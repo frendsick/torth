@@ -1,0 +1,7 @@
+output
+test
+__pycache__/
+*.asm
+*.o
+*.dot
+*.svg
