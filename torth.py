@@ -244,7 +244,35 @@ def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     return ';; -- ' + op_name + ' | File: ' + src_file + ', Row: ' + row + ', Col: ' + col + '\n'
 
 def generate_asm(program: Program) -> None:
-    raise NotImplementedError("Function '" +  generate_asm.__name__ + "' is not implemented")
+    asm_file = sys.argv[1].replace('.torth', '.asm')
+    with open (asm_file, 'a') as f:
+        for op in program:
+            if op.type == OpType.PUSH_INT:
+                f.write(get_op_comment_asm(op, op.type))
+                f.write(f'  mov rax, {op.token.value}\n')
+                f.write(f'  push rax\n')
+            elif op.type == OpType.INTRINSIC:
+                if op.token.value == "+":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write( '  pop rax\n')
+                    f.write( '  pop rbx\n')
+                    f.write( '  add rax, rbx\n')
+                    f.write( '  push rax\n')
+                elif op.token.value.upper() == "PRINT_INT":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write(f'  mov rsi, {op.type.value}\n')
+                    f.write( '  mov [int], rsi\n')
+                    f.write( '  call PrintInt\n')
+                else:
+                    raise NotImplementedError(f"Intrinsic '{op.token.value}' is not implemented")
+            else:
+                raise NotImplementedError(f"Operand '{op.type}' is not implemented")
+
+        # Add exit syscall to asm_file
+        f.write( '; -- exit syscall\n')
+        f.write( '  mov rax, 0x1\n')
+        f.write( '  xor rbx, rbx\n')
+        f.write( '  int 0x80\n')
 
 def compile_asm(tokens = List[Token]) -> None:
     raise NotImplementedError("Function '" +  compile_asm.__name__ + "' is not implemented")
