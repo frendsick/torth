@@ -49,6 +49,12 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  pop rbx\n')
                     f.write( '  add rax, rbx\n')
                     f.write( '  push rax\n')
+                elif intrinsic == "MINUS":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write( '  pop rax\n')
+                    f.write( '  pop rbx\n')
+                    f.write( '  sub rax, rbx\n')
+                    f.write( '  push rax\n')
                 elif intrinsic == "PRINT_INT":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write(f'  mov rsi, {op.type.value}\n')
