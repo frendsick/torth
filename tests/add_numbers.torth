@@ -1,0 +1,11 @@
+34  // Push 34 to the stack
+35  // Push 35 to the stack
++   // Pop two numbers and push their sum to the stack
+.   // Print and pop the number from the top of the stack
+
+// The language does not really matter about alignment
+// Following code prints 420
+400
+    20      + 
+     
+       .
