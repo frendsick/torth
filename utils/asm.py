@@ -45,6 +45,12 @@ def generate_comparison_asm(asm_file, cmov_operand: str) -> None:
     asm_file.write(f'  {cmov_operand} rcx, rdx\n')
     asm_file.write( '  push rcx\n')
 
+def generate_arithmetic_asm(asm_file, operand: str) -> None:
+    asm_file.write( '  pop rax\n')
+    asm_file.write( '  pop rbx\n')
+    asm_file.write(f'  {operand} rax, rbx\n')
+    asm_file.write( '  push rax\n')
+
 def generate_asm(program: Program, asm_file: str) -> None:
     with open (asm_file, 'a') as f:
         for op in program:
@@ -98,22 +104,13 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  push rbx\n')
                 elif intrinsic == "PLUS":
                     f.write(get_op_comment_asm(op, op.type))
-                    f.write( '  pop rax\n')
-                    f.write( '  pop rbx\n')
-                    f.write( '  add rax, rbx\n')
-                    f.write( '  push rax\n')
+                    generate_arithmetic_asm(f, "add")
                 elif intrinsic == "MINUS":
                     f.write(get_op_comment_asm(op, op.type))
-                    f.write( '  pop rax\n')
-                    f.write( '  pop rbx\n')
-                    f.write( '  sub rax, rbx\n')
-                    f.write( '  push rax\n')
+                    generate_arithmetic_asm(f, "sub")
                 elif intrinsic == "MUL":
                     f.write(get_op_comment_asm(op, op.type))
-                    f.write( '  pop rax\n')
-                    f.write( '  pop rbx\n')
-                    f.write( '  mul rbx\n')
-                    f.write( '  push rax\n')
+                    generate_arithmetic_asm(f, "mul")
                 # Rotate three top elements in the stack
                 elif intrinsic == "ROT":
                     f.write(get_op_comment_asm(op, op.type))
