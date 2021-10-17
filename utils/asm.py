@@ -53,6 +53,13 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  pop rax\n')
                     f.write( '  push rax\n')
                     f.write( '  push rax\n')
+                elif intrinsic == "DUP":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write( '  pop rax\n')
+                    f.write( '  pop rbx\n')
+                    f.write( '  push rbx\n')
+                    f.write( '  push rax\n')
+                    f.write( '  push rbx\n')
                 elif intrinsic == "PLUS":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
@@ -99,7 +106,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 raise NotImplementedError(f"Operand '{op.type}' is not implemented")
 
         # Add exit syscall to asm_file
-        f.write( '; -- exit syscall\n')
+        f.write( ';; -- exit syscall\n')
         f.write( '  mov rax, 0x1\n')
         f.write( '  xor rbx, rbx\n')
         f.write( '  int 0x80\n')
