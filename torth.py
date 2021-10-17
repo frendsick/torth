@@ -228,7 +228,7 @@ def generate_program(tokens = List[Token]) -> Program:
         program.append(operand)
     return program
 
-def initialize_asm():
+def initialize_asm(asm_file: str) -> None:
     default_asm = '''default rel
 extern printf
 
@@ -250,8 +250,6 @@ PrintInt:
 global main
 main:
 '''
-
-    asm_file = sys.argv[1].replace('.torth', '.asm')
     with open(asm_file, 'w') as f:
         f.write(default_asm)
 
@@ -264,7 +262,7 @@ def get_op_comment_asm(op: Op, op_type: OpType) -> str:
         op_name = op_type.name + " " + op.token.value
     return ';; -- ' + op_name + ' | File: ' + src_file + ', Row: ' + row + ', Col: ' + col + '\n'
 
-def generate_asm(program: Program) -> None:
+def generate_asm(program: Program, asm_file: str) -> None:
     asm_file = sys.argv[1].replace('.torth', '.asm')
     with open (asm_file, 'a') as f:
         for op in program:
@@ -303,20 +301,21 @@ def link_object_file() -> None:
     raise NotImplementedError("Function '" +  link_object_file.__name__ + "' is not implemented")
 
 def compile_code(tokens = List[Token]) -> None:
+    asm_file = sys.argv[1].replace('.torth', '.asm')
     program = generate_program(tokens)
-    for op in program:
-        print(op)
-    initialize_asm()
-    generate_asm(program)
-    compile_asm()
-    link_object_file()
-    raise NotImplementedError("Function '" +  compile_code.__name__ + "' is under development")
+    initialize_asm(asm_file)
+    generate_asm(program, asm_file)
+    compile_asm(asm_file)
+    link_object_file(asm_file.replace('.asm', '.o'))
+
+def run_code(exe_file: str) -> None:
+    subprocess.run([f'./{exe_file}'])
 
 def main():
     code_file = get_code_file_from_arguments()
     tokens = get_tokens_from_code(code_file)
     compile_code(tokens)
-    raise NotImplementedError("Function '" +  main.__name__ + "' is under development")
+    run_code(code_file.replace(".torth", ""))
 
 if __name__ == "__main__":
     main()
