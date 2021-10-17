@@ -77,6 +77,7 @@ class TokenType(Enum):
     STR=auto()
     WORD=auto()
 
+# Source file name, row, column
 Location=Tuple[str, int, int]
 
 @dataclass
