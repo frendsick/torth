@@ -10,4 +10,4 @@ def get_code_file_from_arguments() -> str:
         usage()
     if os.path.isfile(sys.argv[1]):
         return sys.argv[1]
-    raise FileNotFoundError("Argument '" + sys.argv[1] + "' is not a file")
+    raise FileNotFoundError(f"Argument '{sys.argv[1]}' is not a file")

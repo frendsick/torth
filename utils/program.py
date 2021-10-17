@@ -34,7 +34,7 @@ def generate_program(tokens = List[Token]) -> Program:
             if intrinsic_exists(token.value.upper()):
                 op_type = OpType.INTRINSIC
             else:
-                raise AttributeError ("Intrinsic '" + token.value + "' is not found")
+                raise AttributeError (f"Intrinsic '{token.value}' is not found")
 
         operand = Op(op_type, token)
         program.append(operand)
