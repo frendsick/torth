@@ -12,23 +12,24 @@ def intrinsic_exists(token: str) -> bool:
 def generate_program(tokens = List[Token]) -> Program:
     program = []
     for token in tokens:
+        token_value = token.value.upper()
         if token.type == TokenType.CHAR:
             op_type = OpType.PUSH_STR
         elif token.type == TokenType.INT:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.STR:
             op_type = OpType.PUSH_STR
-        elif token.value.lower() == 'do':
+        elif token_value == 'DO':
             op_type = OpType.DO
-        elif token.value.lower() == 'end':
+        elif token_value == 'END':
             op_type = OpType.END
-        elif token.value.lower() == 'if':
+        elif token_value == 'IF':
             op_type = OpType.IF
-        elif token.value.lower() == 'elif':
+        elif token_value == 'ELIF':
             op_type = OpType.ELIF
-        elif token.value.lower() == 'else':
+        elif token_value == 'ELSE':
             op_type = OpType.ELSE
-        elif token.value.lower() == 'while':
+        elif token_value == 'WHILE':
             op_type = OpType.WHILE
         else:
             if intrinsic_exists(token.value.upper()):
