@@ -72,6 +72,7 @@ class OpType(Enum):
 class TokenType(Enum):
     CHAR=auto()
     INT=auto()
+    KEYWORD=auto()
     STR=auto()
     WORD=auto()
 
