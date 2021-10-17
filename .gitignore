@@ -5,3 +5,5 @@ __pycache__/
 *.o
 *.dot
 *.svg
+.gdb_history
+peda-session*
