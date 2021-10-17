@@ -104,6 +104,32 @@ def get_code_file_from_arguments() -> str:
         return sys.argv[1]
     raise FileNotFoundError("Argument '" + sys.argv[1] + "' is not a file")
 
+# Returns the Intrinsic class value from token
+def get_token_value(token: str) -> str:
+    if token.upper() == 'MOD':
+        return 'DIVMOD'
+    if token == '=':
+        return 'EQ'
+    if token == '>=':
+        return 'GE'
+    if token == '>':
+        return 'GT'
+    if token == '<=':
+        return 'LE'
+    if token == '<':
+        return 'LT'
+    if token == '-':
+        return 'MINUS'
+    if token == '*':
+        return 'MUL'
+    if token == '!=':
+        return 'NE'
+    if token == '+':
+        return 'PLUS'
+    if token == '.':
+        return 'PRINT_INT'
+    return token
+
 def get_token_type(token_text: str) -> TokenType:
     keywords = ['do', 'elif', 'else', 'end', 'if', 'include', 'macro', 'while']
     # Check if all keywords are taken into account
@@ -155,7 +181,7 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
 
     tokens = []
     for match in token_matches:
-        value     = match.group(0)
+        value     = get_token_value(match.group(0))
         type      = get_token_type(value)
         location  = get_token_location(os.path.basename(code_file), match.start()+1, newline_indexes)
         token     = Token(value, type, location)
@@ -168,11 +194,6 @@ def PUSH_STR(char: str) -> None:
 def intrinsic_exists(token: str) -> bool:
     if hasattr(Intrinsic, token):
         return True
-
-    # Check all intrinsics which token value differs from the word representation in the Intrinsic class
-    if token == 'MOD' or token == '=' or token == '>=' or token == '>' or token == '<=' or token == '<' or token == '-' or token == '*' or token == '!=' or token == '+':
-        return True
-
     return False
 
 def generate_program(tokens = List[Token]) -> Program:
@@ -252,13 +273,14 @@ def generate_asm(program: Program) -> None:
                 f.write(f'  mov rax, {op.token.value}\n')
                 f.write(f'  push rax\n')
             elif op.type == OpType.INTRINSIC:
-                if op.token.value == "+":
+                intrinsic = op.token.value.upper()
+                if intrinsic == "PLUS":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
                     f.write( '  pop rbx\n')
                     f.write( '  add rax, rbx\n')
                     f.write( '  push rax\n')
-                elif op.token.value.upper() == "PRINT_INT":
+                elif intrinsic == "PRINT_INT":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write(f'  mov rsi, {op.type.value}\n')
                     f.write( '  mov [int], rsi\n')
