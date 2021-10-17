@@ -98,7 +98,6 @@ def usage() -> None:
 def get_code_file_from_arguments() -> str:
     if len(sys.argv) != 2:
         usage()
-    print(sys.argv[1], os.path.isfile(sys.argv[1]))
     if os.path.isfile(sys.argv[1]):
         return sys.argv[1]
     raise FileNotFoundError("Argument '" + sys.argv[1] + "' is not a file")
