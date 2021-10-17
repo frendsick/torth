@@ -68,6 +68,8 @@ def get_token_type(token_text: str) -> TokenType:
         return TokenType.STR
     if token_text[0] == token_text[-1] == "'" and len(token_text) == 3:
         return TokenType.CHAR
+    if token_text[0] == token_text[-1] == "'" and len(token_text) != 3:
+        raise TypeError("Token " + token_text + " is not a CHAR. Please use double quotes (\"\") for string literals")
     try:
         _integer = int(token_text)
         return TokenType.INT
