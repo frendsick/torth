@@ -1,4 +1,5 @@
 import subprocess
+import sys
 from utils.defs import OpType, Op, Program
 def initialize_asm(asm_file: str) -> None:
     default_asm = '''default rel
@@ -43,8 +44,12 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write(f'  push rax\n')
             elif op.type == OpType.INTRINSIC:
                 intrinsic = op.token.value.upper()
+                # Push argument count to the stack
+                if intrinsic == "ARGC":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write(f'  push {len(sys.argv)}\n')
                 # Pop one element off the stack
-                if intrinsic == "DROP":
+                elif intrinsic == "DROP":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
                 # Duplicate the top element of the stack
