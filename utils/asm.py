@@ -35,6 +35,16 @@ def get_op_comment_asm(op: Op, op_type: OpType) -> str:
         op_name = op_type.name + " " + op.token.value
     return ';; -- ' + op_name + ' | File: ' + src_file + ', Row: ' + row + ', Col: ' + col + '\n'
 
+# Only cmov operand changes with different comparison intrinsics
+def generate_comparison_asm(asm_file, cmov_operand: str) -> None:
+    asm_file.write( '  pop rax\n')
+    asm_file.write( '  pop rbx\n')
+    asm_file.write( '  mov rcx, 0\n')
+    asm_file.write( '  mov rdx, 1\n')
+    asm_file.write( '  cmp rax, rbx\n')
+    asm_file.write(f'  {cmov_operand} rcx, rdx\n')
+    asm_file.write( '  push rcx\n')
+
 def generate_asm(program: Program, asm_file: str) -> None:
     with open (asm_file, 'a') as f:
         for op in program:
@@ -58,6 +68,24 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  pop rax\n')
                     f.write( '  push rax\n')
                     f.write( '  push rax\n')
+                elif intrinsic == "EQ":
+                    f.write(get_op_comment_asm(op, op.type))
+                    generate_comparison_asm(f, "cmove")
+                elif intrinsic == "GE":
+                    f.write(get_op_comment_asm(op, op.type))
+                    generate_comparison_asm(f, "cmovge")
+                elif intrinsic == "GT":
+                    f.write(get_op_comment_asm(op, op.type))
+                    generate_comparison_asm(f, "cmovgt")
+                elif intrinsic == "LE":
+                    f.write(get_op_comment_asm(op, op.type))
+                    generate_comparison_asm(f, "cmovle")
+                elif intrinsic == "LT":
+                    f.write(get_op_comment_asm(op, op.type))
+                    generate_comparison_asm(f, "cmovl")
+                elif intrinsic == "NE":
+                    f.write(get_op_comment_asm(op, op.type))
+                    generate_comparison_asm(f, "cmovne")
                 elif intrinsic == "OVER":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
