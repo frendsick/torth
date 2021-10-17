@@ -48,6 +48,9 @@ def generate_comparison_asm(asm_file, cmov_operand: str) -> None:
 def generate_asm(program: Program, asm_file: str) -> None:
     with open (asm_file, 'a') as f:
         for op in program:
+            # IF is just a keyword which does nothing
+            if op.type == OpType.IF:
+                f.write(get_op_comment_asm(op, op.type))
             if op.type == OpType.PUSH_INT:
                 f.write(get_op_comment_asm(op, op.type))
                 f.write(f'  mov rax, {op.token.value}\n')
