@@ -59,16 +59,15 @@ class Intrinsic(Enum):
     SYSCALL3=auto()
 
 class OpType(Enum):
-    PUSH_INT=auto()
-    PUSH_STR=auto()
-    PUSH_CSTR=auto()
-    INTRINSIC=auto()
-    IF=auto()
+    DO=auto()
     ELIF=auto()
     ELSE=auto()
     END=auto()
+    IF=auto()
+    INTRINSIC=auto()
+    PUSH_INT=auto()
+    PUSH_STR=auto()
     WHILE=auto()
-    DO=auto()
 
 class TokenType(Enum):
     CHAR=auto()
