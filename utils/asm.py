@@ -53,7 +53,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  pop rax\n')
                     f.write( '  push rax\n')
                     f.write( '  push rax\n')
-                elif intrinsic == "DUP":
+                elif intrinsic == "OVER":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
                     f.write( '  pop rbx\n')
