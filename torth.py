@@ -103,6 +103,13 @@ def get_code_file_from_arguments() -> str:
     raise FileNotFoundError("Argument '" + sys.argv[1] + "' is not a file")
 
 def get_token_type(token_text: str) -> TokenType:
+    keywords = ['do', 'elif', 'else', 'end', 'if', 'include', 'macro', 'while']
+    # Check if all keywords are taken into account
+    assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
+
+    # Keywords are case insensitive
+    if token_text.lower() in keywords:
+        return TokenType.KEYWORD
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
     if token_text[0] == token_text[-1] == "'" and len(token_text) == 3:
