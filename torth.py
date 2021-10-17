@@ -147,7 +147,7 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
 
     # Get all newline characters and tokens with their locations from the code
     newline_indexes = [i for i in range(len(code)) if code[i] == '\n']
-    
+
     # Strings are between quotes and can contain whitespaces
     token_matches = [token for token in re.finditer(r'".*"|\S+', code)]
 
@@ -158,11 +158,81 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
         location  = get_token_location(os.path.basename(code_file), match.start()+1, newline_indexes)
         token     = Token(value, type, location)
         tokens.append(token)
-
     return tokens
 
-def compile_code(tokens = List[Token]) -> Program:
-    raise NotImplementedError("Function '" +  compile_code.__name__ + "' is not implemented")
+def PUSH_STR(char: str) -> None:
+    raise NotImplementedError("Function 'PUSH_STR' is not implemented")
+
+def intrinsic_exists(token: str) -> bool:
+    if hasattr(Intrinsic, token):
+        return True
+
+    # Check all intrinsics which token value differs from the word representation in the Intrinsic class
+    if token == 'MOD' or token == '=' or token == '>=' or token == '>' or token == '<=' or token == '<' or token == '-' or token == '*' or token == '!=' or token == '+':
+        return True
+
+    return False
+
+def generate_program(tokens = List[Token]) -> Program:
+    program = []
+    for token in tokens:
+        if token.type == TokenType.CHAR:
+            op_type = OpType.PUSH_STR
+        elif token.type == TokenType.INT:
+            op_type = OpType.PUSH_INT
+        elif token.type == TokenType.STR:
+            op_type = OpType.PUSH_STR
+        elif token.value.lower() == 'do':
+            op_type = OpType.DO
+        elif token.value.lower() == 'end':
+            op_type = OpType.END
+        elif token.value.lower() == 'if':
+            op_type = OpType.IF
+        elif token.value.lower() == 'elif':
+            op_type = OpType.ELIF
+        elif token.value.lower() == 'else':
+            op_type = OpType.ELSE
+        elif token.value.lower() == 'while':
+            op_type = OpType.WHILE
+        else:
+            if intrinsic_exists(token.value.upper()):
+                op_type = OpType.INTRINSIC
+            else:
+                raise AttributeError ("Intrinsic '" + token.value + "' is not found")
+
+
+        operand = Op(op_type, token)
+        program.append(operand)
+    return program
+
+def initialize_asm():
+    default_asm = '''section .text
+    global _start
+
+_start:'''
+
+    asm_file = sys.argv[1].replace('.torth', '.asm')
+    with open(asm_file, 'w') as f:
+        f.write(default_asm)
+
+def generate_asm(program: Program) -> None:
+    raise NotImplementedError("Function '" +  generate_asm.__name__ + "' is not implemented")
+
+def compile_asm(tokens = List[Token]) -> None:
+    raise NotImplementedError("Function '" +  compile_asm.__name__ + "' is not implemented")
+
+def link_object_file() -> None:
+    raise NotImplementedError("Function '" +  link_object_file.__name__ + "' is not implemented")
+
+def compile_code(tokens = List[Token]) -> None:
+    program = generate_program(tokens)
+    for op in program:
+        print(op)
+    initialize_asm()
+    generate_asm(program)
+    compile_asm()
+    link_object_file()
+    raise NotImplementedError("Function '" +  compile_code.__name__ + "' is under development")
 
 def main():
     code_file = get_code_file_from_arguments()
