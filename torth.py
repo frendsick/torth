@@ -208,10 +208,27 @@ def generate_program(tokens = List[Token]) -> Program:
     return program
 
 def initialize_asm():
-    default_asm = '''section .text
-    global _start
+    default_asm = '''default rel
+extern printf
 
-_start:'''
+section .rodata
+  formatStrInt db "%d",10,0
+
+section .bss
+  int: RESQ 1 ; allocates 8 bytes
+
+section .text
+PrintInt:
+  mov rsi, [rsp+8]
+  mov rdi, formatStrInt
+  mov rax, 0
+
+  call printf
+  ret
+
+global main
+main:
+'''
 
     asm_file = sys.argv[1].replace('.torth', '.asm')
     with open(asm_file, 'w') as f:
