@@ -1,3 +1,7 @@
+// Expected output:
+// 69
+// 420
+
 34  // Push 34 to the stack
 35  // Push 35 to the stack
 +   // Pop two numbers and push their sum to the stack
