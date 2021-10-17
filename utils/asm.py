@@ -43,9 +43,11 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write(f'  push rax\n')
             elif op.type == OpType.INTRINSIC:
                 intrinsic = op.token.value.upper()
+                # Pop one element off the stack
                 if intrinsic == "DROP":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
+                # Duplicate the top element of the stack
                 elif intrinsic == "DUP":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
@@ -69,6 +71,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  pop rbx\n')
                     f.write( '  mul rbx\n')
                     f.write( '  push rax\n')
+                # Rotate three top elements in the stack
                 elif intrinsic == "ROT":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
@@ -77,6 +80,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  push rbx\n')
                     f.write( '  push rax\n')
                     f.write( '  push rcx\n')
+                # Push remainder and quotient to stack
                 elif intrinsic == "DIVMOD":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
