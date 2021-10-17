@@ -2,7 +2,7 @@
 import os
 from utils.lex import get_tokens_from_code
 from utils.program import compile_code, run_code
-from utils.util import get_code_file_from_arguments, usage
+from utils.util import get_code_file_from_arguments
 
 def main():
     code_file = get_code_file_from_arguments()
