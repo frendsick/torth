@@ -51,6 +51,9 @@ class Intrinsic(Enum):
     SYSCALL1=auto()
     SYSCALL2=auto()
     SYSCALL3=auto()
+    SYSCALL4=auto()
+    SYSCALL5=auto()
+    SYSCALL6=auto()
 
 class OpType(Enum):
     DO=auto()

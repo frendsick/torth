@@ -105,6 +105,62 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  mov [int], rsi\n')
                     f.write( '  call PrintInt\n')
+                elif intrinsic == "SYSCALL0":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write("  pop rax\n")
+                    f.write("  syscall\n")
+                    f.write("  push rax\n")
+                elif intrinsic == "SYSCALL1":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write("  pop rax\n")
+                    f.write("  pop rdi\n")
+                    f.write("  syscall\n")
+                    f.write("  push rax\n")
+                elif intrinsic == "SYSCALL2":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write("  pop rax\n");
+                    f.write("  pop rdi\n");
+                    f.write("  pop rsi\n");
+                    f.write("  syscall\n");
+                    f.write("  push rax\n")
+                elif intrinsic == "SYSCALL3":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write("  pop rax\n")
+                    f.write("  pop rdi\n")
+                    f.write("  pop rsi\n")
+                    f.write("  pop rdx\n")
+                    f.write("  syscall\n")
+                    f.write("  push rax\n")
+                elif intrinsic == "SYSCALL4":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write("  pop rax\n")
+                    f.write("  pop rdi\n")
+                    f.write("  pop rsi\n")
+                    f.write("  pop rdx\n")
+                    f.write("  pop r10\n")
+                    f.write("  syscall\n")
+                    f.write("  push rax\n")
+                elif intrinsic == "SYSCALL5":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write("  pop rax\n")
+                    f.write("  pop rdi\n")
+                    f.write("  pop rsi\n")
+                    f.write("  pop rdx\n")
+                    f.write("  pop r10\n")
+                    f.write("  pop r8\n")
+                    f.write("  syscall\n")
+                    f.write("  push rax\n")
+                elif intrinsic == "SYSCALL6":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write("  pop rax\n")
+                    f.write("  pop rdi\n")
+                    f.write("  pop rsi\n")
+                    f.write("  pop rdx\n")
+                    f.write("  pop r10\n")
+                    f.write("  pop r8\n")
+                    f.write("  pop r9\n")
+                    f.write("  syscall\n")
+                    f.write("  push rax\n")
                 else:
                     raise NotImplementedError(f"Intrinsic '{op.token.value}' is not implemented")
             else:
