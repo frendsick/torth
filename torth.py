@@ -64,7 +64,15 @@ def get_code_file_from_arguments() -> str:
     raise FileNotFoundError("Argument '" + sys.argv[1] + "' is not a file")
 
 def get_token_type(token_text: str) -> TokenType:
-    raise NotImplementedError("Function " + get_token_type.__name__ + " is not implemented")
+    if token_text[0] == token_text[-1] == '"':
+        return TokenType.STR
+    if token_text[0] == token_text[-1] == "'" and len(token_text) == 3:
+        return TokenType.CHAR
+    try:
+        _integer = int(token_text)
+        return TokenType.INT
+    except ValueError:
+        return TokenType.WORD
 
 # Returns tuple containing the row and the column where the token was found
 def get_token_location(filename: str, position: int, newline_indexes: List[int]) -> Location:
