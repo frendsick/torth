@@ -71,7 +71,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  push rax ; Quotient\n')
                 elif intrinsic == "PRINT_INT":
                     f.write(get_op_comment_asm(op, op.type))
-                    f.write(f'  mov rsi, {op.type.value}\n')
                     f.write( '  mov [int], rsi\n')
                     f.write( '  call PrintInt\n')
                 else:
