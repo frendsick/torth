@@ -110,7 +110,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     generate_arithmetic_asm(f, "sub")
                 elif intrinsic == "MUL":
                     f.write(get_op_comment_asm(op, op.type))
-                    generate_arithmetic_asm(f, "mul")
+                    f.write( '  pop rax\n')
+                    f.write( '  pop rbx\n')
+                    f.write( '  mul rbx\n')
+                    f.write( '  push rax\n')
                 # Rotate three top elements in the stack
                 elif intrinsic == "ROT":
                     f.write(get_op_comment_asm(op, op.type))
