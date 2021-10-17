@@ -142,8 +142,12 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     with open(code_file, 'r') as f:
         code = f.read()
     
+    # Remove all comments from the code
+    code = re.sub(r'\s*\/\/.*', '', code)
+
     # Get all newline characters and tokens with their locations from the code
     newline_indexes = [i for i in range(len(code)) if code[i] == '\n']
+    
     # Strings are between quotes and can contain whitespaces
     token_matches = [token for token in re.finditer(r'".*"|\S+', code)]
 
