@@ -294,11 +294,11 @@ def generate_asm(program: Program, asm_file: str) -> None:
         f.write( '  xor rbx, rbx\n')
         f.write( '  int 0x80\n')
 
-def compile_asm(tokens = List[Token]) -> None:
-    raise NotImplementedError("Function '" +  compile_asm.__name__ + "' is not implemented")
+def compile_asm(asm_file: str) -> None:
+    subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file])
 
-def link_object_file() -> None:
-    raise NotImplementedError("Function '" +  link_object_file.__name__ + "' is not implemented")
+def link_object_file(obj_file: str) -> None:
+    subprocess.run(['gcc', '-no-pie', f'-o{obj_file.replace(".o", "")}', obj_file])
 
 def compile_code(tokens = List[Token]) -> None:
     asm_file = sys.argv[1].replace('.torth', '.asm')
