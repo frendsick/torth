@@ -234,6 +234,15 @@ main:
     with open(asm_file, 'w') as f:
         f.write(default_asm)
 
+def get_op_comment_asm(op: Op, op_type: OpType) -> str:
+    src_file    = op.token.location[0]
+    row         = str(op.token.location[1])
+    col         = str(op.token.location[2])
+    op_name     = op_type.name
+    if op_name == "INTRINSIC":
+        op_name = op_type.name + " " + op.token.value
+    return ';; -- ' + op_name + ' | File: ' + src_file + ', Row: ' + row + ', Col: ' + col + '\n'
+
 def generate_asm(program: Program) -> None:
     raise NotImplementedError("Function '" +  generate_asm.__name__ + "' is not implemented")
 
