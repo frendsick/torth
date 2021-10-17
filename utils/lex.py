@@ -4,7 +4,7 @@ from typing import List
 from utils.defs import Keyword, TokenType, Location, Token
 # Returns the Intrinsic class value from token
 def get_token_value(token: str) -> str:
-    if token.upper() == 'MOD':
+    if token == '/':
         return 'DIVMOD'
     if token == '=':
         return 'EQ'
