@@ -46,6 +46,7 @@ class Intrinsic(Enum):
     OVER=auto()
     PLUS=auto()
     PRINT=auto()
+    PRINT_INT=auto()
     ROT=auto()
     SHL=auto()
     SHR=auto()
