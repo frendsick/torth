@@ -43,7 +43,15 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write(f'  push rax\n')
             elif op.type == OpType.INTRINSIC:
                 intrinsic = op.token.value.upper()
-                if intrinsic == "PLUS":
+                if intrinsic == "DROP":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write( '  pop rax\n')
+                elif intrinsic == "DUP":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write( '  pop rax\n')
+                    f.write( '  push rax\n')
+                    f.write( '  push rax\n')
+                elif intrinsic == "PLUS":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
                     f.write( '  pop rbx\n')
