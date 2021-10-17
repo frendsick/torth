@@ -69,6 +69,14 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     f.write( '  pop rbx\n')
                     f.write( '  mul rbx\n')
                     f.write( '  push rax\n')
+                elif intrinsic == "ROT":
+                    f.write(get_op_comment_asm(op, op.type))
+                    f.write( '  pop rax\n')
+                    f.write( '  pop rbx\n')
+                    f.write( '  pop rcx\n')
+                    f.write( '  push rbx\n')
+                    f.write( '  push rax\n')
+                    f.write( '  push rcx\n')
                 elif intrinsic == "DIVMOD":
                     f.write(get_op_comment_asm(op, op.type))
                     f.write( '  pop rax\n')
