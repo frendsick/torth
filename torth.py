@@ -69,13 +69,18 @@ def get_token_type(token_text: str) -> TokenType:
 # Returns tuple containing the row and the column where the token was found
 def get_token_location(filename: str, position: int, newline_indexes: List[int]) -> Location:
     col = position
-    for row in range(len(newline_indexes)):
-        if row > 0:
-            col = position - newline_indexes[row-1]
-        if newline_indexes[row] > position:
+    row = 1
+    for i in range(len(newline_indexes)):
+        if i > 0:
+            col = position - newline_indexes[i-1] - 1
+            row +=1
+        if newline_indexes[i] > position:
             return (filename, row, col)
     
-    return (filename, 0, position) # Row 0 column <position>
+    if len(newline_indexes) >= 1:
+        row += 1
+        col = position - newline_indexes[-1] - 1
+    return (filename, row, col)
 
 def get_tokens_from_code(code_file: str) -> List[Token]:
     with open(code_file, 'r') as f:
@@ -90,7 +95,7 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     for match in token_matches:
         value     = match.group(0)
         type      = get_token_type(value)
-        location  = get_token_location(os.path.basename(code_file), match.start(), newline_indexes)
+        location  = get_token_location(os.path.basename(code_file), match.start()+1, newline_indexes)
         token     = Token(value, type, location)
         tokens.append(token)
 
