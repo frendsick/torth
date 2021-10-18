@@ -155,7 +155,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  mov rsi, [rsp] ; *buf\n')
                 f.write(f'  mov rdx, lenStr{STRING_COUNT} ; count\n')
                 f.write( '  syscall\n')
-                f.write( '  add rsp, 8 ; drop a value from the stack\n')
+                f.write( '  add rsp, 8 ; drop str pointer from the stack\n')
             # TODO: Reimplement PRINT_INT without using C-function printf
             #elif intrinsic == "PRINT_INT":
             #    f.write(get_op_comment_asm(op, op.type))
