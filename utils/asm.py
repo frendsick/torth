@@ -76,7 +76,6 @@ def add_string_variable_asm(asm_file: str, string: str) -> None:
 def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]:
     syscall = stack.pop()
     for _i in range(param_count):
-        print(stack[-1])
         stack.pop()
     syscall.value = '0' # Syscall return value is 0 by default
     stack.append(syscall)
@@ -409,14 +408,18 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write("  pop r9  ; 6. arg\n")
                 f.write("  syscall\n")
                 f.write("  push rax ; return code\n")
+                try:
+                    STACK = get_stack_after_syscall(STACK, 6)
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack")
             else:
                 raise NotImplementedError(f"Intrinsic '{token.value}' is not implemented")
         else:
             raise NotImplementedError(f"Operand '{op.type}' is not implemented")
-    try:
-        print(STACK[-1])
-    except IndexError:
-        print([])
+        
+        for item in STACK:
+            print(item.value, end=',')
+        print()
 
     # Add exit syscall to asm_file
     f.write( ';; -- exit syscall\n')
