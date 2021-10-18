@@ -6,7 +6,7 @@ from utils.defs import Keyword, TokenType, Location, Token
 def get_token_value(token: str) -> str:
     if token == '/':
         return 'DIVMOD'
-    if token == '=':
+    if token == '==':
         return 'EQ'
     if token == '>=':
         return 'GE'
