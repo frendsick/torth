@@ -26,6 +26,10 @@ def get_token_value(token: str) -> str:
         return 'PLUS'
     if token == '.':
         return 'PRINT_INT'
+    if token == 'TRUE':
+        return '1'
+    if token == 'FALSE':
+        return '0'
     return token
 
 def get_token_type(token_text: str) -> TokenType:
@@ -36,6 +40,8 @@ def get_token_type(token_text: str) -> TokenType:
     # Keywords are case insensitive
     if token_text.upper() in keywords:
         return TokenType.KEYWORD
+    if token_text.upper() in ('TRUE', 'FALSE'):
+        return TokenType.BOOL
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
     if token_text[0] == token_text[-1] == "'" and len(token_text) == 3:
@@ -84,4 +90,5 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
         location  = get_token_location(os.path.basename(code_file), match.start()+1, newline_indexes)
         token     = Token(value, type, location)
         tokens.append(token)
+
     return tokens

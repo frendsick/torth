@@ -13,7 +13,9 @@ def generate_program(tokens = List[Token]) -> Program:
     program = []
     for token in tokens:
         token_value = token.value.upper()
-        if token.type == TokenType.CHAR:
+        if token.type == TokenType.BOOL:
+            op_type = OpType.PUSH_INT
+        elif token.type == TokenType.CHAR:
             op_type = OpType.PUSH_STR
         elif token.type == TokenType.INT:
             op_type = OpType.PUSH_INT
@@ -32,7 +34,7 @@ def generate_program(tokens = List[Token]) -> Program:
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
         else:
-            if intrinsic_exists(token.value.upper()):
+            if intrinsic_exists(token_value):
                 op_type = OpType.INTRINSIC
             else:
                 raise AttributeError (f"Intrinsic '{token.value}' is not found")
