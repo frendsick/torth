@@ -178,7 +178,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  mov [int], rsi\n')
                 f.write( '  call PrintInt\n')
-
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -186,6 +185,17 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  pop rbx\n')
                 f.write( '  push rax\n')
                 f.write( '  push rbx\n')
+            # Swap two element pairs at the top of the stack
+            elif intrinsic == "SWAP2":
+                f.write(get_op_comment_asm(op, op.type))
+                f.write( '  pop rax\n')
+                f.write( '  pop rbx\n')
+                f.write( '  pop rcx\n')
+                f.write( '  pop rdx\n')
+                f.write( '  push rbx\n')
+                f.write( '  push rax\n')
+                f.write( '  push rdx\n')
+                f.write( '  push rcx\n')
             elif intrinsic == "SYSCALL0":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax\n")
