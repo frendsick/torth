@@ -241,7 +241,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write("  syscall\n")
                 f.write("  push rax\n")
             else:
-                raise NotImplementedError(f"Operand '{op.type}' is not implemented")
+                raise NotImplementedError(f"Intrinsic '{op.token.value}' is not implemented")
+        else:
+            raise NotImplementedError(f"Operand '{op.type}' is not implemented")
 
     # Add exit syscall to asm_file
     f.write( ';; -- exit syscall\n')
