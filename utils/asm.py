@@ -1,6 +1,6 @@
 import subprocess
 import sys
-from utils.defs import OpType, Op, TokenType, Token, Program, STACK
+from utils.defs import Colors, OpType, Op, TokenType, Token, Program, STACK
 
 # How many different string variables are stored to the program
 STRING_COUNT = 0
@@ -72,6 +72,19 @@ def add_string_variable_asm(asm_file: str, string: str) -> None:
         for i in range(4, len(file_lines)):
             f.write(file_lines[i])
 
+def compiler_error(op: Op, error_message: str) -> str:
+    operand = op.token.value
+    file    = op.token.location[0]
+    row     = op.token.location[1]
+    col     = op.token.location[2]
+    print(Colors.FAIL + "Compiler error" + Colors.NC + f": {error_message}\n")
+
+    print(Colors.HEADER + "Operand" + Colors.NC + f": {operand}")
+    print(Colors.HEADER + "File" + Colors.NC + f": {file}")
+    print(Colors.HEADER + "Row" + Colors.NC + f": {row}, " \
+        + Colors.HEADER + "Column" + Colors.NC + f": {col}")
+    exit(1)
+
 def generate_asm(program: Program, asm_file: str) -> None:
     global STACK
     for op in program:
@@ -108,14 +121,22 @@ def generate_asm(program: Program, asm_file: str) -> None:
             elif intrinsic == "DROP":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  add rsp, 8\n')
-                STACK.pop()
+                try:
+                    STACK.pop()
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack.")
             # Duplicate the top element of the stack
             elif intrinsic == "DUP":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
                 f.write( '  push rax\n')
                 f.write( '  push rax\n')
-                STACK.append(STACK[-1])
+                try:
+                    STACK.pop()
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack.")
+                STACK.append(top)
+                STACK.append(top)
             elif intrinsic == "EQ":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmove")
@@ -218,7 +239,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  mov [int], rsi\n')
                 f.write( '  call PrintInt\n')
                 f.write( '  add rsp, 8\n')
-                STACK.pop()
+                try:
+                    STACK.pop()
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack.")
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
                 f.write(get_op_comment_asm(op, op.type))
