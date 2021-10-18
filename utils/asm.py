@@ -5,12 +5,30 @@ from utils.defs import OpType, Op, Program
 # How many different string variables are stored to the program
 STRING_COUNT = 0
 
-def initialize_asm(asm_file: str) -> None:
-    default_asm = '''section .rodata
-section .text
-  global _start
+def get_asm_file_start(asm_file:str) -> str:
+    return '''default rel
+extern printf
 
-_start:
+section .rodata
+'''
+
+def initialize_asm(asm_file: str) -> None:
+    default_asm = get_asm_file_start(asm_file) + '''  formatStrInt db "%d",10,0
+
+section .bss
+  int: RESQ 1 ; allocates 8 bytes
+
+section .text
+PrintInt:
+  global _start
+  mov rsi, [rsp+8]
+  mov rdi, formatStrInt
+  mov rax, 0
+  call printf
+  ret
+
+global main
+main:
 '''
     with open(asm_file, 'w') as f:
         f.write(default_asm)
@@ -46,12 +64,12 @@ def add_string_variable_asm(asm_file: str, string: str) -> None:
     with open(asm_file, 'r') as f:
         file_lines = f.readlines()
     with open(asm_file, 'w') as f:
-        f.write( 'section .rodata\n')
+        f.write(get_asm_file_start(asm_file))
         f.write(f'  str{STRING_COUNT} db "{string}",10\n')
         f.write(f'  lenStr{STRING_COUNT} equ $-str{STRING_COUNT}\n\n')
 
         # Rewrite lines except for the first line (section .rodata)
-        for i in range(1, len(file_lines)):
+        for i in range(4, len(file_lines)):
             f.write(file_lines[i])
 
 def generate_asm(program: Program, asm_file: str) -> None:
@@ -66,7 +84,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
             f.write(f'  push rax\n')
         elif op.type == OpType.PUSH_STR:
             str_val = op.token.value[1:-1]  # Take quotes out of the string
-            str_len = len(op.token.value)-1 # String length without quotes plus newline
 
             # Close the assembly file so the file can be rewritten in add_string_variable_asm
             f.close()
@@ -157,10 +174,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  syscall\n')
                 f.write( '  add rsp, 8 ; drop str pointer from the stack\n')
             # TODO: Reimplement PRINT_INT without using C-function printf
-            #elif intrinsic == "PRINT_INT":
-            #    f.write(get_op_comment_asm(op, op.type))
-            #    f.write( '  mov [int], rsi\n')
-            #    f.write( '  call PrintInt\n')
+            elif intrinsic == "PRINT_INT":
+                f.write(get_op_comment_asm(op, op.type))
+                f.write( '  mov [int], rsi\n')
+                f.write( '  call PrintInt\n')
 
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
@@ -241,4 +258,4 @@ def compile_asm(asm_file: str) -> None:
     subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file])
 
 def link_object_file(obj_file: str) -> None:
-    subprocess.run(['ld', f'-o{obj_file.replace(".o", "")}', obj_file])
+    subprocess.run(['gcc', '-no-pie', f'-o{obj_file.replace(".o", "")}', obj_file])
