@@ -46,10 +46,12 @@ def add_string_variable_asm(asm_file: str, string: str) -> None:
     with open(asm_file, 'r') as f:
         file_lines = f.readlines()
     with open(asm_file, 'w') as f:
-        f.write(get_asm_file_start(asm_file))
-        f.write(f'  str{STRING_COUNT} db "{string}",10,1\n')
-        f.write(f'  lenStr{STRING_COUNT} equ $-str{STRING_COUNT}\n')
-        for i in range(4, len(file_lines)):
+        f.write( 'section .rodata\n')
+        f.write(f'  str{STRING_COUNT} db "{string}",10\n')
+        f.write(f'  lenStr{STRING_COUNT} equ $-str{STRING_COUNT}\n\n')
+
+        # Rewrite lines except for the first line (section .rodata)
+        for i in range(1, len(file_lines)):
             f.write(file_lines[i])
 
 def generate_asm(program: Program, asm_file: str) -> None:
