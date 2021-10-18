@@ -29,12 +29,12 @@ def get_token_value(token: str) -> str:
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords = ['do', 'elif', 'else', 'end', 'if', 'include', 'macro', 'while']
+    keywords = ['DO', 'ELIF', 'ELSE', 'END', 'IF', 'INCLUDE', 'MACRO', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 
     # Keywords are case insensitive
-    if token_text.lower() in keywords:
+    if token_text.upper() in keywords:
         return TokenType.KEYWORD
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
