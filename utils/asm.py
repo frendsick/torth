@@ -1,5 +1,6 @@
 import subprocess
 import sys
+from typing import List
 from utils.defs import Colors, OpType, Op, TokenType, Token, Program, STACK
 
 # How many different string variables are stored to the program
@@ -71,6 +72,15 @@ def add_string_variable_asm(asm_file: str, string: str) -> None:
         # Rewrite lines except for the first line (section .rodata)
         for i in range(4, len(file_lines)):
             f.write(file_lines[i])
+
+def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]:
+    syscall = stack.pop()
+    for _i in range(param_count):
+        print(stack[-1])
+        stack.pop()
+    syscall.value = '0' # Syscall return value is 0 by default
+    stack.append(syscall)
+    return stack
 
 def compiler_error(op: Op, error_message: str) -> str:
     operand = op.token.value
@@ -308,17 +318,36 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  push rax\n')
                 f.write( '  push rdx\n')
                 f.write( '  push rcx\n')
+                try:
+                    a = STACK.pop()
+                    b = STACK.pop()
+                    c = STACK.pop()
+                    d = STACK.pop()
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack.")
+                STACK.append(b)
+                STACK.append(a)
+                STACK.append(d)
+                STACK.append(c)
             elif intrinsic == "SYSCALL0":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
                 f.write("  syscall\n")
                 f.write("  push rax ; return code\n")
+                try:
+                    STACK = get_stack_after_syscall(STACK, 0)
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack")
             elif intrinsic == "SYSCALL1":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
                 f.write("  pop rdi ; 1. arg\n")
                 f.write("  syscall\n")
                 f.write("  push rax ; return code\n")
+                try:
+                    STACK = get_stack_after_syscall(STACK, 1)
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack")
             elif intrinsic == "SYSCALL2":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -326,6 +355,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write("  pop rsi ; 2. arg\n")
                 f.write("  syscall\n");
                 f.write("  push rax ; return code\n")
+                try:
+                    STACK = get_stack_after_syscall(STACK, 2)
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack")
             elif intrinsic == "SYSCALL3":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -334,6 +367,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write("  pop rdx ; 3. arg\n")
                 f.write("  syscall\n")
                 f.write("  push rax ; return code\n")
+                try:
+                    STACK = get_stack_after_syscall(STACK, 3)
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack")
             elif intrinsic == "SYSCALL4":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -343,6 +380,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write("  pop r10 ; 4. arg\n")
                 f.write("  syscall\n")
                 f.write("  push rax ; return code\n")
+                try:
+                    STACK = get_stack_after_syscall(STACK, 4)
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack")
             elif intrinsic == "SYSCALL5":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -353,6 +394,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write("  pop r8  ; 5. arg\n")
                 f.write("  syscall\n")
                 f.write("  push rax ; return code\n")
+                try:
+                    STACK = get_stack_after_syscall(STACK, 5)
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack")
             elif intrinsic == "SYSCALL6":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
