@@ -47,6 +47,7 @@ class Intrinsic(Enum):
     STORE32=auto()
     STORE64=auto()
     SWAP=auto()
+    SWAP2=auto()
     SYSCALL0=auto()
     SYSCALL1=auto()
     SYSCALL2=auto()
