@@ -1,12 +1,19 @@
 import subprocess
 import sys
 from utils.defs import OpType, Op, Program
-def initialize_asm(asm_file: str) -> None:
-    default_asm = '''default rel
+
+# How many different string variables are stored to the program
+STRING_COUNT = 0
+
+def get_asm_file_start(asm_file:str) -> None:
+    return '''default rel
 extern printf
 
 section .rodata
-  formatStrInt db "%d",10,0
+'''
+
+def initialize_asm(asm_file: str) -> None:
+    default_asm = get_asm_file_start(asm_file) + '''  formatStrInt db "%d",10,0
 
 section .bss
   int: RESQ 1 ; allocates 8 bytes
