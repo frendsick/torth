@@ -5,30 +5,12 @@ from utils.defs import OpType, Op, Program
 # How many different string variables are stored to the program
 STRING_COUNT = 0
 
-def get_asm_file_start(asm_file:str) -> None:
-    return '''default rel
-extern printf
-
-section .rodata
-'''
-
 def initialize_asm(asm_file: str) -> None:
-    default_asm = get_asm_file_start(asm_file) + '''  formatStrInt db "%d",10,0
-
-section .bss
-  int: RESQ 1 ; allocates 8 bytes
-
+    default_asm = '''section .rodata
 section .text
-PrintInt:
-  mov rsi, [rsp+8]
-  mov rdi, formatStrInt
-  mov rax, 0
+  global _start
 
-  call printf
-  ret
-
-global main
-main:
+_start:
 '''
     with open(asm_file, 'w') as f:
         f.write(default_asm)
@@ -102,7 +84,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
             # Pop one element off the stack
             elif intrinsic == "DROP":
                 f.write(get_op_comment_asm(op, op.type))
-                f.write( '  pop rax\n')
+                f.write( '  add rsp, 8\n')
             # Duplicate the top element of the stack
             elif intrinsic == "DUP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -171,12 +153,13 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  mov rsi, [rsp] ; *buf\n')
                 f.write(f'  mov rdx, lenStr{STRING_COUNT} ; count\n')
                 f.write( '  syscall\n')
-                f.write( '  add rsp, 16 ; drop two values from the stack\n')
-                f.write( '  push rax ; return code\n')
-            elif intrinsic == "PRINT_INT":
-                f.write(get_op_comment_asm(op, op.type))
-                f.write( '  mov [int], rsi\n')
-                f.write( '  call PrintInt\n')
+                f.write( '  add rsp, 8 ; drop a value from the stack\n')
+            # TODO: Reimplement PRINT_INT without using C-function printf
+            #elif intrinsic == "PRINT_INT":
+            #    f.write(get_op_comment_asm(op, op.type))
+            #    f.write( '  mov [int], rsi\n')
+            #    f.write( '  call PrintInt\n')
+
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -247,13 +230,13 @@ def generate_asm(program: Program, asm_file: str) -> None:
 
     # Add exit syscall to asm_file
     f.write( ';; -- exit syscall\n')
-    f.write( '  mov rax, 0x1\n')
-    f.write( '  xor rbx, rbx\n')
-    f.write( '  int 0x80\n')
+    f.write( '  mov rax, 60\n')
+    f.write( '  mov rdi, 0\n')
+    f.write( '  syscall\n')
     f.close()
 
 def compile_asm(asm_file: str) -> None:
     subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file])
 
 def link_object_file(obj_file: str) -> None:
-    subprocess.run(['gcc', '-no-pie', f'-o{obj_file.replace(".o", "")}', obj_file])
+    subprocess.run(['ld', f'-o{obj_file.replace(".o", "")}', obj_file])
