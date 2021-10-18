@@ -81,7 +81,7 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     newline_indexes = [i for i in range(len(code)) if code[i] == '\n']
 
     # Strings are between quotes and can contain whitespaces
-    token_matches = [token for token in re.finditer(r'".*"|\S+', code)]
+    token_matches = [token for token in re.finditer(r'".*?"|\S+', code)]
 
     tokens = []
     for match in token_matches:
