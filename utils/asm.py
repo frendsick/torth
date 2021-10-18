@@ -1,6 +1,6 @@
 import subprocess
 import sys
-from utils.defs import OpType, Op, Program
+from utils.defs import OpType, Op, TokenType, Token, Program, STACK
 
 # How many different string variables are stored to the program
 STRING_COUNT = 0
@@ -73,17 +73,20 @@ def add_string_variable_asm(asm_file: str, string: str) -> None:
             f.write(file_lines[i])
 
 def generate_asm(program: Program, asm_file: str) -> None:
+    global STACK
     for op in program:
+        token = op.token
         f = open(asm_file, 'a')
         # IF is just a keyword which does nothing
         if op.type == OpType.IF:
             f.write(get_op_comment_asm(op, op.type))
         elif op.type == OpType.PUSH_INT:
             f.write(get_op_comment_asm(op, op.type))
-            f.write(f'  mov rax, {op.token.value}\n')
+            f.write(f'  mov rax, {token.value}\n')
             f.write(f'  push rax\n')
+            STACK.append(token)
         elif op.type == OpType.PUSH_STR:
-            str_val = op.token.value[1:-1]  # Take quotes out of the string
+            str_val = token.value[1:-1]  # Take quotes out of the string
 
             # Close the assembly file so the file can be rewritten in add_string_variable_asm
             f.close()
@@ -93,41 +96,62 @@ def generate_asm(program: Program, asm_file: str) -> None:
             f.write(get_op_comment_asm(op, op.type))
             f.write(f'  mov rsi, str{STRING_COUNT} ; Pointer to string\n')
             f.write( '  push rsi\n')
- 
+            STACK.append(token)
         elif op.type == OpType.INTRINSIC:
-            intrinsic = op.token.value.upper()
+            intrinsic = token.value.upper()
             # Push argument count to the stack
             if intrinsic == "ARGC":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write(f'  push {len(sys.argv)}\n')
+                STACK.append(token)
             # Pop one element off the stack
             elif intrinsic == "DROP":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  add rsp, 8\n')
+                STACK.pop()
             # Duplicate the top element of the stack
             elif intrinsic == "DUP":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
                 f.write( '  push rax\n')
                 f.write( '  push rax\n')
+                STACK.append(STACK[-1])
             elif intrinsic == "EQ":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmove")
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a==b),TokenType.BOOL, token.location))
             elif intrinsic == "GE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovge")
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a>=b),TokenType.BOOL, token.location))
             elif intrinsic == "GT":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovgt")
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a>b),TokenType.BOOL, token.location))
             elif intrinsic == "LE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovle")
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a<=b),TokenType.BOOL, token.location))
             elif intrinsic == "LT":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovl")
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a<b),TokenType.BOOL, token.location))
             elif intrinsic == "NE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovne")
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a!=b),TokenType.BOOL, token.location))
             elif intrinsic == "OVER":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
@@ -135,18 +159,28 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  push rbx\n')
                 f.write( '  push rax\n')
                 f.write( '  push rbx\n')
+                STACK.append(STACK[-2])
             elif intrinsic == "PLUS":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_arithmetic_asm(f, "add")
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a+b),TokenType.INT, token.location))
             elif intrinsic == "MINUS":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_arithmetic_asm(f, "sub")
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a-b),TokenType.INT, token.location))
             elif intrinsic == "MUL":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
                 f.write( '  pop rbx\n')
                 f.write( '  mul rbx\n')
                 f.write( '  push rax\n')
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a*b),TokenType.INT, token.location))
             # Rotate three top elements in the stack
             elif intrinsic == "ROT":
                 f.write(get_op_comment_asm(op, op.type))
@@ -165,6 +199,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  div rbx\n')
                 f.write( '  push rdx ; Remainder\n')
                 f.write( '  push rax ; Quotient\n')
+                b = STACK.pop()
+                a = STACK.pop()
+                STACK.append(Token(str(a%b),TokenType.INT, token.location))
+                STACK.append(Token(str(a//b),TokenType.INT, token.location))
             elif intrinsic == "PRINT":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  mov rax, 1 ; write syscall\n')
@@ -173,11 +211,14 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write(f'  mov rdx, lenStr{STRING_COUNT} ; count\n')
                 f.write( '  syscall\n')
                 f.write( '  add rsp, 8 ; drop str pointer from the stack\n')
+                STACK.pop()
             # TODO: Reimplement PRINT_INT without using C-function printf
             elif intrinsic == "PRINT_INT":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  mov [int], rsi\n')
                 f.write( '  call PrintInt\n')
+                f.write( '  add rsp, 8\n')
+                STACK.pop()
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -253,7 +294,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write("  syscall\n")
                 f.write("  push rax ; return code\n")
             else:
-                raise NotImplementedError(f"Intrinsic '{op.token.value}' is not implemented")
+                raise NotImplementedError(f"Intrinsic '{token.value}' is not implemented")
         else:
             raise NotImplementedError(f"Operand '{op.type}' is not implemented")
 

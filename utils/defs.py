@@ -68,6 +68,7 @@ class OpType(Enum):
     WHILE=auto()
 
 class TokenType(Enum):
+    BOOL=auto()
     CHAR=auto()
     INT=auto()
     KEYWORD=auto()
@@ -89,3 +90,4 @@ class Op:
     token: Token
 
 Program=List[Op]
+STACK=[]
