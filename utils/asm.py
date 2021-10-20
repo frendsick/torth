@@ -2,7 +2,7 @@ import re
 import subprocess
 import sys
 from typing import List
-from utils.defs import Colors, OpType, Op, TokenType, Token, Program, STACK
+from utils.defs import Colors, OpType, Op, TokenType, Token, Program, STACK, REGEX
 
 def get_asm_file_start(asm_file:str) -> str:
     return '''default rel
@@ -89,6 +89,16 @@ def compiler_error(op: Op, error_type: str, error_message: str) -> str:
         + Colors.HEADER + "Column" + Colors.NC + f": {col}")
     exit(1)
 
+def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> None:
+    regex = REGEX[expected_type]
+    error_message = f"Wrong type of value popped from the stack.\n\n" + \
+        f"{Colors.HEADER}Value{Colors.NC}: {popped_value}\n" + \
+        f"{Colors.HEADER}Expected{Colors.NC}: {expected_type}\n" + \
+        f"{Colors.HEADER}Regex{Colors.NC}: {regex}"
+
+    # Raise compiler error if the value gotten from the stack does not match with the regex
+    assert re.match(regex, str(popped_value)), compiler_error(op, "REGISTER_VALUE_ERROR", error_message)
+
 def generate_asm(program: Program, asm_file: str) -> None:
     global STACK
     for op in program:
@@ -98,10 +108,11 @@ def generate_asm(program: Program, asm_file: str) -> None:
         if op.type == OpType.IF:
             f.write(get_op_comment_asm(op, op.type))
         elif op.type == OpType.PUSH_INT:
+            integer = token.value
             f.write(get_op_comment_asm(op, op.type))
-            f.write(f'  mov rax, {token.value}\n')
+            f.write(f'  mov rax, {integer}\n')
             f.write(f'  push rax\n')
-            STACK.append(token)
+            STACK.append(integer)
         elif op.type == OpType.PUSH_STR:
             str_val = token.value[1:-1] # Take quotes out of the string
             str_len = len(str_val) + 1  # Add newline
@@ -123,9 +134,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
             intrinsic = token.value.upper()
             # Push argument count to the stack
             if intrinsic == "ARGC":
+                argc = len(sys.argv)
                 f.write(get_op_comment_asm(op, op.type))
-                f.write(f'  push {len(sys.argv)}\n')
-                STACK.append(token)
+                f.write(f'  push {argc}\n')
+                STACK.append(argc)
             elif intrinsic == "DIV":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
@@ -137,7 +149,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value) // int(b.value)),TokenType.INT, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(int(a.value) // int(b.value))
             # Pop one element off the stack
             elif intrinsic == "DROP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -171,7 +185,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(a==b),TokenType.BOOL, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(a==b))
             elif intrinsic == "GE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovge")
@@ -180,7 +196,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(a>=b),TokenType.BOOL, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(a>=b))
             elif intrinsic == "GT":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovgt")
@@ -189,7 +207,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(a>b),TokenType.BOOL, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(a>b))
             elif intrinsic == "LE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovle")
@@ -198,7 +218,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(a<=b),TokenType.BOOL, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(a<=b))
             elif intrinsic == "LT":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovl")
@@ -207,7 +229,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(a<b),TokenType.BOOL, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(a<b))
             elif intrinsic == "NE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovne")
@@ -216,7 +240,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(a!=b),TokenType.BOOL, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(a!=b))
             elif intrinsic == "OVER":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
@@ -229,6 +255,8 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
                 STACK.append(a)
                 STACK.append(b)
                 STACK.append(a)
@@ -240,7 +268,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value) + int(b.value)),TokenType.INT, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(int(a) + int(b)))
             elif intrinsic == "MINUS":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_arithmetic_asm(f, "sub")
@@ -249,7 +279,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value) - int(b.value)),TokenType.INT, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(int(a) - int(b)))
             elif intrinsic == "MOD":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_arithmetic_asm(f, "sub")
@@ -262,7 +294,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value) % int(b.value)),TokenType.INT, token.location))
+                STACK.append(str(int(a) % int(b)))
             elif intrinsic == "MUL":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
@@ -274,7 +306,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value) * int(b.value)),TokenType.INT, token.location))
+                STACK.append(str(int(a) * int(b)))
             # Rotate three top elements in the stack
             elif intrinsic == "ROT":
                 f.write(get_op_comment_asm(op, op.type))
@@ -306,8 +338,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value)% int(b.value)),TokenType.INT, token.location))
-                STACK.append(Token(str(int(a.value)//int(b.value)),TokenType.INT, token.location))
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
+                STACK.append(str(int(a)% int(b)))
+                STACK.append(str(int(a)//int(b)))
             elif intrinsic == "PRINT":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rsi    ; *buf\n')
@@ -320,10 +354,8 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     count = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                assert re.match('\*buf s\d+', buf), compiler_error(op,"REGISTER_VALUE_ERROR", \
-                    f"Wrong type of value popped from the stack: Expected: *buf, Got: {buf}")
-                assert re.match('\d+', count), compiler_error(op,"REGISTER_VALUE_ERROR", \
-                    f"Wrong type of value popped from the stack: Expected: INT, Got: {count}")
+                check_popped_value_type(op, buf, expected_type='*buf')
+                check_popped_value_type(op, count, expected_type='INT')
 
             # TODO: Reimplement PRINT_INT without using C-function printf
             elif intrinsic == "PRINT_INT":
@@ -332,9 +364,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  call PrintInt\n')
                 f.write( '  add rsp, 8\n')
                 try:
-                    STACK.pop()
+                    value = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                check_popped_value_type(op, value, expected_type='INT')
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -347,6 +380,8 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                check_popped_value_type(op, a, expected_type='INT')
+                check_popped_value_type(op, b, expected_type='INT')
                 STACK.append(a)
                 STACK.append(b)
             # Swap two element pairs at the top of the stack

@@ -92,8 +92,10 @@ class Token:
 
 @dataclass
 class Op:
+    id: int
     type: OpType
     token: Token
 
 Program=List[Op]
 STACK=[]
+REGEX={'INT': '-?\d+', '*buf': '\*buf s\d+'}

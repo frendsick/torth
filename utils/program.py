@@ -11,6 +11,7 @@ def intrinsic_exists(token: str) -> bool:
 
 def generate_program(tokens = List[Token]) -> Program:
     program = []
+    id=0
     for token in tokens:
         token_value = token.value.upper()
         if token.type == TokenType.BOOL:
@@ -39,8 +40,9 @@ def generate_program(tokens = List[Token]) -> Program:
             else:
                 raise AttributeError (f"Intrinsic '{token.value}' is not found")
 
-        operand = Op(op_type, token)
+        operand = Op(id, op_type, token)
         program.append(operand)
+        id += 1
     return program
 
 def compile_code(tokens = List[Token]) -> None:
