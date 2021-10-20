@@ -158,6 +158,11 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     compiler_error(op, f"Not enough values in the stack.")
                 STACK.append(top)
                 STACK.append(top)
+            elif intrinsic == "EXIT":
+                f.write(get_op_comment_asm(op, op.type))
+                f.write( '  mov rax, 60\n')
+                f.write( '  mov rdi, 0\n')
+                f.write( '  syscall\n')
             elif intrinsic == "EQ":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmove")
