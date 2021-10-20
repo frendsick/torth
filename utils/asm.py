@@ -2,7 +2,7 @@ import re
 import subprocess
 import sys
 from typing import List
-from utils.defs import Colors, OpType, Op, TokenType, Token, Program, STACK, REGEX
+from utils.defs import Colors, OpType, Op, Token, Program, STACK, REGEX
 
 def get_asm_file_start(asm_file:str) -> str:
     return '''default rel
