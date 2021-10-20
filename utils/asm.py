@@ -3,9 +3,6 @@ import sys
 from typing import List
 from utils.defs import Colors, OpType, Op, TokenType, Token, Program, STACK
 
-# How many different string variables are stored to the program
-STRING_COUNT = 0
-
 def get_asm_file_start(asm_file:str) -> str:
     return '''default rel
 extern printf
@@ -59,15 +56,12 @@ def generate_arithmetic_asm(asm_file, operand: str) -> None:
     asm_file.write(f'  {operand} rax, rbx\n')
     asm_file.write( '  push rax\n')
 
-def add_string_variable_asm(asm_file: str, string: str) -> None:
-    global STRING_COUNT
-    STRING_COUNT += 1
+def add_string_variable_asm(asm_file: str, string: str, op: Op) -> None:
     with open(asm_file, 'r') as f:
         file_lines = f.readlines()
     with open(asm_file, 'w') as f:
         f.write(get_asm_file_start(asm_file))
-        f.write(f'  str{STRING_COUNT} db "{string}",10\n')
-        f.write(f'  lenStr{STRING_COUNT} equ $-str{STRING_COUNT}\n\n')
+        f.write(f'  s{op.id} db "{string}",10\n')
 
         # Rewrite lines except for the first line (section .rodata)
         for i in range(4, len(file_lines)):
@@ -108,17 +102,22 @@ def generate_asm(program: Program, asm_file: str) -> None:
             f.write(f'  push rax\n')
             STACK.append(token)
         elif op.type == OpType.PUSH_STR:
-            str_val = token.value[1:-1]  # Take quotes out of the string
+            str_val = token.value[1:-1] # Take quotes out of the string
+            str_len = len(str_val) + 1  # Add newline
 
             # Close the assembly file so the file can be rewritten in add_string_variable_asm
             f.close()
-            add_string_variable_asm(asm_file, str_val)
+            add_string_variable_asm(asm_file, str_val, op)
 
             f = open(asm_file, 'a')
             f.write(get_op_comment_asm(op, op.type))
-            f.write(f'  mov rsi, str{STRING_COUNT} ; Pointer to string\n')
+            f.write(f'  mov rax, {str_len} ; String length\n')
+            f.write(f'  mov rsi, s{op.id} ; Pointer to string\n')
+            f.write( '  push rax\n')
             f.write( '  push rsi\n')
-            STACK.append(token)
+
+            STACK.append(f"{str_len}")
+            STACK.append(f"s{op.id}")
         elif op.type == OpType.INTRINSIC:
             intrinsic = token.value.upper()
             # Push argument count to the stack
@@ -310,12 +309,11 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 STACK.append(Token(str(int(a.value)//int(b.value)),TokenType.INT, token.location))
             elif intrinsic == "PRINT":
                 f.write(get_op_comment_asm(op, op.type))
+                f.write( '  pop rsi    ; *buf\n')
+                f.write( '  pop rdx    ; count\n')
                 f.write( '  mov rax, 1 ; write syscall\n')
                 f.write( '  mov rdi, 1 ; fd 1 => stdout\n')
-                f.write( '  mov rsi, [rsp] ; *buf\n')
-                f.write(f'  mov rdx, lenStr{STRING_COUNT} ; count\n')
                 f.write( '  syscall\n')
-                f.write( '  add rsp, 8 ; drop str pointer from the stack\n')
                 try:
                     STACK.pop()
                 except IndexError:
