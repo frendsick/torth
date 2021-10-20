@@ -187,7 +187,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 check_popped_value_type(op, a, expected_type='INT')
                 check_popped_value_type(op, b, expected_type='INT')
-                STACK.append(str(a==b))
+                STACK.append(str(int(a==b)))
             elif intrinsic == "GE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovge")
@@ -198,10 +198,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 check_popped_value_type(op, a, expected_type='INT')
                 check_popped_value_type(op, b, expected_type='INT')
-                STACK.append(str(a>=b))
+                STACK.append(str(int(a>=b)))
             elif intrinsic == "GT":
                 f.write(get_op_comment_asm(op, op.type))
-                generate_comparison_asm(f, "cmovgt")
+                generate_comparison_asm(f, "cmovg")
                 try:
                     b = STACK.pop()
                     a = STACK.pop()
@@ -209,7 +209,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 check_popped_value_type(op, a, expected_type='INT')
                 check_popped_value_type(op, b, expected_type='INT')
-                STACK.append(str(a>b))
+                STACK.append(str(int(a>b)))
             elif intrinsic == "LE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovle")
@@ -220,7 +220,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 check_popped_value_type(op, a, expected_type='INT')
                 check_popped_value_type(op, b, expected_type='INT')
-                STACK.append(str(a<=b))
+                STACK.append(str(int(a<=b)))
             elif intrinsic == "LT":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovl")
@@ -231,7 +231,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 check_popped_value_type(op, a, expected_type='INT')
                 check_popped_value_type(op, b, expected_type='INT')
-                STACK.append(str(a<b))
+                STACK.append(str(int(a<b)))
             elif intrinsic == "NE":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_comparison_asm(f, "cmovne")
@@ -242,7 +242,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 check_popped_value_type(op, a, expected_type='INT')
                 check_popped_value_type(op, b, expected_type='INT')
-                STACK.append(str(a!=b))
+                STACK.append(str(int(a!=b)))
             elif intrinsic == "OVER":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
