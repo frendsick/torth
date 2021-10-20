@@ -140,6 +140,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 STACK.append(argc)
             elif intrinsic == "DIV":
                 f.write(get_op_comment_asm(op, op.type))
+                f.write( '  xor edx, edx ; Do not use floating point arithmetic\n')
                 f.write( '  pop rax\n')
                 f.write( '  pop rbx\n')
                 f.write( '  div rbx\n')
@@ -285,6 +286,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
             elif intrinsic == "MOD":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_arithmetic_asm(f, "sub")
+                f.write( '  xor edx, edx ; Do not use floating point arithmetic\n')
                 f.write( '  pop rax\n')
                 f.write( '  pop rbx\n')
                 f.write( '  div rbx\n')
@@ -328,6 +330,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
             # Push remainder and quotient to stack
             elif intrinsic == "DIVMOD":
                 f.write(get_op_comment_asm(op, op.type))
+                f.write( '  xor edx, edx ; Do not use floating point arithmetic\n')
                 f.write( '  pop rax\n')
                 f.write( '  pop rbx\n')
                 f.write( '  div rbx\n')
@@ -380,8 +383,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                check_popped_value_type(op, a, expected_type='INT')
-                check_popped_value_type(op, b, expected_type='INT')
                 STACK.append(a)
                 STACK.append(b)
             # Swap two element pairs at the top of the stack
