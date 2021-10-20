@@ -235,7 +235,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, f"Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value)+int(b.value)),TokenType.INT, token.location))
+                STACK.append(Token(str(int(a.value) + int(b.value)),TokenType.INT, token.location))
             elif intrinsic == "MINUS":
                 f.write(get_op_comment_asm(op, op.type))
                 generate_arithmetic_asm(f, "sub")
@@ -244,7 +244,20 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, f"Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value)-int(b.value)),TokenType.INT, token.location))
+                STACK.append(Token(str(int(a.value) - int(b.value)),TokenType.INT, token.location))
+            elif intrinsic == "MOD":
+                f.write(get_op_comment_asm(op, op.type))
+                generate_arithmetic_asm(f, "sub")
+                f.write( '  pop rax\n')
+                f.write( '  pop rbx\n')
+                f.write( '  div rbx\n')
+                f.write( '  push rdx ; Remainder\n')
+                try:
+                    b = STACK.pop()
+                    a = STACK.pop()
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack.")
+                STACK.append(Token(str(int(a.value) % int(b.value)),TokenType.INT, token.location))
             elif intrinsic == "MUL":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
@@ -256,7 +269,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                 except IndexError:
                     compiler_error(op, f"Not enough values in the stack.")
-                STACK.append(Token(str(int(a.value)*int(b.value)),TokenType.INT, token.location))
+                STACK.append(Token(str(int(a.value) * int(b.value)),TokenType.INT, token.location))
             # Rotate three top elements in the stack
             elif intrinsic == "ROT":
                 f.write(get_op_comment_asm(op, op.type))
@@ -271,7 +284,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rax\n')
                 f.write( '  pop rbx\n')
-                f.write( '  xor rdx, rdx\n')
                 f.write( '  div rbx\n')
                 f.write( '  push rdx ; Remainder\n')
                 f.write( '  push rax ; Quotient\n')
