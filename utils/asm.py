@@ -76,7 +76,7 @@ def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]
     stack.append(syscall)
     return stack
 
-def compiler_error(op: Op, error_type: str, error_message: str) -> str:
+def compiler_error(op: Op, error_type: str, error_message: str) -> None:
     operand = op.token.value
     file    = op.token.location[0]
     row     = op.token.location[1]
@@ -494,10 +494,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 raise NotImplementedError(f"Intrinsic '{token.value}' is not implemented")
         else:
             raise NotImplementedError(f"Operand '{op.type}' is not implemented")
-        
-        for item in STACK:
-            print(item.value, end=',')
-        print()
 
     # Add exit syscall to asm_file
     f.write( ';; -- exit syscall\n')
