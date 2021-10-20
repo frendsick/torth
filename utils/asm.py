@@ -489,7 +489,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK = get_stack_after_syscall(STACK, 6)
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             else:
                 raise NotImplementedError(f"Intrinsic '{token.value}' is not implemented")
         else:
