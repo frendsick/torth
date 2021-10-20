@@ -1,3 +1,4 @@
+import re
 import subprocess
 import sys
 from typing import List
@@ -75,12 +76,12 @@ def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]
     stack.append(syscall)
     return stack
 
-def compiler_error(op: Op, error_message: str) -> str:
+def compiler_error(op: Op, error_type: str, error_message: str) -> str:
     operand = op.token.value
     file    = op.token.location[0]
     row     = op.token.location[1]
     col     = op.token.location[2]
-    print(Colors.FAIL + "Compiler error" + Colors.NC + f": {error_message}\n")
+    print(Colors.HEADER + "Compiler error " + Colors.FAIL + error_type + Colors.NC + f":\n{error_message}\n")
 
     print(Colors.HEADER + "Operand" + Colors.NC + f": {operand}")
     print(Colors.HEADER + "File" + Colors.NC + f": {file}")
@@ -117,7 +118,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
             f.write( '  push rsi\n')
 
             STACK.append(f"{str_len}")
-            STACK.append(f"s{op.id}")
+            STACK.append(f"*buf s{op.id}")
         elif op.type == OpType.INTRINSIC:
             intrinsic = token.value.upper()
             # Push argument count to the stack
@@ -135,7 +136,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(int(a.value) // int(b.value)),TokenType.INT, token.location))
             # Pop one element off the stack
             elif intrinsic == "DROP":
@@ -144,7 +145,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             # Duplicate the top element of the stack
             elif intrinsic == "DUP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -154,7 +155,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     top = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(top)
                 STACK.append(top)
             elif intrinsic == "EXIT":
@@ -169,7 +170,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(a==b),TokenType.BOOL, token.location))
             elif intrinsic == "GE":
                 f.write(get_op_comment_asm(op, op.type))
@@ -178,7 +179,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(a>=b),TokenType.BOOL, token.location))
             elif intrinsic == "GT":
                 f.write(get_op_comment_asm(op, op.type))
@@ -187,7 +188,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(a>b),TokenType.BOOL, token.location))
             elif intrinsic == "LE":
                 f.write(get_op_comment_asm(op, op.type))
@@ -196,7 +197,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(a<=b),TokenType.BOOL, token.location))
             elif intrinsic == "LT":
                 f.write(get_op_comment_asm(op, op.type))
@@ -205,7 +206,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(a<b),TokenType.BOOL, token.location))
             elif intrinsic == "NE":
                 f.write(get_op_comment_asm(op, op.type))
@@ -214,7 +215,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(a!=b),TokenType.BOOL, token.location))
             elif intrinsic == "OVER":
                 f.write(get_op_comment_asm(op, op.type))
@@ -227,7 +228,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(a)
                 STACK.append(b)
                 STACK.append(a)
@@ -238,7 +239,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(int(a.value) + int(b.value)),TokenType.INT, token.location))
             elif intrinsic == "MINUS":
                 f.write(get_op_comment_asm(op, op.type))
@@ -247,7 +248,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(int(a.value) - int(b.value)),TokenType.INT, token.location))
             elif intrinsic == "MOD":
                 f.write(get_op_comment_asm(op, op.type))
@@ -260,7 +261,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(int(a.value) % int(b.value)),TokenType.INT, token.location))
             elif intrinsic == "MUL":
                 f.write(get_op_comment_asm(op, op.type))
@@ -272,7 +273,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(int(a.value) * int(b.value)),TokenType.INT, token.location))
             # Rotate three top elements in the stack
             elif intrinsic == "ROT":
@@ -288,7 +289,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     c = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(b)
                 STACK.append(a)
                 STACK.append(c)
@@ -304,7 +305,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(Token(str(int(a.value)% int(b.value)),TokenType.INT, token.location))
                 STACK.append(Token(str(int(a.value)//int(b.value)),TokenType.INT, token.location))
             elif intrinsic == "PRINT":
@@ -315,9 +316,15 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  mov rdi, 1 ; fd 1 => stdout\n')
                 f.write( '  syscall\n')
                 try:
-                    STACK.pop()
+                    buf = STACK.pop()
+                    count = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                assert re.match('\*buf s\d+', buf), compiler_error(op,"REGISTER_VALUE_ERROR", \
+                    f"Wrong type of value popped from the stack: Expected: *buf, Got: {buf}")
+                assert re.match('\d+', count), compiler_error(op,"REGISTER_VALUE_ERROR", \
+                    f"Wrong type of value popped from the stack: Expected: INT, Got: {count}")
+
             # TODO: Reimplement PRINT_INT without using C-function printf
             elif intrinsic == "PRINT_INT":
                 f.write(get_op_comment_asm(op, op.type))
@@ -327,7 +334,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -339,7 +346,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     a = STACK.pop()
                     b = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(a)
                 STACK.append(b)
             # Swap two element pairs at the top of the stack
@@ -359,7 +366,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     c = STACK.pop()
                     d = STACK.pop()
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 STACK.append(b)
                 STACK.append(a)
                 STACK.append(d)
@@ -372,7 +379,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK = get_stack_after_syscall(STACK, 0)
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             elif intrinsic == "SYSCALL1":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -382,7 +389,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK = get_stack_after_syscall(STACK, 1)
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             elif intrinsic == "SYSCALL2":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -393,7 +400,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK = get_stack_after_syscall(STACK, 2)
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             elif intrinsic == "SYSCALL3":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -405,7 +412,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK = get_stack_after_syscall(STACK, 3)
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             elif intrinsic == "SYSCALL4":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -418,7 +425,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK = get_stack_after_syscall(STACK, 4)
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             elif intrinsic == "SYSCALL5":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
@@ -432,7 +439,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK = get_stack_after_syscall(STACK, 5)
                 except IndexError:
-                    compiler_error(op, f"Not enough values in the stack")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             elif intrinsic == "SYSCALL6":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write("  pop rax ; syscall\n")
