@@ -284,6 +284,15 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write( '  push rbx\n')
                 f.write( '  push rax\n')
                 f.write( '  push rcx\n')
+                try:
+                    a = STACK.pop()
+                    b = STACK.pop()
+                    c = STACK.pop()
+                except IndexError:
+                    compiler_error(op, f"Not enough values in the stack.")
+                STACK.append(b)
+                STACK.append(a)
+                STACK.append(c)
             # Push remainder and quotient to stack
             elif intrinsic == "DIVMOD":
                 f.write(get_op_comment_asm(op, op.type))
