@@ -81,8 +81,8 @@ def compiler_error(op: Op, error_type: str, error_message: str) -> None:
     file    = op.token.location[0]
     row     = op.token.location[1]
     col     = op.token.location[2]
-    print(Colors.HEADER + "Compiler error " + Colors.FAIL + error_type + Colors.NC + f":\n{error_message}\n")
 
+    print(Colors.HEADER + "Compiler error " + Colors.FAIL + error_type + Colors.NC + f":\n{error_message}\n")
     print(Colors.HEADER + "Operand" + Colors.NC + f": {operand}")
     print(Colors.HEADER + "File" + Colors.NC + f": {file}")
     print(Colors.HEADER + "Row" + Colors.NC + f": {row}, " \
@@ -178,7 +178,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     STACK.pop()
                 except IndexError:
-                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.")
             # Duplicate the top element of the stack
             elif intrinsic == "DUP":
                 f.write(get_op_comment_asm(op, op.type))
@@ -188,7 +188,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     top = STACK.pop()
                 except IndexError:
-                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
                 STACK.append(top)
                 STACK.append(top)
             elif intrinsic == "EXIT":
@@ -310,7 +310,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     a = STACK.pop()
                 except IndexError:
-                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least two elements.")
                 check_popped_value_type(op, a, expected_type='INT')
                 check_popped_value_type(op, b, expected_type='INT')
                 STACK.append(a)
@@ -341,7 +341,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     b = STACK.pop()
                     c = STACK.pop()
                 except IndexError:
-                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least three elements to rotate.")
                 STACK.append(b)
                 STACK.append(a)
                 STACK.append(c)
@@ -356,7 +356,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
                     buf = STACK.pop()
                     count = STACK.pop()
                 except IndexError:
-                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", \
+                        f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.")
+
                 check_popped_value_type(op, buf, expected_type='*buf')
                 check_popped_value_type(op, count, expected_type='INT')
 
@@ -369,7 +371,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 try:
                     value = STACK.pop()
                 except IndexError:
-                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Stack is empty")
                 check_popped_value_type(op, value, expected_type='INT')
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
