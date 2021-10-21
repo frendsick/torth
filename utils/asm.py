@@ -2,20 +2,28 @@ import re
 import subprocess
 import sys
 from typing import List
-from utils.defs import Colors, OpType, Op, Token, Program, STACK, REGEX
+from utils.defs import Colors, OpType, Op, Token, Program, STACK, REGEX, MEMORY_SIZE
 
 def get_asm_file_start(asm_file:str) -> str:
     return '''default rel
 extern printf
 
+%define sys_exit 60
+%define sys_read 0
+%define sys_write 1
+
+%define stdin 0
+%define stdout 1
+
 section .rodata
 '''
 
 def initialize_asm(asm_file: str) -> None:
-    default_asm = get_asm_file_start(asm_file) + '''  formatStrInt db "%d",10,0
+    default_asm = get_asm_file_start(asm_file) + f'''  formatStrInt db "%d",10,0
 
 section .bss
   int: RESQ 1 ; allocates 8 bytes
+  mem: RESB {MEMORY_SIZE} ; allocates {MEMORY_SIZE} bytes
 
 section .text
 PrintInt:
@@ -65,7 +73,8 @@ def add_string_variable_asm(asm_file: str, string: str, op: Op) -> None:
         f.write(f'  s{op.id} db "{string}",10\n')
 
         # Rewrite lines except for the first line (section .rodata)
-        for i in range(4, len(file_lines)):
+        len_asm_file_start = len(get_asm_file_start(asm_file).split('\n')) - 1
+        for i in range(len_asm_file_start, len(file_lines)):
             f.write(file_lines[i])
 
 def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]:
