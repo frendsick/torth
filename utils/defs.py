@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import List,Tuple
+
+MEMORY_SIZE = 800000
+
 class Colors:
     FAIL = '\033[91m'
     HEADER = '\033[95m'

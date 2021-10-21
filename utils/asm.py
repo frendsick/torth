@@ -15,6 +15,8 @@ extern printf
 %define stdin 0
 %define stdout 1
 
+%define success 0
+
 section .rodata
 '''
 
@@ -340,8 +342,8 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rsi    ; *buf\n')
                 f.write( '  pop rdx    ; count\n')
-                f.write( '  mov rax, 1 ; write syscall\n')
-                f.write( '  mov rdi, 1 ; fd 1 => stdout\n')
+                f.write( '  mov rax, sys_write\n')
+                f.write( '  mov rdi, stdout\n')
                 f.write( '  syscall\n')
                 try:
                     buf = STACK.pop()
@@ -509,8 +511,8 @@ def generate_asm(program: Program, asm_file: str) -> None:
 
     # Add exit syscall to asm_file
     f.write( ';; -- exit syscall\n')
-    f.write( '  mov rax, 60\n')
-    f.write( '  mov rdi, 0\n')
+    f.write( '  mov rax, sys_exit\n')
+    f.write( '  mov rdi, success\n')
     f.write( '  syscall\n')
     f.close()
 
