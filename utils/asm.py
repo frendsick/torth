@@ -336,24 +336,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 check_popped_value_type(op, a, expected_type='INT')
                 check_popped_value_type(op, b, expected_type='INT')
                 STACK.append(str(int(a) + int(b)))
-            # Rotate three top elements in the stack
-            elif intrinsic == "ROT":
-                f.write(get_op_comment_asm(op, op.type))
-                f.write( '  pop rax\n')
-                f.write( '  pop rbx\n')
-                f.write( '  pop rcx\n')
-                f.write( '  push rbx\n')
-                f.write( '  push rax\n')
-                f.write( '  push rcx\n')
-                try:
-                    a = STACK.pop()
-                    b = STACK.pop()
-                    c = STACK.pop()
-                except IndexError:
-                    compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least three elements to rotate.")
-                STACK.append(b)
-                STACK.append(a)
-                STACK.append(c)
             elif intrinsic == "PRINT":
                 f.write(get_op_comment_asm(op, op.type))
                 f.write( '  pop rsi    ; *buf\n')
@@ -382,6 +364,24 @@ def generate_asm(program: Program, asm_file: str) -> None:
                 except IndexError:
                     compiler_error(op, "POP_FROM_EMPTY_STACK", "Stack is empty")
                 check_popped_value_type(op, value, expected_type='INT')
+            # Rotate three top elements in the stack
+            elif intrinsic == "ROT":
+                f.write(get_op_comment_asm(op, op.type))
+                f.write( '  pop rax\n')
+                f.write( '  pop rbx\n')
+                f.write( '  pop rcx\n')
+                f.write( '  push rbx\n')
+                f.write( '  push rax\n')
+                f.write( '  push rcx\n')
+                try:
+                    a = STACK.pop()
+                    b = STACK.pop()
+                    c = STACK.pop()
+                except IndexError:
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least three elements to rotate.")
+                STACK.append(b)
+                STACK.append(a)
+                STACK.append(c)
             # Swap two elements at the top of the stack
             elif intrinsic == "SWAP":
                 f.write(get_op_comment_asm(op, op.type))
