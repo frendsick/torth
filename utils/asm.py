@@ -116,14 +116,11 @@ def get_op_asm(op: Op) -> str:
     global STACK
     token  = op.token
     op_asm = ""
-    if op.type == OpType.IF:
-        return op_asm
-    elif op.type == OpType.PUSH_INT:
+    if op.type == OpType.PUSH_INT:
         integer = token.value
         STACK.append(integer)
         op_asm += f'  mov rax, {integer}\n'
         op_asm +=  '  push rax\n'
-        return op_asm
     elif op.type == OpType.PUSH_STR:
         str_val = op.token.value[1:-1]  # Take quotes out of the string
         str_len = len(str_val) + 1      # Add newline
@@ -133,14 +130,12 @@ def get_op_asm(op: Op) -> str:
         op_asm += f'  mov rsi, s{op.id} ; Pointer to string\n'
         op_asm +=  '  push rax\n'
         op_asm +=  '  push rsi\n'
-        return op_asm
     elif op.type == OpType.INTRINSIC:
         intrinsic = token.value.upper()
         if intrinsic == "ARGC":
             argc = len(sys.argv)
             STACK.append(argc)
             op_asm += f'  push {argc}\n'
-            return op_asm
         elif intrinsic == "DIV":
             op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
             op_asm +=  '  pop rax\n'
@@ -155,9 +150,7 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(int(a.value) // int(b.value))
-            return op_asm
         elif intrinsic == "DIVMOD":
-            f.write(get_op_comment_asm(op, op.type))
             op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
             op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
@@ -173,14 +166,12 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a)% int(b)))
             STACK.append(str(int(a)//int(b)))
-            return op_asm
         elif intrinsic == "DROP":
             op_asm +=  '  add rsp, 8\n'
             try:
                 STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.")
-            return op_asm
         elif intrinsic == "DUP":
             op_asm +=  '  pop rax\n'
             op_asm +=  '  push rax\n'
@@ -191,12 +182,10 @@ def get_op_asm(op: Op) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
             STACK.append(top)
             STACK.append(top)
-            return op_asm
         elif intrinsic == "EXIT":
             op_asm +=  '  mov rax, 60\n'
             op_asm +=  '  mov rdi, 0\n'
             op_asm +=  '  syscall\n'
-            return op_asm
         elif intrinsic == "EQ":
             op_asm += get_comparison_asm("cmove")
             try:
@@ -207,7 +196,6 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a==b)))
-            return op_asm
         elif intrinsic == "GE":
             op_asm += get_comparison_asm("cmovge")
             try:
@@ -218,7 +206,6 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a>=b)))
-            return op_asm
         elif intrinsic == "GT":
             op_asm += get_comparison_asm("cmovg")
             try:
@@ -229,7 +216,6 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a>b)))
-            return op_asm
         elif intrinsic == "LE":
             op_asm += get_comparison_asm("cmovle")
             try:
@@ -240,7 +226,6 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a<=b)))
-            return op_asm
         elif intrinsic == "LT":
             op_asm += get_comparison_asm("cmovl")
             try:
@@ -251,7 +236,6 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a<b)))
-            return op_asm
         elif intrinsic == "MINUS":
             op_asm += get_arithmetic_asm("sub")
             try:
@@ -262,7 +246,6 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a) - int(b)))
-            return op_asm
         elif intrinsic == "MOD":
             op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
             op_asm +=  '  pop rax\n'
@@ -275,7 +258,6 @@ def get_op_asm(op: Op) -> str:
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(str(int(a) % int(b)))
-            return op_asm
         elif intrinsic == "MUL":
             op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
@@ -287,7 +269,6 @@ def get_op_asm(op: Op) -> str:
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(str(int(a) * int(b)))
-            return op_asm
         elif intrinsic == "NE":
             op_asm += get_comparison_asm("cmovne")
             try:
@@ -298,7 +279,6 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a!=b)))
-            return op_asm
         elif intrinsic == "OVER":
             op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
@@ -315,7 +295,6 @@ def get_op_asm(op: Op) -> str:
             STACK.append(a)
             STACK.append(b)
             STACK.append(a)
-            return op_asm
         elif intrinsic == "PLUS":
             op_asm += get_arithmetic_asm(f, "add")
             try:
@@ -326,7 +305,6 @@ def get_op_asm(op: Op) -> str:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a) + int(b)))
-            return op_asm
         elif intrinsic == "PRINT":
             op_asm +=  '  pop rsi    ; *buf\n'
             op_asm +=  '  pop rdx    ; count\n'
@@ -342,7 +320,6 @@ def get_op_asm(op: Op) -> str:
 
             check_popped_value_type(op, buf, expected_type='*buf')
             check_popped_value_type(op, count, expected_type='INT')
-            return op_asm
         elif intrinsic == "PRINT_INT":
             op_asm +=  '  mov [int], rsi\n'
             op_asm +=  '  call PrintInt\n'
@@ -352,7 +329,6 @@ def get_op_asm(op: Op) -> str:
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Stack is empty")
             check_popped_value_type(op, value, expected_type='INT')
-            return op_asm
         elif intrinsic == "ROT":
             op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
@@ -369,7 +345,6 @@ def get_op_asm(op: Op) -> str:
             STACK.append(b)
             STACK.append(a)
             STACK.append(c)
-            return op_asm
         elif intrinsic == "SWAP":
             op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
@@ -382,7 +357,6 @@ def get_op_asm(op: Op) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(a)
             STACK.append(b)
-            return op_asm
         elif intrinsic == "SWAP2":
             op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
@@ -403,7 +377,6 @@ def get_op_asm(op: Op) -> str:
             STACK.append(a)
             STACK.append(d)
             STACK.append(c)
-            return op_asm
         elif intrinsic == "SYSCALL0":
             op_asm += "  pop rax ; syscall\n"
             op_asm += "  syscall\n"
@@ -412,7 +385,6 @@ def get_op_asm(op: Op) -> str:
                 STACK = get_stack_after_syscall(STACK, 0)
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            return op_asm
         elif intrinsic == "SYSCALL1":
             op_asm += "  pop rax ; syscall\n"
             op_asm += "  pop rdi ; 1. arg\n"
@@ -422,7 +394,6 @@ def get_op_asm(op: Op) -> str:
                 STACK = get_stack_after_syscall(STACK, 1)
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            return op_asm
         elif intrinsic == "SYSCALL2":
             op_asm += "  pop rax ; syscall\n"
             op_asm += "  pop rdi ; 1. arg\n"
@@ -433,7 +404,6 @@ def get_op_asm(op: Op) -> str:
                 STACK = get_stack_after_syscall(STACK, 2)
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            return op_asm
         elif intrinsic == "SYSCALL3":
             op_asm += "  pop rax ; syscall\n"
             op_asm += "  pop rdi ; 1. arg\n"
@@ -445,7 +415,6 @@ def get_op_asm(op: Op) -> str:
                 STACK = get_stack_after_syscall(STACK, 3)
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            return op_asm
         elif intrinsic == "SYSCALL4":
             op_asm += "  pop rax ; syscall\n"
             op_asm += "  pop rdi ; 1. arg\n"
@@ -458,7 +427,6 @@ def get_op_asm(op: Op) -> str:
                 STACK = get_stack_after_syscall(STACK, 4)
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            return op_asm
         elif intrinsic == "SYSCALL5":
             op_asm += "  pop rax ; syscall\n"
             op_asm += "  pop rdi ; 1. arg\n"
@@ -472,7 +440,6 @@ def get_op_asm(op: Op) -> str:
                 STACK = get_stack_after_syscall(STACK, 5)
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            return op_asm
         elif intrinsic == "SYSCALL6":
             op_asm += "  pop rax ; syscall\n"
             op_asm += "  pop rdi ; 1. arg\n"
@@ -483,7 +450,8 @@ def get_op_asm(op: Op) -> str:
             op_asm += "  pop r9  ; 6. arg\n"
             op_asm += "  syscall\n"
             op_asm += "  push rax ; return code\n"
-            return op_asm
+    
+    return op_asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
     global STACK
