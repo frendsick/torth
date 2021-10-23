@@ -98,6 +98,7 @@ class Op:
     id: int
     type: OpType
     token: Token
+    size: int = 0
 
 Program=List[Op]
 STACK=[]
