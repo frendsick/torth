@@ -112,11 +112,33 @@ def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> No
     # Raise compiler error if the value gotten from the stack does not match with the regex
     assert re.match(regex, str(popped_value)), compiler_error(op, "REGISTER_VALUE_ERROR", error_message)
 
-def get_op_asm(op: Op) -> str:
+def get_op_asm(op: Op, program: Program) -> str:
     global STACK
     token  = op.token
     op_asm = ""
-    if op.type == OpType.PUSH_INT:
+    if op.type == OpType.END:
+        offset = 0
+        for i in range(op.id - 1, -1, -1):
+            if program[i].type == OpType.WHILE:
+                op_asm += f'  jmp {offset}\n'
+                break
+            offset += program[i].size
+            print(f"{program[i]=}")
+            print(f"{offset=}")
+    elif op.type == OpType.IF:
+        offset = 0
+        for i in range(op.id + 1, len(program)):
+            offset += program[i].size
+            print(f"{program[i]=}")
+            print(f"{offset=}")
+            # IF is conditional jump to operand after END
+            if program[i].type == OpType.END:
+                break
+        op_asm += f'  pop rax\n'
+        op_asm += f'  push rax\n'
+        op_asm += f'  test rax, rax\n'
+        op_asm += f'  jz {offset}\n'
+    elif op.type == OpType.PUSH_INT:
         integer = token.value
         STACK.append(integer)
         op_asm += f'  mov rax, {integer}\n'
@@ -453,6 +475,41 @@ def get_op_asm(op: Op) -> str:
     
     return op_asm
 
+def get_op_size(op: Op, program: Program):
+    COMPARISON_INSTRUCTIONS = ['cmove', 'cmovge', 'cmovg', 'cmovle', 'cmovl', 'cmovne']
+    # http://unixwiz.net/techtips/x86-jumps.html
+    JUMP_INSTRUCTIONS = ['jo', 'jno', 'js', 'jns', 'je', 'jz', 'jne', 'jnz', 'jb', 'jnae', 'jc', 'jnb', 'jae', 'jnc' \
+        'jbe', 'jna', 'ja', 'jnbe', 'jl', 'jnge', 'jge', 'jng', 'jg', 'jnle', 'jp', 'jpe', 'jnp', 'jpo', 'jcxz', 'jecxz']
+    REGISTERS = ['rax', 'rbx', 'rcx', 'rdx', 'rsi', 'rdi', 'rbp', 'rsp', 'rip', 'r8', 'r9', '10', 'r11', 'r12', 'r13', 'r14', 'r15']
+
+    asm_instructions = get_op_asm(op, program).split('\n')[:-1]
+    op_size = 0
+    for row in asm_instructions:
+        instruction = row.strip().split(' ')[0]
+        if instruction in COMPARISON_INSTRUCTIONS:
+            op_size += 4
+        elif instruction in JUMP_INSTRUCTIONS:
+            op_size += 6
+        elif instruction == "call":
+            op_size += 5
+        elif instruction == "cmp":
+            op_size += 3
+        elif instruction == "mov":
+            print(row)
+            if re.match(r"\[\w+\]", row):
+                print("JeEEE")
+            op_size += 5
+        elif instruction == "pop":
+            op_size += 1
+        elif instruction == "push":
+            op_size += 1
+        elif instruction =="syscall":
+            op_size += 2
+        elif instruction == "test":
+            op_size += 3
+
+    return op_size
+
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
         token = op.token
@@ -462,8 +519,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
             add_string_variable_asm(asm_file, str_val, op)
 
         with open(asm_file, 'a') as f:
-            f.write(get_op_asm(op))
             f.write(get_op_comment_asm(op, op.type))
+            op_asm = get_op_asm(op, program=program)
+            if op_asm != "":
+                f.write(op_asm)
 
     with open(asm_file, 'a') as f:
         f.write( ';; -- exit syscall\n')

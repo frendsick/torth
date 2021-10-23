@@ -3,7 +3,8 @@ import subprocess
 import sys
 from typing import List
 from utils.defs import TokenType, Token, OpType, Program, Op, Intrinsic
-from utils.asm import get_op_asm, initialize_asm, generate_asm, compile_asm, link_object_file
+from utils.asm import get_op_size, initialize_asm, generate_asm, compile_asm, link_object_file
+
 def intrinsic_exists(token: str) -> bool:
     if hasattr(Intrinsic, token):
         return True
@@ -42,8 +43,9 @@ def generate_program(tokens = List[Token]) -> Program:
 
         operand = Op(id, op_type, token)
 
-        op_size = (len(get_op_asm(operand).split('\n')) - 1) * 8 # 64bit = 8bytes
+        op_size = get_op_size(operand, program)
         operand.size = op_size
+        print(f"{op_size=}")
 
         program.append(operand)
         id += 1
