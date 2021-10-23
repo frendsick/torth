@@ -296,7 +296,7 @@ def get_op_asm(op: Op) -> str:
             STACK.append(b)
             STACK.append(a)
         elif intrinsic == "PLUS":
-            op_asm += get_arithmetic_asm(f, "add")
+            op_asm += get_arithmetic_asm("add")
             try:
                 b = STACK.pop()
                 a = STACK.pop()
@@ -454,7 +454,6 @@ def get_op_asm(op: Op) -> str:
     return op_asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
-    global STACK
     for op in program:
         token = op.token
 
