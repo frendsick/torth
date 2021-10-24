@@ -1,0 +1,7 @@
+0 // Previous
+1 // Current
+0 // The counter for WHILE loop
+WHILE dup 20 >= DO
+  rot dup rot + print_int
+  rot rot 1 +
+END
