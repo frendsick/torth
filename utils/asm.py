@@ -248,6 +248,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
+            STACK.append(a)
             STACK.append(str(int(a==b)))
         elif intrinsic == "GE":
             op_asm += get_comparison_asm("cmovge")
@@ -258,6 +259,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
+            STACK.append(a)
             STACK.append(str(int(a>=b)))
         elif intrinsic == "GT":
             op_asm += get_comparison_asm("cmovg")
@@ -268,6 +270,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
+            STACK.append(a)
             STACK.append(str(int(a>b)))
         elif intrinsic == "LE":
             op_asm += get_comparison_asm("cmovle")
@@ -278,6 +281,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
+            STACK.append(a)
             STACK.append(str(int(a<=b)))
         elif intrinsic == "LT":
             op_asm += get_comparison_asm("cmovl")
@@ -288,6 +292,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
+            STACK.append(a)
             STACK.append(str(int(a<b)))
         elif intrinsic == "MINUS":
             op_asm += get_arithmetic_asm("sub")
@@ -331,6 +336,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
+            STACK.append(a)
             STACK.append(str(int(a!=b)))
         elif intrinsic == "OVER":
             op_asm +=  '  pop rax\n'
