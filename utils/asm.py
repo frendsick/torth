@@ -59,6 +59,7 @@ def get_comparison_asm(cmov_operand: str) -> str:
     comparison_asm +=  '  mov rdx, 1\n'
     comparison_asm +=  '  cmp rax, rbx\n'
     comparison_asm += f'  {cmov_operand} rcx, rdx\n'
+    comparison_asm +=  '  push rbx\n'
     comparison_asm +=  '  push rcx\n'
     return comparison_asm
 
@@ -170,7 +171,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm +=  '  push rsi\n'
     # WHILE is a keyword for ELSE to jump to
     elif op.type == OpType.WHILE:
-        op_asm += f'WHILE{op.id}:'
+        op_asm += f'WHILE{op.id}:\n'
     elif op.type == OpType.INTRINSIC:
         intrinsic = token.value.upper()
         if intrinsic == "ARGC":
