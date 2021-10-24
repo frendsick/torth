@@ -408,18 +408,19 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
             op_asm +=  '  pop rcx\n'
-            op_asm +=  '  push rbx\n'
             op_asm +=  '  push rax\n'
             op_asm +=  '  push rcx\n'
+            op_asm +=  '  push rbx\n'
+
             try:
                 a = STACK.pop()
                 b = STACK.pop()
                 c = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least three elements to rotate.")
-            STACK.append(b)
             STACK.append(a)
             STACK.append(c)
+            STACK.append(b)
         elif intrinsic == "SWAP":
             op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
