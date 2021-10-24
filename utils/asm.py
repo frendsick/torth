@@ -116,19 +116,27 @@ def get_op_asm(op: Op, program: Program) -> str:
     global STACK
     token  = op.token
     op_asm = ""
-    if op.type == OpType.END:
+    # ELSE is unconditional jump to operand after END
+    if op.type == OpType.ELSE:
+        offset = 6 # jmp operation takes 6 bytes
+        for i in range(op.id + 1, len(program)):
+            offset += program[i].size
+            if program[i].type == OpType.END:
+                break
+        op_asm += f'  jmp {offset}\n'
+    elif op.type == OpType.END:
         offset = 0
         for i in range(op.id - 1, -1, -1):
             if program[i].type == OpType.WHILE:
                 op_asm += f'  jmp {offset}\n'
                 break
             offset += program[i].size
+    # IF is conditional jump to operand after ELIF, ELSE or END
     elif op.type == OpType.IF:
         offset = 6 # jmp operation takes 6 bytes
         for i in range(op.id + 1, len(program)):
             offset += program[i].size
-            # IF is conditional jump to operand after END
-            if program[i].type == OpType.END:
+            if program[i].type in (OpType.ELIF, OpType.ELSE, OpType.END):
                 break
         op_asm += f'  pop rax\n'
         op_asm += f'  test rax, rax\n'
@@ -474,7 +482,7 @@ def get_op_size(op: Op, program: Program):
     ARITHMETIC_INSTRUCTIONS = ['add', 'div', 'mul', 'sub']
     COMPARISON_INSTRUCTIONS = ['cmove', 'cmovge', 'cmovg', 'cmovle', 'cmovl', 'cmovne']
     # http://unixwiz.net/techtips/x86-jumps.html
-    JUMP_INSTRUCTIONS = ['jo', 'jno', 'js', 'jns', 'je', 'jz', 'jne', 'jnz', 'jb', 'jnae', 'jc', 'jnb', 'jae', 'jnc' \
+    COMDITIONAL_JUMP_INSTRUCTIONS = ['jo', 'jno', 'js', 'jns', 'je', 'jz', 'jne', 'jnz', 'jb', 'jnae', 'jc', 'jnb', 'jae', 'jnc' \
         'jbe', 'jna', 'ja', 'jnbe', 'jl', 'jnge', 'jge', 'jng', 'jg', 'jnle', 'jp', 'jpe', 'jnp', 'jpo', 'jcxz', 'jecxz']
     REGISTERS = ['rax', 'rbx', 'rcx', 'rdx', 'rsi', 'rdi', 'rbp', 'rsp', 'rip', 'r8', 'r9', '10', 'r11', 'r12', 'r13', 'r14', 'r15']
 
@@ -486,21 +494,24 @@ def get_op_size(op: Op, program: Program):
             op_size += 4
         if instruction in COMPARISON_INSTRUCTIONS:
             op_size += 4
-        elif instruction in JUMP_INSTRUCTIONS:
+        elif instruction in COMDITIONAL_JUMP_INSTRUCTIONS:
             op_size += 6
         elif instruction == "call":
             op_size += 5
         elif instruction == "cmp":
             op_size += 3
-        elif instruction == "mov":
-            if re.match(r"\[\w+\]", row):
-                print("JeEEE")
+        elif instruction == "jmp":
             op_size += 5
+        elif instruction == "mov":
+            if re.search("mov rsi, s\d+", row):
+                op_size += 8
+            else:
+                op_size += 5
         elif instruction == "pop":
             op_size += 1
         elif instruction == "push":
             op_size += 1
-        elif instruction =="syscall":
+        elif instruction == "syscall":
             op_size += 2
         elif instruction == "test":
             op_size += 3
