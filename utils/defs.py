@@ -3,7 +3,7 @@ from enum import Enum, auto
 from typing import List,Tuple
 
 MEMORY_SIZE     = 8000
-INCLUDE_PATHS   = ['.', './lib/']
+INCLUDE_PATHS   = ['./', './lib/']
 
 class Colors:
     FAIL = '\033[91m'
