@@ -11,3 +11,5 @@ macro write SYS_write syscall3 end
 macro read SYS_read syscall3 end
 macro execve SYS_execve syscall3 end
 macro exit SYS_exit syscall1 drop end
+
+macro rotr rot rot end
