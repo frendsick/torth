@@ -80,12 +80,12 @@ def include_file_to_code(file: str, code: str, line: int) -> str:
     new_lines = old_lines[:line] + include_lines + old_lines[line+1:]
     return '\n'.join(new_lines)
 
-def include_files(code):
+def include_files(code: str) -> str:
     code_lines = code.splitlines()
     row  = 0
     rows = len(code_lines)
     for line in code_lines:
-        match = re.search("^include\s+(\w+)\s*$", line)
+        match = re.search("^\s*include\s+(\S+)\s*$", line)
         if match:
             for path in INCLUDE_PATHS:
                 include_file = path + match.group(1) + ".torth"
