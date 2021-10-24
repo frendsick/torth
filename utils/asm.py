@@ -116,14 +116,29 @@ def get_op_asm(op: Op, program: Program) -> str:
     global STACK
     token  = op.token
     op_asm = ""
-    # ELIF is conditional jump to operand after ENDIF
-    if op.type == OpType.ELIF:
+
+    # DO is conditional jump to operand after ELIF, ELSE or ENDIF
+    if op.type == OpType.DO:
+        offset = 6 # jmp operation takes 6 bytes
+        for i in range(op.id + 1, len(program)):
+            offset += program[i].size
+            if program[i].type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF):
+                break
+        op_asm += f'  pop rax\n'
+        op_asm += f'  test rax, rax\n'
+        op_asm += f'  jz {offset}\n'
+    # ELIF is a keyword for DO to jump to
+    elif op.type == OpType.ELIF:
+        pass
+    # ELSE is unconditional jump to operand after ENDIF
+    elif op.type == OpType.ELSE:
         offset = 6 # jmp operation takes 6 bytes
         for i in range(op.id + 1, len(program)):
             offset += program[i].size
             if program[i].type == OpType.ENDIF:
                 break
         op_asm += f'  jmp {offset}\n'
+    # END is unconditional jump to WHILE
     elif op.type == OpType.END:
         offset = 0
         for i in range(op.id - 1, -1, -1):
@@ -131,6 +146,9 @@ def get_op_asm(op: Op, program: Program) -> str:
                 op_asm += f'  jmp {offset}\n'
                 break
             offset += program[i].size
+    # ENDIF is a keyword for DO or ELSE to jump to
+    elif op.type == OpType.ENDIF:
+        pass
     # IF is conditional jump to operand after ELIF, ELSE or ENDIF
     elif op.type == OpType.IF:
         offset = 6 # jmp operation takes 6 bytes
