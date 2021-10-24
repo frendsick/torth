@@ -1,7 +1,7 @@
 import re
 import os
 from typing import List
-from utils.defs import Keyword, TokenType, Location, Token
+from utils.defs import INCLUDE_PATHS, Keyword, TokenType, Location, Token
 
 # Returns the Intrinsic class value from token
 def get_token_value(token: str) -> str:
@@ -73,12 +73,38 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
         col = position - newline_indexes[-1] - 1
     return (filename, row, col)
 
+def include_file_to_code(file: str, code: str, line: int) -> str:
+    with open(file, 'r') as f:
+        include_lines = f.read().splitlines()
+    old_lines = code.splitlines()
+    new_lines = old_lines[:line] + include_lines + old_lines[line+1:]
+    return '\n'.join(new_lines)
+
+def include_files(code):
+    code_lines = code.splitlines()
+    row  = 0
+    rows = len(code_lines)
+    for line in code_lines:
+        match = re.search("^include\s+(\w+)\s*$", line)
+        if match:
+            for path in INCLUDE_PATHS:
+                include_file = path + match.group(1) + ".torth"
+                print(include_file)
+                if os.path.isfile(include_file):
+                    code = include_file_to_code(include_file, code, row)
+                    row += len(code.splitlines()) - rows
+        row += 1
+    return code
+
 def get_tokens_from_code(code_file: str) -> List[Token]:
     with open(code_file, 'r') as f:
         code = f.read()
     
     # Remove all comments from the code
     code = re.sub(r'\s*\/\/.*', '', code)
+
+    # Add included files to code
+    code = include_files(code)
 
     # Get all newline characters and tokens with their locations from the code
     newline_indexes = [i for i in range(len(code)) if code[i] == '\n']
