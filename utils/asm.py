@@ -123,14 +123,10 @@ def get_op_asm(op: Op, program: Program) -> str:
                 op_asm += f'  jmp {offset}\n'
                 break
             offset += program[i].size
-            print(f"{program[i]=}")
-            print(f"{offset=}")
     elif op.type == OpType.IF:
         offset = 0
         for i in range(op.id + 1, len(program)):
             offset += program[i].size
-            print(f"{program[i]=}")
-            print(f"{offset=}")
             # IF is conditional jump to operand after END
             if program[i].type == OpType.END:
                 break
@@ -495,7 +491,6 @@ def get_op_size(op: Op, program: Program):
         elif instruction == "cmp":
             op_size += 3
         elif instruction == "mov":
-            print(row)
             if re.match(r"\[\w+\]", row):
                 print("JeEEE")
             op_size += 5
