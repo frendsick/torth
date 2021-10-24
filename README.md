@@ -7,6 +7,15 @@ Torth is planned to be
 - [x] Native (Linux x86_64)
 - [x] Stack-based (just like Porth)
 
+## Usage
+
+```console
+$ cat hello.torth
+"Hello, World!" puts
+$ ./torth.py hello.torth
+Hello, World!
+```
+
 ## Examples
 
 Hello World
@@ -47,13 +56,4 @@ WHILE dup 30 >= DO
 END drop // Drop the counter from the stack
 
 "Sum of all numbers not divisible by 3 or 5: " print print_int
-```
-
-## Usage
-
-```console
-$ cat hello.torth
-"Hello, World!" puts
-$ ./torth.py hello.torth
-Hello, World!
 ```
