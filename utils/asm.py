@@ -124,14 +124,13 @@ def get_op_asm(op: Op, program: Program) -> str:
                 break
             offset += program[i].size
     elif op.type == OpType.IF:
-        offset = 0
+        offset = 6 # jmp operation takes 6 bytes
         for i in range(op.id + 1, len(program)):
             offset += program[i].size
             # IF is conditional jump to operand after END
             if program[i].type == OpType.END:
                 break
         op_asm += f'  pop rax\n'
-        op_asm += f'  push rax\n'
         op_asm += f'  test rax, rax\n'
         op_asm += f'  jz {offset}\n'
     elif op.type == OpType.PUSH_INT:
