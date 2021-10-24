@@ -2,6 +2,16 @@
 1 // Current
 0 // The counter for WHILE loop
 WHILE dup 20 >= DO
-  rot dup rot + print_int
-  rot rot 1 +
+  // Duplicate Current to use it next iteration as Previous
+  rot dup
+  // Rotate the duplicate to the third position in the stack
+  rot
+  // Add the two numbers in the top of the stack together (Previous and Current)
+  +
+  // Print the sum
+  print_int
+  // Rotate stack to the original position (Previous, Current, counter)
+  rot rot
+  // Increment counter for WHILE loop
+  1 +
 END
