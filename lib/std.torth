@@ -1,0 +1,13 @@
+macro NULL 0 end
+
+macro true  1 end
+macro false 0 end
+
+macro stdin  0 end
+macro stdout 1 end
+macro stderr 2 end
+
+macro write SYS_write syscall3 end
+macro read SYS_read syscall3 end
+macro execve SYS_execve syscall3 end
+macro exit SYS_exit syscall1 drop end
