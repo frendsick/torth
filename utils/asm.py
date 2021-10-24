@@ -117,48 +117,49 @@ def get_op_asm(op: Op, program: Program) -> str:
     token  = op.token
     op_asm = ""
 
-    # DO is conditional jump to operand after ELIF, ELSE or ENDIF
+    # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
     if op.type == OpType.DO:
-        offset = 6 # jmp operation takes 6 bytes
         for i in range(op.id + 1, len(program)):
-            offset += program[i].size
-            if program[i].type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF):
+            if program[i].type in (OpType.ELIF, OpType.ELSE, OpType.END, OpType.ENDIF):
+                jump_destination = program[i].type.name + str(i)
+                op_asm += f'  pop rax\n'
+                op_asm += f'  test rax, rax\n'
+                op_asm += f'  jz {jump_destination}\n'
                 break
-        op_asm += f'  pop rax\n'
-        op_asm += f'  test rax, rax\n'
-        op_asm += f'  jz {offset}\n'
-    # ELIF is a keyword for DO to jump to
+    # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELIF:
-        pass
+        for i in range(op.id + 1, len(program)):
+            if program[i].type == OpType.ENDIF:
+                op_asm += f'  jmp ENDIF{i}\n'
+                op_asm += f'ELIF{op.id}:\n'
+                break
     # ELSE is unconditional jump to operand after ENDIF
     elif op.type == OpType.ELSE:
-        offset = 6 # jmp operation takes 6 bytes
         for i in range(op.id + 1, len(program)):
-            offset += program[i].size
             if program[i].type == OpType.ENDIF:
+                op_asm += f'  jmp ENDIF{i}\n'
+                op_asm += f'ELSE{op.id}:\n'
                 break
-        op_asm += f'  jmp {offset}\n'
     # END is unconditional jump to WHILE
     elif op.type == OpType.END:
-        offset = 0
         for i in range(op.id - 1, -1, -1):
+            print(program[i])
             if program[i].type == OpType.WHILE:
-                op_asm += f'  jmp {offset}\n'
+                op_asm += f'  jmp WHILE{i}\n'
+                op_asm += f'END{op.id}:\n'
                 break
-            offset += program[i].size
     # ENDIF is a keyword for DO or ELSE to jump to
     elif op.type == OpType.ENDIF:
-        pass
+        op_asm += f'ENDIF{op.id}:\n'
     # IF is conditional jump to operand after ELIF, ELSE or ENDIF
     elif op.type == OpType.IF:
-        offset = 6 # jmp operation takes 6 bytes
         for i in range(op.id + 1, len(program)):
-            offset += program[i].size
             if program[i].type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF):
+                jump_destination = program[i].type.name + str(i)
+                op_asm += f'  pop rax\n'
+                op_asm += f'  test rax, rax\n'
+                op_asm += f'  jz {jump_destination}\n'
                 break
-        op_asm += f'  pop rax\n'
-        op_asm += f'  test rax, rax\n'
-        op_asm += f'  jz {offset}\n'
     elif op.type == OpType.PUSH_INT:
         integer = token.value
         STACK.append(integer)
@@ -173,6 +174,9 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm += f'  mov rsi, s{op.id} ; Pointer to string\n'
         op_asm +=  '  push rax\n'
         op_asm +=  '  push rsi\n'
+    # WHILE is a keyword for ELSE to jump to
+    elif op.type == OpType.WHILE:
+        op_asm += f'WHILE{op.id}:'
     elif op.type == OpType.INTRINSIC:
         intrinsic = token.value.upper()
         if intrinsic == "ARGC":
@@ -495,46 +499,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm += "  push rax ; return code\n"
     
     return op_asm
-
-def get_op_size(op: Op, program: Program):
-    ARITHMETIC_INSTRUCTIONS = ['add', 'div', 'mul', 'sub']
-    COMPARISON_INSTRUCTIONS = ['cmove', 'cmovge', 'cmovg', 'cmovle', 'cmovl', 'cmovne']
-    # http://unixwiz.net/techtips/x86-jumps.html
-    COMDITIONAL_JUMP_INSTRUCTIONS = ['jo', 'jno', 'js', 'jns', 'je', 'jz', 'jne', 'jnz', 'jb', 'jnae', 'jc', 'jnb', 'jae', 'jnc' \
-        'jbe', 'jna', 'ja', 'jnbe', 'jl', 'jnge', 'jge', 'jng', 'jg', 'jnle', 'jp', 'jpe', 'jnp', 'jpo', 'jcxz', 'jecxz']
-    REGISTERS = ['rax', 'rbx', 'rcx', 'rdx', 'rsi', 'rdi', 'rbp', 'rsp', 'rip', 'r8', 'r9', '10', 'r11', 'r12', 'r13', 'r14', 'r15']
-
-    asm_instructions = get_op_asm(op, program).split('\n')[:-1]
-    op_size = 0
-    for row in asm_instructions:
-        instruction = row.strip().split(' ')[0]
-        if instruction in ARITHMETIC_INSTRUCTIONS:
-            op_size += 4
-        if instruction in COMPARISON_INSTRUCTIONS:
-            op_size += 4
-        elif instruction in COMDITIONAL_JUMP_INSTRUCTIONS:
-            op_size += 6
-        elif instruction == "call":
-            op_size += 5
-        elif instruction == "cmp":
-            op_size += 3
-        elif instruction == "jmp":
-            op_size += 5
-        elif instruction == "mov":
-            if re.search("mov rsi, s\d+", row):
-                op_size += 8
-            else:
-                op_size += 5
-        elif instruction == "pop":
-            op_size += 1
-        elif instruction == "push":
-            op_size += 1
-        elif instruction == "syscall":
-            op_size += 2
-        elif instruction == "test":
-            op_size += 3
-
-    return op_size
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
