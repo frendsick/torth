@@ -132,12 +132,18 @@ def get_op_asm(op: Op, program: Program) -> str:
         for i in range(op.id + 1, len(program)):
             op_type = program[i].type
             if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
             or ( parent_op_type == OpType.WHILE and op_type == OpType.END ):
                 jump_destination = program[i].type.name + str(i)
-                op_asm += f'  pop rax\n'
-                op_asm += f'  test rax, rax\n'
+                op_asm +=  '  pop rax\n'
+                op_asm +=  '  add rsp, 8\n'
+                op_asm +=  '  test rax, rax\n'
                 op_asm += f'  jz {jump_destination}\n'
+                try:
+                    STACK.pop()
+                    STACK.pop()
+                except IndexError:
+                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
                 break
     # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELIF:
@@ -311,10 +317,11 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  div rbx\n'
             op_asm +=  '  push rdx ; Remainder\n'
             try:
-                a = STACK.pop()
                 b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            print(a, b)
             STACK.append(str(int(a) % int(b)))
         elif intrinsic == "MUL":
             op_asm +=  '  pop rax\n'
@@ -383,11 +390,6 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "PRINT_INT":
             op_asm +=  '  mov [int], rsi\n'
             op_asm +=  '  call PrintInt\n'
-            try:
-                value = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Stack is empty")
-            check_popped_value_type(op, value, expected_type='INT')
         elif intrinsic == "PUTS":
             op_asm +=  '  pop rsi    ; *buf\n'
             op_asm +=  '  pop rdx    ; count\n'
