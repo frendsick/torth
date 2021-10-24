@@ -1,0 +1,13 @@
+3
+WHILE dup 100 >= DO
+    IF dup 15 % 0 == DO
+        "FizzBuzz" puts
+    ELIF dup 3 % 0 == DO
+        "Fizz" puts
+    ELIF dup 5 % 0 == DO
+        "Buzz" puts
+    ELSE
+        PRINT_INT
+    ENDIF
+    1 +
+END
