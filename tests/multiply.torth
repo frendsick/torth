@@ -1,7 +1,0 @@
-// Expected output:
-// 69
-
-3   // Push 3 to the stack
-23  // Push 23 to the stack
-*   // Pop two numbers and push their product to the stack
-.   // Print and pop the number from the top of the stack

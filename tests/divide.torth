@@ -1,8 +1,0 @@
-// Expected output:
-// 42
-
-2   // Push 85 to the stack (a)
-85  // Push 2 to the stack (b)
-/   // Pop two numbers and push first the remainder and then the quotient to the stack (a/b)
-.   // Print and pop the number from the top of the stack
-.

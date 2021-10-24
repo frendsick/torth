@@ -1,7 +1,0 @@
-// Expected output:
-// 69
-
-1337// Push 1337 to the stack (b)
-1406// Push 1406 to the stack (a)
--   // Pop two numbers and push their difference to the stack (a-b)
-.   // Print and pop the number from the top of the stack
