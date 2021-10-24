@@ -25,8 +25,8 @@ def generate_program(tokens = List[Token]) -> Program:
             op_type = OpType.PUSH_STR
         elif token_value == 'DO':
             op_type = OpType.DO
-        elif token_value == 'END':
-            op_type = OpType.END
+        elif token_value == 'ENDIF':
+            op_type = OpType.ENDIF
         elif token_value == 'IF':
             op_type = OpType.IF
         elif token_value == 'ELIF':
