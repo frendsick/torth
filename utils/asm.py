@@ -472,6 +472,7 @@ def get_op_asm(op: Op, program: Program) -> str:
     return op_asm
 
 def get_op_size(op: Op, program: Program):
+    ARITHMETIC_INSTRUCTIONS = ['add', 'div', 'mul', 'sub']
     COMPARISON_INSTRUCTIONS = ['cmove', 'cmovge', 'cmovg', 'cmovle', 'cmovl', 'cmovne']
     # http://unixwiz.net/techtips/x86-jumps.html
     JUMP_INSTRUCTIONS = ['jo', 'jno', 'js', 'jns', 'je', 'jz', 'jne', 'jnz', 'jb', 'jnae', 'jc', 'jnb', 'jae', 'jnc' \
@@ -482,6 +483,8 @@ def get_op_size(op: Op, program: Program):
     op_size = 0
     for row in asm_instructions:
         instruction = row.strip().split(' ')[0]
+        if instruction in ARITHMETIC_INSTRUCTIONS:
+            op_size += 4
         if instruction in COMPARISON_INSTRUCTIONS:
             op_size += 4
         elif instruction in JUMP_INSTRUCTIONS:
