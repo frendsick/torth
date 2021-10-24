@@ -365,7 +365,6 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "PRINT_INT":
             op_asm +=  '  mov [int], rsi\n'
             op_asm +=  '  call PrintInt\n'
-            op_asm +=  '  add rsp, 8\n'
             try:
                 value = STACK.pop()
             except IndexError:
