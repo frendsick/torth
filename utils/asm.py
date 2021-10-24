@@ -133,7 +133,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 op_asm += f'  jmp ENDIF{i}\n'
                 op_asm += f'ELIF{op.id}:\n'
                 break
-    # ELSE is unconditional jump to operand after ENDIF
+    # ELSE is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELSE:
         for i in range(op.id + 1, len(program)):
             if program[i].type == OpType.ENDIF:
@@ -151,15 +151,9 @@ def get_op_asm(op: Op, program: Program) -> str:
     # ENDIF is a keyword for DO or ELSE to jump to
     elif op.type == OpType.ENDIF:
         op_asm += f'ENDIF{op.id}:\n'
-    # IF is conditional jump to operand after ELIF, ELSE or ENDIF
+    # IF is just a keyword indicating a start of the conditional block
     elif op.type == OpType.IF:
-        for i in range(op.id + 1, len(program)):
-            if program[i].type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF):
-                jump_destination = program[i].type.name + str(i)
-                op_asm += f'  pop rax\n'
-                op_asm += f'  test rax, rax\n'
-                op_asm += f'  jz {jump_destination}\n'
-                break
+        pass
     elif op.type == OpType.PUSH_INT:
         integer = token.value
         STACK.append(integer)
