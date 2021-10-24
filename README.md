@@ -12,7 +12,7 @@ Torth is planned to be
 Hello World
 
 ```pascal
-"Hello, World!" print
+"Hello, World!" puts
 ```
 
 Program that adds two numbers and prints their sum
@@ -52,15 +52,8 @@ END drop // Drop the counter from the stack
 ## Usage
 
 ```console
-$ cat arithmetics.torth
-420 917 + PRINT_INT // Prints 1337 to stdout
-9001 7664 - .       // . is the same as PRINT_INT
-13379               // Code alignment does not matter
-10                  // Division rounds down
-        /           // 13379 / 10 => 1337
-    PrInT_InT       // Keywords are case insensitive
-$ ./torth.py add_numbers.torth
-1337
-1337
-1337
+$ cat hello.torth
+"Hello, World!" puts
+$ ./torth.py hello.torth
+Hello, World!
 ```
