@@ -1,13 +1,18 @@
-3
-WHILE dup 100 >= DO
+0 // The sum of numbers not divisible by 3 or 5
+1 // The counter for WHILE loop
+
+WHILE dup 30 >= DO
     IF dup 15 % 0 == DO
-        "FizzBuzz" puts
+        "FizzBuzz  " print print_int
     ELIF dup 3 % 0 == DO
-        "Fizz" puts
+        "Fizz      " print print_int
     ELIF dup 5 % 0 == DO
-        "Buzz" puts
+        "Buzz      " print print_int
     ELSE
-        PRINT_INT
+        // Add current number to the sum of numbers not divisible by 3 or 5
+        dup rot + swap
     ENDIF
     1 +
-END
+END drop // Drop the counter from the stack
+
+"Sum of all numbers not divisible by 3 or 5: " print print_int
