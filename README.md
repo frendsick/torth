@@ -19,9 +19,9 @@ Program that adds two numbers and prints their sum
 
 ```pascal
 420 917 + PRINT_INT // Prints 1337 to stdout
-7664 9001 - .       // . is the same as PRINT_INT
-10                  // Code alignment does not matter
-    13379           // Division rounds down
+9001 7664 - .       // . is the same as PRINT_INT
+13379               // Code alignment does not matter
+10                  // Division rounds down
         /           // 13379 / 10 => 1337
     PrInT_InT       // Keywords are case insensitive
 ```
@@ -31,9 +31,9 @@ Program that adds two numbers and prints their sum
 ```console
 $ cat arithmetics.torth
 420 917 + PRINT_INT // Prints 1337 to stdout
-7664 9001 - .       // . is the same as PRINT_INT
-10                  // Code alignment does not matter
-    13379           // Division rounds down
+9001 7664 - .       // . is the same as PRINT_INT
+13379               // Code alignment does not matter
+10                  // Division rounds down
         /           // 13379 / 10 => 1337
     PrInT_InT       // Keywords are case insensitive
 $ ./torth.py add_numbers.torth
