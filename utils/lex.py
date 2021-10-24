@@ -89,7 +89,6 @@ def include_files(code):
         if match:
             for path in INCLUDE_PATHS:
                 include_file = path + match.group(1) + ".torth"
-                print(include_file)
                 if os.path.isfile(include_file):
                     code = include_file_to_code(include_file, code, row)
                     row += len(code.splitlines()) - rows
