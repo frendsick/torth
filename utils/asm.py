@@ -321,7 +321,6 @@ def get_op_asm(op: Op, program: Program) -> str:
                 a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            print(a, b)
             STACK.append(str(int(a) % int(b)))
         elif intrinsic == "MUL":
             op_asm +=  '  pop rax\n'
