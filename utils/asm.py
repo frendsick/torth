@@ -59,6 +59,7 @@ def get_comparison_asm(cmov_operand: str) -> str:
     comparison_asm +=  '  mov rdx, 1\n'
     comparison_asm +=  '  cmp rax, rbx\n'
     comparison_asm += f'  {cmov_operand} rcx, rdx\n'
+    comparison_asm +=  '  push rbx\n'
     comparison_asm +=  '  push rcx\n'
     return comparison_asm
 
@@ -112,11 +113,49 @@ def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> No
     # Raise compiler error if the value gotten from the stack does not match with the regex
     assert re.match(regex, str(popped_value)), compiler_error(op, "REGISTER_VALUE_ERROR", error_message)
 
-def get_op_asm(op: Op) -> str:
+def get_op_asm(op: Op, program: Program) -> str:
     global STACK
     token  = op.token
     op_asm = ""
-    if op.type == OpType.PUSH_INT:
+
+    # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
+    if op.type == OpType.DO:
+        for i in range(op.id + 1, len(program)):
+            if program[i].type in (OpType.ELIF, OpType.ELSE, OpType.END, OpType.ENDIF):
+                jump_destination = program[i].type.name + str(i)
+                op_asm += f'  pop rax\n'
+                op_asm += f'  test rax, rax\n'
+                op_asm += f'  jz {jump_destination}\n'
+                break
+    # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
+    elif op.type == OpType.ELIF:
+        for i in range(op.id + 1, len(program)):
+            if program[i].type == OpType.ENDIF:
+                op_asm += f'  jmp ENDIF{i}\n'
+                op_asm += f'ELIF{op.id}:\n'
+                break
+    # ELSE is unconditional jump to ENDIF and a keyword for DO to jump to
+    elif op.type == OpType.ELSE:
+        for i in range(op.id + 1, len(program)):
+            if program[i].type == OpType.ENDIF:
+                op_asm += f'  jmp ENDIF{i}\n'
+                op_asm += f'ELSE{op.id}:\n'
+                break
+    # END is unconditional jump to WHILE
+    elif op.type == OpType.END:
+        for i in range(op.id - 1, -1, -1):
+            print(program[i])
+            if program[i].type == OpType.WHILE:
+                op_asm += f'  jmp WHILE{i}\n'
+                op_asm += f'END{op.id}:\n'
+                break
+    # ENDIF is a keyword for DO or ELSE to jump to
+    elif op.type == OpType.ENDIF:
+        op_asm += f'ENDIF{op.id}:\n'
+    # IF is just a keyword indicating a start of the conditional block
+    elif op.type == OpType.IF:
+        pass
+    elif op.type == OpType.PUSH_INT:
         integer = token.value
         STACK.append(integer)
         op_asm += f'  mov rax, {integer}\n'
@@ -130,6 +169,9 @@ def get_op_asm(op: Op) -> str:
         op_asm += f'  mov rsi, s{op.id} ; Pointer to string\n'
         op_asm +=  '  push rax\n'
         op_asm +=  '  push rsi\n'
+    # WHILE is a keyword for ELSE to jump to
+    elif op.type == OpType.WHILE:
+        op_asm += f'WHILE{op.id}:\n'
     elif op.type == OpType.INTRINSIC:
         intrinsic = token.value.upper()
         if intrinsic == "ARGC":
@@ -323,7 +365,6 @@ def get_op_asm(op: Op) -> str:
         elif intrinsic == "PRINT_INT":
             op_asm +=  '  mov [int], rsi\n'
             op_asm +=  '  call PrintInt\n'
-            op_asm +=  '  add rsp, 8\n'
             try:
                 value = STACK.pop()
             except IndexError:
@@ -462,8 +503,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
             add_string_variable_asm(asm_file, str_val, op)
 
         with open(asm_file, 'a') as f:
-            f.write(get_op_asm(op))
             f.write(get_op_comment_asm(op, op.type))
+            op_asm = get_op_asm(op, program=program)
+            if op_asm != "":
+                f.write(op_asm)
 
     with open(asm_file, 'a') as f:
         f.write( ';; -- exit syscall\n')

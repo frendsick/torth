@@ -2,6 +2,7 @@ import re
 import os
 from typing import List
 from utils.defs import Keyword, TokenType, Location, Token
+
 # Returns the Intrinsic class value from token
 def get_token_value(token: str) -> str:
     if token == '%':
@@ -35,7 +36,7 @@ def get_token_value(token: str) -> str:
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords = ['DO', 'ELIF', 'ELSE', 'END', 'IF', 'INCLUDE', 'MACRO', 'WHILE']
+    keywords = ['DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'IF', 'INCLUDE', 'MACRO', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 
