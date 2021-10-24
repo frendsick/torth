@@ -64,8 +64,8 @@ def get_comparison_asm(cmov_operand: str) -> str:
     return comparison_asm
 
 def get_arithmetic_asm(operand: str) -> str:
-    arithmetic_asm  =  '  pop rax\n'
-    arithmetic_asm +=  '  pop rbx\n'
+    arithmetic_asm  =  '  pop rbx\n'
+    arithmetic_asm +=  '  pop rax\n'
     arithmetic_asm += f'  {operand} rax, rbx\n'
     arithmetic_asm +=  '  push rax\n'
     return arithmetic_asm
@@ -144,7 +144,6 @@ def get_op_asm(op: Op, program: Program) -> str:
     # END is unconditional jump to WHILE
     elif op.type == OpType.END:
         for i in range(op.id - 1, -1, -1):
-            print(program[i])
             if program[i].type == OpType.WHILE:
                 op_asm += f'  jmp WHILE{i}\n'
                 op_asm += f'END{op.id}:\n'
@@ -180,13 +179,13 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm += f'  push {argc}\n'
         elif intrinsic == "DIV":
             op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
-            op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
+            op_asm +=  '  pop rax\n'
             op_asm +=  '  div rbx\n'
             op_asm +=  '  push RAX ; Quotient\n'
             try:
-                b = STACK.pop()
                 a = STACK.pop()
+                b = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -194,14 +193,14 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(str(int(a) // int(b)))
         elif intrinsic == "DIVMOD":
             op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
-            op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
+            op_asm +=  '  pop rax\n'
             op_asm +=  '  div rbx\n'
             op_asm +=  '  push rdx ; Remainder\n'
             op_asm +=  '  push rax ; Quotient\n'
             try:
-                b = STACK.pop()
                 a = STACK.pop()
+                b = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -281,8 +280,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "MINUS":
             op_asm += get_arithmetic_asm("sub")
             try:
-                b = STACK.pop()
                 a = STACK.pop()
+                b = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -290,13 +289,13 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(str(int(a) - int(b)))
         elif intrinsic == "MOD":
             op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
-            op_asm +=  '  pop rax\n'
             op_asm +=  '  pop rbx\n'
+            op_asm +=  '  pop rax\n'
             op_asm +=  '  div rbx\n'
             op_asm +=  '  push rdx ; Remainder\n'
             try:
-                b = STACK.pop()
                 a = STACK.pop()
+                b = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(str(int(a) % int(b)))
