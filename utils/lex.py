@@ -85,7 +85,7 @@ def include_files(code: str) -> str:
     row  = 0
     rows = len(code_lines)
     for line in code_lines:
-        match = re.search("^\s*include\s+(\S+)\s*$", line)
+        match = re.search(r'^\s*include\s+(\S+)\s*$', line)
         if match:
             for path in INCLUDE_PATHS:
                 include_file = path + match.group(1) + ".torth"
@@ -95,6 +95,28 @@ def include_files(code: str) -> str:
         row += 1
     return code
 
+def get_macros(code: str) -> dict:
+    code_lines      = code.splitlines()
+    defined_macros  = {}
+    for line in code_lines:
+        match = re.search(r'\s*macro\s+(.+?)\s+(.+)\s+end', line)
+        if match:
+            defined_macros[match.group(1)] = match.group(2)
+    return defined_macros
+
+def get_tokens_from_macro(macro: str, defined_macros: dict) -> list:
+    return [token for token in re.finditer(r'".*?"|\S+', defined_macros[macro])]
+
+def get_tokens(code: str, defined_macros: dict) -> List[re.Match[str]]:
+    original_tokens     = [token for token in re.finditer(r'".*?"|\S+', code)]
+    real_tokens         = []    # Tokens with macros interpreted
+    for match in original_tokens:
+        if match.group(0) in defined_macros:
+            real_tokens += get_tokens_from_macro(match.group(0), defined_macros)
+        else:
+            real_tokens.append(match)
+    return real_tokens
+
 def get_tokens_from_code(code_file: str) -> List[Token]:
     with open(code_file, 'r') as f:
         code = f.read()
@@ -102,14 +124,16 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     # Remove all comments from the code
     code = re.sub(r'\s*\/\/.*', '', code)
 
-    # Add included files to code
-    code = include_files(code)
+    # Add included files to code and interpret defined macros
+    code            = include_files(code)
+    defined_macros  = get_macros(code)
+
+    # Remove all macros from the code
+    code = re.sub(r'\s*macro.+end\s*', '', code)
+    token_matches = get_tokens(code, defined_macros)
 
     # Get all newline characters and tokens with their locations from the code
     newline_indexes = [i for i in range(len(code)) if code[i] == '\n']
-
-    # Strings are between quotes and can contain whitespaces
-    token_matches = [token for token in re.finditer(r'".*?"|\S+', code)]
 
     tokens = []
     for match in token_matches:
