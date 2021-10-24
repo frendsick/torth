@@ -113,6 +113,14 @@ def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> No
     # Raise compiler error if the value gotten from the stack does not match with the regex
     assert re.match(regex, str(popped_value)), compiler_error(op, "REGISTER_VALUE_ERROR", error_message)
 
+def get_parent_op_type_do(op: Op, program: Program) -> OpType:
+    for i in range(op.id - 1, -1, -1):
+        if program[i].type in (OpType.IF, OpType.ELIF, OpType.WHILE):
+            return program[i].type
+        if program[i].type in (OpType.DO, OpType.END, OpType.ENDIF):
+            break
+    compiler_error(op, "AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE")
+
 def get_op_asm(op: Op, program: Program) -> str:
     global STACK
     token  = op.token
@@ -120,8 +128,12 @@ def get_op_asm(op: Op, program: Program) -> str:
 
     # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
     if op.type == OpType.DO:
+        parent_op_type = get_parent_op_type_do(op, program)
         for i in range(op.id + 1, len(program)):
-            if program[i].type in (OpType.ELIF, OpType.ELSE, OpType.END, OpType.ENDIF):
+            op_type = program[i].type
+            if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.WHILE and op_type == OpType.END ):
                 jump_destination = program[i].type.name + str(i)
                 op_asm += f'  pop rax\n'
                 op_asm += f'  test rax, rax\n'
@@ -182,7 +194,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  pop rbx\n'
             op_asm +=  '  pop rax\n'
             op_asm +=  '  div rbx\n'
-            op_asm +=  '  push RAX ; Quotient\n'
+            op_asm +=  '  push rax ; Quotient\n'
             try:
                 a = STACK.pop()
                 b = STACK.pop()
