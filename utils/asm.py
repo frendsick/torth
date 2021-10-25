@@ -208,7 +208,10 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
-            STACK.append(str(int(a) // int(b)))
+            try:
+                STACK.append(str(int(b) // int(a)))
+            except ZeroDivisionError:
+                compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
         elif intrinsic == "DIVMOD":
             op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
             op_asm +=  '  pop rbx\n'
