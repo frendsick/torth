@@ -48,8 +48,8 @@ def generate_program(tokens = List[Token]) -> Program:
         id += 1
     return program
 
-def compile_code(tokens = List[Token]) -> None:
-    asm_file = f"output/{os.path.basename(sys.argv[1]).replace('.torth', '.asm')}"
+def compile_code(tokens: List[Token], input_file: str, output_file: str) -> None:
+    asm_file = input_file.replace('.torth', '.asm')
     program = generate_program(tokens)
     initialize_asm(asm_file)
     generate_asm(program, asm_file)
