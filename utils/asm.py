@@ -21,7 +21,7 @@ section .rodata
 '''
 
 def initialize_asm(asm_file: str) -> None:
-    default_asm = get_asm_file_start(asm_file) + f'''  formatStrInt db "%d",10,0
+    default_asm = get_asm_file_start(asm_file) + f'''  formatStrInt db "%lld",10,0
 
 section .bss
   int: RESQ 1 ; allocates 8 bytes
