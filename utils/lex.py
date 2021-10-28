@@ -107,7 +107,7 @@ def get_macros(code: str) -> dict:
 def get_tokens_from_macro(macro: str, defined_macros: dict) -> list:
     return [token for token in re.finditer(r'".*?"|\S+', defined_macros[macro])]
 
-def get_tokens(code: str, defined_macros: dict) -> List[re.Match[str]]:
+def get_tokens(code: str, defined_macros: dict) -> list:
     original_tokens     = [token for token in re.finditer(r'".*?"|\S+', code)]
     real_tokens         = []    # Tokens with macros interpreted
     for match in original_tokens:
