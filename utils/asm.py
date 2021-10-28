@@ -529,7 +529,10 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm += "  pop r9  ; 6. arg\n"
             op_asm += "  syscall\n"
             op_asm += "  push rax ; return code\n"
-    
+        else:
+            compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
+    else:
+        compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
