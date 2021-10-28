@@ -25,7 +25,9 @@ def initialize_asm(asm_file: str) -> None:
 
 section .bss
   int: RESQ 1 ; allocates 8 bytes
-  mem: RESB {MEMORY_SIZE} ; allocates {MEMORY_SIZE} bytes
+  mem: RESB {MEMORY_SIZE}   ; allocates {MEMORY_SIZE} bytes
+  %define buffer_len 65535  ; Should be enough for any user input
+  buffer: resb buffer_len
 
 section .text
 PrintInt:
@@ -281,6 +283,16 @@ def get_op_asm(op: Op, program: Program) -> str:
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(a)
             STACK.append(str(int(a>b)))
+        elif intrinsic == "INPUT":
+            op_asm += '  mov rax, sys_read\n'
+            op_asm += '  mov rdi, stdin\n'
+            op_asm += '  mov rsi, buffer\n'
+            op_asm += '  mov rdx, buffer_len\n'
+            op_asm += '  syscall\n'
+            op_asm += '  push rax\n'
+            op_asm += '  push buffer\n'
+            STACK.append(f"42")
+            STACK.append(f"*buf buffer")
         elif intrinsic == "LE":
             op_asm += get_comparison_asm("cmovle")
             try:

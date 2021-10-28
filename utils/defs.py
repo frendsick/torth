@@ -37,6 +37,7 @@ class Intrinsic(Enum):
     GE=auto()
     GT=auto()
     HERE=auto()
+    INPUT=auto()
     LE=auto()
     LOAD8=auto()
     LOAD32=auto()
@@ -107,4 +108,4 @@ class Op:
 
 Program=List[Op]
 STACK=[]
-REGEX={'INT': '-?\d+', '*buf': '\*buf s\d+'}
+REGEX={'INT': '-?\d+', '*buf': '\*buf \S+'}
