@@ -47,10 +47,8 @@ def get_token_type(token_text: str) -> TokenType:
         return TokenType.BOOL
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
-    if token_text[0] == token_text[-1] == "'" and len(token_text) == 3:
-        return TokenType.CHAR
-    if token_text[0] == token_text[-1] == "'" and len(token_text) != 3:
-        raise TypeError(f"Token {token_text} is not a CHAR. Please use double quotes (\"\") for string literals")
+    if token_text[0] == token_text[-1] == "'":
+        return TokenType.CSTR
     try:
         _integer = int(token_text)
         return TokenType.INT
@@ -108,7 +106,7 @@ def get_tokens_from_macro(macro: str, defined_macros: dict) -> list:
     return [token for token in re.finditer(r'".*?"|\S+', defined_macros[macro])]
 
 def get_tokens(code: str, defined_macros: dict) -> list:
-    original_tokens     = [token for token in re.finditer(r'".*?"|\S+', code)]
+    original_tokens     = [token for token in re.finditer(r'''".*?"|'.*?'|\S+''', code)]
     real_tokens         = []    # Tokens with macros interpreted
     for match in original_tokens:
         if match.group(0) in defined_macros:

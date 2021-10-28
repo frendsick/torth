@@ -16,8 +16,8 @@ def generate_program(tokens = List[Token]) -> Program:
         token_value = token.value.upper()
         if token.type == TokenType.BOOL:
             op_type = OpType.PUSH_INT
-        elif token.type == TokenType.CHAR:
-            op_type = OpType.PUSH_STR
+        elif token.type == TokenType.CSTR:
+            op_type = OpType.PUSH_CSTR
         elif token.type == TokenType.INT:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.STR:

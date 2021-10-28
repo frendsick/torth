@@ -72,12 +72,15 @@ def get_arithmetic_asm(operand: str) -> str:
     arithmetic_asm +=  '  push rax\n'
     return arithmetic_asm
 
-def add_string_variable_asm(asm_file: str, string: str, op: Op) -> None:
+def add_string_variable_asm(asm_file: str, string: str, op: Op, insert_newline: bool) -> None:
     with open(asm_file, 'r') as f:
         file_lines = f.readlines()
     with open(asm_file, 'w') as f:
         f.write(get_asm_file_start(asm_file))
-        f.write(f'  s{op.id} db "{string}",10\n')
+        if insert_newline:
+            f.write(f'  s{op.id} db "{string}",10,0\n')
+        else:
+            f.write(f'  s{op.id} db "{string}",0\n')
 
         # Rewrite lines except for the first line (section .rodata)
         len_asm_file_start = len(get_asm_file_start(asm_file).split('\n')) - 1
@@ -88,8 +91,7 @@ def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]
     syscall = stack.pop()
     for _i in range(param_count):
         stack.pop()
-    syscall.value = '0' # Syscall return value is 0 by default
-    stack.append(syscall)
+    stack.append('0') # Syscall return value is 0 by default
     return stack
 
 def compiler_error(op: Op, error_type: str, error_message: str) -> None:
@@ -174,6 +176,11 @@ def get_op_asm(op: Op, program: Program) -> str:
     # IF is just a keyword indicating a start of the conditional block
     elif op.type == OpType.IF:
         pass
+    elif op.type == OpType.PUSH_CSTR:
+        str_val = op.token.value[1:-1]  # Take quotes out of the string
+        STACK.append(f"*buf s{op.id}")
+        op_asm += f'  mov rsi, s{op.id} ; Pointer to string\n'
+        op_asm +=  '  push rsi\n'
     elif op.type == OpType.PUSH_INT:
         integer = token.value
         STACK.append(integer)
@@ -551,9 +558,10 @@ def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
         token = op.token
 
-        if op.type == OpType.PUSH_STR:
+        if op.type == OpType.PUSH_STR or op.type == OpType.PUSH_CSTR:
             str_val = token.value[1:-1]  # Take quotes out of the string
-            add_string_variable_asm(asm_file, str_val, op)
+            insert_newline = True if op.type == OpType.PUSH_STR else False
+            add_string_variable_asm(asm_file, str_val, op, insert_newline)
 
         with open(asm_file, 'a') as f:
             f.write(get_op_comment_asm(op, op.type))
