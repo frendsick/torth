@@ -156,6 +156,16 @@ def get_op_asm(op: Op, program: Program) -> str:
                 op_asm += f'  jmp ENDIF{i}\n'
                 op_asm += f'ELIF{op.id}:\n'
                 break
+        # ELIF is like DUP, it duplicates the first element in the stack
+        op_asm +=  '  pop rax\n'
+        op_asm +=  '  push rax\n'
+        op_asm +=  '  push rax\n'
+        try:
+            top = STACK.pop()
+        except IndexError:
+            compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+        STACK.append(top)
+        STACK.append(top)
     # ELSE is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELSE:
         for i in range(op.id + 1, len(program)):
@@ -173,9 +183,17 @@ def get_op_asm(op: Op, program: Program) -> str:
     # ENDIF is a keyword for DO or ELSE to jump to
     elif op.type == OpType.ENDIF:
         op_asm += f'ENDIF{op.id}:\n'
-    # IF is just a keyword indicating a start of the conditional block
+    # IF is like DUP, it duplicates the first element in the stack
     elif op.type == OpType.IF:
-        pass
+        op_asm +=  '  pop rax\n'
+        op_asm +=  '  push rax\n'
+        op_asm +=  '  push rax\n'
+        try:
+            top = STACK.pop()
+        except IndexError:
+            compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+        STACK.append(top)
+        STACK.append(top)
     elif op.type == OpType.PUSH_CSTR:
         str_val = op.token.value[1:-1]  # Take quotes out of the string
         STACK.append(f"*buf s{op.id}")
@@ -195,9 +213,19 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm += f'  mov rsi, s{op.id} ; Pointer to string\n'
         op_asm +=  '  push rax\n'
         op_asm +=  '  push rsi\n'
-    # WHILE is a keyword for ELSE to jump to
+    # WHILE is a keyword for ELSE to jump to and also like DUP
+    # It duplicates the first element in the stack
     elif op.type == OpType.WHILE:
         op_asm += f'WHILE{op.id}:\n'
+        op_asm +=  '  pop rax\n'
+        op_asm +=  '  push rax\n'
+        op_asm +=  '  push rax\n'
+        try:
+            top = STACK.pop()
+        except IndexError:
+            compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+        STACK.append(top)
+        STACK.append(top)
     elif op.type == OpType.INTRINSIC:
         intrinsic = token.value.upper()
         if intrinsic == "ARGC":
