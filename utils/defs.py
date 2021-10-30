@@ -29,6 +29,7 @@ class Intrinsic(Enum):
     CAST_BOOL=auto()
     CAST_INT=auto()
     CAST_PTR=auto()
+    GET_NTH=auto()
     DIV=auto()
     DIVMOD=auto()
     DROP=auto()

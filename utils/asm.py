@@ -307,6 +307,27 @@ def get_op_asm(op: Op, program: Program) -> str:
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(a)
             STACK.append(str(int(a>=b)))
+        # Copies Nth element from the stack to the top of the stack (first element is 0th)
+        elif intrinsic == "GET_NTH":
+            op_asm +=  '  pop rax\n'
+            # The top element in the stack is the N
+            try:
+                n = int(STACK.pop())
+            except IndexError:
+                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            except ValueError:
+                compiler_error(op, "STACK_VALUE_ERROR", "First element in the stack is not an integer.")
+            try:
+                stack_index = len(STACK) - 1 # Zero based indexes
+                nth_element = STACK[stack_index - n]
+            except IndexError:
+                compiler_error(op, "NOT_ENOUGH_ELEMENTS_IN_STACK", \
+                    f"Cannot get {n}. element from the stack: Stack only contains {len(STACK)} elements.")
+            op_asm += f'  add rsp, {n * 8} ; Stack pointer to the Nth element\n'
+            op_asm +=  '  pop rax ; Get Nth element to rax\n'
+            op_asm += f'  sub rsp, {n * 8 + 8} ; Return stack pointer\n'
+            op_asm +=  '  push rax\n'
+            STACK.append(nth_element)
         elif intrinsic == "GT":
             op_asm += get_comparison_asm("cmovg")
             try:
