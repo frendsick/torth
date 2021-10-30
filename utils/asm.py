@@ -374,8 +374,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "MINUS":
             op_asm += get_arithmetic_asm("sub")
             try:
-                a = STACK.pop()
                 b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
