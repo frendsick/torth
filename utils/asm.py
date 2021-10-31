@@ -281,6 +281,10 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
             STACK.append(top)
             STACK.append(top)
+        elif intrinsic == "ENVP":
+            op_asm +=  '  mov rax, [rsp+8]\n'
+            op_asm +=  '  push rax\n'
+            STACK.append('ENVP')
         elif intrinsic == "EXIT":
             op_asm +=  '  mov rax, 60\n'
             op_asm +=  '  mov rdi, 0\n'
