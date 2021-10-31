@@ -643,7 +643,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
             # Remove whitespaces from the elements list
             elements = [element.strip().replace("'", '"') for element in elements]
             add_array_asm(asm_file, elements, op)
-            print(elements)
 
         with open(asm_file, 'a') as f:
             f.write(get_op_comment_asm(op, op.type))
