@@ -12,6 +12,7 @@ class Colors:
     WARNING = '\033[93m'
 
 class Keyword(Enum):
+    ARRAY=auto()
     DO=auto()
     ELIF=auto()
     ELSE=auto()

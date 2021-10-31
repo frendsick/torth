@@ -36,7 +36,7 @@ def get_token_value(token: str) -> str:
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords = ['DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'IF', 'INCLUDE', 'MACRO', 'WHILE']
+    keywords = ['ARRAY', 'DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'IF', 'INCLUDE', 'MACRO', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 
@@ -106,7 +106,7 @@ def get_tokens_from_macro(macro: str, defined_macros: dict) -> list:
     return [token for token in re.finditer(r'".*?"|\S+', defined_macros[macro])]
 
 def get_tokens(code: str, defined_macros: dict) -> list:
-    original_tokens     = [token for token in re.finditer(r'''".*?"|'.*?'|\S+''', code)]
+    original_tokens     = [token for token in re.finditer(r'''\w+\(.+\)|".*?"|'.*?'|\S+''', code)]
     real_tokens         = []    # Tokens with macros interpreted
     for match in original_tokens:
         if match.group(0) in defined_macros:
