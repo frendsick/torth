@@ -14,7 +14,9 @@ def generate_program(tokens = List[Token]) -> Program:
     id=0
     for token in tokens:
         token_value = token.value.upper()
-        if token.type == TokenType.BOOL:
+        if token.type == TokenType.ARRAY:
+            op_type = OpType.PUSH_ARRAY
+        elif token.type == TokenType.BOOL:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.CSTR:
             op_type = OpType.PUSH_CSTR
@@ -40,7 +42,7 @@ def generate_program(tokens = List[Token]) -> Program:
             if intrinsic_exists(token_value):
                 op_type = OpType.INTRINSIC
             else:
-                raise AttributeError (f"Intrinsic '{token.value}' is not found")
+                raise AttributeError (f"Operation '{token.value}' is not found")
 
         operand = Op(id, op_type, token)
         program.append(operand)

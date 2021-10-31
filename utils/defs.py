@@ -12,7 +12,6 @@ class Colors:
     WARNING = '\033[93m'
 
 class Keyword(Enum):
-    ARRAY=auto()
     DO=auto()
     ELIF=auto()
     ELSE=auto()
@@ -73,12 +72,14 @@ class OpType(Enum):
     ENDIF=auto()
     IF=auto()
     INTRINSIC=auto()
+    PUSH_ARRAY=auto()
     PUSH_CSTR=auto()
     PUSH_INT=auto()
     PUSH_STR=auto()
     WHILE=auto()
 
 class TokenType(Enum):
+    ARRAY=auto()
     BOOL=auto()
     CHAR=auto()
     CSTR=auto()

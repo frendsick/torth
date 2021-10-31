@@ -194,6 +194,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
         STACK.append(top)
         STACK.append(top)
+    elif op.type == OpType.PUSH_ARRAY:
+        raise NotImplementedError
     elif op.type == OpType.PUSH_CSTR:
         str_val = op.token.value[1:-1]  # Take quotes out of the string
         STACK.append(f"*buf s{op.id}")
