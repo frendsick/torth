@@ -33,6 +33,8 @@ ELIF 0 == DO                      //  else if (0 == i)
 ELSE                              //  else
   "Negative number" puts          //    puts("Negative number");
 ENDIF
+
+// Output: Negative number
 ```
 
 #### WHILE
