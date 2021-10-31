@@ -87,6 +87,23 @@ def add_string_variable_asm(asm_file: str, string: str, op: Op, insert_newline: 
         for i in range(len_asm_file_start, len(file_lines)):
             f.write(file_lines[i])
 
+def add_array_asm(asm_file: str, array: list, op: Op) -> None:
+    with open(asm_file, 'r') as f:
+        file_lines = f.readlines()
+    with open(asm_file, 'w') as f:
+        f.write(get_asm_file_start(asm_file))
+        for i in range(len(array)):
+            f.write(f'  s{op.id}_{i}: db {array[i]},0\n')
+        f.write(f'  s_arr{op.id}: dq ')
+        for i in range(len(array)):
+            f.write(f's{op.id}_{i}, ')
+        f.write('0\n')
+
+        # Rewrite lines
+        len_asm_file_start = len(get_asm_file_start(asm_file).split('\n')) - 1
+        for i in range(len_asm_file_start, len(file_lines)):
+            f.write(file_lines[i])
+
 def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]:
     syscall = stack.pop()
     for _i in range(param_count):
@@ -195,7 +212,9 @@ def get_op_asm(op: Op, program: Program) -> str:
         STACK.append(top)
         STACK.append(top)
     elif op.type == OpType.PUSH_ARRAY:
-        raise NotImplementedError
+        op_asm += f'  mov rsi, s_arr{op.id} ; Pointer to array\n'
+        op_asm +=  '  push rsi\n'
+        STACK.append(f"*buf s_arr{op.id}")
     elif op.type == OpType.PUSH_CSTR:
         str_val = op.token.value[1:-1]  # Take quotes out of the string
         STACK.append(f"*buf s{op.id}")
@@ -617,6 +636,14 @@ def generate_asm(program: Program, asm_file: str) -> None:
             str_val = token.value[1:-1]  # Take quotes out of the string
             insert_newline = True if op.type == OpType.PUSH_STR else False
             add_string_variable_asm(asm_file, str_val, op, insert_newline)
+
+        elif op.type == OpType.PUSH_ARRAY:
+            value = op.token.value
+            elements = value[value.find("(")+1:value.find(")")].split(',')
+            # Remove whitespaces from the elements list
+            elements = [element.strip().replace("'", '"') for element in elements]
+            add_array_asm(asm_file, elements, op)
+            print(elements)
 
         with open(asm_file, 'a') as f:
             f.write(get_op_comment_asm(op, op.type))
