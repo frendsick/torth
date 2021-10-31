@@ -370,9 +370,9 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm += '  mov rsi, buffer\n'
             op_asm += '  mov rdx, buffer_len\n'
             op_asm += '  syscall\n'
-            op_asm += '  push rax\n'
+            op_asm += '  xor rdx, rdx\n'
+            op_asm += '  mov [buffer+rax-1], dl  ; Change newline character to NULL\n'
             op_asm += '  push buffer\n'
-            STACK.append(f"42")
             STACK.append(f"*buf buffer")
         elif intrinsic == "LE":
             op_asm += get_comparison_asm("cmovle")
