@@ -17,6 +17,8 @@ extern printf
 
 %define success 0
 
+%define buffer_len 65535
+
 section .rodata
 '''
 
@@ -26,8 +28,6 @@ def initialize_asm(asm_file: str) -> None:
 section .bss
   int: RESQ 1 ; allocates 8 bytes
   mem: RESB {MEMORY_SIZE}   ; allocates {MEMORY_SIZE} bytes
-  %define buffer_len 65535  ; Should be enough for any user input
-  buffer: resb buffer_len
 
 section .text
 PrintInt:
@@ -106,6 +106,23 @@ def add_array_asm(asm_file: str, array: list, op: Op) -> None:
         # Rewrite lines
         len_asm_file_start = len(get_asm_file_start(asm_file).split('\n')) - 1
         for i in range(len_asm_file_start, len(file_lines)):
+            f.write(file_lines[i])
+
+def add_input_buffer_asm(asm_file: str, op: Op):
+    with open(asm_file, 'r') as f:
+        file_lines = f.readlines()
+    with open(asm_file, 'w') as f:
+        f.write(get_asm_file_start(asm_file))
+        row = len(get_asm_file_start(asm_file).splitlines()) - 1
+        while row < len(file_lines):
+            row += 1
+            f.write(file_lines[row])
+            if file_lines[row] == "section .bss\n":
+                break
+        f.write(f'  buffer{op.id}: resb buffer_len\n')
+
+        # Rewrite lines
+        for i in range(row+1, len(file_lines)):
             f.write(file_lines[i])
 
 def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]:
@@ -371,12 +388,14 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "INPUT":
             op_asm += '  mov rax, sys_read\n'
             op_asm += '  mov rdi, stdin\n'
-            op_asm += '  mov rsi, buffer\n'
+            op_asm +=f'  mov rsi, buffer{op.id}\n'
             op_asm += '  mov rdx, buffer_len\n'
             op_asm += '  syscall\n'
             op_asm += '  xor rdx, rdx\n'
-            op_asm += '  mov [buffer+rax-1], dl  ; Change newline character to NULL\n'
-            op_asm += '  push buffer\n'
+            op_asm +=f'  mov [buffer{op.id}+rax-1], dl  ; Change newline character to NULL\n'
+            op_asm += '  push rax\n'
+            op_asm +=f'  push buffer{op.id}\n'
+            STACK.append(f"42") # User input length is not known beforehand
             STACK.append(f"*buf buffer")
         elif intrinsic == "LE":
             op_asm += get_comparison_asm("cmovle")
@@ -639,14 +658,17 @@ def generate_asm(program: Program, asm_file: str) -> None:
         if op.type == OpType.PUSH_STR or op.type == OpType.PUSH_CSTR:
             str_val = token.value[1:-1]  # Take quotes out of the string
             insert_newline = True if op.type == OpType.PUSH_STR else False
-            add_string_variable_asm(asm_file, str_val, op, insert_newline)
+            add_string_variable_asm(asm_file, str_val, op, insert_newline, op.type)
 
         elif op.type == OpType.PUSH_ARRAY:
-            value = op.token.value
+            value = token.value
             elements = value[value.find("(")+1:value.find(")")].split(',')
             # Remove whitespaces from the elements list
             elements = [element.strip().replace("'", '"') for element in elements]
             add_array_asm(asm_file, elements, op)
+
+        elif token.value.upper() == 'INPUT':
+            add_input_buffer_asm(asm_file, op)
 
         with open(asm_file, 'a') as f:
             f.write(get_op_comment_asm(op, op.type))
