@@ -85,7 +85,7 @@ def include_files(code: str) -> str:
     row  = 0
     rows = len(code_lines)
     for line in code_lines:
-        match = re.search(r'^\s*include\s+(\S+)\s*$', line)
+        match = re.search(r'^\s*include\s+(\S+)\s*$', line, re.IGNORECASE)
         if match:
             for path in INCLUDE_PATHS:
                 include_file = path + match.group(1) + ".torth"
