@@ -50,7 +50,24 @@ END                               //  }
 
 ## ELIF
 
-TODO
+ELIF is an unconditional jump to the operation after ENDIF. It's also a keyword for DO to coditionally jump over.
+
+### Examples
+
+ELIF is a unconditional jump to the operation after ENDIF because the keyword is only reached if the previous IF or ELIF block's condition was true. DO keyword is a conditional jump to the operation after ELIF if the condition is false.
+
+```pascal
+4                                 //  int i = 4;
+if 0 < DO                         //  if (0 < i)
+  "Positive number" puts          //    puts("Positive number");
+ELIF 0 == DO                      //  else if (0 == i)
+  "Zero" puts                     //    puts("Zero");
+ELSE                              //  else
+  "Negative number" puts          //    puts("Negative number");
+ENDIF
+
+// Output: Positive number
+```
 
 ## ELSE
 
