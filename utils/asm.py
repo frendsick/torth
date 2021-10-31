@@ -180,7 +180,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 op_asm += f'  jmp WHILE{i}\n'
                 op_asm += f'END{op.id}:\n'
                 break
-    # ENDIF is a keyword for DO or ELSE to jump to
+    # ENDIF is a keyword for DO, ELIF or ELSE to jump to
     elif op.type == OpType.ENDIF:
         op_asm += f'ENDIF{op.id}:\n'
     # IF is like DUP, it duplicates the first element in the stack
