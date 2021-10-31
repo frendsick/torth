@@ -98,7 +98,24 @@ ENDIF
 
 ## END
 
-TODO
+END is an unconditional jump to WHILE keyword. The loop's condition is always evaluated by the DO keyword after WHILE which is also a conditional jump to the operation after the END keyword.
+
+### Examples
+
+```pascal
+0 WHILE 10 > DO                         //  int i=0; while (10 > i) {
+  1 +                                   //    i++;
+  "This is row " print print_int        //    printf("This is row %d\n", i);
+END                                     //  }
+"Loop over after row " print print_int  //  printf("Loop over after row %d\n", i);
+
+// Output:
+// This is row 1
+// This is row 2
+// ...
+// This is row 10
+// Loop over after row 10
+```
 
 ## ENDIF
 
