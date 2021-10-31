@@ -119,7 +119,48 @@ END                                     //  }
 
 ## ENDIF
 
-TODO
+ENDIF is a keyword for DO, ELIF, or ELSE keywords to jump over.
+
+### Examples
+
+```pascal
+0                                 //  int i = 0;
+if 0 < DO                         //  if (0 < i)
+  "Positive number" puts          //    puts("Positive number");
+ENDIF
+"This is after ENDIF" puts        //  puts("This is after ENDIF");
+
+// Output: This is after ENDIF
+```
+
+```pascal
+4                                 //  int i = 0;
+if 0 < DO                         //  if (0 < i)
+  "Positive number" puts          //    puts("Positive number");
+ELIF 0 == DO                      //  else if (0 == i)
+  "Zero" puts                     //    puts("Zero");
+ENDIF
+"This is after ENDIF" puts        //  puts("This is after ENDIF");
+
+// Output:
+// Positive number
+// This is after ENDIF
+```
+
+```pascal
+0                                 //  int i = 0;
+if 0 < DO                         //  if (0 < i)
+  "Positive number" puts          //    puts("Positive number");
+ELIF 0 == DO                      //  else if (0 == i)
+  "Zero" puts                     //    puts("Zero");
+ELSE                              //  else
+  "Negative number" puts          //    puts("Negative number");
+"This is after ENDIF" puts        //  puts("This is after ENDIF");
+
+// Output:
+// Zero
+// This is after ENDIF
+```
 
 ## IF
 
