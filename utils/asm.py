@@ -72,15 +72,19 @@ def get_arithmetic_asm(operand: str) -> str:
     arithmetic_asm +=  '  push rax\n'
     return arithmetic_asm
 
-def add_string_variable_asm(asm_file: str, string: str, op: Op, insert_newline: bool) -> None:
+def add_string_variable_asm(asm_file: str, string: str, op: Op, insert_newline: bool, op_type: OpType) -> None:
     with open(asm_file, 'r') as f:
         file_lines = f.readlines()
     with open(asm_file, 'w') as f:
+        if op_type == OpType.PUSH_STR:
+            str_prefix = 's'
+        elif op_type == OpType.PUSH_CSTR:
+            str_prefix = 'cs'
         f.write(get_asm_file_start(asm_file))
         if insert_newline:
-            f.write(f'  s{op.id} db "{string}",10,0\n')
+            f.write(f'  {str_prefix}{op.id} db "{string}",10,0\n')
         else:
-            f.write(f'  s{op.id} db "{string}",0\n')
+            f.write(f'  {str_prefix}{op.id} db "{string}",0\n')
 
         # Rewrite lines except for the first line (section .rodata)
         len_asm_file_start = len(get_asm_file_start(asm_file).split('\n')) - 1
@@ -217,8 +221,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         STACK.append(f"*buf s_arr{op.id}")
     elif op.type == OpType.PUSH_CSTR:
         str_val = op.token.value[1:-1]  # Take quotes out of the string
-        STACK.append(f"*buf s{op.id}")
-        op_asm += f'  mov rsi, s{op.id} ; Pointer to string\n'
+        STACK.append(f"*buf cs{op.id}")
+        op_asm += f'  mov rsi, cs{op.id} ; Pointer to string\n'
         op_asm +=  '  push rsi\n'
     elif op.type == OpType.PUSH_INT:
         integer = token.value
