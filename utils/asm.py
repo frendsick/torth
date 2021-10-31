@@ -385,6 +385,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(a)
             STACK.append(str(int(a>b)))
+        # User input is essentially a CSTR but the length is also pushed to the stack for possible printing
         elif intrinsic == "INPUT":
             op_asm += '  mov rax, sys_read\n'
             op_asm += '  mov rdi, stdin\n'
