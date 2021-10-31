@@ -46,6 +46,12 @@ In while loop, DO is a conditional jump to operation after END.
   1 +                             //    i++;
   "This is row " print print_int  //    printf("This is row %d\n", i);
 END                               //  }
+
+// Output:
+// This is row 1
+// This is row 2
+// ...
+// This is row 10
 ```
 
 ## ELIF
