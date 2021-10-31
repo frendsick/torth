@@ -155,6 +155,7 @@ ELIF 0 == DO                      //  else if (0 == i)
   "Zero" puts                     //    puts("Zero");
 ELSE                              //  else
   "Negative number" puts          //    puts("Negative number");
+ENDIF
 "This is after ENDIF" puts        //  puts("This is after ENDIF");
 
 // Output:
