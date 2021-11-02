@@ -111,5 +111,5 @@ class Func:
     name: str
     ops: Program
 
-STACK=[]
+STACK: List[str] = []
 REGEX={'INT': '-?\d+', '*buf': '\*buf \S+'}
