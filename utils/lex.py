@@ -95,15 +95,22 @@ def include_files(code: str) -> str:
         row += 1
     return code
 
-def get_tokens_from_function(ops_str: str) -> list:
-    return [token for token in re.findall(r'".*?"|\S+', ops_str, re.MULTILINE)]
+def get_tokens_from_function(func_ops: List[str], defined_functions: Dict[str, List[str]]) -> list:
+    func_tokens = []
+    for op in func_ops:
+        if op in defined_functions:
+            func_tokens += get_tokens_from_function(defined_functions[op], defined_functions)
+        else:
+            func_tokens.append(op)
+    return func_tokens
 
 def get_functions(code: str) -> Dict[str, List[str]]:
     defined_functions = {}
-    matches = re.finditer(r'\s*func\s+(.+?)\s+(.+)\s+end', code, re.IGNORECASE | re.MULTILINE)
+    matches = re.finditer(r'\s*func\s+(.+?)\s+((.*|\n)*)\s+end', code, re.IGNORECASE | re.MULTILINE)
     for match in matches:
         func_name   = match.group(1)
-        func_ops    = get_tokens_from_function(match.group(2))
+        func_tokens = [token for token in re.findall(r'".*?"|\S+', match.group(2), re.MULTILINE)]
+        func_ops    = get_tokens_from_function(func_tokens, defined_functions)
         defined_functions[func_name] = func_ops
     return defined_functions
 
@@ -112,12 +119,9 @@ def get_tokens(code: str, defined_functions: Dict[str, List[str]]) -> list:
     original_tokens = [token for token in re.finditer(token_regex, code)]
     real_tokens     = []    # Tokens with functions interpreted
     for match in original_tokens:
-        token = match.group(0)
-        # Check if token is a defined function
-        if token in defined_functions:
-            # Function can contain multiple tokens
-            for func_token in defined_functions[token]:
-                real_tokens.append(re.search(token_regex, func_token, re.MULTILINE))
+        if match.group(0) in defined_functions:
+            for token_str in defined_functions[match.group(0)]:
+                real_tokens.append(re.search(token_regex, token_str))
         else:
             real_tokens.append(match)
     return real_tokens
