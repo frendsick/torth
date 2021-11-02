@@ -134,7 +134,7 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     defined_functions   = get_functions(code)
 
     # Remove all functions from the code
-    code = re.sub(r'\s*func\s+(.+?)\s+(.+)\s+end', '', code, re.IGNORECASE | re.MULTILINE)
+    code = re.sub(r'\s*func\s+(.+?)\s+((.*|\n)*)\s+end', '', code, re.IGNORECASE | re.MULTILINE)
     token_matches = get_tokens(code, defined_functions)
 
     # Get all newline characters and tokens with their locations from the code
