@@ -24,7 +24,6 @@ def initialize_asm(asm_file: str) -> None:
 
 section .bss
   int: RESQ 1 ; allocates 8 bytes
-  mem: RESB {MEMORY_SIZE}   ; allocates {MEMORY_SIZE} bytes
 
 section .text
 PrintInt:

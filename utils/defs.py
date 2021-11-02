@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import List,Tuple
 
-MEMORY_SIZE     = 8000
+MEMORY_SIZE     = 8000 # TODO memory management
 INCLUDE_PATHS   = ['./', './lib/']
 
 class Colors:
