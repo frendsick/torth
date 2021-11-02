@@ -1,7 +1,7 @@
 import re
 import subprocess
 import sys
-from typing import List
+from typing import List, Tuple
 from utils.defs import Colors, OpType, Op, Token, Program, STACK, REGEX, MEMORY_SIZE
 
 def get_asm_file_start(asm_file:str) -> str:
@@ -163,7 +163,7 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
             break
     compiler_error(op, "AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE")
 
-def get_op_asm(op: Op, program: Program) -> str:
+def get_op_asm(op: Op, program: Program) -> Tuple[str, Program]:
     global STACK
     token  = op.token
     op_asm = ""
@@ -650,7 +650,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
-    return op_asm
+    return op_asm, program
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
@@ -673,7 +673,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
 
         with open(asm_file, 'a') as f:
             f.write(get_op_comment_asm(op, op.type))
-            op_asm = get_op_asm(op, program=program)
+            op_asm, program = get_op_asm(op, program=program)
             if op_asm != "":
                 f.write(op_asm)
 
