@@ -8,16 +8,13 @@ def get_asm_file_start(asm_file:str) -> str:
     return '''default rel
 extern printf
 
+%define buffer_len 65535 ; User input buffer length
+%define stdin 0
+%define stdout 1
+%define success 0
 %define sys_exit 60
 %define sys_read 0
 %define sys_write 1
-
-%define stdin 0
-%define stdout 1
-
-%define success 0
-
-%define buffer_len 65535
 
 section .rodata
 '''
