@@ -1,6 +1,6 @@
 import re
 import os
-from typing import List
+from typing import Dict, List
 from utils.defs import INCLUDE_PATHS, Keyword, TokenType, Location, Token
 
 # Returns the Intrinsic class value from token
@@ -36,7 +36,7 @@ def get_token_value(token: str) -> str:
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords = ['DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'IF', 'INCLUDE', 'MACRO', 'WHILE']
+    keywords = ['DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNC', 'IF', 'INCLUDE', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 
@@ -95,24 +95,29 @@ def include_files(code: str) -> str:
         row += 1
     return code
 
-def get_macros(code: str) -> dict:
-    code_lines      = code.splitlines()
-    defined_macros  = {}
-    for line in code_lines:
-        match = re.search(r'\s*macro\s+(.+?)\s+(.+)\s+end', line)
-        if match:
-            defined_macros[match.group(1)] = match.group(2)
-    return defined_macros
+def get_tokens_from_function(ops_str: str) -> list:
+    return [token for token in re.findall(r'".*?"|\S+', ops_str, re.MULTILINE)]
 
-def get_tokens_from_macro(macro: str, defined_macros: dict) -> list:
-    return [token for token in re.finditer(r'".*?"|\S+', defined_macros[macro])]
+def get_functions(code: str) -> Dict[str, List[str]]:
+    defined_functions = {}
+    matches = re.finditer(r'\s*func\s+(.+?)\s+(.+)\s+end', code, re.IGNORECASE | re.MULTILINE)
+    for match in matches:
+        func_name   = match.group(1)
+        func_ops    = get_tokens_from_function(match.group(2))
+        defined_functions[func_name] = func_ops
+    return defined_functions
 
-def get_tokens(code: str, defined_macros: dict) -> list:
-    original_tokens     = [token for token in re.finditer(r'''\w+\(.+\)|".*?"|'.*?'|\S+''', code)]
-    real_tokens         = []    # Tokens with macros interpreted
+def get_tokens(code: str, defined_functions: Dict[str, List[str]]) -> list:
+    token_regex     = r'''\[.*\]|".*?"|'.*?'|\S+'''
+    original_tokens = [token for token in re.finditer(token_regex, code)]
+    real_tokens     = []    # Tokens with functions interpreted
     for match in original_tokens:
-        if match.group(0) in defined_macros:
-            real_tokens += get_tokens_from_macro(match.group(0), defined_macros)
+        token = match.group(0)
+        # Check if token is a defined function
+        if token in defined_functions:
+            # Function can contain multiple tokens
+            for func_token in defined_functions[token]:
+                real_tokens.append(re.search(token_regex, func_token, re.MULTILINE))
         else:
             real_tokens.append(match)
     return real_tokens
@@ -124,13 +129,13 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     # Remove all comments from the code
     code = re.sub(r'\s*\/\/.*', '', code)
 
-    # Add included files to code and interpret defined macros
-    code            = include_files(code)
-    defined_macros  = get_macros(code)
+    # Add included files to code and interpret defined functions
+    code                = include_files(code)
+    defined_functions   = get_functions(code)
 
-    # Remove all macros from the code
-    code = re.sub(r'\s*macro.+end\s*', '', code)
-    token_matches = get_tokens(code, defined_macros)
+    # Remove all functions from the code
+    code = re.sub(r'\s*func\s+(.+?)\s+(.+)\s+end', '', code, re.IGNORECASE | re.MULTILINE)
+    token_matches = get_tokens(code, defined_functions)
 
     # Get all newline characters and tokens with their locations from the code
     newline_indexes = [i for i in range(len(code)) if code[i] == '\n']

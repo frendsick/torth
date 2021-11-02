@@ -19,7 +19,7 @@ class Keyword(Enum):
     ENDIF=auto()
     IF=auto()
     INCLUDE=auto()
-    MACRO=auto()
+    FUNC=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -105,6 +105,7 @@ class Op:
 
 Program=List[Op]
 
+@dataclass
 class Func:
     id: int
     name: str
