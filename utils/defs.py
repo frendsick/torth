@@ -104,5 +104,11 @@ class Op:
     token: Token
 
 Program=List[Op]
+
+class Func:
+    id: int
+    name: str
+    ops: Program
+
 STACK=[]
 REGEX={'INT': '-?\d+', '*buf': '\*buf \S+'}
