@@ -106,7 +106,7 @@ def get_tokens_from_function(func_ops: List[str], defined_functions: Dict[str, L
 
 def get_functions(code: str) -> Dict[str, List[str]]:
     defined_functions = {}
-    matches = re.finditer(r'\s*func\s+(.+?)\s+((.*|\n)*)\s+end', code, re.IGNORECASE | re.MULTILINE)
+    matches = re.finditer(r'(?i)\s*func\s+(.+?)\s+((.*?|\n)*)(\s+)end', code, re.MULTILINE)
     for match in matches:
         func_name   = match.group(1)
         func_tokens = [token for token in re.findall(r'".*?"|\S+', match.group(2), re.MULTILINE)]
@@ -138,7 +138,7 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     defined_functions   = get_functions(code)
 
     # Remove all functions from the code
-    code = re.sub(r'\s*func\s+(.+?)\s+((.*|\n)*)\s+end', '', code, re.IGNORECASE | re.MULTILINE)
+    code = re.sub(r'(?i)\s*func\s+(.+?)\s+((.*?|\n)*)(\s+)end', '', code, re.MULTILINE)
     token_matches = get_tokens(code, defined_functions)
 
     # Get all newline characters and tokens with their locations from the code
