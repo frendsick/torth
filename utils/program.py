@@ -5,14 +5,11 @@ from utils.defs import TokenType, Token, OpType, Program, Op, Intrinsic
 from utils.asm import initialize_asm, generate_asm, compile_asm, link_object_file
 
 def intrinsic_exists(token: str) -> bool:
-    if hasattr(Intrinsic, token):
-        return True
-    return False
+    return bool(hasattr(Intrinsic, token))
 
 def generate_program(tokens = List[Token]) -> Program:
     program = []
-    id=0
-    for token in tokens:
+    for id, token in enumerate(tokens):
         token_value = token.value.upper()
         if token.type == TokenType.ARRAY:
             op_type = OpType.PUSH_ARRAY
@@ -38,15 +35,13 @@ def generate_program(tokens = List[Token]) -> Program:
             op_type = OpType.ELSE
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
+        elif intrinsic_exists(token_value):
+            op_type = OpType.INTRINSIC
         else:
-            if intrinsic_exists(token_value):
-                op_type = OpType.INTRINSIC
-            else:
-                raise AttributeError (f"Operation '{token.value}' is not found")
+            raise AttributeError (f"Operation '{token.value}' is not found")
 
         operand = Op(id, op_type, token)
         program.append(operand)
-        id += 1
     return program
 
 def compile_code(tokens: List[Token], input_file: str, output_file: str) -> None:

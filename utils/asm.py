@@ -122,7 +122,7 @@ def add_input_buffer_asm(asm_file: str, op: Op):
             f.write(file_lines[i])
 
 def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]:
-    syscall = stack.pop()
+    _syscall = stack.pop()
     for _i in range(param_count):
         stack.pop()
     stack.append('0') # Syscall return value is 0 by default
@@ -150,7 +150,7 @@ def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> No
         f"{Colors.HEADER}Regex{Colors.NC}: {regex}"
 
     # Raise compiler error if the value gotten from the stack does not match with the regex
-    assert re.match(regex, str(popped_value)), compiler_error(op, "REGISTER_VALUE_ERROR", error_message)
+    assert re.match(regex, popped_value), compiler_error(op, "REGISTER_VALUE_ERROR", error_message)
 
 def get_parent_op_type_do(op: Op, program: Program) -> OpType:
     for i in range(op.id - 1, -1, -1):
@@ -654,9 +654,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
         token = op.token
 
-        if op.type == OpType.PUSH_STR or op.type == OpType.PUSH_CSTR:
+        if op.type in [OpType.PUSH_STR, OpType.PUSH_CSTR]:
             str_val = token.value[1:-1]  # Take quotes out of the string
-            insert_newline = True if op.type == OpType.PUSH_STR else False
+            insert_newline = op.type == OpType.PUSH_STR
             add_string_variable_asm(asm_file, str_val, op, insert_newline, op.type)
 
         elif op.type == OpType.PUSH_ARRAY:

@@ -36,7 +36,7 @@ def get_token_value(token: str) -> str:
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords = ['DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNC', 'IF', 'INCLUDE', 'WHILE']
+    keywords: List[str] = ['DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNC', 'IF', 'INCLUDE', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 
@@ -45,7 +45,7 @@ def get_token_type(token_text: str) -> TokenType:
         return TokenType.KEYWORD
     if re.search(r'ARRAY\(.+\)', token_text.upper()):
         return TokenType.ARRAY
-    if token_text.upper() in ('TRUE', 'FALSE'):
+    if token_text.upper() in {'TRUE', 'FALSE'}:
         return TokenType.BOOL
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
@@ -67,8 +67,8 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
             row +=1
         if newline_indexes[i] > position:
             return (filename, row, col)
-    
-    if len(newline_indexes) >= 1:
+
+    if newline_indexes:
         row += 1
         col = position - newline_indexes[-1] - 1
     return (filename, row, col)
@@ -85,10 +85,9 @@ def include_files(code: str) -> str:
     row  = 0
     rows = len(code_lines)
     for line in code_lines:
-        match = re.search(r'^\s*include\s+(\S+)\s*$', line, re.IGNORECASE)
-        if match:
+        if match := re.search(r'^\s*include\s+(\S+)\s*$', line, re.IGNORECASE):
             for path in INCLUDE_PATHS:
-                include_file = path + match.group(1) + ".torth"
+                include_file = path + match[1] + ".torth"
                 if os.path.isfile(include_file):
                     code = include_file_to_code(include_file, code, row)
                     row += len(code.splitlines()) - rows
@@ -109,19 +108,18 @@ def get_functions(code: str) -> Dict[str, List[str]]:
     matches = re.finditer(r'(?i)\s*func\s+(.+?)\s+((.*?|\n)*)(\s+)end', code, re.MULTILINE)
     for match in matches:
         func_name   = match.group(1)
-        func_tokens = [token for token in re.findall(r'".*?"|\S+', match.group(2), re.MULTILINE)]
+        func_tokens = list(re.findall(r'".*?"|\S+', match.group(2), re.MULTILINE))
         func_ops    = get_tokens_from_function(func_tokens, defined_functions)
         defined_functions[func_name] = func_ops
     return defined_functions
 
 def get_tokens(code: str, defined_functions: Dict[str, List[str]]) -> list:
     token_regex     = r'''\[.*\]|".*?"|'.*?'|\S+'''
-    original_tokens = [token for token in re.finditer(token_regex, code)]
+    original_tokens = list(re.finditer(token_regex, code))
     real_tokens     = []    # Tokens with functions interpreted
     for match in original_tokens:
         if match.group(0) in defined_functions:
-            for token_str in defined_functions[match.group(0)]:
-                real_tokens.append(re.search(token_regex, token_str))
+            real_tokens.extend(re.search(token_regex, token_str) for token_str in defined_functions[match.group(0)])
         else:
             real_tokens.append(match)
     return real_tokens
@@ -129,7 +127,7 @@ def get_tokens(code: str, defined_functions: Dict[str, List[str]]) -> list:
 def get_tokens_from_code(code_file: str) -> List[Token]:
     with open(code_file, 'r') as f:
         code = f.read()
-    
+
     # Remove all comments from the code
     code = re.sub(r'\s*\/\/.*', '', code)
 
