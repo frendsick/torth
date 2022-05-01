@@ -144,10 +144,10 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
 
     tokens = []
     for match in token_matches:
-        value     = get_token_value(match.group(0))
-        type      = get_token_type(value)
-        location  = get_token_location(os.path.basename(code_file), match.start()+1, newline_indexes)
-        token     = Token(value, type, location)
+        token_value     = get_token_value(match.group(0))
+        token_type      = get_token_type(token_value)
+        token_location  = get_token_location(os.path.basename(code_file), match.start()+1, newline_indexes)
+        token           = Token(token_value, token_type, token_location)
         tokens.append(token)
 
     return tokens
