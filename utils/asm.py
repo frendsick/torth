@@ -46,8 +46,8 @@ def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     col         = str(op.token.location[2])
     op_name     = op_type.name
     if op_name == "INTRINSIC":
-        op_name = op_type.name + " " + op.token.value
-    return ';; -- ' + op_name + ' | File: ' + src_file + ', Row: ' + row + ', Col: ' + col + '\n'
+        op_name = f'{op_type.name} {op.token.value}'
+    return f';; -- {op_name} | File: {src_file}, Row: {row}, Col: {col}' + '\n'
 
 # Only cmov operand changes with different comparison intrinsics
 def get_comparison_asm(cmov_operand: str) -> str:
@@ -134,11 +134,12 @@ def compiler_error(op: Op, error_type: str, error_message: str) -> None:
     row     = op.token.location[1]
     col     = op.token.location[2]
 
-    print(Colors.HEADER + "Compiler error " + Colors.FAIL + error_type + Colors.NC + f":\n{error_message}\n")
-    print(Colors.HEADER + "Operand" + Colors.NC + f": {operand}")
-    print(Colors.HEADER + "File" + Colors.NC + f": {file}")
-    print(Colors.HEADER + "Row" + Colors.NC + f": {row}, " \
-        + Colors.HEADER + "Column" + Colors.NC + f": {col}")
+    print(f'{Colors.HEADER}Compiler error {Colors.FAIL}{error_type}{Colors.NC}' + f":\n{error_message}\n")
+
+    print(f'{Colors.HEADER}Operand{Colors.NC}: {operand}')
+    print(f'{Colors.HEADER}File{Colors.NC}: {file}')
+    print(f'{Colors.HEADER}Row{Colors.NC}: {row}, ' \
+        + f'{Colors.HEADER}Column{Colors.NC}: {col}')
     exit(1)
 
 def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> None:
