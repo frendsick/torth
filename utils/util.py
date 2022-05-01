@@ -13,7 +13,7 @@ def get_command_line_arguments() -> argparse.Namespace:
     parser.add_argument('--save-asm', action='store_true', help='Save assembly file as <code_file>.asm')
     parser.add_argument('code_file', help='Input file')
 
-    args = parser.parse_args(sys.argv[1:])
+    args: argparse.Namespace = parser.parse_args(sys.argv[1:])
     if not os.path.isfile(args.code_file):
         FileNotFoundError(f"Argument '{sys.argv[1]}' is not a file")
     return args

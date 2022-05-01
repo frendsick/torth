@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import List,Tuple
+from typing import Dict, List, Tuple
 
-MEMORY_SIZE     = 8000 # TODO memory management
-INCLUDE_PATHS   = ['./', './lib/']
+MEMORY_SIZE: int            = 8000 # TODO memory management
+INCLUDE_PATHS: List[str]    = ['./', './lib/']
 
 class Colors:
     FAIL = '\033[91m'
@@ -89,7 +89,7 @@ class TokenType(Enum):
     WORD=auto()
 
 # Source file name, row, column
-Location=Tuple[str, int, int]
+Location = Tuple[str, int, int]
 
 @dataclass
 class Token:
@@ -103,7 +103,7 @@ class Op:
     type: OpType
     token: Token
 
-Program=List[Op]
+Program = List[Op]
 
 @dataclass
 class Func:
@@ -112,4 +112,4 @@ class Func:
     ops: Program
 
 STACK: List[str] = []
-REGEX={'INT': '-?\d+', '*buf': '\*buf \S+'}
+REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}
