@@ -1,7 +1,7 @@
 import re
 import subprocess
 import sys
-from typing import List, Tuple
+from typing import List, Literal, NoReturn, Tuple
 from utils.defs import Colors, OpType, Op, Token, Program, STACK, REGEX
 
 def get_asm_file_start(asm_file:str) -> str:
@@ -73,9 +73,9 @@ def add_string_variable_asm(asm_file: str, string: str, op: Op, insert_newline: 
         file_lines: List[str] = f.readlines()
     with open(asm_file, 'w') as f:
         if op_type == OpType.PUSH_STR:
-            str_prefix: str = 's'
+            str_prefix: Literal['s', 'cs'] = 's'
         elif op_type == OpType.PUSH_CSTR:
-            str_prefix: str = 'cs'
+            str_prefix = 'cs'
         f.write(get_asm_file_start(asm_file))
         if insert_newline:
             f.write(f'  {str_prefix}{op.id} db "{string}",10,0\n')
@@ -121,14 +121,14 @@ def add_input_buffer_asm(asm_file: str, op: Op):
         for i in range(row+1, len(file_lines)):
             f.write(file_lines[i])
 
-def get_stack_after_syscall(stack: List[Token], param_count: int) -> List[Token]:
+def get_stack_after_syscall(stack: List[str], param_count: int) -> List[str]:
     _syscall = stack.pop()
     for _i in range(param_count):
         stack.pop()
     stack.append('0') # Syscall return value is 0 by default
     return stack
 
-def compiler_error(op: Op, error_type: str, error_message: str) -> None:
+def compiler_error(op: Op, error_type: str, error_message: str) -> NoReturn:
     operand: str    = op.token.value
     file: str       = op.token.location[0]
     row: int        = op.token.location[1]
@@ -224,7 +224,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm +=  '  push rax\n'
         op_asm +=  '  push rax\n'
         try:
-            top: str = STACK.pop()
+            top = STACK.pop()
         except IndexError:
             compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
         STACK.append(top)
@@ -234,7 +234,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm +=  '  push rsi\n'
         STACK.append(f"*buf s_arr{op.id}")
     elif op.type == OpType.PUSH_CSTR:
-        str_val = op.token.value[1:-1]  # Take quotes out of the string
+        str_val: str = op.token.value[1:-1]  # Take quotes out of the string
         STACK.append(f"*buf cs{op.id}")
         op_asm += f'  mov rsi, cs{op.id} ; Pointer to string\n'
         op_asm +=  '  push rsi\n'
@@ -244,7 +244,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm += f'  mov rax, {integer}\n'
         op_asm +=  '  push rax\n'
     elif op.type == OpType.PUSH_STR:
-        str_val: str = op.token.value[1:-1]  # Take quotes out of the string
+        str_val = op.token.value[1:-1]  # Take quotes out of the string
         str_len: int = len(str_val) + 1      # Add newline
         STACK.append(f"{str_len}")
         STACK.append(f"*buf s{op.id}")
@@ -260,7 +260,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm +=  '  push rax\n'
         op_asm +=  '  push rax\n'
         try:
-            top: str = STACK.pop()
+            top = STACK.pop()
         except IndexError:
             compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
         STACK.append(top)
@@ -278,8 +278,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  div rbx\n'
             op_asm +=  '  push rax ; Quotient\n'
             try:
-                a: str = STACK.pop()
-                b: str = STACK.pop()
+                a = STACK.pop()
+                b = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -296,8 +296,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  push rdx ; Remainder\n'
             op_asm +=  '  push rax ; Quotient\n'
             try:
-                a: str = STACK.pop()
-                b: str = STACK.pop()
+                a = STACK.pop()
+                b = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -315,7 +315,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  push rax\n'
             op_asm +=  '  push rax\n'
             try:
-                top: str = STACK.pop()
+                top = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
             STACK.append(top)
@@ -331,8 +331,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "EQ":
             op_asm += get_comparison_asm("cmove")
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -342,8 +342,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "GE":
             op_asm += get_comparison_asm("cmovge")
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -375,8 +375,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "GT":
             op_asm += get_comparison_asm("cmovg")
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -399,8 +399,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "LE":
             op_asm += get_comparison_asm("cmovle")
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -410,8 +410,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "LT":
             op_asm += get_comparison_asm("cmovl")
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -421,8 +421,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "MINUS":
             op_asm += get_arithmetic_asm("sub")
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -435,8 +435,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  div rbx\n'
             op_asm +=  '  push rdx ; Remainder\n'
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(str(int(a) % int(b)))
@@ -446,16 +446,16 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  mul rbx\n'
             op_asm +=  '  push rax\n'
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(str(int(a) * int(b)))
         elif intrinsic == "NE":
             op_asm += get_comparison_asm("cmovne")
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -469,8 +469,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  push rax\n'
             op_asm +=  '  push rbx\n'
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least two elements.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -481,8 +481,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "PLUS":
             op_asm += get_arithmetic_asm("add")
             try:
-                b: str = STACK.pop()
-                a: str = STACK.pop()
+                b = STACK.pop()
+                a = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             check_popped_value_type(op, a, expected_type='INT')
@@ -515,8 +515,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  mov rdi, stdout\n'
             op_asm +=  '  syscall\n'
             try:
-                buf: str    = STACK.pop()
-                count: str  = STACK.pop()
+                buf    = STACK.pop()
+                count  = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", \
                     f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.")
@@ -532,9 +532,9 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  push rbx\n'
 
             try:
-                a: str = STACK.pop()
-                b: str = STACK.pop()
-                c: str = STACK.pop()
+                a = STACK.pop()
+                b = STACK.pop()
+                c = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least three elements to rotate.")
             STACK.append(a)
@@ -546,8 +546,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  push rax\n'
             op_asm +=  '  push rbx\n'
             try:
-                a: str = STACK.pop()
-                b: str = STACK.pop()
+                a = STACK.pop()
+                b = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(a)
@@ -562,10 +562,10 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  push rdx\n'
             op_asm +=  '  push rcx\n'
             try:
-                a: str = STACK.pop()
-                b: str = STACK.pop()
-                c: str = STACK.pop()
-                d: str = STACK.pop()
+                a = STACK.pop()
+                b = STACK.pop()
+                c = STACK.pop()
+                d = STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(b)
@@ -664,7 +664,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
             value: str = token.value
             elements: List[str] = value[value.find("(")+1:value.find(")")].split(',')
             # Remove whitespaces from the elements list
-            elements: List[str] = [element.strip().replace("'", '"') for element in elements]
+            elements = [element.strip().replace("'", '"') for element in elements]
             add_array_asm(asm_file, elements, op)
 
         elif token.value.upper() == 'INPUT':
