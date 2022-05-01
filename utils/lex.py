@@ -107,15 +107,15 @@ def get_functions(code: str) -> Dict[str, List[str]]:
     defined_functions = {}
     matches = re.finditer(r'(?i)\s*func\s+(.+?)\s+((.*?|\n)*)(\s+)end', code, re.MULTILINE)
     for match in matches:
-        func_name   = match.group(1)
-        func_tokens = list(re.findall(r'".*?"|\S+', match.group(2), re.MULTILINE))
-        func_ops    = get_tokens_from_function(func_tokens, defined_functions)
-        defined_functions[func_name] = func_ops
+        func_name: str          = match.group(1)
+        func_ops: List[str]     = re.findall(r'".*?"|\S+', match.group(2), re.MULTILINE)
+        func_tokens: List[str]  = get_tokens_from_function(func_ops, defined_functions)
+        defined_functions[func_name] = func_tokens
     return defined_functions
 
 def get_tokens(code: str, defined_functions: Dict[str, List[str]]) -> list:
     token_regex     = r'''\[.*\]|".*?"|'.*?'|\S+'''
-    original_tokens = list(re.finditer(token_regex, code))
+    original_tokens = re.finditer(token_regex, code)
     real_tokens     = []    # Tokens with functions interpreted
     for match in original_tokens:
         if match.group(0) in defined_functions:
