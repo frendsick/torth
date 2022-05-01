@@ -97,7 +97,7 @@ def add_array_asm(asm_file: str, array: list, op: Op) -> None:
         f.write(f'  s_arr{op.id}: dq ')
         for i in range(len(array)):
             f.write(f's{op.id}_{i}, ')
-        f.write('0\n')
+        f.write('0\n') # Array ends at NULL byte
 
         # Rewrite lines
         len_asm_file_start = len(get_asm_file_start(asm_file).split('\n')) - 1
@@ -486,6 +486,7 @@ def get_op_asm(op: Op, program: Program) -> Tuple[str, Program]:
             check_popped_value_type(op, a, expected_type='INT')
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a) + int(b)))
+        # TODO: Merge PRINT and PRINT_INT
         elif intrinsic == "PRINT":
             op_asm +=  '  pop rsi    ; *buf\n'
             op_asm +=  '  pop rdx    ; count\n'
