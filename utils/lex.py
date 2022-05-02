@@ -94,36 +94,8 @@ def include_files(code: str) -> str:
         row += 1
     return code
 
-def get_tokens_from_function(func_ops: List[str], defined_functions: Dict[str, List[str]]) -> List[str]:
-    func_tokens: List[str] = []
-    for op in func_ops:
-        if op in defined_functions:
-            func_tokens += get_tokens_from_function(defined_functions[op], defined_functions)
-        else:
-            func_tokens.append(op)
-    return func_tokens
-
-def get_functions(code: str) -> Dict[str, List[str]]:
-    defined_functions: Dict[str, List[str]] = {}
-    matches: Iterator[re.Match[str]] = re.finditer(r'(?i)\s*func\s+(.+?)\s+((.*?|\n)*)(\s+)end', code, re.MULTILINE)
-    for match in matches:
-        func_name: str          = match.group(1)
-        func_ops: List[str]     = re.findall(r'".*?"|\S+', match.group(2), re.MULTILINE)
-        func_tokens: List[str]  = get_tokens_from_function(func_ops, defined_functions)
-        defined_functions[func_name] = func_tokens
-    return defined_functions
-
-def get_token_matches(code: str, defined_functions: Dict[str, List[str]]) -> List[re.Match[str]]:
-    token_regex: str = r'''\[.*\]|".*?"|'.*?'|\S+'''
-    original_tokens: Iterator[re.Match[str]] = re.finditer(token_regex, code)
-    real_tokens: List[re.Match[str]] = [] # Tokens with functions interpreted
-    for match in original_tokens:
-        if match.group(0) in defined_functions:
-            real_tokens.extend(re.search(token_regex, token_str) for token_str in defined_functions[match.group(0)]) # type: ignore
-        else:
-            real_tokens.append(match)
-
-    return real_tokens
+def get_token_matches(code: str) -> List[re.Match[str]]:
+    return list(re.finditer(r'''\[.*\]|".*?"|'.*?'|\S+''', code))
 
 def get_tokens_from_code(code_file: str) -> List[Token]:
     with open(code_file, 'r') as f:
@@ -133,12 +105,9 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     code = re.sub(r'\s*\/\/.*', '', code)
 
     # Add included files to code and interpret defined functions
-    code                = include_files(code)
-    defined_functions   = get_functions(code)
+    code = include_files(code)
 
-    # Remove all functions from the code
-    code = re.sub(r'(?i)\s*func\s+(.+?)\s+((.*?|\n)*)(\s+)end', '', code, re.MULTILINE)
-    token_matches: List[re.Match[str]] = get_token_matches(code, defined_functions)
+    token_matches: List[re.Match[str]] = get_token_matches(code)
 
     # Get all newline characters and tokens with their locations from the code
     newline_indexes: List[int] = [i for i in range(len(code)) if code[i] == '\n']
