@@ -1,7 +1,7 @@
 0 // Previous
 1 // Current
 0 // The counter for WHILE loop
-WHILE dup 20 >= DO
+WHILE 20 >= DO
   // Duplicate Current to use it next iteration as Previous
   rot dup
   // Rotate the duplicate to the third position in the stack
