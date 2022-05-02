@@ -662,7 +662,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
 
         elif op.type == OpType.PUSH_ARRAY:
             value: str = token.value
-            elements: List[str] = value[value.find("(")+1:value.find(")")].split(',')
+            elements: List[str] = value[value.find("(")+1:value.rfind(")")].split(',')
             # Remove whitespaces from the elements list
             elements = [element.strip().replace("'", '"') for element in elements]
             add_array_asm(asm_file, elements, op)
