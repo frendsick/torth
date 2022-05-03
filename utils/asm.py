@@ -281,17 +281,9 @@ def get_op_asm(op: Op, program: Program) -> str:
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.")
         elif intrinsic == "DUP":
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  push rax\n'
-            op_asm +=  '  push rax\n'
-            try:
-                top = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
-            STACK.append(top)
-            STACK.append(top)
+            return get_dup_asm(op)
         elif intrinsic == "ENVP":
-            get_envp_asm()
+            return get_envp_asm()
         elif intrinsic == "EXIT":
             return get_exit_asm()
         elif intrinsic == "EQ":
@@ -351,6 +343,18 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_dup_asm(op: Op) -> str:
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  push rax\n'
+    op_asm      += '  push rax\n'
+    try:
+        top = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    STACK.append(top)
+    STACK.append(top)
     return op_asm
 
 def get_envp_asm() -> str:
