@@ -378,16 +378,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(a)
             STACK.append(str(int(a<=b)))
         elif intrinsic == "LT":
-            op_asm += get_comparison_asm("cmovl")
-            try:
-                b = STACK.pop()
-                a = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            check_popped_value_type(op, a, expected_type='INT')
-            check_popped_value_type(op, b, expected_type='INT')
-            STACK.append(a)
-            STACK.append(str(int(a<b)))
+            return get_lt_asm(op)
         elif intrinsic == "MINUS":
             return get_minus_asm(op)
         elif intrinsic == "MOD":
@@ -432,6 +423,18 @@ def get_op_asm(op: Op, program: Program) -> str:
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
+
+def get_lt_asm(op: Op) -> str:
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(str(int(a<b)))
+    return get_comparison_asm("cmovl")
 
 def get_minus_asm(op: Op) -> str:
     ints: List[int] = pop_integers_from_stack(op, pop_count=2)
