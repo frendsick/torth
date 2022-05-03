@@ -170,21 +170,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_do_asm(op, program)
     # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELIF:
-        for i in range(op.id + 1, len(program)):
-            if program[i].type == OpType.ENDIF:
-                op_asm += f'  jmp ENDIF{i}\n'
-                op_asm += f'ELIF{op.id}:\n'
-                break
-        # ELIF is like DUP, it duplicates the first element in the stack
-        op_asm +=  '  pop rax\n'
-        op_asm +=  '  push rax\n'
-        op_asm +=  '  push rax\n'
-        try:
-            top: str = STACK.pop()
-        except IndexError:
-            compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
-        STACK.append(top)
-        STACK.append(top)
+        return get_elif_asm(op, program)
     # ELSE is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELSE:
         for i in range(op.id + 1, len(program)):
@@ -635,7 +621,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
 
-def get_do_asm(op: Op, program: Program):
+def get_do_asm(op: Op, program: Program) -> str:
     parent_op_type: OpType = get_parent_op_type_do(op, program)
     for i in range(op.id + 1, len(program)):
         op_type: OpType = program[i].type
@@ -653,6 +639,25 @@ def get_do_asm(op: Op, program: Program):
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             break
+    return op_asm
+
+def get_elif_asm(op: Op, program: Program) -> str:
+    op_asm: str = ''
+    for i in range(op.id + 1, len(program)):
+        if program[i].type == OpType.ENDIF:
+            op_asm += f'  jmp ENDIF{i}\n'
+            op_asm += f'ELIF{op.id}:\n'
+            break
+        # ELIF is like DUP, it duplicates the first element in the stack
+    op_asm +=  '  pop rax\n'
+    op_asm +=  '  push rax\n'
+    op_asm +=  '  push rax\n'
+    try:
+        top: str = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    STACK.append(top)
+    STACK.append(top)
     return op_asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
