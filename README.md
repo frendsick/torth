@@ -13,7 +13,7 @@ Torth is planned to be
 ```console
 $ cat hello.torth
 "Hello, World!" puts
-$ ./torth.py hello.torth
+$ ./torth.py --run hello.torth
 Hello, World!
 ```
 
