@@ -433,21 +433,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(a)
             STACK.append(str(int(a!=b)))
         elif intrinsic == "OVER":
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  pop rbx\n'
-            op_asm +=  '  push rbx\n'
-            op_asm +=  '  push rax\n'
-            op_asm +=  '  push rbx\n'
-            try:
-                b = STACK.pop()
-                a = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least two elements.")
-            check_popped_value_type(op, a, expected_type='INT')
-            check_popped_value_type(op, b, expected_type='INT')
-            STACK.append(a)
-            STACK.append(b)
-            STACK.append(a)
+            return get_over_asm(op)
         elif intrinsic == "PLUS":
             return get_plus_asm(op)
         # TODO: Merge PRINT and PRINT_INT
@@ -481,6 +467,24 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_over_asm(op: Op) -> str:
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  push rbx\n'
+    op_asm      += '  push rax\n'
+    op_asm      += '  push rbx\n'
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least two elements.")
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(b)
+    STACK.append(a)
     return op_asm
 
 def get_plus_asm(op: Op) -> str:
