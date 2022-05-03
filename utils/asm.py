@@ -511,17 +511,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(c)
             STACK.append(b)
         elif intrinsic == "SWAP":
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  pop rbx\n'
-            op_asm +=  '  push rax\n'
-            op_asm +=  '  push rbx\n'
-            try:
-                a = STACK.pop()
-                b = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            STACK.append(a)
-            STACK.append(b)
+            return get_swap_asm(op)
         elif intrinsic == "SWAP2":
             return get_swap2_asm(op)
         elif intrinsic == "SYSCALL0":
@@ -542,6 +532,20 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_swap_asm(op: Op) -> str:
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  push rax\n'
+    op_asm      += '  push rbx\n'
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    STACK.append(a)
+    STACK.append(b)
     return op_asm
 
 def get_swap2_asm(op: Op) -> str:
