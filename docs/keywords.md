@@ -181,4 +181,21 @@ ENDIF
 
 ## WHILE
 
-TODO
+WHILE is a keyword for END to jump to. It also duplicates the first element in the stack like DUP intrinsic.
+
+### Examples
+
+```pascal
+0 WHILE 10 > DO                         //  int i=0; while (10 > i) {
+  1 +                                   //    i++;
+  "This is row " print print_int        //    printf("This is row %d\n", i);
+END                                     //  }
+"Loop over after row " print print_int  //  printf("Loop over after row %d\n", i);
+
+// Output:
+// This is row 1
+// This is row 2
+// ...
+// This is row 10
+// Loop over after row 10
+```
