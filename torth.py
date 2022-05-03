@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import argparse, os
 from typing import List
+from compiler.compile import compile_code, remove_compilation_files
 from compiler.defs import Token
 from compiler.lex import get_tokens_from_code
-from compiler.program import compile_code, remove_compilation_files, run_code
+from compiler.program import run_code
 from compiler.utils import get_command_line_arguments, get_file_contents
 
 def main():
