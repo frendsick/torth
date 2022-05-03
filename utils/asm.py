@@ -259,21 +259,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             except ZeroDivisionError:
                 compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
         elif intrinsic == "DIVMOD":
-            op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
-            op_asm +=  '  pop rbx\n'
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  div rbx\n'
-            op_asm +=  '  push rdx ; Remainder\n'
-            op_asm +=  '  push rax ; Quotient\n'
-            try:
-                a = STACK.pop()
-                b = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            check_popped_value_type(op, a, expected_type='INT')
-            check_popped_value_type(op, b, expected_type='INT')
-            STACK.append(str(int(a)% int(b)))
-            STACK.append(str(int(a)//int(b)))
+            return get_divmod_asm(op)
         elif intrinsic == "DROP":
             return get_drop_asm(op)
         elif intrinsic == "DUP":
@@ -339,6 +325,24 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_divmod_asm(op: Op) -> str:
+    op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  pop rax\n'
+    op_asm      += '  div rbx\n'
+    op_asm      += '  push rdx ; Remainder\n'
+    op_asm      += '  push rax ; Quotient\n'
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(str(int(a)% int(b)))
+    STACK.append(str(int(a)//int(b)))
     return op_asm
 
 def get_drop_asm(op: Op) -> str:
