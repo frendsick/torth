@@ -186,9 +186,8 @@ def get_op_asm(op: Op, program: Program) -> str:
                 op_asm += f'  jmp WHILE{i}\n'
                 op_asm += f'END{op.id}:\n'
                 break
-    # ENDIF is a keyword for DO, ELIF or ELSE to jump to
     elif op.type == OpType.ENDIF:
-        op_asm += f'ENDIF{op.id}:\n'
+        return get_endif_asm(op)
     elif op.type == OpType.IF:
         return get_if_asm(op)
     elif op.type == OpType.PUSH_ARRAY:
@@ -273,6 +272,10 @@ def get_op_asm(op: Op, program: Program) -> str:
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
+
+# ENDIF is a keyword for DO, ELIF or ELSE to jump to
+def get_endif_asm(op: Op) -> str:
+    return f'ENDIF{op.id}:\n'
 
 # IF is like DUP, it duplicates the first element in the stack
 def get_if_asm(op: Op) -> str:
