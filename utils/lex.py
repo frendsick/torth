@@ -89,36 +89,22 @@ def get_token_matches(code: str) -> List[re.Match[str]]:
         i += 1
     return matches
 
+# Constructs and returns a Token object from a regex match
+def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[int]) -> Token:
+    token_value     = get_token_value(match.group(0))
+    token_type      = get_token_type(token_value)
+    token_location  = get_token_location(file, match.start(), newline_indexes)
+    return Token(token_value, token_type, token_location)
+
 def get_tokens_from_code(file: str, code: str) -> List[Token]:
     tokens: List[Token] = []
     token_matches: List[re.Match[str]] = get_token_matches(code)
 
     # Newlines are used to determine when a comment ends and when new line starts
     newline_indexes: List[int]  = [nl.start() for nl in re.finditer('\n', code)]
-    next_newline: int           = newline_indexes[0] if newline_indexes else 0
-    newline_list_index: int     = 0
 
-    is_comment: bool = False
     for match in token_matches:
-        # Comment ends to new line
-        if match.start() > next_newline and is_comment:
-            is_comment = False
-        newline_list_index = min(newline_list_index+1, len(newline_indexes)-1)
-        next_newline = newline_indexes[newline_list_index]
-
-        token_value     = get_token_value(match.group(0))
-        token_type      = get_token_type(token_value)
-        token_location  = get_token_location(os.path.basename(file), match.start(), newline_indexes)
-
-        if token_value.startswith('//'):
-            is_comment = True
-        if is_comment:
-            continue
-
-        if token_value.startswith('//'):
-            is_comment = True
-
-        token = Token(token_value, token_type, token_location)
+        token = get_token_from_match(match, os.path.basename(file), newline_indexes)
         tokens.append(token)
 
     return tokens
