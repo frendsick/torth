@@ -615,6 +615,10 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm += "  pop r9  ; 6. arg\n"
             op_asm += "  syscall\n"
             op_asm += "  push rax ; return code\n"
+            try:
+                STACK = get_stack_after_syscall(STACK, 6)
+            except IndexError:
+                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
         else:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
