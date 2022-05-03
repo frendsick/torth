@@ -295,9 +295,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  push rax\n'
             STACK.append('ENVP')
         elif intrinsic == "EXIT":
-            op_asm +=  '  mov rax, 60\n'
-            op_asm +=  '  mov rdi, 0\n'
-            op_asm +=  '  syscall\n'
+            return get_exit_asm()
         elif intrinsic == "EQ":
             return get_eq_asm(op)
         elif intrinsic == "GE":
@@ -355,6 +353,12 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_exit_asm() -> str:
+    op_asm: str  = '  mov rax, 60\n'
+    op_asm      += '  mov rdi, 0\n'
+    op_asm      += '  syscall\n'
     return op_asm
 
 def get_eq_asm(op: Op) -> str:
