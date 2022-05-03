@@ -128,7 +128,7 @@ def get_stack_after_syscall(stack: List[str], param_count: int) -> List[str]:
     stack.append('0') # Syscall return value is 0 by default
     return stack
 
-def compiler_error(error_type: str, error_message: str, op: Optional[Op] = None) -> NoReturn:
+def compiler_error(op: Optional[Op], error_type: str, error_message: str) -> NoReturn:
     operand: str    = op.token.value
     file: str       = op.token.location[0]
     row: int        = op.token.location[1]
@@ -291,9 +291,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(top)
             STACK.append(top)
         elif intrinsic == "ENVP":
-            op_asm +=  '  mov rax, [rsp+8]\n'
-            op_asm +=  '  push rax\n'
-            STACK.append('ENVP')
+            get_envp_asm()
         elif intrinsic == "EXIT":
             return get_exit_asm()
         elif intrinsic == "EQ":
@@ -353,6 +351,12 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_envp_asm() -> str:
+    op_asm: str  = '  mov rax, [rbp+8]\n'
+    op_asm      += '  push rax\n'
+    STACK.append('ENVP')
     return op_asm
 
 def get_exit_asm() -> str:
