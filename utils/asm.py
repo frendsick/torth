@@ -1,8 +1,137 @@
 import re
 import subprocess
-import sys
 from typing import List, Literal, NoReturn, Optional
 from utils.defs import Colors, OpType, Op, Token, Program, STACK, REGEX
+
+def generate_asm(program: Program, asm_file: str) -> None:
+    for op in program:
+        token: Token = op.token
+
+        if op.type in [OpType.PUSH_STR, OpType.PUSH_CSTR]:
+            str_val: str = token.value[1:-1]  # Take quotes out of the string
+            insert_newline: bool = op.type == OpType.PUSH_STR
+            add_string_variable_asm(asm_file, str_val, op, insert_newline, op.type)
+
+        elif op.type == OpType.PUSH_ARRAY:
+            value: str = token.value
+            elements: List[str] = value[value.find("(")+1:value.rfind(")")].split(',')
+            # Remove whitespaces from the elements list
+            elements = [element.strip().replace("'", '"') for element in elements]
+            add_array_asm(asm_file, elements, op)
+
+        elif token.value.upper() == 'INPUT':
+            add_input_buffer_asm(asm_file, op)
+
+        with open(asm_file, 'a') as f:
+            f.write(get_op_comment_asm(op, op.type))
+            op_asm: str = get_op_asm(op, program=program)
+            if op_asm != "":
+                f.write(op_asm)
+
+    with open(asm_file, 'a') as f:
+        f.write( ';; -- exit syscall\n')
+        f.write( '  mov rax, sys_exit\n')
+        f.write( '  mov rdi, success\n')
+        f.write( '  syscall\n')
+        f.close()
+
+def get_op_asm(op: Op, program: Program) -> str:
+    global STACK
+    token: Token = op.token
+
+    if op.type == OpType.DO:
+        return get_do_asm(op, program)
+    elif op.type == OpType.ELIF:
+        return get_elif_asm(op, program)
+    elif op.type == OpType.ELSE:
+        return get_else_asm(op, program)
+    elif op.type == OpType.END:
+        return get_end_asm(op, program)
+    elif op.type == OpType.ENDIF:
+        return get_endif_asm(op)
+    elif op.type == OpType.IF:
+        return get_if_asm(op)
+    elif op.type == OpType.PUSH_ARRAY:
+        return get_push_array_asm(op)
+    elif op.type == OpType.PUSH_CSTR:
+        return get_push_cstr_asm(op)
+    elif op.type == OpType.PUSH_INT:
+        return get_push_int_asm(token)
+    elif op.type == OpType.PUSH_STR:
+        return get_push_str_asm(op)
+    elif op.type == OpType.WHILE:
+        return get_while_asm(op)
+    elif op.type == OpType.INTRINSIC:
+        intrinsic: str = token.value.upper()
+        if intrinsic == "DIV":
+            return get_div_asm(op)
+        elif intrinsic == "DIVMOD":
+            return get_divmod_asm(op)
+        elif intrinsic == "DROP":
+            return get_drop_asm(op)
+        elif intrinsic == "DUP":
+            return get_dup_asm(op)
+        elif intrinsic == "ENVP":
+            return get_envp_asm()
+        elif intrinsic == "EXIT":
+            return get_exit_asm()
+        elif intrinsic == "EQ":
+            return get_eq_asm(op)
+        elif intrinsic == "GE":
+            return get_ge_asm(op)
+        elif intrinsic == "GET_NTH":
+            return get_nth_asm(op)
+        elif intrinsic == "GT":
+            return get_gt_asm(op)
+        elif intrinsic == "INPUT":
+            return get_input_asm(op)
+        elif intrinsic == "LE":
+            return get_le_asm(op)
+        elif intrinsic == "LT":
+            return get_lt_asm(op)
+        elif intrinsic == "MINUS":
+            return get_minus_asm(op)
+        elif intrinsic == "MOD":
+            return get_mod_asm(op)
+        elif intrinsic == "MUL":
+            return get_mul_asm(op)
+        elif intrinsic == "NE":
+            return get_ne_asm(op)
+        elif intrinsic == "OVER":
+            return get_over_asm(op)
+        elif intrinsic == "PLUS":
+            return get_plus_asm(op)
+        # TODO: Merge PRINT and PRINT_INT
+        elif intrinsic == "PRINT":
+            return get_string_output_asm(op, intrinsic)
+        elif intrinsic == "PRINT_INT":
+            return get_print_int_asm()
+        elif intrinsic == "PUTS":
+            return get_string_output_asm(op, intrinsic)
+        elif intrinsic == "ROT":
+            return get_rot_asm(op)
+        elif intrinsic == "SWAP":
+            return get_swap_asm(op)
+        elif intrinsic == "SWAP2":
+            return get_swap2_asm(op)
+        elif intrinsic == "SYSCALL0":
+            return get_syscall_asm(op, param_count=0)
+        elif intrinsic == "SYSCALL1":
+            return get_syscall_asm(op, param_count=1)
+        elif intrinsic == "SYSCALL2":
+            return get_syscall_asm(op, param_count=2)
+        elif intrinsic == "SYSCALL3":
+            return get_syscall_asm(op, param_count=3)
+        elif intrinsic == "SYSCALL4":
+            return get_syscall_asm(op, param_count=4)
+        elif intrinsic == "SYSCALL5":
+            return get_syscall_asm(op, param_count=5)
+        elif intrinsic == "SYSCALL6":
+            return get_syscall_asm(op, param_count=6)
+        else:
+            compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
+    else:
+        compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
 
 def get_asm_file_start() -> str:
     return '''default rel
@@ -160,104 +289,6 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
         if program[i].type in (OpType.DO, OpType.END, OpType.ENDIF):
             break
     compiler_error(op, "AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE")
-
-def get_op_asm(op: Op, program: Program) -> str:
-    global STACK
-    token: Token = op.token
-
-    if op.type == OpType.DO:
-        return get_do_asm(op, program)
-    elif op.type == OpType.ELIF:
-        return get_elif_asm(op, program)
-    elif op.type == OpType.ELSE:
-        return get_else_asm(op, program)
-    elif op.type == OpType.END:
-        return get_end_asm(op, program)
-    elif op.type == OpType.ENDIF:
-        return get_endif_asm(op)
-    elif op.type == OpType.IF:
-        return get_if_asm(op)
-    elif op.type == OpType.PUSH_ARRAY:
-        return get_push_array_asm(op)
-    elif op.type == OpType.PUSH_CSTR:
-        return get_push_cstr_asm(op)
-    elif op.type == OpType.PUSH_INT:
-        return get_push_int_asm(token)
-    elif op.type == OpType.PUSH_STR:
-        return get_push_str_asm(op)
-    elif op.type == OpType.WHILE:
-        return get_while_asm(op)
-    elif op.type == OpType.INTRINSIC:
-        intrinsic: str = token.value.upper()
-        if intrinsic == "DIV":
-            return get_div_asm(op)
-        elif intrinsic == "DIVMOD":
-            return get_divmod_asm(op)
-        elif intrinsic == "DROP":
-            return get_drop_asm(op)
-        elif intrinsic == "DUP":
-            return get_dup_asm(op)
-        elif intrinsic == "ENVP":
-            return get_envp_asm()
-        elif intrinsic == "EXIT":
-            return get_exit_asm()
-        elif intrinsic == "EQ":
-            return get_eq_asm(op)
-        elif intrinsic == "GE":
-            return get_ge_asm(op)
-        elif intrinsic == "GET_NTH":
-            return get_nth_asm(op)
-        elif intrinsic == "GT":
-            return get_gt_asm(op)
-        elif intrinsic == "INPUT":
-            return get_input_asm(op)
-        elif intrinsic == "LE":
-            return get_le_asm(op)
-        elif intrinsic == "LT":
-            return get_lt_asm(op)
-        elif intrinsic == "MINUS":
-            return get_minus_asm(op)
-        elif intrinsic == "MOD":
-            return get_mod_asm(op)
-        elif intrinsic == "MUL":
-            return get_mul_asm(op)
-        elif intrinsic == "NE":
-            return get_ne_asm(op)
-        elif intrinsic == "OVER":
-            return get_over_asm(op)
-        elif intrinsic == "PLUS":
-            return get_plus_asm(op)
-        # TODO: Merge PRINT and PRINT_INT
-        elif intrinsic == "PRINT":
-            return get_string_output_asm(op, intrinsic)
-        elif intrinsic == "PRINT_INT":
-            return get_print_int_asm()
-        elif intrinsic == "PUTS":
-            return get_string_output_asm(op, intrinsic)
-        elif intrinsic == "ROT":
-            return get_rot_asm(op)
-        elif intrinsic == "SWAP":
-            return get_swap_asm(op)
-        elif intrinsic == "SWAP2":
-            return get_swap2_asm(op)
-        elif intrinsic == "SYSCALL0":
-            return get_syscall_asm(op, param_count=0)
-        elif intrinsic == "SYSCALL1":
-            return get_syscall_asm(op, param_count=1)
-        elif intrinsic == "SYSCALL2":
-            return get_syscall_asm(op, param_count=2)
-        elif intrinsic == "SYSCALL3":
-            return get_syscall_asm(op, param_count=3)
-        elif intrinsic == "SYSCALL4":
-            return get_syscall_asm(op, param_count=4)
-        elif intrinsic == "SYSCALL5":
-            return get_syscall_asm(op, param_count=5)
-        elif intrinsic == "SYSCALL6":
-            return get_syscall_asm(op, param_count=6)
-        else:
-            compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
-    else:
-        compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
 
 # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 def get_do_asm(op: Op, program: Program) -> str:
@@ -718,38 +749,6 @@ def get_syscall_asm(op: Op, param_count: int) -> str:
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
     return (op_asm)
-
-def generate_asm(program: Program, asm_file: str) -> None:
-    for op in program:
-        token: Token = op.token
-
-        if op.type in [OpType.PUSH_STR, OpType.PUSH_CSTR]:
-            str_val: str = token.value[1:-1]  # Take quotes out of the string
-            insert_newline: bool = op.type == OpType.PUSH_STR
-            add_string_variable_asm(asm_file, str_val, op, insert_newline, op.type)
-
-        elif op.type == OpType.PUSH_ARRAY:
-            value: str = token.value
-            elements: List[str] = value[value.find("(")+1:value.rfind(")")].split(',')
-            # Remove whitespaces from the elements list
-            elements = [element.strip().replace("'", '"') for element in elements]
-            add_array_asm(asm_file, elements, op)
-
-        elif token.value.upper() == 'INPUT':
-            add_input_buffer_asm(asm_file, op)
-
-        with open(asm_file, 'a') as f:
-            f.write(get_op_comment_asm(op, op.type))
-            op_asm: str = get_op_asm(op, program=program)
-            if op_asm != "":
-                f.write(op_asm)
-
-    with open(asm_file, 'a') as f:
-        f.write( ';; -- exit syscall\n')
-        f.write( '  mov rax, sys_exit\n')
-        f.write( '  mov rdi, success\n')
-        f.write( '  syscall\n')
-        f.close()
 
 def compile_asm(asm_file: str) -> None:
     subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file])
