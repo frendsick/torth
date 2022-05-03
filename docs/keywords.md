@@ -179,14 +179,6 @@ ENDIF
 // Positive number
 ```
 
-## INCLUDE
-
-TODO
-
-## MACRO
-
-TODO
-
 ## WHILE
 
 TODO
