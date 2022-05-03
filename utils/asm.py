@@ -476,8 +476,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             check_popped_value_type(op, buf, expected_type='*buf')
             check_popped_value_type(op, count, expected_type='INT')
         elif intrinsic == "PRINT_INT":
-            op_asm +=  '  mov [int], rsi\n'
-            op_asm +=  '  call PrintInt\n'
+            return get_print_int_asm()
         elif intrinsic == "PUTS":
             return get_puts_asm(op, intrinsic)
         elif intrinsic == "ROT":
@@ -504,6 +503,11 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_print_int_asm() -> str:
+    op_asm: str  = '  mov [int], rsi\n'
+    op_asm      += '  call PrintInt\n'
     return op_asm
 
 def get_puts_asm(op: Op, intrinsic: str) -> str:
