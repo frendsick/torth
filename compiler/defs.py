@@ -101,11 +101,5 @@ class Op:
 
 Program = List[Op]
 
-@dataclass
-class Func:
-    id: int
-    name: str
-    ops: Program
-
 STACK: List[str] = []
 REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}
