@@ -36,7 +36,7 @@ PrintInt:
 
 global main
 main:
-  mov rbp, rsp
+  mov rbp, rsp ; Initialize RBP
 '''
     with open(asm_file, 'w') as f:
         f.write(default_asm)
@@ -201,9 +201,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         STACK.append(top)
         STACK.append(top)
     elif op.type == OpType.PUSH_ARRAY:
-        op_asm += f'  mov rsi, s_arr{op.id} ; Pointer to array\n'
-        op_asm +=  '  push rsi\n'
-        STACK.append(f"*buf s_arr{op.id}")
+        return get_push_array_asm(op)
     elif op.type == OpType.PUSH_CSTR:
         return get_push_cstr_asm(op)
     elif op.type == OpType.PUSH_INT:
@@ -283,6 +281,12 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_push_array_asm(op: Op) -> str:
+    STACK.append(f"*buf s_arr{op.id}")
+    op_asm: str  = f'  mov rsi, s_arr{op.id} ; Pointer to array\n'
+    op_asm      +=  '  push rsi\n'
     return op_asm
 
 def get_push_cstr_asm(op: Op) -> str:
