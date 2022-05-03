@@ -1,7 +1,6 @@
-import re
-import subprocess
-from typing import List, Literal, NoReturn, Optional
-from compiler.defs import Colors, OpType, Op, Token, Program, STACK, REGEX
+from typing import List, Literal
+from compiler.defs import OpType, Op, Token, Program, STACK
+from compiler.util import check_popped_value_type, compiler_error
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
@@ -257,30 +256,6 @@ def get_stack_after_syscall(stack: List[str], param_count: int) -> List[str]:
         stack.pop()
     stack.append('0') # Syscall return value is 0 by default
     return stack
-
-def compiler_error(op: Optional[Op], error_type: str, error_message: str) -> NoReturn:
-    operand: str    = op.token.value
-    file: str       = op.token.location[0]
-    row: int        = op.token.location[1]
-    col: int        = op.token.location[2]
-
-    print(f'{Colors.HEADER}Compiler error {Colors.FAIL}{error_type}{Colors.NC}' + f":\n{error_message}\n")
-
-    print(f'{Colors.HEADER}Operand{Colors.NC}: {operand}')
-    print(f'{Colors.HEADER}File{Colors.NC}: {file}')
-    print(f'{Colors.HEADER}Row{Colors.NC}: {row}, ' \
-        + f'{Colors.HEADER}Column{Colors.NC}: {col}')
-    exit(1)
-
-def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> None:
-    regex: str = REGEX[expected_type]
-    error_message: str = f"Wrong type of value popped from the stack.\n\n" + \
-        f"{Colors.HEADER}Value{Colors.NC}: {popped_value}\n" + \
-        f"{Colors.HEADER}Expected{Colors.NC}: {expected_type}\n" + \
-        f"{Colors.HEADER}Regex{Colors.NC}: {regex}"
-
-    # Raise compiler error if the value gotten from the stack does not match with the regex
-    assert re.match(regex, popped_value), compiler_error(op, "REGISTER_VALUE_ERROR", error_message)
 
 def get_parent_op_type_do(op: Op, program: Program) -> OpType:
     for i in range(op.id - 1, -1, -1):
@@ -749,9 +724,3 @@ def get_syscall_asm(op: Op, param_count: int) -> str:
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
     return (op_asm)
-
-def compile_asm(asm_file: str) -> None:
-    subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file])
-
-def link_object_file(obj_file: str, output_file: str) -> None:
-    subprocess.run(['gcc', '-no-pie', f'-o{output_file}', obj_file])
