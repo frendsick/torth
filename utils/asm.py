@@ -543,87 +543,43 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(d)
             STACK.append(c)
         elif intrinsic == "SYSCALL0":
-            op_asm += "  pop rax ; syscall\n"
-            op_asm += "  syscall\n"
-            op_asm += "  push rax ; return code\n"
-            try:
-                STACK = get_stack_after_syscall(STACK, 0)
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            return get_syscall_asm(op, param_count=0)
         elif intrinsic == "SYSCALL1":
-            op_asm += "  pop rax ; syscall\n"
-            op_asm += "  pop rdi ; 1. arg\n"
-            op_asm += "  syscall\n"
-            op_asm += "  push rax ; return code\n"
-            try:
-                STACK = get_stack_after_syscall(STACK, 1)
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            return get_syscall_asm(op, param_count=1)
         elif intrinsic == "SYSCALL2":
-            op_asm += "  pop rax ; syscall\n"
-            op_asm += "  pop rdi ; 1. arg\n"
-            op_asm += "  pop rsi ; 2. arg\n"
-            op_asm += "  syscall\n"
-            op_asm += "  push rax ; return code\n"
-            try:
-                STACK = get_stack_after_syscall(STACK, 2)
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            return get_syscall_asm(op, param_count=2)
         elif intrinsic == "SYSCALL3":
-            op_asm += "  pop rax ; syscall\n"
-            op_asm += "  pop rdi ; 1. arg\n"
-            op_asm += "  pop rsi ; 2. arg\n"
-            op_asm += "  pop rdx ; 3. arg\n"
-            op_asm += "  syscall\n"
-            op_asm += "  push rax ; return code\n"
-            try:
-                STACK = get_stack_after_syscall(STACK, 3)
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            return get_syscall_asm(op, param_count=3)
         elif intrinsic == "SYSCALL4":
-            op_asm += "  pop rax ; syscall\n"
-            op_asm += "  pop rdi ; 1. arg\n"
-            op_asm += "  pop rsi ; 2. arg\n"
-            op_asm += "  pop rdx ; 3. arg\n"
-            op_asm += "  pop r10 ; 4. arg\n"
-            op_asm += "  syscall\n"
-            op_asm += "  push rax ; return code\n"
-            try:
-                STACK = get_stack_after_syscall(STACK, 4)
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            return get_syscall_asm(op, param_count=4)
         elif intrinsic == "SYSCALL5":
-            op_asm += "  pop rax ; syscall\n"
-            op_asm += "  pop rdi ; 1. arg\n"
-            op_asm += "  pop rsi ; 2. arg\n"
-            op_asm += "  pop rdx ; 3. arg\n"
-            op_asm += "  pop r10 ; 4. arg\n"
-            op_asm += "  pop r8  ; 5. arg\n"
-            op_asm += "  syscall\n"
-            op_asm += "  push rax ; return code\n"
-            try:
-                STACK = get_stack_after_syscall(STACK, 5)
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            return get_syscall_asm(op, param_count=5)
         elif intrinsic == "SYSCALL6":
-            op_asm += "  pop rax ; syscall\n"
-            op_asm += "  pop rdi ; 1. arg\n"
-            op_asm += "  pop rsi ; 2. arg\n"
-            op_asm += "  pop rdx ; 3. arg\n"
-            op_asm += "  pop r10 ; 4. arg\n"
-            op_asm += "  pop r8  ; 5. arg\n"
-            op_asm += "  pop r9  ; 6. arg\n"
-            op_asm += "  syscall\n"
-            op_asm += "  push rax ; return code\n"
-            try:
-                STACK = get_stack_after_syscall(STACK, 6)
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            return get_syscall_asm(op, param_count=6)
         else:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
+
+def get_syscall_asm(op: Op, param_count: int) -> str:
+    op_asm: str  = "  pop rax ; syscall\n"
+
+    # Pop arguments to syscall argument registers
+    argument_registers: List[str] = ['rdi', 'rsi', 'rdx', 'r10', 'r8', 'r9']
+    for i in range(param_count):
+        op_asm += f"  pop {argument_registers[i]} ; {i+1}. arg\n"
+
+    # Call the syscall and push return code to RAX
+    op_asm      += "  syscall\n"
+    op_asm      += "  push rax ; return code\n"
+
+    global STACK
+    try:
+        STACK = get_stack_after_syscall(STACK, param_count)
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    return (op_asm)
 
 def get_do_asm(op: Op, program: Program) -> str:
     parent_op_type: OpType = get_parent_op_type_do(op, program)
