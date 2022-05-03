@@ -167,23 +167,7 @@ def get_op_asm(op: Op, program: Program) -> str:
 
     # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
     if op.type == OpType.DO:
-        parent_op_type: OpType = get_parent_op_type_do(op, program)
-        for i in range(op.id + 1, len(program)):
-            op_type: OpType = program[i].type
-            if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.WHILE and op_type == OpType.END ):
-                jump_destination: str = program[i].type.name + str(i)
-                op_asm +=  '  pop rax\n'
-                op_asm +=  '  add rsp, 8\n'
-                op_asm +=  '  test rax, rax\n'
-                op_asm += f'  jz {jump_destination}\n'
-                try:
-                    STACK.pop()
-                    STACK.pop()
-                except IndexError:
-                    compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-                break
+        return get_do_asm(op, program)
     # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELIF:
         for i in range(op.id + 1, len(program)):
@@ -649,6 +633,26 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_do_asm(op: Op, program: Program):
+    parent_op_type: OpType = get_parent_op_type_do(op, program)
+    for i in range(op.id + 1, len(program)):
+        op_type: OpType = program[i].type
+        if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.WHILE and op_type == OpType.END ):
+            jump_destination: str = program[i].type.name + str(i)
+            op_asm: str  =  '  pop rax\n'
+            op_asm      +=  '  add rsp, 8\n'
+            op_asm      +=  '  test rax, rax\n'
+            op_asm      += f'  jz {jump_destination}\n'
+            try:
+                STACK.pop()
+                STACK.pop()
+            except IndexError:
+                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            break
     return op_asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
