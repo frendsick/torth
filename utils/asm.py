@@ -172,13 +172,8 @@ def get_op_asm(op: Op, program: Program) -> str:
     # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELIF:
         return get_elif_asm(op, program)
-    # ELSE is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELSE:
-        for i in range(op.id + 1, len(program)):
-            if program[i].type == OpType.ENDIF:
-                op_asm += f'  jmp ENDIF{i}\n'
-                op_asm += f'ELSE{op.id}:\n'
-                break
+        return get_else_asm(op, program)
     elif op.type == OpType.END:
         return get_end_asm(op, program)
     elif op.type == OpType.ENDIF:
@@ -266,6 +261,15 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+
+# ELSE is unconditional jump to ENDIF and a keyword for DO to jump to
+def get_else_asm(op: Op, program: Program) -> str:
+    op_asm: str = ''
+    for i in range(op.id + 1, len(program)):
+        if program[i].type == OpType.ENDIF:
+            op_asm += f'  jmp ENDIF{i}\n'
+            op_asm += f'ELSE{op.id}:\n'
+            break
     return op_asm
 
 # END is unconditional jump to WHILE
