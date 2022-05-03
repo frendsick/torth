@@ -399,17 +399,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(str(int(a) - int(b)))
         elif intrinsic == "MOD":
-            op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
-            op_asm +=  '  pop rbx\n'
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  div rbx\n'
-            op_asm +=  '  push rdx ; Remainder\n'
-            try:
-                b = STACK.pop()
-                a = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            STACK.append(str(int(a) % int(b)))
+            return get_mod_asm(op)
         elif intrinsic == "MUL":
             return get_mul_asm(op)
         elif intrinsic == "NE":
@@ -449,6 +439,20 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_mod_asm(op: Op) -> str:
+    op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  pop rax\n'
+    op_asm      += '  div rbx\n'
+    op_asm      += '  push rdx ; Remainder\n'
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    STACK.append(str(int(a) % int(b)))
     return op_asm
 
 def get_mul_asm(op: Op) -> str:
