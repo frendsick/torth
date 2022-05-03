@@ -479,20 +479,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  mov [int], rsi\n'
             op_asm +=  '  call PrintInt\n'
         elif intrinsic == "PUTS":
-            op_asm +=  '  pop rsi    ; *buf\n'
-            op_asm +=  '  pop rdx    ; count\n'
-            op_asm +=  '  mov rax, sys_write\n'
-            op_asm +=  '  mov rdi, stdout\n'
-            op_asm +=  '  syscall\n'
-            try:
-                buf    = STACK.pop()
-                count  = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", \
-                    f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.")
-
-            check_popped_value_type(op, buf, expected_type='*buf')
-            check_popped_value_type(op, count, expected_type='INT')
+            return get_puts_asm(op, intrinsic)
         elif intrinsic == "ROT":
             return get_rot_asm(op)
         elif intrinsic == "SWAP":
@@ -517,6 +504,24 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_puts_asm(op: Op, intrinsic: str) -> str:
+    op_asm: str  = '  pop rsi    ; *buf\n'
+    op_asm      += '  pop rdx    ; count\n'
+    op_asm      += '  mov rax, sys_write\n'
+    op_asm      += '  mov rdi, stdout\n'
+    op_asm      += '  syscall\n'
+    try:
+        buf    = STACK.pop()
+        count  = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", \
+            f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.")
+
+    # Check if the popped values were of the correct type
+    check_popped_value_type(op, buf, expected_type='*buf')
+    check_popped_value_type(op, count, expected_type='INT')
     return op_asm
 
 def get_rot_asm(op: Op) -> str:
