@@ -343,16 +343,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             op_asm +=  '  push rax\n'
             STACK.append(nth_element)
         elif intrinsic == "GT":
-            op_asm += get_comparison_asm("cmovg")
-            try:
-                b = STACK.pop()
-                a = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            check_popped_value_type(op, a, expected_type='INT')
-            check_popped_value_type(op, b, expected_type='INT')
-            STACK.append(a)
-            STACK.append(str(int(a>b)))
+            return get_ge_asm(op)
         elif intrinsic == "INPUT":
             return get_input_asm(op)
         elif intrinsic == "LE":
@@ -403,6 +394,18 @@ def get_op_asm(op: Op, program: Program) -> str:
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
+
+def get_ge_asm(op: Op) -> str:
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(str(int(a>b)))
+    return get_comparison_asm("cmovg")
 
 # User input is essentially a CSTR but the length is also pushed to the stack for possible printing
 def get_input_asm(op: Op) -> str:
