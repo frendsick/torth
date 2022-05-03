@@ -205,10 +205,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm +=  '  push rsi\n'
         STACK.append(f"*buf s_arr{op.id}")
     elif op.type == OpType.PUSH_CSTR:
-        str_val: str = op.token.value[1:-1]  # Take quotes out of the string
-        STACK.append(f"*buf cs{op.id}")
-        op_asm += f'  mov rsi, cs{op.id} ; Pointer to string\n'
-        op_asm +=  '  push rsi\n'
+        return get_push_cstr_asm(op)
     elif op.type == OpType.PUSH_INT:
         return get_push_int_asm(token)
     elif op.type == OpType.PUSH_STR:
@@ -286,6 +283,12 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_push_cstr_asm(op: Op) -> str:
+    STACK.append(f"*buf cs{op.id}")
+    op_asm: str  = f'  mov rsi, cs{op.id} ; Pointer to string\n'
+    op_asm      +=  '  push rsi\n'
     return op_asm
 
 def get_push_int_asm(token: Token) -> str:
