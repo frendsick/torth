@@ -1,6 +1,6 @@
 from typing import List, Literal
 from compiler.defs import OpType, Op, Token, Program, STACK
-from compiler.util import check_popped_value_type, compiler_error
+from compiler.utils import check_popped_value_type, compiler_error
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:

@@ -4,7 +4,7 @@ from typing import List
 from compiler.defs import Token
 from compiler.lex import get_tokens_from_code
 from compiler.program import compile_code, remove_compilation_files, run_code
-from compiler.util import get_command_line_arguments, get_file_contents
+from compiler.utils import get_command_line_arguments, get_file_contents
 
 def main():
     args: argparse.Namespace = get_command_line_arguments()
