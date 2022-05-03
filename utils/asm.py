@@ -1,10 +1,10 @@
 import re
 import subprocess
 import sys
-from typing import List, Literal, NoReturn, Tuple
+from typing import List, Literal, NoReturn, Optional
 from utils.defs import Colors, OpType, Op, Token, Program, STACK, REGEX
 
-def get_asm_file_start(asm_file:str) -> str:
+def get_asm_file_start() -> str:
     return '''default rel
 extern printf
 
@@ -20,7 +20,7 @@ section .rodata
 '''
 
 def initialize_asm(asm_file: str) -> None:
-    default_asm: str = get_asm_file_start(asm_file) + f'''  formatStrInt db "%lld",10,0
+    default_asm: str = f'''{get_asm_file_start()}  formatStrInt db "%lld",10,0
 
 section .bss
   int: RESQ 1 ; allocates 8 bytes
@@ -76,14 +76,14 @@ def add_string_variable_asm(asm_file: str, string: str, op: Op, insert_newline: 
             str_prefix: Literal['s', 'cs'] = 's'
         elif op_type == OpType.PUSH_CSTR:
             str_prefix = 'cs'
-        f.write(get_asm_file_start(asm_file))
+        f.write(get_asm_file_start())
         if insert_newline:
             f.write(f'  {str_prefix}{op.id} db "{string}",10,0\n')
         else:
             f.write(f'  {str_prefix}{op.id} db "{string}",0\n')
 
         # Rewrite lines except for the first line (section .rodata)
-        len_asm_file_start: int = len(get_asm_file_start(asm_file).split('\n')) - 1
+        len_asm_file_start: int = len(get_asm_file_start().split('\n')) - 1
         for i in range(len_asm_file_start, len(file_lines)):
             f.write(file_lines[i])
 
@@ -91,7 +91,7 @@ def add_array_asm(asm_file: str, array: list, op: Op) -> None:
     with open(asm_file, 'r') as f:
         file_lines: List[str] = f.readlines()
     with open(asm_file, 'w') as f:
-        f.write(get_asm_file_start(asm_file))
+        f.write(get_asm_file_start())
         for i in range(len(array)):
             f.write(f'  s{op.id}_{i}: db {array[i]},0\n')
         f.write(f'  s_arr{op.id}: dq ')
@@ -100,7 +100,7 @@ def add_array_asm(asm_file: str, array: list, op: Op) -> None:
         f.write('0\n') # Array ends at NULL byte
 
         # Rewrite lines
-        len_asm_file_start: int = len(get_asm_file_start(asm_file).split('\n')) - 1
+        len_asm_file_start: int = len(get_asm_file_start().split('\n')) - 1
         for i in range(len_asm_file_start, len(file_lines)):
             f.write(file_lines[i])
 
@@ -108,8 +108,8 @@ def add_input_buffer_asm(asm_file: str, op: Op):
     with open(asm_file, 'r') as f:
         file_lines: List[str] = f.readlines()
     with open(asm_file, 'w') as f:
-        f.write(get_asm_file_start(asm_file))
-        row: int = len(get_asm_file_start(asm_file).splitlines()) - 1
+        f.write(get_asm_file_start())
+        row: int = len(get_asm_file_start().splitlines()) - 1
         while row < len(file_lines):
             row += 1
             f.write(file_lines[row])
@@ -128,7 +128,7 @@ def get_stack_after_syscall(stack: List[str], param_count: int) -> List[str]:
     stack.append('0') # Syscall return value is 0 by default
     return stack
 
-def compiler_error(op: Op, error_type: str, error_message: str) -> NoReturn:
+def compiler_error(error_type: str, error_message: str, op: Optional[Op] = None) -> NoReturn:
     operand: str    = op.token.value
     file: str       = op.token.location[0]
     row: int        = op.token.location[1]
