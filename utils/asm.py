@@ -237,11 +237,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         STACK.append(top)
     elif op.type == OpType.INTRINSIC:
         intrinsic: str = token.value.upper()
-        if intrinsic == "ARGC":
-            argc: str = str(len(sys.argv))
-            STACK.append(argc)
-            op_asm += f'  push {argc}\n'
-        elif intrinsic == "DIV":
+        if intrinsic == "DIV":
             return get_div_asm(op)
         elif intrinsic == "DIVMOD":
             return get_divmod_asm(op)
