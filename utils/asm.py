@@ -389,15 +389,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(a)
             STACK.append(str(int(a<b)))
         elif intrinsic == "MINUS":
-            op_asm += get_arithmetic_asm("sub")
-            try:
-                b = STACK.pop()
-                a = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            check_popped_value_type(op, a, expected_type='INT')
-            check_popped_value_type(op, b, expected_type='INT')
-            STACK.append(str(int(a) - int(b)))
+            return get_minus_asm(op)
         elif intrinsic == "MOD":
             return get_mod_asm(op)
         elif intrinsic == "MUL":
@@ -440,6 +432,11 @@ def get_op_asm(op: Op, program: Program) -> str:
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
+
+def get_minus_asm(op: Op) -> str:
+    ints: List[int] = pop_integers_from_stack(op, pop_count=2)
+    STACK.append(str(int(ints[0]) + int(ints[1])))
+    return get_arithmetic_asm("sub")
 
 def get_mod_asm(op: Op) -> str:
     op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
