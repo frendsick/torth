@@ -209,10 +209,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm += f'  mov rsi, cs{op.id} ; Pointer to string\n'
         op_asm +=  '  push rsi\n'
     elif op.type == OpType.PUSH_INT:
-        integer: str = token.value
-        STACK.append(integer)
-        op_asm += f'  mov rax, {integer}\n'
-        op_asm +=  '  push rax\n'
+        return get_push_int_asm(token)
     elif op.type == OpType.PUSH_STR:
         return get_push_str_asm(op)
     elif op.type == OpType.WHILE:
@@ -288,6 +285,13 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_push_int_asm(token: Token) -> str:
+    integer: str = token.value
+    STACK.append(integer)
+    op_asm: str  = f'  mov rax, {integer}\n'
+    op_asm      +=  '  push rax\n'
     return op_asm
 
 def get_push_str_asm(op: Op) -> str:
