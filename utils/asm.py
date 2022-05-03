@@ -189,7 +189,6 @@ def get_op_asm(op: Op, program: Program) -> str:
     # ENDIF is a keyword for DO, ELIF or ELSE to jump to
     elif op.type == OpType.ENDIF:
         op_asm += f'ENDIF{op.id}:\n'
-    # IF is like DUP, it duplicates the first element in the stack
     elif op.type == OpType.IF:
         return get_if_asm(op)
     elif op.type == OpType.PUSH_ARRAY:
@@ -275,17 +274,9 @@ def get_op_asm(op: Op, program: Program) -> str:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
 
-def get_if_asm(op) -> str:
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  push rax\n'
-    op_asm      += '  push rax\n'
-    try:
-        top = STACK.pop()
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
-    STACK.append(top)
-    STACK.append(top)
-    return op_asm
+# IF is like DUP, it duplicates the first element in the stack
+def get_if_asm(op: Op) -> str:
+    return get_dup_asm(op)
 
 def get_push_array_asm(op: Op) -> str:
     STACK.append(f"*buf s_arr{op.id}")
