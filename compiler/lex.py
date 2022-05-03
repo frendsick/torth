@@ -26,7 +26,11 @@ def get_token_matches(code: str) -> List[re.Match[str]]:
     # Take comments out of matches
     i: int = 0
     while i < len(matches):
-        if matches[i].group(0) != matches_without_comments[i].group(0):
+        match: str                  = matches[i].group(0)
+        match_without_comments: str = matches_without_comments[i].group(0)
+
+        # If i >= size of matches_without_comments list then the rest is comments
+        if i >= len(matches_without_comments) or match != match_without_comments:
             matches.pop(i)
             i -= 1
         i += 1
