@@ -460,25 +460,11 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(str(int(a) + int(b)))
         # TODO: Merge PRINT and PRINT_INT
         elif intrinsic == "PRINT":
-            op_asm +=  '  pop rsi    ; *buf\n'
-            op_asm +=  '  pop rdx    ; count\n'
-            op_asm +=  '  sub rdx, 1 ; Remove newline\n'
-            op_asm +=  '  mov rax, sys_write\n'
-            op_asm +=  '  mov rdi, stdout\n'
-            op_asm +=  '  syscall\n'
-            try:
-                buf: str    = STACK.pop()
-                count: str  = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", \
-                    f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.")
-
-            check_popped_value_type(op, buf, expected_type='*buf')
-            check_popped_value_type(op, count, expected_type='INT')
+            return get_string_output_asm(op, intrinsic)
         elif intrinsic == "PRINT_INT":
             return get_print_int_asm()
         elif intrinsic == "PUTS":
-            return get_puts_asm(op, intrinsic)
+            return get_string_output_asm(op, intrinsic)
         elif intrinsic == "ROT":
             return get_rot_asm(op)
         elif intrinsic == "SWAP":
@@ -510,9 +496,13 @@ def get_print_int_asm() -> str:
     op_asm      += '  call PrintInt\n'
     return op_asm
 
-def get_puts_asm(op: Op, intrinsic: str) -> str:
+def get_string_output_asm(op: Op, intrinsic: str) -> str:
     op_asm: str  = '  pop rsi    ; *buf\n'
     op_asm      += '  pop rdx    ; count\n'
+
+    # PRINT is the same as PUTS but without newline
+    if intrinsic == 'PRINT':
+        op_asm +=  '  sub rdx, 1 ; Remove newline\n'
     op_asm      += '  mov rax, sys_write\n'
     op_asm      += '  mov rdi, stdout\n'
     op_asm      += '  syscall\n'
