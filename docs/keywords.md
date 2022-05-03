@@ -8,8 +8,6 @@ This is the documentation for different keywords available in the Torth language
 - [END](#END)
 - [ENDIF](#ENDIF)
 - [IF](#IF)
-- [INCLUDE](#INCLUDE)
-- [MACRO](#MACRO)
 - [WHILE](#WHILE)
 
 ## DO
