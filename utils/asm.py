@@ -214,14 +214,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm += f'  mov rax, {integer}\n'
         op_asm +=  '  push rax\n'
     elif op.type == OpType.PUSH_STR:
-        str_val = op.token.value[1:-1]  # Take quotes out of the string
-        str_len: int = len(str_val) + 1      # Add newline
-        STACK.append(f"{str_len}")
-        STACK.append(f"*buf s{op.id}")
-        op_asm += f'  mov rax, {str_len} ; String length\n'
-        op_asm += f'  mov rsi, s{op.id} ; Pointer to string\n'
-        op_asm +=  '  push rax\n'
-        op_asm +=  '  push rsi\n'
+        return get_push_str_asm(op)
     elif op.type == OpType.WHILE:
         return get_while_asm(op)
     elif op.type == OpType.INTRINSIC:
@@ -295,6 +288,17 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_push_str_asm(op: Op) -> str:
+    str_val: str = op.token.value[1:-1]  # Take quotes out of the string
+    str_len: int = len(str_val) + 1      # Add newline
+    STACK.append(f"{str_len}")
+    STACK.append(f"*buf s{op.id}")
+    op_asm: str  = f'  mov rax, {str_len} ; String length\n'
+    op_asm      += f'  mov rsi, s{op.id} ; Pointer to string\n'
+    op_asm      +=  '  push rax\n'
+    op_asm      +=  '  push rsi\n'
     return op_asm
 
 # WHILE is a keyword for ELSE to jump to and also like DUP
