@@ -353,19 +353,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             check_popped_value_type(op, b, expected_type='INT')
             STACK.append(a)
             STACK.append(str(int(a>b)))
-        # User input is essentially a CSTR but the length is also pushed to the stack for possible printing
         elif intrinsic == "INPUT":
-            op_asm += '  mov rax, sys_read\n'
-            op_asm += '  mov rdi, stdin\n'
-            op_asm +=f'  mov rsi, buffer{op.id}\n'
-            op_asm += '  mov rdx, buffer_len\n'
-            op_asm += '  syscall\n'
-            op_asm += '  xor rdx, rdx\n'
-            op_asm +=f'  mov [buffer{op.id}+rax-1], dl  ; Change newline character to NULL\n'
-            op_asm += '  push rax\n'
-            op_asm +=f'  push buffer{op.id}\n'
-            STACK.append(f"42") # User input length is not known beforehand
-            STACK.append(f"*buf buffer")
+            return get_input_asm(op)
         elif intrinsic == "LE":
             return get_le_asm(op)
         elif intrinsic == "LT":
@@ -413,6 +402,21 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+# User input is essentially a CSTR but the length is also pushed to the stack for possible printing
+def get_input_asm(op: Op) -> str:
+    op_asm: str  =  '  mov rax, sys_read\n'
+    op_asm      +=  '  mov rdi, stdin\n'
+    op_asm      += f'  mov rsi, buffer{op.id}\n'
+    op_asm      +=  '  mov rdx, buffer_len\n'
+    op_asm      +=  '  syscall\n'
+    op_asm      +=  '  xor rdx, rdx\n'
+    op_asm      += f'  mov [buffer{op.id}+rax-1], dl  ; Change newline character to NULL\n'
+    op_asm      +=  '  push rax\n'
+    op_asm      += f'  push buffer{op.id}\n'
+    STACK.append(f"42") # User input length is not known beforehand
+    STACK.append(f"*buf buffer")
     return op_asm
 
 def get_le_asm(op: Op) -> str:
