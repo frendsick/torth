@@ -275,11 +275,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(str(int(a)% int(b)))
             STACK.append(str(int(a)//int(b)))
         elif intrinsic == "DROP":
-            op_asm +=  '  add rsp, 8\n'
-            try:
-                STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.")
+            return get_drop_asm(op)
         elif intrinsic == "DUP":
             return get_dup_asm(op)
         elif intrinsic == "ENVP":
@@ -344,6 +340,13 @@ def get_op_asm(op: Op, program: Program) -> str:
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
+
+def get_drop_asm(op: Op) -> str:
+    try:
+        STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.")
+    return '  add rsp, 8\n'
 
 def get_dup_asm(op: Op) -> str:
     op_asm: str  = '  pop rax\n'
