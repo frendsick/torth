@@ -242,22 +242,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(argc)
             op_asm += f'  push {argc}\n'
         elif intrinsic == "DIV":
-            op_asm +=  '  xor edx, edx ; Do not use floating point arithmetic\n'
-            op_asm +=  '  pop rbx\n'
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  div rbx\n'
-            op_asm +=  '  push rax ; Quotient\n'
-            try:
-                a = STACK.pop()
-                b = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            check_popped_value_type(op, a, expected_type='INT')
-            check_popped_value_type(op, b, expected_type='INT')
-            try:
-                STACK.append(str(int(b) // int(a)))
-            except ZeroDivisionError:
-                compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
+            return get_div_asm(op)
         elif intrinsic == "DIVMOD":
             return get_divmod_asm(op)
         elif intrinsic == "DROP":
@@ -325,6 +310,25 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_div_asm(op: Op) -> str:
+    op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  pop rax\n'
+    op_asm      += '  div rbx\n'
+    op_asm      += '  push rax ; Quotient\n'
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    try:
+        STACK.append(str(int(b) // int(a)))
+    except ZeroDivisionError:
+        compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
     return op_asm
 
 def get_divmod_asm(op: Op) -> str:
