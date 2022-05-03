@@ -36,6 +36,7 @@ PrintInt:
 
 global main
 main:
+  mov rbp, rsp
 '''
     with open(asm_file, 'w') as f:
         f.write(default_asm)
