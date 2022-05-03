@@ -25,7 +25,7 @@ Hello World
 "Hello, World!" puts
 ```
 
-Program that adds two numbers and prints their sum
+Program that does different arithmetic operations and prints their output
 
 ```pascal
 420 917 + PRINT_INT // Prints 1337 to stdout
