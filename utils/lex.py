@@ -1,7 +1,7 @@
 import re
 import os
-from typing import Dict, Iterator, List
-from utils.defs import INCLUDE_PATHS, Keyword, TokenType, Location, Token
+from typing import List
+from utils.defs import Keyword, TokenType, Location, Token
 
 # Returns the Intrinsic class value from token
 def get_token_value(token: str) -> str:
@@ -66,62 +66,59 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
             col = position - newline_indexes[i-1] - 1
             row +=1
         if newline_indexes[i] > position:
-            return (filename, row, col)
+            return (filename, row, col+1)
 
     if newline_indexes:
         row += 1
         col = position - newline_indexes[-1] - 1
-    return (filename, row, col)
+    return (filename, row, col+1)
 
-def include_file_to_code(file: str, code: str, line: int) -> str:
-    with open(file, 'r') as f:
-        include_lines: List[str] = f.read().splitlines()
-    old_lines: List[str] = code.splitlines()
-    new_lines: List[str] = old_lines[:line] + include_lines + old_lines[line+1:]
-    return '\n'.join(new_lines)
-
-def include_files(code: str) -> str:
-    code_lines: List[str] = code.splitlines()
-    row: int = 0
-    rows: int = len(code_lines)
-    for line in code_lines:
-        if match := re.search(r'^\s*include\s+(\S+)\s*$', line, re.IGNORECASE):
-            for path in INCLUDE_PATHS:
-                include_file: str = path + match[1] + ".torth"
-                if os.path.isfile(include_file):
-                    code = include_file_to_code(include_file, code, row)
-                    row += len(code.splitlines()) - rows
-        row += 1
-    return code
-
+# Returns all tokens with comments taken out
 def get_token_matches(code: str) -> List[re.Match[str]]:
-    return list(re.finditer(r'''\[.*\]|".*?"|'.*?'|\S+''', code))
+    TOKEN_REGEX: re.Pattern[str] = re.compile(r'''\[.*\]|".*?"|'.*?'|\S+''')
+    matches: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code))
+    code_without_comments: str = re.sub(r'\s*\/\/.*', '', code)
+    matches_without_comments: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code_without_comments))
 
-def get_tokens_from_code(code_file: str) -> List[Token]:
-    with open(code_file, 'r') as f:
-        code: str = f.read()
+    # Take comments out of matches
+    i: int = 0
+    while i < len(matches):
+        if matches[i].group(0) != matches_without_comments[i].group(0):
+            matches.pop(i)
+            i -= 1
+        i += 1
+    return matches
 
-    # Get all newline characters and tokens with their locations from the code
-    newline_indexes: List[Dict[str, int]] = [{code_file: i} for i in range(len(code)) if code[i] == '\n']
-    print(newline_indexes)
-
-    # Remove all comments from the code
-    code = re.sub(r'\s*\/\/.*', '', code)
-
-    # Add included files to code
-    code = include_files(code)
-
+def get_tokens_from_code(file: str, code: str) -> List[Token]:
+    tokens: List[Token] = []
     token_matches: List[re.Match[str]] = get_token_matches(code)
 
-    # Get all newline characters and tokens with their locations from the code
-    #newline_indexes: List[int] = [i for i in range(len(code)) if code[i] == '\n']
+    # Newlines are used to determine when a comment ends and when new line starts
+    newline_indexes: List[int]  = [nl.start() for nl in re.finditer('\n', code)]
+    next_newline: int           = newline_indexes[0] if newline_indexes else 0
+    newline_list_index: int     = 0
 
-    tokens: List[Token] = []
+    is_comment: bool = False
     for match in token_matches:
+        # Comment ends to new line
+        if match.start() > next_newline and is_comment:
+            is_comment = False
+        newline_list_index = min(newline_list_index+1, len(newline_indexes)-1)
+        next_newline = newline_indexes[newline_list_index]
+
         token_value     = get_token_value(match.group(0))
         token_type      = get_token_type(token_value)
-        token_location  = get_token_location(os.path.basename(code_file), match.start()+1, newline_indexes)
-        token           = Token(token_value, token_type, token_location)
+        token_location  = get_token_location(os.path.basename(file), match.start(), newline_indexes)
+
+        if token_value.startswith('//'):
+            is_comment = True
+        if is_comment:
+            continue
+
+        if token_value.startswith('//'):
+            is_comment = True
+
+        token = Token(token_value, token_type, token_location)
         tokens.append(token)
 
     return tokens
