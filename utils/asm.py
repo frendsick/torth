@@ -422,16 +422,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(str(int(a) * int(b)))
         elif intrinsic == "NE":
-            op_asm += get_comparison_asm("cmovne")
-            try:
-                b = STACK.pop()
-                a = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            check_popped_value_type(op, a, expected_type='INT')
-            check_popped_value_type(op, b, expected_type='INT')
-            STACK.append(a)
-            STACK.append(str(int(a!=b)))
+            return get_ne_asm(op)
         elif intrinsic == "OVER":
             return get_over_asm(op)
         elif intrinsic == "PLUS":
@@ -468,6 +459,18 @@ def get_op_asm(op: Op, program: Program) -> str:
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
+
+def get_ne_asm(op: Op) -> str:
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(str(int(a!=b)))
+    return get_comparison_asm("cmovne")
 
 def get_over_asm(op: Op) -> str:
     op_asm: str  = '  pop rax\n'
