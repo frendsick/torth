@@ -222,19 +222,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         op_asm += f'  mov rsi, s{op.id} ; Pointer to string\n'
         op_asm +=  '  push rax\n'
         op_asm +=  '  push rsi\n'
-    # WHILE is a keyword for ELSE to jump to and also like DUP
-    # It duplicates the first element in the stack
     elif op.type == OpType.WHILE:
-        op_asm += f'WHILE{op.id}:\n'
-        op_asm +=  '  pop rax\n'
-        op_asm +=  '  push rax\n'
-        op_asm +=  '  push rax\n'
-        try:
-            top = STACK.pop()
-        except IndexError:
-            compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
-        STACK.append(top)
-        STACK.append(top)
+        return get_while_asm(op)
     elif op.type == OpType.INTRINSIC:
         intrinsic: str = token.value.upper()
         if intrinsic == "DIV":
@@ -306,6 +295,21 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+# WHILE is a keyword for ELSE to jump to and also like DUP
+# It duplicates the first element in the stack
+def get_while_asm(op: Op) -> str:
+    op_asm: str  = f'WHILE{op.id}:\n'
+    op_asm      +=  '  pop rax\n'
+    op_asm      +=  '  push rax\n'
+    op_asm      +=  '  push rax\n'
+    try:
+        top = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    STACK.append(top)
+    STACK.append(top)
     return op_asm
 
 def get_div_asm(op: Op) -> str:
