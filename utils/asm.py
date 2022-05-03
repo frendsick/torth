@@ -449,15 +449,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(b)
             STACK.append(a)
         elif intrinsic == "PLUS":
-            op_asm += get_arithmetic_asm("add")
-            try:
-                b = STACK.pop()
-                a = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            check_popped_value_type(op, a, expected_type='INT')
-            check_popped_value_type(op, b, expected_type='INT')
-            STACK.append(str(int(a) + int(b)))
+            return get_plus_asm(op)
         # TODO: Merge PRINT and PRINT_INT
         elif intrinsic == "PRINT":
             return get_string_output_asm(op, intrinsic)
@@ -490,6 +482,22 @@ def get_op_asm(op: Op, program: Program) -> str:
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
     return op_asm
+
+def get_plus_asm(op: Op) -> str:
+    ints: List[int] = pop_integers_from_stack(op, pop_count=2)
+    STACK.append(str(int(ints[0]) + int(ints[1])))
+    return get_arithmetic_asm("add")
+
+def pop_integers_from_stack(op: Op, pop_count: int) -> List[int]:
+    popped_integers: List[int] = []
+    for _ in range(pop_count):
+        try:
+            popped: str = STACK.pop()
+            check_popped_value_type(op, popped, expected_type='INT')
+            popped_integers.append(popped)
+        except IndexError:
+            compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    return popped_integers
 
 def get_print_int_asm() -> str:
     op_asm: str  = '  mov [int], rsi\n'
