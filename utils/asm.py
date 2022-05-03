@@ -411,16 +411,7 @@ def get_op_asm(op: Op, program: Program) -> str:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             STACK.append(str(int(a) % int(b)))
         elif intrinsic == "MUL":
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  pop rbx\n'
-            op_asm +=  '  mul rbx\n'
-            op_asm +=  '  push rax\n'
-            try:
-                b = STACK.pop()
-                a = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            STACK.append(str(int(a) * int(b)))
+            return get_mul_asm(op)
         elif intrinsic == "NE":
             return get_ne_asm(op)
         elif intrinsic == "OVER":
@@ -458,6 +449,19 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_mul_asm(op: Op) -> str:
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  mul rbx\n'
+    op_asm      += '  push rax\n'
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    STACK.append(str(int(a) * int(b)))
     return op_asm
 
 def get_ne_asm(op: Op) -> str:
