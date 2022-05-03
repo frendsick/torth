@@ -620,7 +620,7 @@ def pop_integers_from_stack(op: Op, pop_count: int) -> List[int]:
         try:
             popped: str = STACK.pop()
             check_popped_value_type(op, popped, expected_type='INT')
-            popped_integers.append(popped)
+            popped_integers.append(int(popped))
         except IndexError:
             compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
     return popped_integers

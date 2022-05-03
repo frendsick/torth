@@ -25,7 +25,7 @@ def get_file_contents(file: str) -> str:
     with open(file, 'r') as f:
         return f.read()
 
-def compiler_error(op: Optional[Op], error_type: str, error_message: str) -> NoReturn:
+def compiler_error(op: Op, error_type: str, error_message: str) -> NoReturn:
     operand: str    = op.token.value
     file: str       = op.token.location[0]
     row: int        = op.token.location[1]
