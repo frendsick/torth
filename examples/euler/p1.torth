@@ -1,0 +1,17 @@
+// Multiples of 3 or 5
+// Problem 1
+// If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
+// Find the sum of all the multiples of 3 or 5 below 1000.
+
+0 // total
+3 // index
+WHILE 1000 > DO
+  IF 3 % 0 == DO
+    dup rot + swap
+  ELIF 5 % 0 == DO
+    dup rot + swap
+  ENDIF
+  1 +  // index++
+END drop // Drop loop index from stack
+
+"Sum of all numbers divisible by 3 or 5: " print print_int // Output: 233168
