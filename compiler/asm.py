@@ -364,8 +364,8 @@ def get_push_str_asm(op: Op) -> str:
     op_asm      +=  '  push rsi\n'
     return op_asm
 
-# WHILE is a keyword for ELSE to jump to and also like DUP
-# It duplicates the first element in the stack
+# WHILE is a keyword for END to jump to.
+# Also like DUP it duplicates the first element in the stack.
 def get_while_asm(op: Op) -> str:
     op_asm: str  = f'WHILE{op.id}:\n'
     op_asm      +=  '  pop rax\n'
