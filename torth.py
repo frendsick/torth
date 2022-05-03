@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 import argparse, os
 from typing import List
-from utils.defs import Token
-from utils.lex import get_tokens_from_code
-from utils.program import compile_code, remove_compilation_files, run_code
-from utils.util import get_command_line_arguments
+from compiler.compile import compile_code, remove_compilation_files
+from compiler.defs import Token
+from compiler.lex import get_tokens_from_code
+from compiler.program import run_code
+from compiler.utils import get_command_line_arguments, get_file_contents
 
 def main():
     args: argparse.Namespace = get_command_line_arguments()
-    tokens: List[Token] = get_tokens_from_code(args.code_file)
+    code: str = get_file_contents(args.code_file)
+    tokens: List[Token] = get_tokens_from_code(args.code_file, code)
     code_file_basename: str = os.path.basename(args.code_file)
 
-    if args.output is not None:
-        exe_file: str = args.output
-    else:
-        exe_file: str = code_file_basename.replace('.torth', '')
+    # Executable's file name is code file name without extension by default
+    exe_file: str = args.output if args.output is not None else code_file_basename.replace('.torth', '')
 
     compile_code(tokens, code_file_basename, exe_file)
     remove_compilation_files(code_file_basename, args)

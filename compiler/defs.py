@@ -2,9 +2,6 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, List, Tuple
 
-MEMORY_SIZE: int            = 8000 # TODO memory management
-INCLUDE_PATHS: List[str]    = ['./', './lib/']
-
 class Colors:
     FAIL = '\033[91m'
     HEADER = '\033[95m'
@@ -35,6 +32,7 @@ class Intrinsic(Enum):
     DROP=auto()
     DUP=auto()
     ENVP=auto()
+    EXIT=auto()
     EQ=auto()
     GE=auto()
     GT=auto()
