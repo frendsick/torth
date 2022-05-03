@@ -1,7 +1,7 @@
 import re
 import subprocess
 from typing import List, Literal, NoReturn, Optional
-from utils.defs import Colors, OpType, Op, Token, Program, STACK, REGEX
+from compiler.defs import Colors, OpType, Op, Token, Program, STACK, REGEX
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:

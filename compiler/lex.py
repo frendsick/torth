@@ -1,7 +1,7 @@
 import re
 import os
 from typing import List
-from utils.defs import Keyword, TokenType, Location, Token
+from compiler.defs import Keyword, TokenType, Location, Token
 
 def get_tokens_from_code(file: str, code: str) -> List[Token]:
     tokens: List[Token] = []

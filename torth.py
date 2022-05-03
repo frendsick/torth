@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import argparse, os
 from typing import List
-from utils.defs import Token
-from utils.lex import get_tokens_from_code
-from utils.program import compile_code, remove_compilation_files, run_code
-from utils.util import get_command_line_arguments, get_file_contents
+from compiler.defs import Token
+from compiler.lex import get_tokens_from_code
+from compiler.program import compile_code, remove_compilation_files, run_code
+from compiler.util import get_command_line_arguments, get_file_contents
 
 def main():
     args: argparse.Namespace = get_command_line_arguments()

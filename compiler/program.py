@@ -1,8 +1,8 @@
 import argparse
 import subprocess
 from typing import List
-from utils.defs import TokenType, Token, OpType, Program, Op, Intrinsic
-from utils.asm import initialize_asm, generate_asm, compile_asm, link_object_file
+from compiler.defs import TokenType, Token, OpType, Program, Op, Intrinsic
+from compiler.asm import initialize_asm, generate_asm, compile_asm, link_object_file
 
 def intrinsic_exists(token: str) -> bool:
     return bool(hasattr(Intrinsic, token))
