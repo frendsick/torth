@@ -165,7 +165,19 @@ ENDIF
 
 ## IF
 
-TODO
+IF keyword is like DUP intrinsic, it duplicates the first element in the stack so that there is no need to manually duplicate the topmost element in the stack for the purpose of IF statement comparisation.
+
+### Examples
+
+```pascal
+4                                 //  int i = 4;
+IF 0 < DO                         //  if (0 < i)
+  "Positive number" puts          //    puts("Positive number");
+ENDIF
+
+// Output:
+// Positive number
+```
 
 ## INCLUDE
 
