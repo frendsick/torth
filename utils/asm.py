@@ -164,12 +164,9 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
 def get_op_asm(op: Op, program: Program) -> str:
     global STACK
     token: Token = op.token
-    op_asm: str = ''
 
-    # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
     if op.type == OpType.DO:
         return get_do_asm(op, program)
-    # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
     elif op.type == OpType.ELIF:
         return get_elif_asm(op, program)
     elif op.type == OpType.ELSE:
@@ -261,6 +258,47 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+
+# DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
+def get_do_asm(op: Op, program: Program) -> str:
+    parent_op_type: OpType = get_parent_op_type_do(op, program)
+    for i in range(op.id + 1, len(program)):
+        op_type: OpType = program[i].type
+        if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.WHILE and op_type == OpType.END ):
+            jump_destination: str = program[i].type.name + str(i)
+            op_asm: str  =  '  pop rax\n'
+            op_asm      +=  '  add rsp, 8\n'
+            op_asm      +=  '  test rax, rax\n'
+            op_asm      += f'  jz {jump_destination}\n'
+            try:
+                STACK.pop()
+                STACK.pop()
+            except IndexError:
+                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            break
+    return op_asm
+
+# ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
+def get_elif_asm(op: Op, program: Program) -> str:
+    op_asm: str = ''
+    for i in range(op.id + 1, len(program)):
+        if program[i].type == OpType.ENDIF:
+            op_asm += f'  jmp ENDIF{i}\n'
+            op_asm += f'ELIF{op.id}:\n'
+            break
+        # ELIF is like DUP, it duplicates the first element in the stack
+    op_asm +=  '  pop rax\n'
+    op_asm +=  '  push rax\n'
+    op_asm +=  '  push rax\n'
+    try:
+        top: str = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    STACK.append(top)
+    STACK.append(top)
+    return op_asm
 
 # ELSE is unconditional jump to ENDIF and a keyword for DO to jump to
 def get_else_asm(op: Op, program: Program) -> str:
@@ -680,45 +718,6 @@ def get_syscall_asm(op: Op, param_count: int) -> str:
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
     return (op_asm)
-
-def get_do_asm(op: Op, program: Program) -> str:
-    parent_op_type: OpType = get_parent_op_type_do(op, program)
-    for i in range(op.id + 1, len(program)):
-        op_type: OpType = program[i].type
-        if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.WHILE and op_type == OpType.END ):
-            jump_destination: str = program[i].type.name + str(i)
-            op_asm: str  =  '  pop rax\n'
-            op_asm      +=  '  add rsp, 8\n'
-            op_asm      +=  '  test rax, rax\n'
-            op_asm      += f'  jz {jump_destination}\n'
-            try:
-                STACK.pop()
-                STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            break
-    return op_asm
-
-def get_elif_asm(op: Op, program: Program) -> str:
-    op_asm: str = ''
-    for i in range(op.id + 1, len(program)):
-        if program[i].type == OpType.ENDIF:
-            op_asm += f'  jmp ENDIF{i}\n'
-            op_asm += f'ELIF{op.id}:\n'
-            break
-        # ELIF is like DUP, it duplicates the first element in the stack
-    op_asm +=  '  pop rax\n'
-    op_asm +=  '  push rax\n'
-    op_asm +=  '  push rax\n'
-    try:
-        top: str = STACK.pop()
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
-    STACK.append(top)
-    STACK.append(top)
-    return op_asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
