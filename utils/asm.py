@@ -523,25 +523,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             STACK.append(a)
             STACK.append(b)
         elif intrinsic == "SWAP2":
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  pop rbx\n'
-            op_asm +=  '  pop rcx\n'
-            op_asm +=  '  pop rdx\n'
-            op_asm +=  '  push rbx\n'
-            op_asm +=  '  push rax\n'
-            op_asm +=  '  push rdx\n'
-            op_asm +=  '  push rcx\n'
-            try:
-                a = STACK.pop()
-                b = STACK.pop()
-                c = STACK.pop()
-                d = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            STACK.append(b)
-            STACK.append(a)
-            STACK.append(d)
-            STACK.append(c)
+            return get_swap2_asm(op)
         elif intrinsic == "SYSCALL0":
             return get_syscall_asm(op, param_count=0)
         elif intrinsic == "SYSCALL1":
@@ -560,6 +542,28 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_swap2_asm(op: Op) -> str:
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  pop rcx\n'
+    op_asm      += '  pop rdx\n'
+    op_asm      += '  push rbx\n'
+    op_asm      += '  push rax\n'
+    op_asm      += '  push rdx\n'
+    op_asm      += '  push rcx\n'
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+        c = STACK.pop()
+        d = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    STACK.append(b)
+    STACK.append(a)
+    STACK.append(d)
+    STACK.append(c)
     return op_asm
 
 def get_syscall_asm(op: Op, param_count: int) -> str:
