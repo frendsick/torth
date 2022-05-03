@@ -494,22 +494,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             check_popped_value_type(op, buf, expected_type='*buf')
             check_popped_value_type(op, count, expected_type='INT')
         elif intrinsic == "ROT":
-            op_asm +=  '  pop rax\n'
-            op_asm +=  '  pop rbx\n'
-            op_asm +=  '  pop rcx\n'
-            op_asm +=  '  push rax\n'
-            op_asm +=  '  push rcx\n'
-            op_asm +=  '  push rbx\n'
-
-            try:
-                a = STACK.pop()
-                b = STACK.pop()
-                c = STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least three elements to rotate.")
-            STACK.append(a)
-            STACK.append(c)
-            STACK.append(b)
+            return get_rot_asm(op)
         elif intrinsic == "SWAP":
             return get_swap_asm(op)
         elif intrinsic == "SWAP2":
@@ -532,6 +517,24 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
         compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+    return op_asm
+
+def get_rot_asm(op: Op) -> str:
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  pop rcx\n'
+    op_asm      += '  push rax\n'
+    op_asm      += '  push rcx\n'
+    op_asm      += '  push rbx\n'
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+        c = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain at least three elements to rotate.")
+    STACK.append(a)
+    STACK.append(c)
+    STACK.append(b)
     return op_asm
 
 def get_swap_asm(op: Op) -> str:
