@@ -17,3 +17,7 @@ def get_command_line_arguments() -> argparse.Namespace:
     if not os.path.isfile(args.code_file):
         raise FileNotFoundError(f"Argument '{args.code_file}' is not a file")
     return args
+
+def get_file_contents(file: str) -> str:
+    with open(file, 'r') as f:
+        return f.read()

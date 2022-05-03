@@ -101,16 +101,20 @@ def get_tokens_from_code(code_file: str) -> List[Token]:
     with open(code_file, 'r') as f:
         code: str = f.read()
 
+    # Get all newline characters and tokens with their locations from the code
+    newline_indexes: List[Dict[str, int]] = [{code_file: i} for i in range(len(code)) if code[i] == '\n']
+    print(newline_indexes)
+
     # Remove all comments from the code
     code = re.sub(r'\s*\/\/.*', '', code)
 
-    # Add included files to code and interpret defined functions
+    # Add included files to code
     code = include_files(code)
 
     token_matches: List[re.Match[str]] = get_token_matches(code)
 
     # Get all newline characters and tokens with their locations from the code
-    newline_indexes: List[int] = [i for i in range(len(code)) if code[i] == '\n']
+    #newline_indexes: List[int] = [i for i in range(len(code)) if code[i] == '\n']
 
     tokens: List[Token] = []
     for match in token_matches:
