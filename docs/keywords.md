@@ -2,6 +2,7 @@
 
 This is the documentation for different keywords available in the Torth language.
 
+- [BREAK](#BREAK)
 - [DO](#DO)
 - [ELIF](#ELIF)
 - [ELSE](#ELSE)
@@ -9,6 +10,27 @@ This is the documentation for different keywords available in the Torth language
 - [ENDIF](#ENDIF)
 - [IF](#IF)
 - [WHILE](#WHILE)
+
+## BREAK
+
+BREAK is unconditional jump to the operation after END of the current loop.
+
+### Examples
+
+```pascal
+0 WHILE 10 > DO
+  1 + print_int
+  IF 3 == DO
+    "Breaking from loop..." puts
+    BREAK
+  ENDIF
+END
+// Output:
+1
+2
+3
+Breaking from loop...
+```
 
 ## DO
 

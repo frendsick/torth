@@ -9,6 +9,7 @@ class Colors:
     WARNING = '\033[93m'
 
 class Keyword(Enum):
+    BREAK=auto()
     DO=auto()
     ELIF=auto()
     ELSE=auto()
@@ -62,6 +63,7 @@ class Intrinsic(Enum):
     SYSCALL6=auto()
 
 class OpType(Enum):
+    BREAK=auto()
     DO=auto()
     ELIF=auto()
     ELSE=auto()

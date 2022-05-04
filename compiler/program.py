@@ -19,6 +19,8 @@ def generate_program(tokens = List[Token]) -> Program:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.STR:
             op_type = OpType.PUSH_STR
+        elif token_value == 'BREAK':
+            op_type = OpType.BREAK
         elif token_value == 'DO':
             op_type = OpType.DO
         elif token_value == 'END':

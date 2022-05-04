@@ -38,7 +38,9 @@ def get_op_asm(op: Op, program: Program) -> str:
     global STACK
     token: Token = op.token
 
-    if op.type == OpType.DO:
+    if op.type == OpType.BREAK:
+        return get_break_asm(op, program)
+    elif op.type == OpType.DO:
         return get_do_asm(op, program)
     elif op.type == OpType.ELIF:
         return get_elif_asm(op, program)
@@ -259,6 +261,29 @@ def get_stack_after_syscall(stack: List[str], param_count: int) -> List[str]:
     stack.append('0') # Syscall return value is 0 by default
     return stack
 
+def get_end_op_for_while(op: Op, program: Program) -> Op:
+    while_count: int = 0
+    for i in range(op.id, len(program)):
+        if program[i].type == OpType.END:
+            while_count -= 1
+            if while_count == 0:
+                return program[i]
+        if program[i].type == OpType.WHILE:
+            while_count += 1
+    compiler_error(op, "AMBIGUOUS_BREAK", "WHILE loop does not have END.")
+
+# Find the previous WHILE keyword
+def get_parent_while_for_break(op: Op, program: Program) -> Op:
+    end_count: int = 0
+    for i in range(op.id - 1, -1, -1):
+        if program[i].type == OpType.WHILE:
+            if end_count == 0:
+                return program[i]
+            end_count -= 1
+        if program[i].type == OpType.END:
+            end_count += 1
+    compiler_error(op, "AMBIGUOUS_BREAK", "BREAK operand without parent WHILE.")
+
 def get_parent_op_type_do(op: Op, program: Program) -> OpType:
     for i in range(op.id - 1, -1, -1):
         if program[i].type in (OpType.IF, OpType.ELIF, OpType.WHILE):
@@ -266,6 +291,12 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
         if program[i].type in (OpType.DO, OpType.END, OpType.ENDIF):
             break
     compiler_error(op, "AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE")
+
+# BREAK is unconditional jump to operand after current loop's END
+def get_break_asm(op: Op, program: Program) -> str:
+    parent_while: Op = get_parent_while_for_break(op, program)
+    parent_end:   Op = get_end_op_for_while(parent_while, program)
+    return f'  jmp END{parent_end.id}\n'
 
 # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 def get_do_asm(op: Op, program: Program) -> str:
