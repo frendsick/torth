@@ -1,0 +1,9 @@
+// Problem 5: Smallest multiple
+
+// For each prime factor, find where it occurs most often as a factor and write it that many times in a new list.
+// 2 => 16  = 2⁴
+// 3 => 9   = 3²
+// 5, 7, 11, 13, 17 and 19 occurs one time
+// Smallest common multiple is 2⁴ * 3² * 5 * 7 * 11 * 13 * 17 * 19
+
+2 4 ^ 3 2 ^ * 5 * 7 * 11 * 13 * 17 * 19 * print_int // Output: 232792560
