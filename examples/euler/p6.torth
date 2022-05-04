@@ -1,0 +1,25 @@
+0     // Squares total
+100   // Limit
+1     // Loop index
+
+WHILE rot over >= DO  // While Limit >= Loop index
+  over 2 ^            // Square the current Loop index
+  rot swap2 +         // Add current index square to Squares total
+  rot swap            // Align stack as it was before the while loop
+  1 +                 // Increment Loop index by one
+END drop              // Leave Squares total and Limit to the stack
+
+0     // Sum total
+swap  // Limit
+0     // Loop index
+
+WHILE rot over > DO   // While Limit > Loop index
+  rot dup rot +       // Add Loop index to Sum total
+  rot 1 +             // Increment Loop index by one
+END drop drop         // Leave Squares total and Sum total to the stack
+
+// Drop Limit and Loop index and square the Sum total
+2 ^  
+
+// Calculate and print the difference between Squares total and the square of Sum total
+swap - print_int  // Output: 25164150
