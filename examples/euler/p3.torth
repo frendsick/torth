@@ -1,0 +1,16 @@
+// Problem 3: Largest prime factor
+
+600851475143 // prime
+3 // i
+
+// while(prime/2 >= i)
+WHILE rot over 2 / >= DO
+  // If prime factor is found divide the prime with it
+  IF rot over % 0 == DO
+    swap over / swap  // prime = prime / factor
+  else
+    2 +  // i+=2
+  ENDIF
+END
+
+"The largest prime factor of number 600851475143: " print print_int // Output: 6857
