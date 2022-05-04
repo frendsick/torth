@@ -471,23 +471,25 @@ def get_ge_asm(op: Op) -> str:
     STACK.append(str(int(a>=b)))
     return get_comparison_asm("cmovge")
 
-# Copies Nth element from the stack to the top of the stack (first element is 0th)
+# Copies Nth element from the stack to the top of the stack
 def get_nth_asm(op: Op) -> str:
     op_asm: str = '  pop rax\n'
 
     # The top element in the stack is the N
     try:
-        n: int = int(STACK.pop())
+        n: int = int(STACK.pop()) - 1
+        if n < 0:
+            raise ValueError
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
     except ValueError:
-        compiler_error(op, "STACK_VALUE_ERROR", "First element in the stack is not an integer.")
+        compiler_error(op, "STACK_VALUE_ERROR", "First element in the stack is not a non-zero positive integer.")
     try:
-        stack_index: int = len(STACK) - 1 # Zero based indexes
+        stack_index: int = len(STACK) - 1
         nth_element: str = STACK[stack_index - n]
     except IndexError:
         compiler_error(op, "NOT_ENOUGH_ELEMENTS_IN_STACK", \
-                    f"Cannot get {n}. element from the stack: Stack only contains {len(STACK)} elements.")
+                    f"Cannot get {n+1}. element from the stack: Stack only contains {len(STACK)} elements.")
 
     op_asm += f'  add rsp, {n * 8} ; Stack pointer to the Nth element\n'
     op_asm +=  '  pop rax ; Get Nth element to rax\n'
