@@ -38,7 +38,9 @@ def get_op_asm(op: Op, program: Program) -> str:
     global STACK
     token: Token = op.token
 
-    if op.type == OpType.DO:
+    if op.type == OpType.BREAK:
+        return get_break_asm(op, program)
+    elif op.type == OpType.DO:
         return get_do_asm(op, program)
     elif op.type == OpType.ELIF:
         return get_elif_asm(op, program)
@@ -266,6 +268,9 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
         if program[i].type in (OpType.DO, OpType.END, OpType.ENDIF):
             break
     compiler_error(op, "AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE")
+
+def get_break_asm(op: Op, program: Program) -> str:
+    compiler_error(op, "NOT_IMPLEMENTED", "Assembly logic for BREAK keyword has not been implemented yet.")
 
 # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 def get_do_asm(op: Op, program: Program) -> str:
