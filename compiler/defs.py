@@ -46,6 +46,7 @@ class Intrinsic(Enum):
     OR=auto()
     OVER=auto()
     PLUS=auto()
+    POW=auto()
     PUTS=auto()
     PRINT=auto()
     PRINT_INT=auto()

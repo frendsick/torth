@@ -66,6 +66,8 @@ def get_token_value(token: str) -> str:
         return 'NE'
     if token == '+':
         return 'PLUS'
+    if token == '^':
+        return 'POW'
     if token == '.':
         return 'PRINT_INT'
     if token == 'TRUE':

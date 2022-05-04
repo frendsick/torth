@@ -1,5 +1,5 @@
 from typing import List, Literal
-from compiler.defs import OpType, Op, Token, Program, STACK
+from compiler.defs import OpType, Op, Program, STACK, Token, TokenType
 from compiler.utils import check_popped_value_type, compiler_error
 
 def generate_asm(program: Program, asm_file: str) -> None:
@@ -100,6 +100,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_over_asm(op)
         elif intrinsic == "PLUS":
             return get_plus_asm(op)
+        elif intrinsic == "POW":
+            return get_pow_asm(op)
         # TODO: Merge PRINT and PRINT_INT
         elif intrinsic == "PRINT":
             return get_string_output_asm(op, intrinsic)
@@ -274,16 +276,20 @@ def get_do_asm(op: Op, program: Program) -> str:
             or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
             or ( parent_op_type == OpType.WHILE and op_type == OpType.END ):
             jump_destination: str = program[i].type.name + str(i)
-            op_asm: str  =  '  pop rax\n'
-            op_asm      +=  '  add rsp, 8\n'
-            op_asm      +=  '  test rax, rax\n'
-            op_asm      += f'  jz {jump_destination}\n'
+            op_asm: str = generate_do_asm(jump_destination)
             try:
                 STACK.pop()
                 STACK.pop()
             except IndexError:
                 compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             break
+    return op_asm
+
+def generate_do_asm(jump_destination: str) -> str:
+    op_asm: str  =  '  pop rax\n'
+    op_asm      +=  '  add rsp, 8\n'
+    op_asm      +=  '  test rax, rax\n'
+    op_asm      += f'  jz {jump_destination}\n'
     return op_asm
 
 # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
@@ -626,6 +632,47 @@ def pop_integers_from_stack(op: Op, pop_count: int) -> List[int]:
         except IndexError:
             compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
     return popped_integers
+
+# The sequence of operations is from examples/pow.torth
+# TODO: Make "POW" Macro in Torth when Macro's are implemented
+def get_pow_asm(op: Op) -> str:
+    do_jump_destination: str = f'END{op.id}'
+    mock_int_token: Token = Token('1', TokenType.INT, op.token.location)
+    op_asm: str  = get_over_asm(op)
+    op_asm      += get_push_int_asm(mock_int_token)
+    op_asm      += get_rot_asm(op)
+    op_asm      += get_rot_asm(op)
+    op_asm      += get_swap_asm(op)
+    op_asm      += get_while_asm(op)
+    op_asm      += get_rot_asm(op)
+    op_asm      += get_over_asm(op)
+    op_asm      += get_gt_asm(op)
+    op_asm      += generate_do_asm(do_jump_destination)
+    op_asm      += get_swap_asm(op)
+    op_asm      += get_swap2_asm(op)
+    op_asm      += get_dup_asm(op)
+    op_asm      += get_rot_asm(op)
+    op_asm      += get_mul_asm(op)
+    op_asm      += get_swap_asm(op)
+    op_asm      += get_swap2_asm(op)
+    op_asm      += get_push_int_asm(mock_int_token)
+    STACK.pop() # Pop the integer pushed with the mock Token
+    op_asm      += get_plus_asm(op)
+    op_asm      += f'  jmp WHILE{op.id}\n'
+    op_asm      += f'{do_jump_destination}:\n'
+    for _ in range(3):
+        op_asm  += get_drop_asm(op)
+
+    try:
+        exponent: str   = STACK.pop()
+        number: str     = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    check_popped_value_type(op, number, expected_type='INT')
+    check_popped_value_type(op, exponent, expected_type='INT')
+    STACK.append(str(int(number)**int(exponent)))
+
+    return op_asm
 
 def get_print_int_asm() -> str:
     op_asm: str  = '  mov [int], rsi\n'
