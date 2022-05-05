@@ -715,7 +715,6 @@ def get_pow_asm(op: Op) -> str:
     op_asm      += get_swap_asm(op)
     op_asm      += get_swap2_asm(op)
     op_asm      += get_push_int_asm(mock_int_token)
-    STACK.pop() # Pop the integer pushed with the mock Token
     op_asm      += get_plus_asm(op)
     op_asm      += f'  jmp WHILE{op.id}\n'
     op_asm      += f'{do_jump_destination}:\n'
@@ -725,6 +724,7 @@ def get_pow_asm(op: Op) -> str:
     try:
         exponent: str   = STACK.pop()
         number: str     = STACK.pop()
+        STACK.pop()
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
     check_popped_value_type(op, number, expected_type='INT')
