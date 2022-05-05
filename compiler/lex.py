@@ -44,6 +44,7 @@ def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[
 
 # Returns the Intrinsic class value from token
 def get_token_value(token: str) -> str:
+    token = token.upper()
     if token == '%':
         return 'MOD'
     if token == '/':
