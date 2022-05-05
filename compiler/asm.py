@@ -24,6 +24,7 @@ def generate_asm(program: Program, asm_file: str) -> None:
         with open(asm_file, 'a') as f:
             f.write(get_op_comment_asm(op, op.type))
             op_asm: str = get_op_asm(op, program=program)
+            print(op.token.value, STACK)
             if op_asm != "":
                 f.write(op_asm)
 
@@ -72,6 +73,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_drop_asm(op)
         elif intrinsic == "DUP":
             return get_dup_asm(op)
+        elif intrinsic == "DUP2":
+            return get_dup2_asm(op)
         elif intrinsic == "ENVP":
             return get_envp_asm()
         elif intrinsic == "EXIT":
@@ -470,6 +473,24 @@ def get_dup_asm(op: Op) -> str:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
     STACK.append(top)
     STACK.append(top)
+    return op_asm
+
+def get_dup2_asm(op: Op) -> str:
+    op_asm: str  = '  pop rbx\n'
+    op_asm      += '  pop rax\n'
+    op_asm      += '  push rax\n'
+    op_asm      += '  push rbx\n'
+    op_asm      += '  push rax\n'
+    op_asm      += '  push rbx\n'
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    STACK.append(a)
+    STACK.append(b)
+    STACK.append(a)
+    STACK.append(b)
     return op_asm
 
 def get_envp_asm() -> str:
