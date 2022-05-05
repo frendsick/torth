@@ -275,8 +275,8 @@ def get_end_op_for_while(op: Op, program: Program) -> Op:
             while_count += 1
     compiler_error(op, "AMBIGUOUS_BREAK", "WHILE loop does not have END.")
 
-# Find the previous WHILE keyword
-def get_parent_while_for_break(op: Op, program: Program) -> Op:
+# Find the parent WHILE keyword
+def get_parent_while(op: Op, program: Program) -> Op:
     end_count: int = 0
     for i in range(op.id - 1, -1, -1):
         if program[i].type == OpType.WHILE:
@@ -285,7 +285,35 @@ def get_parent_while_for_break(op: Op, program: Program) -> Op:
             end_count -= 1
         if program[i].type == OpType.END:
             end_count += 1
-    compiler_error(op, "AMBIGUOUS_BREAK", "BREAK operand without parent WHILE.")
+    compiler_error(op, f"AMBIGUOUS_{op.token.value.upper()}", "BREAK operand without parent WHILE.")
+
+# DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
+def get_do_asm(op: Op, program: Program) -> str:
+    parent_op_type: OpType = get_parent_op_type_do(op, program)
+    while_count: int = 0
+    for i in range(op.id + 1, len(program)):
+        op_type: OpType = program[i].type
+
+        # Keep count on the nested WHILE's
+        if parent_op_type == OpType.WHILE and op_type == OpType.WHILE:
+            while_count += 1
+            continue
+
+        if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
+            or ( parent_op_type == OpType.WHILE and op_type == OpType.END and while_count == 0):
+            jump_destination: str = program[i].type.name + str(i)
+            op_asm: str = generate_do_asm(jump_destination)
+            try:
+                STACK.pop()
+                STACK.pop()
+            except IndexError:
+                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            break
+
+        if parent_op_type == OpType.WHILE and op_type == OpType.END:
+            while_count -= 1
+    return op_asm
 
 def get_parent_op_type_do(op: Op, program: Program) -> OpType:
     for i in range(op.id - 1, -1, -1):
@@ -297,27 +325,9 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
 
 # BREAK is unconditional jump to operand after current loop's END
 def get_break_asm(op: Op, program: Program) -> str:
-    parent_while: Op = get_parent_while_for_break(op, program)
+    parent_while: Op = get_parent_while(op, program)
     parent_end:   Op = get_end_op_for_while(parent_while, program)
     return f'  jmp END{parent_end.id}\n'
-
-# DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
-def get_do_asm(op: Op, program: Program) -> str:
-    parent_op_type: OpType = get_parent_op_type_do(op, program)
-    for i in range(op.id + 1, len(program)):
-        op_type: OpType = program[i].type
-        if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.WHILE and op_type == OpType.END ):
-            jump_destination: str = program[i].type.name + str(i)
-            op_asm: str = generate_do_asm(jump_destination)
-            try:
-                STACK.pop()
-                STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-            break
-    return op_asm
 
 def generate_do_asm(jump_destination: str) -> str:
     op_asm: str  =  '  pop rax\n'
@@ -358,12 +368,9 @@ def get_else_asm(op: Op, program: Program) -> str:
 
 # END is unconditional jump to WHILE
 def get_end_asm(op: Op, program: Program) -> str:
-    op_asm: str = ''
-    for i in range(op.id - 1, -1, -1):
-        if program[i].type == OpType.WHILE:
-            op_asm += f'  jmp WHILE{i}\n'
-            op_asm += f'END{op.id}:\n'
-            break
+    parent_while: Op = get_parent_while(op, program)
+    op_asm: str  = f'  jmp WHILE{parent_while.id}\n'
+    op_asm      += f'END{op.id}:\n'
     return op_asm
 
 # ENDIF is a keyword for DO, ELIF or ELSE to jump to
