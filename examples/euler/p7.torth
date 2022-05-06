@@ -1,0 +1,27 @@
+10001 //n
+2     // Counter
+3     // i
+
+// WHILE n² > i
+WHILE 4 get_nth 2 ^ > DO
+  1 // k
+
+  // WHILE i > k
+  WHILE rot over > DO
+    swap 2 + swap // k += 2
+
+    // IF i % k == 0, then break
+    IF rot over % 0 == DO break ENDIF
+
+    // IF k + 2 == i, then increment counter
+    IF rot 2 + over == DO rot rot 1 + rot ENDIF
+
+    // IF counter == n
+    rot rot IF 5 get_nth == DO swap print_int exit ENDIF
+    
+    // Align stack as it was before the loop
+    rot swap
+  END drop
+
+  2 + // i += 2
+END
