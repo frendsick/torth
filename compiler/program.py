@@ -99,7 +99,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "LE":
                 type_check_le(op)
             elif intrinsic == "LT":
-                continue #return type_check_lt(op)
+                type_check_lt(op)
             elif intrinsic == "MINUS":
                 continue #return type_check_minus(op)
             elif intrinsic == "MOD":
@@ -255,3 +255,10 @@ def type_check_le(op: Op) -> None:
     check_popped_value_type(op, b, expected_type='INT')
     STACK.append(a)
     STACK.append(str(int(a<=b)))
+
+def type_check_lt(op: Op) -> None:
+    a, b = pop_two_from_stack(op)
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(str(int(a<b)))
