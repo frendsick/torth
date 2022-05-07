@@ -85,7 +85,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "DUP2":
                 type_check_dup2(op)
             elif intrinsic == "ENVP":
-                continue #return type_check_envp()
+                STACK.append('ENVP')
             elif intrinsic == "EQ":
                 continue #return type_check_eq(op)
             elif intrinsic == "GE":
