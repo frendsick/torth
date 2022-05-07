@@ -331,6 +331,11 @@ def get_do_asm(op: Op, program: Program) -> str:
             or ( parent_op_type == OpType.WHILE and op_type == OpType.END and while_count == 0):
             jump_destination: str = program[i].type.name + str(i)
             op_asm: str = generate_do_asm(jump_destination)
+            try:
+                STACK.pop()
+                STACK.pop()
+            except IndexError:
+                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
             break
 
         if parent_op_type == OpType.WHILE and op_type == OpType.END:
