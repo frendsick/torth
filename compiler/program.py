@@ -69,7 +69,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.PUSH_INT:
             STACK.append(op.token.value)
         elif op.type == OpType.PUSH_STR:
-            continue #return type_check_push_str(op)
+            return type_check_push_str(op)
         elif op.type == OpType.WHILE:
             continue #return type_check_while(op)
         elif op.type == OpType.INTRINSIC:
@@ -168,3 +168,9 @@ def type_check_dup(op: Op) -> str:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
     STACK.append(top)
     STACK.append(top)
+
+def type_check_push_str(op: Op) -> str:
+    str_val: str = op.token.value[1:-1]  # Take quotes out of the string
+    str_len: int = len(str_val) + 1      # Add newline
+    STACK.append(f"{str_len}")
+    STACK.append(f"*buf s{op.id}")
