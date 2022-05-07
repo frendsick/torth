@@ -14,7 +14,6 @@ def link_object_file(obj_file: str, output_file: str) -> None:
 def compile_code(tokens: List[Token], input_file: str, output_file: str) -> None:
     asm_file: str = input_file.replace('.torth', '.asm')
     program: Program = generate_program(tokens)
-    # Uncomment when type type_check_program is implemented
     type_check_program(program)
     initialize_asm(asm_file)
     generate_asm(program, asm_file)
