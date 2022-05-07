@@ -111,7 +111,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "OVER":
                 type_check_over(op)
             elif intrinsic == "PLUS":
-                continue #return type_check_plus(op)
+                type_check_plus(op)
             elif intrinsic == "POW":
                 continue #return type_check_pow(op)
             # TODO: Merge PRINT and PRINT_INT
@@ -287,3 +287,7 @@ def type_check_over(op: Op) -> None:
     STACK.append(a)
     STACK.append(b)
     STACK.append(a)
+
+def type_check_plus(op: Op) -> None:
+    a, b = pop_two_from_stack(op)
+    STACK.append(str(int(a) + int(b)))
