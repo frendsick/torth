@@ -1,5 +1,5 @@
 import subprocess
-from typing import List
+from typing import List, Tuple
 from compiler.defs import Intrinsic, Op, OpType, Program, STACK, TokenType, Token
 from compiler.utils import check_popped_value_type, compiler_error
 
@@ -145,12 +145,16 @@ def type_check_program(program: Program) -> None:
             compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.")
     raise NotImplementedError("Type checking is not implemented yet.")
 
-def type_check_do(op: Op) -> None:
+def pop_two_from_stack(op: Op) -> Tuple[str, str]:
     try:
-        STACK.pop()
-        STACK.pop()
+        b: str = STACK.pop()
+        a: str = STACK.pop()
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    return a, b
+
+def type_check_do(op: Op) -> None:
+    pop_two_from_stack(op)
 
 def type_check_push_str(op: Op) -> None:
     str_val: str = op.token.value[1:-1]  # Take quotes out of the string
@@ -159,25 +163,17 @@ def type_check_push_str(op: Op) -> None:
     STACK.append(f"*buf s{op.id}")
 
 def type_check_div(op: Op) -> None:
-    try:
-        a = STACK.pop()
-        b = STACK.pop()
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-
+    a, b = pop_two_from_stack(op)
     check_popped_value_type(op, a, expected_type='INT')
     check_popped_value_type(op, b, expected_type='INT')
+
     try:
         STACK.append(str(int(b) // int(a)))
     except ZeroDivisionError:
         compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
 
 def type_check_divmod(op: Op) -> None:
-    try:
-        a = STACK.pop()
-        b = STACK.pop()
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    a, b = pop_two_from_stack(op)
 
     check_popped_value_type(op, a, expected_type='INT')
     check_popped_value_type(op, b, expected_type='INT')
@@ -202,23 +198,14 @@ def type_check_dup(op: Op) -> None:
     STACK.append(top)
 
 def type_check_dup2(op: Op) -> None:
-    try:
-        b = STACK.pop()
-        a = STACK.pop()
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    a, b = pop_two_from_stack(op)
     STACK.append(a)
     STACK.append(b)
     STACK.append(a)
     STACK.append(b)
 
 def type_check_eq(op: Op) -> None:
-    try:
-        b = STACK.pop()
-        a = STACK.pop()
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-
+    a, b = pop_two_from_stack(op)
     check_popped_value_type(op, a, expected_type='INT')
     check_popped_value_type(op, b, expected_type='INT')
     STACK.append(a)
