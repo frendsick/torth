@@ -79,7 +79,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "DIVMOD":
                 type_check_divmod(op)
             elif intrinsic == "DROP":
-                continue #return type_check_drop(op)
+                type_check_drop(op)
             elif intrinsic == "DUP":
                 continue #return type_check_dup(op)
             elif intrinsic == "DUP2":
@@ -152,7 +152,7 @@ def type_check_do(op: Op) -> None:
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
 
-def type_check_push_str(op: Op) -> str:
+def type_check_push_str(op: Op) -> None:
     str_val: str = op.token.value[1:-1]  # Take quotes out of the string
     str_len: int = len(str_val) + 1      # Add newline
     STACK.append(f"{str_len}")
@@ -187,7 +187,13 @@ def type_check_divmod(op: Op) -> None:
     except ZeroDivisionError:
         compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
 
-def type_check_dup(op: Op) -> str:
+def type_check_drop(op: Op) -> None:
+    try:
+        STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.")
+
+def type_check_dup(op: Op) -> None:
     try:
         top = STACK.pop()
     except IndexError:
