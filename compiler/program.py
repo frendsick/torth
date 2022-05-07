@@ -77,7 +77,7 @@ def type_check_program(program: Program) -> None:
             if intrinsic == "DIV":
                 type_check_div(op)
             elif intrinsic == "DIVMOD":
-                continue #return type_check_divmod(op)
+                type_check_divmod(op)
             elif intrinsic == "DROP":
                 continue #return type_check_drop(op)
             elif intrinsic == "DUP":
@@ -152,21 +152,13 @@ def type_check_do(op: Op) -> None:
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
 
-def type_check_dup(op: Op) -> str:
-    try:
-        top = STACK.pop()
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
-    STACK.append(top)
-    STACK.append(top)
-
 def type_check_push_str(op: Op) -> str:
     str_val: str = op.token.value[1:-1]  # Take quotes out of the string
     str_len: int = len(str_val) + 1      # Add newline
     STACK.append(f"{str_len}")
     STACK.append(f"*buf s{op.id}")
 
-def type_check_div(op: Op) -> str:
+def type_check_div(op: Op) -> None:
     try:
         a = STACK.pop()
         b = STACK.pop()
@@ -179,3 +171,26 @@ def type_check_div(op: Op) -> str:
         STACK.append(str(int(b) // int(a)))
     except ZeroDivisionError:
         compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
+
+def type_check_divmod(op: Op) -> None:
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    try:
+        STACK.append(str(int(a)% int(b)))
+        STACK.append(str(int(a)//int(b)))
+    except ZeroDivisionError:
+        compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
+
+def type_check_dup(op: Op) -> str:
+    try:
+        top = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    STACK.append(top)
+    STACK.append(top)
