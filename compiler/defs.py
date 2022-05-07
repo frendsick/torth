@@ -16,6 +16,7 @@ class Keyword(Enum):
     END=auto()
     ENDIF=auto()
     IF=auto()
+    MACRO=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
