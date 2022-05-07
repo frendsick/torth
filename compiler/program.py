@@ -142,7 +142,6 @@ def type_check_program(program: Program) -> None:
                 compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.")
         else:
             compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.")
-    raise NotImplementedError("Type checking is not implemented yet.")
 
 def pop_two_from_stack(op: Op) -> Tuple[str, str]:
     try:
@@ -167,7 +166,7 @@ def type_check_div(op: Op) -> None:
     check_popped_value_type(op, b, expected_type='INT')
 
     try:
-        STACK.append(str(int(b) // int(a)))
+        STACK.append(str(int(a) // int(b)))
     except ZeroDivisionError:
         compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
 
@@ -244,7 +243,7 @@ def type_check_lt(op: Op) -> None:
 
 def type_check_minus(op: Op) -> None:
     a, b = pop_two_from_stack(op)
-    STACK.append(str(int(a) + int(b)))
+    STACK.append(str(int(a) - int(b)))
 
 def type_check_mod(op: Op) -> None:
     a, b = pop_two_from_stack(op)
