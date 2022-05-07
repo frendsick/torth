@@ -156,12 +156,12 @@ def type_check_do(op: Op) -> None:
 
 # ELIF is like DUP, it duplicates the first element in the stack
 def type_check_elif(op: Op) -> None:
-    get_dup_asm(op)
+    type_check_dup(op)
 
 def type_check_if(op: Op) -> None:
-    get_dup_asm(op)
+    type_check_dup(op)
 
-def get_dup_asm(op: Op) -> str:
+def type_check_dup(op: Op) -> str:
     try:
         top = STACK.pop()
     except IndexError:
