@@ -87,7 +87,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "ENVP":
                 STACK.append('ENVP')
             elif intrinsic == "EQ":
-                continue #return type_check_eq(op)
+                type_check_eq(op)
             elif intrinsic == "GE":
                 continue #return type_check_ge(op)
             elif intrinsic == "GET_NTH":
@@ -211,3 +211,15 @@ def type_check_dup2(op: Op) -> None:
     STACK.append(b)
     STACK.append(a)
     STACK.append(b)
+
+def type_check_eq(op: Op) -> None:
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(str(int(a==b)))
