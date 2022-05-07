@@ -71,7 +71,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.PUSH_STR:
             return type_check_push_str(op)
         elif op.type == OpType.WHILE:
-            continue #return type_check_while(op)
+            type_check_dup(op)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "AND":
