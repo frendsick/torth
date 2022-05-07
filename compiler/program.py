@@ -91,7 +91,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "GE":
                 type_check_ge(op)
             elif intrinsic == "GET_NTH":
-                type_check_nth(op)
+                continue  # Type checking is performed when generating assembly
             elif intrinsic == "GT":
                 type_check_gt(op)
             elif intrinsic == "INPUT":
@@ -114,9 +114,7 @@ def type_check_program(program: Program) -> None:
                 type_check_plus(op)
             elif intrinsic == "POW":
                 type_check_pow(op)
-            elif intrinsic == "PRINT":
-                type_check_string_output(op, intrinsic)
-            elif intrinsic == "PUTS":
+            elif intrinsic in {"PRINT", "PUTS"}:
                 type_check_string_output(op, intrinsic)
             elif intrinsic == "ROT":
                 type_check_rot(op)
@@ -216,26 +214,6 @@ def type_check_ge(op: Op) -> None:
     check_popped_value_type(op, b, expected_type='INT')
     STACK.append(a)
     STACK.append(str(int(a>=b)))
-
-# Copies Nth element from the stack to the top of the stack
-def type_check_nth(op: Op) -> None:
-    # The top element in the stack is the N
-    try:
-        n: int = int(STACK.pop()) - 1
-        if n < 0:
-            compiler_error(op, "STACK_INDEX_ERROR", "Stack index N cannot be <= 0.")
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-    except ValueError:
-        compiler_error(op, "STACK_VALUE_ERROR", "First element in the stack is not a non-zero positive integer.")
-    try:
-        stack_index: int = len(STACK) - 1
-        nth_element: str = STACK[stack_index - n]
-    except IndexError:
-        compiler_error(op, "NOT_ENOUGH_ELEMENTS_IN_STACK", \
-                    f"Cannot get {n+1}. element from the stack: Stack only contains {len(STACK)} elements.")
-
-    STACK.append(nth_element)
 
 def type_check_gt(op: Op) -> None:
     a, b = pop_two_from_stack(op)
