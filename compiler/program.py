@@ -51,7 +51,7 @@ def run_code(exe_file: str) -> None:
 # Type check all operations which
 def type_check_program(program: Program) -> None:
     global STACK
-    NOT_TYPED_TOKENS: List[Token] = [ 'BREAK', 'ELSE', 'END', 'ENDIF', 'EXIT', 'PRINT_INT' ]
+    NOT_TYPED_TOKENS: List[Token] = [ 'BREAK', 'ELSE', 'END', 'ENDIF', 'EXIT' ]
     for op in program:
         token: Token = op.token
         if token.value.upper() in NOT_TYPED_TOKENS:
@@ -116,6 +116,8 @@ def type_check_program(program: Program) -> None:
                 type_check_pow(op)
             elif intrinsic in {"PRINT", "PUTS"}:
                 type_check_string_output(op, intrinsic)
+            elif intrinsic == "PRINT_INT":
+                type_check_print_int(op)
             elif intrinsic == "ROT":
                 type_check_rot(op)
             elif intrinsic == "SWAP":
@@ -314,6 +316,10 @@ def type_check_string_output(op: Op, intrinsic: str) -> None:
 
     check_popped_value_type(op, buf, expected_type='*buf')
     check_popped_value_type(op, count, expected_type='INT')
+
+def type_check_print_int(op: Op) -> None:
+    integer: str = STACK.pop()
+    check_popped_value_type(op, integer, expected_type='INT')
 
 def type_check_rot(op: Op) -> None:
     try:
