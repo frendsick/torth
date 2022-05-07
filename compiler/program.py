@@ -274,7 +274,7 @@ def type_check_plus(op: Op) -> None:
 # TODO: Make "POW" Macro in Torth when Macro's are implemented
 def type_check_pow(op: Op) -> None:
     type_check_over(op)             # OVER
-    STACK.append(op.token.value)    # PUSH_INT
+    STACK.append('1')               # PUSH_INT
     type_check_rot(op)              # ROT
     type_check_rot(op)              # ROT
     type_check_swap(op)             # SWAP
@@ -290,9 +290,9 @@ def type_check_pow(op: Op) -> None:
     type_check_mul(op)              # MUL
     type_check_swap(op)             # SWAP
     type_check_swap2(op)            # SWAP2
-    STACK.append(op.token.value)    # PUSH_INT
+    STACK.append('1')               # PUSH_INT
     type_check_plus(op)             # PLUS
-    for _ in range(3):
+    for _ in range(2):
         type_check_drop(op)         # DROP
 
     try:
