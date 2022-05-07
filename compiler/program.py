@@ -63,7 +63,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.IF:
             return type_check_if(op)
         elif op.type == OpType.PUSH_ARRAY:
-            continue #return type_check_push_array(op)
+            return type_check_push_array(op)
         elif op.type == OpType.PUSH_CSTR:
             continue #return type_check_push_cstr(op)
         elif op.type == OpType.PUSH_INT:
@@ -168,3 +168,6 @@ def get_dup_asm(op: Op) -> str:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
     STACK.append(top)
     STACK.append(top)
+
+def type_check_push_array(op: Op) -> None:
+    STACK.append(f"*buf s_arr{op.id}")
