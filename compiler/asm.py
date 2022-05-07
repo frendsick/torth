@@ -1,6 +1,6 @@
 from typing import List, Literal
-from compiler.defs import OpType, Op, Program, STACK, Token, TokenType
-from compiler.utils import check_popped_value_type, compiler_error
+from compiler.defs import OpType, Op, Program, STACK, Token
+from compiler.utils import compiler_error
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
@@ -35,7 +35,6 @@ def generate_asm(program: Program, asm_file: str) -> None:
         f.close()
 
 def get_op_asm(op: Op, program: Program) -> str:
-    token: Token = op.token
     if op.type == OpType.BREAK:
         return get_break_asm(op, program)
     elif op.type == OpType.DO:
@@ -49,88 +48,88 @@ def get_op_asm(op: Op, program: Program) -> str:
     elif op.type == OpType.ENDIF:
         return get_endif_asm(op)
     elif op.type == OpType.IF:
-        return get_if_asm(op)
+        return get_if_asm()
     elif op.type == OpType.PUSH_ARRAY:
         return get_push_array_asm(op)
     elif op.type == OpType.PUSH_CSTR:
         return get_push_cstr_asm(op)
     elif op.type == OpType.PUSH_INT:
-        return get_push_int_asm(token)
+        return get_push_int_asm(op.token.value)
     elif op.type == OpType.PUSH_STR:
         return get_push_str_asm(op)
     elif op.type == OpType.WHILE:
         return get_while_asm(op)
     elif op.type == OpType.INTRINSIC:
-        intrinsic: str = token.value.upper()
+        intrinsic: str = op.token.value.upper()
         if intrinsic == "DIV":
-            return get_div_asm(op)
+            return get_div_asm()
         elif intrinsic == "DIVMOD":
-            return get_divmod_asm(op)
+            return get_divmod_asm()
         elif intrinsic == "DROP":
-            return get_drop_asm(op)
+            return get_drop_asm()
         elif intrinsic == "DUP":
-            return get_dup_asm(op)
+            return get_dup_asm()
         elif intrinsic == "DUP2":
-            return get_dup2_asm(op)
+            return get_dup2_asm()
         elif intrinsic == "ENVP":
             return get_envp_asm()
         elif intrinsic == "EXIT":
             return get_exit_asm()
         elif intrinsic == "EQ":
-            return get_eq_asm(op)
+            return get_eq_asm()
         elif intrinsic == "GE":
-            return get_ge_asm(op)
+            return get_ge_asm()
         elif intrinsic == "GET_NTH":
             return get_nth_asm(op)
         elif intrinsic == "GT":
-            return get_gt_asm(op)
+            return get_gt_asm()
         elif intrinsic == "INPUT":
             return get_input_asm(op)
         elif intrinsic == "LE":
-            return get_le_asm(op)
+            return get_le_asm()
         elif intrinsic == "LT":
-            return get_lt_asm(op)
+            return get_lt_asm()
         elif intrinsic == "MINUS":
-            return get_minus_asm(op)
+            return get_minus_asm()
         elif intrinsic == "MOD":
-            return get_mod_asm(op)
+            return get_mod_asm()
         elif intrinsic == "MUL":
-            return get_mul_asm(op)
+            return get_mul_asm()
         elif intrinsic == "NE":
-            return get_ne_asm(op)
+            return get_ne_asm()
         elif intrinsic == "OVER":
-            return get_over_asm(op)
+            return get_over_asm()
         elif intrinsic == "PLUS":
-            return get_plus_asm(op)
+            return get_plus_asm()
         elif intrinsic == "POW":
             return get_pow_asm(op)
         # TODO: Merge PRINT and PRINT_INT
         elif intrinsic == "PRINT":
-            return get_string_output_asm(op, intrinsic)
+            return get_string_output_asm(intrinsic)
         elif intrinsic == "PRINT_INT":
             return get_print_int_asm()
         elif intrinsic == "PUTS":
-            return get_string_output_asm(op, intrinsic)
+            return get_string_output_asm(intrinsic)
         elif intrinsic == "ROT":
-            return get_rot_asm(op)
+            return get_rot_asm()
         elif intrinsic == "SWAP":
-            return get_swap_asm(op)
+            return get_swap_asm()
         elif intrinsic == "SWAP2":
-            return get_swap2_asm(op)
+            return get_swap2_asm()
         elif intrinsic == "SYSCALL0":
-            return get_syscall_asm(op, param_count=0)
+            return get_syscall_asm(param_count=0)
         elif intrinsic == "SYSCALL1":
-            return get_syscall_asm(op, param_count=1)
+            return get_syscall_asm(param_count=1)
         elif intrinsic == "SYSCALL2":
-            return get_syscall_asm(op, param_count=2)
+            return get_syscall_asm(param_count=2)
         elif intrinsic == "SYSCALL3":
-            return get_syscall_asm(op, param_count=3)
+            return get_syscall_asm(param_count=3)
         elif intrinsic == "SYSCALL4":
-            return get_syscall_asm(op, param_count=4)
+            return get_syscall_asm(param_count=4)
         elif intrinsic == "SYSCALL5":
-            return get_syscall_asm(op, param_count=5)
+            return get_syscall_asm(param_count=5)
         elif intrinsic == "SYSCALL6":
-            return get_syscall_asm(op, param_count=6)
+            return get_syscall_asm(param_count=6)
         else:
             compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
     else:
@@ -390,8 +389,8 @@ def get_endif_asm(op: Op) -> str:
     return f'ENDIF{op.id}:\n'
 
 # IF is like DUP, it duplicates the first element in the stack
-def get_if_asm(op: Op) -> str:
-    return get_dup_asm(op)
+def get_if_asm() -> str:
+    return get_dup_asm()
 
 def get_push_array_asm(op: Op) -> str:
     op_asm: str  = f'  mov rsi, s_arr{op.id} ; Pointer to array\n'
@@ -403,8 +402,8 @@ def get_push_cstr_asm(op: Op) -> str:
     op_asm      +=  '  push rsi\n'
     return op_asm
 
-def get_push_int_asm(token: Token) -> str:
-    op_asm: str  = f'  mov rax, {token.value}\n'
+def get_push_int_asm(integer: str) -> str:
+    op_asm: str  = f'  mov rax, {integer}\n'
     op_asm      +=  '  push rax\n'
     return op_asm
 
@@ -421,12 +420,10 @@ def get_push_str_asm(op: Op) -> str:
 # Also like DUP it duplicates the first element in the stack.
 def get_while_asm(op: Op) -> str:
     op_asm: str  = f'WHILE{op.id}:\n'
-    op_asm      +=  '  pop rax\n'
-    op_asm      +=  '  push rax\n'
-    op_asm      +=  '  push rax\n'
+    op_asm      += get_dup_asm()
     return op_asm
 
-def get_div_asm(op: Op) -> str:
+def get_div_asm() -> str:
     op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rax\n'
@@ -434,7 +431,7 @@ def get_div_asm(op: Op) -> str:
     op_asm      += '  push rax ; Quotient\n'
     return op_asm
 
-def get_divmod_asm(op: Op) -> str:
+def get_divmod_asm() -> str:
     op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rax\n'
@@ -443,16 +440,16 @@ def get_divmod_asm(op: Op) -> str:
     op_asm      += '  push rax ; Quotient\n'
     return op_asm
 
-def get_drop_asm(op: Op) -> str:
-    return '  add rsp, 8\n'
+def get_drop_asm(count: int = 1) -> str:
+    return f'  add rsp, {8*count}\n'
 
-def get_dup_asm(op: Op) -> str:
+def get_dup_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rax\n'
     return op_asm
 
-def get_dup2_asm(op: Op) -> str:
+def get_dup2_asm() -> str:
     op_asm: str  = '  pop rbx\n'
     op_asm      += '  pop rax\n'
     op_asm      += '  push rax\n'
@@ -462,7 +459,7 @@ def get_dup2_asm(op: Op) -> str:
     return op_asm
 
 def get_envp_asm() -> str:
-    op_asm: str  = '  mov rax, [rbp+8]\n'
+    op_asm: str  = '  mov rax, [rbp+24]\n'
     op_asm      += '  push rax\n'
     return op_asm
 
@@ -505,7 +502,7 @@ def get_nth_asm(op: Op) -> str:
     STACK.append(nth_element)
     return op_asm
 
-def get_gt_asm(op: Op) -> str:
+def get_gt_asm() -> str:
     return get_comparison_asm("cmovg")
 
 # User input is essentially a CSTR but the length is also pushed to the stack for possible printing
@@ -530,7 +527,7 @@ def get_lt_asm() -> str:
 def get_minus_asm() -> str:
     return get_arithmetic_asm("sub")
 
-def get_mod_asm(op: Op) -> str:
+def get_mod_asm() -> str:
     op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rax\n'
@@ -538,17 +535,17 @@ def get_mod_asm(op: Op) -> str:
     op_asm      += '  push rdx ; Remainder\n'
     return op_asm
 
-def get_mul_asm(op: Op) -> str:
+def get_mul_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  mul rbx\n'
     op_asm      += '  push rax\n'
     return op_asm
 
-def get_ne_asm(op: Op) -> str:
+def get_ne_asm() -> str:
     return get_comparison_asm("cmovne")
 
-def get_over_asm(op: Op) -> str:
+def get_over_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  push rbx\n'
@@ -563,30 +560,29 @@ def get_plus_asm() -> str:
 # TODO: Make "POW" Macro in Torth when Macro's are implemented
 def get_pow_asm(op: Op) -> str:
     do_jump_destination: str = f'END{op.id}'
-    mock_int_token: Token = Token('1', TokenType.INT, op.token.location)
-    op_asm: str  = get_over_asm(op)
-    op_asm      += get_push_int_asm(mock_int_token)
-    op_asm      += get_rot_asm(op)
-    op_asm      += get_rot_asm(op)
-    op_asm      += get_swap_asm(op)
+    op_asm: str  = get_over_asm()
+    op_asm      += get_push_int_asm('1')
+    op_asm      += get_rot_asm()
+    op_asm      += get_rot_asm()
+    op_asm      += get_swap_asm()
     op_asm      += get_while_asm(op)
-    op_asm      += get_rot_asm(op)
-    op_asm      += get_over_asm(op)
-    op_asm      += get_gt_asm(op)
+    op_asm      += get_rot_asm()
+    op_asm      += get_over_asm()
+    op_asm      += get_gt_asm()
     op_asm      += generate_do_asm(do_jump_destination)
-    op_asm      += get_swap_asm(op)
-    op_asm      += get_swap2_asm(op)
-    op_asm      += get_dup_asm(op)
-    op_asm      += get_rot_asm(op)
-    op_asm      += get_mul_asm(op)
-    op_asm      += get_swap_asm(op)
-    op_asm      += get_swap2_asm(op)
-    op_asm      += get_push_int_asm(mock_int_token)
-    op_asm      += get_plus_asm(op)
+    op_asm      += get_swap_asm()
+    op_asm      += get_swap2_asm()
+    op_asm      += get_dup_asm()
+    op_asm      += get_rot_asm()
+    op_asm      += get_mul_asm()
+    op_asm      += get_swap_asm()
+    op_asm      += get_swap2_asm()
+    op_asm      += get_push_int_asm('1')
+    op_asm      += get_plus_asm()
     op_asm      += f'  jmp WHILE{op.id}\n'
     op_asm      += f'{do_jump_destination}:\n'
     for _ in range(3):
-        op_asm  += get_drop_asm(op)
+        op_asm  += get_drop_asm()
     return op_asm
 
 def get_print_int_asm() -> str:
@@ -594,7 +590,7 @@ def get_print_int_asm() -> str:
     op_asm      += '  call PrintInt\n'
     return op_asm
 
-def get_string_output_asm(op: Op, intrinsic: str) -> str:
+def get_string_output_asm(intrinsic: str) -> str:
     op_asm: str  = '  pop rsi    ; *buf\n'
     op_asm      += '  pop rdx    ; count\n'
 
@@ -606,7 +602,7 @@ def get_string_output_asm(op: Op, intrinsic: str) -> str:
     op_asm      += '  syscall\n'
     return op_asm
 
-def get_rot_asm(op: Op) -> str:
+def get_rot_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rcx\n'
@@ -615,14 +611,14 @@ def get_rot_asm(op: Op) -> str:
     op_asm      += '  push rbx\n'
     return op_asm
 
-def get_swap_asm(op: Op) -> str:
+def get_swap_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rbx\n'
     return op_asm
 
-def get_swap2_asm(op: Op) -> str:
+def get_swap2_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rcx\n'
@@ -633,7 +629,7 @@ def get_swap2_asm(op: Op) -> str:
     op_asm      += '  push rcx\n'
     return op_asm
 
-def get_syscall_asm(op: Op, param_count: int) -> str:
+def get_syscall_asm(param_count: int) -> str:
     op_asm: str  = "  pop rax ; syscall\n"
 
     # Pop arguments to syscall argument registers
