@@ -123,7 +123,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "SWAP":
                 type_check_swap(op)
             elif intrinsic == "SWAP2":
-                continue #return type_check_swap2(op)
+                type_check_swap2(op)
             elif intrinsic == "SYSCALL0":
                 continue #return type_check_syscall(op, param_count=0)
             elif intrinsic == "SYSCALL1":
@@ -317,3 +317,16 @@ def type_check_swap(op: Op) -> None:
     a, b = pop_two_from_stack(op)
     STACK.append(b)
     STACK.append(a)
+
+def type_check_swap2(op: Op) -> None:
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+        c = STACK.pop()
+        d = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    STACK.append(b)
+    STACK.append(a)
+    STACK.append(d)
+    STACK.append(c)
