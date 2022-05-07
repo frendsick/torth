@@ -63,9 +63,9 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.IF:
             return type_check_if(op)
         elif op.type == OpType.PUSH_ARRAY:
-            return type_check_push_array(op)
+            STACK.append(f"*buf s_arr{op.id}")
         elif op.type == OpType.PUSH_CSTR:
-            return type_check_push_cstr(op)
+            STACK.append(f"*buf cs{op.id}")
         elif op.type == OpType.PUSH_INT:
             STACK.append(op.token.value)
         elif op.type == OpType.PUSH_STR:
@@ -168,9 +168,3 @@ def type_check_dup(op: Op) -> str:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
     STACK.append(top)
     STACK.append(top)
-
-def type_check_push_array(op: Op) -> None:
-    STACK.append(f"*buf s_arr{op.id}")
-
-def type_check_push_cstr(op: Op) -> None:
-    STACK.append(f"*buf cs{op.id}")
