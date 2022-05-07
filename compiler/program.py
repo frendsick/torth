@@ -93,7 +93,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "GET_NTH":
                 type_check_nth(op)
             elif intrinsic == "GT":
-                continue #return type_check_gt(op)
+                type_check_gt(op)
             elif intrinsic == "INPUT":
                 continue #return type_check_input(op)
             elif intrinsic == "LE":
@@ -237,3 +237,10 @@ def type_check_nth(op: Op) -> None:
                     f"Cannot get {n+1}. element from the stack: Stack only contains {len(STACK)} elements.")
 
     STACK.append(nth_element)
+
+def type_check_gt(op: Op) -> None:
+    a, b = pop_two_from_stack(op)
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(str(int(a>b)))
