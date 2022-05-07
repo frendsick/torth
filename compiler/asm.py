@@ -277,13 +277,6 @@ def add_input_buffer_asm(asm_file: str, op: Op):
         for i in range(row+1, len(file_lines)):
             f.write(file_lines[i])
 
-def get_stack_after_syscall(stack: List[str], param_count: int) -> List[str]:
-    _syscall = stack.pop()
-    for _i in range(param_count):
-        stack.pop()
-    stack.append('0') # Syscall return value is 0 by default
-    return stack
-
 def get_end_op_for_while(op: Op, program: Program) -> Op:
     while_count: int = 0
     for i in range(op.id, len(program)):
