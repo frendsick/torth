@@ -59,7 +59,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.DO:
             return type_check_do(op)
         elif op.type == OpType.ELIF:
-            continue #return type_check_elif(op, program)
+            return type_check_elif(op)
         elif op.type == OpType.ELSE:
             continue #return type_check_else(op, program)
         elif op.type == OpType.END:
@@ -163,3 +163,12 @@ def type_check_do(op: Op) -> str:
         STACK.pop()
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+
+# ELIF is like DUP, it duplicates the first element in the stack
+def type_check_elif(op: Op) -> str:
+    try:
+        top: str = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    STACK.append(top)
+    STACK.append(top)
