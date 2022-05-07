@@ -147,7 +147,7 @@ def type_check_program(program: Program) -> None:
             compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.")
     raise NotImplementedError("Type checking is not implemented yet.")
 
-def type_check_do(op: Op) -> str:
+def type_check_do(op: Op) -> None:
     try:
         STACK.pop()
         STACK.pop()
