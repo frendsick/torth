@@ -166,12 +166,7 @@ def type_check_do(op: Op) -> str:
 
 # ELIF is like DUP, it duplicates the first element in the stack
 def type_check_elif(op: Op) -> None:
-    try:
-        top: str = STACK.pop()
-    except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
-    STACK.append(top)
-    STACK.append(top)
+    get_dup_asm(op)
 
 def type_check_if(op: Op) -> None:
     get_dup_asm(op)
