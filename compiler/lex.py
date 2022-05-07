@@ -1,49 +1,71 @@
 import re
 import os
-from typing import List
+from typing import List, Tuple
 from compiler.defs import Keyword, TokenType, Location, Token
 
-def get_tokens_from_code(file: str, code: str) -> List[Token]:
-    tokens: List[Token] = []
-    token_matches: List[re.Match[str]] = get_token_matches(code)
+def get_tokens_from_code(file: str, code: str, macro_location: Location = None) -> List[Token]:
+    MACRO_REGEX: re.Pattern[str]        = re.compile(r'\s*MACRO\s+(\S+)\s+(.*)\s+END\s*', re.IGNORECASE)
+    token_matches: List[re.Match[str]]  = get_token_matches(code, MACRO_REGEX)
 
     # Newlines are used to determine when a comment ends and when new line starts
     newline_indexes: List[int]  = [nl.start() for nl in re.finditer('\n', code)]
 
+    tokens: List[Token]             = []
+    macros: List[Tuple[str,str]]    = re.findall(MACRO_REGEX, code)
     for match in token_matches:
-        token = get_token_from_match(match, os.path.basename(file), newline_indexes)
+        token = get_token_from_match(match, os.path.basename(file), newline_indexes, macros, macro_location)
         tokens.append(token)
 
     return tokens
 
 # Returns all tokens with comments taken out
-def get_token_matches(code: str) -> List[re.Match[str]]:
+def get_token_matches(code: str, macro_regex: re.Pattern[str]) -> List[re.Match[str]]:
     TOKEN_REGEX: re.Pattern[str] = re.compile(r'''\[.*\]|".*?"|'.*?'|\S+''')
-    matches: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code))
-    code_without_comments: str = re.sub(r'\s*\/\/.*', '', code)
-    matches_without_comments: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code_without_comments))
 
-    # Take comments out of matches
+    matches: List[re.Match[str]]            = list(re.finditer(TOKEN_REGEX, code))
+    code_without_comments: str              = re.sub(r'\s*\/\/.*', '', code)
+    code_without_macros: str                = re.sub(macro_regex, '', code_without_comments)
+    final_code_matches: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code_without_macros))
+
+    # Take comments and macros out of matches
     i: int = 0
     while i < len(matches):
         match: str = matches[i].group(0)
 
         # If i >= size of matches_without_comments list then the rest is comments
-        if i >= len(matches_without_comments) or match != matches_without_comments[i].group(0):
+        if i >= len(final_code_matches) or match != final_code_matches[i].group(0):
             matches.pop(i)
             i -= 1
         i += 1
     return matches
 
+def merge_macros_to_matches(macros: List[Tuple[str, str]], matches: List[re.Match[str]]) -> List[re.Match[str]]:
+    for macro in macros:
+        macro_name: str = macro[0]
+        macro_code: str = macro[1]
+
+        # Replace all references to macro's name with macro's content
+
+
+def merge_macros_to_code(code: str, macro_regex: str) -> str:
+    macros: List[Tuple[str, str]] = re.findall(macro_regex, code)
+    for macro in macros:
+        # Remove macros from code
+        code = re.sub(macro_regex, '', code, count=1)
+
+        # Replace all calls to the macro with the macro contents
+        code = code.replace(macro[0], macro[1])
+    return code
+
 # Constructs and returns a Token object from a regex match
-def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[int]) -> Token:
-    token_value     = get_token_value(match.group(0))
-    token_type      = get_token_type(token_value)
-    token_location  = get_token_location(file, match.start(), newline_indexes)
+def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[int], macros: List[Tuple[str,str]], macro_location: Location) -> Token:
+    token_value: str        = get_token_value(match.group(0), macros)
+    token_type: TokenType   = get_token_type(token_value)
+    token_location          = macro_location or get_token_location(file, match.start(), newline_indexes)
     return Token(token_value, token_type, token_location)
 
 # Returns the Intrinsic class value from token
-def get_token_value(token: str) -> str:
+def get_token_value(token: str, macros: List[Tuple[str,str]]) -> str:
     token = token.upper()
     if token == '%':
         return 'MOD'
@@ -75,10 +97,14 @@ def get_token_value(token: str) -> str:
         return '1'
     if token == 'FALSE':
         return '0'
+    for macro in macros:
+        macro_name: str = macro[0].upper()
+        if token == macro_name:
+            return macro[1]  # Macro's code
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords: List[str] = ['BREAK', 'DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'IF', 'WHILE']
+    keywords: List[str] = ['BREAK', 'DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'IF', 'MACRO', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 

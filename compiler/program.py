@@ -1,14 +1,18 @@
+import re
 import subprocess
 from typing import List, Tuple
 from compiler.defs import Intrinsic, Op, OpType, Program, STACK, TokenType, Token
+from compiler.lex import get_tokens_from_code
 from compiler.utils import check_popped_value_type, compiler_error
 
 def intrinsic_exists(token: str) -> bool:
     return bool(hasattr(Intrinsic, token))
 
-def generate_program(tokens = List[Token]) -> Program:
+def generate_program(tokens: List[Token], file: str) -> Program:
     program: List[Op] = []
-    for id, token in enumerate(tokens):
+    op_id: int = 0
+    for token in tokens:
+        op_id = len(program)
         token_value: str = token.value.upper()
         if token.type == TokenType.ARRAY:
             op_type = OpType.PUSH_ARRAY
@@ -38,10 +42,23 @@ def generate_program(tokens = List[Token]) -> Program:
             op_type = OpType.WHILE
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
+        elif re.match(r'\S+\s+\S+', token_value):
+            macro_tokens: List[Token]   = get_tokens_from_code(file, token_value, token.location)
+            program                    += generate_program(macro_tokens, file)
+
+            # Fix Op ID's after appending macro tokens
+            for i, _ in enumerate(program):
+                program[i].id = i
+
+            # Use the last Op from macro as the Op for current iteration of the loop
+            last_macro_op: Op   = program.pop()
+            op_id: int          = last_macro_op.id
+            token: Token        = last_macro_op.token
+            op_type: OpType     = last_macro_op.type
         else:
             raise AttributeError (f"Operation '{token_value}' is not found")
 
-        operand: Op = Op(id, op_type, token)
+        operand: Op = Op(op_id, op_type, token)
         program.append(operand)
     return program
 

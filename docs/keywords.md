@@ -9,6 +9,7 @@ This is the documentation for different keywords available in the Torth language
 - [END](#END)
 - [ENDIF](#ENDIF)
 - [IF](#IF)
+- [MACRO](#MACRO)
 - [WHILE](#WHILE)
 
 ## BREAK
@@ -197,6 +198,26 @@ ENDIF
 
 // Output:
 // Positive number
+```
+
+## MACRO
+
+Macros are defined using MACRO keyword. Macros are pieces of code that can be called from wherever inside the program by using its name like functions in many other languages. When called, the macro's name is replaced with the contents of the macro during compilation. Macros should be defined before calling. Defined macros are case insensitive tokens like all other keywords in Torth.
+
+Macros do not take parameters but instead use the current stack. It would be a good practice to somehow document what kind of values does the macro expect to be in the stack and how it alters stack's state during it's execution.
+
+Macros cannot be yet called from within a macro. That feature is probably going to be implemented someday.
+
+### Examples
+
+```pascal
+MACRO multiple_by_two
+  2 *
+END
+macro OutputInteger print_int end
+
+3 MULTIPLE_BY_TWO outputinteger // Macros are case insensitive
+5 multiple_by_two multiple_by_two OutputInteger // 5 * 2 * 2 * 2 = 40
 ```
 
 ## WHILE
