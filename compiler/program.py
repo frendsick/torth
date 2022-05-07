@@ -116,9 +116,9 @@ def type_check_program(program: Program) -> None:
                 continue #return type_check_pow(op)
             # TODO: Merge PRINT and PRINT_INT
             elif intrinsic == "PRINT":
-                continue #return type_check_string_output(op, intrinsic)
+                type_check_string_output(op, intrinsic)
             elif intrinsic == "PUTS":
-                continue #return type_check_string_output(op, intrinsic)
+                type_check_string_output(op, intrinsic)
             elif intrinsic == "ROT":
                 continue #return type_check_rot(op)
             elif intrinsic == "SWAP":
@@ -291,3 +291,14 @@ def type_check_over(op: Op) -> None:
 def type_check_plus(op: Op) -> None:
     a, b = pop_two_from_stack(op)
     STACK.append(str(int(a) + int(b)))
+
+def type_check_string_output(op: Op, intrinsic: str) -> str:
+    try:
+        buf    = STACK.pop()
+        count  = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", \
+            f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.")
+
+    check_popped_value_type(op, buf, expected_type='*buf')
+    check_popped_value_type(op, count, expected_type='INT')
