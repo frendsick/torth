@@ -113,7 +113,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "PLUS":
                 type_check_plus(op)
             elif intrinsic == "POW":
-                continue #return type_check_pow(op)
+                type_check_pow(op)
             elif intrinsic == "PRINT":
                 type_check_string_output(op, intrinsic)
             elif intrinsic == "PUTS":
@@ -290,6 +290,41 @@ def type_check_over(op: Op) -> None:
 def type_check_plus(op: Op) -> None:
     a, b = pop_two_from_stack(op)
     STACK.append(str(int(a) + int(b)))
+
+# The sequence of operations is from examples/pow.torth
+# TODO: Make "POW" Macro in Torth when Macro's are implemented
+def type_check_pow(op: Op) -> None:
+    type_check_over(op)             # OVER
+    STACK.append(op.token.value)    # PUSH_INT
+    type_check_rot(op)              # ROT
+    type_check_rot(op)              # ROT
+    type_check_swap(op)             # SWAP
+    type_check_dup(op)              # WHILE
+    type_check_rot(op)              # ROT
+    type_check_over(op)             # OVER
+    type_check_gt(op)               # GT
+    type_check_do(op)               # DO
+    type_check_swap(op)             # SWAP
+    type_check_swap2(op)            # SWAP2
+    type_check_dup(op)              # DUP
+    type_check_rot(op)              # ROT
+    type_check_mul(op)              # MUL
+    type_check_swap(op)             # SWAP
+    type_check_swap2(op)            # SWAP2
+    STACK.append(op.token.value)    # PUSH_INT
+    type_check_plus(op)             # PLUS
+    for _ in range(3):
+        type_check_drop(op)         # DROP
+
+    try:
+        exponent: str   = STACK.pop()
+        number: str     = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+
+    check_popped_value_type(op, number, expected_type='INT')
+    check_popped_value_type(op, exponent, expected_type='INT')
+    STACK.append(str(int(number)**int(exponent)))
 
 def type_check_string_output(op: Op, intrinsic: str) -> None:
     try:
