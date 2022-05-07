@@ -114,13 +114,12 @@ def type_check_program(program: Program) -> None:
                 type_check_plus(op)
             elif intrinsic == "POW":
                 continue #return type_check_pow(op)
-            # TODO: Merge PRINT and PRINT_INT
             elif intrinsic == "PRINT":
                 type_check_string_output(op, intrinsic)
             elif intrinsic == "PUTS":
                 type_check_string_output(op, intrinsic)
             elif intrinsic == "ROT":
-                continue #return type_check_rot(op)
+                type_check_rot(op)
             elif intrinsic == "SWAP":
                 continue #return type_check_swap(op)
             elif intrinsic == "SWAP2":
@@ -292,7 +291,7 @@ def type_check_plus(op: Op) -> None:
     a, b = pop_two_from_stack(op)
     STACK.append(str(int(a) + int(b)))
 
-def type_check_string_output(op: Op, intrinsic: str) -> str:
+def type_check_string_output(op: Op, intrinsic: str) -> None:
     try:
         buf    = STACK.pop()
         count  = STACK.pop()
@@ -302,3 +301,14 @@ def type_check_string_output(op: Op, intrinsic: str) -> str:
 
     check_popped_value_type(op, buf, expected_type='*buf')
     check_popped_value_type(op, count, expected_type='INT')
+
+def type_check_rot(op: Op) -> None:
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+        c = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain three elements to rotate.")
+    STACK.append(a)
+    STACK.append(c)
+    STACK.append(b)
