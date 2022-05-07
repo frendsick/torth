@@ -24,7 +24,8 @@ def generate_asm(program: Program, asm_file: str) -> None:
         with open(asm_file, 'a') as f:
             f.write(get_op_comment_asm(op, op.type))
             op_asm: str = get_op_asm(op, program=program)
-            print(op.token.value, STACK)
+            # Uncomment print to see virtual stack for ops
+            #print(op.token.value, STACK)
             if op_asm != "":
                 f.write(op_asm)
 
