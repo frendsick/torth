@@ -107,7 +107,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "MUL":
                 type_check_mul(op)
             elif intrinsic == "NE":
-                continue #return type_check_ne(op)
+                type_check_ne(op)
             elif intrinsic == "OVER":
                 continue #return type_check_over(op)
             elif intrinsic == "PLUS":
@@ -274,3 +274,10 @@ def type_check_mod(op: Op) -> None:
 def type_check_mul(op: Op) -> None:
     a, b = pop_two_from_stack(op)
     STACK.append(str(int(a) * int(b)))
+
+def type_check_ne(op: Op) -> None:
+    a, b = pop_two_from_stack(op)
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(str(int(a!=b)))
