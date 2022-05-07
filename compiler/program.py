@@ -39,7 +39,7 @@ def generate_program(tokens = List[Token]) -> Program:
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
         else:
-            raise AttributeError (f"Operation '{token.value}' is not found")
+            raise AttributeError (f"Operation '{token_value}' is not found")
 
         operand: Op = Op(id, op_type, token)
         program.append(operand)
