@@ -103,7 +103,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "MINUS":
                 type_check_minus(op)
             elif intrinsic == "MOD":
-                continue #return type_check_mod(op)
+                type_check_mod(op)
             elif intrinsic == "MUL":
                 continue #return type_check_mul(op)
             elif intrinsic == "NE":
@@ -266,3 +266,7 @@ def type_check_lt(op: Op) -> None:
 def type_check_minus(op: Op) -> None:
     a, b = pop_two_from_stack(op)
     STACK.append(str(int(a) + int(b)))
+
+def type_check_mod(op: Op) -> None:
+    a, b = pop_two_from_stack(op)
+    STACK.append(str(int(a) % int(b)))
