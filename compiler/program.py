@@ -1,7 +1,7 @@
 import subprocess
 from typing import List
 from compiler.defs import Intrinsic, Op, OpType, Program, STACK, TokenType, Token
-from compiler.utils import compiler_error
+from compiler.utils import check_popped_value_type, compiler_error
 
 def intrinsic_exists(token: str) -> bool:
     return bool(hasattr(Intrinsic, token))
@@ -74,10 +74,8 @@ def type_check_program(program: Program) -> None:
             type_check_dup(op)  # WHILE duplicates the first element in the stack
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
-            if intrinsic == "AND":
-                continue #return type_check_and(op)
-            elif intrinsic == "DIV":
-                continue #return type_check_div(op)
+            if intrinsic == "DIV":
+                type_check_div(op)
             elif intrinsic == "DIVMOD":
                 continue #return type_check_divmod(op)
             elif intrinsic == "DROP":
@@ -167,3 +165,17 @@ def type_check_push_str(op: Op) -> str:
     str_len: int = len(str_val) + 1      # Add newline
     STACK.append(f"{str_len}")
     STACK.append(f"*buf s{op.id}")
+
+def type_check_div(op: Op) -> str:
+    try:
+        a = STACK.pop()
+        b = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    try:
+        STACK.append(str(int(b) // int(a)))
+    except ZeroDivisionError:
+        compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
