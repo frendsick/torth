@@ -95,7 +95,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "GT":
                 type_check_gt(op)
             elif intrinsic == "INPUT":
-                continue #return type_check_input(op)
+                type_check_input()
             elif intrinsic == "LE":
                 continue #return type_check_le(op)
             elif intrinsic == "LT":
@@ -244,3 +244,7 @@ def type_check_gt(op: Op) -> None:
     check_popped_value_type(op, b, expected_type='INT')
     STACK.append(a)
     STACK.append(str(int(a>b)))
+
+def type_check_input() -> None:
+    STACK.append(f"42") # User input length is not known beforehand
+    STACK.append(f"*buf buffer")
