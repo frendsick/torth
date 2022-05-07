@@ -125,19 +125,19 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "SWAP2":
                 type_check_swap2(op)
             elif intrinsic == "SYSCALL0":
-                continue #return type_check_syscall(op, param_count=0)
+                type_check_syscall(op, param_count=0)
             elif intrinsic == "SYSCALL1":
-                continue #return type_check_syscall(op, param_count=1)
+                type_check_syscall(op, param_count=1)
             elif intrinsic == "SYSCALL2":
-                continue #return type_check_syscall(op, param_count=2)
+                type_check_syscall(op, param_count=2)
             elif intrinsic == "SYSCALL3":
-                continue #return type_check_syscall(op, param_count=3)
+                type_check_syscall(op, param_count=3)
             elif intrinsic == "SYSCALL4":
-                continue #return type_check_syscall(op, param_count=4)
+                type_check_syscall(op, param_count=4)
             elif intrinsic == "SYSCALL5":
-                continue #return type_check_syscall(op, param_count=5)
+                type_check_syscall(op, param_count=5)
             elif intrinsic == "SYSCALL6":
-                continue #return type_check_syscall(op, param_count=6)
+                type_check_syscall(op, param_count=6)
             else:
                 compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.")
         else:
@@ -330,3 +330,15 @@ def type_check_swap2(op: Op) -> None:
     STACK.append(a)
     STACK.append(d)
     STACK.append(c)
+
+def type_check_syscall(op: Op, param_count: int) -> None:
+    try:
+        get_stack_after_syscall(STACK, param_count)
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+
+def get_stack_after_syscall(stack: List[str], param_count: int) -> None:
+    _syscall = stack.pop()
+    for _i in range(param_count):
+        stack.pop()
+    stack.append('0') # Syscall return value is 0 if no errors occurred
