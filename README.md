@@ -48,11 +48,11 @@ FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 0 // The sum of numbers not divisible by 3 or 5
 1 WHILE 30 >= DO
     IF 15 % 0 == DO
-        "FizzBuzz  " print print_int
+        "FizzBuzz  " print dup print_int
     ELIF 3 % 0 == DO
-        "Fizz      " print print_int
+        "Fizz      " print dup print_int
     ELIF 5 % 0 == DO
-        "Buzz      " print print_int
+        "Buzz      " print dup print_int
     ELSE
         // Add current number to the sum of numbers not divisible by 3 or 5
         dup rot + swap
@@ -61,14 +61,6 @@ FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 END drop // Drop the counter from the stack
 
 "Sum of all numbers not divisible by 3 or 5: " print print_int
-```
-
-Invoking execve Linux syscall
-
-```pascal
-// The execve command is constructed with the following strace output:
-// execve("/usr/bin/wget", ["wget", "example.com", "-O", "example.html"], 0x7ffffec61f68)
-envp array("wget","example.com","-O","example.html") '/usr/bin/wget' 59 syscall3
 ```
 
 ## Documentation
