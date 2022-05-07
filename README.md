@@ -8,6 +8,12 @@ Torth is planned to be
 - [x] Native (Linux x86_64)
 - [x] Stack-based (just like Porth)
 
+## Requirements
+
+- Python3.6 or newer
+- NASM
+- LD
+
 ## Usage
 
 ```console
