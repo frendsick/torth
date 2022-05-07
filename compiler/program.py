@@ -57,11 +57,11 @@ def type_check_program(program: Program) -> None:
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
         elif op.type == OpType.DO:
-            return type_check_do(op)
+            type_check_do(op)
         elif op.type == OpType.ELIF:
-            return type_check_elif(op)
+            type_check_dup(op)  # ELIF duplicates the first element in the stack
         elif op.type == OpType.IF:
-            return type_check_if(op)
+            type_check_dup(op)  # IF duplicates the first element in the stack
         elif op.type == OpType.PUSH_ARRAY:
             STACK.append(f"*buf s_arr{op.id}")
         elif op.type == OpType.PUSH_CSTR:
@@ -69,9 +69,9 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.PUSH_INT:
             STACK.append(op.token.value)
         elif op.type == OpType.PUSH_STR:
-            return type_check_push_str(op)
+            type_check_push_str(op)
         elif op.type == OpType.WHILE:
-            type_check_dup(op)
+            type_check_dup(op)  # WHILE duplicates the first element in the stack
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "AND":
@@ -153,13 +153,6 @@ def type_check_do(op: Op) -> None:
         STACK.pop()
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
-
-# ELIF is like DUP, it duplicates the first element in the stack
-def type_check_elif(op: Op) -> None:
-    type_check_dup(op)
-
-def type_check_if(op: Op) -> None:
-    type_check_dup(op)
 
 def type_check_dup(op: Op) -> str:
     try:
