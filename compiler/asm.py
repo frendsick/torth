@@ -71,8 +71,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_dup_asm()
         elif intrinsic == "DUP2":
             return get_dup2_asm()
-        elif intrinsic == "ENVP":
-            return get_envp_asm()
         elif intrinsic == "EXIT":
             return get_exit_asm()
         elif intrinsic == "EQ":
@@ -456,11 +454,6 @@ def get_dup2_asm() -> str:
     op_asm      += '  push rbx\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rbx\n'
-    return op_asm
-
-def get_envp_asm() -> str:
-    op_asm: str  = '  mov rax, [rbp+24]\n'
-    op_asm      += '  push rax\n'
     return op_asm
 
 def get_exit_asm() -> str:

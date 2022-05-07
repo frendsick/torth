@@ -1,6 +1,0 @@
-// This program runs Linux command 'wget example.com -O example.html' with execve syscall
-// which gets the contents of the example.com webpage and saves it to example.html file.
-
-// The execve command is constructed with the following strace output:
-// execve("/usr/bin/wget", ["wget", "example.com", "-O", "example.html"], 0x7ffffec61f68)
-envp array("wget","example.com","-O","example.html") '/usr/bin/wget' 59 syscall3

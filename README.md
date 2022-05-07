@@ -63,14 +63,6 @@ END drop // Drop the counter from the stack
 "Sum of all numbers not divisible by 3 or 5: " print print_int
 ```
 
-Invoking execve Linux syscall
-
-```pascal
-// The execve command is constructed with the following strace output:
-// execve("/usr/bin/wget", ["wget", "example.com", "-O", "example.html"], 0x7ffffec61f68)
-envp array("wget","example.com","-O","example.html") '/usr/bin/wget' 59 syscall3
-```
-
 ## Documentation
 
 - [Keywords](./docs/keywords.md)
