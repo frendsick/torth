@@ -121,7 +121,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "ROT":
                 type_check_rot(op)
             elif intrinsic == "SWAP":
-                continue #return type_check_swap(op)
+                type_check_swap(op)
             elif intrinsic == "SWAP2":
                 continue #return type_check_swap2(op)
             elif intrinsic == "SYSCALL0":
@@ -312,3 +312,8 @@ def type_check_rot(op: Op) -> None:
     STACK.append(a)
     STACK.append(c)
     STACK.append(b)
+
+def type_check_swap(op: Op) -> None:
+    a, b = pop_two_from_stack(op)
+    STACK.append(b)
+    STACK.append(a)
