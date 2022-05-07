@@ -65,7 +65,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.PUSH_ARRAY:
             return type_check_push_array(op)
         elif op.type == OpType.PUSH_CSTR:
-            continue #return type_check_push_cstr(op)
+            return type_check_push_cstr(op)
         elif op.type == OpType.PUSH_INT:
             continue #return type_check_push_int(token)
         elif op.type == OpType.PUSH_STR:
@@ -171,3 +171,6 @@ def type_check_dup(op: Op) -> str:
 
 def type_check_push_array(op: Op) -> None:
     STACK.append(f"*buf s_arr{op.id}")
+
+def type_check_push_cstr(op: Op) -> None:
+    STACK.append(f"*buf cs{op.id}")
