@@ -81,9 +81,9 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "DROP":
                 type_check_drop(op)
             elif intrinsic == "DUP":
-                continue #return type_check_dup(op)
+                type_check_dup(op)
             elif intrinsic == "DUP2":
-                continue #return type_check_dup2(op)
+                type_check_dup2(op)
             elif intrinsic == "ENVP":
                 continue #return type_check_envp()
             elif intrinsic == "EQ":
@@ -200,3 +200,14 @@ def type_check_dup(op: Op) -> None:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
     STACK.append(top)
     STACK.append(top)
+
+def type_check_dup2(op: Op) -> None:
+    try:
+        b = STACK.pop()
+        a = STACK.pop()
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+    STACK.append(a)
+    STACK.append(b)
+    STACK.append(a)
+    STACK.append(b)
