@@ -89,7 +89,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "EQ":
                 type_check_eq(op)
             elif intrinsic == "GE":
-                continue #return type_check_ge(op)
+                type_check_ge(op)
             elif intrinsic == "GET_NTH":
                 continue #return type_check_nth(op)
             elif intrinsic == "GT":
@@ -210,3 +210,10 @@ def type_check_eq(op: Op) -> None:
     check_popped_value_type(op, b, expected_type='INT')
     STACK.append(a)
     STACK.append(str(int(a==b)))
+
+def type_check_ge(op: Op) -> None:
+    a, b = pop_two_from_stack(op)
+    check_popped_value_type(op, a, expected_type='INT')
+    check_popped_value_type(op, b, expected_type='INT')
+    STACK.append(a)
+    STACK.append(str(int(a>=b)))
