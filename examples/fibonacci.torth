@@ -9,7 +9,7 @@ WHILE 20 >= DO
   // Add the two numbers in the top of the stack together (Previous and Current)
   +
   // Print the sum
-  print_int
+  dup print_int
   // Rotate stack to the original position (Previous, Current, counter)
   rot rot
   // Increment counter for WHILE loop
