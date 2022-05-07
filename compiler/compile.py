@@ -9,7 +9,7 @@ def compile_asm(asm_file: str) -> None:
     subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file])
 
 def link_object_file(obj_file: str, output_file: str) -> None:
-    subprocess.run(['gcc', '-no-pie', f'-o{output_file}', obj_file])
+    subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{output_file}', obj_file])
 
 def compile_code(tokens: List[Token], input_file: str, output_file: str) -> None:
     asm_file: str = input_file.replace('.torth', '.asm')
