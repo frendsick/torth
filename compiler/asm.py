@@ -746,7 +746,6 @@ def get_pow_asm(op: Op) -> str:
     try:
         exponent: str   = STACK.pop()
         number: str     = STACK.pop()
-        STACK.pop()
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
     check_popped_value_type(op, number, expected_type='INT')
