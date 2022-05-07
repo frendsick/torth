@@ -45,22 +45,34 @@ Program that does different arithmetic operations and prints their output
 FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 
 ```pascal
+// Args: STR, INT
+// Returns: None
+MACRO OutputRow
+    print dup print_int
+END
+
+// Args: Row, Total
+// Returns: Row, Total
+MACRO AddTotal
+    dup rot + swap
+END
+
 0 // The sum of numbers not divisible by 3 or 5
 1 WHILE 30 >= DO
     IF 15 % 0 == DO
-        "FizzBuzz  " print dup print_int
+        "FizzBuzz  " OutputRow
     ELIF 3 % 0 == DO
-        "Fizz      " print dup print_int
+        "Fizz      " OutputRow
     ELIF 5 % 0 == DO
-        "Buzz      " print dup print_int
+        "Buzz      " OutputRow
     ELSE
         // Add current number to the sum of numbers not divisible by 3 or 5
-        dup rot + swap
+        AddTotal
     ENDIF
     1 +
 END drop // Drop the counter from the stack
 
-"Sum of all numbers not divisible by 3 or 5: " print print_int
+"Sum of all numbers not divisible by 3 or 5: " OutputRow
 ```
 
 ## Documentation
