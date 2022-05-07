@@ -51,7 +51,7 @@ def run_code(exe_file: str) -> None:
 # Type check all operations which
 def type_check_program(program: Program) -> None:
     global STACK
-    NOT_TYPED_TOKENS: List[Token] = [ 'BREAK', 'ELSE', 'END', 'ENDIF', 'EXIT' ]
+    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'ELSE', 'END', 'ENDIF', 'EXIT' ]
     for op in program:
         token: Token = op.token
         if token.value.upper() in NOT_TYPED_TOKENS:
