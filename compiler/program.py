@@ -49,7 +49,6 @@ def generate_program(tokens: List[Token], file: str) -> Program:
             # Fix Op ID's after appending macro tokens
             for i, _ in enumerate(program):
                 program[i].id = i
-                print(program[i])
 
             # Use the last Op from macro as the Op for current iteration of the loop
             last_macro_op: Op   = program.pop()
