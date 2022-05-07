@@ -330,12 +330,7 @@ def get_do_asm(op: Op, program: Program) -> str:
             or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
             or ( parent_op_type == OpType.WHILE and op_type == OpType.END and while_count == 0):
             jump_destination: str = program[i].type.name + str(i)
-            op_asm: str = generate_do_asm(jump_destination)
-            try:
-                STACK.pop()
-                STACK.pop()
-            except IndexError:
-                compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+            op_asm: str = generate_do_asm(op, jump_destination)
             break
 
         if parent_op_type == OpType.WHILE and op_type == OpType.END:
@@ -733,7 +728,7 @@ def get_pow_asm(op: Op) -> str:
     op_asm      += get_rot_asm(op)
     op_asm      += get_over_asm(op)
     op_asm      += get_gt_asm(op)
-    op_asm      += generate_do_asm(do_jump_destination)
+    op_asm      += generate_do_asm(op, do_jump_destination)
     op_asm      += get_swap_asm(op)
     op_asm      += get_swap2_asm(op)
     op_asm      += get_dup_asm(op)
