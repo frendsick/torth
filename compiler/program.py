@@ -60,12 +60,6 @@ def type_check_program(program: Program) -> None:
             return type_check_do(op)
         elif op.type == OpType.ELIF:
             return type_check_elif(op)
-        elif op.type == OpType.ELSE:
-            continue #return type_check_else(op, program)
-        elif op.type == OpType.END:
-            continue #return type_check_end(op, program)
-        elif op.type == OpType.ENDIF:
-            continue #return type_check_endif(op)
         elif op.type == OpType.IF:
             return type_check_if(op)
         elif op.type == OpType.PUSH_ARRAY:
@@ -94,8 +88,6 @@ def type_check_program(program: Program) -> None:
                 continue #return type_check_dup2(op)
             elif intrinsic == "ENVP":
                 continue #return type_check_envp()
-            elif intrinsic == "EXIT":
-                continue #return type_check_exit()
             elif intrinsic == "EQ":
                 continue #return type_check_eq(op)
             elif intrinsic == "GE":
@@ -127,8 +119,6 @@ def type_check_program(program: Program) -> None:
             # TODO: Merge PRINT and PRINT_INT
             elif intrinsic == "PRINT":
                 continue #return type_check_string_output(op, intrinsic)
-            elif intrinsic == "PRINT_INT":
-                continue #return type_check_print_int()
             elif intrinsic == "PUTS":
                 continue #return type_check_string_output(op, intrinsic)
             elif intrinsic == "ROT":
