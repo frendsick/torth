@@ -1,17 +1,16 @@
 import re
 import os
 from typing import List, Tuple
-from compiler.defs import Keyword, TokenType, Location, Token
+from compiler.defs import Keyword, TokenType, Location, Token, TOKEN_REGEXES
 
 def get_tokens_from_code(file: str, code: str, macro_location: Location = None) -> List[Token]:
-    MACRO_REGEX: re.Pattern[str]        = re.compile(r'\s*MACRO\s+(\S+)\s+(.*)\s+END\s*', re.IGNORECASE)
-    token_matches: List[re.Match[str]]  = get_token_matches(code, MACRO_REGEX)
+    token_matches: List[re.Match[str]]  = get_token_matches(code)
 
     # Newlines are used to determine when a comment ends and when new line starts
     newline_indexes: List[int]  = [nl.start() for nl in re.finditer('\n', code)]
 
     tokens: List[Token]             = []
-    macros: List[Tuple[str,str]]    = re.findall(MACRO_REGEX, code)
+    macros: List[Tuple[str,str]]    = TOKEN_REGEXES['MACRO'].findall(code)
     for match in token_matches:
         token = get_token_from_match(match, os.path.basename(file), newline_indexes, macros, macro_location)
         tokens.append(token)
@@ -19,12 +18,12 @@ def get_tokens_from_code(file: str, code: str, macro_location: Location = None) 
     return tokens
 
 # Returns all tokens with comments taken out
-def get_token_matches(code: str, macro_regex: re.Pattern[str]) -> List[re.Match[str]]:
+def get_token_matches(code: str) -> List[re.Match[str]]:
     TOKEN_REGEX: re.Pattern[str] = re.compile(r'''\[.*\]|".*?"|'.*?'|\S+''')
 
     matches: List[re.Match[str]]            = list(re.finditer(TOKEN_REGEX, code))
     code_without_comments: str              = re.sub(r'\s*\/\/.*', '', code)
-    code_without_macros: str                = re.sub(macro_regex, '', code_without_comments)
+    code_without_macros: str                = TOKEN_REGEXES['MACRO'].sub('', code_without_comments)
     final_code_matches: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code_without_macros))
 
     # Take comments and macros out of matches
