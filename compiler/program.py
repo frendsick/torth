@@ -322,18 +322,16 @@ def type_check_pow(op: Op) -> None:
     type_check_swap2(op)            # SWAP2
     STACK.append('1')               # PUSH_INT
     type_check_plus(op)             # PLUS
-    for _ in range(2):
+    for _ in range(3):
         type_check_drop(op)         # DROP
 
     try:
-        exponent: str   = STACK.pop()
-        number: str     = STACK.pop()
+        power: str = STACK.pop()
     except IndexError:
         compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
 
-    check_popped_value_type(op, number, expected_type='INT')
-    check_popped_value_type(op, exponent, expected_type='INT')
-    STACK.append(str(int(number)**int(exponent)))
+    check_popped_value_type(op, power, expected_type='INT')
+    STACK.append(str(power))
 
 def type_check_string_output(op: Op, intrinsic: str) -> None:
     try:
