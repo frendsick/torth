@@ -11,6 +11,7 @@ class Colors:
 class Keyword(Enum):
     BREAK=auto()
     DO=auto()
+    DONE=auto()
     ELIF=auto()
     ELSE=auto()
     END=auto()
@@ -67,6 +68,7 @@ class Intrinsic(Enum):
 class OpType(Enum):
     BREAK=auto()
     DO=auto()
+    DONE=auto()
     ELIF=auto()
     ELSE=auto()
     END=auto()

@@ -4,9 +4,9 @@ This is the documentation for different keywords available in the Torth language
 
 - [BREAK](#BREAK)
 - [DO](#DO)
+- [DONE](#DONE)
 - [ELIF](#ELIF)
 - [ELSE](#ELSE)
-- [END](#END)
 - [ENDIF](#ENDIF)
 - [IF](#IF)
 - [MACRO](#MACRO)
@@ -14,7 +14,7 @@ This is the documentation for different keywords available in the Torth language
 
 ## BREAK
 
-BREAK is unconditional jump to the operation after END of the current loop.
+BREAK is unconditional jump to the operation after DONE of the current loop.
 
 ### Examples
 
@@ -25,7 +25,7 @@ BREAK is unconditional jump to the operation after END of the current loop.
     "Breaking from loop..." puts
     BREAK
   ENDIF
-END
+DONE
 // Output:
 1
 2
@@ -35,7 +35,7 @@ Breaking from loop...
 
 ## DO
 
-DO is a conditional jump to the operation after next ELIF, ELSE, ENDIF or END.
+DO is a conditional jump to the operation after next ELIF, ELSE, ENDIF or DONE.
 
 The conditional jump will occur if the condition does not match because if it does the block of code should be executed.
 
@@ -60,19 +60,40 @@ ENDIF
 
 #### WHILE
 
-In while loop, DO is a conditional jump to operation after END.
+In while loop, DO is a conditional jump to operation after DONE.
 
 ```pascal
 0 WHILE 10 > DO                   //  int i=0; while (10 > i) {
   1 +                             //    i++;
   "This is row " print print_int  //    printf("This is row %d\n", i);
-END                               //  }
+DONE                               //  }
 
 // Output:
 // This is row 1
 // This is row 2
 // ...
 // This is row 10
+```
+
+## DONE
+
+DONE is an unconditional jump to WHILE keyword. The loop's condition is always evaluated by the DO keyword after WHILE which is also a conditional jump to the operation after the DONE keyword.
+
+### Examples
+
+```pascal
+0 WHILE 10 > DO                         //  int i=0; while (10 > i) {
+  1 +                                   //    i++;
+  "This is row " print print_int        //    printf("This is row %d\n", i);
+DONE                                     //  }
+"Loop over after row " print print_int  //  printf("Loop over after row %d\n", i);
+
+// Output:
+// This is row 1
+// This is row 2
+// ...
+// This is row 10
+// Loop over after row 10
 ```
 
 ## ELIF
@@ -115,27 +136,6 @@ ELSE                              //  else
 ENDIF
 
 // Output: Zero
-```
-
-## END
-
-END is an unconditional jump to WHILE keyword. The loop's condition is always evaluated by the DO keyword after WHILE which is also a conditional jump to the operation after the END keyword.
-
-### Examples
-
-```pascal
-0 WHILE 10 > DO                         //  int i=0; while (10 > i) {
-  1 +                                   //    i++;
-  "This is row " print print_int        //    printf("This is row %d\n", i);
-END                                     //  }
-"Loop over after row " print print_int  //  printf("Loop over after row %d\n", i);
-
-// Output:
-// This is row 1
-// This is row 2
-// ...
-// This is row 10
-// Loop over after row 10
 ```
 
 ## ENDIF
@@ -222,7 +222,7 @@ macro OutputInteger print_int end
 
 ## WHILE
 
-WHILE is a keyword for END to jump to. It also duplicates the first element in the stack like DUP intrinsic.
+WHILE is a keyword for DONE to jump to. It also duplicates the first element in the stack like DUP intrinsic.
 
 ### Examples
 
@@ -230,7 +230,7 @@ WHILE is a keyword for END to jump to. It also duplicates the first element in t
 0 WHILE 10 > DO                         //  int i=0; while (10 > i) {
   1 +                                   //    i++;
   "This is row " print print_int        //    printf("This is row %d\n", i);
-END                                     //  }
+DONE                                     //  }
 "Loop over after row " print print_int  //  printf("Loop over after row %d\n", i);
 
 // Output:

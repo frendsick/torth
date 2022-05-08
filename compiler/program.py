@@ -28,6 +28,8 @@ def generate_program(tokens: List[Token], file: str) -> Program:
             op_type = OpType.BREAK
         elif token_value == 'DO':
             op_type = OpType.DO
+        elif token_value == 'DONE':
+            op_type = OpType.DONE
         elif token_value == 'END':
             op_type = OpType.END
         elif token_value == 'ENDIF':
@@ -63,7 +65,7 @@ def run_code(exe_file: str) -> None:
 # Type check all operations which
 def type_check_program(program: Program) -> None:
     global STACK
-    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'ELSE', 'END', 'ENDIF', 'EXIT' ]
+    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELSE', 'ENDIF', 'EXIT' ]
     for op in program:
         token: Token = op.token
         if token.value.upper() in NOT_TYPED_TOKENS:

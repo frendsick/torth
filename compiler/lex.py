@@ -96,7 +96,7 @@ def get_token_value(token: str, macros: List[Tuple[str,str]]) -> str:
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords: List[str] = ['BREAK', 'DO', 'ELIF', 'ELSE', 'END', 'ENDIF', 'IF', 'MACRO', 'WHILE']
+    keywords: List[str] = ['BREAK', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'ENDIF', 'IF', 'MACRO', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 

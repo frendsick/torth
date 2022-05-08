@@ -39,12 +39,12 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_break_asm(op, program)
     elif op.type == OpType.DO:
         return get_do_asm(op, program)
+    elif op.type == OpType.DONE:
+        return get_done_asm(op, program)
     elif op.type == OpType.ELIF:
         return get_elif_asm(op, program)
     elif op.type == OpType.ELSE:
         return get_else_asm(op, program)
-    elif op.type == OpType.END:
-        return get_end_asm(op, program)
     elif op.type == OpType.ENDIF:
         return get_endif_asm(op)
     elif op.type == OpType.IF:
@@ -280,13 +280,13 @@ def add_input_buffer_asm(asm_file: str, op: Op):
 def get_end_op_for_while(op: Op, program: Program) -> Op:
     while_count: int = 0
     for i in range(op.id, len(program)):
-        if program[i].type == OpType.END:
+        if program[i].type == OpType.DONE:
             while_count -= 1
             if while_count == 0:
                 return program[i]
         if program[i].type == OpType.WHILE:
             while_count += 1
-    compiler_error(op, "AMBIGUOUS_BREAK", "WHILE loop does not have END.")
+    compiler_error(op, "AMBIGUOUS_BREAK", "WHILE loop does not have DONE.")
 
 # Find the parent WHILE keyword
 def get_parent_while(op: Op, program: Program) -> Op:
@@ -296,7 +296,7 @@ def get_parent_while(op: Op, program: Program) -> Op:
             if end_count == 0:
                 return program[i]
             end_count -= 1
-        if program[i].type == OpType.END:
+        if program[i].type == OpType.DONE:
             end_count += 1
     compiler_error(op, f"AMBIGUOUS_{op.token.value.upper()}", "BREAK operand without parent WHILE.")
 
@@ -314,12 +314,12 @@ def get_do_asm(op: Op, program: Program) -> str:
 
         if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
             or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.WHILE and op_type == OpType.END and while_count == 0):
+            or ( parent_op_type == OpType.WHILE and op_type == OpType.DONE and while_count == 0):
             jump_destination: str = program[i].type.name + str(i)
             op_asm: str = generate_do_asm(jump_destination)
             break
 
-        if parent_op_type == OpType.WHILE and op_type == OpType.END:
+        if parent_op_type == OpType.WHILE and op_type == OpType.DONE:
             while_count -= 1
     return op_asm
 
@@ -327,7 +327,7 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
     for i in range(op.id - 1, -1, -1):
         if program[i].type in (OpType.IF, OpType.ELIF, OpType.WHILE):
             return program[i].type
-        if program[i].type in (OpType.DO, OpType.END, OpType.ENDIF):
+        if program[i].type in (OpType.DO, OpType.DONE, OpType.ENDIF):
             break
     compiler_error(op, "AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE")
 
@@ -335,13 +335,20 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
 def get_break_asm(op: Op, program: Program) -> str:
     parent_while: Op = get_parent_while(op, program)
     parent_end:   Op = get_end_op_for_while(parent_while, program)
-    return f'  jmp END{parent_end.id}\n'
+    return f'  jmp DONE{parent_end.id}\n'
 
 def generate_do_asm(jump_destination: str) -> str:
     op_asm: str  =  '  pop rax\n'
     op_asm      +=  '  add rsp, 8\n'
     op_asm      +=  '  test rax, rax\n'
     op_asm      += f'  jz {jump_destination}\n'
+    return op_asm
+
+# DONE is unconditional jump to WHILE
+def get_done_asm(op: Op, program: Program) -> str:
+    parent_while: Op = get_parent_while(op, program)
+    op_asm: str  = f'  jmp WHILE{parent_while.id}\n'
+    op_asm      += f'DONE{op.id}:\n'
     return op_asm
 
 # ELIF is unconditional jump to ENDIF and a keyword for DO to jump to
@@ -366,13 +373,6 @@ def get_else_asm(op: Op, program: Program) -> str:
             op_asm += f'  jmp ENDIF{i}\n'
             op_asm += f'ELSE{op.id}:\n'
             break
-    return op_asm
-
-# END is unconditional jump to WHILE
-def get_end_asm(op: Op, program: Program) -> str:
-    parent_while: Op = get_parent_while(op, program)
-    op_asm: str  = f'  jmp WHILE{parent_while.id}\n'
-    op_asm      += f'END{op.id}:\n'
     return op_asm
 
 # ENDIF is a keyword for DO, ELIF or ELSE to jump to
@@ -407,7 +407,7 @@ def get_push_str_asm(op: Op) -> str:
     op_asm      +=  '  push rsi\n'
     return op_asm
 
-# WHILE is a keyword for END to jump to.
+# WHILE is a keyword for DONE to jump to.
 # Also like DUP it duplicates the first element in the stack.
 def get_while_asm(op: Op) -> str:
     op_asm: str  = f'WHILE{op.id}:\n'
@@ -531,7 +531,7 @@ def get_plus_asm() -> str:
 # The sequence of operations is from examples/pow.torth
 # TODO: Make "POW" Macro in Torth when Macro's are implemented
 def get_pow_asm(op: Op) -> str:
-    do_jump_destination: str = f'END{op.id}'
+    do_jump_destination: str = f'DONE{op.id}'
     op_asm: str  = get_over_asm()
     op_asm      += get_push_int_asm('1')
     op_asm      += get_rot_asm()
