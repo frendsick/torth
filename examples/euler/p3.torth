@@ -11,6 +11,6 @@ WHILE rot over 2 / >= DO
   else
     2 +  // i+=2
   ENDIF
-END
+DONE
 
 "The largest prime factor of number 600851475143: " print print_int // Output: 6857

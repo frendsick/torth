@@ -7,7 +7,7 @@ WHILE rot over >= DO  // While Limit >= Loop index
   rot swap2 +         // Add current index square to Squares total
   rot swap            // Align stack as it was before the while loop
   1 +                 // Increment Loop index by one
-END drop              // Leave Squares total and Limit to the stack
+DONE drop             // Leave Squares total and Limit to the stack
 
 0     // Sum total
 swap  // Limit
@@ -16,7 +16,7 @@ swap  // Limit
 WHILE rot over > DO   // While Limit > Loop index
   rot dup rot +       // Add Loop index to Sum total
   rot 1 +             // Increment Loop index by one
-END drop drop         // Leave Squares total and Sum total to the stack
+DONE drop drop        // Leave Squares total and Sum total to the stack
 
 // Drop Limit and Loop index and square the Sum total
 2 ^  

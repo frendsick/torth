@@ -3,4 +3,4 @@
 WHILE 10 >= DO          // while (10 >= i) {
     "Row " PRINT dup .  //   printf("Row %d\n", i);
     1 +                 //   i++;
-END                     // }
+DONE                    // }

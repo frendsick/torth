@@ -14,6 +14,6 @@ WHILE 1000 > DO
     add_to_total
   ENDIF
   1 +  // index++
-END drop // Drop loop index from stack
+DONE drop // Drop loop index from stack
 
 "Sum of all numbers divisible by 3 or 5: " print print_int // Output: 233168

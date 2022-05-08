@@ -70,7 +70,7 @@ END
         AddTotal
     ENDIF
     1 +
-END drop // Drop the counter from the stack
+DONE drop // Drop the counter from the stack
 
 "Sum of all numbers not divisible by 3 or 5: " OutputRow
 ```

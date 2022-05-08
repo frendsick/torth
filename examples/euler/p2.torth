@@ -14,7 +14,7 @@ WHILE 4000000 >= DO
   IF 2 % 0 == DO
     swap rot dup rot + rot
   ENDIF
-END
+DONE
 
 "Sum of even fibonacci numbers under 4000000: " print
 // Get the total from the third position of the stack

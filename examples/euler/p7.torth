@@ -21,7 +21,7 @@ WHILE 4 get_nth 2 ^ > DO
     
     // Align stack as it was before the loop
     rot swap
-  END drop
+  DONE drop
 
   2 + // i += 2
-END
+DONE
