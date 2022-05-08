@@ -55,7 +55,7 @@ def generate_program(tokens: List[Token], file: str) -> Program:
         else:
             raise AttributeError (f"Operation '{token_value}' is not found")
 
-        if not re.match(r'\S+\s+\S+', token.value):
+        if op_id == len(program):
             program.append( Op(op_id, op_type, token) )
     return program
 
