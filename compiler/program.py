@@ -50,16 +50,11 @@ def generate_program(tokens: List[Token], file: str) -> Program:
             for i, _ in enumerate(program):
                 program[i].id = i
 
-            # Use the last Op from macro as the Op for current iteration of the loop
-            last_macro_op: Op   = program.pop()
-            op_id: int          = last_macro_op.id
-            token: Token        = last_macro_op.token
-            op_type: OpType     = last_macro_op.type
         else:
             raise AttributeError (f"Operation '{token_value}' is not found")
 
-        operand: Op = Op(op_id, op_type, token)
-        program.append(operand)
+        if not re.match(r'\S+\s+\S+', token.value):
+            program.append( Op(op_id, op_type, token) )
     return program
 
 def run_code(exe_file: str) -> None:
@@ -108,7 +103,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "GE":
                 type_check_ge(op)
             elif intrinsic == "GET_NTH":
-                continue  # Type checking is performed when generating assembly
+                type_check_get_nth(op)
             elif intrinsic == "GT":
                 type_check_gt(op)
             elif intrinsic == "INPUT":
@@ -159,7 +154,7 @@ def type_check_program(program: Program) -> None:
                 compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.")
         else:
             compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.")
-
+        print(op.token.value.upper(), STACK)
 def pop_two_from_stack(op: Op) -> Tuple[str, str]:
     try:
         b: str = STACK.pop()
@@ -232,6 +227,24 @@ def type_check_ge(op: Op) -> None:
     check_popped_value_type(op, b, expected_type='INT')
     STACK.append(a)
     STACK.append(str(int(a>=b)))
+
+def type_check_get_nth(op: Op) -> None:
+    # The top element in the stack is the N
+    try:
+        n: int = int(STACK.pop()) - 1
+        if n < 0:
+            raise ValueError
+    except IndexError:
+        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+    except ValueError:
+        compiler_error(op, "STACK_VALUE_ERROR", "First element in the stack is not a non-zero positive integer.")
+    try:
+        stack_index: int = len(STACK) - 1
+        nth_element: str = STACK[stack_index - n]
+    except IndexError:
+        compiler_error(op, "NOT_ENOUGH_ELEMENTS_IN_STACK", \
+                    f"Cannot get {n+1}. element from the stack: Stack only contains {len(STACK)} elements.")
+    STACK.append(nth_element)
 
 def type_check_gt(op: Op) -> None:
     a, b = pop_two_from_stack(op)

@@ -17,7 +17,7 @@ WHILE 4 get_nth 2 ^ > DO
     IF rot 2 + over == DO rot rot 1 + rot ENDIF
 
     // IF counter == n
-    rot rot IF 5 get_nth == DO swap print_int exit ENDIF
+    rot rot IF 5 get_nth == DO swap dup print_int exit ENDIF
     
     // Align stack as it was before the loop
     rot swap
