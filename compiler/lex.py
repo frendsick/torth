@@ -39,14 +39,6 @@ def get_token_matches(code: str, macro_regex: re.Pattern[str]) -> List[re.Match[
         i += 1
     return matches
 
-def merge_macros_to_matches(macros: List[Tuple[str, str]], matches: List[re.Match[str]]) -> List[re.Match[str]]:
-    for macro in macros:
-        macro_name: str = macro[0]
-        macro_code: str = macro[1]
-
-        # Replace all references to macro's name with macro's content
-
-
 def merge_macros_to_code(code: str, macro_regex: str) -> str:
     macros: List[Tuple[str, str]] = re.findall(macro_regex, code)
     for macro in macros:
