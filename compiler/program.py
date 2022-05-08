@@ -1,7 +1,7 @@
 import re
 import subprocess
 from typing import List, Tuple
-from compiler.defs import Intrinsic, Op, OpType, Program, STACK, TokenType, Token
+from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType, TOKEN_REGEXES
 from compiler.lex import get_tokens_from_code
 from compiler.utils import check_popped_value_type, compiler_error
 

@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, List, Tuple
@@ -110,3 +111,7 @@ Program = List[Op]
 
 STACK: List[str] = []
 REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}
+TOKEN_REGEXES: Dict[str, re.Pattern[str]]  = {
+    'INCLUDE':  re.compile(r'(?i)\bINCLUDE\b "(\S+)"'),
+    'MACRO':    re.compile(r'\s*MACRO\s+(\S+)\s+(.*)\s+END\s*', re.IGNORECASE)
+}
