@@ -43,14 +43,6 @@ def generate_program(tokens: List[Token], file: str) -> Program:
             op_type = OpType.WHILE
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
-        elif re.match(r'\S+\s+\S+', token_value):
-            macro_tokens: List[Token]   = get_tokens_from_code(file, token_value, token.location)
-            program                    += generate_program(macro_tokens, file)
-
-            # Fix Op ID's after appending macro tokens
-            for i, _ in enumerate(program):
-                program[i].id = i
-
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found")
 
