@@ -452,7 +452,7 @@ def get_dup2_asm() -> str:
 
 def get_exit_asm() -> str:
     op_asm: str  = '  mov rax, 60\n'
-    op_asm      += '  mov rdi, 0\n'
+    op_asm      += '  pop rdi\n'
     op_asm      += '  syscall\n'
     return op_asm
 
