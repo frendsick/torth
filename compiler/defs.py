@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 class Colors:
     FAIL = '\033[91m'
@@ -94,7 +94,7 @@ class TokenType(Enum):
     WORD=auto()
 
 # Source file name, row, column
-Location = Tuple[str, int, int]
+Location = tuple[str, int, int]
 
 @dataclass
 class Token:
