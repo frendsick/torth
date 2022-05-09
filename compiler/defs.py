@@ -19,7 +19,6 @@ class Keyword(Enum):
     ENDIF=auto()
     FUNCTION=auto()
     IF=auto()
-    MACRO=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -102,24 +101,26 @@ class Token:
     type: TokenType
     location: Location
 
+# param types, return types
+Signature   = tuple[List[str], List[str]]
+
+@dataclass
+class Function:
+    name: str
+    signature: Signature
+    tokens: List[Token]
+
 @dataclass
 class Op:
     id: int
     type: OpType
     token: Token
 
-Program     = List[Op]
-Signature   = tuple[str, List[str], List[str]]  # Name, param types, return types
-
-@dataclass
-class Function:
-    name: str
-    ops: Program
-    signature: Signature
+Program = List[Op]
 
 STACK: List[str] = []
 REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}
 TOKEN_REGEXES: Dict[str, re.Pattern[str]]  = {
-    'INCLUDE':  re.compile(r'(?i)\bINCLUDE\b "(\S+)"'),
-    'MACRO':    re.compile(r'\s*MACRO\s+(\S+)\s+(.*)\s+END\s*', re.IGNORECASE)
+    'FUNCTION': re.compile(r'\s*FUNCTION\s+(\S+)\s+(.*)\s+END\s*', re.IGNORECASE),
+    'INCLUDE':  re.compile(r'(?i)\bINCLUDE\b "(\S+)"')
 }
