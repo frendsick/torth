@@ -1,24 +1,36 @@
 import itertools
-import os
 import re
-from typing import List
+from typing import List, Optional
 from compiler.defs import Function, Keyword, Location, Signature, Token, TokenType, TOKEN_REGEXES
 
-def get_tokens_from_code(code: str, file: str) -> List[Token]:
+def get_functions_from_code(code: str, file: str) -> List[Token]:
     token_matches: List[re.Match[str]] = get_token_matches(code)
     # Newlines are used to determine when a comment ends and when new line starts
     newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', code)]
+    return get_functions(file, token_matches, newline_indexes)
 
-    functions: List[Function] = get_functions(file, token_matches, newline_indexes)
-    print(functions)
-    tokens: List[Token] = []
-    for match in token_matches:
-        token = get_token_from_match(match, os.path.basename(file), newline_indexes)
-        tokens.append(token)
+def get_tokens_from_functions(functions: List[Function], file: str) -> List[Token]:
+    try:
+        main_function: Function = [ functions.pop() for func in functions if func.name.upper() == 'MAIN' ][0]
+    except IndexError:
+        compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a main function")
+    return get_tokens_from_function(main_function, functions)
 
+def get_tokens_from_function(parent_function: Function, functions: List[Function]) -> List[Token]:
+    tokens: List[Token] = parent_function.tokens
+    i = 0
+    while i < len(tokens):
+        for func in functions:
+            child_function: Function = func if tokens[i].value == func.name else None
+            if child_function:
+                tokens = tokens[:i] + get_tokens_from_function(child_function, functions) + tokens[i+1:]
+        i += 1
     return tokens
 
-def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes: List[int]) -> Signature:
+# Generates and returns a list of Function objects
+def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes: List[int]) -> List[Function]:
+
+    # Initialize variables
     functions: List[Function]       = []
     current_part: int               = 0
     name: str                       = ''
@@ -26,22 +38,32 @@ def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes
     return_types: List[str]         = []
     tokens: List[Token]             = []
 
-    function_parts: List[int] = list(range(5)) # Not in function, name, param types, return types, location
-    function_part: itertools.cycle = itertools.cycle(function_parts)
-    next(function_part)
+    # Functions are made of four parts:
+    #  1 : name,
+    #  2 : param types
+    #  3 : return types
+    #  4 : location
+    # (0 : Not lexing a function)
+    FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '--', '->', ':', 'END']
+    function_parts: itertools.cycle = itertools.cycle(list(range(5)))
+    next(function_parts)
 
     for match in token_matches:
         token_value: str = match.group(0)
-        if token_value.upper() in {'FUNCTION', '--', '->', ':', 'END'}:
-            current_part = next(function_part)
+
+        # Go to next function part
+        if token_value.upper() in FUNCTION_PART_DELIMITERS:
+            current_part = next(function_parts)
+
+            # Append Function and reset variables when function is fully lexed
             if token_value.upper() == 'END':
                 signature: Signature = Signature( (param_types, return_types) )
                 functions.append( Function(name, signature, tokens) )
-                # Empty variable names
                 name            = ''
                 param_types     = []
                 return_types    = []
                 tokens          = []
+
         elif current_part == 1:
             name = token_value
         elif current_part == 2:
