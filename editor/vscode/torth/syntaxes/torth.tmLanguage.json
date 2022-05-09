@@ -45,7 +45,7 @@
           "match": "\\b(?i)(ret)\\b"
         },
         {
-          "name": "support.function",
+          "name": "entity.name.function.torth",
           "match": "(?i)(?<=function\\s)\\b(\\S+)\\b"
         }
       ]
@@ -62,7 +62,7 @@
       "patterns": [
         {
           "name": "keyword.control.torth",
-          "match": "\\b(?i)(break|do|done|elif|else|endif|if|while)\\b"
+          "match": "\\b(?i)(break|do|done|elif|else|endif|if|include|while)\\b"
         }
       ]
     },
