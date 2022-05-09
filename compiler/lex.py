@@ -1,7 +1,8 @@
 import itertools
 import re
-from typing import List, Optional
-from compiler.defs import Function, Keyword, Location, Signature, Token, TokenType, TOKEN_REGEXES
+from typing import List
+from compiler.defs import Function, Keyword, Location, Signature, Token, TokenType
+from compiler.utils import compiler_error
 
 def get_functions_from_code(code: str, file: str) -> List[Token]:
     token_matches: List[re.Match[str]] = get_token_matches(code)

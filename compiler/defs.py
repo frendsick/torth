@@ -120,7 +120,3 @@ Program = List[Op]
 
 STACK: List[str] = []
 REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}
-TOKEN_REGEXES: Dict[str, re.Pattern[str]]  = {
-    'FUNCTION': re.compile(r'\s*FUNCTION\s+(\S+)\s+(.*)\s+END\s*', re.IGNORECASE),
-    'INCLUDE':  re.compile(r'(?i)\bINCLUDE\b "(\S+)"')
-}
