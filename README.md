@@ -28,51 +28,49 @@ Hello, World!
 Hello World
 
 ```pascal
-"Hello, World!" puts
-```
-
-Program that does different arithmetic operations and prints their output
-
-```pascal
-420 917 + PRINT_INT // Prints 1337 to stdout
-9001 7664 - .       // . is the same as PRINT_INT
-13379               // Code alignment does not matter
-10                  // Division rounds down
-        /           // 13379 / 10 => 1337
-    PrInT_InT       // Keywords are case insensitive
+function Main -- -> ret :
+    "Hello, World!" puts
+end
 ```
 
 FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 
 ```pascal
-// Args: STR, INT
-// Returns: None
-MACRO OutputRow
+function OutputRow -- str_buf* str_len number -> number :
     print dup print_int
-END
+end
 
-// Args: Row, Total
-// Returns: Row, Total
-MACRO AddTotal
+function AddTotal -- row total -> row total :
     dup rot + swap
-END
+end
 
-0 // The sum of numbers not divisible by 3 or 5
-1 WHILE 30 >= DO
-    IF 15 % 0 == DO
-        "FizzBuzz  " OutputRow
-    ELIF 3 % 0 == DO
-        "Fizz      " OutputRow
-    ELIF 5 % 0 == DO
-        "Buzz      " OutputRow
-    ELSE
-        // Add current number to the sum of numbers not divisible by 3 or 5
-        AddTotal
-    ENDIF
-    1 +
-DONE drop // Drop the counter from the stack
+function FizzBuzz -- index sum limit -> sum :
+    // WHILE limit >= index
+    WHILE 4 get_nth >= DO
+        IF 15 % 0 == DO
+            "FizzBuzz  " OutputRow
+        ELIF 3 % 0 == DO
+            "Fizz      " OutputRow
+        ELIF 5 % 0 == DO
+            "Buzz      " OutputRow
+        ELSE
+            // Add current number to the sum of numbers not divisible by 3 or 5
+            AddTotal
+        ENDIF
+        1 +
+    DONE drop swap drop // Drop the counter and limit from the stack
+end
 
-"Sum of all numbers not divisible by 3 or 5: " OutputRow
+function Main -- -> int :
+    30  // limit
+    0   // sum
+    1   // index
+
+    FizzBuzz
+
+    "Sum of all numbers not divisible by 3 or 5: " OutputRow drop
+    0 // return 0
+end
 ```
 
 ## Documentation

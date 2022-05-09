@@ -1,6 +1,9 @@
-"WHILE loop" puts       // puts("WHILE loop");
-1                       // i = 1;
-WHILE 10 >= DO          // while (10 >= i) {
-    "Row " PRINT dup .  //   printf("Row %d\n", i);
-    1 +                 //   i++;
-DONE                    // }
+function Main -- -> ret :
+    "WHILE loop" puts       // puts("WHILE loop");
+    1                       // i = 1;
+    WHILE 10 >= DO          // while (10 >= i) {
+        "Row " PRINT dup .  //   printf("Row %d\n", i);
+        1 +                 //   i++;
+    DONE                    // }
+    0                       // return 0
+end
