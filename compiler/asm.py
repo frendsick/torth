@@ -288,15 +288,15 @@ def get_end_op_for_while(op: Op, program: Program) -> Op:
 
 # Find the parent WHILE keyword
 def get_parent_while(op: Op, program: Program) -> Op:
-    end_count: int = 0
+    done_count: int = 0
     for i in range(op.id - 1, -1, -1):
         if program[i].type == OpType.WHILE:
-            if end_count == 0:
+            if done_count == 0:
                 return program[i]
-            end_count -= 1
+            done_count -= 1
         if program[i].type == OpType.DONE:
-            end_count += 1
-    compiler_error(f"AMBIGUOUS_{op.token.value.upper()}", "BREAK operand without parent WHILE.", op.token)
+            done_count += 1
+    compiler_error(f"AMBIGUOUS_{op.token.value.upper()}", f"{op.token.value.upper()} operand without parent WHILE.", op.token)
 
 # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 def get_do_asm(op: Op, program: Program) -> str:
@@ -322,11 +322,14 @@ def get_do_asm(op: Op, program: Program) -> str:
     return op_asm
 
 def get_parent_op_type_do(op: Op, program: Program) -> OpType:
+    parent_count: int = 0
     for i in range(op.id - 1, -1, -1):
         if program[i].type in (OpType.IF, OpType.ELIF, OpType.WHILE):
-            return program[i].type
-        if program[i].type in (OpType.DO, OpType.DONE, OpType.ENDIF):
-            break
+            if parent_count == 0:
+                return program[i].type
+            parent_count -= 1
+        if program[i].type in (OpType.DONE, OpType.ENDIF):
+            parent_count += 1
     compiler_error("AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE", op.token)
 
 # BREAK is unconditional jump to operand after current loop's END
