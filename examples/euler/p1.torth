@@ -3,17 +3,27 @@
 // If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
 // Find the sum of all the multiples of 3 or 5 below 1000.
 
-MACRO add_to_total  dup rot + swap END
+FUNCTION add_to_total -- int -> int :
+  dup rot + swap
+END
 
-0 // total
-3 // index
-WHILE 1000 > DO
-  IF 3 % 0 == DO
-    add_to_total
-  ELIF 5 % 0 == DO
-    add_to_total
-  ENDIF
-  1 +  // index++
-DONE drop // Drop loop index from stack
+FUNCTION get_fizzbuzz_sum -- int int int -> int :
+  // WHILE limit > index
+  WHILE 4 get_nth > DO
+    IF 3 % 0 == DO
+      add_to_total
+    ELIF 5 % 0 == DO
+      add_to_total
+    ENDIF
+    1 +  // index++
+  DONE drop swap drop // Drop loop index and limit from stack
+END
 
-"Sum of all numbers divisible by 3 or 5: " print print_int // Output: 233168
+FUNCTION main -- -> int :
+  1000  // limit
+  0     // total
+  3     // index
+  get_fizzbuzz_sum  // Returns: sum
+  "Sum of all numbers divisible by 3 or 5: " print print_int // Output: 233168
+  0
+END

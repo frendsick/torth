@@ -1,7 +1,6 @@
-import re
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 class Colors:
     FAIL = '\033[91m'
@@ -17,8 +16,8 @@ class Keyword(Enum):
     ELSE=auto()
     END=auto()
     ENDIF=auto()
+    FUNCTION=auto()
     IF=auto()
-    MACRO=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -51,7 +50,6 @@ class Intrinsic(Enum):
     OR=auto()
     OVER=auto()
     PLUS=auto()
-    POW=auto()
     PUTS=auto()
     PRINT=auto()
     PRINT_INT=auto()
@@ -93,13 +91,22 @@ class TokenType(Enum):
     WORD=auto()
 
 # Source file name, row, column
-Location = Tuple[str, int, int]
+Location = tuple[str, int, int]
 
 @dataclass
 class Token:
     value: str
     type: TokenType
     location: Location
+
+# param types, return types
+Signature   = tuple[List[str], List[str]]
+
+@dataclass
+class Function:
+    name: str
+    signature: Signature
+    tokens: List[Token]
 
 @dataclass
 class Op:
@@ -111,7 +118,3 @@ Program = List[Op]
 
 STACK: List[str] = []
 REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}
-TOKEN_REGEXES: Dict[str, re.Pattern[str]]  = {
-    'INCLUDE':  re.compile(r'(?i)\bINCLUDE\b "(\S+)"'),
-    'MACRO':    re.compile(r'\s*MACRO\s+(\S+)\s+(.*)\s+END\s*', re.IGNORECASE)
-}

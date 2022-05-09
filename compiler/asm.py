@@ -1,5 +1,5 @@
 from typing import List, Literal
-from compiler.defs import OpType, Op, Program, STACK, Token
+from compiler.defs import OpType, Op, Program, Token
 from compiler.utils import compiler_error
 
 def generate_asm(program: Program, asm_file: str) -> None:
@@ -99,8 +99,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_over_asm()
         elif intrinsic == "PLUS":
             return get_plus_asm()
-        elif intrinsic == "POW":
-            return get_pow_asm(op)
         # TODO: Merge PRINT and PRINT_INT
         elif intrinsic == "PRINT":
             return get_string_output_asm(intrinsic)
@@ -129,9 +127,9 @@ def get_op_asm(op: Op, program: Program) -> str:
         elif intrinsic == "SYSCALL6":
             return get_syscall_asm(param_count=6)
         else:
-            compiler_error(op, "NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.")
+            compiler_error("NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.", op.token)
     else:
-        compiler_error(op, "NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.")
+        compiler_error("NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.", op.token)
 
 def get_asm_file_start() -> str:
     return '''default rel
@@ -286,19 +284,19 @@ def get_end_op_for_while(op: Op, program: Program) -> Op:
                 return program[i]
         if program[i].type == OpType.WHILE:
             while_count += 1
-    compiler_error(op, "AMBIGUOUS_BREAK", "WHILE loop does not have DONE.")
+    compiler_error("AMBIGUOUS_BREAK", "WHILE loop does not have DONE.", op.token)
 
 # Find the parent WHILE keyword
 def get_parent_while(op: Op, program: Program) -> Op:
-    end_count: int = 0
+    done_count: int = 0
     for i in range(op.id - 1, -1, -1):
         if program[i].type == OpType.WHILE:
-            if end_count == 0:
+            if done_count == 0:
                 return program[i]
-            end_count -= 1
+            done_count -= 1
         if program[i].type == OpType.DONE:
-            end_count += 1
-    compiler_error(op, f"AMBIGUOUS_{op.token.value.upper()}", "BREAK operand without parent WHILE.")
+            done_count += 1
+    compiler_error(f"AMBIGUOUS_{op.token.value.upper()}", f"{op.token.value.upper()} operand without parent WHILE.", op.token)
 
 # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 def get_do_asm(op: Op, program: Program) -> str:
@@ -324,12 +322,15 @@ def get_do_asm(op: Op, program: Program) -> str:
     return op_asm
 
 def get_parent_op_type_do(op: Op, program: Program) -> OpType:
+    parent_count: int = 0
     for i in range(op.id - 1, -1, -1):
         if program[i].type in (OpType.IF, OpType.ELIF, OpType.WHILE):
-            return program[i].type
-        if program[i].type in (OpType.DO, OpType.DONE, OpType.ENDIF):
-            break
-    compiler_error(op, "AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE")
+            if parent_count == 0:
+                return program[i].type
+            parent_count -= 1
+        if program[i].type in (OpType.DONE, OpType.ENDIF):
+            parent_count += 1
+    compiler_error("AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE", op.token)
 
 # BREAK is unconditional jump to operand after current loop's END
 def get_break_asm(op: Op, program: Program) -> str:
@@ -527,35 +528,6 @@ def get_over_asm() -> str:
 
 def get_plus_asm() -> str:
     return get_arithmetic_asm("add")
-
-# The sequence of operations is from examples/pow.torth
-# TODO: Make "POW" Macro in Torth when Macro's are implemented
-def get_pow_asm(op: Op) -> str:
-    do_jump_destination: str = f'DONE{op.id}'
-    op_asm: str  = get_over_asm()
-    op_asm      += get_push_int_asm('1')
-    op_asm      += get_rot_asm()
-    op_asm      += get_rot_asm()
-    op_asm      += get_swap_asm()
-    op_asm      += get_while_asm(op)
-    op_asm      += get_rot_asm()
-    op_asm      += get_over_asm()
-    op_asm      += get_gt_asm()
-    op_asm      += generate_do_asm(do_jump_destination)
-    op_asm      += get_swap_asm()
-    op_asm      += get_swap2_asm()
-    op_asm      += get_dup_asm()
-    op_asm      += get_rot_asm()
-    op_asm      += get_mul_asm()
-    op_asm      += get_swap_asm()
-    op_asm      += get_swap2_asm()
-    op_asm      += get_push_int_asm('1')
-    op_asm      += get_plus_asm()
-    op_asm      += f'  jmp WHILE{op.id}\n'
-    op_asm      += f'{do_jump_destination}:\n'
-    for _ in range(3):
-        op_asm  += get_drop_asm()
-    return op_asm
 
 def get_print_int_asm() -> str:
     op_asm: str  = '  pop rdi\n'

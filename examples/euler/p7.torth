@@ -1,27 +1,44 @@
-10001 //n
-2     // Counter
-3     // i
+// Problem 7: 10001st prime
+function Pow -- e n -> power :
+  over  // o = 2  (original value)
+  1     // c = 1  (count)
+  rot rot swap  // n o e c
+  WHILE rot over > DO  // n o c e
+    swap swap2 dup rot * // e c o n
+    swap swap2 1 +  // n o e c
+  DONE drop drop drop  // Leave only the power to the stack
+end
 
-// WHILE n² > i
-WHILE 4 get_nth 2 ^ > DO
-  1 // k
+function get_nth_prime -- n -> ret :
+  2     // Counter
+  3     // i
 
-  // WHILE i > k
-  WHILE rot over > DO
-    swap 2 + swap // k += 2
+  // WHILE n² > i
+  WHILE 4 get_nth 2 Pow > DO
+    1 // k
 
-    // IF i % k == 0, then break
-    IF rot over % 0 == DO break ENDIF
+    // WHILE i > k
+    WHILE rot over > DO
+      swap 2 + swap // k += 2
 
-    // IF k + 2 == i, then increment counter
-    IF rot 2 + over == DO rot rot 1 + rot ENDIF
+      // IF i % k == 0, then break
+      IF rot over % 0 == DO break ENDIF
 
-    // IF counter == n
-    rot rot IF 5 get_nth == DO swap dup print_int exit ENDIF
-    
-    // Align stack as it was before the loop
-    rot swap
-  DONE drop
+      // IF k + 2 == i, then increment counter
+      IF rot 2 + over == DO rot rot 1 + rot ENDIF
 
-  2 + // i += 2
-DONE
+      // IF counter == n
+      rot rot IF 5 get_nth == DO swap dup print_int 0 exit ENDIF
+      
+      // Align stack as it was before the loop
+      rot swap
+    DONE drop
+
+    2 + // i += 2
+  DONE
+end
+
+function Main -- -> :
+  10001 // n
+  get_nth_prime
+end

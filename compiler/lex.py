@@ -1,21 +1,81 @@
+import itertools
 import re
-import os
-from typing import List, Tuple
-from compiler.defs import Keyword, TokenType, Location, Token, TOKEN_REGEXES
+from typing import List
+from compiler.defs import Function, Keyword, Location, Signature, Token, TokenType
+from compiler.utils import compiler_error
 
-def get_tokens_from_code(file: str, code: str, macro_location: Location = None) -> List[Token]:
-    token_matches: List[re.Match[str]]  = get_token_matches(code)
-
+def get_functions_from_code(code: str, file: str) -> List[Token]:
+    token_matches: List[re.Match[str]] = get_token_matches(code)
     # Newlines are used to determine when a comment ends and when new line starts
-    newline_indexes: List[int]  = [nl.start() for nl in re.finditer('\n', code)]
+    newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', code)]
+    return get_functions(file, token_matches, newline_indexes)
 
-    tokens: List[Token]             = []
-    macros: List[Tuple[str,str]]    = TOKEN_REGEXES['MACRO'].findall(code)
-    for match in token_matches:
-        token = get_token_from_match(match, os.path.basename(file), newline_indexes, macros, macro_location)
-        tokens.append(token)
+def get_tokens_from_functions(functions: List[Function], file: str) -> List[Token]:
+    try:
+        main_function: Function = [ functions.pop() for func in functions if func.name.upper() == 'MAIN' ][0]
+    except IndexError:
+        compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a main function")
+    return get_tokens_from_function(main_function, functions)
 
+def get_tokens_from_function(parent_function: Function, functions: List[Function]) -> List[Token]:
+    tokens: List[Token] = parent_function.tokens
+    i = 0
+    while i < len(tokens):
+        for func in functions:
+            child_function: Function = func if tokens[i].value == func.name else None
+            if child_function:
+                tokens = tokens[:i] + get_tokens_from_function(child_function, functions) + tokens[i+1:]
+        i += 1
     return tokens
+
+# Generates and returns a list of Function objects
+def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes: List[int]) -> List[Function]:
+
+    # Initialize variables
+    functions: List[Function]       = []
+    current_part: int               = 0
+    name: str                       = ''
+    param_types: List[str]          = []
+    return_types: List[str]         = []
+    tokens: List[Token]             = []
+
+    # Functions are made of four parts:
+    #  1 : name,
+    #  2 : param types
+    #  3 : return types
+    #  4 : location
+    # (0 : Not lexing a function)
+    FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '--', '->', ':', 'END']
+    function_parts: itertools.cycle = itertools.cycle(list(range(5)))
+    next(function_parts)
+
+    for match in token_matches:
+        token_value: str = match.group(0)
+
+        # Go to next function part
+        if token_value.upper() in FUNCTION_PART_DELIMITERS:
+            current_part = next(function_parts)
+
+            # Append Function and reset variables when function is fully lexed
+            if token_value.upper() == 'END':
+                signature: Signature = Signature( (param_types, return_types) )
+                functions.append( Function(name, signature, tokens) )
+                name            = ''
+                param_types     = []
+                return_types    = []
+                tokens          = []
+
+        elif current_part == 1:
+            name = token_value
+        elif current_part == 2:
+            param_types.append(token_value.upper())
+        elif current_part == 3:
+            return_types.append(token_value.upper())
+        elif current_part == 4:
+            token: Token = get_token_from_match(match, file, newline_indexes)
+            tokens.append(token)
+
+    return functions
 
 # Returns all tokens with comments taken out
 def get_token_matches(code: str) -> List[re.Match[str]]:
@@ -23,8 +83,7 @@ def get_token_matches(code: str) -> List[re.Match[str]]:
 
     matches: List[re.Match[str]]            = list(re.finditer(TOKEN_REGEX, code))
     code_without_comments: str              = re.sub(r'\s*\/\/.*', '', code)
-    code_without_macros: str                = TOKEN_REGEXES['MACRO'].sub('', code_without_comments)
-    final_code_matches: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code_without_macros))
+    final_code_matches: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code_without_comments))
 
     # Take comments and macros out of matches
     i: int = 0
@@ -38,26 +97,15 @@ def get_token_matches(code: str) -> List[re.Match[str]]:
         i += 1
     return matches
 
-def merge_macros_to_code(code: str, macro_regex: str) -> str:
-    macros: List[Tuple[str, str]] = re.findall(macro_regex, code)
-    for macro in macros:
-        # Remove macros from code
-        code = re.sub(macro_regex, '', code, count=1)
-
-        # Replace all calls to the macro with the macro contents
-        code = code.replace(macro[0], macro[1])
-    return code
-
 # Constructs and returns a Token object from a regex match
-def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[int], macros: List[Tuple[str,str]], macro_location: Location) -> Token:
-    token_value: str        = get_token_value(match.group(0), macros)
+def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[int]) -> Token:
+    token_value: str        = get_token_value(match.group(0))
     token_type: TokenType   = get_token_type(token_value)
-    token_location          = macro_location or get_token_location(file, match.start(), newline_indexes)
+    token_location          = get_token_location(file, match.start(), newline_indexes)
     return Token(token_value, token_type, token_location)
 
 # Returns the Intrinsic class value from token
-def get_token_value(token: str, macros: List[Tuple[str,str]]) -> str:
-    token = token.upper()
+def get_token_value(token: str) -> str:
     if token == '%':
         return 'MOD'
     if token == '/':
@@ -80,18 +128,12 @@ def get_token_value(token: str, macros: List[Tuple[str,str]]) -> str:
         return 'NE'
     if token == '+':
         return 'PLUS'
-    if token == '^':
-        return 'POW'
     if token == '.':
         return 'PRINT_INT'
-    if token == 'TRUE':
+    if token.upper() == 'TRUE':
         return '1'
-    if token == 'FALSE':
+    if token.upper() == 'FALSE':
         return '0'
-    for macro in macros:
-        macro_name: str = macro[0].upper()
-        if token == macro_name:
-            return macro[1]  # Macro's code
     return token
 
 def get_token_type(token_text: str) -> TokenType:

@@ -3,7 +3,7 @@ import os
 import re
 import sys
 from typing import NoReturn, Optional
-from compiler.defs import Colors, REGEX, Op
+from compiler.defs import Colors, REGEX, Token, Op
 
 def usage() -> None:
     print("Usage: ./torth.py file")
@@ -18,25 +18,25 @@ def get_command_line_arguments() -> argparse.Namespace:
 
     args: argparse.Namespace = parser.parse_args(sys.argv[1:])
     if not os.path.isfile(args.code_file):
-        raise FileNotFoundError(f"Argument '{args.code_file}' is not a file")
+        compiler_error("ARGUMENT_ERROR", f"Argument '{args.code_file}' is not a file")
     return args
 
 def get_file_contents(file: str) -> str:
     with open(file, 'r') as f:
         return f.read()
 
-def compiler_error(op: Op, error_type: str, error_message: str) -> NoReturn:
-    operand: str    = op.token.value
-    file: str       = op.token.location[0]
-    row: int        = op.token.location[1]
-    col: int        = op.token.location[2]
-
+def compiler_error(error_type: str, error_message: str, token: Optional[Token] = None) -> NoReturn:
     print(f'{Colors.HEADER}Compiler error {Colors.FAIL}{error_type}{Colors.NC}' + f":\n{error_message}\n")
+    if token:
+        operand: str    = token.value
+        file: str       = token.location[0]
+        row: int        = token.location[1]
+        col: int        = token.location[2]
 
-    print(f'{Colors.HEADER}Operand{Colors.NC}: {operand}')
-    print(f'{Colors.HEADER}File{Colors.NC}: {file}')
-    print(f'{Colors.HEADER}Row{Colors.NC}: {row}, ' \
-        + f'{Colors.HEADER}Column{Colors.NC}: {col}')
+        print(f'{Colors.HEADER}Operand{Colors.NC}: {operand}')
+        print(f'{Colors.HEADER}File{Colors.NC}: {file}')
+        print(f'{Colors.HEADER}Row{Colors.NC}: {row}, ' \
+            + f'{Colors.HEADER}Column{Colors.NC}: {col}')
     exit(1)
 
 def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> None:

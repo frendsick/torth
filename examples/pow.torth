@@ -1,27 +1,31 @@
-// Program calculates n^e
+function Pow -- exponent number -> power :
+  over  // o = 2  (original value)
+  1     // c = 1  (count)
 
-13    // n = 13 (number)
-16    // e = 16 (exponent)
-over  // o = 2  (original value)
-1     // c = 1  (count)
+  // Initial stack alignment (rightmost is on the top): n e o c
 
-// Initial stack alignment (rightmost is on the top): n e o c
+  // Align count and exponent to the top of the stack
+  // to be used as condition for the WHILE loop
+  rot rot swap  // n o e c
 
-// Align count and exponent to the top of the stack
-// to be used as condition for the WHILE loop
-rot rot swap  // n o e c
+  // If exponent > count then we need to multiple the number at least one more time
+  WHILE rot over > DO  // n o c e
 
-// If exponent > count then we need to multiple the number at least one more time
-WHILE rot over > DO  // n o c e
+    // Put original number and n to the top of the stack
+    swap swap2 dup rot  // e c o n o
 
-// Put original number and n to the top of the stack
-swap swap2 dup rot  // e c o n o
+    // Multiply n with the original number to get new n
+    * // e c o n
 
-// Multiply n with the original number to get new n
-* // e c o n
+    // Align the stack as it was initially before WHILE loop
+    swap swap2 1 +  // n o e c
 
-// Align the stack as it was initially before WHILE loop
-swap swap2 1 +  // n o e c
-END drop drop drop  // Leave only the power to the stack
+  DONE drop drop drop  // Leave only the power to the stack
+end
 
-print_int // Print the result of 13^16 = 665416609183179841
+function Main -- -> ret :
+  13  // n = 13 (number)
+  16  // e = 16 (exponent)
+  Pow print_int
+  0   // return 0
+end

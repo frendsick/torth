@@ -1,21 +1,30 @@
-// Problem 2: Even Fibonacci numbers
-
-2 // Total
-1 // Previous
-2 // Current
-WHILE 4000000 >= DO
-  // Duplicate Current to use it next iteration as Previous
-  dup
-  // Rotate the duplicate to the third position in the stack
-  rot
-  // Add the two numbers in the top of the stack together (Previous and Current)
-  +
-  // If Current is even add it to the Total
+function sum_current_with_previous -- Current Previous -> Sum Current : 
+  dup rot +
+end
+    
+// If Current is even add it to the Total
+function add_if_even -- Current _Previous Total -> Current _Previous Total :
   IF 2 % 0 == DO
     swap rot dup rot + rot
   ENDIF
-DONE
+end
 
-"Sum of even fibonacci numbers under 4000000: " print
-// Get the total from the third position of the stack
-3 GET_NTH print_int // Output: 4613732
+// Problem 2: Even Fibonacci numbers
+function sum_of_even_fibonacci -- Current, Previous, Total, Limit -> Current :
+  WHILE 5 get_nth >= DO
+    sum_current_with_previous
+    add_if_even
+  DONE
+  drop drop swap drop
+end
+
+function main -- -> ret :
+  4000000 // Limit
+  2       // Total
+  1       // Previous
+  2       // Current
+
+  "Sum of even fibonacci numbers under 4000000: " print
+  sum_of_even_fibonacci print_int // Output: 4613732
+  0  // return 0
+end
