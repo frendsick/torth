@@ -1,8 +1,7 @@
 import re
 import subprocess
-from typing import List, Tuple
-from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType, TOKEN_REGEXES
-from compiler.lex import get_tokens_from_code
+from typing import List
+from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType
 from compiler.utils import check_popped_value_type, compiler_error
 
 def intrinsic_exists(token: str) -> bool:
@@ -53,7 +52,7 @@ def generate_program(tokens: List[Token], file: str) -> Program:
                 program[i].id = i
 
         else:
-            raise AttributeError (f"Operation '{token_value}' is not found")
+            compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found")
 
         if op_id == len(program):
             program.append( Op(op_id, op_type, token) )
@@ -153,16 +152,16 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "SYSCALL6":
                 type_check_syscall(op, param_count=6)
             else:
-                compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.")
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", op.token)
         else:
-            compiler_error(op, "NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.")
-        print(op.token.value.upper(), STACK)
-def pop_two_from_stack(op: Op) -> Tuple[str, str]:
+            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", op.token)
+
+def pop_two_from_stack(op: Op) -> tuple[str, str]:
     try:
         b: str = STACK.pop()
         a: str = STACK.pop()
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", op.token)
     return a, b
 
 def type_check_do(op: Op) -> None:
@@ -182,7 +181,7 @@ def type_check_div(op: Op) -> None:
     try:
         STACK.append(str(int(a) // int(b)))
     except ZeroDivisionError:
-        compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
+        compiler_error("DIVISION_BY_ZERO", "Division by zero is not possible.", op.token)
 
 def type_check_divmod(op: Op) -> None:
     a, b = pop_two_from_stack(op)
@@ -193,19 +192,19 @@ def type_check_divmod(op: Op) -> None:
         STACK.append(str(int(a)% int(b)))
         STACK.append(str(int(a)//int(b)))
     except ZeroDivisionError:
-        compiler_error(op, "DIVISION_BY_ZERO", "Division by zero is not possible.")
+        compiler_error("DIVISION_BY_ZERO", "Division by zero is not possible.", op.token)
 
 def type_check_drop(op: Op) -> None:
     try:
         STACK.pop()
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.")
+        compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", op.token)
 
 def type_check_dup(op: Op) -> None:
     try:
         top = STACK.pop()
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.")
+        compiler_error("POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.", op.token)
     STACK.append(top)
     STACK.append(top)
 
@@ -237,15 +236,15 @@ def type_check_get_nth(op: Op) -> None:
         if n < 0:
             raise ValueError
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", op.token)
     except ValueError:
-        compiler_error(op, "STACK_VALUE_ERROR", "First element in the stack is not a non-zero positive integer.")
+        compiler_error("STACK_VALUE_ERROR", "First element in the stack is not a non-zero positive integer.", op.token)
     try:
         stack_index: int = len(STACK) - 1
         nth_element: str = STACK[stack_index - n]
     except IndexError:
-        compiler_error(op, "NOT_ENOUGH_ELEMENTS_IN_STACK", \
-                    f"Cannot get {n+1}. element from the stack: Stack only contains {len(STACK)} elements.")
+        compiler_error("NOT_ENOUGH_ELEMENTS_IN_STACK", \
+                    f"Cannot get {n+1}. element from the stack: Stack only contains {len(STACK)} elements.", op.token)
     STACK.append(nth_element)
 
 def type_check_gt(op: Op) -> None:
@@ -330,7 +329,7 @@ def type_check_pow(op: Op) -> None:
     try:
         power: str = STACK.pop()
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", op.token)
 
     check_popped_value_type(op, power, expected_type='INT')
     STACK.append(str(power))
@@ -340,8 +339,8 @@ def type_check_string_output(op: Op, intrinsic: str) -> None:
         buf    = STACK.pop()
         count  = STACK.pop()
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", \
-            f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.")
+        compiler_error("POP_FROM_EMPTY_STACK", \
+            f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.", op.token)
 
     check_popped_value_type(op, buf, expected_type='*buf')
     check_popped_value_type(op, count, expected_type='INT')
@@ -356,7 +355,7 @@ def type_check_rot(op: Op) -> None:
         b = STACK.pop()
         c = STACK.pop()
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "The stack does not contain three elements to rotate.")
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack does not contain three elements to rotate.", op.token)
     STACK.append(a)
     STACK.append(c)
     STACK.append(b)
@@ -373,7 +372,7 @@ def type_check_swap2(op: Op) -> None:
         c = STACK.pop()
         d = STACK.pop()
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", op.token)
     STACK.append(b)
     STACK.append(a)
     STACK.append(d)
@@ -383,7 +382,7 @@ def type_check_syscall(op: Op, param_count: int) -> None:
     try:
         get_stack_after_syscall(STACK, param_count)
     except IndexError:
-        compiler_error(op, "POP_FROM_EMPTY_STACK", "Not enough values in the stack.")
+        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", op.token)
 
 def get_stack_after_syscall(stack: List[str], param_count: int) -> None:
     _syscall = stack.pop()
