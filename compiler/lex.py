@@ -1,7 +1,40 @@
-import re
+import itertools
 import os
-from typing import List, Tuple
-from compiler.defs import Keyword, TokenType, Location, Token, TOKEN_REGEXES
+import re
+from typing import Dict, List
+from compiler.defs import Keyword, Signature, TokenType, Location, Token, TOKEN_REGEXES
+
+def get_function_signatures(code: str) -> Signature:
+    function_signatures: List[Signature] = []
+    function_parts: List[int] = list(range(4)) # Not in function, name, param types, return types
+    function_part: itertools.cycle = itertools.cycle(function_parts)
+    next(function_part)
+
+    current_part: int       = 0
+    function_name: str      = ''
+    param_types: List[str]  = []
+    return_types: List[str] = []
+
+    for word in code.split():
+        print(word, current_part)
+        if word.upper() in ('FUNCTION', '--', '->', ':'):
+            current_part = next(function_part)
+            if word == ':':
+                function_signatures.append( (function_name, param_types, return_types) )
+                # Empty variable names
+                function_name   = ''
+                param_types     = []
+                return_types    = []
+
+        elif current_part == 1:
+            print(word)
+            function_name: str = word
+        elif current_part == 2:
+            param_types.append(word)
+        elif current_part == 3:
+            return_types.append(word)
+    return function_signatures
+
 
 def get_tokens_from_code(file: str, code: str, macro_location: Location = None) -> List[Token]:
     token_matches: List[re.Match[str]]  = get_token_matches(code)
@@ -10,7 +43,7 @@ def get_tokens_from_code(file: str, code: str, macro_location: Location = None) 
     newline_indexes: List[int]  = [nl.start() for nl in re.finditer('\n', code)]
 
     tokens: List[Token]             = []
-    macros: List[Tuple[str,str]]    = TOKEN_REGEXES['MACRO'].findall(code)
+    macros: List[tuple[str,str]]    = TOKEN_REGEXES['MACRO'].findall(code)
     for match in token_matches:
         token = get_token_from_match(match, os.path.basename(file), newline_indexes, macros, macro_location)
         tokens.append(token)
@@ -39,7 +72,7 @@ def get_token_matches(code: str) -> List[re.Match[str]]:
     return matches
 
 def merge_macros_to_code(code: str, macro_regex: str) -> str:
-    macros: List[Tuple[str, str]] = re.findall(macro_regex, code)
+    macros: List[tuple[str, str]] = re.findall(macro_regex, code)
     for macro in macros:
         # Remove macros from code
         code = re.sub(macro_regex, '', code, count=1)
@@ -49,14 +82,14 @@ def merge_macros_to_code(code: str, macro_regex: str) -> str:
     return code
 
 # Constructs and returns a Token object from a regex match
-def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[int], macros: List[Tuple[str,str]], macro_location: Location) -> Token:
+def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[int], macros: List[tuple[str,str]], macro_location: Location) -> Token:
     token_value: str        = get_token_value(match.group(0), macros)
     token_type: TokenType   = get_token_type(token_value)
     token_location          = macro_location or get_token_location(file, match.start(), newline_indexes)
     return Token(token_value, token_type, token_location)
 
 # Returns the Intrinsic class value from token
-def get_token_value(token: str, macros: List[Tuple[str,str]]) -> str:
+def get_token_value(token: str, macros: List[tuple[str,str]]) -> str:
     token = token.upper()
     if token == '%':
         return 'MOD'

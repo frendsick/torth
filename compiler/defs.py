@@ -17,6 +17,7 @@ class Keyword(Enum):
     ELSE=auto()
     END=auto()
     ENDIF=auto()
+    FUNCTION=auto()
     IF=auto()
     MACRO=auto()
     WHILE=auto()
@@ -107,7 +108,14 @@ class Op:
     type: OpType
     token: Token
 
-Program = List[Op]
+Program     = List[Op]
+Signature   = tuple[str, List[str], List[str]]  # Name, param types, return types
+
+@dataclass
+class Function:
+    name: str
+    ops: Program
+    signature: Signature
 
 STACK: List[str] = []
 REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}
