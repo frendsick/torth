@@ -1,0 +1,98 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Torth",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#functions"
+    },
+    {
+      "include": "#intrinsics"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#maths"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#strings"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.torth",
+          "begin": "//",
+          "end": "$"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "storage.type.torth",
+          "match": "\\b(?i)(function|end)\\b"
+        },
+        {
+          "name": "markup.deleted.torth",
+          "match": "\\b(?i)(ret)\\b"
+        },
+        {
+          "name": "support.function",
+          "match": "(?i)(?<=function\\s)\\b(\\S+)\\b"
+        }
+      ]
+    },
+    "intrinsics": {
+      "patterns": [
+        {
+          "name": "constant.torth",
+          "match": "\\b(?i)(ARGC|ARGV|DROP|DUP|DUP2|ENVP|EXIT|GET_NTH|HERE|INPUT|OVER|PUTS|PRINT|PRINT_INT|ROT|SWAP|SWAP2|SYSCALL0|SYSCALL1|SYSCALL2|SYSCALL3s|SYSCALL4|SYSCALL5|SYSCALL6)\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.torth",
+          "match": "\\b(?i)(break|do|done|elif|else|endif|if|while)\\b"
+        }
+      ]
+    },
+    "maths": {
+      "patterns": [
+        {
+          "name": "constant.numeric.torth",
+          "match": "\\b(?i)(\\+|PLUS|\\-|MINUS|\\*|MUL|\\/|DIV|\\%|DIV|DIVMOD|&&|AND|OR|==|EQ|!=|NE|>=|GE|>|GT|<=|LE|<|LT|NOT)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.torth",
+          "match": "\\b(\\d+)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.torth",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.torth",
+          "match": "\\\\."
+        }
+      ]
+    }
+  },
+  "scopeName": "source.torth"
+}
