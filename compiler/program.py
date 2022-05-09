@@ -7,7 +7,7 @@ from compiler.utils import check_popped_value_type, compiler_error
 def intrinsic_exists(token: str) -> bool:
     return bool(hasattr(Intrinsic, token))
 
-def generate_program(tokens: List[Token], file: str) -> Program:
+def generate_program(tokens: List[Token]) -> Program:
     program: List[Op] = []
     op_id: int = 0
     for token in tokens:
@@ -117,8 +117,6 @@ def type_check_program(program: Program) -> None:
                 type_check_over(op)
             elif intrinsic == "PLUS":
                 type_check_plus(op)
-            elif intrinsic == "POW":
-                type_check_pow(op)
             elif intrinsic in {"PRINT", "PUTS"}:
                 type_check_string_output(op, intrinsic)
             elif intrinsic == "PRINT_INT":
@@ -292,39 +290,6 @@ def type_check_over(op: Op) -> None:
 def type_check_plus(op: Op) -> None:
     a, b = pop_two_from_stack(op)
     STACK.append(str(int(a) + int(b)))
-
-# The sequence of operations is from examples/pow.torth
-# TODO: Make "POW" Macro in Torth when Macro's are implemented
-def type_check_pow(op: Op) -> None:
-    type_check_over(op)             # OVER
-    STACK.append('1')               # PUSH_INT
-    type_check_rot(op)              # ROT
-    type_check_rot(op)              # ROT
-    type_check_swap(op)             # SWAP
-    type_check_dup(op)              # WHILE
-    type_check_rot(op)              # ROT
-    type_check_over(op)             # OVER
-    type_check_gt(op)               # GT
-    type_check_do(op)               # DO
-    type_check_swap(op)             # SWAP
-    type_check_swap2(op)            # SWAP2
-    type_check_dup(op)              # DUP
-    type_check_rot(op)              # ROT
-    type_check_mul(op)              # MUL
-    type_check_swap(op)             # SWAP
-    type_check_swap2(op)            # SWAP2
-    STACK.append('1')               # PUSH_INT
-    type_check_plus(op)             # PLUS
-    for _ in range(3):
-        type_check_drop(op)         # DROP
-
-    try:
-        power: str = STACK.pop()
-    except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", op.token)
-
-    check_popped_value_type(op, power, expected_type='INT')
-    STACK.append(str(power))
 
 def type_check_string_output(op: Op, intrinsic: str) -> None:
     try:

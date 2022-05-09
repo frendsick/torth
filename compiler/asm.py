@@ -99,8 +99,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_over_asm()
         elif intrinsic == "PLUS":
             return get_plus_asm()
-        elif intrinsic == "POW":
-            return get_pow_asm(op)
         # TODO: Merge PRINT and PRINT_INT
         elif intrinsic == "PRINT":
             return get_string_output_asm(intrinsic)
@@ -527,35 +525,6 @@ def get_over_asm() -> str:
 
 def get_plus_asm() -> str:
     return get_arithmetic_asm("add")
-
-# The sequence of operations is from examples/pow.torth
-# TODO: Make "POW" Macro in Torth when Macro's are implemented
-def get_pow_asm(op: Op) -> str:
-    do_jump_destination: str = f'DONE{op.id}'
-    op_asm: str  = get_over_asm()
-    op_asm      += get_push_int_asm('1')
-    op_asm      += get_rot_asm()
-    op_asm      += get_rot_asm()
-    op_asm      += get_swap_asm()
-    op_asm      += get_while_asm(op)
-    op_asm      += get_rot_asm()
-    op_asm      += get_over_asm()
-    op_asm      += get_gt_asm()
-    op_asm      += generate_do_asm(do_jump_destination)
-    op_asm      += get_swap_asm()
-    op_asm      += get_swap2_asm()
-    op_asm      += get_dup_asm()
-    op_asm      += get_rot_asm()
-    op_asm      += get_mul_asm()
-    op_asm      += get_swap_asm()
-    op_asm      += get_swap2_asm()
-    op_asm      += get_push_int_asm('1')
-    op_asm      += get_plus_asm()
-    op_asm      += f'  jmp WHILE{op.id}\n'
-    op_asm      += f'{do_jump_destination}:\n'
-    for _ in range(3):
-        op_asm  += get_drop_asm()
-    return op_asm
 
 def get_print_int_asm() -> str:
     op_asm: str  = '  pop rdi\n'

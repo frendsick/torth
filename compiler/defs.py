@@ -1,4 +1,3 @@
-import re
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, List
@@ -51,7 +50,6 @@ class Intrinsic(Enum):
     OR=auto()
     OVER=auto()
     PLUS=auto()
-    POW=auto()
     PUTS=auto()
     PRINT=auto()
     PRINT_INT=auto()
