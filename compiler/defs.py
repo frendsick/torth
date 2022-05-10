@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 class Colors:
     FAIL = '\033[91m'
@@ -91,7 +91,7 @@ class TokenType(Enum):
     WORD=auto()
 
 # Source file name, row, column
-Location = tuple[str, int, int]
+Location = Tuple[str, int, int]
 
 @dataclass
 class Token:
@@ -100,7 +100,7 @@ class Token:
     location: Location
 
 # param types, return types
-Signature   = tuple[List[str], List[str]]
+Signature   = Tuple[List[str], List[str]]
 
 @dataclass
 class Function:

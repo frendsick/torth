@@ -47,4 +47,4 @@ def check_popped_value_type(op: Op, popped_value: str, expected_type: str) -> No
         f"{Colors.HEADER}Regex{Colors.NC}: {regex}"
 
     # Raise compiler error if the value gotten from the stack does not match with the regex
-    assert re.match(regex, popped_value), compiler_error(op, "REGISTER_VALUE_ERROR", error_message)
+    assert re.match(regex, popped_value), compiler_error("REGISTER_VALUE_ERROR", error_message, op.token)

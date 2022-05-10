@@ -1,6 +1,6 @@
 import itertools
 import re
-from typing import List
+from typing import List, Optional
 from compiler.defs import Function, Keyword, Location, Signature, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
 
@@ -17,7 +17,7 @@ def get_functions_from_code(code: str, file: str, included_files: List[str]) -> 
     included_files.append(file)
     for file in included_files:
         included_code: str = get_file_contents(file)
-        token_matches: List[re.Match[str]] = get_token_matches(included_code)
+        token_matches: list = get_token_matches(included_code)
         # Newlines are used to determine when a comment ends and when new line starts
         newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', code)]
         functions += get_functions(file, token_matches, newline_indexes)
@@ -35,14 +35,14 @@ def get_tokens_from_function(parent_function: Function, functions: List[Function
     i = 0
     while i < len(tokens):
         for func in functions:
-            child_function: Function = func if tokens[i].value == func.name else None
+            child_function: Optional[Function] = func if tokens[i].value == func.name else None
             if child_function:
                 tokens = tokens[:i] + get_tokens_from_function(child_function, functions) + tokens[i+1:]
         i += 1
     return tokens
 
 # Generates and returns a list of Function objects
-def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes: List[int]) -> List[Function]:
+def get_functions(file: str, token_matches: list, newline_indexes: List[int]) -> List[Function]:
 
     # Initialize variables
     functions: List[Function]       = []
@@ -59,7 +59,7 @@ def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes
     #  4 : location
     # (0 : Not lexing a function)
     FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '->', ':', 'END']
-    function_parts: itertools.cycle = itertools.cycle(list(range(5)))
+    function_parts = itertools.cycle(list(range(5)))
     next(function_parts)
 
     for match in token_matches:
@@ -71,7 +71,7 @@ def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes
 
             # Append Function and reset variables when function is fully lexed
             if token_value.upper() == 'END':
-                signature: Signature = Signature( (param_types, return_types) )
+                signature: Signature = (param_types, return_types)
                 functions.append( Function(name, signature, tokens) )
                 name            = ''
                 param_types     = []
@@ -92,7 +92,7 @@ def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes
     return functions
 
 # Returns all tokens with comments taken out
-def get_token_matches(code: str) -> List[re.Match[str]]:
+def get_token_matches(code: str) -> list:
     TOKEN_REGEX: re.Pattern[str] = re.compile(r'''\[.*\]|".*?"|'.*?'|\S+''')
 
     matches: List[re.Match[str]]            = list(re.finditer(TOKEN_REGEX, code))
@@ -112,7 +112,7 @@ def get_token_matches(code: str) -> List[re.Match[str]]:
     return matches
 
 # Constructs and returns a Token object from a regex match
-def get_token_from_match(match: re.Match[str], file: str, newline_indexes: List[int]) -> Token:
+def get_token_from_match(match: list, file: str, newline_indexes: List[int]) -> Token:
     token_value: str        = get_token_value(match.group(0))
     token_type: TokenType   = get_token_type(token_value)
     token_location          = get_token_location(file, match.start(), newline_indexes)

@@ -1,6 +1,6 @@
 import re
 import subprocess
-from typing import List
+from typing import List, Tuple
 from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType
 from compiler.utils import check_popped_value_type, compiler_error
 
@@ -143,7 +143,7 @@ def type_check_program(program: Program) -> None:
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", op.token)
 
-def pop_two_from_stack(op: Op) -> tuple[str, str]:
+def pop_two_from_stack(op: Op) -> Tuple[str, str]:
     try:
         b: str = STACK.pop()
         a: str = STACK.pop()
@@ -210,7 +210,7 @@ def type_check_eq(op: Op) -> None:
     STACK.append(str(int(a==b)))
 
 def type_check_exit(op: Op) -> None:
-    _return_code: int = STACK.pop()
+    _return_code: str = STACK.pop()
     check_popped_value_type(op, _return_code, expected_type='INT')
 
 def type_check_ge(op: Op) -> None:
