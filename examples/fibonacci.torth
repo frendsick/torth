@@ -1,27 +1,20 @@
 function Fib -- Current Previous Limit -> Sum :
   0 // The counter for WHILE loop
-  WHILE 5 get_nth > DO
+  WHILE 4 get_nth over < DO
     // Duplicate Current to use it next iteration as Previous
-    rot dup
-    // Rotate the duplicate to the third position in the stack
-    rot
+    swap dup
     // Add the two numbers in the top of the stack together (Previous and Current)
-    +
-    // Print the sum
-    dup print_int
-    // Rotate stack to the original position (Previous, Current, counter)
-    rot rot
+    rot swap2 + dup . swap
     // Increment counter for WHILE loop
     1 +
   DONE drop swap drop
 end
 
-function Main -- -> ret :
+function Main -- -> :
   20  // Limit
   0   // Previous
   1   // Current
 
   Fib // Returns Current after Limit rounds
   "The 20. fibonacci number starting from 0 and 1 is: " print print_int
-  0   // Return 0
 end
