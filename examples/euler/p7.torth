@@ -1,6 +1,6 @@
 // Problem 7: 10001st prime
 // NOT WORKING FOR CURRENT LANGUAGE VERSION
-function Pow -- e n -> power :
+function Pow e n -> power :
   over  // o = 2  (original value)
   1     // c = 1  (count)
   rot rot swap  // n o e c
@@ -10,7 +10,7 @@ function Pow -- e n -> power :
   DONE drop drop drop  // Leave only the power to the stack
 end
 
-function get_nth_prime -- n -> ret :
+function get_nth_prime n -> ret :
   2     // Counter
   3     // i
 
@@ -39,7 +39,7 @@ function get_nth_prime -- n -> ret :
   DONE
 end
 
-function Main -- -> :
+function Main -> :
   10001 // n
   get_nth_prime
 end

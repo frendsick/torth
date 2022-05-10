@@ -45,7 +45,7 @@ def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes
     #  3 : return types
     #  4 : location
     # (0 : Not lexing a function)
-    FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '--', '->', ':', 'END']
+    FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '->', ':', 'END']
     function_parts: itertools.cycle = itertools.cycle(list(range(5)))
     next(function_parts)
 
@@ -67,6 +67,7 @@ def get_functions(file: str, token_matches: List[re.Match[str]], newline_indexes
 
         elif current_part == 1:
             name = token_value
+            current_part = next(function_parts)
         elif current_part == 2:
             param_types.append(token_value.upper())
         elif current_part == 3:
