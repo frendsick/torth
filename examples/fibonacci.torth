@@ -4,7 +4,7 @@ function Fib Current Previous Limit -> Sum :
     // Duplicate Current to use it next iteration as Previous
     swap dup
     // Add the two numbers in the top of the stack together (Previous and Current)
-    rot swap2 + dup . swap
+    rot swap2 + dup print swap
     // Increment counter for WHILE loop
     1 +
   DONE drop swap drop
@@ -16,5 +16,5 @@ function Main -> :
   1   // Current
 
   Fib // Returns Current after Limit rounds
-  "The 20. fibonacci number starting from 0 and 1 is: " print print_int
+  "The 20. fibonacci number starting from 0 and 1 is: " puts print
 end

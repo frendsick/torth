@@ -29,7 +29,7 @@ Hello World
 
 ```pascal
 function Main -> :
-    "Hello, World!" puts
+    "Hello, World!\n" puts
 end
 ```
 
@@ -37,7 +37,7 @@ FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 
 ```pascal
 function OutputRow str_buf* str_len number -> number :
-    print dup print_int
+    puts dup print
 end
 
 function AddTotal row total -> row total :

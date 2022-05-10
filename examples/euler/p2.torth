@@ -25,6 +25,6 @@ function main -> :
   1       // Previous
   2       // Current
 
-  "Sum of even fibonacci numbers under 4000000: " print
-  sum_of_even_fibonacci print_int // Output: 4613732
+  "Sum of even fibonacci numbers under 4000000: " puts
+  sum_of_even_fibonacci print // Output: 4613732
 end
