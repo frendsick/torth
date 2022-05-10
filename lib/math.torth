@@ -7,7 +7,7 @@ function Pow int int -> int :
   // Initial stack alignment (rightmost is on the top): n e o c
 
   // If exponent > count then we need to multiple the number at least one more time
-  WHILE 3 get_nth over < DO  // n e o c
+  WHILE 3 nth over < DO  // n e o c
 
     // Multiply n with the original number to get new n
     rot swap2 dup rot * // c e o n

@@ -1,6 +1,6 @@
 function Fib Current Previous Limit -> Sum :
   0 // The counter for WHILE loop
-  WHILE 4 get_nth over < DO
+  WHILE 4 nth over < DO
     // Duplicate Current to use it next iteration as Previous
     swap dup
     // Add the two numbers in the top of the stack together (Previous and Current)

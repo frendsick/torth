@@ -9,7 +9,7 @@ function get_nth_prime n -> ret :
   3     // i
 
   // WHILE n² > i
-  WHILE 4 get_nth 2 Pow > DO
+  WHILE 4 nth 2 Pow > DO
     1 // k
 
     // WHILE i > k
@@ -23,7 +23,7 @@ function get_nth_prime n -> ret :
       IF rot 2 + over == DO rot rot 1 + rot ENDIF
 
       // IF counter == n
-      rot rot IF 5 get_nth == DO swap dup print_int 0 exit ENDIF
+      rot rot IF 5 nth == DO swap dup print_int 0 exit ENDIF
       
       // Align stack as it was before the loop
       rot swap

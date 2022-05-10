@@ -46,7 +46,7 @@ end
 
 function FizzBuzz index sum limit -> sum :
     // WHILE index <= limit
-    WHILE 3 get_nth over <= DO
+    WHILE 3 nth over <= DO
         IF 15 % 0 == DO
             "FizzBuzz  " OutputRow
         ELIF 3 % 0 == DO

@@ -87,8 +87,8 @@ def type_check_program(program: Program) -> None:
                 type_check_exit(op)
             elif intrinsic == "GE":
                 type_check_ge(op)
-            elif intrinsic == "GET_NTH":
-                type_check_get_nth(op)
+            elif intrinsic == "NTH":
+                type_check_nth(op)
             elif intrinsic == "GT":
                 type_check_gt(op)
             elif intrinsic == "INPUT":
@@ -197,7 +197,7 @@ def type_check_ge(op: Op) -> None:
     STACK.append(a)
     STACK.append(str(int(a>=b)))
 
-def type_check_get_nth(op: Op) -> None:
+def type_check_nth(op: Op) -> None:
     # The top element in the stack is the N
     try:
         n: int = int(STACK.pop()) - 1

@@ -71,7 +71,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_eq_asm()
         elif intrinsic == "GE":
             return get_ge_asm()
-        elif intrinsic == "GET_NTH":
+        elif intrinsic == "NTH":
             return get_nth_asm()
         elif intrinsic == "GT":
             return get_gt_asm()
