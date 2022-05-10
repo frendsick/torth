@@ -75,8 +75,6 @@ def type_check_program(program: Program) -> None:
             intrinsic: str = token.value.upper()
             if intrinsic == "DIV":
                 type_check_div(op)
-            elif intrinsic == "DIVMOD":
-                type_check_divmod(op)
             elif intrinsic == "DROP":
                 type_check_drop(op)
             elif intrinsic == "DUP":
@@ -164,17 +162,6 @@ def type_check_div(op: Op) -> None:
 
     try:
         STACK.append(str(int(a) // int(b)))
-    except ZeroDivisionError:
-        compiler_error("DIVISION_BY_ZERO", "Division by zero is not possible.", op.token)
-
-def type_check_divmod(op: Op) -> None:
-    a, b = pop_two_from_stack(op)
-
-    check_popped_value_type(op, a, expected_type='INT')
-    check_popped_value_type(op, b, expected_type='INT')
-    try:
-        STACK.append(str(int(a)% int(b)))
-        STACK.append(str(int(a)//int(b)))
     except ZeroDivisionError:
         compiler_error("DIVISION_BY_ZERO", "Division by zero is not possible.", op.token)
 
