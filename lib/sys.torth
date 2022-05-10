@@ -15,8 +15,8 @@ function SYS_rt_sigaction -> int : 13 end
 function SYS_rt_sigprocmask -> int : 14 end
 function SYS_rt_sigreturn -> int : 15 end
 function SYS_ioctl -> int : 16 end
-function SYS_pread-> int : 64 17 end
-function SYS_pwrite-> int : 64 18 end
+function SYS_pread -> int : 64 17 end
+function SYS_pwrite -> int : 64 18 end
 function SYS_readv -> int : 19 end
 function SYS_writev -> int : 20 end
 function SYS_access -> int : 21 end
@@ -31,7 +31,7 @@ function SYS_shmget -> int : 29 end
 function SYS_shmat -> int : 30 end
 function SYS_shmctl -> int : 31 end
 function SYS_dup -> int : 32 end
-function SYS_dup-> int : 2 33 end
+function SYS_dup -> int : 2 33 end
 function SYS_pause -> int : 34 end
 function SYS_nanosleep -> int : 35 end
 function SYS_getitimer -> int : 36 end
@@ -59,7 +59,7 @@ function SYS_fork -> int : 57 end
 function SYS_vfork -> int : 58 end
 function SYS_execve -> int : 59 end
 function SYS_exit -> int : 60 end
-function SYS_wait-> int : 4 61 end
+function SYS_wait -> int : 4 61 end
 function SYS_kill -> int : 62 end
 function SYS_uname -> int : 63 end
 function SYS_semget -> int : 64 end
@@ -164,7 +164,7 @@ function SYS_sync -> int : 162 end
 function SYS_acct -> int : 163 end
 function SYS_settimeofday -> int : 164 end
 function SYS_mount -> int : 165 end
-function SYS_umount-> int : 2 166 end
+function SYS_umount -> int : 2 166 end
 function SYS_swapon -> int : 167 end
 function SYS_swapoff -> int : 168 end
 function SYS_reboot -> int : 169 end
@@ -215,11 +215,11 @@ function SYS_epoll_create -> int : 213 end
 function SYS_epoll_ctl_old -> int : 214 end
 function SYS_epoll_wait_old -> int : 215 end
 function SYS_remap_file_pages -> int : 216 end
-function SYS_getdents-> int : 64 217 end
+function SYS_getdents -> int : 64 217 end
 function SYS_set_tid_address -> int : 218 end
 function SYS_restart_syscall -> int : 219 end
 function SYS_semtimedop -> int : 220 end
-function SYS_fadvise-> int : 64 221 end
+function SYS_fadvise -> int : 64 221 end
 function SYS_timer_create -> int : 222 end
 function SYS_timer_settime -> int : 223 end
 function SYS_timer_gettime -> int : 224 end
@@ -268,7 +268,7 @@ function SYS_symlinkat -> int : 266 end
 function SYS_readlinkat -> int : 267 end
 function SYS_fchmodat -> int : 268 end
 function SYS_faccessat -> int : 269 end
-function SYS_pselect-> int : 6 270 end
+function SYS_pselect -> int : 6 270 end
 function SYS_ppoll -> int : 271 end
 function SYS_unshare -> int : 272 end
 function SYS_set_robust_list -> int : 273 end
@@ -286,13 +286,13 @@ function SYS_eventfd -> int : 284 end
 function SYS_fallocate -> int : 285 end
 function SYS_timerfd_settime -> int : 286 end
 function SYS_timerfd_gettime -> int : 287 end
-function SYS_accept-> int : 4 288 end
-function SYS_signalfd-> int : 4 289 end
-function SYS_eventfd-> int : 2 290 end
-function SYS_epoll_create-> int : 1 291 end
-function SYS_dup-> int : 3 292 end
-function SYS_pipe-> int : 2 293 end
-function SYS_inotify_init-> int : 1 294 end
+function SYS_accept -> int : 4 288 end
+function SYS_signalfd -> int : 4 289 end
+function SYS_eventfd -> int : 2 290 end
+function SYS_epoll_create -> int : 1 291 end
+function SYS_dup -> int : 3 292 end
+function SYS_pipe -> int : 2 293 end
+function SYS_inotify_init -> int : 1 294 end
 function SYS_preadv -> int : 295 end
 function SYS_pwritev -> int : 296 end
 function SYS_rt_tgsigqueueinfo -> int : 297 end
@@ -300,7 +300,7 @@ function SYS_perf_event_open -> int : 298 end
 function SYS_recvmmsg -> int : 299 end
 function SYS_fanotify_init -> int : 300 end
 function SYS_fanotify_mark -> int : 301 end
-function SYS_prlimit-> int : 64 302 end
+function SYS_prlimit -> int : 64 302 end
 function SYS_name_to_handle_at -> int : 303 end
 function SYS_open_by_handle_at -> int : 304 end
 function SYS_clock_adjtime -> int : 305 end
