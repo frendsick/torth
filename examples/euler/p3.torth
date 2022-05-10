@@ -11,11 +11,10 @@ function get_largest_prime_factor -- i prime -> max_prime :
   DONE
 end
 
-function main -- -> ret :
+function main -- -> :
   600851475143  // prime
   3  // i
 
   "The largest prime factor of number 600851475143: " print
   get_largest_prime_factor print_int  // Output: 6857
-  0  // return 0
 end

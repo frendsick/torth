@@ -1,16 +1,16 @@
-function sum_current_with_previous -- Current Previous -> Sum Current : 
+function sum_current_with_previous Current Previous -> Sum Current : 
   dup rot +
 end
     
 // If Current is even add it to the Total
-function add_if_even -- Current _Previous Total -> Current _Previous Total :
+function add_if_even Current _Previous Total -> Current _Previous Total :
   IF 2 % 0 == DO
     rot over + rot rot
   ENDIF
 end
 
 // Problem 2: Even Fibonacci numbers
-function sum_of_even_fibonacci -- Current, Previous, Total, Limit -> Current :
+function sum_of_even_fibonacci Current, Previous, Total, Limit -> Current :
   WHILE dup 5 get_nth >= DO
     sum_current_with_previous
     add_if_even
@@ -18,7 +18,7 @@ function sum_of_even_fibonacci -- Current, Previous, Total, Limit -> Current :
   drop drop swap drop
 end
 
-function main -- -> ret :
+function main -> :
   4000000 // Limit
   2       // Total
   1       // Previous
@@ -26,5 +26,4 @@ function main -- -> ret :
 
   "Sum of even fibonacci numbers under 4000000: " print
   sum_of_even_fibonacci print_int // Output: 4613732
-  0  // return 0
 end

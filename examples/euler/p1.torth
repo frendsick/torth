@@ -4,11 +4,11 @@
 // Find the sum of all the multiples of 3 or 5 below 1000.
 INCLUDE "rst.rst"
 
-FUNCTION add_to_total -- int -> int :
+FUNCTION add_to_total int -> int :
   dup rot + swap
 END
 
-FUNCTION get_fizzbuzz_sum -- int int int -> int :
+FUNCTION get_fizzbuzz_sum int int int -> int :
   // WHILE limit > index
   WHILE dup 4 get_nth > DO
     IF 3 % 0 == DO
@@ -20,11 +20,10 @@ FUNCTION get_fizzbuzz_sum -- int int int -> int :
   DONE drop swap drop // Drop loop index and limit from stack
 END
 
-FUNCTION main -- -> int :
+FUNCTION main -> :
   1000  // limit
   0     // total
   3     // index
   get_fizzbuzz_sum  // Returns: sum
   "Sum of all numbers divisible by 3 or 5: " print print_int // Output: 233168
-  0
 END

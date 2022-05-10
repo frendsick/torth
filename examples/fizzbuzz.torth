@@ -1,12 +1,12 @@
-function OutputRow -- str_buf* str_len number -> number :
+function OutputRow str_buf* str_len number -> number :
     print dup print_int
 end
 
-function AddTotal -- row total -> row total :
+function AddTotal row total -> row total :
     dup rot + swap
 end
 
-function FizzBuzz -- index sum limit -> sum :
+function FizzBuzz index sum limit -> sum :
     // WHILE limit >= index
     WHILE dup 4 get_nth >= DO
         IF 15 % 0 == DO
@@ -23,7 +23,7 @@ function FizzBuzz -- index sum limit -> sum :
     DONE drop swap drop // Drop the counter and limit from the stack
 end
 
-function Main -- -> int :
+function Main -> :
     30  // limit
     0   // sum
     1   // index
@@ -31,5 +31,4 @@ function Main -- -> int :
     FizzBuzz
 
     "Sum of all numbers not divisible by 3 or 5: " OutputRow drop
-    0 // return 0
 end

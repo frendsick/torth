@@ -1,6 +1,6 @@
 // Problem 5: Smallest multiple
 
-function Pow -- n e -> power :
+function Pow n e -> power :
   over  // o = 2  (original value)
   1     // c = 1  (count)
   // n e o c
@@ -15,7 +15,6 @@ end
 // 3 => 9   = 3²
 // 5, 7, 11, 13, 17 and 19 occurs one time
 // Smallest common multiple is 2⁴ * 3² * 5 * 7 * 11 * 13 * 17 * 19
-function Main -- -> ret :
+function Main -> ret :
   2 4 Pow 3 2 Pow * 5 * 7 * 11 * 13 * 17 * 19 * print_int // Output: 232792560
-  0  // return 0
 end

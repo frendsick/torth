@@ -1,4 +1,4 @@
-function Pow -- number exponent -> power :
+function Pow number exponent -> power :
   over  // o = n  (original value)
   1     // c = 1  (count)
 
@@ -16,9 +16,8 @@ function Pow -- number exponent -> power :
   DONE drop drop drop  // Leave only the power to the stack
 end
 
-function Main -- -> ret :
+function Main -> :
   13  // n = 13 (number)
   16  // e = 16 (exponent)
   Pow print_int
-  0   // return 0
 end

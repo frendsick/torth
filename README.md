@@ -28,7 +28,7 @@ Hello, World!
 Hello World
 
 ```pascal
-function Main -- -> ret :
+function Main -> :
     "Hello, World!" puts
 end
 ```
@@ -36,15 +36,15 @@ end
 FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 
 ```pascal
-function OutputRow -- str_buf* str_len number -> number :
+function OutputRow str_buf* str_len number -> number :
     print dup print_int
 end
 
-function AddTotal -- row total -> row total :
+function AddTotal row total -> row total :
     dup rot + swap
 end
 
-function FizzBuzz -- index sum limit -> sum :
+function FizzBuzz index sum limit -> sum :
     // WHILE index <= limit
     WHILE 3 get_nth over <= DO
         IF 15 % 0 == DO
@@ -61,7 +61,7 @@ function FizzBuzz -- index sum limit -> sum :
     DONE drop swap drop // Drop the counter and limit from the stack
 end
 
-function Main -- -> int :
+function Main -> int :
     30  // limit
     0   // sum
     1   // index
