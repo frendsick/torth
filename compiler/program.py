@@ -9,9 +9,7 @@ def intrinsic_exists(token: str) -> bool:
 
 def generate_program(tokens: List[Token]) -> Program:
     program: List[Op] = []
-    op_id: int = 0
-    for token in tokens:
-        op_id = len(program)
+    for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()
         if token.type == TokenType.ARRAY:
             op_type = OpType.PUSH_ARRAY
@@ -46,8 +44,7 @@ def generate_program(tokens: List[Token]) -> Program:
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found")
 
-        if op_id == len(program):
-            program.append( Op(op_id, op_type, token) )
+        program.append( Op(op_id, op_type, token) )
     return program
 
 def run_code(exe_file: str) -> None:

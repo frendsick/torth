@@ -5,15 +5,16 @@ import re
 from typing import List
 from compiler.compile import compile_code, remove_compilation_files
 from compiler.defs import Function, Token
-from compiler.lex import get_functions_from_code, get_tokens_from_functions
+from compiler.lex import get_functions_from_code, get_included_files, get_tokens_from_functions
 from compiler.program import run_code
 from compiler.utils import get_command_line_arguments, get_file_contents
 
 def main():
     args: argparse.Namespace = get_command_line_arguments()
     code: str = get_file_contents(args.code_file)
+    included_files: List[str]   = get_included_files(code)
     code_file_basename: str     = os.path.basename(args.code_file)
-    functions: List[Function]   = get_functions_from_code(code, code_file_basename)
+    functions: List[Function]   = get_functions_from_code(code, code_file_basename, included_files)
     tokens: List[Token]         = get_tokens_from_functions(functions, code_file_basename)
 
     # Executable's file name is code file name without extension by default

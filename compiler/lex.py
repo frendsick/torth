@@ -2,17 +2,30 @@ import itertools
 import re
 from typing import List
 from compiler.defs import Function, Keyword, Location, Signature, Token, TokenType
-from compiler.utils import compiler_error
+from compiler.utils import compiler_error, get_file_contents
 
-def get_functions_from_code(code: str, file: str) -> List[Token]:
-    token_matches: List[re.Match[str]] = get_token_matches(code)
-    # Newlines are used to determine when a comment ends and when new line starts
-    newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', code)]
-    return get_functions(file, token_matches, newline_indexes)
+def get_included_files(code: str):
+    INCLUDE_REGEX = re.compile(r'include\s+"(\S+)"', flags=re.MULTILINE)
+    included_files: List[str] = INCLUDE_REGEX.findall(code)
+    for file in included_files:
+        included_code: str = get_file_contents(file)
+        included_files += get_included_files(included_code)
+    return included_files
+
+def get_functions_from_code(code: str, file: str, included_files: List[str]) -> List[Function]:
+    functions: List[Function] = []
+    included_files.append(file)
+    for file in included_files:
+        included_code: str = get_file_contents(file)
+        token_matches: List[re.Match[str]] = get_token_matches(included_code)
+        # Newlines are used to determine when a comment ends and when new line starts
+        newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', code)]
+        functions += get_functions(file, token_matches, newline_indexes)
+    return functions
 
 def get_tokens_from_functions(functions: List[Function], file: str) -> List[Token]:
     try:
-        main_function: Function = [ functions.pop() for func in functions if func.name.upper() == 'MAIN' ][0]
+        main_function: Function = [ func for func in functions if func.name.upper() == 'MAIN' ][0]
     except IndexError:
         compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a main function")
     return get_tokens_from_function(main_function, functions)
