@@ -1,15 +1,16 @@
-macro NULL 0 end
+include "lib/sys.torth"
+function NULL -> int : 0 end
 
-macro true  1 end
-macro false 0 end
+function true -> int : 1 end
+function false -> int : 0 end
 
-macro stdin  0 end
-macro stdout 1 end
-macro stderr 2 end
+function stdin  -> int : 0 end
+function stdout -> int : 1 end
+function stderr -> int : 2 end
 
-macro write SYS_write syscall3 end
-macro read SYS_read syscall3 end
-macro execve SYS_execve syscall3 end
-macro exit SYS_exit syscall1 drop end
+function write -> int : SYS_write syscall3 end
+function read -> int : SYS_read syscall3 end
+function execve -> int : SYS_execve syscall3 end
+function exit -> int : SYS_exit syscall1 drop end
 
-macro rotr rot rot end
+function rotr -> int : rot rot end
