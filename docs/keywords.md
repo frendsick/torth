@@ -202,22 +202,52 @@ ENDIF
 
 ## MACRO
 
-Macros are defined using MACRO keyword. Macros are pieces of code that can be called from wherever inside the program by using its name like functions in many other languages. When called, the macro's name is replaced with the contents of the macro during compilation. Macros should be defined before calling. Defined macros are case insensitive tokens like all other keywords in Torth.
+Functions are defined using FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as token. When called, the function's name is replaced with the contents of the function during compilation. Functions should be defined before calling. Defined functions are case sensitive tokens unlike most other keywords in Torth.
 
-Macros do not take parameters but instead use the current stack. It would be a good practice to somehow document what kind of values does the macro expect to be in the stack and how it alters stack's state during it's execution.
+Functions do not take parameters but instead use the current stack. Function syntax encourages the programmer to document the params used in the function and how it alters stack's state during it's execution.
 
-Macros cannot be yet called from within a macro. That feature is probably going to be implemented someday.
+### Syntax
+
+```pascal
+// Different tokens or words can be on different lines
+FUNCION <name> <args> -> <return_values> END
+```
 
 ### Examples
 
 ```pascal
-MACRO multiple_by_two
-  2 *
-END
-macro OutputInteger print_int end
+// Example with name and age as parameters, name is on top of the stack
+// Note: Strings pushes two items to the stack, it's length and pointer to the string buffer
+function is_adult str_buf* int int -> bool :
+  print // Prints name
+  if 18 > do
+    False " you are not an adult"
+  else
+    True  " you are an adult"
+  endif puts // Prints
+end
 
-3 MULTIPLE_BY_TWO outputinteger // Macros are case insensitive
-5 multiple_by_two multiple_by_two OutputInteger // 5 * 2 * 2 * 2 = 40
+function main -> :
+  42 "Teemu" is_adult
+  "Return value: " print print_int // Output: 40
+end
+```
+
+```pascal
+FUNCTION multiply_by_two int -> int : 2 * END
+
+// Functions can be called from within another function
+function MultiplyByFour
+  int
+  ->
+  int :
+    multiply_by_two
+    multiply_by_two
+end
+
+function main -> :
+  5 multiply_by_two MultiplyByFour print_int  // Output: 40
+end
 ```
 
 ## WHILE
