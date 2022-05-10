@@ -1,14 +1,8 @@
 // Problem 6: Sum square difference
 // NOT WORKING FOR CURRENT LANGUAGE VERSION
-function Pow e n -> power :
-  over  // o = 2  (original value)
-  1     // c = 1  (count)
-  rot rot swap  // n o e c
-  WHILE rot over > DO  // n o c e
-    swap swap2 dup rot * // e c o n
-    swap swap2 1 +  // n o e c
-  DONE drop drop drop  // Leave only the power to the stack
-end
+
+// Pow function
+include "lib/math.torth"
 
 function sum_of_squares Limit -> sum :
   1   // Loop index
