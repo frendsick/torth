@@ -13,14 +13,13 @@ def main():
     args: argparse.Namespace = get_command_line_arguments()
     code: str = get_file_contents(args.code_file)
     included_files: List[str]   = get_included_files(code)
-    code_file_basename: str     = os.path.basename(args.code_file)
-    functions: List[Function]   = get_functions_from_code(code, code_file_basename, included_files)
-    tokens: List[Token]         = get_tokens_from_functions(functions, code_file_basename)
+    functions: List[Function]   = get_functions_from_code(code, args.code_file, included_files)
 
     # Executable's file name is code file name without extension by default
+    code_file_basename: str = os.path.basename(args.code_file)
     exe_file: str = args.output if args.output is not None else code_file_basename.replace('.torth', '')
 
-    compile_code(tokens, code_file_basename, exe_file)
+    compile_code(code_file_basename, exe_file, functions)
     remove_compilation_files(code_file_basename, args)
     if args.run:
         run_code(exe_file)
