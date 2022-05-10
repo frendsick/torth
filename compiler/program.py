@@ -317,9 +317,9 @@ def type_check_rot(op: Op) -> None:
         c = STACK.pop()
     except IndexError:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack does not contain three elements to rotate.", op.token)
+    STACK.append(b)
     STACK.append(a)
     STACK.append(c)
-    STACK.append(b)
 
 def type_check_swap(op: Op) -> None:
     a, b = pop_two_from_stack(op)

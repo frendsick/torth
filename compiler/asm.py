@@ -547,9 +547,9 @@ def get_rot_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rcx\n'
+    op_asm      += '  push rbx\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rcx\n'
-    op_asm      += '  push rbx\n'
     return op_asm
 
 def get_swap_asm() -> str:
