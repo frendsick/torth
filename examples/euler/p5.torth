@@ -3,7 +3,8 @@ include "lib/math.torth"
 // 2 => 16  = 2⁴
 // 3 => 9   = 3²
 // 5, 7, 11, 13, 17 and 19 occurs one time
-// Smallest common multiple is 2⁴ * 3² * 5 * 7 * 11 * 13 * 17 * 19
-function Main -> ret :
-  2 4 Pow 3 2 Pow * 5 * 7 * 11 * 13 * 17 * 19 * print_int // Output: 232792560
+// Least common multiple is 2⁴ * 3² * 5 * 7 * 11 * 13 * 17 * 19
+function Main -> :
+  "Least common multiple for numbers from 1 to 20: " puts
+  2 4 Pow 3 2 Pow * 5 * 7 * 11 * 13 * 17 * 19 * print // Output: 232792560
 end

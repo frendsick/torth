@@ -6,10 +6,8 @@ def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
         token: Token = op.token
 
-        if op.type in [OpType.PUSH_STR, OpType.PUSH_CSTR]:
-            str_val: str = token.value[1:-1]  # Take quotes out of the string
-            insert_newline: bool = op.type == OpType.PUSH_STR
-            add_string_variable_asm(asm_file, str_val, op, insert_newline, op.type)
+        if op.type == OpType.PUSH_STR:
+            add_string_variable_asm(asm_file, token.value, op)
 
         elif op.type == OpType.PUSH_ARRAY:
             value: str = token.value
@@ -63,8 +61,6 @@ def get_op_asm(op: Op, program: Program) -> str:
         intrinsic: str = op.token.value.upper()
         if intrinsic == "DIV":
             return get_div_asm()
-        elif intrinsic == "DIVMOD":
-            return get_divmod_asm()
         elif intrinsic == "DROP":
             return get_drop_asm()
         elif intrinsic == "DUP":
@@ -75,7 +71,7 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_eq_asm()
         elif intrinsic == "GE":
             return get_ge_asm()
-        elif intrinsic == "GET_NTH":
+        elif intrinsic == "NTH":
             return get_nth_asm()
         elif intrinsic == "GT":
             return get_gt_asm()
@@ -97,13 +93,10 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_over_asm()
         elif intrinsic == "PLUS":
             return get_plus_asm()
-        # TODO: Merge PRINT and PRINT_INT
         elif intrinsic == "PRINT":
-            return get_string_output_asm(intrinsic)
-        elif intrinsic == "PRINT_INT":
-            return get_print_int_asm()
+            return get_print_asm()
         elif intrinsic == "PUTS":
-            return get_string_output_asm(intrinsic)
+            return get_puts_asm()
         elif intrinsic == "ROT":
             return get_rot_asm()
         elif intrinsic == "SWAP":
@@ -144,14 +137,11 @@ section .rodata
 '''
 
 def initialize_asm(asm_file: str) -> None:
-    default_asm: str = f'''{get_asm_file_start()}  formatStrInt db "%lld",10,0
-
-section .bss
-  int: RESQ 1 ; allocates 8 bytes
-
+    default_asm: str = f'''{get_asm_file_start()}
 section .text
+
 ;; Joinked from Porth's print function, thank you Tsoding!
-PrintInt:
+print:
   mov     r9, -3689348814741910323
   sub     rsp, 40
   mov     BYTE [rsp+31], 10
@@ -220,19 +210,15 @@ def get_arithmetic_asm(operand: str) -> str:
     arithmetic_asm      +=  '  push rax\n'
     return arithmetic_asm
 
-def add_string_variable_asm(asm_file: str, string: str, op: Op, insert_newline: bool, op_type: OpType) -> None:
+def add_string_variable_asm(asm_file: str, string: str, op: Op) -> None:
     with open(asm_file, 'r') as f:
         file_lines: List[str] = f.readlines()
     with open(asm_file, 'w') as f:
-        if op_type == OpType.PUSH_STR:
-            str_prefix: Literal['s', 'cs'] = 's'
-        elif op_type == OpType.PUSH_CSTR:
-            str_prefix = 'cs'
         f.write(get_asm_file_start())
-        if insert_newline:
-            f.write(f'  {str_prefix}{op.id} db "{string}",10,0\n')
-        else:
-            f.write(f'  {str_prefix}{op.id} db "{string}",0\n')
+
+        # Replace \n with nasm approved 10s for newline
+        string = string.replace('\\n','",10,"')
+        f.write(f'  s{op.id} db {string},0\n')
 
         # Rewrite lines except for the first line (section .rodata)
         len_asm_file_start: int = len(get_asm_file_start().split('\n')) - 1
@@ -399,10 +385,7 @@ def get_push_int_asm(integer: str) -> str:
 
 def get_push_str_asm(op: Op) -> str:
     str_val: str = op.token.value[1:-1]  # Take quotes out of the string
-    str_len: int = len(str_val) + 1      # Add newline
-    op_asm: str  = f'  mov rax, {str_len} ; String length\n'
-    op_asm      += f'  mov rsi, s{op.id} ; Pointer to string\n'
-    op_asm      +=  '  push rax\n'
+    op_asm: str  = f'  mov rsi, s{op.id} ; Pointer to string\n'
     op_asm      +=  '  push rsi\n'
     return op_asm
 
@@ -415,15 +398,6 @@ def get_div_asm() -> str:
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rax\n'
     op_asm      += '  div rbx\n'
-    op_asm      += '  push rax ; Quotient\n'
-    return op_asm
-
-def get_divmod_asm() -> str:
-    op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  pop rax\n'
-    op_asm      += '  div rbx\n'
-    op_asm      += '  push rdx ; Remainder\n'
     op_asm      += '  push rax ; Quotient\n'
     return op_asm
 
@@ -515,21 +489,27 @@ def get_over_asm() -> str:
 def get_plus_asm() -> str:
     return get_arithmetic_asm("add")
 
-def get_print_int_asm() -> str:
-    op_asm: str  = '  pop rdi\n'
-    op_asm      += '  call PrintInt\n'
+def get_print_asm() -> str:
+    op_asm: str  =  '  pop rdi\n'
+    op_asm      +=  '  call print\n'
     return op_asm
 
-def get_string_output_asm(intrinsic: str) -> str:
-    op_asm: str  = '  pop rsi    ; *buf\n'
-    op_asm      += '  pop rdx    ; count\n'
-
-    # PRINT is the same as PUTS but without newline
-    if intrinsic == 'PRINT':
-        op_asm +=  '  sub rdx, 1 ; Remove newline\n'
-    op_asm      += '  mov rax, sys_write\n'
-    op_asm      += '  mov rdi, stdout\n'
-    op_asm      += '  syscall\n'
+# https://localcoder.org/how-to-print-a-string-to-the-terminal-in-x86-64-assembly-nasm-without-syscall
+def get_puts_asm() -> str:
+    op_asm: str  =  '  pop r9\n'
+    op_asm      +=  '  mov rdi, r9      ; pointer to string\n'
+    op_asm      +=  '  xor rcx, rcx     ; zero rcx\n'
+    op_asm      +=  '  not rcx          ; set rcx = -1\n'
+    op_asm      +=  '  xor al, al       ; zero the al register (initialize to NUL)\n'
+    op_asm      +=  '  cld              ; clear the direction flag\n'
+    op_asm      +=  '  repnz scasb      ; get the string length (dec rcx through NUL)\n'
+    op_asm      +=  '  not rcx          ; rev all bits of negative results in absolute value\n'
+    op_asm      +=  '  dec rcx          ; -1 to skip the null-terminator, rcx contains length\n'
+    op_asm      +=  '  mov rdx, rcx     ; put length in rdx\n'
+    op_asm      +=  '  mov rsi, r9\n'
+    op_asm      +=  '  mov rax, 1\n'
+    op_asm      +=  '  mov rdi, rax\n'
+    op_asm      +=  '  syscall          ; write syscall\n'
     return op_asm
 
 def get_rot_asm() -> str:

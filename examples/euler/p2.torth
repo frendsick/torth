@@ -12,7 +12,7 @@ end
 
 // Problem 2: Even Fibonacci numbers
 function sum_of_even_fibonacci Current, Previous, Total, Limit -> Current :
-  WHILE dup 5 get_nth >= DO
+  WHILE dup 5 nth >= DO
     sum_current_with_previous
     add_if_even
   DONE
@@ -25,6 +25,6 @@ function main -> :
   1       // Previous
   2       // Current
 
-  "Sum of even fibonacci numbers under 4000000: " print
-  sum_of_even_fibonacci print_int // Output: 4613732
+  "Sum of even fibonacci numbers under 4000000: " puts
+  sum_of_even_fibonacci print // Output: 4613732
 end

@@ -1,23 +1,5 @@
-function Pow number exponent -> power :
-  over  // o = n  (original value)
-  1     // c = 1  (count)
-
-  // Initial stack alignment (rightmost is on the top): n e o c
-
-  // If exponent > count then we need to multiple the number at least one more time
-  WHILE 3 get_nth over < DO  // n e o c
-
-    // Multiply n with the original number to get new n
-    rot swap2 dup rot * // c e o n
-
-    // Align the stack as it was initially before WHILE loop
-    rot swap2 swap 1 +  // n e o c
-
-  DONE drop drop drop  // Leave only the power to the stack
-end
-
+include "lib/math.torth"
 function Main -> :
-  13  // n = 13 (number)
-  16  // e = 16 (exponent)
-  Pow print_int
+  "13^16 == " puts
+  13 16 Pow print
 end

@@ -54,7 +54,7 @@
       "patterns": [
         {
           "name": "constant.torth",
-          "match": "\\b(?i)(ARGC|ARGV|DROP|DUP|DUP2|ENVP|EXIT|GET_NTH|HERE|INPUT|OVER|PUTS|PRINT|PRINT_INT|ROT|SWAP|SWAP2|SYSCALL0|SYSCALL1|SYSCALL2|SYSCALL3s|SYSCALL4|SYSCALL5|SYSCALL6)\\b"
+          "match": "\\b(?i)(ARGC|ARGV|DROP|DUP|DUP2|ENVP|EXIT|HERE|INPUT|NTH|OVER|PUTS|PRINT|ROT|SWAP|SWAP2|SYSCALL0|SYSCALL1|SYSCALL2|SYSCALL3s|SYSCALL4|SYSCALL5|SYSCALL6)\\b"
         }
       ]
     },
@@ -70,7 +70,7 @@
       "patterns": [
         {
           "name": "constant.numeric.torth",
-          "match": "\\b(?i)(\\+|PLUS|\\-|MINUS|\\*|MUL|\\/|DIV|\\%|DIV|DIVMOD|&&|AND|OR|==|EQ|!=|NE|>=|GE|>|GT|<=|LE|<|LT|NOT)\\b"
+          "match": "\\b(?i)(\\+|PLUS|\\-|MINUS|\\*|MUL|\\/|DIV|\\%|DIV|&&|AND|OR|==|EQ|!=|NE|>=|GE|>|GT|<=|LE|<|LT|NOT)\\b"
         }
       ]
     },

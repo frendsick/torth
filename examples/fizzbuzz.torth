@@ -1,5 +1,5 @@
 function OutputRow str_buf* str_len number -> number :
-    print dup print_int
+    puts dup print
 end
 
 function AddTotal row total -> row total :
@@ -8,7 +8,7 @@ end
 
 function FizzBuzz index sum limit -> sum :
     // WHILE limit >= index
-    WHILE dup 4 get_nth >= DO
+    WHILE dup 4 nth >= DO
         IF 15 % 0 == DO
             "FizzBuzz  " OutputRow
         ELIF 3 % 0 == DO

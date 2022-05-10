@@ -1,8 +1,8 @@
 function Main -> :
-    "WHILE loop" puts       // puts("WHILE loop");
-    1                       // i = 1;
+    "WHILE loop:\n" puts        // puts("WHILE loop");
+    1                           // i = 1;
     WHILE dup 10 >= DO          // while (10 >= i) {
-        "Row " PRINT dup .  //   printf("Row %d\n", i);
-        1 +                 //   i++;
-    DONE                    // }
+        "Row " puts dup print   //   printf("Row %d\n", i);
+        1 +                     //   i++;
+    DONE                        // }
 end
