@@ -1,3 +1,4 @@
+include "lib/std.torth"
 function sum_current_with_previous Current Previous -> Sum Current : 
   dup rot +
 end
@@ -5,7 +6,7 @@ end
 // If Current is even add it to the Total
 function add_if_even Current _Previous Total -> Current _Previous Total :
   IF 2 % 0 == DO
-    rot over + rot rot
+    rot over + rotr
   ENDIF
 end
 
@@ -15,7 +16,7 @@ function sum_of_even_fibonacci Current, Previous, Total, Limit -> Current :
     sum_current_with_previous
     add_if_even
   DONE
-  drop drop swap drop
+  drop2 swap drop
 end
 
 function main -> :
