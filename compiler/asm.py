@@ -95,11 +95,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_over_asm()
         elif intrinsic == "PLUS":
             return get_plus_asm()
-        # TODO: Merge PRINT and PRINT_INT
-        elif intrinsic == "PRINT":
-            return get_string_output_asm(intrinsic)
         elif intrinsic == "PRINT_INT":
-            return get_print_int_asm()
+            return get_print_asm()
         elif intrinsic == "PUTS":
             return get_string_output_asm(intrinsic)
         elif intrinsic == "ROT":
@@ -144,12 +141,10 @@ section .rodata
 def initialize_asm(asm_file: str) -> None:
     default_asm: str = f'''{get_asm_file_start()}  formatStrInt db "%lld",10,0
 
-section .bss
-  int: RESQ 1 ; allocates 8 bytes
-
 section .text
+
 ;; Joinked from Porth's print function, thank you Tsoding!
-PrintInt:
+print:
   mov     r9, -3689348814741910323
   sub     rsp, 40
   mov     BYTE [rsp+31], 10
@@ -504,9 +499,9 @@ def get_over_asm() -> str:
 def get_plus_asm() -> str:
     return get_arithmetic_asm("add")
 
-def get_print_int_asm() -> str:
+def get_print_asm() -> str:
     op_asm: str  = '  pop rdi\n'
-    op_asm      += '  call PrintInt\n'
+    op_asm      += '  call print\n'
     return op_asm
 
 def get_string_output_asm(intrinsic: str) -> str:

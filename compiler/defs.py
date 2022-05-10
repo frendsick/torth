@@ -47,7 +47,6 @@ class Intrinsic(Enum):
     PLUS=auto()
     PUTS=auto()
     PRINT=auto()
-    PRINT_INT=auto()
     ROT=auto()
     SWAP=auto()
     SWAP2=auto()
