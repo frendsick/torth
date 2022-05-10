@@ -1,4 +1,3 @@
-import re
 import subprocess
 from typing import List, Tuple
 from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import os
-import re
 from typing import List
 from compiler.compile import compile_code, remove_compilation_files
 from compiler.defs import Function, Token
