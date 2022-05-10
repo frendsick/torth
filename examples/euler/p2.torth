@@ -11,7 +11,7 @@ end
 
 // Problem 2: Even Fibonacci numbers
 function sum_of_even_fibonacci -- Current, Previous, Total, Limit -> Current :
-  WHILE 5 get_nth >= DO
+  WHILE dup 5 get_nth >= DO
     sum_current_with_previous
     add_if_even
   DONE
