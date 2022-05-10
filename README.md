@@ -16,9 +16,9 @@ Torth is planned to be
 
 ## Usage
 
-```console
+```pascal
 $ cat hello.torth
-"Hello, World!" puts
+function main -> : "Hello, World!\n" puts end
 $ ./torth.py --run hello.torth
 Hello, World!
 ```
