@@ -1,6 +1,6 @@
-function SYS_read -> int : -> 0 end
-function SYS_write -> int : -> 1 end
-function SYS_open -> int : -> 2 end
+function SYS_read -> int : 0 end
+function SYS_write -> int : 1 end
+function SYS_open -> int : 2 end
 function SYS_close -> int : 3 end
 function SYS_stat -> int : 4 end
 function SYS_fstat -> int : 5 end
@@ -312,3 +312,12 @@ function SYS_process_vm_readv -> int : 310 end
 function SYS_process_vm_writev -> int : 311 end
 function SYS_kcmp -> int : 312 end
 function SYS_finit_module -> int : 313 end
+
+// int fd, void *buf, size_t count
+function write int ptr int -> int : SYS_write syscall3 end
+// int fd, void *buf, size_t count
+function read int ptr int -> int ptr int : SYS_read syscall3 end
+// const char *pathname, char *const argv[], char *const envp[]
+function execve ptr arr arr -> int : SYS_execve syscall3 end
+// int status
+function exit int -> exit : SYS_exit syscall1 drop end

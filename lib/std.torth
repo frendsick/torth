@@ -1,16 +1,9 @@
 include "lib/sys.torth"
 function NULL -> int : 0 end
 
-function true -> int : 1 end
-function false -> int : 0 end
-
 function stdin  -> int : 0 end
 function stdout -> int : 1 end
 function stderr -> int : 2 end
 
-function write -> int : SYS_write syscall3 end
-function read -> int : SYS_read syscall3 end
-function execve -> int : SYS_execve syscall3 end
-function exit -> int : SYS_exit syscall1 drop end
-
+function drop2 -> int : drop drop end
 function rotr -> int : rot rot end
