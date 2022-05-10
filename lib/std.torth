@@ -1,4 +1,3 @@
-include "lib/sys.torth"
 function NULL -> int : 0 end
 
 function stdin  -> int : 0 end
