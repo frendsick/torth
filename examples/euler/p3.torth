@@ -1,13 +1,12 @@
 // Problem 3: Largest prime factor
-
 function get_largest_prime_factor -- i prime -> max_prime :
   // while(prime/2 >= i)
-  WHILE rot over 2 / >= DO
+  WHILE over over 2 / <= DO
     // If prime factor is found divide the prime with it
-    IF rot over % 0 == DO
-      swap over / swap  // prime = prime / factor
+    IF rot dup rot % 0 == DO
+      over / swap // prime = prime / factor
     else
-      2 +  // i+=2
+      swap 2 +  // i+=2
     ENDIF
   DONE
 end

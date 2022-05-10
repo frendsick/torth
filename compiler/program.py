@@ -56,7 +56,7 @@ def run_code(exe_file: str) -> None:
 # Type check all operations which
 def type_check_program(program: Program) -> None:
     global STACK
-    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELSE', 'ENDIF' ]
+    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELSE', 'ENDIF', 'WHILE' ]
     for op in program:
         token: Token = op.token
         if token.value.upper() in NOT_TYPED_TOKENS:
@@ -75,8 +75,6 @@ def type_check_program(program: Program) -> None:
             STACK.append(op.token.value)
         elif op.type == OpType.PUSH_STR:
             type_check_push_str(op)
-        elif op.type == OpType.WHILE:
-            type_check_dup(op)  # WHILE duplicates the first element in the stack
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "DIV":
@@ -147,7 +145,7 @@ def type_check_program(program: Program) -> None:
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", op.token)
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", op.token)
-
+        print(op.token.value.upper(), STACK)
 def pop_two_from_stack(op: Op) -> tuple[str, str]:
     try:
         b: str = STACK.pop()
@@ -319,9 +317,9 @@ def type_check_rot(op: Op) -> None:
         c = STACK.pop()
     except IndexError:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack does not contain three elements to rotate.", op.token)
+    STACK.append(b)
     STACK.append(a)
     STACK.append(c)
-    STACK.append(b)
 
 def type_check_swap(op: Op) -> None:
     a, b = pop_two_from_stack(op)

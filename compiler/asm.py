@@ -409,11 +409,8 @@ def get_push_str_asm(op: Op) -> str:
     return op_asm
 
 # WHILE is a keyword for DONE to jump to.
-# Also like DUP it duplicates the first element in the stack.
 def get_while_asm(op: Op) -> str:
-    op_asm: str  = f'WHILE{op.id}:\n'
-    op_asm      += get_dup_asm()
-    return op_asm
+    return f'WHILE{op.id}:\n'
 
 def get_div_asm() -> str:
     op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
@@ -550,9 +547,9 @@ def get_rot_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rcx\n'
+    op_asm      += '  push rbx\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rcx\n'
-    op_asm      += '  push rbx\n'
     return op_asm
 
 def get_swap_asm() -> str:

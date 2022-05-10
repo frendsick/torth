@@ -8,7 +8,7 @@ end
 
 function FizzBuzz -- index sum limit -> sum :
     // WHILE limit >= index
-    WHILE 4 get_nth >= DO
+    WHILE dup 4 get_nth >= DO
         IF 15 % 0 == DO
             "FizzBuzz  " OutputRow
         ELIF 3 % 0 == DO
