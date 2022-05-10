@@ -142,8 +142,6 @@ def get_token_value(token: str) -> str:
         return 'NE'
     if token == '+':
         return 'PLUS'
-    if token == '.':
-        return 'PRINT_INT'
     if token.upper() == 'TRUE':
         return '1'
     if token.upper() == 'FALSE':
@@ -164,8 +162,6 @@ def get_token_type(token_text: str) -> TokenType:
         return TokenType.BOOL
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
-    if token_text[0] == token_text[-1] == "'":
-        return TokenType.CSTR
     try:
         _integer = int(token_text)
         return TokenType.INT

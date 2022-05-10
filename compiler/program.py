@@ -14,8 +14,6 @@ def generate_program(tokens: List[Token]) -> Program:
             op_type = OpType.PUSH_ARRAY
         elif token.type == TokenType.BOOL:
             op_type = OpType.PUSH_INT
-        elif token.type == TokenType.CSTR:
-            op_type = OpType.PUSH_CSTR
         elif token.type == TokenType.INT:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.STR:
@@ -65,8 +63,6 @@ def type_check_program(program: Program) -> None:
             type_check_dup(op)  # IF duplicates the first element in the stack
         elif op.type == OpType.PUSH_ARRAY:
             STACK.append(f"*buf s_arr{op.id}")
-        elif op.type == OpType.PUSH_CSTR:
-            STACK.append(f"*buf cs{op.id}")
         elif op.type == OpType.PUSH_INT:
             STACK.append(op.token.value)
         elif op.type == OpType.PUSH_STR:

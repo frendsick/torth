@@ -69,7 +69,6 @@ class OpType(Enum):
     IF=auto()
     INTRINSIC=auto()
     PUSH_ARRAY=auto()
-    PUSH_CSTR=auto()
     PUSH_INT=auto()
     PUSH_STR=auto()
     WHILE=auto()
@@ -77,8 +76,6 @@ class OpType(Enum):
 class TokenType(Enum):
     ARRAY=auto()
     BOOL=auto()
-    CHAR=auto()
-    CSTR=auto()
     INT=auto()
     KEYWORD=auto()
     STR=auto()
