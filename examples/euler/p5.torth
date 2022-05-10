@@ -1,12 +1,12 @@
 // Problem 5: Smallest multiple
 
-function Pow -- e n -> power :
+function Pow -- n e -> power :
   over  // o = 2  (original value)
   1     // c = 1  (count)
-  rot rot swap  // n o e c
-  WHILE rot over > DO  // n o c e
-    swap swap2 dup rot * // e c o n
-    swap swap2 1 +  // n o e c
+  // n e o c
+  WHILE 3 get_nth over < DO  // n e o c
+    rot swap2 dup rot * // c e o n
+    rot swap2 swap 1 +  // n e o c
   DONE drop drop drop  // Leave only the power to the stack
 end
 
