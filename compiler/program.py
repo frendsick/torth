@@ -145,7 +145,7 @@ def type_check_program(program: Program) -> None:
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", op.token)
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", op.token)
-        print(op.token.value.upper(), STACK)
+
 def pop_two_from_stack(op: Op) -> tuple[str, str]:
     try:
         b: str = STACK.pop()
