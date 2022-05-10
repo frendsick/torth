@@ -1,5 +1,5 @@
 function OutputRow str_buf* str_len number -> number :
-    print dup print_int
+    puts dup print
 end
 
 function AddTotal row total -> row total :

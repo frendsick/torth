@@ -111,10 +111,10 @@ def type_check_program(program: Program) -> None:
                 type_check_over(op)
             elif intrinsic == "PLUS":
                 type_check_plus(op)
-            elif intrinsic in {"PRINT", "PUTS"}:
-                type_check_string_output(op, intrinsic)
-            elif intrinsic == "PRINT_INT":
-                type_check_print_int(op)
+            elif intrinsic == "PRINT":
+                type_check_print(op)
+            elif intrinsic == "PUTS":
+                type_check_puts(op)
             elif intrinsic == "ROT":
                 type_check_rot(op)
             elif intrinsic == "SWAP":
@@ -282,20 +282,13 @@ def type_check_plus(op: Op) -> None:
     a, b = pop_two_from_stack(op)
     STACK.append(str(int(a) + int(b)))
 
-def type_check_string_output(op: Op, intrinsic: str) -> None:
-    try:
-        buf    = STACK.pop()
-        count  = STACK.pop()
-    except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", \
-            f"Not enough values in the stack for syscall 'write'.\n{intrinsic} operand requires two values, *buf and count.", op.token)
-
-    check_popped_value_type(op, buf, expected_type='*buf')
-    check_popped_value_type(op, count, expected_type='INT')
-
-def type_check_print_int(op: Op) -> None:
+def type_check_print(op: Op) -> None:
     integer: str = STACK.pop()
     check_popped_value_type(op, integer, expected_type='INT')
+
+def type_check_puts(op: Op) -> None:
+    string: str = STACK.pop()
+    check_popped_value_type(op, string, expected_type='*buf')
 
 def type_check_rot(op: Op) -> None:
     try:
