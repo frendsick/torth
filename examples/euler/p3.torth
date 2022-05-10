@@ -1,7 +1,9 @@
+include "lib/std.torth"
+
 // Problem 3: Largest prime factor
 function get_largest_prime_factor -- i prime -> max_prime :
   // while(prime/2 >= i)
-  WHILE over over 2 / <= DO
+  WHILE dup2 2 / <= DO
     // If prime factor is found divide the prime with it
     IF rot dup rot % 0 == DO
       over / swap // prime = prime / factor

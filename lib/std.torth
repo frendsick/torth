@@ -1,3 +1,4 @@
+include "lib/sys.torth"
 function NULL -> int : 0 end
 
 function stdin  -> int : 0 end
@@ -5,4 +6,5 @@ function stdout -> int : 1 end
 function stderr -> int : 2 end
 
 function drop2 -> int : drop drop end
+function dup2 -> int : over over end
 function rotr -> int : rot rot end

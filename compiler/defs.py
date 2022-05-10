@@ -31,7 +31,6 @@ class Intrinsic(Enum):
     DIVMOD=auto()
     DROP=auto()
     DUP=auto()
-    DUP2=auto()
     ENVP=auto()
     EXIT=auto()
     EQ=auto()
