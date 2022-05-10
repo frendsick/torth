@@ -63,8 +63,6 @@ def get_op_asm(op: Op, program: Program) -> str:
         intrinsic: str = op.token.value.upper()
         if intrinsic == "DIV":
             return get_div_asm()
-        elif intrinsic == "DIVMOD":
-            return get_divmod_asm()
         elif intrinsic == "DROP":
             return get_drop_asm()
         elif intrinsic == "DUP":
@@ -415,15 +413,6 @@ def get_div_asm() -> str:
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rax\n'
     op_asm      += '  div rbx\n'
-    op_asm      += '  push rax ; Quotient\n'
-    return op_asm
-
-def get_divmod_asm() -> str:
-    op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  pop rax\n'
-    op_asm      += '  div rbx\n'
-    op_asm      += '  push rdx ; Remainder\n'
     op_asm      += '  push rax ; Quotient\n'
     return op_asm
 

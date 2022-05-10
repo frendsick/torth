@@ -70,7 +70,7 @@
       "patterns": [
         {
           "name": "constant.numeric.torth",
-          "match": "\\b(?i)(\\+|PLUS|\\-|MINUS|\\*|MUL|\\/|DIV|\\%|DIV|DIVMOD|&&|AND|OR|==|EQ|!=|NE|>=|GE|>|GT|<=|LE|<|LT|NOT)\\b"
+          "match": "\\b(?i)(\\+|PLUS|\\-|MINUS|\\*|MUL|\\/|DIV|\\%|DIV|&&|AND|OR|==|EQ|!=|NE|>=|GE|>|GT|<=|LE|<|LT|NOT)\\b"
         }
       ]
     },
