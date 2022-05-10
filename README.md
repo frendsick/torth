@@ -45,8 +45,8 @@ function AddTotal -- row total -> row total :
 end
 
 function FizzBuzz -- index sum limit -> sum :
-    // WHILE limit >= index
-    WHILE 4 get_nth >= DO
+    // WHILE index <= limit
+    WHILE 3 get_nth over <= DO
         IF 15 % 0 == DO
             "FizzBuzz  " OutputRow
         ELIF 3 % 0 == DO

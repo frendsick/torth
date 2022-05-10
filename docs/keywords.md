@@ -19,7 +19,7 @@ BREAK is unconditional jump to the operation after DONE of the current loop.
 ### Examples
 
 ```pascal
-0 WHILE 10 > DO
+0 WHILE dup 10 > DO
   1 + print_int
   IF 3 == DO
     "Breaking from loop..." puts
@@ -63,7 +63,7 @@ ENDIF
 In while loop, DO is a conditional jump to operation after DONE.
 
 ```pascal
-0 WHILE 10 > DO                   //  int i=0; while (10 > i) {
+0 WHILE dup 10 > DO                   //  int i=0; while (10 > i) {
   1 +                             //    i++;
   "This is row " print print_int  //    printf("This is row %d\n", i);
 DONE                               //  }
@@ -82,7 +82,7 @@ DONE is an unconditional jump to WHILE keyword. The loop's condition is always e
 ### Examples
 
 ```pascal
-0 WHILE 10 > DO                         //  int i=0; while (10 > i) {
+0 WHILE dup 10 > DO                         //  int i=0; while (10 > i) {
   1 +                                   //    i++;
   "This is row " print print_int        //    printf("This is row %d\n", i);
 DONE                                     //  }
@@ -222,12 +222,12 @@ macro OutputInteger print_int end
 
 ## WHILE
 
-WHILE is a keyword for DONE to jump to. It also duplicates the first element in the stack like DUP intrinsic.
+WHILE is a keyword for DONE to jump to.
 
 ### Examples
 
 ```pascal
-0 WHILE 10 > DO                         //  int i=0; while (10 > i) {
+0 WHILE dup 10 > DO                         //  int i=0; while (10 > i) {
   1 +                                   //    i++;
   "This is row " print print_int        //    printf("This is row %d\n", i);
 DONE                                     //  }

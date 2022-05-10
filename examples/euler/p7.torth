@@ -1,4 +1,5 @@
 // Problem 7: 10001st prime
+// NOT WORKING FOR CURRENT LANGUAGE VERSION
 function Pow -- e n -> power :
   over  // o = 2  (original value)
   1     // c = 1  (count)
