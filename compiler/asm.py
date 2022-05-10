@@ -438,16 +438,13 @@ def get_nth_asm() -> str:
 def get_gt_asm() -> str:
     return get_comparison_asm("cmovg")
 
-# User input is essentially a CSTR but the length is also pushed to the stack for possible printing
 def get_input_asm(op: Op) -> str:
     op_asm: str  =  '  mov rax, sys_read\n'
     op_asm      +=  '  mov rdi, stdin\n'
     op_asm      += f'  mov rsi, buffer{op.id}\n'
-    op_asm      +=  '  mov rdx, buffer_len\n'
     op_asm      +=  '  syscall\n'
     op_asm      +=  '  xor rdx, rdx\n'
     op_asm      += f'  mov [buffer{op.id}+rax-1], dl  ; Change newline character to NULL\n'
-    op_asm      +=  '  push rax\n'
     op_asm      += f'  push buffer{op.id}\n'
     return op_asm
 
