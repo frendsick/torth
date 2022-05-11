@@ -12,7 +12,7 @@ def main():
     args: argparse.Namespace    = get_command_line_arguments()
     code: str                   = get_file_contents(args.code_file)
     included_files: List[str]   = get_included_files(code)
-    functions: List[Function]   = get_functions_from_code(code, args.code_file, included_files)
+    functions: List[Function]   = get_functions_from_code(args.code_file, included_files)
 
     # Executable's file name is code file name without extension by default
     code_file_basename: str = os.path.basename(args.code_file)

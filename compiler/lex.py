@@ -12,7 +12,7 @@ def get_included_files(code: str):
         included_files += get_included_files(included_code)
     return included_files
 
-def get_functions_from_code(code: str, file: str, included_files: List[str]) -> List[Function]:
+def get_functions_from_code(file: str, included_files: List[str]) -> List[Function]:
     functions: List[Function] = []
     included_files.append(file)
     for file in included_files:
