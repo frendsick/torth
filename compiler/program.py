@@ -86,7 +86,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "GT":
                 type_check_gt(token)
             elif intrinsic == "HERE":
-                STACK.append("*buf")
+                STACK.append(f"*buf s_{op.id}")
             elif intrinsic == "INPUT":
                 type_check_input()
             elif intrinsic == "LE":
