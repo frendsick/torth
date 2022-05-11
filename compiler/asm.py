@@ -142,7 +142,6 @@ section .text
 print:
   mov     r9, -3689348814741910323
   sub     rsp, 40
-  mov     BYTE [rsp+31], 10
   lea     rcx, [rsp+30]
 .L2:
   mov     rax, rdi
