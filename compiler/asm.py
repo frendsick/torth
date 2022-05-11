@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import List
 from compiler.defs import OpType, Op, Program, Token
 from compiler.utils import compiler_error
 
@@ -69,8 +69,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_eq_asm()
         elif intrinsic == "GE":
             return get_ge_asm()
-        elif intrinsic == "NTH":
-            return get_nth_asm()
         elif intrinsic == "GT":
             return get_gt_asm()
         elif intrinsic == "INPUT":
@@ -87,6 +85,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_mul_asm()
         elif intrinsic == "NE":
             return get_ne_asm()
+        elif intrinsic == "NTH":
+            return get_nth_asm()
         elif intrinsic == "OVER":
             return get_over_asm()
         elif intrinsic == "PLUS":
@@ -376,7 +376,6 @@ def get_push_int_asm(integer: str) -> str:
     return op_asm
 
 def get_push_str_asm(op: Op) -> str:
-    str_val: str = op.token.value[1:-1]  # Take quotes out of the string
     op_asm: str  = f'  mov rsi, s{op.id} ; Pointer to string\n'
     op_asm      +=  '  push rsi\n'
     return op_asm
@@ -429,6 +428,9 @@ def get_nth_asm() -> str:
 
 def get_gt_asm() -> str:
     return get_comparison_asm("cmovg")
+
+def get_here_asm(op: Op) -> str:
+    return get_push_str_asm(op)
 
 def get_input_asm(op: Op) -> str:
     op_asm: str  =  '  mov rax, sys_read\n'

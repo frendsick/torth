@@ -108,4 +108,4 @@ class Op:
 Program = List[Op]
 
 STACK: List[str] = []
-REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}
+TYPE_REGEX: Dict[str, str] = {'INT': '-?\d+', '*buf': '\*buf \S+'}

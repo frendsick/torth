@@ -5,7 +5,7 @@ from compiler.defs import Function, Keyword, Location, Signature, Token, TokenTy
 from compiler.utils import compiler_error, get_file_contents
 
 def get_included_files(code: str):
-    INCLUDE_REGEX = re.compile(r'include\s+"(\S+)"', flags=re.MULTILINE)
+    INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', flags=re.MULTILINE | re.IGNORECASE)
     included_files: List[str] = INCLUDE_REGEX.findall(code)
     for file in included_files:
         included_code: str = get_file_contents(file)
