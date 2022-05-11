@@ -8,14 +8,14 @@ def generate_asm(program: Program, asm_file: str) -> None:
 
         if op.type == OpType.PUSH_STR:
             add_string_variable_asm(asm_file, token.value, op)
-
+        elif token.value.upper() == "HERE":
+            add_string_variable_asm(asm_file, f'"{str(token.location)}"', op)
         elif op.type == OpType.PUSH_ARRAY:
             value: str = token.value
             elements: List[str] = value[value.find("(")+1:value.rfind(")")].split(',')
             # Remove whitespaces from the elements list
             elements = [element.strip().replace("'", '"') for element in elements]
             add_array_asm(asm_file, elements, op)
-
         elif token.value.upper() == 'INPUT':
             add_input_buffer_asm(asm_file, op)
 
@@ -71,6 +71,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_ge_asm()
         elif intrinsic == "GT":
             return get_gt_asm()
+        elif intrinsic == "HERE":
+            return get_here_asm(op)
         elif intrinsic == "INPUT":
             return get_input_asm(op)
         elif intrinsic == "LE":
