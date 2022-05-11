@@ -66,7 +66,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.PUSH_INT:
             STACK.append(op.token.value)
         elif op.type == OpType.PUSH_STR:
-            type_check_push_str(op)
+            STACK.append(op.token.value[1:-1])  # Take quotes out of the string
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "DIV":
@@ -83,8 +83,6 @@ def type_check_program(program: Program) -> None:
                 type_check_exit(op)
             elif intrinsic == "GE":
                 type_check_ge(op)
-            elif intrinsic == "NTH":
-                type_check_nth(op)
             elif intrinsic == "GT":
                 type_check_gt(op)
             elif intrinsic == "INPUT":
@@ -101,6 +99,8 @@ def type_check_program(program: Program) -> None:
                 type_check_mul(op)
             elif intrinsic == "NE":
                 type_check_ne(op)
+            elif intrinsic == "NTH":
+                type_check_nth(op)
             elif intrinsic == "OVER":
                 type_check_over(op)
             elif intrinsic == "PLUS":
@@ -144,12 +144,6 @@ def pop_two_from_stack(op: Op) -> Tuple[str, str]:
 
 def type_check_do(op: Op) -> None:
     pop_two_from_stack(op)
-
-def type_check_push_str(op: Op) -> None:
-    str_val: str = op.token.value[1:-1]  # Take quotes out of the string
-    str_len: int = len(str_val) + 1      # Add newline
-    STACK.append(f"{str_len}")
-    STACK.append(f"*buf s{op.id}")
 
 def type_check_div(op: Op) -> None:
     a, b = pop_two_from_stack(op)
