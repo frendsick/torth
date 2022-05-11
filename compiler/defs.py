@@ -3,9 +3,9 @@ from enum import Enum, auto
 from typing import Dict, List, Tuple
 
 class Colors:
-    FAIL = '\033[91m'
-    HEADER = '\033[95m'
-    NC = '\033[0m'
+    FAIL    = '\033[91m'
+    HEADER  = '\033[95m'
+    NC      = '\033[0m'
     WARNING = '\033[93m'
 
 class Keyword(Enum):
