@@ -5,7 +5,7 @@ import sys
 from typing import NoReturn, Optional
 from compiler.defs import Colors, REGEX, Token, Op
 
-def usage() -> None:
+def usage() -> NoReturn:
     print("Usage: ./torth.py file")
     exit(1)
 
