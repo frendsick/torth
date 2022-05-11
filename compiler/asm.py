@@ -138,6 +138,8 @@ section .rodata
 
 def initialize_asm(asm_file: str) -> None:
     default_asm: str = f'''{get_asm_file_start()}
+section .bss
+
 section .text
 
 ;; Joinked from Porth's print function, thank you Tsoding!

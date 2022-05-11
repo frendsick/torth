@@ -1,6 +1,6 @@
 import subprocess
 from typing import List, Tuple
-from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType, TYPE_REGEX
+from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType
 from compiler.utils import check_popped_value_type, compiler_error
 
 def intrinsic_exists(token: str) -> bool:
@@ -214,8 +214,7 @@ def type_check_gt(token: Token) -> None:
     STACK.append(str(int(a>b)))
 
 def type_check_input() -> None:
-    STACK.append(f"42") # User input length is not known beforehand
-    STACK.append(f"*buf buffer")
+    STACK.append(f"*buf s_buffer")
 
 def type_check_le(token: Token) -> None:
     a, b = pop_two_from_stack(token)
@@ -266,7 +265,7 @@ def type_check_print(token: Token) -> None:
 
 def type_check_puts(token: Token) -> None:
     string: str = STACK.pop()
-    check_popped_value_type(token, string, expected_type='*buf')
+    check_popped_value_type(token, string, expected_type='STR')
 
 def type_check_rot(token: Token) -> None:
     try:

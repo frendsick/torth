@@ -3,7 +3,7 @@ import os
 import re
 import sys
 from typing import NoReturn, Optional
-from compiler.defs import Colors, Op, Token, TYPE_REGEX
+from compiler.defs import Colors, Token, TYPE_REGEX
 
 def usage() -> NoReturn:
     print("Usage: ./torth.py file")
