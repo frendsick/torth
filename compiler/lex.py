@@ -19,7 +19,7 @@ def get_functions_from_code(code: str, file: str, included_files: List[str]) -> 
         included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
         # Newlines are used to determine when a comment ends and when new line starts
-        newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', code)]
+        newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
         functions += get_functions(file, token_matches, newline_indexes)
     return functions
 
