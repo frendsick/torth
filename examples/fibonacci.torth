@@ -1,10 +1,10 @@
-function Fib Current Previous Limit -> Sum :
-  0 // The counter for WHILE loop
+function Fib F1 F0 Limit -> Fx :
+  1 // The counter for WHILE loop
   WHILE 4 nth over < DO
     // Duplicate Current to use it next iteration as Previous
     swap dup
     // Add the two numbers in the top of the stack together (Previous and Current)
-    rot swap2 + dup print swap
+    rot swap2 + swap
     // Increment counter for WHILE loop
     1 +
   DONE drop swap drop
@@ -12,9 +12,10 @@ end
 
 function Main -> :
   20  // Limit
-  0   // Previous
-  1   // Current
+  0   // F0
+  1   // F1
 
-  Fib // Returns Current after Limit rounds
-  "The 20. fibonacci number starting from 0 and 1 is: " puts print
+  "The 20. fibonacci number starting from " puts
+  dup print " and " puts over print " is: " puts
+  Fib print "\n" puts  // Answer: 6765
 end

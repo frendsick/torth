@@ -38,7 +38,7 @@ FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 
 ```pascal
 function OutputRow str_buf* str_len number -> number :
-    puts dup print
+    puts dup print "\n" puts
 end
 
 function AddTotal row total -> row total :
@@ -46,8 +46,8 @@ function AddTotal row total -> row total :
 end
 
 function FizzBuzz index sum limit -> sum :
-    // WHILE index <= limit
-    WHILE 3 nth over <= DO
+    // WHILE limit >= index
+    WHILE dup 4 nth >= DO
         IF 15 % 0 == DO
             "FizzBuzz  " OutputRow
         ELIF 3 % 0 == DO
@@ -62,15 +62,14 @@ function FizzBuzz index sum limit -> sum :
     DONE drop swap drop // Drop the counter and limit from the stack
 end
 
-function Main -> int :
+function Main -> :
     30  // limit
     0   // sum
     1   // index
 
     FizzBuzz
 
-    "Sum of all numbers not divisible by 3 or 5: " OutputRow drop
-    0 // return 0
+    "Sum of all numbers not divisible by 3 or 5: " OutputRow
 end
 ```
 

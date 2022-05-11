@@ -1,4 +1,4 @@
-include "lib/math.torth"
+include "lib/math.torth"  // Pow
 // For each prime factor, find where it occurs most often as a factor and write it that many times in a new list.
 // 2 => 16  = 2⁴
 // 3 => 9   = 3²
@@ -6,5 +6,5 @@ include "lib/math.torth"
 // Least common multiple is 2⁴ * 3² * 5 * 7 * 11 * 13 * 17 * 19
 function Main -> :
   "Least common multiple for numbers from 1 to 20: " puts
-  2 4 Pow 3 2 Pow * 5 * 7 * 11 * 13 * 17 * 19 * print // Output: 232792560
+  2 4 Pow 3 2 Pow * 5 * 7 * 11 * 13 * 17 * 19 * print "\n" puts // Answer: 232792560
 end

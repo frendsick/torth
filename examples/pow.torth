@@ -1,5 +1,5 @@
 include "lib/math.torth"
 function Main -> :
   "13^16 == " puts
-  13 16 Pow print
+  13 16 Pow print "\n" puts // Expected: 665416609183179841
 end
