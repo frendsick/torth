@@ -49,6 +49,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_if_asm()
     elif op.type == OpType.PUSH_ARRAY:
         return get_push_array_asm(op)
+    elif op.type == OpType.PUSH_HEX:
+        return get_push_hex_asm(op.token.value)
     elif op.type == OpType.PUSH_INT:
         return get_push_int_asm(op.token.value)
     elif op.type == OpType.PUSH_STR:
@@ -372,6 +374,11 @@ def get_if_asm() -> str:
 def get_push_array_asm(op: Op) -> str:
     op_asm: str  = f'  mov rsi, s_arr{op.id} ; Pointer to array\n'
     op_asm      +=  '  push rsi\n'
+    return op_asm
+
+def get_push_hex_asm(hexadecimal: str) -> str:
+    op_asm: str  = f'  mov rax, {hexadecimal}\n'
+    op_asm      +=  '  push rax\n'
     return op_asm
 
 def get_push_int_asm(integer: str) -> str:
