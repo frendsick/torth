@@ -18,6 +18,7 @@ class Keyword(Enum):
     ENDIF=auto()
     FUNCTION=auto()
     IF=auto()
+    MEMORY=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -35,6 +36,10 @@ class Intrinsic(Enum):
     HERE=auto()
     INPUT=auto()
     LE=auto()
+    LOAD_BYTE=auto()
+    LOAD_WORD=auto()
+    LOAD_DOUBLE=auto()
+    LOAD_QUAD=auto()
     LT=auto()
     MINUS=auto()
     MOD=auto()
@@ -48,6 +53,10 @@ class Intrinsic(Enum):
     PRINT=auto()
     PUTS=auto()
     ROT=auto()
+    STORE_BYTE=auto()
+    STORE_WORD=auto()
+    STORE_DOUBLE=auto()
+    STORE_QUAD=auto()
     SWAP=auto()
     SWAP2=auto()
     SYSCALL0=auto()
@@ -80,6 +89,7 @@ class TokenType(Enum):
     HEX=auto()
     INT=auto()
     KEYWORD=auto()
+    PTR=auto()
     STR=auto()
     WORD=auto()
 
