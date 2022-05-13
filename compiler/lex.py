@@ -92,7 +92,6 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
 
 def get_memories_from_code(file: str, included_files: List[str], functions: List[Function]) -> List[Memory]:
     memories: List[Memory] = []
-    included_files.append(file)
     for file in included_files:
         included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
