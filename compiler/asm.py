@@ -69,8 +69,8 @@ def get_memory_definitions_asm(memories: List[Memory]) -> str:
         name: str           = memory[0]
         size: int           = memory[1]
         file, row, col      = memory[2]
-        asm += get_token_info_comment_asm(name, file, row, col)
-        asm += f'  {name}: RESB {size}'
+        asm += get_token_info_comment_asm(f'MEMORY {name}', file, row, col)
+        asm += f'  {name}: RESB {size}\n'
     return asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
@@ -124,6 +124,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_push_hex_asm(op.token.value)
     elif op.type == OpType.PUSH_INT:
         return get_push_int_asm(op.token.value)
+    elif op.type == OpType.PUSH_PTR:
+        return get_push_ptr_asm(op.token.value)
     elif op.type == OpType.PUSH_STR:
         return get_push_str_asm(op)
     elif op.type == OpType.WHILE:
@@ -152,6 +154,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_le_asm()
         elif intrinsic == "LT":
             return get_lt_asm()
+        elif intrinsic == "LOAD":
+            return get_load_asm()
         elif intrinsic == "MINUS":
             return get_minus_asm()
         elif intrinsic == "MOD":
@@ -172,6 +176,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_puts_asm()
         elif intrinsic == "ROT":
             return get_rot_asm()
+        elif intrinsic == "STORE":
+            return get_store_asm()
         elif intrinsic == "SWAP":
             return get_swap_asm()
         elif intrinsic == "SWAP2":
@@ -399,6 +405,11 @@ def get_push_int_asm(integer: str) -> str:
     op_asm      +=  '  push rax\n'
     return op_asm
 
+def get_push_ptr_asm(memory_name: str) -> str:
+    op_asm: str  = f'  mov rax, {memory_name}\n'
+    op_asm      +=  '  push rax\n'
+    return op_asm
+
 def get_push_str_asm(op: Op) -> str:
     op_asm: str  = f'  mov rsi, s{op.id} ; Pointer to string\n'
     op_asm      +=  '  push rsi\n'
@@ -472,6 +483,12 @@ def get_le_asm() -> str:
 def get_lt_asm() -> str:
     return get_comparison_asm("cmovl")
 
+def get_load_asm() -> str:
+    op_asm: str  =  '  pop rax\n'
+    op_asm      +=  '  mov rbx, [rax]\n'
+    op_asm      +=  '  push rbx\n'
+    return op_asm
+
 def get_minus_asm() -> str:
     return get_arithmetic_asm("sub")
 
@@ -534,6 +551,12 @@ def get_rot_asm() -> str:
     op_asm      += '  push rbx\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rcx\n'
+    return op_asm
+
+def get_store_asm() -> str:
+    op_asm: str  =  '  pop rax\n'
+    op_asm      +=  '  pop rbx\n'
+    op_asm      += f'  mov [rax], rbx\n'
     return op_asm
 
 def get_swap_asm() -> str:

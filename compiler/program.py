@@ -108,6 +108,8 @@ def type_check_program(program: Program) -> None:
                 type_check_le(token)
             elif intrinsic == "LT":
                 type_check_lt(token)
+            elif intrinsic == "LOAD":
+                type_check_load(token)
             elif intrinsic == "MINUS":
                 type_check_minus(token)
             elif intrinsic == "MOD":
@@ -128,6 +130,8 @@ def type_check_program(program: Program) -> None:
                 type_check_puts(token)
             elif intrinsic == "ROT":
                 type_check_rot(token)
+            elif intrinsic == "STORE":
+                type_check_store(token)
             elif intrinsic == "SWAP":
                 type_check_swap(token)
             elif intrinsic == "SWAP2":
@@ -245,6 +249,13 @@ def type_check_lt(token: Token) -> None:
     STACK.append(a)
     STACK.append(str(int(a<b)))
 
+def type_check_load(token: Token) -> None:
+    try:
+        ptr: str = STACK.pop()
+    except IndexError:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
+    check_popped_value_type(token, ptr, expected_type='PTR')
+
 def type_check_minus(token: Token) -> None:
     a, b = pop_two_from_stack(token)
     STACK.append(str(int(a) - int(b)))
@@ -275,7 +286,10 @@ def type_check_plus(token: Token) -> None:
     STACK.append(str(int(a) + int(b)))
 
 def type_check_print(token: Token) -> None:
-    integer: str = STACK.pop()
+    try:
+        integer: str = STACK.pop()
+    except IndexError:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
     check_popped_value_type(token, integer, expected_type='INT')
 
 def type_check_puts(token: Token) -> None:
@@ -292,6 +306,13 @@ def type_check_rot(token: Token) -> None:
     STACK.append(b)
     STACK.append(a)
     STACK.append(c)
+
+def type_check_store(token: Token) -> None:
+    try:
+        _value, ptr = pop_two_from_stack(token)
+    except IndexError:
+        compiler_error("POP_FROM_EMPTY_STACK", f"{token.value.upper()} requires two values on the stack, PTR and value.", token)
+    check_popped_value_type(token, ptr, expected_type='PTR')
 
 def type_check_swap(token: Token) -> None:
     a, b = pop_two_from_stack(token)
