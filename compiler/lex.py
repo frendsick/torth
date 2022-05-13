@@ -1,7 +1,7 @@
 import itertools
 import re
 from typing import List, Optional
-from compiler.defs import Function, Keyword, Location, Signature, Token, TokenType
+from compiler.defs import Function, Keyword, Location, Memory, Signature, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
 
 def get_included_files(code: str):
@@ -90,6 +90,61 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
             tokens.append(token)
 
     return functions
+
+def get_memories_from_code(file: str, included_files: List[str], functions: List[Function]) -> List[Memory]:
+    memories: List[Memory] = []
+    included_files.append(file)
+    for file in included_files:
+        included_code: str = get_file_contents(file)
+        token_matches: list = get_token_matches(included_code)
+        newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
+        memories += get_memories(file, token_matches, newline_indexes, functions)
+    return memories
+
+def get_memories(file: str, token_matches: list, newline_indexes: List[int], functions: List[Function]) -> List[Memory]:
+    memories: List[Memory]  = []
+    name: str               = ''
+    size: int               = None
+    defining_memory: bool   = False
+    for match in token_matches:
+        token_value: str = match.group(0)
+        if defining_memory:
+            if not name:
+                name = get_memory_name(token_value, token_matches, memories)
+                location: Location = get_token_location(file, match.start(), newline_indexes)
+                continue
+            elif not size:
+                size = get_memory_size(token_value, functions)
+                memory: Memory = (name, size, location)
+                memories.append(memory)
+                defining_memory = False
+
+                # Reset variables
+                name = ''
+                size = None
+                continue
+        if token_value.upper() == 'MEMORY':
+            defining_memory = True
+    return memories
+
+def get_memory_name(token_value: str, token_matches: List[int], memories: List[Memory]) -> str:
+    # Overwriting token name with memory is not allowed
+    if token_value in memories:
+        compiler_error("MEMORY_REDEFINITION", f"Memory '{token_value}' already exists. Memory name should be unique.")
+    return token_value
+
+def get_memory_size(token_value: str, functions: List[Function]) -> str:
+    # Check if function with the token_value exists which only returns an integer
+    for func in functions:
+        if func.name == token_value and func.signature[1] == ['INT']:
+            return token_value
+
+    # Test if token is an integer
+    try:
+        int(token_value)
+    except ValueError:
+        compiler_error("MEMORY_SIZE_VALUE_ERROR", f"The memory size should be an integer. Got: {token_value}")
+    return token_value
 
 # Returns all tokens with comments taken out
 def get_token_matches(code: str) -> list:
