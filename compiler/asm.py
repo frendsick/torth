@@ -187,12 +187,15 @@ def get_op_asm(op: Op, program: Program) -> str:
 
 def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     src_file: str   = op.token.location[0]
-    row: str        = str(op.token.location[1])
-    col: str        = str(op.token.location[2])
+    row: int        = op.token.location[1]
+    col: int        = op.token.location[2]
     op_name: str    = op_type.name
     if op_name == "INTRINSIC":
         op_name = f'{op_type.name} {op.token.value}'
-    return f';; -- {op_name} | File: {src_file}, Row: {row}, Col: {col}' + '\n'
+    return get_token_info_comment_asm(op_name, src_file, row, col)
+
+def get_token_info_comment_asm(name: str, file: str, row: int, col: int) -> str:
+    return f';; -- {name} | File: {file}, Row: {row}, Col: {col}' + '\n'
 
 # Only cmov operand changes with different comparison intrinsics
 def get_comparison_asm(cmov_operand: str) -> str:
