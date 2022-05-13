@@ -509,9 +509,9 @@ def get_puts_asm() -> str:
     op_asm      +=  '  dec rcx          ; -1 to skip the null-terminator, rcx contains length\n'
     op_asm      +=  '  mov rdx, rcx     ; put length in rdx\n'
     op_asm      +=  '  mov rsi, r9\n'
-    op_asm      +=  '  mov rax, 1\n'
-    op_asm      +=  '  mov rdi, rax\n'
-    op_asm      +=  '  syscall          ; write syscall\n'
+    op_asm      +=  '  mov rax, stdout\n'
+    op_asm      +=  '  mov rdi, rax     ; write syscall\n'
+    op_asm      +=  '  syscall\n'
     return op_asm
 
 def get_rot_asm() -> str:
