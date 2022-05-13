@@ -1,6 +1,67 @@
 from typing import List
-from compiler.defs import OpType, Op, Program, Token
+from compiler.defs import Memory, OpType, Op, Program, Token
 from compiler.utils import compiler_error
+
+def initialize_asm(asm_file: str, memories: List[Memory]) -> None:
+    default_asm: str = f'''{get_asm_file_start()}
+section .bss
+
+section .text
+
+;; Joinked from Porth's print function, thank you Tsoding!
+print:
+  mov     r9, -3689348814741910323
+  sub     rsp, 40
+  lea     rcx, [rsp+30]
+.L2:
+  mov     rax, rdi
+  lea     r8, [rsp+32]
+  mul     r9
+  mov     rax, rdi
+  sub     r8, rcx
+  shr     rdx, 3
+  lea     rsi, [rdx+rdx*4]
+  add     rsi, rsi
+  sub     rax, rsi
+  add     eax, 48
+  mov     BYTE [rcx], al
+  mov     rax, rdi
+  mov     rdi, rdx
+  mov     rdx, rcx
+  sub     rcx, 1
+  cmp     rax, 9
+  ja      .L2
+  lea     rax, [rsp+32]
+  mov     edi, 1
+  sub     rdx, rax
+  xor     eax, eax
+  lea     rsi, [rsp+32+rdx]
+  mov     rdx, r8
+  mov     rax, 1
+  syscall
+  add     rsp, 40
+  ret
+
+global _start
+_start:
+  mov rbp, rsp ; Initialize RBP
+'''
+    with open(asm_file, 'w') as f:
+        f.write(default_asm)
+
+def get_asm_file_start() -> str:
+    return '''default rel
+
+%define buffer_len 65535 ; User input buffer length
+%define stdin 0
+%define stdout 1
+%define success 0
+%define sys_exit 60
+%define sys_read 0
+%define sys_write 1
+
+section .rodata
+'''
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
@@ -123,67 +184,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             compiler_error("NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.", op.token)
     else:
         compiler_error("NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.", op.token)
-
-def get_asm_file_start() -> str:
-    return '''default rel
-
-%define buffer_len 65535 ; User input buffer length
-%define stdin 0
-%define stdout 1
-%define success 0
-%define sys_exit 60
-%define sys_read 0
-%define sys_write 1
-
-section .rodata
-'''
-
-def initialize_asm(asm_file: str) -> None:
-    default_asm: str = f'''{get_asm_file_start()}
-section .bss
-
-section .text
-
-;; Joinked from Porth's print function, thank you Tsoding!
-print:
-  mov     r9, -3689348814741910323
-  sub     rsp, 40
-  lea     rcx, [rsp+30]
-.L2:
-  mov     rax, rdi
-  lea     r8, [rsp+32]
-  mul     r9
-  mov     rax, rdi
-  sub     r8, rcx
-  shr     rdx, 3
-  lea     rsi, [rdx+rdx*4]
-  add     rsi, rsi
-  sub     rax, rsi
-  add     eax, 48
-  mov     BYTE [rcx], al
-  mov     rax, rdi
-  mov     rdi, rdx
-  mov     rdx, rcx
-  sub     rcx, 1
-  cmp     rax, 9
-  ja      .L2
-  lea     rax, [rsp+32]
-  mov     edi, 1
-  sub     rdx, rax
-  xor     eax, eax
-  lea     rsi, [rsp+32+rdx]
-  mov     rdx, r8
-  mov     rax, 1
-  syscall
-  add     rsp, 40
-  ret
-
-global _start
-_start:
-  mov rbp, rsp ; Initialize RBP
-'''
-    with open(asm_file, 'w') as f:
-        f.write(default_asm)
 
 def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     src_file: str   = op.token.location[0]
