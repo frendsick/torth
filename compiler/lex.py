@@ -58,7 +58,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
     #  3 : return types
     #  4 : location
     # (0 : Not lexing a function)
-    FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '->', ':', 'END']
+    FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '_name', '->', ':', 'END']
     function_parts = itertools.cycle(list(range(5)))
     next(function_parts)
 
@@ -66,7 +66,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
         token_value: str = match.group(0)
 
         # Go to next function part
-        if token_value.upper() in FUNCTION_PART_DELIMITERS:
+        if token_value.upper() == FUNCTION_PART_DELIMITERS[current_part]:
             current_part = next(function_parts)
 
             # Append Function and reset variables when function is fully lexed
