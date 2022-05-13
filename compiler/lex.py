@@ -88,7 +88,6 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
         elif current_part == 4:
             token: Token = get_token_from_match(match, file, newline_indexes)
             tokens.append(token)
-
     return functions
 
 def get_memories_from_code(file: str, included_files: List[str], functions: List[Function]) -> List[Memory]:
@@ -110,7 +109,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], fun
         token_value: str = match.group(0)
         if defining_memory:
             if not name:
-                name = get_memory_name(token_value, token_matches, memories)
+                name = get_memory_name(token_value, memories)
                 location: Location = get_token_location(file, match.start(), newline_indexes)
                 continue
             elif not size:
@@ -127,7 +126,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], fun
             defining_memory = True
     return memories
 
-def get_memory_name(token_value: str, token_matches: List[int], memories: List[Memory]) -> str:
+def get_memory_name(token_value: str, memories: List[Memory]) -> str:
     # Overwriting token name with memory is not allowed
     if token_value in memories:
         compiler_error("MEMORY_REDEFINITION", f"Memory '{token_value}' already exists. Memory name should be unique.")

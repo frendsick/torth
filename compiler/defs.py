@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, List, Tuple
 
+STACK: List[str] = []
+
 class Colors:
     FAIL    = '\033[91m'
     HEADER  = '\033[95m'
@@ -80,6 +82,7 @@ class OpType(Enum):
     PUSH_ARRAY=auto()
     PUSH_HEX=auto()
     PUSH_INT=auto()
+    PUSH_PTR=auto()
     PUSH_STR=auto()
     WHILE=auto()
 
@@ -118,6 +121,8 @@ class Op:
     token: Token
 
 Program = List[Op]
-
-STACK: List[str] = []
-TYPE_REGEX: Dict[str, str] = {'INT': '-?\d+', 'STR': '\*buf s_\S+'}
+TYPE_REGEX: Dict[str, str] = {
+    'INT': '-?\d+',
+    'PTR': '\*ptr \S+',
+    'STR': '\*buf s_\S+'
+}

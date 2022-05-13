@@ -5,7 +5,7 @@ from compiler.utils import compiler_error
 def initialize_asm(asm_file: str, memories: List[Memory]) -> None:
     default_asm: str = f'''{get_asm_file_start()}
 section .bss
-
+{get_memory_definitions_asm(memories)}
 section .text
 
 ;; Joinked from Porth's print function, thank you Tsoding!
@@ -62,6 +62,16 @@ def get_asm_file_start() -> str:
 
 section .rodata
 '''
+
+def get_memory_definitions_asm(memories: List[Memory]) -> str:
+    asm: str = ''
+    for memory in memories:
+        name: str           = memory[0]
+        size: int           = memory[1]
+        file, row, col      = memory[2]
+        asm += get_token_info_comment_asm(name, file, row, col)
+        asm += f'  {name}: RESB {size}'
+    return asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:

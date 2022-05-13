@@ -1,12 +1,9 @@
 import subprocess
 from typing import List, Tuple
-from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType
+from compiler.defs import Intrinsic, Memory, Op, OpType, Program, STACK, Token, TokenType
 from compiler.utils import check_popped_value_type, compiler_error
 
-def intrinsic_exists(token: str) -> bool:
-    return bool(hasattr(Intrinsic, token))
-
-def generate_program(tokens: List[Token]) -> Program:
+def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
     program: List[Op] = []
     for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()
@@ -40,11 +37,23 @@ def generate_program(tokens: List[Token]) -> Program:
             op_type = OpType.WHILE
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
+        elif function_name_exists(token_value, memories):
+            op_type = OpType.PUSH_PTR
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found")
 
         program.append( Op(op_id, op_type, token) )
     return program
+
+def intrinsic_exists(token: str) -> bool:
+    return bool(hasattr(Intrinsic, token))
+
+def function_name_exists(token: str, memories: List[Memory]) -> bool:
+    for memory in memories:
+        memory_name = memory[0]
+        if memory_name.upper() == token:
+            return True
+    return False
 
 def run_code(exe_file: str) -> None:
     subprocess.run([f'./{exe_file}'])
@@ -71,6 +80,8 @@ def type_check_program(program: Program) -> None:
             STACK.append(token.value)
         elif op.type == OpType.PUSH_STR:
             STACK.append(f"*buf s_{op.id}")
+        elif op.type == OpType.PUSH_PTR:
+            STACK.append(f"*ptr {op.token.value}")
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "DIV":
