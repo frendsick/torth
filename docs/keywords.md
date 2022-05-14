@@ -3,6 +3,7 @@
 This is the documentation for different keywords available in the Torth language.
 
 - [BREAK](#BREAK)
+- [CONST](#CONST)
 - [DO](#DO)
 - [DONE](#DONE)
 - [ELIF](#ELIF)
@@ -31,6 +32,34 @@ DONE
 2
 3
 Breaking from loop...
+```
+
+## CONST
+
+CONST keyword is an alternative way of declarating a [FUNCTION](#FUNCTION) which does not take any parameters and only returns an integer. CONSTs can be used in [MEMORY](#MEMORY) declarations when defining the size of the memory.
+
+### Syntax
+
+```pascal
+// Different tokens or words can be on different lines
+FUNCION <name> <integer> END
+```
+
+### Examples
+
+```pascal
+include "lib/sys.torth"
+const ptr_size 8 end
+memory dst ptr_size end
+memory src ptr_size end
+
+function main -> :
+  1337 src store      // Store 1337 to src
+  9001 dst store      // Store 9001 to dst
+  src load dst store  // Copy the value from src to dst
+  src load print      // Print the value 1337 from src
+  dst load print      // Print the value 1337 from dst
+end  // Expected output: 13371337
 ```
 
 ## DO
