@@ -20,7 +20,7 @@ def main():
     code_file_basename: str = os.path.basename(args.code_file)
     exe_file: str = args.output if args.output is not None else code_file_basename.replace('.torth', '')
 
-    compile_code(code_file_basename, exe_file, functions, memories)
+    compile_code(code_file_basename, exe_file, constants, functions, memories)
     remove_compilation_files(code_file_basename, args)
     if args.run:
         run_code(exe_file)

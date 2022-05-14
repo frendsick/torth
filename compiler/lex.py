@@ -149,7 +149,7 @@ def get_memory_size(token_value: str, constants: List[Constant]) -> str:
     # Check if function with the token_value exists which only returns an integer
     for constant in constants:
         if constant.name == token_value:
-            return constant.value
+            return token_value
 
     # Test if token is an integer
     try:

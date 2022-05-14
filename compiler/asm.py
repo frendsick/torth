@@ -1,9 +1,9 @@
 from typing import List
-from compiler.defs import Memory, OpType, Op, Program, Token
+from compiler.defs import Constant, Memory, OpType, Op, Program, Token
 from compiler.utils import compiler_error
 
-def initialize_asm(asm_file: str, memories: List[Memory]) -> None:
-    default_asm: str = f'''{get_asm_file_start()}
+def initialize_asm(asm_file: str, constants: List[Constant], memories: List[Memory]) -> None:
+    default_asm: str = f'''{get_asm_file_start(constants)}
 section .bss
 {get_memory_definitions_asm(memories)}
 section .text
@@ -49,17 +49,16 @@ _start:
     with open(asm_file, 'w') as f:
         f.write(default_asm)
 
-def get_asm_file_start() -> str:
-    return '''default rel
+def get_asm_file_start(constants: List[Constant]) -> str:
+    const_defines: str = ''.join(f'%define {const.name} {const.value}\n' for const in constants)
 
+    return f'''default rel
+
+;; DEFINES
 %define buffer_len 65535 ; User input buffer length
-%define stdin 0
-%define stdout 1
 %define success 0
 %define sys_exit 60
-%define sys_read 0
-%define sys_write 1
-
+{const_defines}
 section .rodata
 '''
 
@@ -73,12 +72,12 @@ def get_memory_definitions_asm(memories: List[Memory]) -> str:
         asm += f'  {name}: RESB {size}\n'
     return asm
 
-def generate_asm(program: Program, asm_file: str) -> None:
+def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> None:
     for op in program:
         token: Token = op.token
 
         if op.type == OpType.PUSH_STR:
-            add_string_variable_asm(asm_file, token.value, op)
+            add_string_variable_asm(asm_file, token.value, op, constants)
         elif token.value.upper() == "HERE":
             add_string_variable_asm(asm_file, f'"{str(token.location)}"', op)
         elif op.type == OpType.PUSH_ARRAY:
@@ -86,9 +85,9 @@ def generate_asm(program: Program, asm_file: str) -> None:
             elements: List[str] = value[value.find("(")+1:value.rfind(")")].split(',')
             # Remove whitespaces from the elements list
             elements = [element.strip().replace("'", '"') for element in elements]
-            add_array_asm(asm_file, elements, op)
+            add_array_asm(asm_file, elements, op, constants)
         elif token.value.upper() == 'INPUT':
-            add_input_buffer_asm(asm_file, op)
+            add_input_buffer_asm(asm_file, op, constants)
 
         with open(asm_file, 'a') as f:
             f.write(get_op_comment_asm(op, op.type))
@@ -234,26 +233,27 @@ def get_arithmetic_asm(operand: str) -> str:
     arithmetic_asm      +=  '  push rax\n'
     return arithmetic_asm
 
-def add_string_variable_asm(asm_file: str, string: str, op: Op) -> None:
+def add_string_variable_asm(asm_file: str, string: str, op: Op, constants: List[Constant]) -> None:
     with open(asm_file, 'r') as f:
         file_lines: List[str] = f.readlines()
     with open(asm_file, 'w') as f:
-        f.write(get_asm_file_start())
+        asm_file_start: str = get_asm_file_start(constants)
+        f.write(asm_file_start)
 
         # Replace \n with nasm approved 10s for newline
         string = string.replace('\\n','",10,"')
         f.write(f'  s{op.id} db {string},0\n')
 
         # Rewrite lines except for the first line (section .rodata)
-        len_asm_file_start: int = len(get_asm_file_start().split('\n')) - 1
+        len_asm_file_start: int = len(asm_file_start.split('\n')) - 1
         for i in range(len_asm_file_start, len(file_lines)):
             f.write(file_lines[i])
 
-def add_array_asm(asm_file: str, array: list, op: Op) -> None:
+def add_array_asm(asm_file: str, array: list, op: Op, constants: List[Constant]) -> None:
     with open(asm_file, 'r') as f:
         file_lines: List[str] = f.readlines()
     with open(asm_file, 'w') as f:
-        f.write(get_asm_file_start())
+        f.write(get_asm_file_start(constants))
         for i in range(len(array)):
             f.write(f'  s{op.id}_{i}: db {array[i]},0\n')
         f.write(f'  s_arr{op.id}: dq ')
@@ -262,16 +262,17 @@ def add_array_asm(asm_file: str, array: list, op: Op) -> None:
         f.write('0\n') # Array ends at NULL byte
 
         # Rewrite lines
-        len_asm_file_start: int = len(get_asm_file_start().split('\n')) - 1
+        len_asm_file_start: int = len(get_asm_file_start(constants).split('\n')) - 1
         for i in range(len_asm_file_start, len(file_lines)):
             f.write(file_lines[i])
 
-def add_input_buffer_asm(asm_file: str, op: Op):
+def add_input_buffer_asm(asm_file: str, op: Op, constants: List[Constant]):
     with open(asm_file, 'r') as f:
         file_lines: List[str] = f.readlines()
     with open(asm_file, 'w') as f:
-        f.write(get_asm_file_start())
-        row: int = len(get_asm_file_start().splitlines()) - 1
+        asm_file_start: str = get_asm_file_start(constants)
+        f.write(asm_file_start)
+        row: int = len(asm_file_start.splitlines()) - 1
         while row < len(file_lines):
             row += 1
             f.write(file_lines[row])
