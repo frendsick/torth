@@ -98,8 +98,6 @@ def type_check_program(program: Program) -> None:
                 STACK.append('ENVP')
             elif intrinsic == "EQ":
                 type_check_eq(token)
-            elif intrinsic == "EXIT":
-                type_check_exit(token)
             elif intrinsic == "GE":
                 type_check_ge(token)
             elif intrinsic == "GT":
@@ -200,9 +198,6 @@ def type_check_eq(token: Token) -> None:
     check_popped_value_type(token, b, expected_type='INT')
     STACK.append(a)
     STACK.append(str(int(a==b)))
-
-def type_check_exit(token: Token) -> None:
-    check_popped_value_type(token, STACK.pop(), expected_type='INT')
 
 def type_check_ge(token: Token) -> None:
     a, b = pop_two_from_stack(token)

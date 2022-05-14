@@ -139,8 +139,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_drop_asm()
         elif intrinsic == "DUP":
             return get_dup_asm()
-        elif intrinsic == "EXIT":
-            return get_exit_asm()
         elif intrinsic == "EQ":
             return get_eq_asm()
         elif intrinsic == "GE":
@@ -442,12 +440,6 @@ def get_dup_asm() -> str:
     op_asm: str  = '  pop rax\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rax\n'
-    return op_asm
-
-def get_exit_asm() -> str:
-    op_asm: str  = '  mov rax, 60\n'
-    op_asm      += '  pop rdi\n'
-    op_asm      += '  syscall\n'
     return op_asm
 
 def get_eq_asm() -> str:
