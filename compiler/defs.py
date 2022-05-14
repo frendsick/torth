@@ -12,6 +12,7 @@ class Colors:
 
 class Keyword(Enum):
     BREAK=auto()
+    CONST=auto()
     DO=auto()
     DONE=auto()
     ELIF=auto()

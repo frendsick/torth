@@ -45,12 +45,15 @@ def get_tokens_from_function(parent_function: Function, functions: List[Function
 def get_functions(file: str, token_matches: list, newline_indexes: List[int]) -> List[Function]:
 
     # Initialize variables
-    functions: List[Function]       = []
-    current_part: int               = 0
-    name: str                       = ''
-    param_types: List[str]          = []
-    return_types: List[str]         = []
-    tokens: List[Token]             = []
+    functions: List[Function]   = []
+    current_part: int           = 0
+    name: str                   = ''
+    param_types: List[str]      = []
+    return_types: List[str]     = []
+    tokens: List[Token]         = []
+
+    # CONST is a constant integer so a function with Signature( [], ['INT'] )
+    is_const: bool = False
 
     # Functions are made of four parts:
     #  1 : name,
@@ -63,7 +66,10 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
     next(function_parts)
 
     for match in token_matches:
-        token_value: str = match.group(0)
+        if 'CONST' in match.group(0).upper():
+            is_const = True
+
+        token_value: str = re.sub('CONST', 'FUNCTION', match.group(0), flags=re.IGNORECASE)
 
         # Go to next function part
         if token_value.upper() == FUNCTION_PART_DELIMITERS[current_part]:
@@ -77,9 +83,17 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
                 param_types     = []
                 return_types    = []
                 tokens          = []
+                is_const        = False
 
         elif current_part == 1:
             name = token_value
+            if (is_const):
+                # CONST is a constant integer so a function with Signature( [], ['INT'] )
+                return_types.append('INT')
+
+                # Defining CONST skips -> and : delimiters
+                next(function_parts)
+                next(function_parts)
             current_part = next(function_parts)
         elif current_part == 2:
             param_types.append(token_value.upper())
@@ -202,7 +216,7 @@ def get_token_value(token: str) -> str:
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords: List[str] = ['BREAK', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNCTION', 'IF', 'MEMORY', 'WHILE']
+    keywords: List[str] = ['BREAK', 'CONST', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNCTION', 'IF', 'MEMORY', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 
