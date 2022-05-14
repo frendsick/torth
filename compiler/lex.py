@@ -213,6 +213,8 @@ def get_token_type(token_text: str) -> TokenType:
         return TokenType.ARRAY
     if token_text.upper() in {'TRUE', 'FALSE'}:
         return TokenType.BOOL
+    if len(token_text) == 3 and token_text[0] == token_text[-1] == "'":
+        return TokenType.CHAR
     if token_text.startswith('0x'):
         return TokenType.HEX
     if token_text[0] == token_text[-1] == '"':
