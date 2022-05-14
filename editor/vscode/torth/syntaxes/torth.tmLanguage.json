@@ -6,6 +6,9 @@
       "include": "#comments"
     },
     {
+      "include": "#datatypes"
+    },
+    {
       "include": "#functions"
     },
     {
@@ -31,6 +34,14 @@
           "name": "comment.line.double-slash.torth",
           "begin": "//",
           "end": "$"
+        }
+      ]
+    },
+    "datatypes": {
+      "patterns": [
+        {
+          "name": "entity.name.type.torth",
+          "match": "\\b(?i)(array|bool|char|int|ptr|str)\\b"
         }
       ]
     },

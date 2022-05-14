@@ -32,7 +32,7 @@ syntax match torthEscapes display contained "\\[nr\"']"
 syntax region torthNumber start=/\s\d/ skip=/\d/ end=/\s/
 
 " Type names the compiler recognizes
-syntax keyword torthTypeNames array bool int ptr str
+syntax keyword torthTypeNames array bool char int ptr str
 
 " Set highlights
 highlight default link torthTodos Todo
