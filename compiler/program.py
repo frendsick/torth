@@ -110,7 +110,9 @@ def type_check_program(program: Program) -> None:
                 type_check_le(token)
             elif intrinsic == "LT":
                 type_check_lt(token)
-            elif intrinsic == "LOAD":
+            elif intrinsic == "LOAD_BYTE":
+                type_check_load(token)
+            elif intrinsic == "LOAD_QWORD":
                 type_check_load(token)
             elif intrinsic == "MINUS":
                 type_check_minus(token)
@@ -132,7 +134,9 @@ def type_check_program(program: Program) -> None:
                 type_check_puts(token)
             elif intrinsic == "ROT":
                 type_check_rot(token)
-            elif intrinsic == "STORE":
+            elif intrinsic == "STORE_BYTE":
+                type_check_store(token)
+            elif intrinsic == "STORE_QWORD":
                 type_check_store(token)
             elif intrinsic == "SWAP":
                 type_check_swap(token)

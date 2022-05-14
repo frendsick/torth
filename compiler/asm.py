@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from compiler.defs import Constant, Memory, OpType, Op, Program, Token
 from compiler.utils import compiler_error
 
@@ -153,8 +153,10 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_le_asm()
         elif intrinsic == "LT":
             return get_lt_asm()
-        elif intrinsic == "LOAD":
-            return get_load_asm()
+        elif intrinsic == "LOAD_BYTE":
+            return get_load_asm('BYTE')
+        elif intrinsic == "LOAD_QWORD":
+            return get_load_asm('QWORD')
         elif intrinsic == "MINUS":
             return get_minus_asm()
         elif intrinsic == "MOD":
@@ -175,8 +177,10 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_puts_asm()
         elif intrinsic == "ROT":
             return get_rot_asm()
-        elif intrinsic == "STORE":
-            return get_store_asm()
+        elif intrinsic == "STORE_BYTE":
+            return get_store_asm('BYTE')
+        elif intrinsic == "STORE_QWORD":
+            return get_store_asm('QWORD')
         elif intrinsic == "SWAP":
             return get_swap_asm()
         elif intrinsic == "SWAP2":
@@ -483,9 +487,15 @@ def get_le_asm() -> str:
 def get_lt_asm() -> str:
     return get_comparison_asm("cmovl")
 
-def get_load_asm() -> str:
+def get_load_asm(size: str) -> str:
+    register_sizes: Dict[str, str] = {
+        'BYTE'  : 'bl',
+        'QWORD' : 'rbx'
+    }
+    register: str = register_sizes[size]
     op_asm: str  =  '  pop rax\n'
-    op_asm      +=  '  mov rbx, [rax]\n'
+    op_asm      +=  '  xor rbx, rbx\n'
+    op_asm      += f'  mov {register}, [rax]\n'
     op_asm      +=  '  push rbx\n'
     return op_asm
 
@@ -539,7 +549,7 @@ def get_puts_asm() -> str:
     op_asm      +=  '  dec rcx          ; -1 to skip the null-terminator, rcx contains length\n'
     op_asm      +=  '  mov rdx, rcx     ; put length in rdx\n'
     op_asm      +=  '  mov rsi, r9\n'
-    op_asm      +=  '  mov rax, stdout\n'
+    op_asm      +=  '  mov rax, 1       ; stdout\n'
     op_asm      +=  '  mov rdi, rax     ; write syscall\n'
     op_asm      +=  '  syscall\n'
     return op_asm
@@ -553,10 +563,15 @@ def get_rot_asm() -> str:
     op_asm      += '  push rcx\n'
     return op_asm
 
-def get_store_asm() -> str:
+def get_store_asm(size: str) -> str:
+    register_sizes: Dict[str, str] = {
+        'BYTE'  : 'bl',
+        'QWORD' : 'rbx'
+    }
+    register: str = register_sizes[size]
     op_asm: str  =  '  pop rax\n'
-    op_asm      +=  '  pop rbx\n'
-    op_asm      += f'  mov [rax], rbx\n'
+    op_asm      += f'  pop rbx\n'
+    op_asm      += f'  mov [rax], {register}\n'
     return op_asm
 
 def get_swap_asm() -> str:
