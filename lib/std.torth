@@ -5,6 +5,9 @@ const stdin  0 end
 const stdout 1 end
 const stderr 2 end
 
+const int_size 8 end
+const ptr_size 8 end
+
 function drop2 -> int : drop drop end
 function dup2 -> int : over over end
 function rotr -> int : rot rot end
