@@ -18,7 +18,9 @@ def compile_code(input_file: str, output_file: str, functions: List[Function], m
 
     # Generate Program from tokens and type check it with virtual stack
     program: Program = generate_program(tokens, memories)
-    type_check_program(program)
+
+    # TODO: Fix type checking and enable it
+    #type_check_program(program)
 
     # Generate assembly from Program
     asm_file: str = input_file.replace('.torth', '.asm')
