@@ -1,0 +1,29 @@
+// WIP: Implemented creating table and iterating through it
+
+include "lib/std.torth"
+const RULES_COUNT 8 end
+memory rules 8 end // int table[8]
+
+function initialize_rules -> ptr :
+  rules                   // Pointer to table
+  0 over     store_byte   // table[0] == 0
+  1 over 1 + store_byte   // table[1] == 1
+  1 over 2 + store_byte   // table[2] == 1
+  0 over 3 + store_byte   // table[2] == 0
+  1 over 4 + store_byte   // table[2] == 1
+  1 over 5 + store_byte   // table[2] == 1
+  1 over 6 + store_byte   // table[2] == 1
+  0 over 7 + store_byte   // table[7] == 0
+end
+
+function output_rules -> :
+  rules while dup rules RULES_COUNT + > do
+    dup load_byte print
+    1 +
+  done drop "\n" puts
+end
+
+function main -> :
+  initialize_rules
+  output_rules
+end

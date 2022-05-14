@@ -7,6 +7,7 @@ Torth is planned to be
 - [x] Compiled
 - [x] Native (Linux x86_64)
 - [x] Stack-based (just like Porth)
+- [ ] Turing complete
 - [ ] Self-hosted
 
 ## Requirements
