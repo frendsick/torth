@@ -8,8 +8,8 @@ This is the documentation for different keywords available in the Torth language
 - [ELIF](#ELIF)
 - [ELSE](#ELSE)
 - [ENDIF](#ENDIF)
+- [FUNCTION](#FUNCTION)
 - [IF](#IF)
-- [MACRO](#MACRO)
 - [WHILE](#WHILE)
 
 ## BREAK
@@ -184,23 +184,7 @@ ENDIF
 // This is after ENDIF
 ```
 
-## IF
-
-IF keyword is like DUP intrinsic, it duplicates the first element in the stack so that there is no need to manually duplicate the topmost element in the stack for the purpose of IF statement comparisation.
-
-### Examples
-
-```pascal
-4                                 //  int i = 4;
-IF 0 < DO                         //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ENDIF
-
-// Output:
-// Positive number
-```
-
-## MACRO
+## FUNCTION
 
 Functions are defined using FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as token. When called, the function's name is replaced with the contents of the function during compilation. Functions should be defined before calling. Defined functions are case sensitive tokens unlike most other keywords in Torth.
 
@@ -248,6 +232,22 @@ end
 function main -> :
   5 multiply_by_two MultiplyByFour print_int  // Output: 40
 end
+```
+
+## IF
+
+IF keyword is like DUP intrinsic, it duplicates the first element in the stack so that there is no need to manually duplicate the topmost element in the stack for the purpose of IF statement comparisation.
+
+### Examples
+
+```pascal
+4                                 //  int i = 4;
+IF 0 < DO                         //  if (0 < i)
+  "Positive number" puts          //    puts("Positive number");
+ENDIF
+
+// Output:
+// Positive number
 ```
 
 ## WHILE
