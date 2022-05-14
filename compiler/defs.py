@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, List, Tuple
 
+STACK: List[str] = []
+
 class Colors:
     FAIL    = '\033[91m'
     HEADER  = '\033[95m'
@@ -18,6 +20,7 @@ class Keyword(Enum):
     ENDIF=auto()
     FUNCTION=auto()
     IF=auto()
+    MEMORY=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -35,6 +38,7 @@ class Intrinsic(Enum):
     HERE=auto()
     INPUT=auto()
     LE=auto()
+    LOAD=auto()
     LT=auto()
     MINUS=auto()
     MOD=auto()
@@ -48,6 +52,7 @@ class Intrinsic(Enum):
     PRINT=auto()
     PUTS=auto()
     ROT=auto()
+    STORE=auto()
     SWAP=auto()
     SWAP2=auto()
     SYSCALL0=auto()
@@ -69,20 +74,24 @@ class OpType(Enum):
     IF=auto()
     INTRINSIC=auto()
     PUSH_ARRAY=auto()
+    PUSH_HEX=auto()
     PUSH_INT=auto()
+    PUSH_PTR=auto()
     PUSH_STR=auto()
     WHILE=auto()
 
 class TokenType(Enum):
     ARRAY=auto()
     BOOL=auto()
+    HEX=auto()
     INT=auto()
     KEYWORD=auto()
+    PTR=auto()
     STR=auto()
     WORD=auto()
 
-# Source file name, row, column
-Location = Tuple[str, int, int]
+Location = Tuple[str, int, int]     # Source file name, row, column
+Memory = Tuple[str, str, Location]  # Name, str(size), Location
 
 @dataclass
 class Token:
@@ -106,6 +115,8 @@ class Op:
     token: Token
 
 Program = List[Op]
-
-STACK: List[str] = []
-TYPE_REGEX: Dict[str, str] = {'INT': '-?\d+', 'STR': '\*buf s_\S+'}
+TYPE_REGEX: Dict[str, str] = {
+    'INT': '-?\d+',
+    'PTR': '\*ptr \S+',
+    'STR': '\*buf s_\S+'
+}

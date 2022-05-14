@@ -1,12 +1,9 @@
 import subprocess
 from typing import List, Tuple
-from compiler.defs import Intrinsic, Op, OpType, Program, STACK, Token, TokenType
+from compiler.defs import Intrinsic, Memory, Op, OpType, Program, STACK, Token, TokenType
 from compiler.utils import check_popped_value_type, compiler_error
 
-def intrinsic_exists(token: str) -> bool:
-    return bool(hasattr(Intrinsic, token))
-
-def generate_program(tokens: List[Token]) -> Program:
+def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
     program: List[Op] = []
     for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()
@@ -14,6 +11,8 @@ def generate_program(tokens: List[Token]) -> Program:
             op_type = OpType.PUSH_ARRAY
         elif token.type == TokenType.BOOL:
             op_type = OpType.PUSH_INT
+        elif token.type == TokenType.HEX:
+            op_type = OpType.PUSH_HEX
         elif token.type == TokenType.INT:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.STR:
@@ -38,11 +37,23 @@ def generate_program(tokens: List[Token]) -> Program:
             op_type = OpType.WHILE
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
+        elif function_name_exists(token_value, memories):
+            op_type = OpType.PUSH_PTR
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found")
 
         program.append( Op(op_id, op_type, token) )
     return program
+
+def intrinsic_exists(token: str) -> bool:
+    return bool(hasattr(Intrinsic, token))
+
+def function_name_exists(token: str, memories: List[Memory]) -> bool:
+    for memory in memories:
+        memory_name = memory[0]
+        if memory_name.upper() == token:
+            return True
+    return False
 
 def run_code(exe_file: str) -> None:
     subprocess.run([f'./{exe_file}'])
@@ -63,10 +74,14 @@ def type_check_program(program: Program) -> None:
             type_check_dup(token)  # IF duplicates the first element in the stack
         elif op.type == OpType.PUSH_ARRAY:
             STACK.append(f"*buf s_arr{op.id}")
+        elif op.type == OpType.PUSH_HEX:
+            STACK.append(token.value)
         elif op.type == OpType.PUSH_INT:
             STACK.append(token.value)
         elif op.type == OpType.PUSH_STR:
             STACK.append(f"*buf s_{op.id}")
+        elif op.type == OpType.PUSH_PTR:
+            STACK.append(f"*ptr {op.token.value}")
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "DIV":
@@ -93,6 +108,8 @@ def type_check_program(program: Program) -> None:
                 type_check_le(token)
             elif intrinsic == "LT":
                 type_check_lt(token)
+            elif intrinsic == "LOAD":
+                type_check_load(token)
             elif intrinsic == "MINUS":
                 type_check_minus(token)
             elif intrinsic == "MOD":
@@ -113,6 +130,8 @@ def type_check_program(program: Program) -> None:
                 type_check_puts(token)
             elif intrinsic == "ROT":
                 type_check_rot(token)
+            elif intrinsic == "STORE":
+                type_check_store(token)
             elif intrinsic == "SWAP":
                 type_check_swap(token)
             elif intrinsic == "SWAP2":
@@ -230,6 +249,13 @@ def type_check_lt(token: Token) -> None:
     STACK.append(a)
     STACK.append(str(int(a<b)))
 
+def type_check_load(token: Token) -> None:
+    try:
+        ptr: str = STACK.pop()
+    except IndexError:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
+    check_popped_value_type(token, ptr, expected_type='PTR')
+
 def type_check_minus(token: Token) -> None:
     a, b = pop_two_from_stack(token)
     STACK.append(str(int(a) - int(b)))
@@ -260,7 +286,10 @@ def type_check_plus(token: Token) -> None:
     STACK.append(str(int(a) + int(b)))
 
 def type_check_print(token: Token) -> None:
-    integer: str = STACK.pop()
+    try:
+        integer: str = STACK.pop()
+    except IndexError:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
     check_popped_value_type(token, integer, expected_type='INT')
 
 def type_check_puts(token: Token) -> None:
@@ -277,6 +306,13 @@ def type_check_rot(token: Token) -> None:
     STACK.append(b)
     STACK.append(a)
     STACK.append(c)
+
+def type_check_store(token: Token) -> None:
+    try:
+        _value, ptr = pop_two_from_stack(token)
+    except IndexError:
+        compiler_error("POP_FROM_EMPTY_STACK", f"{token.value.upper()} requires two values on the stack, PTR and value.", token)
+    check_popped_value_type(token, ptr, expected_type='PTR')
 
 def type_check_swap(token: Token) -> None:
     a, b = pop_two_from_stack(token)

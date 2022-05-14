@@ -1,6 +1,77 @@
 from typing import List
-from compiler.defs import OpType, Op, Program, Token
+from compiler.defs import Memory, OpType, Op, Program, Token
 from compiler.utils import compiler_error
+
+def initialize_asm(asm_file: str, memories: List[Memory]) -> None:
+    default_asm: str = f'''{get_asm_file_start()}
+section .bss
+{get_memory_definitions_asm(memories)}
+section .text
+
+;; Joinked from Porth's print function, thank you Tsoding!
+print:
+  mov     r9, -3689348814741910323
+  sub     rsp, 40
+  lea     rcx, [rsp+30]
+.L2:
+  mov     rax, rdi
+  lea     r8, [rsp+32]
+  mul     r9
+  mov     rax, rdi
+  sub     r8, rcx
+  shr     rdx, 3
+  lea     rsi, [rdx+rdx*4]
+  add     rsi, rsi
+  sub     rax, rsi
+  add     eax, 48
+  mov     BYTE [rcx], al
+  mov     rax, rdi
+  mov     rdi, rdx
+  mov     rdx, rcx
+  sub     rcx, 1
+  cmp     rax, 9
+  ja      .L2
+  lea     rax, [rsp+32]
+  mov     edi, 1
+  sub     rdx, rax
+  xor     eax, eax
+  lea     rsi, [rsp+32+rdx]
+  mov     rdx, r8
+  mov     rax, 1
+  syscall
+  add     rsp, 40
+  ret
+
+global _start
+_start:
+  mov rbp, rsp ; Initialize RBP
+'''
+    with open(asm_file, 'w') as f:
+        f.write(default_asm)
+
+def get_asm_file_start() -> str:
+    return '''default rel
+
+%define buffer_len 65535 ; User input buffer length
+%define stdin 0
+%define stdout 1
+%define success 0
+%define sys_exit 60
+%define sys_read 0
+%define sys_write 1
+
+section .rodata
+'''
+
+def get_memory_definitions_asm(memories: List[Memory]) -> str:
+    asm: str = ''
+    for memory in memories:
+        name: str           = memory[0]
+        size: int           = memory[1]
+        file, row, col      = memory[2]
+        asm += get_token_info_comment_asm(f'MEMORY {name}', file, row, col)
+        asm += f'  {name}: RESB {size}\n'
+    return asm
 
 def generate_asm(program: Program, asm_file: str) -> None:
     for op in program:
@@ -49,8 +120,12 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_if_asm()
     elif op.type == OpType.PUSH_ARRAY:
         return get_push_array_asm(op)
+    elif op.type == OpType.PUSH_HEX:
+        return get_push_hex_asm(op.token.value)
     elif op.type == OpType.PUSH_INT:
         return get_push_int_asm(op.token.value)
+    elif op.type == OpType.PUSH_PTR:
+        return get_push_ptr_asm(op.token.value)
     elif op.type == OpType.PUSH_STR:
         return get_push_str_asm(op)
     elif op.type == OpType.WHILE:
@@ -79,6 +154,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_le_asm()
         elif intrinsic == "LT":
             return get_lt_asm()
+        elif intrinsic == "LOAD":
+            return get_load_asm()
         elif intrinsic == "MINUS":
             return get_minus_asm()
         elif intrinsic == "MOD":
@@ -99,6 +176,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_puts_asm()
         elif intrinsic == "ROT":
             return get_rot_asm()
+        elif intrinsic == "STORE":
+            return get_store_asm()
         elif intrinsic == "SWAP":
             return get_swap_asm()
         elif intrinsic == "SWAP2":
@@ -122,75 +201,17 @@ def get_op_asm(op: Op, program: Program) -> str:
     else:
         compiler_error("NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.", op.token)
 
-def get_asm_file_start() -> str:
-    return '''default rel
-
-%define buffer_len 65535 ; User input buffer length
-%define stdin 0
-%define stdout 1
-%define success 0
-%define sys_exit 60
-%define sys_read 0
-%define sys_write 1
-
-section .rodata
-'''
-
-def initialize_asm(asm_file: str) -> None:
-    default_asm: str = f'''{get_asm_file_start()}
-section .bss
-
-section .text
-
-;; Joinked from Porth's print function, thank you Tsoding!
-print:
-  mov     r9, -3689348814741910323
-  sub     rsp, 40
-  lea     rcx, [rsp+30]
-.L2:
-  mov     rax, rdi
-  lea     r8, [rsp+32]
-  mul     r9
-  mov     rax, rdi
-  sub     r8, rcx
-  shr     rdx, 3
-  lea     rsi, [rdx+rdx*4]
-  add     rsi, rsi
-  sub     rax, rsi
-  add     eax, 48
-  mov     BYTE [rcx], al
-  mov     rax, rdi
-  mov     rdi, rdx
-  mov     rdx, rcx
-  sub     rcx, 1
-  cmp     rax, 9
-  ja      .L2
-  lea     rax, [rsp+32]
-  mov     edi, 1
-  sub     rdx, rax
-  xor     eax, eax
-  lea     rsi, [rsp+32+rdx]
-  mov     rdx, r8
-  mov     rax, 1
-  syscall
-  add     rsp, 40
-  ret
-
-global _start
-_start:
-  mov rbp, rsp ; Initialize RBP
-'''
-    with open(asm_file, 'w') as f:
-        f.write(default_asm)
-
 def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     src_file: str   = op.token.location[0]
-    row: str        = str(op.token.location[1])
-    col: str        = str(op.token.location[2])
+    row: int        = op.token.location[1]
+    col: int        = op.token.location[2]
     op_name: str    = op_type.name
     if op_name == "INTRINSIC":
         op_name = f'{op_type.name} {op.token.value}'
-    return f';; -- {op_name} | File: {src_file}, Row: {row}, Col: {col}' + '\n'
+    return get_token_info_comment_asm(op_name, src_file, row, col)
+
+def get_token_info_comment_asm(name: str, file: str, row: int, col: int) -> str:
+    return f';; -- {name} | File: {file}, Row: {row}, Col: {col}' + '\n'
 
 # Only cmov operand changes with different comparison intrinsics
 def get_comparison_asm(cmov_operand: str) -> str:
@@ -374,8 +395,18 @@ def get_push_array_asm(op: Op) -> str:
     op_asm      +=  '  push rsi\n'
     return op_asm
 
+def get_push_hex_asm(hexadecimal: str) -> str:
+    op_asm: str  = f'  mov rax, {hexadecimal}\n'
+    op_asm      +=  '  push rax\n'
+    return op_asm
+
 def get_push_int_asm(integer: str) -> str:
     op_asm: str  = f'  mov rax, {integer}\n'
+    op_asm      +=  '  push rax\n'
+    return op_asm
+
+def get_push_ptr_asm(memory_name: str) -> str:
+    op_asm: str  = f'  mov rax, {memory_name}\n'
     op_asm      +=  '  push rax\n'
     return op_asm
 
@@ -452,6 +483,12 @@ def get_le_asm() -> str:
 def get_lt_asm() -> str:
     return get_comparison_asm("cmovl")
 
+def get_load_asm() -> str:
+    op_asm: str  =  '  pop rax\n'
+    op_asm      +=  '  mov rbx, [rax]\n'
+    op_asm      +=  '  push rbx\n'
+    return op_asm
+
 def get_minus_asm() -> str:
     return get_arithmetic_asm("sub")
 
@@ -502,9 +539,9 @@ def get_puts_asm() -> str:
     op_asm      +=  '  dec rcx          ; -1 to skip the null-terminator, rcx contains length\n'
     op_asm      +=  '  mov rdx, rcx     ; put length in rdx\n'
     op_asm      +=  '  mov rsi, r9\n'
-    op_asm      +=  '  mov rax, 1\n'
-    op_asm      +=  '  mov rdi, rax\n'
-    op_asm      +=  '  syscall          ; write syscall\n'
+    op_asm      +=  '  mov rax, stdout\n'
+    op_asm      +=  '  mov rdi, rax     ; write syscall\n'
+    op_asm      +=  '  syscall\n'
     return op_asm
 
 def get_rot_asm() -> str:
@@ -514,6 +551,12 @@ def get_rot_asm() -> str:
     op_asm      += '  push rbx\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rcx\n'
+    return op_asm
+
+def get_store_asm() -> str:
+    op_asm: str  =  '  pop rax\n'
+    op_asm      +=  '  pop rbx\n'
+    op_asm      += f'  mov [rax], rbx\n'
     return op_asm
 
 def get_swap_asm() -> str:

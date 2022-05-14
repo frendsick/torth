@@ -2,7 +2,7 @@ import argparse
 import subprocess
 from typing import List
 from compiler.asm import generate_asm, initialize_asm
-from compiler.defs import Function, Program, Token
+from compiler.defs import Function, Memory, Program, Token
 from compiler.lex import get_tokens_from_functions
 from compiler.program import generate_program, type_check_program
 
@@ -12,17 +12,17 @@ def compile_asm(asm_file: str) -> None:
 def link_object_file(obj_file: str, output_file: str) -> None:
     subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{output_file}', obj_file])
 
-def compile_code(input_file: str, output_file: str, functions: List[Function]) -> None:
+def compile_code(input_file: str, output_file: str, functions: List[Function], memories: List[Memory]) -> None:
     # Get all tokens in the order of execution
     tokens: List[Token] = get_tokens_from_functions(functions, input_file)
 
     # Generate Program from tokens and type check it with virtual stack
-    program: Program = generate_program(tokens)
+    program: Program = generate_program(tokens, memories)
     type_check_program(program)
 
     # Generate assembly from Program
     asm_file: str = input_file.replace('.torth', '.asm')
-    initialize_asm(asm_file)
+    initialize_asm(asm_file, memories)
     generate_asm(program, asm_file)
 
     # Compile the assembly code with NASM and link it with LD
