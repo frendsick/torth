@@ -1,317 +1,317 @@
-function SYS_read -> int : 0 end
-function SYS_write -> int : 1 end
-function SYS_open -> int : 2 end
-function SYS_close -> int : 3 end
-function SYS_stat -> int : 4 end
-function SYS_fstat -> int : 5 end
-function SYS_lstat -> int : 6 end
-function SYS_poll -> int : 7 end
-function SYS_lseek -> int : 8 end
-function SYS_mmap -> int : 9 end
-function SYS_mprotect -> int : 10 end
-function SYS_munmap -> int : 11 end
-function SYS_brk -> int : 12 end
-function SYS_rt_sigaction -> int : 13 end
-function SYS_rt_sigprocmask -> int : 14 end
-function SYS_rt_sigreturn -> int : 15 end
-function SYS_ioctl -> int : 16 end
-function SYS_pread -> int : 64 17 end
-function SYS_pwrite -> int : 64 18 end
-function SYS_readv -> int : 19 end
-function SYS_writev -> int : 20 end
-function SYS_access -> int : 21 end
-function SYS_pipe -> int : 22 end
-function SYS_select -> int : 23 end
-function SYS_sched_yield -> int : 24 end
-function SYS_mremap -> int : 25 end
-function SYS_msync -> int : 26 end
-function SYS_mincore -> int : 27 end
-function SYS_madvise -> int : 28 end
-function SYS_shmget -> int : 29 end
-function SYS_shmat -> int : 30 end
-function SYS_shmctl -> int : 31 end
-function SYS_dup -> int : 32 end
-function SYS_dup -> int : 2 33 end
-function SYS_pause -> int : 34 end
-function SYS_nanosleep -> int : 35 end
-function SYS_getitimer -> int : 36 end
-function SYS_alarm -> int : 37 end
-function SYS_setitimer -> int : 38 end
-function SYS_getpid -> int : 39 end
-function SYS_sendfile -> int : 40 end
-function SYS_socket -> int : 41 end
-function SYS_connect -> int : 42 end
-function SYS_accept -> int : 43 end
-function SYS_sendto -> int : 44 end
-function SYS_recvfrom -> int : 45 end
-function SYS_sendmsg -> int : 46 end
-function SYS_recvmsg -> int : 47 end
-function SYS_shutdown -> int : 48 end
-function SYS_bind -> int : 49 end
-function SYS_listen -> int : 50 end
-function SYS_getsockname -> int : 51 end
-function SYS_getpeername -> int : 52 end
-function SYS_socketpair -> int : 53 end
-function SYS_setsockopt -> int : 54 end
-function SYS_getsockopt -> int : 55 end
-function SYS_clone -> int : 56 end
-function SYS_fork -> int : 57 end
-function SYS_vfork -> int : 58 end
-function SYS_execve -> int : 59 end
-function SYS_exit -> int : 60 end
-function SYS_wait -> int : 4 61 end
-function SYS_kill -> int : 62 end
-function SYS_uname -> int : 63 end
-function SYS_semget -> int : 64 end
-function SYS_semop -> int : 65 end
-function SYS_semctl -> int : 66 end
-function SYS_shmdt -> int : 67 end
-function SYS_msgget -> int : 68 end
-function SYS_msgsnd -> int : 69 end
-function SYS_msgrcv -> int : 70 end
-function SYS_msgctl -> int : 71 end
-function SYS_fcntl -> int : 72 end
-function SYS_flock -> int : 73 end
-function SYS_fsync -> int : 74 end
-function SYS_fdatasync -> int : 75 end
-function SYS_truncate -> int : 76 end
-function SYS_ftruncate -> int : 77 end
-function SYS_getdents -> int : 78 end
-function SYS_getcwd -> int : 79 end
-function SYS_chdir -> int : 80 end
-function SYS_fchdir -> int : 81 end
-function SYS_rename -> int : 82 end
-function SYS_mkdir -> int : 83 end
-function SYS_rmdir -> int : 84 end
-function SYS_creat -> int : 85 end
-function SYS_link -> int : 86 end
-function SYS_unlink -> int : 87 end
-function SYS_symlink -> int : 88 end
-function SYS_readlink -> int : 89 end
-function SYS_chmod -> int : 90 end
-function SYS_fchmod -> int : 91 end
-function SYS_chown -> int : 92 end
-function SYS_fchown -> int : 93 end
-function SYS_lchown -> int : 94 end
-function SYS_umask -> int : 95 end
-function SYS_gettimeofday -> int : 96 end
-function SYS_getrlimit -> int : 97 end
-function SYS_getrusage -> int : 98 end
-function SYS_sysinfo -> int : 99 end
-function SYS_times -> int : 100 end
-function SYS_ptrace -> int : 101 end
-function SYS_getuid -> int : 102 end
-function SYS_syslog -> int : 103 end
-function SYS_getgid -> int : 104 end
-function SYS_setuid -> int : 105 end
-function SYS_setgid -> int : 106 end
-function SYS_geteuid -> int : 107 end
-function SYS_getegid -> int : 108 end
-function SYS_setpgid -> int : 109 end
-function SYS_getppid -> int : 110 end
-function SYS_getpgrp -> int : 111 end
-function SYS_setsid -> int : 112 end
-function SYS_setreuid -> int : 113 end
-function SYS_setregid -> int : 114 end
-function SYS_getgroups -> int : 115 end
-function SYS_setgroups -> int : 116 end
-function SYS_setresuid -> int : 117 end
-function SYS_getresuid -> int : 118 end
-function SYS_setresgid -> int : 119 end
-function SYS_getresgid -> int : 120 end
-function SYS_getpgid -> int : 121 end
-function SYS_setfsuid -> int : 122 end
-function SYS_setfsgid -> int : 123 end
-function SYS_getsid -> int : 124 end
-function SYS_capget -> int : 125 end
-function SYS_capset -> int : 126 end
-function SYS_rt_sigpending -> int : 127 end
-function SYS_rt_sigtimedwait -> int : 128 end
-function SYS_rt_sigqueueinfo -> int : 129 end
-function SYS_rt_sigsuspend -> int : 130 end
-function SYS_sigaltstack -> int : 131 end
-function SYS_utime -> int : 132 end
-function SYS_mknod -> int : 133 end
-function SYS_uselib -> int : 134 end
-function SYS_personality -> int : 135 end
-function SYS_ustat -> int : 136 end
-function SYS_statfs -> int : 137 end
-function SYS_fstatfs -> int : 138 end
-function SYS_sysfs -> int : 139 end
-function SYS_getpriority -> int : 140 end
-function SYS_setpriority -> int : 141 end
-function SYS_sched_setparam -> int : 142 end
-function SYS_sched_getparam -> int : 143 end
-function SYS_sched_setscheduler -> int : 144 end
-function SYS_sched_getscheduler -> int : 145 end
-function SYS_sched_get_priority_max -> int : 146 end
-function SYS_sched_get_priority_min -> int : 147 end
-function SYS_sched_rr_get_interval -> int : 148 end
-function SYS_mlock -> int : 149 end
-function SYS_munlock -> int : 150 end
-function SYS_mlockall -> int : 151 end
-function SYS_munlockall -> int : 152 end
-function SYS_vhangup -> int : 153 end
-function SYS_modify_ldt -> int : 154 end
-function SYS_pivot_root -> int : 155 end
-function SYS__sysctl -> int : 156 end
-function SYS_prctl -> int : 157 end
-function SYS_arch_prctl -> int : 158 end
-function SYS_adjtimex -> int : 159 end
-function SYS_setrlimit -> int : 160 end
-function SYS_chroot -> int : 161 end
-function SYS_sync -> int : 162 end
-function SYS_acct -> int : 163 end
-function SYS_settimeofday -> int : 164 end
-function SYS_mount -> int : 165 end
-function SYS_umount -> int : 2 166 end
-function SYS_swapon -> int : 167 end
-function SYS_swapoff -> int : 168 end
-function SYS_reboot -> int : 169 end
-function SYS_sethostname -> int : 170 end
-function SYS_setdomainname -> int : 171 end
-function SYS_iopl -> int : 172 end
-function SYS_ioperm -> int : 173 end
-function SYS_create_module -> int : 174 end
-function SYS_init_module -> int : 175 end
-function SYS_delete_module -> int : 176 end
-function SYS_get_kernel_syms -> int : 177 end
-function SYS_query_module -> int : 178 end
-function SYS_quotactl -> int : 179 end
-function SYS_nfsservctl -> int : 180 end
-function SYS_getpmsg -> int : 181 end
-function SYS_putpmsg -> int : 182 end
-function SYS_afs_syscall -> int : 183 end
-function SYS_tuxcall -> int : 184 end
-function SYS_security -> int : 185 end
-function SYS_gettid -> int : 186 end
-function SYS_readahead -> int : 187 end
-function SYS_setxattr -> int : 188 end
-function SYS_lsetxattr -> int : 189 end
-function SYS_fsetxattr -> int : 190 end
-function SYS_getxattr -> int : 191 end
-function SYS_lgetxattr -> int : 192 end
-function SYS_fgetxattr -> int : 193 end
-function SYS_listxattr -> int : 194 end
-function SYS_llistxattr -> int : 195 end
-function SYS_flistxattr -> int : 196 end
-function SYS_removexattr -> int : 197 end
-function SYS_lremovexattr -> int : 198 end
-function SYS_fremovexattr -> int : 199 end
-function SYS_tkill -> int : 200 end
-function SYS_time -> int : 201 end
-function SYS_futex -> int : 202 end
-function SYS_sched_setaffinity -> int : 203 end
-function SYS_sched_getaffinity -> int : 204 end
-function SYS_set_thread_area -> int : 205 end
-function SYS_io_setup -> int : 206 end
-function SYS_io_destroy -> int : 207 end
-function SYS_io_getevents -> int : 208 end
-function SYS_io_submit -> int : 209 end
-function SYS_io_cancel -> int : 210 end
-function SYS_get_thread_area -> int : 211 end
-function SYS_lookup_dcookie -> int : 212 end
-function SYS_epoll_create -> int : 213 end
-function SYS_epoll_ctl_old -> int : 214 end
-function SYS_epoll_wait_old -> int : 215 end
-function SYS_remap_file_pages -> int : 216 end
-function SYS_getdents -> int : 64 217 end
-function SYS_set_tid_address -> int : 218 end
-function SYS_restart_syscall -> int : 219 end
-function SYS_semtimedop -> int : 220 end
-function SYS_fadvise -> int : 64 221 end
-function SYS_timer_create -> int : 222 end
-function SYS_timer_settime -> int : 223 end
-function SYS_timer_gettime -> int : 224 end
-function SYS_timer_getoverrun -> int : 225 end
-function SYS_timer_delete -> int : 226 end
-function SYS_clock_settime -> int : 227 end
-function SYS_clock_gettime -> int : 228 end
-function SYS_clock_getres -> int : 229 end
-function SYS_clock_nanosleep -> int : 230 end
-function SYS_exit_group -> int : 231 end
-function SYS_epoll_wait -> int : 232 end
-function SYS_epoll_ctl -> int : 233 end
-function SYS_tgkill -> int : 234 end
-function SYS_utimes -> int : 235 end
-function SYS_vserver -> int : 236 end
-function SYS_mbind -> int : 237 end
-function SYS_set_mempolicy -> int : 238 end
-function SYS_get_mempolicy -> int : 239 end
-function SYS_mq_open -> int : 240 end
-function SYS_mq_unlink -> int : 241 end
-function SYS_mq_timedsend -> int : 242 end
-function SYS_mq_timedreceive -> int : 243 end
-function SYS_mq_notify -> int : 244 end
-function SYS_mq_getsetattr -> int : 245 end
-function SYS_kexec_load -> int : 246 end
-function SYS_waitid -> int : 247 end
-function SYS_add_key -> int : 248 end
-function SYS_request_key -> int : 249 end
-function SYS_keyctl -> int : 250 end
-function SYS_ioprio_set -> int : 251 end
-function SYS_ioprio_get -> int : 252 end
-function SYS_inotify_init -> int : 253 end
-function SYS_inotify_add_watch -> int : 254 end
-function SYS_inotify_rm_watch -> int : 255 end
-function SYS_migrate_pages -> int : 256 end
-function SYS_openat -> int : 257 end
-function SYS_mkdirat -> int : 258 end
-function SYS_mknodat -> int : 259 end
-function SYS_fchownat -> int : 260 end
-function SYS_futimesat -> int : 261 end
-function SYS_newfstatat -> int : 262 end
-function SYS_unlinkat -> int : 263 end
-function SYS_renameat -> int : 264 end
-function SYS_linkat -> int : 265 end
-function SYS_symlinkat -> int : 266 end
-function SYS_readlinkat -> int : 267 end
-function SYS_fchmodat -> int : 268 end
-function SYS_faccessat -> int : 269 end
-function SYS_pselect -> int : 6 270 end
-function SYS_ppoll -> int : 271 end
-function SYS_unshare -> int : 272 end
-function SYS_set_robust_list -> int : 273 end
-function SYS_get_robust_list -> int : 274 end
-function SYS_splice -> int : 275 end
-function SYS_tee -> int : 276 end
-function SYS_sync_file_range -> int : 277 end
-function SYS_vmsplice -> int : 278 end
-function SYS_move_pages -> int : 279 end
-function SYS_utimensat -> int : 280 end
-function SYS_epoll_pwait -> int : 281 end
-function SYS_signalfd -> int : 282 end
-function SYS_timerfd_create -> int : 283 end
-function SYS_eventfd -> int : 284 end
-function SYS_fallocate -> int : 285 end
-function SYS_timerfd_settime -> int : 286 end
-function SYS_timerfd_gettime -> int : 287 end
-function SYS_accept -> int : 4 288 end
-function SYS_signalfd -> int : 4 289 end
-function SYS_eventfd -> int : 2 290 end
-function SYS_epoll_create -> int : 1 291 end
-function SYS_dup -> int : 3 292 end
-function SYS_pipe -> int : 2 293 end
-function SYS_inotify_init -> int : 1 294 end
-function SYS_preadv -> int : 295 end
-function SYS_pwritev -> int : 296 end
-function SYS_rt_tgsigqueueinfo -> int : 297 end
-function SYS_perf_event_open -> int : 298 end
-function SYS_recvmmsg -> int : 299 end
-function SYS_fanotify_init -> int : 300 end
-function SYS_fanotify_mark -> int : 301 end
-function SYS_prlimit -> int : 64 302 end
-function SYS_name_to_handle_at -> int : 303 end
-function SYS_open_by_handle_at -> int : 304 end
-function SYS_clock_adjtime -> int : 305 end
-function SYS_syncfs -> int : 306 end
-function SYS_sendmmsg -> int : 307 end
-function SYS_setns -> int : 308 end
-function SYS_getcpu -> int : 309 end
-function SYS_process_vm_readv -> int : 310 end
-function SYS_process_vm_writev -> int : 311 end
-function SYS_kcmp -> int : 312 end
-function SYS_finit_module -> int : 313 end
+const SYS_read 0 end
+const SYS_write 1 end
+const SYS_open 2 end
+const SYS_close 3 end
+const SYS_stat 4 end
+const SYS_fstat 5 end
+const SYS_lstat 6 end
+const SYS_poll 7 end
+const SYS_lseek 8 end
+const SYS_mmap 9 end
+const SYS_mprotect 10 end
+const SYS_munmap 11 end
+const SYS_brk 12 end
+const SYS_rt_sigaction 13 end
+const SYS_rt_sigprocmask 14 end
+const SYS_rt_sigreturn 15 end
+const SYS_ioctl 16 end
+const SYS_pread 64 17 end
+const SYS_pwrite 64 18 end
+const SYS_readv 19 end
+const SYS_writev 20 end
+const SYS_access 21 end
+const SYS_pipe 22 end
+const SYS_select 23 end
+const SYS_sched_yield 24 end
+const SYS_mremap 25 end
+const SYS_msync 26 end
+const SYS_mincore 27 end
+const SYS_madvise 28 end
+const SYS_shmget 29 end
+const SYS_shmat 30 end
+const SYS_shmctl 31 end
+const SYS_dup 32 end
+const SYS_dup 2 33 end
+const SYS_pause 34 end
+const SYS_nanosleep 35 end
+const SYS_getitimer 36 end
+const SYS_alarm 37 end
+const SYS_setitimer 38 end
+const SYS_getpid 39 end
+const SYS_sendfile 40 end
+const SYS_socket 41 end
+const SYS_connect 42 end
+const SYS_accept 43 end
+const SYS_sendto 44 end
+const SYS_recvfrom 45 end
+const SYS_sendmsg 46 end
+const SYS_recvmsg 47 end
+const SYS_shutdown 48 end
+const SYS_bind 49 end
+const SYS_listen 50 end
+const SYS_getsockname 51 end
+const SYS_getpeername 52 end
+const SYS_socketpair 53 end
+const SYS_setsockopt 54 end
+const SYS_getsockopt 55 end
+const SYS_clone 56 end
+const SYS_fork 57 end
+const SYS_vfork 58 end
+const SYS_execve 59 end
+const SYS_exit 60 end
+const SYS_wait 4 61 end
+const SYS_kill 62 end
+const SYS_uname 63 end
+const SYS_semget 64 end
+const SYS_semop 65 end
+const SYS_semctl 66 end
+const SYS_shmdt 67 end
+const SYS_msgget 68 end
+const SYS_msgsnd 69 end
+const SYS_msgrcv 70 end
+const SYS_msgctl 71 end
+const SYS_fcntl 72 end
+const SYS_flock 73 end
+const SYS_fsync 74 end
+const SYS_fdatasync 75 end
+const SYS_truncate 76 end
+const SYS_ftruncate 77 end
+const SYS_getdents 78 end
+const SYS_getcwd 79 end
+const SYS_chdir 80 end
+const SYS_fchdir 81 end
+const SYS_rename 82 end
+const SYS_mkdir 83 end
+const SYS_rmdir 84 end
+const SYS_creat 85 end
+const SYS_link 86 end
+const SYS_unlink 87 end
+const SYS_symlink 88 end
+const SYS_readlink 89 end
+const SYS_chmod 90 end
+const SYS_fchmod 91 end
+const SYS_chown 92 end
+const SYS_fchown 93 end
+const SYS_lchown 94 end
+const SYS_umask 95 end
+const SYS_gettimeofday 96 end
+const SYS_getrlimit 97 end
+const SYS_getrusage 98 end
+const SYS_sysinfo 99 end
+const SYS_times 100 end
+const SYS_ptrace 101 end
+const SYS_getuid 102 end
+const SYS_syslog 103 end
+const SYS_getgid 104 end
+const SYS_setuid 105 end
+const SYS_setgid 106 end
+const SYS_geteuid 107 end
+const SYS_getegid 108 end
+const SYS_setpgid 109 end
+const SYS_getppid 110 end
+const SYS_getpgrp 111 end
+const SYS_setsid 112 end
+const SYS_setreuid 113 end
+const SYS_setregid 114 end
+const SYS_getgroups 115 end
+const SYS_setgroups 116 end
+const SYS_setresuid 117 end
+const SYS_getresuid 118 end
+const SYS_setresgid 119 end
+const SYS_getresgid 120 end
+const SYS_getpgid 121 end
+const SYS_setfsuid 122 end
+const SYS_setfsgid 123 end
+const SYS_getsid 124 end
+const SYS_capget 125 end
+const SYS_capset 126 end
+const SYS_rt_sigpending 127 end
+const SYS_rt_sigtimedwait 128 end
+const SYS_rt_sigqueueinfo 129 end
+const SYS_rt_sigsuspend 130 end
+const SYS_sigaltstack 131 end
+const SYS_utime 132 end
+const SYS_mknod 133 end
+const SYS_uselib 134 end
+const SYS_personality 135 end
+const SYS_ustat 136 end
+const SYS_statfs 137 end
+const SYS_fstatfs 138 end
+const SYS_sysfs 139 end
+const SYS_getpriority 140 end
+const SYS_setpriority 141 end
+const SYS_sched_setparam 142 end
+const SYS_sched_getparam 143 end
+const SYS_sched_setscheduler 144 end
+const SYS_sched_getscheduler 145 end
+const SYS_sched_get_priority_max 146 end
+const SYS_sched_get_priority_min 147 end
+const SYS_sched_rr_get_interval 148 end
+const SYS_mlock 149 end
+const SYS_munlock 150 end
+const SYS_mlockall 151 end
+const SYS_munlockall 152 end
+const SYS_vhangup 153 end
+const SYS_modify_ldt 154 end
+const SYS_pivot_root 155 end
+const SYS__sysctl 156 end
+const SYS_prctl 157 end
+const SYS_arch_prctl 158 end
+const SYS_adjtimex 159 end
+const SYS_setrlimit 160 end
+const SYS_chroot 161 end
+const SYS_sync 162 end
+const SYS_acct 163 end
+const SYS_settimeofday 164 end
+const SYS_mount 165 end
+const SYS_umount 2 166 end
+const SYS_swapon 167 end
+const SYS_swapoff 168 end
+const SYS_reboot 169 end
+const SYS_sethostname 170 end
+const SYS_setdomainname 171 end
+const SYS_iopl 172 end
+const SYS_ioperm 173 end
+const SYS_create_module 174 end
+const SYS_init_module 175 end
+const SYS_delete_module 176 end
+const SYS_get_kernel_syms 177 end
+const SYS_query_module 178 end
+const SYS_quotactl 179 end
+const SYS_nfsservctl 180 end
+const SYS_getpmsg 181 end
+const SYS_putpmsg 182 end
+const SYS_afs_syscall 183 end
+const SYS_tuxcall 184 end
+const SYS_security 185 end
+const SYS_gettid 186 end
+const SYS_readahead 187 end
+const SYS_setxattr 188 end
+const SYS_lsetxattr 189 end
+const SYS_fsetxattr 190 end
+const SYS_getxattr 191 end
+const SYS_lgetxattr 192 end
+const SYS_fgetxattr 193 end
+const SYS_listxattr 194 end
+const SYS_llistxattr 195 end
+const SYS_flistxattr 196 end
+const SYS_removexattr 197 end
+const SYS_lremovexattr 198 end
+const SYS_fremovexattr 199 end
+const SYS_tkill 200 end
+const SYS_time 201 end
+const SYS_futex 202 end
+const SYS_sched_setaffinity 203 end
+const SYS_sched_getaffinity 204 end
+const SYS_set_thread_area 205 end
+const SYS_io_setup 206 end
+const SYS_io_destroy 207 end
+const SYS_io_getevents 208 end
+const SYS_io_submit 209 end
+const SYS_io_cancel 210 end
+const SYS_get_thread_area 211 end
+const SYS_lookup_dcookie 212 end
+const SYS_epoll_create 213 end
+const SYS_epoll_ctl_old 214 end
+const SYS_epoll_wait_old 215 end
+const SYS_remap_file_pages 216 end
+const SYS_getdents64 217 end
+const SYS_set_tid_address 218 end
+const SYS_restart_syscall 219 end
+const SYS_semtimedop 220 end
+const SYS_fadvise64 221 end
+const SYS_timer_create 222 end
+const SYS_timer_settime 223 end
+const SYS_timer_gettime 224 end
+const SYS_timer_getoverrun 225 end
+const SYS_timer_delete 226 end
+const SYS_clock_settime 227 end
+const SYS_clock_gettime 228 end
+const SYS_clock_getres 229 end
+const SYS_clock_nanosleep 230 end
+const SYS_exit_group 231 end
+const SYS_epoll_wait 232 end
+const SYS_epoll_ctl 233 end
+const SYS_tgkill 234 end
+const SYS_utimes 235 end
+const SYS_vserver 236 end
+const SYS_mbind 237 end
+const SYS_set_mempolicy 238 end
+const SYS_get_mempolicy 239 end
+const SYS_mq_open 240 end
+const SYS_mq_unlink 241 end
+const SYS_mq_timedsend 242 end
+const SYS_mq_timedreceive 243 end
+const SYS_mq_notify 244 end
+const SYS_mq_getsetattr 245 end
+const SYS_kexec_load 246 end
+const SYS_waitid 247 end
+const SYS_add_key 248 end
+const SYS_request_key 249 end
+const SYS_keyctl 250 end
+const SYS_ioprio_set 251 end
+const SYS_ioprio_get 252 end
+const SYS_inotify_init 253 end
+const SYS_inotify_add_watch 254 end
+const SYS_inotify_rm_watch 255 end
+const SYS_migrate_pages 256 end
+const SYS_openat 257 end
+const SYS_mkdirat 258 end
+const SYS_mknodat 259 end
+const SYS_fchownat 260 end
+const SYS_futimesat 261 end
+const SYS_newfstatat 262 end
+const SYS_unlinkat 263 end
+const SYS_renameat 264 end
+const SYS_linkat 265 end
+const SYS_symlinkat 266 end
+const SYS_readlinkat 267 end
+const SYS_fchmodat 268 end
+const SYS_faccessat 269 end
+const SYS_pselect6 270 end
+const SYS_ppoll 271 end
+const SYS_unshare 272 end
+const SYS_set_robust_list 273 end
+const SYS_get_robust_list 274 end
+const SYS_splice 275 end
+const SYS_tee 276 end
+const SYS_sync_file_range 277 end
+const SYS_vmsplice 278 end
+const SYS_move_pages 279 end
+const SYS_utimensat 280 end
+const SYS_epoll_pwait 281 end
+const SYS_signalfd 282 end
+const SYS_timerfd_create 283 end
+const SYS_eventfd 284 end
+const SYS_fallocate 285 end
+const SYS_timerfd_settime 286 end
+const SYS_timerfd_gettime 287 end
+const SYS_accept4 288 end
+const SYS_signalfd4 289 end
+const SYS_eventfd2 290 end
+const SYS_epoll_create1 291 end
+const SYS_dup3 292 end
+const SYS_pipe2 293 end
+const SYS_inotify_init1 294 end
+const SYS_preadv 295 end
+const SYS_pwritev 296 end
+const SYS_rt_tgsigqueueinfo 297 end
+const SYS_perf_event_open 298 end
+const SYS_recvmmsg 299 end
+const SYS_fanotify_init 300 end
+const SYS_fanotify_mark 301 end
+const SYS_prlimit64 302 end
+const SYS_name_to_handle_at 303 end
+const SYS_open_by_handle_at 304 end
+const SYS_clock_adjtime 305 end
+const SYS_syncfs 306 end
+const SYS_sendmmsg 307 end
+const SYS_setns 308 end
+const SYS_getcpu 309 end
+const SYS_process_vm_readv 310 end
+const SYS_process_vm_writev 311 end
+const SYS_kcmp 312 end
+const SYS_finit_module 313 end
 
 // int fd, void *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
