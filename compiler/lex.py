@@ -1,7 +1,7 @@
 import itertools
 import re
 from typing import List, Optional
-from compiler.defs import Function, Keyword, Location, Memory, Signature, Token, TokenType
+from compiler.defs import Constant, Function, Keyword, Location, Memory, Signature, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
 
 def get_included_files(code: str):
@@ -104,16 +104,16 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
             tokens.append(token)
     return functions
 
-def get_memories_from_code(file: str, included_files: List[str], functions: List[Function]) -> List[Memory]:
+def get_memories_from_code(file: str, included_files: List[str], constants: List[Constant]) -> List[Memory]:
     memories: List[Memory] = []
     for file in included_files:
         included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
         newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
-        memories += get_memories(file, token_matches, newline_indexes, functions)
+        memories += get_memories(file, token_matches, newline_indexes, constants)
     return memories
 
-def get_memories(file: str, token_matches: list, newline_indexes: List[int], functions: List[Function]) -> List[Memory]:
+def get_memories(file: str, token_matches: list, newline_indexes: List[int], constants: List[Constant]) -> List[Memory]:
     memories: List[Memory]  = []
     name: str               = ''
     size: int               = None
@@ -126,7 +126,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], fun
                 location: Location = get_token_location(file, match.start(), newline_indexes)
                 continue
             elif not size:
-                size = get_memory_size(token_value, functions)
+                size = get_memory_size(token_value, constants)
                 memory: Memory = (name, size, location)
                 memories.append(memory)
                 defining_memory = False
@@ -145,11 +145,11 @@ def get_memory_name(token_value: str, memories: List[Memory]) -> str:
         compiler_error("MEMORY_REDEFINITION", f"Memory '{token_value}' already exists. Memory name should be unique.")
     return token_value
 
-def get_memory_size(token_value: str, functions: List[Function]) -> str:
+def get_memory_size(token_value: str, constants: List[Constant]) -> str:
     # Check if function with the token_value exists which only returns an integer
-    for func in functions:
-        if func.name == token_value and func.signature[1] == ['INT']:
-            return token_value
+    for constant in constants:
+        if constant.name == token_value:
+            return constant.value
 
     # Test if token is an integer
     try:
@@ -254,3 +254,11 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
         row += 1
         col = position - newline_indexes[-1] - 1
     return (filename, row, col+1)
+
+def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
+    constants: List[Constant] = []
+    for func in functions:
+        if len(func.tokens) == 1 and func.signature == ( [], ['INT'] ):
+            constant: Constant = Constant(func.name, func.tokens[0].value, func.tokens[0].location)
+            constants.append(constant)
+    return constants

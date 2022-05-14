@@ -93,8 +93,14 @@ class TokenType(Enum):
     STR=auto()
     WORD=auto()
 
-Location = Tuple[str, int, int]     # Source file name, row, column
-Memory = Tuple[str, str, Location]  # Name, str(size), Location
+Location    = Tuple[str, int, int]      # Source file name, row, column
+Memory      = Tuple[str, str, Location] # Name, str(size), Location
+
+@dataclass
+class Constant:
+    name: str
+    value: str
+    location: Location
 
 @dataclass
 class Token:
