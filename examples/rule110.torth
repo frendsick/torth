@@ -41,10 +41,34 @@ function output_board -> :
   done drop "\n" puts
 end
 
+function rule110 -> :
+  // i = 0; while(i < BOARD_SIZE - 2)
+  0 while dup BOARD_SIZE 2 - > do
+
+    // Print the current iteration
+    // j = 0; while(i < BOARD_SIZE - 2)
+    0 while dup BOARD_SIZE > do
+
+      // if(board[j] == 1)
+      if board + load_byte 1 == do
+        "*" puts
+      else
+        " " puts
+      endif
+      1 +   // i++
+    done drop
+    "\n" puts
+
+    1 +   // j++
+  done drop
+end
+
 function main -> :
   initialize_rules
   output_rules
 
   initialize_board
   output_board
+
+  rule110
 end
