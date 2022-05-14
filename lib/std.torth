@@ -11,3 +11,6 @@ const ptr_size 8 end
 function drop2 -> int : drop drop end
 function dup2 -> int : over over end
 function rotr -> int : rot rot end
+
+function >> int ptr -> : over load_byte swap rot + store_byte end  // Bit shift right
+function << int ptr -> : over load_byte swap rot - store_byte end  // Bit shift left
