@@ -2,22 +2,40 @@
 
 include "lib/std.torth"
 const RULES_COUNT 8 end
-memory rules 8 end // int table[8]
+const BOARD_SIZE 30 end
 
-function initialize_rules -> ptr :
+memory rules RULES_COUNT end // int table[RULES_COUNT]
+memory board BOARD_SIZE end  // int board[BOARD_SIZE]
+
+function initialize_rules -> :
   rules                   // Pointer to table
-  0 over     store_byte   // table[0] == 0
-  1 over 1 + store_byte   // table[1] == 1
-  1 over 2 + store_byte   // table[2] == 1
-  0 over 3 + store_byte   // table[2] == 0
-  1 over 4 + store_byte   // table[2] == 1
-  1 over 5 + store_byte   // table[2] == 1
-  1 over 6 + store_byte   // table[2] == 1
-  0 over 7 + store_byte   // table[7] == 0
+  0 over     store_byte   // table[0] == 0  // 111
+  1 over 1 + store_byte   // table[1] == 1  // 110
+  1 over 2 + store_byte   // table[2] == 1  // 101
+  0 over 3 + store_byte   // table[2] == 0  // 100
+  1 over 4 + store_byte   // table[2] == 1  // 011
+  1 over 5 + store_byte   // table[2] == 1  // 010
+  1 over 6 + store_byte   // table[2] == 1  // 001
+  0 over 7 + store_byte   // table[7] == 0  // 000
+  drop
 end
 
 function output_rules -> :
+  "Rule table contents: " puts
   rules while dup rules RULES_COUNT + > do
+    dup load_byte print
+    1 +
+  done drop "\n" puts
+end
+
+function initialize_board -> :
+  board
+  1 over BOARD_SIZE 2 - + store_byte  // board[BOARD_SIZE - 2] = 1
+end
+
+function output_board -> :
+"First board iteration: " puts
+  board while dup board BOARD_SIZE + > do
     dup load_byte print
     1 +
   done drop "\n" puts
@@ -26,4 +44,7 @@ end
 function main -> :
   initialize_rules
   output_rules
+
+  initialize_board
+  output_board
 end
