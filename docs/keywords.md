@@ -3,13 +3,14 @@
 This is the documentation for different keywords available in the Torth language.
 
 - [BREAK](#BREAK)
+- [CONST](#CONST)
 - [DO](#DO)
 - [DONE](#DONE)
 - [ELIF](#ELIF)
 - [ELSE](#ELSE)
 - [ENDIF](#ENDIF)
+- [FUNCTION](#FUNCTION)
 - [IF](#IF)
-- [MACRO](#MACRO)
 - [WHILE](#WHILE)
 
 ## BREAK
@@ -31,6 +32,34 @@ DONE
 2
 3
 Breaking from loop...
+```
+
+## CONST
+
+CONST keyword is an alternative way of declarating a [FUNCTION](#FUNCTION) which does not take any parameters and only returns an integer. CONSTs can be used in [MEMORY](#MEMORY) declarations when defining the size of the memory.
+
+### Syntax
+
+```pascal
+// Different tokens or words can be on different lines
+FUNCION <name> <integer> END
+```
+
+### Examples
+
+```pascal
+include "lib/sys.torth"
+const ptr_size 8 end
+memory dst ptr_size end
+memory src ptr_size end
+
+function main -> :
+  1337 src store      // Store 1337 to src
+  9001 dst store      // Store 9001 to dst
+  src load dst store  // Copy the value from src to dst
+  src load print      // Print the value 1337 from src
+  dst load print      // Print the value 1337 from dst
+end  // Expected output: 13371337
 ```
 
 ## DO
@@ -184,23 +213,7 @@ ENDIF
 // This is after ENDIF
 ```
 
-## IF
-
-IF keyword is like DUP intrinsic, it duplicates the first element in the stack so that there is no need to manually duplicate the topmost element in the stack for the purpose of IF statement comparisation.
-
-### Examples
-
-```pascal
-4                                 //  int i = 4;
-IF 0 < DO                         //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ENDIF
-
-// Output:
-// Positive number
-```
-
-## MACRO
+## FUNCTION
 
 Functions are defined using FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as token. When called, the function's name is replaced with the contents of the function during compilation. Functions should be defined before calling. Defined functions are case sensitive tokens unlike most other keywords in Torth.
 
@@ -248,6 +261,22 @@ end
 function main -> :
   5 multiply_by_two MultiplyByFour print_int  // Output: 40
 end
+```
+
+## IF
+
+IF keyword is like DUP intrinsic, it duplicates the first element in the stack so that there is no need to manually duplicate the topmost element in the stack for the purpose of IF statement comparisation.
+
+### Examples
+
+```pascal
+4                                 //  int i = 4;
+IF 0 < DO                         //  if (0 < i)
+  "Positive number" puts          //    puts("Positive number");
+ENDIF
+
+// Output:
+// Positive number
 ```
 
 ## WHILE

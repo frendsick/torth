@@ -1,7 +1,7 @@
 import itertools
 import re
 from typing import List, Optional
-from compiler.defs import Function, Keyword, Location, Memory, Signature, Token, TokenType
+from compiler.defs import Constant, Function, Keyword, Location, Memory, Signature, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
 
 def get_included_files(code: str):
@@ -45,12 +45,15 @@ def get_tokens_from_function(parent_function: Function, functions: List[Function
 def get_functions(file: str, token_matches: list, newline_indexes: List[int]) -> List[Function]:
 
     # Initialize variables
-    functions: List[Function]       = []
-    current_part: int               = 0
-    name: str                       = ''
-    param_types: List[str]          = []
-    return_types: List[str]         = []
-    tokens: List[Token]             = []
+    functions: List[Function]   = []
+    current_part: int           = 0
+    name: str                   = ''
+    param_types: List[str]      = []
+    return_types: List[str]     = []
+    tokens: List[Token]         = []
+
+    # CONST is a constant integer so a function with Signature( [], ['INT'] )
+    is_const: bool = False
 
     # Functions are made of four parts:
     #  1 : name,
@@ -63,7 +66,10 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
     next(function_parts)
 
     for match in token_matches:
-        token_value: str = match.group(0)
+        if 'CONST' in match.group(0).upper():
+            is_const = True
+
+        token_value: str = re.sub('CONST', 'FUNCTION', match.group(0), flags=re.IGNORECASE)
 
         # Go to next function part
         if token_value.upper() == FUNCTION_PART_DELIMITERS[current_part]:
@@ -77,9 +83,17 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
                 param_types     = []
                 return_types    = []
                 tokens          = []
+                is_const        = False
 
         elif current_part == 1:
             name = token_value
+            if (is_const):
+                # CONST is a constant integer so a function with Signature( [], ['INT'] )
+                return_types.append('INT')
+
+                # Defining CONST skips -> and : delimiters
+                next(function_parts)
+                next(function_parts)
             current_part = next(function_parts)
         elif current_part == 2:
             param_types.append(token_value.upper())
@@ -90,16 +104,16 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
             tokens.append(token)
     return functions
 
-def get_memories_from_code(file: str, included_files: List[str], functions: List[Function]) -> List[Memory]:
+def get_memories_from_code(file: str, included_files: List[str], constants: List[Constant]) -> List[Memory]:
     memories: List[Memory] = []
     for file in included_files:
         included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
         newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
-        memories += get_memories(file, token_matches, newline_indexes, functions)
+        memories += get_memories(file, token_matches, newline_indexes, constants)
     return memories
 
-def get_memories(file: str, token_matches: list, newline_indexes: List[int], functions: List[Function]) -> List[Memory]:
+def get_memories(file: str, token_matches: list, newline_indexes: List[int], constants: List[Constant]) -> List[Memory]:
     memories: List[Memory]  = []
     name: str               = ''
     size: int               = None
@@ -112,7 +126,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], fun
                 location: Location = get_token_location(file, match.start(), newline_indexes)
                 continue
             elif not size:
-                size = get_memory_size(token_value, functions)
+                size = get_memory_size(token_value, constants)
                 memory: Memory = (name, size, location)
                 memories.append(memory)
                 defining_memory = False
@@ -131,10 +145,10 @@ def get_memory_name(token_value: str, memories: List[Memory]) -> str:
         compiler_error("MEMORY_REDEFINITION", f"Memory '{token_value}' already exists. Memory name should be unique.")
     return token_value
 
-def get_memory_size(token_value: str, functions: List[Function]) -> str:
+def get_memory_size(token_value: str, constants: List[Constant]) -> str:
     # Check if function with the token_value exists which only returns an integer
-    for func in functions:
-        if func.name == token_value and func.signature[1] == ['INT']:
+    for constant in constants:
+        if constant.name == token_value:
             return token_value
 
     # Test if token is an integer
@@ -202,7 +216,7 @@ def get_token_value(token: str) -> str:
     return token
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords: List[str] = ['BREAK', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNCTION', 'IF', 'MEMORY', 'WHILE']
+    keywords: List[str] = ['BREAK', 'CONST', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNCTION', 'IF', 'MEMORY', 'WHILE']
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 
@@ -240,3 +254,11 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
         row += 1
         col = position - newline_indexes[-1] - 1
     return (filename, row, col+1)
+
+def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
+    constants: List[Constant] = []
+    for func in functions:
+        if len(func.tokens) == 1 and func.signature == ( [], ['INT'] ):
+            constant: Constant = Constant(func.name, func.tokens[0].value, func.tokens[0].location)
+            constants.append(constant)
+    return constants
