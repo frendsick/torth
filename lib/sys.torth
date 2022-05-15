@@ -313,6 +313,11 @@ const SYS_process_vm_writev 311 end
 const SYS_kcmp 312 end
 const SYS_finit_module 313 end
 
+// SYS_open flags
+const O_RDONLY 0 end
+const O_WRONLY 1 end
+const O_RDWR 2 end
+
 // int fd, void *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
 // int fd, void *buf, size_t count
