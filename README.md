@@ -38,22 +38,22 @@ end
 FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 
 ```pascal
-function OutputRow str_buf* str_len number -> number :
+function OutputRow str_buf* str_len number -> int :
     puts dup print "\n" puts
 end
 
-function AddTotal row total -> row total :
+function AddTotal row total -> int int :
     dup rot + swap
 end
 
-function FizzBuzz index sum limit -> sum :
+function FizzBuzz index sum limit -> int :
     // WHILE limit >= index
     WHILE dup 4 nth >= DO
-        IF 15 % 0 == DO
+        IF dup 15 % 0 == DO
             "FizzBuzz  " OutputRow
-        ELIF 3 % 0 == DO
+        ELIF dup 3 % 0 == DO
             "Fizz      " OutputRow
-        ELIF 5 % 0 == DO
+        ELIF dup 5 % 0 == DO
             "Buzz      " OutputRow
         ELSE
             // Add current number to the sum of numbers not divisible by 3 or 5
