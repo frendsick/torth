@@ -135,7 +135,9 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_while_asm(op)
     elif op.type == OpType.INTRINSIC:
         intrinsic: str = op.token.value.upper()
-        if intrinsic == "ARGV":
+        if   intrinsic == "ARGC":
+            return get_argc_asm()
+        elif intrinsic == "ARGV":
             return get_argv_asm()
         elif intrinsic == "DIV":
             return get_div_asm()
@@ -435,6 +437,12 @@ def get_push_str_asm(op: Op) -> str:
 # WHILE is a keyword for DONE to jump to.
 def get_while_asm(op: Op) -> str:
     return f'WHILE{op.id}:\n'
+
+def get_argc_asm() -> str:
+    op_asm: str  = '  mov rax, [args_ptr]\n'
+    op_asm      += '  mov rax, [rax]\n'
+    op_asm      += '  push rax\n'
+    return op_asm
 
 def get_argv_asm() -> str:
     op_asm: str  = '  mov rax, [args_ptr]\n'
