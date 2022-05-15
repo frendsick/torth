@@ -24,3 +24,5 @@ const EPERM -1 end
 const EROFS -30 end
 const ETXTBSY -26 end
 const EWOULDBLOCK -11 end
+const EAGAIN -11 end
+const EIO -5 end
