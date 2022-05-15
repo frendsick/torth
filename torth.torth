@@ -1,0 +1,9 @@
+include "compiler/defs.torth"
+include "compiler/lex.torth"
+include "lib/std.torth"
+
+function main -> :
+  "420 917 + print" get_next_word
+  
+  "TODO: Implement Torth compiler with itself\n" puts exit 1
+end
