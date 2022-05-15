@@ -1,28 +1,27 @@
 // Problem 6: Sum square difference
-// NOT WORKING FOR CURRENT LANGUAGE VERSION
 
 // Pow function
 include "lib/math.torth"
 
-function sum_of_squares Limit -> sum :
-  1   // Loop index
+function sum_of_squares Limit -> int int :
   0   // Squares total
-  rot WHILE rot over >= DO  // While Limit >= Loop index
-    over 2 Pow              // Square the current Loop index
-    rot swap2 +             // Add current index square to Squares total
-    rot swap                // Align stack as it was before the while loop
-    1 +                     // Increment Loop index by one
-  DONE drop                 // Leave Squares total and Limit to the stack
+  1   // Loop index
+  rot // Limit
+  WHILE over over >= DO // While Limit >= Loop index
+    swap dup 2 Pow      // Square the current Loop index
+    swap2 rot rot +     // Add current index square to Squares total
+    rot 1 + rot         // Loop index += 1
+  DONE swap drop        // Leave Limit and Squares total to the stack
 end
 
-function square_of_sum Limit -> square_of_sum :
+function square_of_sum Limit -> int :
   0     // Sum total
-  swap  // Limit
-  0     // Loop index
-  WHILE rot over > DO   // While Limit > Loop index
-    rot dup rot +       // Add Loop index to Sum total
-    rot 1 +             // Increment Loop index by one
-  DONE drop drop        // Leave Sum total to the stack
+  1     // Loop index
+  rot   // Limit
+  WHILE over over >= DO   // While Limit >= Loop index
+    over swap2 +          // Add Loop index to Sum total
+    swap 1 + rot          // Increment Loop index by one
+  DONE drop drop          // Leave Sum total to the stack
   
   2 Pow  // Square the Sum total
 end
@@ -34,5 +33,5 @@ function Main -> :
   square_of_sum
 
   // Calculate and print the difference between Squares total and the square of Sum total
-  swap - print_int  // Output: 25164150
+  swap - print "\n" puts // Output: 25164150
 end
