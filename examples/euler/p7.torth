@@ -1,32 +1,32 @@
 // Problem 7: 10001st prime
-// NOT WORKING FOR CURRENT LANGUAGE VERSION
 
-// Pow function
-include "lib/math.torth"
+include "lib/math.torth"  // Pow
+include "lib/std.torth"   // exit
 
 function get_nth_prime n -> ret :
   2     // Counter
   3     // i
 
   // WHILE n² > i
-  WHILE 4 nth 2 Pow > DO
+  WHILE dup 4 nth 2 Pow > DO
     1 // k
 
-    // WHILE i > k
-    WHILE rot over > DO
-      swap 2 + swap // k += 2
+    // WHILE k > i
+    WHILE over over < DO
+      2 + // k += 2
 
       // IF i % k == 0, then break
-      IF rot over % 0 == DO break ENDIF
+      IF over over % 0 == DO break ENDIF
 
       // IF k + 2 == i, then increment counter
-      IF rot 2 + over == DO rot rot 1 + rot ENDIF
+      IF over over 2 + == DO rot 1 + rot rot ENDIF
 
-      // IF counter == n
-      rot rot IF 5 nth == DO swap dup print_int 0 exit ENDIF
-      
-      // Align stack as it was before the loop
-      rot swap
+      // IF counter == n, then print result and exit
+      IF 3 nth 5 nth == DO
+        // Output: 10001. prime is: 104743
+        4 nth print ". prime is: " puts swap dup print "\n" puts 0 exit
+      ENDIF
+
     DONE drop
 
     2 + // i += 2
