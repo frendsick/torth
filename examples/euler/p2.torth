@@ -5,7 +5,7 @@ end
     
 // If Current is even add it to the Total
 function add_if_even Current _Previous Total -> Current _Previous Total :
-  IF 2 % 0 == DO
+  IF dup 2 % 0 == DO
     rot over + rotr
   ENDIF
 end

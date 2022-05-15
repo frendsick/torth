@@ -22,7 +22,7 @@ BREAK is unconditional jump to the operation after DONE of the current loop.
 ```pascal
 0 WHILE dup 10 > DO
   1 + print_int
-  IF 3 == DO
+  IF dup 3 == DO
     "Breaking from loop..." puts
     BREAK
   ENDIF
@@ -76,9 +76,9 @@ With IF and ELIF statements, DO is a conditional jump to the operation after the
 
 ```pascal
 -4                                //  int i = -4;
-IF 0 < DO                         //  if (0 < i)
+IF dup 0 < DO                         //  if (0 < i)
   "Positive number" puts          //    puts("Positive number");
-ELIF 0 == DO                      //  else if (0 == i)
+ELIF dup 0 == DO                      //  else if (0 == i)
   "Zero" puts                     //    puts("Zero");
 ELSE                              //  else
   "Negative number" puts          //    puts("Negative number");
@@ -135,9 +135,9 @@ ELIF is a unconditional jump to the operation after ENDIF because the keyword is
 
 ```pascal
 4                                 //  int i = 4;
-IF 0 < DO                         //  if (0 < i)
+IF dup 0 < DO                         //  if (0 < i)
   "Positive number" puts          //    puts("Positive number");
-ELIF 0 == DO                      //  else if (0 == i)
+ELIF dup 0 == DO                      //  else if (0 == i)
   "Zero" puts                     //    puts("Zero");
 ELSE                              //  else
   "Negative number" puts          //    puts("Negative number");
@@ -156,9 +156,9 @@ ELSE is a unconditional jump to the operation after ENDIF because the keyword is
 
 ```pascal
 0                                 //  int i = 0;
-IF 0 < DO                         //  if (0 < i)
+IF dup 0 < DO                         //  if (0 < i)
   "Positive number" puts          //    puts("Positive number");
-ELIF 0 == DO                      //  else if (0 == i)
+ELIF dup 0 == DO                      //  else if (0 == i)
   "Zero" puts                     //    puts("Zero");
 ELSE                              //  else
   "Negative number" puts          //    puts("Negative number");
@@ -185,9 +185,9 @@ ENDIF
 
 ```pascal
 4                                 //  int i = 0;
-IF 0 < DO                         //  if (0 < i)
+IF dup 0 < DO                         //  if (0 < i)
   "Positive number" puts          //    puts("Positive number");
-ELIF 0 == DO                      //  else if (0 == i)
+ELIF dup 0 == DO                      //  else if (0 == i)
   "Zero" puts                     //    puts("Zero");
 ENDIF
 "This is after ENDIF" puts        //  puts("This is after ENDIF");
@@ -199,9 +199,9 @@ ENDIF
 
 ```pascal
 0                                 //  int i = 0;
-IF 0 < DO                         //  if (0 < i)
+IF dup 0 < DO                         //  if (0 < i)
   "Positive number" puts          //    puts("Positive number");
-ELIF 0 == DO                      //  else if (0 == i)
+ELIF dup 0 == DO                      //  else if (0 == i)
   "Zero" puts                     //    puts("Zero");
 ELSE                              //  else
   "Negative number" puts          //    puts("Negative number");
@@ -233,7 +233,7 @@ FUNCION <name> <args> -> <return_values> END
 // Note: Strings pushes two items to the stack, it's length and pointer to the string buffer
 function is_adult str_buf* int int -> bool :
   print // Prints name
-  if 18 > do
+  if dup 18 > do
     False " you are not an adult"
   else
     True  " you are an adult"
@@ -265,13 +265,13 @@ end
 
 ## IF
 
-IF keyword is like DUP intrinsic, it duplicates the first element in the stack so that there is no need to manually duplicate the topmost element in the stack for the purpose of IF statement comparisation.
+IF is just a keyword which starts an IF-block. IF-block ends to (ENDIF)[#ENDIF].
 
 ### Examples
 
 ```pascal
 4                                 //  int i = 4;
-IF 0 < DO                         //  if (0 < i)
+IF dup 0 < DO                         //  if (0 < i)
   "Positive number" puts          //    puts("Positive number");
 ENDIF
 

@@ -6,7 +6,7 @@ function get_largest_prime_factor prime -> max_prime :
   // while(prime/2 >= i)
   WHILE dup2 2 / <= DO
     // If prime factor is found divide the prime with it
-    IF rot dup rot % 0 == DO
+    IF dup rot dup rot % 0 == DO
       over / swap // prime = prime / factor
     else
       swap 2 +  // i+=2

@@ -10,9 +10,9 @@ END
 FUNCTION get_fizzbuzz_sum int int int -> int :
   // WHILE limit > index
   WHILE dup 4 nth > DO
-    IF 3 % 0 == DO
+    IF dup 3 % 0 == DO
       add_to_total
-    ELIF 5 % 0 == DO
+    ELIF dup 5 % 0 == DO
       add_to_total
     ENDIF
     1 +  // index++

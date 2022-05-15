@@ -39,7 +39,7 @@ function print_iteration -> :
   0 while dup BOARD_SIZE > do
 
     // if(current_board[j] == 1)
-    if current_board + load_BYTE 1 == do
+    if dup current_board + load_BYTE 1 == do
       "*" puts
     else
       " " puts
@@ -75,21 +75,21 @@ end
 // Sets the current_board index according to rules
 function update_board_index board_index -> int :
   pattern
-  if   load_QWORD 0x10101 == do // 111
+  if   dup load_QWORD 0x10101 == do // 111
     0 set_board_index
-  elif load_QWORD 0x10100 == do // 110
+  elif dup load_QWORD 0x10100 == do // 110
     1 set_board_index
-  elif load_QWORD 0x10001 == do // 101
+  elif dup load_QWORD 0x10001 == do // 101
     2 set_board_index
-  elif load_QWORD 0x10000 == do // 100
+  elif dup load_QWORD 0x10000 == do // 100
     3 set_board_index
-  elif load_QWORD 0x00101 == do // 011
+  elif dup load_QWORD 0x00101 == do // 011
     4 set_board_index
-  elif load_QWORD 0x00100 == do // 010
+  elif dup load_QWORD 0x00100 == do // 010
     5 set_board_index
-  elif load_QWORD 0x00001 == do // 001
+  elif dup load_QWORD 0x00001 == do // 001
     6 set_board_index
-  elif load_QWORD 0x00000 == do // 000
+  elif dup load_QWORD 0x00000 == do // 000
     7 set_board_index
   endif
   drop

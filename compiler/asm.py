@@ -105,7 +105,9 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
         f.close()
 
 def get_op_asm(op: Op, program: Program) -> str:
-    if op.type == OpType.BREAK:
+    if op.type in [OpType.IF]:
+        return ''
+    elif op.type == OpType.BREAK:
         return get_break_asm(op, program)
     elif op.type == OpType.DO:
         return get_do_asm(op, program)
@@ -117,8 +119,6 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_else_asm(op, program)
     elif op.type == OpType.ENDIF:
         return get_endif_asm(op)
-    elif op.type == OpType.IF:
-        return get_if_asm()
     elif op.type == OpType.PUSH_ARRAY:
         return get_push_array_asm(op)
     elif op.type == OpType.PUSH_CHAR:
@@ -380,10 +380,6 @@ def get_elif_asm(op: Op, program: Program) -> str:
             op_asm += f'  jmp ENDIF{i}\n'
             op_asm += f'ELIF{op.id}:\n'
             break
-    # ELIF is like DUP, it duplicates the first element in the stack
-    op_asm +=  '  pop rax\n'
-    op_asm +=  '  push rax\n'
-    op_asm +=  '  push rax\n'
     return op_asm
 
 # ELSE is unconditional jump to ENDIF and a keyword for DO to jump to
@@ -399,10 +395,6 @@ def get_else_asm(op: Op, program: Program) -> str:
 # ENDIF is a keyword for DO, ELIF or ELSE to jump to
 def get_endif_asm(op: Op) -> str:
     return f'ENDIF{op.id}:\n'
-
-# IF is like DUP, it duplicates the first element in the stack
-def get_if_asm() -> str:
-    return get_dup_asm()
 
 def get_push_array_asm(op: Op) -> str:
     op_asm: str  = f'  mov rsi, s_arr{op.id} ; Pointer to array\n'

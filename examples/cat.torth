@@ -19,7 +19,7 @@ end
 // Returns: fd
 function open_file file_name -> int :
   dup O_RDONLY swap SYS_open syscall2
-  if ENOENT == do swap "File '" puts puts "' does not exist.\n" puts exit endif
+  if dup ENOENT == do swap "File '" puts puts "' does not exist.\n" puts exit endif
 end
 
 // Returns: the number of bytes read
