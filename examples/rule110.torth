@@ -21,14 +21,14 @@ end
 
 function initialize_board -> :
   current_board
-  1 over BOARD_SIZE 2 - + store_byte  // current_board[BOARD_SIZE - 2] = 1
+  1 over 2 + store_byte   // current_board[2] = 1
   drop
 end
 
 // Sync previous_board with current_board
 function sync_boards -> :
   0 while dup BOARD_SIZE > do
-    dup current_board + load_byte
+    dup current_board + load_BYTE
     over previous_board + store_byte
     1 +
   done drop
@@ -39,7 +39,7 @@ function print_iteration -> :
   0 while dup BOARD_SIZE > do
 
     // if(current_board[j] == 1)
-    if current_board + load_byte 1 == do
+    if current_board + load_BYTE 1 == do
       "*" puts
     else
       " " puts
@@ -51,51 +51,55 @@ end
 
 function get_pattern board_index -> int :
   previous_board
-  over 1 - over + load_byte pattern     store_byte  // pattern[0] = previous_board[j-1]
-  over     over + load_byte pattern 1 + store_byte  // pattern[1] = previous_board[j]
-  over 1 + over + load_byte pattern 2 + store_byte  // pattern[2] = previous_board[j+1]
+  over 1 - over + load_BYTE pattern     store_byte  // pattern[0] = previous_board[j-1]
+  over     over + load_BYTE pattern 1 + store_byte  // pattern[1] = previous_board[j]
+  over 1 + over + load_BYTE pattern 2 + store_byte  // pattern[2] = previous_board[j+1]
   drop
 end
 
+function output_board -> :
+  "Board iteration: " puts
+  current_board while dup current_board BOARD_SIZE + > do
+    dup load_BYTE print
+  done drop "\n" puts
+ end
+
+function set_board_index rule_index pattern_ptr -> :
+  rules + load_BYTE 3 nth current_board + store_byte
+end
+
+function set_board_index rule_index board_index -> :
+  rules + load_BYTE over current_board + store_byte
+end
+
 // Sets the current_board index according to rules
-function set_board_index board_index -> int :
+function update_board_index board_index -> int :
   pattern
-  if load_byte 1 == do
-    if 1 + load_byte 1 == do
-      if 2 + load_byte 1 == do  // 111
-        drop rules load_byte over current_board + store_byte
-      else                      // 110
-        drop rules 1 + load_byte over current_board + store_byte
-      endif
-    else
-      if 2 + load_byte 1 == do  // 101
-        drop rules 2 + load_byte over current_board + store_byte
-      else                      // 100
-        drop rules 3 + load_byte over current_board + store_byte
-      endif
-    endif
-  else
-    if 1 + load_byte 1 == do
-      if 2 + load_byte 1 == do  // 011
-        drop rules 4 + load_byte over current_board + store_byte
-      else                      // 010
-        drop rules 5 + load_byte over current_board + store_byte
-      endif
-    else
-      if 2 + load_byte 1 == do  // 001
-        drop rules 6 + load_byte over current_board + store_byte
-      else                      // 000
-        drop rules 7 + load_byte over current_board + store_byte
-      endif
-    endif
+  if   load_QWORD 0x10101 == do // 111
+    0 set_board_index
+  elif load_QWORD 0x10100 == do // 110
+    1 set_board_index
+  elif load_QWORD 0x10001 == do // 101
+    2 set_board_index
+  elif load_QWORD 0x10000 == do // 100
+    3 set_board_index
+  elif load_QWORD 0x00101 == do // 011
+    4 set_board_index
+  elif load_QWORD 0x00100 == do // 010
+    5 set_board_index
+  elif load_QWORD 0x00001 == do // 001
+    6 set_board_index
+  elif load_QWORD 0x00000 == do // 000
+    7 set_board_index
   endif
+  drop
 end
 
 function calculate_next_iteration -> :
   // j = 1; while(j < BOARD_SIZE - 1)
-  1 while dup BOARD_SIZE 1 - > do
+  1 while dup BOARD_SIZE > do
     get_pattern
-    set_board_index
+    update_board_index
     1 +  // j++
   done drop
 end
