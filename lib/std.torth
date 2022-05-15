@@ -1,5 +1,6 @@
 include "lib/sys.torth"
 const NULL 0 end
+const MEMORY_CAPACITY 430080 end  // 420 * 1024 => 420kb
 
 const stdin  0 end
 const stdout 1 end
