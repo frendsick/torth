@@ -312,24 +312,27 @@ def get_parent_while(op: Op, program: Program) -> Op:
 # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 def get_do_asm(op: Op, program: Program) -> str:
     parent_op_type: OpType = get_parent_op_type_do(op, program)
-    while_count: int = 0
+    parent_op_count: int = 0
     for i in range(op.id + 1, len(program)):
         op_type: OpType = program[i].type
 
-        # Keep count on the nested WHILE's
-        if parent_op_type == OpType.WHILE and op_type == OpType.WHILE:
-            while_count += 1
+        # Keep count on the nested IF's or WHILE's
+        if (parent_op_type in [OpType.IF, OpType.ELIF] and op_type == OpType.IF) \
+        or (parent_op_type == OpType.WHILE and op_type == OpType.WHILE):
+            parent_op_count += 1
             continue
 
-        if ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF) ) \
-            or ( parent_op_type == OpType.WHILE and op_type == OpType.DONE and while_count == 0):
+        if parent_op_count == 0 and \
+            ( ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)) \
+            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)) \
+            or ( parent_op_type == OpType.WHILE and op_type == OpType.DONE ) ):
             jump_destination: str = program[i].type.name + str(i)
             op_asm: str = generate_do_asm(jump_destination)
             break
 
-        if parent_op_type == OpType.WHILE and op_type == OpType.DONE:
-            while_count -= 1
+        if (parent_op_type in [OpType.IF, OpType.ELIF] and op_type == OpType.ENDIF) \
+        or (parent_op_type == OpType.WHILE and op_type == OpType.DONE):
+            parent_op_count -= 1
     return op_asm
 
 def get_parent_op_type_do(op: Op, program: Program) -> OpType:
