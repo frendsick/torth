@@ -22,6 +22,15 @@ function rotr -> int : rot rot end
 function >> int ptr -> : over load_byte swap rot + store_byte end  // Bit shift right
 function << int ptr -> : over load_byte swap rot - store_byte end  // Bit shift left
 
+// int fd, void *buf, size_t count
+function write int ptr int -> int : SYS_write syscall3 end
+// int fd, void *buf, size_t count
+function read int ptr int -> int ptr int : SYS_read syscall3 end
+// const char *pathname, char *const argv[], char *const envp[]
+function execve ptr arr arr -> int : SYS_execve syscall3 end
+// int status
+function exit int -> exit : SYS_exit syscall1 drop end
+
 // Returns: fd
 function open_file file_name -> int :
   dup O_RDONLY swap SYS_open syscall2
