@@ -1,0 +1,41 @@
+include "lib/std.torth"
+memory buf MEMORY_CAPACITY end
+
+function print_help -> ret :
+  "Syntax: ./cat <file_name>\n" puts 1 exit
+end
+
+// Returns: *argv[1]
+function get_argv1 -> ptr :
+  if argc 1 >= do
+    print_help
+  elif argc 2 < do
+    "The program cannot yet output more than one file.\n" puts
+    print_help
+  endif
+  argv int_size + load_QWORD
+end
+
+// Returns: fd
+function open_file file_name -> int :
+  dup O_RDONLY swap SYS_open syscall2
+  if ENOENT == do swap "File '" puts puts "' does not exist.\n" puts exit endif
+end
+
+// Returns: the number of bytes read
+function read_file fd -> int :
+  open_file
+  MEMORY_CAPACITY buf rot read
+end
+
+// Returns: the number of bytes written
+function print_file byte_count -> int : 
+  buf stdout write "\n" puts
+end
+
+// TODO: Outputting multiple files from multiple arguments 
+function main -> :
+  get_argv1
+  read_file
+  print_file
+end
