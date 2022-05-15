@@ -1,7 +1,0 @@
-include "lib/math.torth"   // Import Pow
-function Main -> :
-  13  // Number
-  16  // Exponent
-  over print "^" puts dup print " == " puts
-  Pow print "\n" puts // Expected: 13^16 == 665416609183179841
-end
