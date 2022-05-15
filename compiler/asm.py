@@ -5,6 +5,7 @@ from compiler.utils import compiler_error
 def initialize_asm(asm_file: str, constants: List[Constant], memories: List[Memory]) -> None:
     default_asm: str = f'''{get_asm_file_start(constants)}
 section .bss
+  args_ptr: resq 1
 {get_memory_definitions_asm(memories)}
 section .text
 
@@ -44,7 +45,8 @@ print:
 
 global _start
 _start:
-  mov rbp, rsp ; Initialize RBP
+  mov rbp, rsp          ; Initialize RBP
+  mov [args_ptr], rsp   ; Pointer to argc
 '''
     with open(asm_file, 'w') as f:
         f.write(default_asm)
@@ -133,7 +135,9 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_while_asm(op)
     elif op.type == OpType.INTRINSIC:
         intrinsic: str = op.token.value.upper()
-        if intrinsic == "DIV":
+        if intrinsic == "ARGV":
+            return get_argv_asm()
+        elif intrinsic == "DIV":
             return get_div_asm()
         elif intrinsic == "DROP":
             return get_drop_asm()
@@ -431,6 +435,12 @@ def get_push_str_asm(op: Op) -> str:
 # WHILE is a keyword for DONE to jump to.
 def get_while_asm(op: Op) -> str:
     return f'WHILE{op.id}:\n'
+
+def get_argv_asm() -> str:
+    op_asm: str  = '  mov rax, [args_ptr]\n'
+    op_asm      += '  add rax, 8\n'
+    op_asm      += '  push rax\n'
+    return op_asm
 
 def get_div_asm() -> str:
     op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
