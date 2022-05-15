@@ -1,13 +1,18 @@
+include "lib/errno.torth"
 include "lib/sys.torth"
 const NULL 0 end
+
+// Memory
 const MEMORY_CAPACITY 430080 end  // 420 * 1024 => 420kb
 
+// Data types
+const int_size 8 end
+const ptr_size 8 end
+
+// File descriptors
 const stdin  0 end
 const stdout 1 end
 const stderr 2 end
-
-const int_size 8 end
-const ptr_size 8 end
 
 function drop2 -> int : drop drop end
 function dup2 -> int : over over end
