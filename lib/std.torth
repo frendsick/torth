@@ -18,13 +18,16 @@ const stdin  0 end
 const stdout 1 end
 const stderr 2 end
 
+// Extra intrinsics
 function drop2  -> int : drop drop end
 function dup2   -> int : over over end
 function rev    -> int : swap rot end   // Reverse the top 3 elements
 function rotr   -> int : rot rot end    // Reverse rot
 
-function >> int ptr -> : over load_byte swap rot + store_byte end  // Bit shift right
-function << int ptr -> : over load_byte swap rot - store_byte end  // Bit shift left
+// Ptr functions
+function >> int ptr -> : over load_BYTE swap rot + store_BYTE end  // Bit shift right
+function << int ptr -> : over load_BYTE swap rot - store_BYTE end  // Bit shift left
+function int++  ptr -> : dup load_QWORD 1 + store_BYTE end // Increment pointed value
 
 // int fd, void *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
