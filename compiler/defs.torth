@@ -1,3 +1,4 @@
+// Keywords
 const Keyword.BREAK         0  end
 const Keyword.CONST         1  end
 const Keyword.DO            2  end
@@ -11,6 +12,7 @@ const Keyword.IF            9  end
 const Keyword.MEMORY        10 end
 const Keyword.WHILE         11 end
 
+// Intrinsics
 const Intrinsic.AND         0  end
 const Intrinsic.ARGC        1  end
 const Intrinsic.ARGV        2  end
@@ -51,6 +53,7 @@ const Intrinsic.SYSCALL4    36 end
 const Intrinsic.SYSCALL5    37 end
 const Intrinsic.SYSCALL6    38 end
 
+// Operand types
 const OpType.BREAK          0  end
 const OpType.DO             1  end
 const OpType.DONE           2  end
@@ -68,12 +71,86 @@ const OpType.PUSH_PTR       13 end
 const OpType.PUSH_STR       14 end
 const OpType.WHILE          15 end
 
-const TokenType.ARRAY 0 end
-const TokenType.BOOL 1 end
-const TokenType.CHAR 2 end
-const TokenType.HEX 3 end
-const TokenType.INT 4 end
-const TokenType.KEYWORD 5 end
-const TokenType.PTR 6 end
-const TokenType.STR 7 end
-const TokenType.WORD 8 end
+// Token types
+const TokenType.ARRAY       0 end
+const TokenType.BOOL        1 end
+const TokenType.CHAR        2 end
+const TokenType.HEX         3 end
+const TokenType.INT         4 end
+const TokenType.KEYWORD     5 end
+const TokenType.PTR         6 end
+const TokenType.STR         7 end
+const TokenType.WORD        8 end
+
+// Tuple[str, int, int] # Source file name, row, column
+const Location.size  24 end
+memory location Location.size end
+
+// Location(file_name, row, column)
+function Location.load str int int -> :
+  location
+  dup rot swap store_QWORD ptr++  // file_name
+  dup rot swap store_QWORD ptr++  // row
+  dup rot swap store_QWORD drop   // column
+end
+
+// Tuple[str, str, Location]  # Name, str(size), Location
+const Memory.size 40 end
+
+// @dataclass
+// class Constant:
+//    name: str
+//    value: str
+//    location: Location
+const Constant.size     40 end
+const Constant.name     8  end
+const Constant.value    8  end
+const Constant.location 24 end
+
+// @dataclass
+// class Token:
+//     value: str
+//     type: TokenType
+//     location: Location
+const Token.size     40 end
+const Token.value    8  end
+const Token.type     8  end
+const Token.location 24 end
+
+// Pointer to pointer of Tokens
+memory tokens MEMORY_CAPACITY end
+memory token  Token.size      end
+
+// Token(value, TokenType, Location)
+function Token.load str int ptr -> :
+  token
+  dup rot swap store_QWORD ptr++  // value
+  dup rot swap store_QWORD ptr++  // TokenType
+  dup rot swap store_QWORD drop   // Location
+end
+
+// # param types, return types
+// Signature   = Tuple[List[str], List[str]]
+const Signature 16 end
+
+// @dataclass
+// class Function:
+//     name: str
+//     signature: Signature
+//     tokens: List[Token]
+const Function.name       40 end
+const Function.str        8  end
+const Function.signature  8  end
+const Function.tokens     24 end
+
+// @dataclass
+// class Op:
+//     id: int
+//     type: OpType
+//     token: Token
+const Op.size   40 end
+const Op.id     8  end
+const Op.type   8  end
+const Op.token  24 end
+
+memory Program ptr.size end
