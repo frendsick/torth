@@ -28,6 +28,8 @@ function rotr   -> int : rot rot end    // Reverse rot
 function >> int ptr -> : over load_BYTE swap rot + store_BYTE end  // Bit shift right
 function << int ptr -> : over load_BYTE swap rot - store_BYTE end  // Bit shift left
 function int++  ptr -> : dup load_QWORD 1 + store_BYTE end // Increment pointed value
+function ptr+   ptr -> : char.size  + end
+function ptr++  ptr -> : ptr.size   + end
 
 // int fd, void *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
