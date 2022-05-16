@@ -66,10 +66,10 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
     next(function_parts)
 
     for match in token_matches:
-        if 'CONST' in match.group(0).upper():
+        token_value: str = match.group(0)
+        if token_value.upper() == 'CONST':
             is_const = True
-
-        token_value: str = re.sub('CONST', 'FUNCTION', match.group(0), flags=re.IGNORECASE)
+            token_value = token_value.upper().replace('CONST', 'FUNCTION')
 
         # Go to next function part
         if token_value.upper() == FUNCTION_PART_DELIMITERS[current_part]:
