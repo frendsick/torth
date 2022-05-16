@@ -7,3 +7,24 @@ function get_next_word ptr -> :
     1 +
   done
 end
+
+// Returns pointer to Token list
+function get_tokens -> ptr:
+  tokens  // Pointer to Token list
+
+  // Load tokens list with four dummy tokens
+  while dup tokens ptr.size 4 * + > do
+    // location = Location("torth.torth", 6, 9)
+    9 6 "torth.torth" Location.load
+
+    location      // Location
+    TokenType.INT // TokenType
+    1337          // Value
+    // token = Token(1337, TokenType.INT, location)
+    Token.load
+
+    // tokens.append(token)
+    token over store_QWORD
+    ptr.size +
+  done
+end
