@@ -49,9 +49,9 @@ FUNCION <name> <integer> END
 
 ```pascal
 include "lib/sys.torth"
-const ptr_size 8 end
-memory dst ptr_size end
-memory src ptr_size end
+const ptr.size 8 end
+memory dst ptr.size end
+memory src ptr.size end
 
 function main -> :
   1337 src store      // Store 1337 to src

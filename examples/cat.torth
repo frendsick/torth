@@ -12,7 +12,7 @@ function get_argv1 -> ptr :
     "The program cannot yet output more than one file.\n" puts
     print_help
   endif
-  argv int_size + load_QWORD
+  argv int.size + load_QWORD
 end
 
 // TODO: Outputting multiple files from multiple arguments 
