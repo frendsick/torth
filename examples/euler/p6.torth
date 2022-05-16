@@ -5,9 +5,9 @@ include "lib/math.torth"  // Pow
 include "lib/std.torth"   // dup2
 
 function sum_of_squares Limit -> int int :
-  0   // Squares total
-  1   // Loop index
-  rot // Limit
+  0     // Squares total
+  1     // Loop index
+  rot   // Limit
   WHILE dup2 >= DO // While Limit >= Loop index
     swap dup 2 Pow      // Square the current Loop index
     swap2 rot rot +     // Add current index square to Squares total
@@ -19,10 +19,10 @@ function square_of_sum Limit -> int :
   0     // Sum total
   1     // Loop index
   rot   // Limit
-  WHILE dup2 >= DO   // While Limit >= Loop index
-    over swap2 +          // Add Loop index to Sum total
-    swap 1 + rot          // Increment Loop index by one
-  DONE drop drop          // Leave Sum total to the stack
+  WHILE dup2 >= DO      // While Limit >= Loop index
+    over swap2 +        // Add Loop index to Sum total
+    swap 1 + rot        // Increment Loop index by one
+  DONE drop2            // Leave Sum total to the stack
   
   2 Pow  // Square the Sum total
 end
