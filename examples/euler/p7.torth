@@ -1,9 +1,9 @@
 // Problem 7: 10001st prime
 
 include "lib/math.torth"  // Pow
-include "lib/std.torth"   // exit
+include "lib/std.torth"   // dup2, exit
 
-function get_nth_prime n -> ret :
+function print_nth_prime n -> ret :
   2     // Counter
   3     // i
 
@@ -12,14 +12,14 @@ function get_nth_prime n -> ret :
     1 // k
 
     // WHILE k > i
-    WHILE over over < DO
+    WHILE dup2 < DO
       2 + // k += 2
 
       // IF i % k == 0, then break
-      IF over over % 0 == DO break ENDIF
+      IF dup2 % 0 == DO break ENDIF
 
       // IF k + 2 == i, then increment counter
-      IF over over 2 + == DO rot 1 + rot rot ENDIF
+      IF dup2 2 + == DO rot 1 + rot rot ENDIF
 
       // IF counter == n, then print result and exit
       IF 3 nth 5 nth == DO
@@ -35,5 +35,5 @@ end
 
 function Main -> :
   10001 // n
-  get_nth_prime
+  print_nth_prime
 end

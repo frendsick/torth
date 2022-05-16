@@ -1,13 +1,14 @@
 // Problem 6: Sum square difference
 
 // Pow function
-include "lib/math.torth"
+include "lib/math.torth"  // Pow
+include "lib/std.torth"   // dup2
 
 function sum_of_squares Limit -> int int :
   0   // Squares total
   1   // Loop index
   rot // Limit
-  WHILE over over >= DO // While Limit >= Loop index
+  WHILE dup2 >= DO // While Limit >= Loop index
     swap dup 2 Pow      // Square the current Loop index
     swap2 rot rot +     // Add current index square to Squares total
     rot 1 + rot         // Loop index += 1
@@ -18,7 +19,7 @@ function square_of_sum Limit -> int :
   0     // Sum total
   1     // Loop index
   rot   // Limit
-  WHILE over over >= DO   // While Limit >= Loop index
+  WHILE dup2 >= DO   // While Limit >= Loop index
     over swap2 +          // Add Loop index to Sum total
     swap 1 + rot          // Increment Loop index by one
   DONE drop drop          // Leave Sum total to the stack
