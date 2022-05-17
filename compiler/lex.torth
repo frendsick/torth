@@ -10,12 +10,12 @@ end
 
 // *Token, value, Location
 function load_int_token ptr int str int int -> :
-  TokenType.INT rotr Token.load // Token(value, TokenType.INT, location)
+  TokenType.INT rotr Token.store // Token(value, TokenType.INT, location)
 end
 
 // *Token, value, Location
 function load_word_token ptr str str int int -> :
-  TokenType.WORD rotr Token.load // Token(value, TokenType.INT, location)
+  TokenType.WORD rotr Token.store // Token(value, TokenType.INT, location)
 end
 
 // Returns pointer to Token list
