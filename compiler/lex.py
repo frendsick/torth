@@ -1,3 +1,6 @@
+"""
+The module implements lexing functions that parses Tokens from code files
+"""
 import itertools
 import re
 from typing import List, Optional
@@ -5,6 +8,7 @@ from compiler.defs import Constant, Function, Keyword, Location, Memory, Signatu
 from compiler.utils import compiler_error, get_file_contents
 
 def get_included_files(code: str):
+    """Parse included files from a code string. Return the list of files."""
     INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', flags=re.MULTILINE | re.IGNORECASE)
     included_files: List[str] = INCLUDE_REGEX.findall(code)
     for file in included_files:
@@ -12,9 +16,10 @@ def get_included_files(code: str):
         included_files += get_included_files(included_code)
     return included_files
 
-def get_functions_from_code(file: str, included_files: List[str]) -> List[Function]:
+def get_functions_from_files(file_name: str, included_files: List[str]) -> List[Function]:
+    """Parse declared functions from code file and included files. Return list of Function objects."""
     functions: List[Function] = []
-    included_files.append(file)
+    included_files.append(file_name)
     for file in included_files:
         included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
@@ -24,6 +29,11 @@ def get_functions_from_code(file: str, included_files: List[str]) -> List[Functi
     return functions
 
 def get_tokens_from_functions(functions: List[Function], file: str) -> List[Token]:
+    """
+    Check if a main function is present in code file and parse Tokens from Functions.
+    Raise a compiler error MISSING_MAIN_FUNCTION if main function is not present.
+    Return a list of Token objects.
+    """
     try:
         main_function: Function = [ func for func in functions if func.name.upper() == 'MAIN' ][0]
     except IndexError:
@@ -31,6 +41,7 @@ def get_tokens_from_functions(functions: List[Function], file: str) -> List[Toke
     return get_tokens_from_function(main_function, functions)
 
 def get_tokens_from_function(parent_function: Function, functions: List[Function]) -> List[Token]:
+    """Parse Tokens from a single Function object. Return a list of Token objects."""
     tokens: List[Token] = parent_function.tokens
     i = 0
     while i < len(tokens):
@@ -41,9 +52,11 @@ def get_tokens_from_function(parent_function: Function, functions: List[Function
         i += 1
     return tokens
 
-# Generates and returns a list of Function objects
 def get_functions(file: str, token_matches: list, newline_indexes: List[int]) -> List[Function]:
-
+    """
+    Parse Functions from a list containing re.Matches of tokens parsed from a code file.
+    Return list of Function objects.
+    """
     # Initialize variables
     functions: List[Function]   = []
     current_part: int           = 0
@@ -87,7 +100,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
 
         elif current_part == 1:
             name = token_value
-            if (is_const):
+            if is_const:
                 # CONST is a constant integer so a function with Signature( [], ['INT'] )
                 return_types.append('INT')
 
@@ -104,7 +117,8 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
             tokens.append(token)
     return functions
 
-def get_memories_from_code(file: str, included_files: List[str], constants: List[Constant]) -> List[Memory]:
+def get_memories_from_code(included_files: List[str], constants: List[Constant]) -> List[Memory]:
+    """Parse Memory objects from code file and included files. Return list of Memory objects."""
     memories: List[Memory] = []
     for file in included_files:
         included_code: str = get_file_contents(file)
@@ -114,6 +128,7 @@ def get_memories_from_code(file: str, included_files: List[str], constants: List
     return memories
 
 def get_memories(file: str, token_matches: list, newline_indexes: List[int], constants: List[Constant]) -> List[Memory]:
+    """Parse Memory objects from a single code file. Return list of Memory objects."""
     memories: List[Memory]  = []
     name: str               = ''
     size: int               = None
@@ -125,7 +140,8 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], con
                 name = get_memory_name(token_value, memories)
                 location: Location = get_token_location(file, match.start(), newline_indexes)
                 continue
-            elif not size:
+
+            if not size:
                 size = get_memory_size(token_value, constants)
                 memory: Memory = (name, size, location)
                 memories.append(memory)
@@ -140,12 +156,14 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], con
     return memories
 
 def get_memory_name(token_value: str, memories: List[Memory]) -> str:
+    """Check for redefinition of a Memory object. Return list of Memory objects."""
     # Overwriting token name with memory is not allowed
     if token_value in memories:
         compiler_error("MEMORY_REDEFINITION", f"Memory '{token_value}' already exists. Memory name should be unique.")
     return token_value
 
 def get_memory_size(token_value: str, constants: List[Constant]) -> str:
+    """Verify if the size parameter given to Memory is an integer. Return the size of the Memory to be allocated."""
     # Check if function with the token_value exists which only returns an integer
     for constant in constants:
         if constant.name == token_value:
@@ -158,12 +176,12 @@ def get_memory_size(token_value: str, constants: List[Constant]) -> str:
         compiler_error("MEMORY_SIZE_VALUE_ERROR", f"The memory size should be an integer. Got: {token_value}")
     return token_value
 
-# Returns all tokens with comments taken out
 def get_token_matches(code: str) -> list:
+    """Parse tokens that matches a TOKEN_REGEX pattern from a code string. Return list of re.Match objects."""
     TOKEN_REGEX: re.Pattern[str] = re.compile(r'''\[.*\]|".*?"|'.*?'|\S+''')
 
     matches: List[re.Match[str]]            = list(re.finditer(TOKEN_REGEX, code))
-    code_without_comments: str              = re.sub(r'\s*\/\/.*', '', code)
+    code_without_comments: str              = re.sub(r'\s*\/\/.*', '', code)  # Take comments out of the code
     final_code_matches: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code_without_comments))
 
     # Take comments and macros out of matches
@@ -178,47 +196,51 @@ def get_token_matches(code: str) -> list:
         i += 1
     return matches
 
-# Constructs and returns a Token object from a regex match
 def get_token_from_match(match: list, file: str, newline_indexes: List[int]) -> Token:
+    """Parse Token from a list of re.Match objects. Return the Token."""
     token_value: str        = get_token_value(match.group(0))
     token_type: TokenType   = get_token_type(token_value)
     token_location          = get_token_location(file, match.start(), newline_indexes)
     return Token(token_value, token_type, token_location)
 
-# Returns the Intrinsic class value from token
-def get_token_value(token: str) -> str:
-    if token == '%':
+def get_token_value(token_value: str) -> str:
+    """Bind Intrinsic class value name to Token. Return the Intrinsic value."""
+    if token_value == '%':
         return 'MOD'
-    if token == '/':
+    if token_value == '/':
         return 'DIV'
-    if token == '==':
+    if token_value == '==':
         return 'EQ'
-    if token == '>=':
+    if token_value == '>=':
         return 'GE'
-    if token == '>':
+    if token_value == '>':
         return 'GT'
-    if token == '<=':
+    if token_value == '<=':
         return 'LE'
-    if token == '<':
+    if token_value == '<':
         return 'LT'
-    if token == '-':
+    if token_value == '-':
         return 'MINUS'
-    if token == '*':
+    if token_value == '*':
         return 'MUL'
-    if token == '!=':
+    if token_value == '!=':
         return 'NE'
-    if token == '+':
+    if token_value == '+':
         return 'PLUS'
-    if token.upper() == 'TRUE':
+    if token_value.upper() == 'TRUE':
         return '1'
-    if token.upper() == 'FALSE':
+    if token_value.upper() == 'FALSE':
         return '0'
-    return token
+    return token_value
 
 def get_token_type(token_text: str) -> TokenType:
-    keywords: List[str] = ['BREAK', 'CONST', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNCTION', 'IF', 'MEMORY', 'WHILE']
+    """Return TokenType value corresponding to the Token.value."""
+    keywords: List[str] = [
+        'BREAK', 'CONST', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNCTION', 'IF', 'MEMORY', 'WHILE'
+    ]
     # Check if all keywords are taken into account
-    assert len(Keyword) == len(keywords) , f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
+    assert len(Keyword) == len(keywords) , \
+        f"Wrong number of keywords in get_token_type function! Expected {len(Keyword)}, got {len(keywords)}"
 
     # Keywords are case insensitive
     if token_text.upper() in keywords:
@@ -239,11 +261,15 @@ def get_token_type(token_text: str) -> TokenType:
     except ValueError:
         return TokenType.WORD
 
-# Returns tuple containing the row and the column where the token was found
 def get_token_location(filename: str, position: int, newline_indexes: List[int]) -> Location:
+    """
+    Calculate the Position for token based on it's position from the start of the file
+    and the indexes of the newline characters found from the file.
+    Return Location for Token.
+    """
     col: int = position
     row: int = 1
-    for i in range(len(newline_indexes)):
+    for i, _ in enumerate(newline_indexes):
         if i > 0:
             col = position - newline_indexes[i-1] - 1
             row +=1
@@ -256,6 +282,7 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
     return (filename, row, col+1)
 
 def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
+    """Parse Constants from list of Function objects. Return the list of Constant objects"""
     constants: List[Constant] = []
     for func in functions:
         if len(func.tokens) == 1 and func.signature == ( [], ['INT'] ):
