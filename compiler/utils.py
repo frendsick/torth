@@ -1,4 +1,6 @@
-"""Utility functions for Torth compiler"""
+"""
+Utility functions for Torth compiler
+"""
 import argparse
 import os
 import re
