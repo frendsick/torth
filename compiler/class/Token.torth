@@ -3,25 +3,28 @@
 //     value: str
 //     type: TokenType
 //     location: Location
-const Token.size     40 end
-const Token.value    8  end
-const Token.type     8  end
-const Token.location 24  end
+const Token.size 40 end
+function Token.value  ptr -> any        :       load_QWORD end
+function Token.type   ptr -> TokenType  : 8   + load_QWORD  end
+function Token.file   ptr -> str        : 16  + load_QWORD end
+function Token.row    ptr -> int        : 24  + load_QWORD end
+function Token.col    ptr -> int        : 32  + load_QWORD end
 
-// Pointer to pointer of Tokens
+// Pointer to the list of Tokens
 memory tokens MEMORY_CAPACITY end
 
-// *Token, value, TokenType, Location
-function Token.load ptr str int str int int -> :
-  dup rot swap store_QWORD ptr++  // value
-  dup rot swap store_QWORD ptr++  // TokenType
-  Location.load                   // Location
+// *Token, value, TokenType, file, row, col
+function Token.store ptr str int str int int -> :
+  ptr.store ptr++   // Token.value
+  ptr.store ptr++   // Token.type
+  ptr.store ptr++   // Token.file
+  ptr.store ptr++   // Token.row
+  ptr.store ptr++   // Token.col
   drop
 end
 
 function Token.getType ptr -> str :
-  ptr.size + load_BYTE
-
+  Token.type
   if dup TokenType.ARRAY == do
     "TokenType.ARRAY"
   elif dup TokenType.BOOL == do
@@ -44,22 +47,11 @@ function Token.getType ptr -> str :
   swap drop // Drop TokenType
 end
 
-function Token.getFile ptr -> str :
-  dup ptr.size 2 * + load_QWORD
-end
-
-function Token.getRow ptr -> str :
-  dup ptr.size 3 * + load_QWORD
-end
-
-function Token.getColumn ptr -> str :
-  dup ptr.size 4 * + load_QWORD
-end
-
 function Token.output ptr -> :
   dup "Type     => " puts Token.getType puts "\n" puts
-  dup "Location => File: " puts Token.getFile puts
-  ", Row: " puts Token.getRow print ", Column: " puts Token.getColumn print "\n" puts
+  dup "Location => File: " puts Token.file puts
+  dup ", Row: " puts Token.row print
+  dup ", Column: " puts Token.col print "\n" puts
   drop
 end
 
