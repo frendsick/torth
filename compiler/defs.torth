@@ -90,10 +90,10 @@ const TokenType.WORD        8 end
 const Location.size  24 end
 
 // Location(file_name, row, column)
-function Location.load ptr str int int -> :
-  dup rot swap store_QWORD ptr++  // file_name
-  dup rot swap store_QWORD ptr++  // row
-  dup rot swap store_QWORD drop   // column
+function Location.store ptr str int int -> :
+  ptr.store ptr++  // file_name
+  ptr.store ptr++  // row
+  ptr.store drop   // column
 end
 
 // Tuple[str, str, Location]  # Name, str(size), Location

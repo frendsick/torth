@@ -29,11 +29,12 @@ function rev any any any -> any any any : swap rot end // Reverse the top 3 elem
 function rotr any any any -> any any any : rot rot end // Reverse rot
 
 // Ptr functions
-function >> int ptr -> : over load_BYTE swap rot + store_BYTE end  // Bit shift right
-function << int ptr -> : over load_BYTE swap rot - store_BYTE end  // Bit shift left
-function int++  ptr -> : dup load_QWORD 1 + store_BYTE end // Increment pointed value
-function ptr+   ptr -> : char.size  + end
-function ptr++  ptr -> : ptr.size   + end
+function >> int     ptr -> : over load_BYTE swap rot + store_BYTE end  // Bit shift right
+function << int     ptr -> : over load_BYTE swap rot - store_BYTE end  // Bit shift left
+function int++      ptr -> : dup load_QWORD 1 + store_BYTE end // Increment pointed value
+function ptr+       ptr -> : char.size  + end
+function ptr++      ptr -> : ptr.size   + end
+function ptr.store  ptr -> : dup rot swap store_QWORD end
 
 // int fd, void *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
