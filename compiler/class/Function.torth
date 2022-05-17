@@ -3,7 +3,7 @@
 //     name: str
 //     signature: Signature
 //     tokens: List[Token]
-const Function.size       24 end
-const Function.name       8  end
-const Function.signature  8  end
-const Function.tokens     8  end
+const Function.size 24 end
+function Function.name      ptr -> str        :       load_QWORD end
+function Function.signature ptr -> Signature  : 8   + load_QWORD end
+function Function.tokens    ptr -> ptr        : 16  + load_QWORD end
