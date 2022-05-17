@@ -118,12 +118,11 @@ const Token.location 24  end
 // Pointer to pointer of Tokens
 memory tokens MEMORY_CAPACITY end
 
-// Token(value, TokenType, Location)
-function Token.load ptr str int -> :
+// *Token, value, TokenType, Location
+function Token.load ptr str int str int int -> :
   dup rot swap store_QWORD ptr++  // value
   dup rot swap store_QWORD ptr++  // TokenType
-  // Dummy Location
-  9 6 "torth.torth" 4 nth Location.load // Location("torth.torth", 6, 9)
+  Location.load                   // Location
   drop
 end
 

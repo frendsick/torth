@@ -8,19 +8,25 @@ function get_next_word ptr -> :
   done
 end
 
-function load_int_token ptr int -> :
+// *Token, value, Location
+function load_int_token ptr int str int int -> :
   TokenType.INT rotr Token.load // Token(value, TokenType.INT, location)
 end
 
-function load_word_token ptr str -> :
+// *Token, value, Location
+function load_word_token ptr str str int int -> :
   TokenType.WORD rotr Token.load // Token(value, TokenType.INT, location)
 end
 
 // Returns pointer to Token list
 function get_tokens -> ptr :
+  1 1 "torth.torth" // File: torth.torth, Row: 1, Column: 1
   420     tokens                  load_int_token
+  3 1 "torth.torth" // File: torth.torth, Row: 1, Column: 3
   917     tokens Token.size +     load_int_token
+  2 4 "torth.torth" // File: torth.torth, Row: 4, Column: 2
   "+"     tokens Token.size 2 * + load_word_token
+  9 6 "torth.torth" // File: torth.torth, Row: 6, Column: 9
   "print" tokens Token.size 3 * + load_word_token
 end
 
