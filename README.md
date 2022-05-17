@@ -38,6 +38,7 @@ end
 FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
 
 ```pascal
+include "lib/std.torth"
 function OutputRow str_buf* str_len number -> int :
     puts dup print "\n" puts
 end

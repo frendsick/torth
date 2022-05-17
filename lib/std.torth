@@ -19,10 +19,14 @@ const stdout 1 end
 const stderr 2 end
 
 // Extra intrinsics
-function drop2  -> int : drop drop end
-function dup2   -> int : over over end
-function rev    -> int : swap rot end   // Reverse the top 3 elements
-function rotr   -> int : rot rot end    // Reverse rot
+function div int int -> int : divmod swap drop end
+function mod int int -> int : divmod drop end
+function / int int -> int : div end
+function % int int -> int : mod end
+function drop2 any any -> : drop drop end
+function dup2 any -> any any : over over end
+function rev any any any -> any any any : swap rot end // Reverse the top 3 elements
+function rotr any any any -> any any any : rot rot end // Reverse rot
 
 // Ptr functions
 function >> int ptr -> : over load_BYTE swap rot + store_BYTE end  // Bit shift right

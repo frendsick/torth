@@ -147,8 +147,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_argc_asm()
         if intrinsic == "ARGV":
             return get_argv_asm()
-        if intrinsic == "DIV":
-            return get_div_asm()
+        if intrinsic == "DIVMOD":
+            return get_divmod_asm()
         if intrinsic == "DROP":
             return get_drop_asm()
         if intrinsic == "DUP":
@@ -173,8 +173,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_load_asm('QWORD')
         if intrinsic == "MINUS":
             return get_minus_asm()
-        if intrinsic == "MOD":
-            return get_mod_asm()
         if intrinsic == "MUL":
             return get_mul_asm()
         if intrinsic == "NE":
@@ -480,12 +478,13 @@ def get_argv_asm() -> str:
     op_asm      += '  push rax\n'
     return op_asm
 
-def get_div_asm() -> str:
-    """DIV pops two integers from the stack and pushes their Quotient."""
+def get_divmod_asm() -> str:
+    """DIVMOD pops two integers from the stack and pushes their remainder and quotient."""
     op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
     op_asm      += '  pop rbx\n'
     op_asm      += '  pop rax\n'
     op_asm      += '  div rbx\n'
+    op_asm      += '  push rdx ; Remainder\n'
     op_asm      += '  push rax ; Quotient\n'
     return op_asm
 
@@ -592,15 +591,6 @@ def get_load_asm(size: str) -> str:
 def get_minus_asm() -> str:
     """Pop two integers from the stack and decrement the second value from the top one."""
     return get_arithmetic_asm("sub")
-
-def get_mod_asm() -> str:
-    """Pop two integers from the stack and push the remainder of second value divided by the first."""
-    op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  pop rax\n'
-    op_asm      += '  div rbx\n'
-    op_asm      += '  push rdx  ; Remainder\n'
-    return op_asm
 
 def get_mul_asm() -> str:
     """Pop two integers from the stack and push the product of the two values."""

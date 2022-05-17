@@ -97,8 +97,8 @@ def type_check_program(program: Program) -> None:
             STACK.append(f"*ptr {op.token.value}")
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
-            if intrinsic == "DIV":
-                type_check_div(token)
+            if   intrinsic == "DIVMOD":
+                type_check_divmod(token)
             elif intrinsic == "DROP":
                 type_check_drop(token)
             elif intrinsic == "DUP":
@@ -125,8 +125,6 @@ def type_check_program(program: Program) -> None:
                 type_check_load(token)
             elif intrinsic == "MINUS":
                 type_check_minus(token)
-            elif intrinsic == "MOD":
-                type_check_mod(token)
             elif intrinsic == "MUL":
                 type_check_mul(token)
             elif intrinsic == "NE":
@@ -183,13 +181,14 @@ def type_check_do(token: Token) -> None:
     """DO Keyword pops two items from the stack"""
     pop_two_from_stack(token)
 
-def type_check_div(token: Token) -> None:
+def type_check_divmod(token: Token) -> None:
     """DIV pops two items from the stack and divides second from the top one"""
     a, b = pop_two_from_stack(token)
     check_popped_value_type(token, a, expected_type='INT')
     check_popped_value_type(token, b, expected_type='INT')
 
     try:
+        STACK.append(str(int(a) %  int(b)))
         STACK.append(str(int(a) // int(b)))
     except ZeroDivisionError:
         compiler_error("DIVISION_BY_ZERO", "Division by zero is not possible.", token)
@@ -308,11 +307,6 @@ def type_check_minus(token: Token) -> None:
     """Pop two integers from the stack and decrement the second value from the top one."""
     a, b = pop_two_from_stack(token)
     STACK.append(str(int(a) - int(b)))
-
-def type_check_mod(token: Token) -> None:
-    """Pop two integers from the stack and push the remainder of second value divided by the first."""
-    a, b = pop_two_from_stack(token)
-    STACK.append(str(int(a) % int(b)))
 
 def type_check_mul(token: Token) -> None:
     """Pop two integers from the stack and push the product of the two values."""

@@ -1,7 +1,7 @@
 // Problem 7: 10001st prime
 
 include "lib/math.torth"  // Pow
-include "lib/std.torth"   // dup2, exit
+include "lib/std.torth"   // %, dup2, exit
 
 function print_nth_prime n -> ret :
   2     // Counter

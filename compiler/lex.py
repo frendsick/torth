@@ -205,10 +205,6 @@ def get_token_from_match(match: list, file: str, newline_indexes: List[int]) -> 
 
 def get_token_value(token_value: str) -> str:
     """Bind Intrinsic class value name to Token. Return the Intrinsic value."""
-    if token_value == '%':
-        return 'MOD'
-    if token_value == '/':
-        return 'DIV'
     if token_value == '==':
         return 'EQ'
     if token_value == '>=':
