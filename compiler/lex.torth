@@ -8,23 +8,25 @@ function get_next_word ptr -> :
   done
 end
 
+function load_int_token ptr int -> :
+  TokenType.INT rotr Token.load // Token(value, TokenType.INT, location)
+end
+
+function load_word_token ptr str -> :
+  TokenType.WORD rotr Token.load // Token(value, TokenType.INT, location)
+end
+
 // Returns pointer to Token list
-function get_tokens -> ptr:
-  tokens  // Pointer to Token list
+function get_tokens -> ptr :
+  420     tokens                  load_int_token
+  917     tokens Token.size +     load_int_token
+  "+"     tokens Token.size 2 * + load_word_token
+  "print" tokens Token.size 3 * + load_word_token
+end
 
-  // Load tokens list with four dummy tokens
-  while dup tokens ptr.size 4 * + > do
-    // location = Location("torth.torth", 6, 9)
-    9 6 "torth.torth" Location.load
-
-    location      // Location
-    TokenType.INT // TokenType
-    1337          // Value
-    // token = Token(1337, TokenType.INT, location)
-    Token.load
-
-    // tokens.append(token)
-    token over store_QWORD
-    ptr.size +
-  done
+function print_tokens -> :
+  tokens                  Token.print
+  tokens Token.size +     Token.print
+  tokens Token.size 2 * + Token.puts
+  tokens Token.size 3 * + Token.puts
 end

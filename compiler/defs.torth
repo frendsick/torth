@@ -84,11 +84,9 @@ const TokenType.WORD        8 end
 
 // Tuple[str, int, int] # Source file name, row, column
 const Location.size  24 end
-memory location Location.size end
 
 // Location(file_name, row, column)
-function Location.load str int int -> :
-  location
+function Location.load ptr str int int -> :
   dup rot swap store_QWORD ptr++  // file_name
   dup rot swap store_QWORD ptr++  // row
   dup rot swap store_QWORD drop   // column
@@ -105,7 +103,7 @@ const Memory.size 40 end
 const Constant.size     40 end
 const Constant.name     8  end
 const Constant.value    8  end
-const Constant.location 8  end
+const Constant.location 24  end
 
 // @dataclass
 // class Token:
@@ -115,18 +113,18 @@ const Constant.location 8  end
 const Token.size     40 end
 const Token.value    8  end
 const Token.type     8  end
-const Token.location 8  end
+const Token.location 24  end
 
 // Pointer to pointer of Tokens
 memory tokens MEMORY_CAPACITY end
-memory token  Token.size      end
 
 // Token(value, TokenType, Location)
-function Token.load str int ptr -> :
-  token
+function Token.load ptr str int -> :
   dup rot swap store_QWORD ptr++  // value
   dup rot swap store_QWORD ptr++  // TokenType
-  dup rot swap store_QWORD drop   // Location
+  // Dummy Location
+  9 6 "torth.torth" 4 nth Location.load // Location("torth.torth", 6, 9)
+  drop
 end
 
 function Token.getType ptr -> str :
@@ -155,15 +153,15 @@ function Token.getType ptr -> str :
 end
 
 function Token.getFile ptr -> str :
-  dup ptr.size 2 * + load_QWORD load_QWORD
+  dup ptr.size 2 * + load_QWORD
 end
 
 function Token.getRow ptr -> str :
-  dup ptr.size 2 * + load_QWORD ptr.size + load_QWORD
+  dup ptr.size 3 * + load_QWORD
 end
 
 function Token.getColumn ptr -> str :
-  dup ptr.size 2 * + load_QWORD ptr.size 2 * + load_QWORD
+  dup ptr.size 4 * + load_QWORD
 end
 
 function Token.output ptr -> :
