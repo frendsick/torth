@@ -49,7 +49,6 @@ print:
 
 global _start
 _start:
-  mov rbp, rsp          ; Initialize RBP
   mov [args_ptr], rsp   ; Pointer to argc
 '''
     with open(asm_file, 'w', encoding='utf-8') as f:
