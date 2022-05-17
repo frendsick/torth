@@ -1,0 +1,9 @@
+// @dataclass
+// class Function:
+//     name: str
+//     signature: Signature
+//     tokens: List[Token]
+const Function.size       24 end
+const Function.name       8  end
+const Function.signature  8  end
+const Function.tokens     8  end

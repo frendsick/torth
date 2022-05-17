@@ -1,3 +1,8 @@
+include "compiler/class/Constant.torth"
+include "compiler/class/Function.torth"
+include "compiler/class/Program.torth"
+include "compiler/class/Token.torth"
+
 // Keywords
 const Keyword.BREAK         0  end
 const Keyword.CONST         1  end
@@ -95,113 +100,8 @@ end
 // Tuple[str, str, Location]  # Name, str(size), Location
 const Memory.size 40 end
 
-// @dataclass
-// class Constant:
-//    name: str
-//    value: str
-//    location: Location
-const Constant.size     40 end
-const Constant.name     8  end
-const Constant.value    8  end
-const Constant.location 24  end
-
-// @dataclass
-// class Token:
-//     value: str
-//     type: TokenType
-//     location: Location
-const Token.size     40 end
-const Token.value    8  end
-const Token.type     8  end
-const Token.location 24  end
-
-// Pointer to pointer of Tokens
-memory tokens MEMORY_CAPACITY end
-
-// *Token, value, TokenType, Location
-function Token.load ptr str int str int int -> :
-  dup rot swap store_QWORD ptr++  // value
-  dup rot swap store_QWORD ptr++  // TokenType
-  Location.load                   // Location
-  drop
-end
-
-function Token.getType ptr -> str :
-  ptr.size + load_BYTE
-
-  if dup TokenType.ARRAY == do
-    "TokenType.ARRAY"
-  elif dup TokenType.BOOL == do
-    "TokenType.BOOL"
-  elif dup TokenType.CHAR == do
-    "TokenType.CHAR"
-  elif dup TokenType.HEX == do
-    "TokenType.HEX"
-  elif dup TokenType.INT == do
-    "TokenType.INT"
-  elif dup TokenType.KEYWORD == do
-    "TokenType.KEYWORD"
-  elif dup TokenType.PTR == do
-    "TokenType.PTR"
-  elif dup TokenType.STR == do
-    "TokenType.STR"
-  elif dup TokenType.WORD == do
-    "TokenType.WORD"
-  endif
-  swap drop // Drop TokenType
-end
-
-function Token.getFile ptr -> str :
-  dup ptr.size 2 * + load_QWORD
-end
-
-function Token.getRow ptr -> str :
-  dup ptr.size 3 * + load_QWORD
-end
-
-function Token.getColumn ptr -> str :
-  dup ptr.size 4 * + load_QWORD
-end
-
-function Token.output ptr -> :
-  dup "Type     => " puts Token.getType puts "\n" puts
-  dup "Location => File: " puts Token.getFile puts
-  ", Row: " puts Token.getRow print ", Column: " puts Token.getColumn print "\n" puts
-  drop
-end
-
-function Token.print ptr -> :
-  dup "Token    => " puts load_QWORD print "\n" puts
-  Token.output
-end
-
-function Token.puts ptr -> :
-  dup "Token    => " puts load_QWORD puts "\n" puts
-  Token.output
-end
-
 // # param types, return types
 // Signature   = Tuple[List[str], List[str]]
 const Signature 16 end
-
-// @dataclass
-// class Function:
-//     name: str
-//     signature: Signature
-//     tokens: List[Token]
-const Function.size       24 end
-const Function.name       8  end
-const Function.signature  8  end
-const Function.tokens     8  end
-
-// @dataclass
-// class Op:
-//     id: int
-//     type: OpType
-//     token: Token
-const Op.size   24 end
-const Op.id     8  end
-const Op.type   8  end
-const Op.token  8  end
 
 memory Program ptr.size end

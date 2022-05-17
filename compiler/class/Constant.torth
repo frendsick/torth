@@ -1,0 +1,9 @@
+// @dataclass
+// class Constant:
+//    name: str
+//    value: str
+//    location: Location
+const Constant.size     40 end
+const Constant.name     8  end
+const Constant.value    8  end
+const Constant.location 24  end
