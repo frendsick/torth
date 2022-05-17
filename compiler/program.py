@@ -1,3 +1,6 @@
+"""
+Functions for compile-time type checking and running the Torth program
+"""
 import subprocess
 from typing import List, Tuple
 from compiler.defs import Intrinsic, Memory, Op, OpType, Program, STACK, Token, TokenType
@@ -58,17 +61,16 @@ def function_name_exists(token: str, memories: List[Memory]) -> bool:
     return False
 
 def run_code(exe_file: str) -> None:
-    subprocess.run([f'./{exe_file}'])
+    subprocess.run([f'./{exe_file}'], check=True)
 
 # Type check all operations which
 def type_check_program(program: Program) -> None:
-    global STACK
     NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELSE', 'ENDIF', 'WHILE' ]
     for op in program:
         token: Token = op.token
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
-        elif op.type == OpType.DO:
+        if op.type == OpType.DO:
             type_check_do(token)
         elif op.type == OpType.ELIF:
             type_check_dup(token)  # ELIF duplicates the first element in the stack
@@ -236,7 +238,7 @@ def type_check_gt(token: Token) -> None:
     STACK.append(str(int(a>b)))
 
 def type_check_input() -> None:
-    STACK.append(f"*buf s_buffer")
+    STACK.append("*buf s_buffer")
 
 def type_check_le(token: Token) -> None:
     a, b = pop_two_from_stack(token)
@@ -314,7 +316,8 @@ def type_check_store(token: Token) -> None:
     try:
         _value, ptr = pop_two_from_stack(token)
     except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", f"{token.value.upper()} requires two values on the stack, PTR and value.", token)
+        compiler_error("POP_FROM_EMPTY_STACK", \
+            f"{token.value.upper()} requires two values on the stack, PTR and value.", token)
     check_popped_value_type(token, ptr, expected_type='PTR')
 
 def type_check_swap(token: Token) -> None:
