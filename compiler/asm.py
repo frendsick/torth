@@ -537,7 +537,7 @@ def get_nth_asm() -> str:
 
 def get_gt_asm() -> str:
     """
-    GE takes two elements from the stack and checks if the top element > the other.
+    GT takes two elements from the stack and checks if the top element > the other.
     It pushes the second element back to the stack and a boolean value of the comparison.
     """
     return get_comparison_asm("cmovg")
@@ -567,7 +567,7 @@ def get_le_asm() -> str:
 
 def get_lt_asm() -> str:
     """
-    GE takes two elements from the stack and checks if the top element < the other.
+    LT takes two elements from the stack and checks if the top element < the other.
     It pushes the second element back to the stack and a boolean value of the comparison.
     """
     return get_comparison_asm("cmovl")
@@ -612,7 +612,7 @@ def get_mul_asm() -> str:
 
 def get_ne_asm() -> str:
     """
-    GE takes two elements from the stack and checks if the values are not equal.
+    NE takes two elements from the stack and checks if the values are not equal.
     It pushes the second element back to the stack and a boolean value of the comparison.
     """
     return get_comparison_asm("cmovne")
