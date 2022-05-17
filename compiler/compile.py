@@ -1,18 +1,25 @@
+"""
+Functions required for compiling a Torth program
+"""
 import argparse
 import subprocess
 from typing import List
 from compiler.asm import generate_asm, initialize_asm
 from compiler.defs import Constant, Function, Memory, Program, Token
 from compiler.lex import get_tokens_from_functions
-from compiler.program import generate_program, type_check_program
+from compiler.program import generate_program
 
 def compile_asm(asm_file: str) -> None:
-    subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file])
+    """Compile the generated assembly source code with NASM."""
+    subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file], check=True)
 
 def link_object_file(obj_file: str, output_file: str) -> None:
-    subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{output_file}', obj_file])
+    """Link the compiled object file with LD."""
+    subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{output_file}', obj_file], check=True)
 
-def compile_code(input_file: str, output_file: str, constants: List[Constant], functions: List[Function], memories: List[Memory]) -> None:
+def compile_code(input_file: str, output_file: str, \
+    constants: List[Constant], functions: List[Function], memories: List[Memory]) -> None:
+    """Generate assembly and compile it to statically linked ELF 64-bit executable."""
     # Get all tokens in the order of execution
     tokens: List[Token] = get_tokens_from_functions(functions, input_file)
 
@@ -32,7 +39,8 @@ def compile_code(input_file: str, output_file: str, constants: List[Constant], f
     link_object_file(asm_file.replace('.asm', '.o'), output_file)
 
 def remove_compilation_files(input_file: str, args: argparse.Namespace) -> None:
+    """Clean the current directory from compilation files."""
     input_file_extensionless: str = input_file.split('.')[0]
-    subprocess.run(['rm', '-f', f'{input_file_extensionless}.o'])
+    subprocess.run(['rm', '-f', f'{input_file_extensionless}.o'], check=True)
     if not args.save_asm:
-        subprocess.run(['rm', '-f', f'{input_file_extensionless}.asm'])
+        subprocess.run(['rm', '-f', f'{input_file_extensionless}.asm'], check=True)
