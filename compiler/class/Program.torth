@@ -3,7 +3,7 @@
 //     id: int
 //     type: OpType
 //     token: Token
-const Op.size   24 end
-const Op.id     8  end
-const Op.type   8  end
-const Op.token  8  end
+const Op.size 24 end
+function Op.id    ptr -> int    :       load_QWORD end
+function Op.type  ptr -> OpType : 8   + load_QWORD  end
+function Op.token ptr -> ptr    : 16  + load_QWORD end
