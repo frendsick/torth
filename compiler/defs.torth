@@ -129,6 +129,60 @@ function Token.load str int ptr -> :
   dup rot swap store_QWORD drop   // Location
 end
 
+function Token.getType ptr -> str :
+  ptr.size + load_BYTE
+
+  if dup TokenType.ARRAY == do
+    "TokenType.ARRAY"
+  elif dup TokenType.BOOL == do
+    "TokenType.BOOL"
+  elif dup TokenType.CHAR == do
+    "TokenType.CHAR"
+  elif dup TokenType.HEX == do
+    "TokenType.HEX"
+  elif dup TokenType.INT == do
+    "TokenType.INT"
+  elif dup TokenType.KEYWORD == do
+    "TokenType.KEYWORD"
+  elif dup TokenType.PTR == do
+    "TokenType.PTR"
+  elif dup TokenType.STR == do
+    "TokenType.STR"
+  elif dup TokenType.WORD == do
+    "TokenType.WORD"
+  endif
+  swap drop // Drop TokenType
+end
+
+function Token.getFile ptr -> str :
+  dup ptr.size 2 * + load_QWORD load_QWORD
+end
+
+function Token.getRow ptr -> str :
+  dup ptr.size 2 * + load_QWORD ptr.size + load_QWORD
+end
+
+function Token.getColumn ptr -> str :
+  dup ptr.size 2 * + load_QWORD ptr.size 2 * + load_QWORD
+end
+
+function Token.output ptr -> :
+  dup "Type     => " puts Token.getType puts "\n" puts
+  dup "Location => File: " puts Token.getFile puts
+  ", Row: " puts Token.getRow print ", Column: " puts Token.getColumn print "\n" puts
+  drop
+end
+
+function Token.print ptr -> :
+  dup "Token    => " puts load_QWORD print "\n" puts
+  Token.output
+end
+
+function Token.puts ptr -> :
+  dup "Token    => " puts load_QWORD puts "\n" puts
+  Token.output
+end
+
 // # param types, return types
 // Signature   = Tuple[List[str], List[str]]
 const Signature 16 end
