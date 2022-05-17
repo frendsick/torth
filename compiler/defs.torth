@@ -105,7 +105,7 @@ const Memory.size 40 end
 const Constant.size     40 end
 const Constant.name     8  end
 const Constant.value    8  end
-const Constant.location 24 end
+const Constant.location 8  end
 
 // @dataclass
 // class Token:
@@ -115,7 +115,7 @@ const Constant.location 24 end
 const Token.size     40 end
 const Token.value    8  end
 const Token.type     8  end
-const Token.location 24 end
+const Token.location 8  end
 
 // Pointer to pointer of Tokens
 memory tokens MEMORY_CAPACITY end
@@ -138,19 +138,19 @@ const Signature 16 end
 //     name: str
 //     signature: Signature
 //     tokens: List[Token]
-const Function.name       40 end
-const Function.str        8  end
+const Function.size       24 end
+const Function.name       8  end
 const Function.signature  8  end
-const Function.tokens     24 end
+const Function.tokens     8  end
 
 // @dataclass
 // class Op:
 //     id: int
 //     type: OpType
 //     token: Token
-const Op.size   40 end
+const Op.size   24 end
 const Op.id     8  end
 const Op.type   8  end
-const Op.token  24 end
+const Op.token  8  end
 
 memory Program ptr.size end
