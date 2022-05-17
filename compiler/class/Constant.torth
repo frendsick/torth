@@ -3,7 +3,9 @@
 //    name: str
 //    value: str
 //    location: Location
-const Constant.size     40 end
-const Constant.name     8  end
-const Constant.value    8  end
-const Constant.location 24  end
+const Constant.size 40 end
+function Constant.name  ptr -> str :       load_QWORD end
+function Constant.value ptr -> int : 8   + load_QWORD end
+function Constant.file  ptr -> str : 16  + load_QWORD end
+function Token.row      ptr -> int : 24  + load_QWORD end
+function Token.col      ptr -> int : 32  + load_QWORD end
