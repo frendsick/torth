@@ -1,8 +1,12 @@
+"""
+Functions used for generating assembly code from Torth code
+"""
 from typing import Dict, List
 from compiler.defs import Constant, Memory, OpType, Op, Program, Token
 from compiler.utils import compiler_error
 
 def initialize_asm(asm_file: str, constants: List[Constant], memories: List[Memory]) -> None:
+    """Initialize assembly code file with some common definitions."""
     default_asm: str = f'''{get_asm_file_start(constants)}
 section .bss
   args_ptr: resq 1
@@ -48,7 +52,7 @@ _start:
   mov rbp, rsp          ; Initialize RBP
   mov [args_ptr], rsp   ; Pointer to argc
 '''
-    with open(asm_file, 'w') as f:
+    with open(asm_file, 'w', encoding='utf-8') as f:
         f.write(default_asm)
 
 def get_asm_file_start(constants: List[Constant]) -> str:
@@ -65,6 +69,7 @@ section .rodata
 '''
 
 def get_memory_definitions_asm(memories: List[Memory]) -> str:
+    """Generates assembly code of memory definitions. Returns the memory definitions."""
     asm: str = ''
     for memory in memories:
         name: str           = memory[0]
@@ -81,7 +86,7 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
         if op.type == OpType.PUSH_STR:
             add_string_variable_asm(asm_file, token.value, op, constants)
         elif token.value.upper() == "HERE":
-            add_string_variable_asm(asm_file, f'"{str(token.location)}"', op)
+            add_string_variable_asm(asm_file, f'"{str(token.location)}"', op, constants)
         elif op.type == OpType.PUSH_ARRAY:
             value: str = token.value
             elements: List[str] = value[value.find("(")+1:value.rfind(")")].split(',')
@@ -91,13 +96,13 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
         elif token.value.upper() == 'INPUT':
             add_input_buffer_asm(asm_file, op, constants)
 
-        with open(asm_file, 'a') as f:
+        with open(asm_file, 'a', encoding='utf-8') as f:
             f.write(get_op_comment_asm(op, op.type))
             op_asm: str = get_op_asm(op, program=program)
             if op_asm != "":
                 f.write(op_asm)
 
-    with open(asm_file, 'a') as f:
+    with open(asm_file, 'a', encoding='utf-8') as f:
         f.write( ';; -- exit syscall\n')
         f.write( '  mov rax, sys_exit\n')
         f.write( '  mov rdi, success\n')
@@ -107,108 +112,109 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
 def get_op_asm(op: Op, program: Program) -> str:
     if op.type in [OpType.IF]:
         return ''
-    elif op.type == OpType.BREAK:
+    if op.type == OpType.BREAK:
         return get_break_asm(op, program)
-    elif op.type == OpType.DO:
+    if op.type == OpType.DO:
         return get_do_asm(op, program)
-    elif op.type == OpType.DONE:
+    if op.type == OpType.DONE:
         return get_done_asm(op, program)
-    elif op.type == OpType.ELIF:
+    if op.type == OpType.ELIF:
         return get_elif_asm(op, program)
-    elif op.type == OpType.ELSE:
+    if op.type == OpType.ELSE:
         return get_else_asm(op, program)
-    elif op.type == OpType.ENDIF:
+    if op.type == OpType.ENDIF:
         return get_endif_asm(op)
-    elif op.type == OpType.PUSH_ARRAY:
+    if op.type == OpType.PUSH_ARRAY:
         return get_push_array_asm(op)
-    elif op.type == OpType.PUSH_CHAR:
+    if op.type == OpType.PUSH_CHAR:
         return get_push_char_asm(op)
-    elif op.type == OpType.PUSH_HEX:
+    if op.type == OpType.PUSH_HEX:
         return get_push_hex_asm(op.token.value)
-    elif op.type == OpType.PUSH_INT:
+    if op.type == OpType.PUSH_INT:
         return get_push_int_asm(op.token.value)
-    elif op.type == OpType.PUSH_PTR:
+    if op.type == OpType.PUSH_PTR:
         return get_push_ptr_asm(op.token.value)
-    elif op.type == OpType.PUSH_STR:
+    if op.type == OpType.PUSH_STR:
         return get_push_str_asm(op)
-    elif op.type == OpType.WHILE:
+    if op.type == OpType.WHILE:
         return get_while_asm(op)
-    elif op.type == OpType.INTRINSIC:
+    if op.type == OpType.INTRINSIC:
         intrinsic: str = op.token.value.upper()
         if   intrinsic == "ARGC":
             return get_argc_asm()
-        elif intrinsic == "ARGV":
+        if intrinsic == "ARGV":
             return get_argv_asm()
-        elif intrinsic == "DIV":
+        if intrinsic == "DIV":
             return get_div_asm()
-        elif intrinsic == "DROP":
+        if intrinsic == "DROP":
             return get_drop_asm()
-        elif intrinsic == "DUP":
+        if intrinsic == "DUP":
             return get_dup_asm()
-        elif intrinsic == "EQ":
+        if intrinsic == "EQ":
             return get_eq_asm()
-        elif intrinsic == "GE":
+        if intrinsic == "GE":
             return get_ge_asm()
-        elif intrinsic == "GT":
+        if intrinsic == "GT":
             return get_gt_asm()
-        elif intrinsic == "HERE":
+        if intrinsic == "HERE":
             return get_here_asm(op)
-        elif intrinsic == "INPUT":
+        if intrinsic == "INPUT":
             return get_input_asm(op)
-        elif intrinsic == "LE":
+        if intrinsic == "LE":
             return get_le_asm()
-        elif intrinsic == "LT":
+        if intrinsic == "LT":
             return get_lt_asm()
-        elif intrinsic == "LOAD_BYTE":
+        if intrinsic == "LOAD_BYTE":
             return get_load_asm('BYTE')
-        elif intrinsic == "LOAD_QWORD":
+        if intrinsic == "LOAD_QWORD":
             return get_load_asm('QWORD')
-        elif intrinsic == "MINUS":
+        if intrinsic == "MINUS":
             return get_minus_asm()
-        elif intrinsic == "MOD":
+        if intrinsic == "MOD":
             return get_mod_asm()
-        elif intrinsic == "MUL":
+        if intrinsic == "MUL":
             return get_mul_asm()
-        elif intrinsic == "NE":
+        if intrinsic == "NE":
             return get_ne_asm()
-        elif intrinsic == "NTH":
+        if intrinsic == "NTH":
             return get_nth_asm()
-        elif intrinsic == "OVER":
+        if intrinsic == "OVER":
             return get_over_asm()
-        elif intrinsic == "PLUS":
+        if intrinsic == "PLUS":
             return get_plus_asm()
-        elif intrinsic == "PRINT":
+        if intrinsic == "PRINT":
             return get_print_asm()
-        elif intrinsic == "PUTS":
+        if intrinsic == "PUTS":
             return get_puts_asm()
-        elif intrinsic == "ROT":
+        if intrinsic == "ROT":
             return get_rot_asm()
-        elif intrinsic == "STORE_BYTE":
+        if intrinsic == "STORE_BYTE":
             return get_store_asm('BYTE')
-        elif intrinsic == "STORE_QWORD":
+        if intrinsic == "STORE_QWORD":
             return get_store_asm('QWORD')
-        elif intrinsic == "SWAP":
+        if intrinsic == "SWAP":
             return get_swap_asm()
-        elif intrinsic == "SWAP2":
+        if intrinsic == "SWAP2":
             return get_swap2_asm()
-        elif intrinsic == "SYSCALL0":
+        if intrinsic == "SYSCALL0":
             return get_syscall_asm(param_count=0)
-        elif intrinsic == "SYSCALL1":
+        if intrinsic == "SYSCALL1":
             return get_syscall_asm(param_count=1)
-        elif intrinsic == "SYSCALL2":
+        if intrinsic == "SYSCALL2":
             return get_syscall_asm(param_count=2)
-        elif intrinsic == "SYSCALL3":
+        if intrinsic == "SYSCALL3":
             return get_syscall_asm(param_count=3)
-        elif intrinsic == "SYSCALL4":
+        if intrinsic == "SYSCALL4":
             return get_syscall_asm(param_count=4)
-        elif intrinsic == "SYSCALL5":
+        if intrinsic == "SYSCALL5":
             return get_syscall_asm(param_count=5)
-        elif intrinsic == "SYSCALL6":
+        if intrinsic == "SYSCALL6":
             return get_syscall_asm(param_count=6)
-        else:
-            compiler_error("NOT_IMPLEMENTED", f"Intrinsic {intrinsic} has not been implemented.", op.token)
-    else:
-        compiler_error("NOT_IMPLEMENTED", f"Operation {op.type.name} has not been implemented.", op.token)
+
+        # Compiler error for Intrinsic not implemented
+        compiler_error("NOT_IMPLEMENTED", f"Intrinsic '{intrinsic}' has not been implemented.", op.token)
+    # Compiler error for Op not implemented
+    compiler_error("NOT_IMPLEMENTED", f"Operand '{op.type.name}' has not been implemented.", op.token)
 
 def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     src_file: str   = op.token.location[0]
@@ -242,9 +248,9 @@ def get_arithmetic_asm(operand: str) -> str:
     return arithmetic_asm
 
 def add_string_variable_asm(asm_file: str, string: str, op: Op, constants: List[Constant]) -> None:
-    with open(asm_file, 'r') as f:
+    with open(asm_file, 'r', encoding='utf-8') as f:
         file_lines: List[str] = f.readlines()
-    with open(asm_file, 'w') as f:
+    with open(asm_file, 'w', encoding='utf-8') as f:
         asm_file_start: str = get_asm_file_start(constants)
         f.write(asm_file_start)
 
@@ -258,12 +264,12 @@ def add_string_variable_asm(asm_file: str, string: str, op: Op, constants: List[
             f.write(file_lines[i])
 
 def add_array_asm(asm_file: str, array: list, op: Op, constants: List[Constant]) -> None:
-    with open(asm_file, 'r') as f:
+    with open(asm_file, 'r', encoding='utf-8') as f:
         file_lines: List[str] = f.readlines()
-    with open(asm_file, 'w') as f:
+    with open(asm_file, 'w', encoding='utf-8') as f:
         f.write(get_asm_file_start(constants))
-        for i in range(len(array)):
-            f.write(f'  s{op.id}_{i}: db {array[i]},0\n')
+        for i, item in enumerate(array):
+            f.write(f'  s{op.id}_{i}: db {item},0\n')
         f.write(f'  s_arr{op.id}: dq ')
         for i in range(len(array)):
             f.write(f's{op.id}_{i}, ')
@@ -275,9 +281,9 @@ def add_array_asm(asm_file: str, array: list, op: Op, constants: List[Constant])
             f.write(file_lines[i])
 
 def add_input_buffer_asm(asm_file: str, op: Op, constants: List[Constant]):
-    with open(asm_file, 'r') as f:
+    with open(asm_file, 'r', encoding='utf-8') as f:
         file_lines: List[str] = f.readlines()
-    with open(asm_file, 'w') as f:
+    with open(asm_file, 'w', encoding='utf-8') as f:
         asm_file_start: str = get_asm_file_start(constants)
         f.write(asm_file_start)
         row: int = len(asm_file_start.splitlines()) - 1
@@ -313,7 +319,9 @@ def get_parent_while(op: Op, program: Program) -> Op:
             done_count -= 1
         if program[i].type == OpType.DONE:
             done_count += 1
-    compiler_error(f"AMBIGUOUS_{op.token.value.upper()}", f"{op.token.value.upper()} operand without parent WHILE.", op.token)
+
+    compiler_error(f"AMBIGUOUS_{op.token.value.upper()}", \
+        f"{op.token.value.upper()} operand without parent WHILE.", op.token)
 
 # DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 def get_do_asm(op: Op, program: Program) -> str:
@@ -583,7 +591,7 @@ def get_store_asm(size: str) -> str:
     }
     register: str = register_sizes[size]
     op_asm: str  =  '  pop rax\n'
-    op_asm      += f'  pop rbx\n'
+    op_asm      +=  '  pop rbx\n'
     op_asm      += f'  mov [rax], {register}\n'
     return op_asm
 
