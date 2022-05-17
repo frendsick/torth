@@ -73,7 +73,7 @@ def get_memory_definitions_asm(memories: List[Memory]) -> str:
     asm: str = ''
     for memory in memories:
         name: str           = memory[0]
-        size: int           = memory[1]
+        size: str           = memory[1]
         file, row, col      = memory[2]
         asm += get_token_info_comment_asm(f'MEMORY {name}', file, row, col)
         asm += f'  {name}: RESB {size}\n'

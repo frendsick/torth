@@ -131,7 +131,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], con
     """Parse Memory objects from a single code file. Return list of Memory objects."""
     memories: List[Memory]  = []
     name: str               = ''
-    size: int               = None
+    size: str               = ''
     defining_memory: bool   = False
     for match in token_matches:
         token_value: str = match.group(0)
@@ -149,7 +149,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], con
 
                 # Reset variables
                 name = ''
-                size = None
+                size = ''
                 continue
         if token_value.upper() == 'MEMORY':
             defining_memory = True
@@ -198,9 +198,9 @@ def get_token_matches(code: str) -> list:
 
 def get_token_from_match(match: list, file: str, newline_indexes: List[int]) -> Token:
     """Parse Token from a list of re.Match objects. Return the Token."""
-    token_value: str        = get_token_value(match.group(0))
+    token_value: str        = get_token_value(match.group(0))  # type: ignore
     token_type: TokenType   = get_token_type(token_value)
-    token_location          = get_token_location(file, match.start(), newline_indexes)
+    token_location          = get_token_location(file, match.start(), newline_indexes)  # type: ignore
     return Token(token_value, token_type, token_location)
 
 def get_token_value(token_value: str) -> str:
