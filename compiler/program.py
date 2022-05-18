@@ -18,8 +18,6 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.CHAR:
             op_type = OpType.PUSH_CHAR
-        elif token.type == TokenType.HEX:
-            op_type = OpType.PUSH_HEX
         elif token.type == TokenType.INT:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.STR:
@@ -90,8 +88,6 @@ def type_check_program(program: Program) -> None:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_CHAR:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
-        elif op.type == OpType.PUSH_HEX:
-            type_stack = type_check_push_int(type_stack)
         elif op.type == OpType.PUSH_INT:
             type_stack = type_check_push_int(type_stack)
         elif op.type == OpType.PUSH_STR:

@@ -248,7 +248,7 @@ def get_token_type(token_text: str) -> TokenType:
     if len(token_text) == 3 and token_text[0] == token_text[-1] == "'":
         return TokenType.CHAR
     if token_text.startswith('0x'):
-        return TokenType.HEX
+        return TokenType.INT
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
     try:

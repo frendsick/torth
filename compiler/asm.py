@@ -130,8 +130,6 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_push_array_asm(op)
     if op.type == OpType.PUSH_CHAR:
         return get_push_char_asm(op)
-    if op.type == OpType.PUSH_HEX:
-        return get_push_hex_asm(op.token.value)
     if op.type == OpType.PUSH_INT:
         return get_push_int_asm(op.token.value)
     if op.type == OpType.PUSH_PTR:
@@ -429,12 +427,6 @@ def get_push_array_asm(op: Op) -> str:
 def get_push_char_asm(op: Op) -> str:
     """Return the assembly code for PUSH_CHAR Operand."""
     op_asm: str  = f'  mov rax, {ord(op.token.value[1])}\n'
-    op_asm      +=  '  push rax\n'
-    return op_asm
-
-def get_push_hex_asm(hexadecimal: str) -> str:
-    """Return the assembly code for PUSH_HEX Operand."""
-    op_asm: str  = f'  mov rax, {hexadecimal}\n'
     op_asm      +=  '  push rax\n'
     return op_asm
 
