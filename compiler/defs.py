@@ -1,9 +1,10 @@
 """
 Definitions for classes, constants, and types used by the Torth compiler
 """
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 STACK: List[str] = []
 COLORS: Dict[str, str] = {
@@ -99,6 +100,40 @@ class TokenType(Enum):
     PTR=auto()
     STR=auto()
     WORD=auto()
+
+@dataclass
+class TypeNode:
+    """Node for TypeStack linked list containing the current Token's type"""
+    value: TokenType
+    next_node: Union[TypeNode, None] = None
+
+class TypeStack:
+    """Linked list containing the types on the virtual stack used in type checking"""
+    def __init__(self) -> None:
+        self.head: Union[TypeNode, None] = None
+
+    def print(self):
+        """Print the contents of the TypeStack"""
+        head: TypeNode  = self.head
+        index: int      = 1  # The top element in the stack is number one
+        while head is not None:
+            print(f"[{index}] {head.value}")
+            head = head.next_node
+            index += 1
+
+    def pop(self):
+        """Remove the head element from the TypeStack linked list"""
+        if self.head is None:
+            return None
+        popped = self.head.value
+        self.head = self.head.next_node
+        return popped
+
+    def push(self, token_type: TokenType):
+        """Add new TypeNode item as the new head to TypeStack linked list"""
+        new_head = TypeNode(token_type)
+        new_head.next_node = self.head
+        self.head = new_head
 
 Location    = Tuple[str, int, int]      # Source file name, row, column
 Memory      = Tuple[str, str, Location] # Name, str(size), Location
