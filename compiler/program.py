@@ -3,7 +3,8 @@ Functions for compile-time type checking and running the Torth program
 """
 import subprocess
 from typing import List, Tuple
-from compiler.defs import Intrinsic, Memory, Op, OpType, Program, STACK, Token, TokenType
+from compiler.defs import Intrinsic, Memory, Op, OpType, Program
+from compiler.defs import STACK, Token, TokenType, TypeStack
 from compiler.utils import check_popped_value_type, compiler_error
 
 def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
@@ -72,97 +73,99 @@ def type_check_program(program: Program) -> None:
     Type check all Operands of the Program.
     Raise compiler error if the type checking fails.
     """
+
+    type_stack = TypeStack()
     NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELSE', 'ENDIF', 'WHILE' ]
     for op in program:
         token: Token = op.token
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
         if op.type == OpType.DO:
-            type_check_do(token)
+            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.ELIF:
-            type_check_dup(token)  # ELIF duplicates the first element in the stack
+            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.IF:
-            type_check_dup(token)  # IF duplicates the first element in the stack
+            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_ARRAY:
-            STACK.append(f"*buf s_arr{op.id}")
+            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_CHAR:
-            STACK.append(token.value[1])
+            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_HEX:
-            STACK.append(token.value)
+            type_stack = type_check_push_int(type_stack)
         elif op.type == OpType.PUSH_INT:
-            STACK.append(token.value)
+            type_stack = type_check_push_int(type_stack)
         elif op.type == OpType.PUSH_STR:
-            STACK.append(f"*buf s_{op.id}")
+            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_PTR:
-            STACK.append(f"*ptr {op.token.value}")
+            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if   intrinsic == "DIVMOD":
-                type_check_divmod(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "DROP":
-                type_check_drop(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "DUP":
-                type_check_dup(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "ENVP":
-                STACK.append('ENVP')
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "EQ":
-                type_check_eq(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "GE":
-                type_check_ge(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "GT":
-                type_check_gt(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "HERE":
-                STACK.append(f"*buf s_{op.id}")
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "INPUT":
-                type_check_input()
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "LE":
-                type_check_le(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "LT":
-                type_check_lt(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "LOAD_BYTE":
-                type_check_load(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "LOAD_QWORD":
-                type_check_load(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "MINUS":
-                type_check_minus(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "MUL":
-                type_check_mul(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "NE":
-                type_check_ne(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "NTH":
-                type_check_nth(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "OVER":
-                type_check_over(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "PLUS":
-                type_check_plus(token)
+                type_stack = type_check_plus(token, type_stack)
             elif intrinsic == "PRINT":
-                type_check_print(token)
+                type_stack = type_check_print(token, type_stack)
             elif intrinsic == "PUTS":
-                type_check_puts(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "ROT":
-                type_check_rot(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "STORE_BYTE":
-                type_check_store(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "STORE_QWORD":
-                type_check_store(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SWAP":
-                type_check_swap(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SWAP2":
-                type_check_swap2(token)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SYSCALL0":
-                type_check_syscall(token, param_count=0)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SYSCALL1":
-                type_check_syscall(token, param_count=1)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SYSCALL2":
-                type_check_syscall(token, param_count=2)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SYSCALL3":
-                type_check_syscall(token, param_count=3)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SYSCALL4":
-                type_check_syscall(token, param_count=4)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SYSCALL5":
-                type_check_syscall(token, param_count=5)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SYSCALL6":
-                type_check_syscall(token, param_count=6)
+                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             else:
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
         else:
@@ -180,6 +183,11 @@ def pop_two_from_stack(token: Token) -> Tuple[str, str]:
 def type_check_do(token: Token) -> None:
     """DO Keyword pops two items from the stack"""
     pop_two_from_stack(token)
+
+def type_check_push_int(type_stack: TypeStack) -> TypeStack:
+    """Push an integer to the stack"""
+    type_stack.push(TokenType.INT)
+    return type_stack
 
 def type_check_divmod(token: Token) -> None:
     """DIV pops two items from the stack and divides second from the top one"""
@@ -334,18 +342,23 @@ def type_check_over(token: Token) -> None:
     STACK.append(b)
     STACK.append(a)
 
-def type_check_plus(token: Token) -> None:
+def type_check_plus(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop two integers from the stack and push the sum of the two values."""
-    a, b = pop_two_from_stack(token)
-    STACK.append(str(int(a) + int(b)))
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t1 != t2 != TokenType.INT:
+        error_message = f"PLUS intrinsic requires two integers. Got: {t1}, {t2}"
+        compiler_error("TYPE_ERROR", error_message, token)
+    type_stack.push(TokenType.INT)
+    return type_stack
 
-def type_check_print(token: Token) -> None:
+def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop an integer from the stack and print the value of it to the stdout."""
-    try:
-        integer: str = STACK.pop()
-    except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    check_popped_value_type(token, integer, expected_type='INT')
+    t = type_stack.pop()
+    if t != TokenType.INT:
+        error_message = f"PRINT intrinsic requires an integer. Got: {t}"
+        compiler_error("TYPE_ERROR", error_message, token)
+    return type_stack
 
 def type_check_puts(token: Token) -> None:
     """Pop a pointer from the stack and print the null-terminated buffer to stdout."""
