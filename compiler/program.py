@@ -94,7 +94,7 @@ def type_check_program(program: Program) -> None:
             type_stack = type_check_push_str(type_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
-            if   intrinsic == "DIVMOD":
+            if intrinsic == "DIVMOD":
                 type_stack = type_check_divmod(token, type_stack)
             elif intrinsic == "DROP":
                 type_stack = type_check_drop(token, type_stack)
@@ -102,19 +102,11 @@ def type_check_program(program: Program) -> None:
                 type_stack = type_check_dup(token, type_stack)
             elif intrinsic == "ENVP":
                 type_stack = type_check_push_ptr(type_stack)
-            elif intrinsic == "EQ":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "GE":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "GT":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+            elif intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
+                type_stack = type_check_comparison(token, type_stack)
             elif intrinsic == "HERE":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "INPUT":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "LE":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "LT":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "LOAD_BYTE":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
@@ -124,8 +116,6 @@ def type_check_program(program: Program) -> None:
                 type_stack = type_check_calculations(token, type_stack)
             elif intrinsic == "MUL":
                 type_stack = type_check_calculations(token, type_stack)
-            elif intrinsic == "NE":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "NTH":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "OVER":
@@ -216,6 +206,20 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(TokenType.INT)
     return type_stack
 
+def type_check_comparison(token: Token, type_stack: TypeStack) -> TypeStack:
+    """
+    Type check calculation comparison intrinsics like EQ or GE.
+    Comparison intrinsics take two elements from the stack and compares them.
+    It pushes the second element back to the stack and a boolean value of the comparison.
+    """
+    _  = type_stack.pop()
+    t2 = type_stack.pop()
+    if t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "EQ requires two values to the stack.", token)
+    type_stack.push(t2)
+    type_stack.push(TokenType.BOOL)
+    return type_stack
+
 def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     DIVMOD pops two items from the stack and divides second from the top one.
@@ -246,28 +250,6 @@ def type_check_dup(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(t1)
     return type_stack
 
-def type_check_eq(token: Token) -> None:
-    """
-    EQ takes two elements from the stack and checks if they are equal.
-    It pushes the second element to the stack and a boolean value of the comparison.
-    """
-    a, b = pop_two_from_stack(token)
-    check_popped_value_type(token, a, expected_type='INT')
-    check_popped_value_type(token, b, expected_type='INT')
-    STACK.append(a)
-    STACK.append(str(int(a==b)))
-
-def type_check_ge(token: Token) -> None:
-    """
-    GE takes two elements from the stack and checks if the top element >= the other.
-    It pushes the second element back to the stack and a boolean value of the comparison.
-    """
-    a, b = pop_two_from_stack(token)
-    check_popped_value_type(token, a, expected_type='INT')
-    check_popped_value_type(token, b, expected_type='INT')
-    STACK.append(a)
-    STACK.append(str(int(a>=b)))
-
 def type_check_nth(token: Token) -> None:
     """
     NTH pops one integer from the stack and pushes the Nth element from stack back to stack.
@@ -291,42 +273,9 @@ def type_check_nth(token: Token) -> None:
                     f"Cannot get {n+1}. element from the stack: Stack only contains {len(STACK)} elements.", token)
     STACK.append(nth_element)
 
-def type_check_gt(token: Token) -> None:
-    """
-    GT takes two elements from the stack and checks if the top element > the other.
-    It pushes the second element back to the stack and a boolean value of the comparison.
-    """
-    a, b = pop_two_from_stack(token)
-    check_popped_value_type(token, a, expected_type='INT')
-    check_popped_value_type(token, b, expected_type='INT')
-    STACK.append(a)
-    STACK.append(str(int(a>b)))
-
 def type_check_input() -> None:
     """INPUT reads from stdin to buffer and pushes the pointer to the buffer."""
     STACK.append("*buf s_buffer")
-
-def type_check_le(token: Token) -> None:
-    """
-    LE takes two elements from the stack and checks if the top element <= the other.
-    It pushes the second element back to the stack and a boolean value of the comparison.
-    """
-    a, b = pop_two_from_stack(token)
-    check_popped_value_type(token, a, expected_type='INT')
-    check_popped_value_type(token, b, expected_type='INT')
-    STACK.append(a)
-    STACK.append(str(int(a<=b)))
-
-def type_check_lt(token: Token) -> None:
-    """
-    LT takes two elements from the stack and checks if the top element < the other.
-    It pushes the second element back to the stack and a boolean value of the comparison.
-    """
-    a, b = pop_two_from_stack(token)
-    check_popped_value_type(token, a, expected_type='INT')
-    check_popped_value_type(token, b, expected_type='INT')
-    STACK.append(a)
-    STACK.append(str(int(a<b)))
 
 def type_check_load(token: Token) -> None:
     """
@@ -339,17 +288,6 @@ def type_check_load(token: Token) -> None:
     except IndexError:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
     check_popped_value_type(token, ptr, expected_type='PTR')
-
-def type_check_ne(token: Token) -> None:
-    """
-    NE takes two elements from the stack and checks if the values are not equal.
-    It pushes the second element back to the stack and a boolean value of the comparison.
-    """
-    a, b = pop_two_from_stack(token)
-    check_popped_value_type(token, a, expected_type='INT')
-    check_popped_value_type(token, b, expected_type='INT')
-    STACK.append(a)
-    STACK.append(str(int(a!=b)))
 
 def type_check_over(token: Token) -> None:
     """
