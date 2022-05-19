@@ -107,7 +107,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "HERE":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "INPUT":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_push_str(type_stack)
             elif intrinsic == "LOAD_BYTE":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "LOAD_QWORD":
