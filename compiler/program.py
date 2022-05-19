@@ -95,7 +95,7 @@ def type_check_program(program: Program) -> None:
             if   intrinsic == "DIVMOD":
                 type_stack = type_check_divmod(token, type_stack)
             elif intrinsic == "DROP":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_drop(token, type_stack)
             elif intrinsic == "DUP":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "ENVP":
@@ -223,12 +223,12 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(TokenType.INT)
     return type_stack
 
-def type_check_drop(token: Token) -> None:
+def type_check_drop(token: Token, type_stack: TypeStack) -> TypeStack:
     """DROP removes one item from the stack."""
-    try:
-        STACK.pop()
-    except IndexError:
+    t1 = type_stack.pop()
+    if t1 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", token)
+    return type_stack
 
 def type_check_dup(token: Token) -> None:
     """DUP duplicates the top element of the stack."""
