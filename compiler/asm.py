@@ -88,12 +88,6 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
             add_string_variable_asm(asm_file, token.value, op, constants)
         elif token.value.upper() == "HERE":
             add_string_variable_asm(asm_file, f'"{str(token.location)}"', op, constants)
-        elif op.type == OpType.PUSH_ARRAY:
-            value: str = token.value
-            elements: List[str] = value[value.find("(")+1:value.rfind(")")].split(',')
-            # Remove whitespaces from the elements list
-            elements = [element.strip().replace("'", '"') for element in elements]
-            add_array_asm(asm_file, elements, op, constants)
         elif token.value.upper() == 'INPUT':
             add_input_buffer_asm(asm_file, op, constants)
 
@@ -126,8 +120,6 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_else_asm(op, program)
     if op.type == OpType.ENDIF:
         return get_endif_asm(op)
-    if op.type == OpType.PUSH_ARRAY:
-        return get_push_array_asm(op)
     if op.type == OpType.PUSH_CHAR:
         return get_push_char_asm(op)
     if op.type == OpType.PUSH_INT:
@@ -269,24 +261,6 @@ def add_string_variable_asm(asm_file: str, string: str, op: Op, constants: List[
         for i in range(len_asm_file_start, len(file_lines)):
             f.write(file_lines[i])
 
-def add_array_asm(asm_file: str, array: list, op: Op, constants: List[Constant]) -> None:
-    """Writes a new array variable to assembly file in the .rodata section."""
-    with open(asm_file, 'r', encoding='utf-8') as f:
-        file_lines: List[str] = f.readlines()
-    with open(asm_file, 'w', encoding='utf-8') as f:
-        f.write(get_asm_file_start(constants))
-        for i, item in enumerate(array):
-            f.write(f'  s{op.id}_{i}: db {item},0\n')
-        f.write(f'  s_arr{op.id}: dq ')
-        for i in range(len(array)):
-            f.write(f's{op.id}_{i}, ')
-        f.write('0\n') # Array ends at NULL byte
-
-        # Rewrite lines
-        len_asm_file_start: int = len(get_asm_file_start(constants).split('\n')) - 1
-        for i in range(len_asm_file_start, len(file_lines)):
-            f.write(file_lines[i])
-
 def add_input_buffer_asm(asm_file: str, op: Op, constants: List[Constant]):
     """Writes a new input buffer variable to assembly file in the .rodata section."""
     with open(asm_file, 'r', encoding='utf-8') as f:
@@ -417,12 +391,6 @@ def get_else_asm(op: Op, program: Program) -> str:
 def get_endif_asm(op: Op) -> str:
     """ENDIF is a keyword for DO, ELIF or ELSE to jump to without additional functionality."""
     return f'ENDIF{op.id}:\n'
-
-def get_push_array_asm(op: Op) -> str:
-    """PUSH_ARRAY pushes a pointer to the array to the stack."""
-    op_asm: str  = f'  mov rsi, s_arr{op.id} ; Pointer to array\n'
-    op_asm      +=  '  push rsi\n'
-    return op_asm
 
 def get_push_char_asm(op: Op) -> str:
     """Return the assembly code for PUSH_CHAR Operand."""

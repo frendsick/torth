@@ -12,9 +12,7 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
     program: List[Op] = []
     for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()
-        if token.type == TokenType.ARRAY:
-            op_type = OpType.PUSH_ARRAY
-        elif token.type == TokenType.BOOL:
+        if token.type == TokenType.BOOL:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.CHAR:
             op_type = OpType.PUSH_CHAR
@@ -83,8 +81,6 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.ELIF:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.IF:
-            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
-        elif op.type == OpType.PUSH_ARRAY:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_CHAR:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)

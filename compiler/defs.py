@@ -81,7 +81,6 @@ class OpType(Enum):
     ENDIF=auto()
     IF=auto()
     INTRINSIC=auto()
-    PUSH_ARRAY=auto()
     PUSH_CHAR=auto()
     PUSH_INT=auto()
     PUSH_PTR=auto()
@@ -90,7 +89,6 @@ class OpType(Enum):
 
 class TokenType(Enum):
     """Available Types for Token objects"""
-    ARRAY=auto()
     BOOL=auto()
     CHAR=auto()
     INT=auto()

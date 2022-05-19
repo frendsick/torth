@@ -241,8 +241,6 @@ def get_token_type(token_text: str) -> TokenType:
     # Keywords are case insensitive
     if token_text.upper() in keywords:
         return TokenType.KEYWORD
-    if re.search(r'ARRAY\(.+\)', token_text.upper()):
-        return TokenType.ARRAY
     if token_text.upper() in {'TRUE', 'FALSE'}:
         return TokenType.BOOL
     if len(token_text) == 3 and token_text[0] == token_text[-1] == "'":
