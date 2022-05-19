@@ -81,6 +81,7 @@ class OpType(Enum):
     ENDIF=auto()
     IF=auto()
     INTRINSIC=auto()
+    PUSH_BOOL=auto()
     PUSH_CHAR=auto()
     PUSH_INT=auto()
     PUSH_PTR=auto()

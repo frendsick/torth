@@ -13,7 +13,7 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
     for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()
         if token.type == TokenType.BOOL:
-            op_type = OpType.PUSH_INT
+            op_type = OpType.PUSH_BOOL
         elif token.type == TokenType.CHAR:
             op_type = OpType.PUSH_CHAR
         elif token.type == TokenType.INT:
@@ -82,6 +82,8 @@ def type_check_program(program: Program) -> None:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.IF:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
+        elif op.type == OpType.PUSH_BOOL:
+            type_stack = type_check_push_bool(type_stack)
         elif op.type == OpType.PUSH_CHAR:
             type_stack = type_check_push_char(type_stack)
         elif op.type == OpType.PUSH_INT:
@@ -175,6 +177,11 @@ def pop_two_from_stack(token: Token) -> Tuple[str, str]:
 def type_check_do(token: Token) -> None:
     """DO Keyword pops two items from the stack"""
     pop_two_from_stack(token)
+
+def type_check_push_bool(type_stack: TypeStack) -> TypeStack:
+    """Push a boolean to the stack"""
+    type_stack.push(TokenType.BOOL)
+    return type_stack
 
 def type_check_push_char(type_stack: TypeStack) -> TypeStack:
     """Push a character to the stack"""
