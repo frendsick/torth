@@ -358,7 +358,7 @@ def type_check_plus(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop two integers from the stack and push the sum of the two values."""
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t1 != t2 != TokenType.INT:
+    if t1 != TokenType.INT or t2 != TokenType.INT:
         error_message = f"PLUS intrinsic requires two integers. Got: {t1}, {t2}"
         compiler_error("TYPE_ERROR", error_message, token)
     type_stack.push(TokenType.INT)
