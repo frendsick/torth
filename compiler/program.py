@@ -101,7 +101,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "DUP":
                 type_stack = type_check_dup(token, type_stack)
             elif intrinsic == "ENVP":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_push_ptr(type_stack)
             elif intrinsic == "EQ":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "GE":
