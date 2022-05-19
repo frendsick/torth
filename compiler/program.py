@@ -125,7 +125,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "PRINT":
                 type_stack = type_check_print(token, type_stack)
             elif intrinsic == "PUTS":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_puts(token, type_stack)
             elif intrinsic == "ROT":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "STORE_BYTE":
@@ -302,15 +302,22 @@ def type_check_over(token: Token) -> None:
 def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop an integer from the stack and print the value of it to the stdout."""
     t = type_stack.pop()
+    error_message = f"PRINT intrinsic requires an integer. Got: {t}"
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
     if t != TokenType.INT:
-        error_message = f"PRINT intrinsic requires an integer. Got: {t}"
         compiler_error("TYPE_ERROR", error_message, token)
     return type_stack
 
-def type_check_puts(token: Token) -> None:
-    """Pop a pointer from the stack and print the null-terminated buffer to stdout."""
-    string: str = STACK.pop()
-    check_popped_value_type(token, string, expected_type='STR')
+def type_check_puts(token: Token, type_stack: TypeStack) -> TypeStack:
+    """Pop a pointer to string from the stack and print the null-terminated buffer to stdout."""
+    t = type_stack.pop()
+    error_message = f"PUTS intrinsic requires a string. Got: {t}"
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
+    if t != TokenType.STR:
+        compiler_error("TYPE_ERROR", error_message, token)
+    return type_stack
 
 def type_check_rot(token: Token) -> None:
     """
