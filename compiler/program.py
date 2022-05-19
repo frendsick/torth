@@ -5,7 +5,7 @@ import subprocess
 from typing import List, Tuple
 from compiler.defs import Intrinsic, Memory, Op, OpType, Program
 from compiler.defs import STACK, Token, TokenType, TypeStack
-from compiler.utils import check_popped_value_type, compiler_error
+from compiler.utils import compiler_error
 
 def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
@@ -108,10 +108,16 @@ def type_check_program(program: Program) -> None:
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "INPUT":
                 type_stack = type_check_push_str(type_stack)
-            elif intrinsic == "LOAD_BYTE":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "LOAD_QWORD":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+            elif intrinsic == "LOAD_BOOL":
+                type_stack = type_check_load(token, type_stack, TokenType.BOOL)
+            elif intrinsic == "LOAD_CHAR":
+                type_stack = type_check_load(token, type_stack, TokenType.CHAR)
+            elif intrinsic == "LOAD_INT":
+                type_stack = type_check_load(token, type_stack, TokenType.INT)
+            elif intrinsic == "LOAD_PTR":
+                type_stack = type_check_load(token, type_stack, TokenType.PTR)
+            elif intrinsic == "LOAD_STR":
+                type_stack = type_check_load(token, type_stack, TokenType.STR)
             elif intrinsic == "MINUS":
                 type_stack = type_check_calculations(token, type_stack)
             elif intrinsic == "MUL":
@@ -128,10 +134,16 @@ def type_check_program(program: Program) -> None:
                 type_stack = type_check_puts(token, type_stack)
             elif intrinsic == "ROT":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "STORE_BYTE":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "STORE_QWORD":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+            elif intrinsic == "STORE_BOOL":
+                type_stack = type_check_store(token, type_stack, TokenType.BOOL)
+            elif intrinsic == "STORE_CHAR":
+                type_stack = type_check_store(token, type_stack, TokenType.CHAR)
+            elif intrinsic == "STORE_INT":
+                type_stack = type_check_store(token, type_stack, TokenType.INT)
+            elif intrinsic == "STORE_PTR":
+                type_stack = type_check_store(token, type_stack, TokenType.PTR)
+            elif intrinsic == "STORE_STR":
+                type_stack = type_check_store(token, type_stack, TokenType.STR)
             elif intrinsic == "SWAP":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SWAP2":
@@ -277,17 +289,19 @@ def type_check_input() -> None:
     """INPUT reads from stdin to buffer and pushes the pointer to the buffer."""
     STACK.append("*buf s_buffer")
 
-def type_check_load(token: Token) -> None:
+def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType) -> TypeStack:
     """
-    LOAD variants load certain size value from where a pointer is pointing to.
+    LOAD variants load certain type of value from where a pointer is pointing to.
     It takes one pointer from the stack and pushes back the dereferenced pointer value.
     Different LOAD variants: LOAD_BYTE, LOAD_QWORD.
     """
-    try:
-        ptr: str = STACK.pop()
-    except IndexError:
+    t = type_stack.pop()
+    if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
-    check_popped_value_type(token, ptr, expected_type='PTR')
+    if t != TokenType.PTR:
+        compiler_error("TYPE_ERROR", f"{token.value.upper()} requires PTR to the top of the stack Got: {t}")
+    type_stack.push(loaded_type)
+    return type_stack
 
 def type_check_over(token: Token) -> None:
     """
@@ -334,18 +348,20 @@ def type_check_rot(token: Token) -> None:
     STACK.append(a)
     STACK.append(c)
 
-def type_check_store(token: Token) -> None:
+def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType) -> TypeStack:
     """
-    STORE variants store certain size value from where a pointer is pointing to.
+    STORE variants store a value of certain type to where a pointer is pointing to.
     It takes a pointer and a value from the stack and loads the value to the pointer address.
-    Different STORE variants: STORE_BYTE, STORE_QWORD.
+    Different STORE variants: STORE_BOOL, STORE_CHAR, STORE_INT, STORE_PTR, STORE_STR
     """
-    try:
-        _value, ptr = pop_two_from_stack(token)
-    except IndexError:
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", \
             f"{token.value.upper()} requires two values on the stack, PTR and value.", token)
-    check_popped_value_type(token, ptr, expected_type='PTR')
+    if t1 != TokenType.PTR or t2 != stored_type:
+        compiler_error("TYPE_ERROR", f"Expected: {TokenType.PTR}, {stored_type}.\nGot: {t1}, {t2}", token)
+    return type_stack
 
 def type_check_swap(token: Token) -> None:
     """

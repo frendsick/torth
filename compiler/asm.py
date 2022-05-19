@@ -156,9 +156,15 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_le_asm()
         if intrinsic == "LT":
             return get_lt_asm()
-        if intrinsic == "LOAD_BYTE":
+        if intrinsic == "LOAD_BOOL":
             return get_load_asm('BYTE')
-        if intrinsic == "LOAD_QWORD":
+        if intrinsic == "LOAD_CHAR":
+            return get_load_asm('BYTE')
+        if intrinsic == "LOAD_INT":
+            return get_load_asm('QWORD')
+        if intrinsic == "LOAD_PTR":
+            return get_load_asm('QWORD')
+        if intrinsic == "LOAD_STR":
             return get_load_asm('QWORD')
         if intrinsic == "MINUS":
             return get_minus_asm()
@@ -178,10 +184,16 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_puts_asm()
         if intrinsic == "ROT":
             return get_rot_asm()
-        if intrinsic == "STORE_BYTE":
-            return get_store_asm('BYTE')
-        if intrinsic == "STORE_QWORD":
-            return get_store_asm('QWORD')
+        if intrinsic == "STORE_BOOL":
+            return get_load_asm('BYTE')
+        if intrinsic == "STORE_CHAR":
+            return get_load_asm('BYTE')
+        if intrinsic == "STORE_INT":
+            return get_load_asm('QWORD')
+        if intrinsic == "STORE_PTR":
+            return get_load_asm('QWORD')
+        if intrinsic == "STORE_STR":
+            return get_load_asm('QWORD')
         if intrinsic == "SWAP":
             return get_swap_asm()
         if intrinsic == "SWAP2":
