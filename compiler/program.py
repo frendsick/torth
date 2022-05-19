@@ -93,7 +93,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if   intrinsic == "DIVMOD":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_divmod(token, type_stack)
             elif intrinsic == "DROP":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "DUP":
@@ -209,17 +209,19 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(TokenType.INT)
     return type_stack
 
-def type_check_divmod(token: Token) -> None:
-    """DIV pops two items from the stack and divides second from the top one"""
-    a, b = pop_two_from_stack(token)
-    check_popped_value_type(token, a, expected_type='INT')
-    check_popped_value_type(token, b, expected_type='INT')
-
-    try:
-        STACK.append(str(int(a) %  int(b)))
-        STACK.append(str(int(a) // int(b)))
-    except ZeroDivisionError:
-        compiler_error("DIVISION_BY_ZERO", "Division by zero is not possible.", token)
+def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
+    """
+    DIVMOD pops two items from the stack and divides second from the top one.
+    Pop two integers from the stack and push the remainder and the quotient of the two values.
+    """
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t1 != TokenType.INT or t2 != TokenType.INT:
+        error_message = f"{token.value.upper()} intrinsic requires two integers. Got: {t1}, {t2}"
+        compiler_error("TYPE_ERROR", error_message, token)
+    type_stack.push(TokenType.INT)
+    type_stack.push(TokenType.INT)
+    return type_stack
 
 def type_check_drop(token: Token) -> None:
     """DROP removes one item from the stack."""
