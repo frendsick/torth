@@ -83,13 +83,13 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.IF:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_CHAR:
-            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
+            type_stack = type_check_push_char(type_stack)
         elif op.type == OpType.PUSH_INT:
             type_stack = type_check_push_int(type_stack)
-        elif op.type == OpType.PUSH_STR:
-            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_PTR:
-            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
+            type_stack = type_check_push_ptr(type_stack)
+        elif op.type == OpType.PUSH_STR:
+            type_stack = type_check_push_str(type_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if   intrinsic == "DIVMOD":
@@ -176,9 +176,24 @@ def type_check_do(token: Token) -> None:
     """DO Keyword pops two items from the stack"""
     pop_two_from_stack(token)
 
+def type_check_push_char(type_stack: TypeStack) -> TypeStack:
+    """Push a character to the stack"""
+    type_stack.push(TokenType.CHAR)
+    return type_stack
+
 def type_check_push_int(type_stack: TypeStack) -> TypeStack:
     """Push an integer to the stack"""
     type_stack.push(TokenType.INT)
+    return type_stack
+
+def type_check_push_ptr(type_stack: TypeStack) -> TypeStack:
+    """Push a pointer to the stack"""
+    type_stack.push(TokenType.PTR)
+    return type_stack
+
+def type_check_push_str(type_stack: TypeStack) -> TypeStack:
+    """Push a string to the stack"""
+    type_stack.push(TokenType.STR)
     return type_stack
 
 def type_check_divmod(token: Token) -> None:
