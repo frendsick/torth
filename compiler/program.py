@@ -236,18 +236,18 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
 
 def type_check_drop(token: Token, type_stack: TypeStack) -> TypeStack:
     """DROP removes one item from the stack."""
-    t1 = type_stack.pop()
-    if t1 is None:
+    t = type_stack.pop()
+    if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", token)
     return type_stack
 
 def type_check_dup(token: Token, type_stack: TypeStack) -> TypeStack:
     """DUP duplicates the top item from the stack."""
-    t1 = type_stack.pop()
-    if t1 is None:
+    t = type_stack.pop()
+    if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.", token)
-    type_stack.push(t1)
-    type_stack.push(t1)
+    type_stack.push(t)
+    type_stack.push(t)
     return type_stack
 
 def type_check_nth(token: Token) -> None:
