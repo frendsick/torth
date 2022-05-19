@@ -119,7 +119,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "LOAD_QWORD":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "MINUS":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_minus(token, type_stack)
             elif intrinsic == "MUL":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "NE":
@@ -318,10 +318,15 @@ def type_check_load(token: Token) -> None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
     check_popped_value_type(token, ptr, expected_type='PTR')
 
-def type_check_minus(token: Token) -> None:
-    """Pop two integers from the stack and decrement the second value from the top one."""
-    a, b = pop_two_from_stack(token)
-    STACK.append(str(int(a) - int(b)))
+def type_check_minus(token: Token, type_stack: TypeStack) -> TypeStack:
+    """Pop two integers from the stack and push the difference of the two values."""
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t1 != TokenType.INT or t2 != TokenType.INT:
+        error_message = f"PLUS intrinsic requires two integers. Got: {t1}, {t2}"
+        compiler_error("TYPE_ERROR", error_message, token)
+    type_stack.push(TokenType.INT)
+    return type_stack
 
 def type_check_mul(token: Token) -> None:
     """Pop two integers from the stack and push the product of the two values."""
