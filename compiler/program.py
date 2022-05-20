@@ -145,9 +145,9 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "STORE_STR":
                 type_stack = type_check_store(token, type_stack, TokenType.STR)
             elif intrinsic == "SWAP":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_swap(token, type_stack)
             elif intrinsic == "SWAP2":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_swap2(token, type_stack)
             elif intrinsic == "SYSCALL0":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "SYSCALL1":
@@ -363,31 +363,35 @@ def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType
         compiler_error("TYPE_ERROR", f"Expected: {TokenType.PTR}, {stored_type}.\nGot: {t1}, {t2}", token)
     return type_stack
 
-def type_check_swap(token: Token) -> None:
+def type_check_swap(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     SWAP Intrinsic swaps two top elements in the stack.
     Example with the stack's top element being the rightmost: a b -> b a
     """
-    a, b = pop_two_from_stack(token)
-    STACK.append(b)
-    STACK.append(a)
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "SWAP intsinsic requires two values in the stack.", token)
+    type_stack.push(t1)
+    type_stack.push(t2)
+    return type_stack
 
-def type_check_swap2(token: Token) -> None:
+def type_check_swap2(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     SWAP2 Intrinsic swaps the two pairs of two top elements in the stack.
     Example with the stack's top element being the rightmost: a b c d -> c d a b
     """
-    try:
-        a = STACK.pop()
-        b = STACK.pop()
-        c = STACK.pop()
-        d = STACK.pop()
-    except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", token)
-    STACK.append(b)
-    STACK.append(a)
-    STACK.append(d)
-    STACK.append(c)
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    t3 = type_stack.pop()
+    t4 = type_stack.pop()
+    if t4 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "SWAP2 intsinsic requires four values in the stack.", token)
+    type_stack.push(t2)
+    type_stack.push(t1)
+    type_stack.push(t4)
+    type_stack.push(t3)
+    return type_stack
 
 def type_check_syscall(token: Token, param_count: int) -> None:
     """
