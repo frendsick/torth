@@ -72,17 +72,13 @@ def type_check_program(program: Program) -> None:
     """
 
     type_stack = TypeStack()
-    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELSE', 'ENDIF', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELIF', 'ELSE', 'ENDIF', 'IF', 'WHILE' ]
     for op in program:
         token: Token = op.token
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
         if op.type == OpType.DO:
             type_stack = type_check_do(token, type_stack)
-        elif op.type == OpType.ELIF:
-            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
-        elif op.type == OpType.IF:
-            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.PUSH_BOOL:
             type_stack = type_check_push_bool(type_stack)
         elif op.type == OpType.PUSH_CHAR:
