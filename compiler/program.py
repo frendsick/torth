@@ -1,6 +1,7 @@
 """
 Functions for compile-time type checking and running the Torth program
 """
+import re
 import subprocess
 from typing import List, Tuple
 from compiler.defs import Intrinsic, Memory, Op, OpType, Program
@@ -148,20 +149,8 @@ def type_check_program(program: Program) -> None:
                 type_stack = type_check_swap(token, type_stack)
             elif intrinsic == "SWAP2":
                 type_stack = type_check_swap2(token, type_stack)
-            elif intrinsic == "SYSCALL0":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "SYSCALL1":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "SYSCALL2":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "SYSCALL3":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "SYSCALL4":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "SYSCALL5":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-            elif intrinsic == "SYSCALL6":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+            elif re.fullmatch(r'SYSCALL[0-6]', intrinsic):
+                type_stack = type_check_syscall(token, type_stack, int(intrinsic[-1]))
             else:
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
         else:
@@ -397,7 +386,7 @@ def type_check_swap2(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(t3)
     return type_stack
 
-def type_check_syscall(token: Token, param_count: int) -> None:
+def type_check_syscall(token: Token, type_stack: TypeStack, param_count: int) -> TypeStack:
     """
     SYSCALL intrinsic variants call a Linux syscall.
     Syscalls require different amount of arguments from 0 to 6.
@@ -407,17 +396,7 @@ def type_check_syscall(token: Token, param_count: int) -> None:
 
     https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#tables
     """
-    try:
-        get_stack_after_syscall(STACK, param_count)
-    except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", token)
-
-def get_stack_after_syscall(stack: List[str], param_count: int) -> None:
-    """
-    Pop N+1 elements from the stack of SYSCALL Intrinsic variants
-    where N is 2 for SYSCALL2 and 3 for SYSCALL3.
-    """
-    _syscall = stack.pop()
-    for _i in range(param_count):
-        stack.pop()
-    stack.append('0') # Syscall return value is 0 if no errors occurred
+    for _ in range(param_count+1):
+        type_stack.pop()
+    type_stack.push(TokenType.INT)  # Syscall return code
+    return type_stack
