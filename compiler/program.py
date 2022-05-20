@@ -3,7 +3,7 @@ Functions for compile-time type checking and running the Torth program
 """
 import re
 import subprocess
-from typing import List, Tuple
+from typing import List
 from compiler.defs import Intrinsic, Memory, Op, OpType, Program
 from compiler.defs import STACK, Token, TokenType, TypeStack
 from compiler.utils import compiler_error
@@ -162,6 +162,7 @@ def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
     t2 = type_stack.pop()
     if t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "DO requires two values to the stack.", token)
+    return type_stack
 
 def type_check_push_bool(type_stack: TypeStack) -> TypeStack:
     """Push a boolean to the stack"""
