@@ -78,7 +78,7 @@ def type_check_program(program: Program) -> None:
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
         if op.type == OpType.DO:
-            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
+            type_stack = type_check_do(token, type_stack)
         elif op.type == OpType.ELIF:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
         elif op.type == OpType.IF:
@@ -156,18 +156,12 @@ def type_check_program(program: Program) -> None:
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
 
-def pop_two_from_stack(token: Token) -> Tuple[str, str]:
-    """Pop two items from the virtual stack and return a tuple containing those"""
-    try:
-        b: str = STACK.pop()
-        a: str = STACK.pop()
-    except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", token)
-    return a, b
-
-def type_check_do(token: Token) -> None:
+def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
     """DO Keyword pops two items from the stack"""
-    pop_two_from_stack(token)
+    _  = type_stack.pop()
+    t2 = type_stack.pop()
+    if t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "DO requires two values to the stack.", token)
 
 def type_check_push_bool(type_stack: TypeStack) -> TypeStack:
     """Push a boolean to the stack"""
