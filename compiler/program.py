@@ -133,7 +133,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "PUTS":
                 type_stack = type_check_puts(token, type_stack)
             elif intrinsic == "ROT":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_rot(token, type_stack)
             elif intrinsic == "STORE_BOOL":
                 type_stack = type_check_store(token, type_stack, TokenType.BOOL)
             elif intrinsic == "STORE_CHAR":
@@ -333,20 +333,20 @@ def type_check_puts(token: Token, type_stack: TypeStack) -> TypeStack:
         compiler_error("TYPE_ERROR", error_message, token)
     return type_stack
 
-def type_check_rot(token: Token) -> None:
+def type_check_rot(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     ROT Intrinsic rotates the top three elements of the stack so that the third becomes first.
     Example with the stack's top element being the rightmost: a b c -> b c a
     """
-    try:
-        a = STACK.pop()
-        b = STACK.pop()
-        c = STACK.pop()
-    except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", "The stack does not contain three elements to rotate.", token)
-    STACK.append(b)
-    STACK.append(a)
-    STACK.append(c)
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    t3 = type_stack.pop()
+    if t3 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "ROT intsinsic requires four values in the stack.", token)
+    type_stack.push(t2)
+    type_stack.push(t1)
+    type_stack.push(t3)
+    return type_stack
 
 def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType) -> TypeStack:
     """
