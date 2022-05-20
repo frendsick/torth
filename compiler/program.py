@@ -125,7 +125,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "NTH":
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "OVER":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_over(token, type_stack)
             elif intrinsic == "PLUS":
                 type_stack = type_check_calculations(token, type_stack)
             elif intrinsic == "PRINT":
@@ -303,15 +303,19 @@ def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType)
     type_stack.push(loaded_type)
     return type_stack
 
-def type_check_over(token: Token) -> None:
+def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     OVER Intrinsic pushes a copy of the element one behind the top element of the stack.
     Example with the stack's top element being the rightmost: a b -> a b a
     """
-    a, b = pop_two_from_stack(token)
-    STACK.append(a)
-    STACK.append(b)
-    STACK.append(a)
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "OVER intsinsic requires four values in the stack.", token)
+    type_stack.push(t2)
+    type_stack.push(t1)
+    type_stack.push(t2)
+    return type_stack
 
 def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop an integer from the stack and print the value of it to the stdout."""
