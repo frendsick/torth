@@ -120,7 +120,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "MUL":
                 type_stack = type_check_calculations(token, type_stack)
             elif intrinsic == "NTH":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+                type_stack = type_check_nth(token, type_stack)
             elif intrinsic == "OVER":
                 type_stack = type_check_over(token, type_stack)
             elif intrinsic == "PLUS":
@@ -244,28 +244,19 @@ def type_check_dup(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(t)
     return type_stack
 
-def type_check_nth(token: Token) -> None:
+# TODO: Push the correct type from the stack instead of TokenType.ANY
+def type_check_nth(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     NTH pops one integer from the stack and pushes the Nth element from stack back to stack.
     Note that the Nth is counted without the popped integer.
     Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
     """
-    # The top element in the stack is the N
-    try:
-        n: int = int(STACK.pop()) - 1
-        if n < 0:
-            raise ValueError
-    except IndexError:
-        compiler_error("POP_FROM_EMPTY_STACK", "Not enough values in the stack.", token)
-    except ValueError:
-        compiler_error("STACK_VALUE_ERROR", "First element in the stack is not a non-zero positive integer.", token)
-    try:
-        stack_index: int = len(STACK) - 1
-        nth_element: str = STACK[stack_index - n]
-    except IndexError:
-        compiler_error("NOT_ENOUGH_ELEMENTS_IN_STACK", \
-                    f"Cannot get {n+1}. element from the stack: Stack only contains {len(STACK)} elements.", token)
-    STACK.append(nth_element)
+    t = type_stack.pop()
+    if t not in {TokenType.ANY, TokenType.INT}:
+        error_message = f"{token.value.upper()} intrinsic requires an integer. Got: {t}"
+        compiler_error("TYPE_ERROR", error_message, token)
+    type_stack.push(TokenType.ANY)
+    return type_stack
 
 def type_check_input() -> None:
     """INPUT reads from stdin to buffer and pushes the pointer to the buffer."""
@@ -305,7 +296,7 @@ def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     error_message = f"PRINT intrinsic requires an integer. Got: {t}"
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
-    if t != TokenType.INT:
+    if t not in {TokenType.ANY, TokenType.INT}:
         compiler_error("TYPE_ERROR", error_message, token)
     return type_stack
 
