@@ -86,8 +86,6 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
 
         if op.type == OpType.PUSH_STR:
             add_string_variable_asm(asm_file, token.value, op, constants)
-        elif token.value.upper() == "HERE":
-            add_string_variable_asm(asm_file, f'"{str(token.location)}"', op, constants)
         elif token.value.upper() == 'INPUT':
             add_input_buffer_asm(asm_file, op, constants)
 
@@ -148,8 +146,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_ge_asm()
         if intrinsic == "GT":
             return get_gt_asm()
-        if intrinsic == "HERE":
-            return get_here_asm(op)
         if intrinsic == "INPUT":
             return get_input_asm(op)
         if intrinsic == "LE":
@@ -511,10 +507,6 @@ def get_gt_asm() -> str:
     It pushes the second element back to the stack and a boolean value of the comparison.
     """
     return get_comparison_asm("cmovg")
-
-def get_here_asm(op: Op) -> str:
-    """HERE is supposed to be an intrinsic that prints the token's location to stdout."""
-    compiler_error("NOT_IMPLEMENTED", "HERE intrinsic is not implemented yet.", op.token)
 
 def get_input_asm(op: Op) -> str:
     """INPUT reads from stdin to buffer and pushes the pointer to the buffer."""

@@ -101,8 +101,6 @@ def type_check_program(program: Program) -> None:
                 type_stack = type_check_push_ptr(type_stack)
             elif intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
                 type_stack = type_check_comparison(token, type_stack)
-            elif intrinsic == "HERE":
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
             elif intrinsic == "INPUT":
                 type_stack = type_check_push_str(type_stack)
             elif intrinsic == "LOAD_BOOL":
