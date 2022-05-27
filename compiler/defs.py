@@ -96,6 +96,7 @@ class OpType(Enum):
 
 class TokenType(Enum):
     """Available Types for Token objects"""
+    ANY=auto()
     BOOL=auto()
     CHAR=auto()
     INT=auto()

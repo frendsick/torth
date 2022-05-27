@@ -192,7 +192,8 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t1 != TokenType.INT or t2 != TokenType.INT:
+    if t1 not in {TokenType.ANY, TokenType.INT} \
+    or t2 not in {TokenType.ANY, TokenType.INT}:
         error_message = f"{token.value.upper()} intrinsic requires two integers. Got: {t1}, {t2}"
         compiler_error("TYPE_ERROR", error_message, token)
     type_stack.push(TokenType.INT)
@@ -219,7 +220,8 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t1 != TokenType.INT or t2 != TokenType.INT:
+    if t1 not in {TokenType.ANY, TokenType.INT} \
+    or t2 not in {TokenType.ANY, TokenType.INT}:
         error_message = f"{token.value.upper()} intrinsic requires two integers. Got: {t1}, {t2}"
         compiler_error("TYPE_ERROR", error_message, token)
     type_stack.push(TokenType.INT)
@@ -343,7 +345,8 @@ def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType
     if t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", \
             f"{token.value.upper()} requires two values on the stack, PTR and value.", token)
-    if t1 != TokenType.PTR or t2 != stored_type:
+    if t1 not in {TokenType.ANY, TokenType.PTR} \
+    or t2 not in {TokenType.ANY, stored_type}:
         compiler_error("TYPE_ERROR", f"Expected: {TokenType.PTR}, {stored_type}.\nGot: {t1}, {t2}", token)
     return type_stack
 
