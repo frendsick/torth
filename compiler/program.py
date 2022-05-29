@@ -44,7 +44,7 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
         elif function_name_exists(token_value, memories):
             op_type = OpType.PUSH_PTR
         else:
-            compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found")
+            compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found", token)
 
         program.append( Op(op_id, op_type, token) )
     return program
