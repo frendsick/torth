@@ -7,7 +7,7 @@ from typing import List
 from compiler.asm import generate_asm, initialize_asm
 from compiler.defs import Constant, Function, Memory, Program, Token
 from compiler.lex import get_tokens_from_functions
-from compiler.program import generate_program
+from compiler.program import generate_program, type_check_program
 
 def compile_asm(asm_file: str) -> None:
     """Compile the generated assembly source code with NASM."""
@@ -26,8 +26,7 @@ def compile_code(input_file: str, output_file: str, \
     # Generate Program from tokens and type check it with virtual stack
     program: Program = generate_program(tokens, memories)
 
-    # TODO: Fix type checking and enable it
-    #type_check_program(program)
+    type_check_program(program)
 
     # Generate assembly from Program
     asm_file: str = input_file.replace('.torth', '.asm')

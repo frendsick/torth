@@ -5,7 +5,7 @@ It's like [Porth](https://gitlab.com/tsoding/porth) but written by a first-time 
 Torth is planned to be
 
 - [x] Compiled
-- [ ] Statically typed
+- [x] Statically typed
 - [x] Native (Linux x86_64)
 - [x] Stack-based (just like Porth)
 - [x] [Turing complete](examples/rule110.torth)
