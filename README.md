@@ -26,6 +26,11 @@ $ ./torth.py --run hello.torth
 Hello, World!
 ```
 
+## Documentation
+
+- [Keywords](./docs/keywords.md)
+- [Type checking](./docs/type_checking.md)
+
 ## Examples
 
 Hello World
@@ -75,7 +80,3 @@ function Main -> :
     "Sum of all numbers not divisible by 3 or 5: " OutputRow
 end
 ```
-
-## Documentation
-
-- [Keywords](./docs/keywords.md)
