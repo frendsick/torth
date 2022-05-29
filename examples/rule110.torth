@@ -1,3 +1,4 @@
+include "lib/std.torth"
 const RULES_COUNT 8 end
 const BOARD_SIZE 40 end
 
@@ -7,29 +8,29 @@ memory previous_board BOARD_SIZE end  // int previous_board[BOARD_SIZE]
 memory pattern 3 end                  // int pattern[3]
 
 function initialize_rules -> :
-  rules                   // Pointer to table
-  0 over     store_byte   // table[0] == 0  // 111
-  1 over 1 + store_byte   // table[1] == 1  // 110
-  1 over 2 + store_byte   // table[2] == 1  // 101
-  0 over 3 + store_byte   // table[3] == 0  // 100
-  1 over 4 + store_byte   // table[4] == 1  // 011
-  1 over 5 + store_byte   // table[5] == 1  // 010
-  1 over 6 + store_byte   // table[6] == 1  // 001
-  0 over 7 + store_byte   // table[7] == 0  // 000
+  rules                        // Pointer to table
+  u0 over        store_uint8   // table[0] == 0  // 111
+  u1 over 1 ptr+ store_uint8   // table[1] == 1  // 110
+  u1 over 2 ptr+ store_uint8   // table[2] == 1  // 101
+  u0 over 3 ptr+ store_uint8   // table[3] == 0  // 100
+  u1 over 4 ptr+ store_uint8   // table[4] == 1  // 011
+  u1 over 5 ptr+ store_uint8   // table[5] == 1  // 010
+  u1 over 6 ptr+ store_uint8   // table[6] == 1  // 001
+  u0 over 7 ptr+ store_uint8   // table[7] == 0  // 000
   drop
 end
 
 function initialize_board -> :
   current_board
-  1 over 2 + store_byte   // current_board[2] = 1
+  u1 over 2 ptr+ store_uint8   // current_board[2] = 1
   drop
 end
 
 // Sync previous_board with current_board
 function sync_boards -> :
   0 while dup BOARD_SIZE > do
-    dup current_board + load_BYTE
-    over previous_board + store_byte
+    dup current_board ptr+ load_uint8
+    over previous_board ptr+ store_uint8
     1 +
   done drop
 end
@@ -39,7 +40,7 @@ function print_iteration -> :
   0 while dup BOARD_SIZE > do
 
     // if(current_board[j] == 1)
-    if dup current_board + load_BYTE 1 == do
+    if dup current_board ptr+ load_uint8 1 == do
       "*" puts
     else
       " " puts
@@ -51,45 +52,45 @@ end
 
 function get_pattern board_index -> int :
   previous_board
-  over 1 - over + load_BYTE pattern     store_byte  // pattern[0] = previous_board[j-1]
-  over     over + load_BYTE pattern 1 + store_byte  // pattern[1] = previous_board[j]
-  over 1 + over + load_BYTE pattern 2 + store_byte  // pattern[2] = previous_board[j+1]
+  over 1 - over ptr+ load_uint8 pattern        store_uint8  // pattern[0] = previous_board[j-1]
+  over     over ptr+ load_uint8 pattern 1 ptr+ store_uint8  // pattern[1] = previous_board[j]
+  over 1 + over ptr+ load_uint8 pattern 2 ptr+ store_uint8  // pattern[2] = previous_board[j+1]
   drop
 end
 
 function output_board -> :
   "Board iteration: " puts
-  current_board while dup current_board BOARD_SIZE + > do
-    dup load_BYTE print
+  current_board while dup current_board BOARD_SIZE ptr+ > do
+    dup load_char print
   done drop "\n" puts
  end
 
 function set_board_index rule_index pattern_ptr -> :
-  rules + load_BYTE 3 nth current_board + store_byte
+  rules ptr+ load_uint8 3 nth current_board ptr+ store_uint8
 end
 
 function set_board_index rule_index board_index -> :
-  rules + load_BYTE over current_board + store_byte
+  rules ptr+ load_uint8 over current_board ptr+ store_uint8
 end
 
 // Sets the current_board index according to rules
 function update_board_index board_index -> int :
   pattern
-  if   dup load_QWORD 0x10101 == do // 111
+  if   dup load_int 0x10101 == do // 111
     0 set_board_index
-  elif dup load_QWORD 0x10100 == do // 110
+  elif dup load_int 0x10100 == do // 110
     1 set_board_index
-  elif dup load_QWORD 0x10001 == do // 101
+  elif dup load_int 0x10001 == do // 101
     2 set_board_index
-  elif dup load_QWORD 0x10000 == do // 100
+  elif dup load_int 0x10000 == do // 100
     3 set_board_index
-  elif dup load_QWORD 0x00101 == do // 011
+  elif dup load_int 0x00101 == do // 011
     4 set_board_index
-  elif dup load_QWORD 0x00100 == do // 010
+  elif dup load_int 0x00100 == do // 010
     5 set_board_index
-  elif dup load_QWORD 0x00001 == do // 001
+  elif dup load_int 0x00001 == do // 001
     6 set_board_index
-  elif dup load_QWORD 0x00000 == do // 000
+  elif dup load_int 0x00000 == do // 000
     7 set_board_index
   endif
   drop

@@ -1,3 +1,4 @@
+include "lib/std.torth"
 function OutputRow str_buf* str_len number -> number :
     puts dup print "\n" puts
 end
@@ -31,4 +32,5 @@ function Main -> :
     FizzBuzz
 
     "Sum of all numbers not divisible by 3 or 5: " OutputRow
+    drop  // Sum
 end
