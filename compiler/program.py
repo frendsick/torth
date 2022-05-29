@@ -184,6 +184,13 @@ def type_check_program(program: Program) -> None:
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
 
+    # The stack should be empty when the program ends.
+    # Output the remaining elements in the stack.
+    if type_stack.head is not None:
+        compiler_error("UNHANDLED_DATA_IN_STACK", \
+            "The stack should empty after the program has been executed.\n\n" + \
+            f"Unhandled Token types:\n{type_stack.print()}", token)
+
 def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     CAST_BOOL explicitely casts the top element of the stack to BOOL type.
