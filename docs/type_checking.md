@@ -33,3 +33,16 @@ function main -> :
   char_array puts "\n" puts
 end
 ```
+
+### INT, UINT8 - Integer
+
+64-bit integers are defined by just using the decimal or hexadecimal value. Hexadecimal integers are prepended with '0x'.
+
+8-bit unsigned integers are defined by prepending a number between 0-255 with the letter 'u'. Example: u42.
+
+```pascal
+  420       // 64-bit decimal
+  0x420     // 64-bit hexadecimal
+  u139      // uint8
+  - + print // 420 + 0x420 - 139 = 1337
+```
