@@ -45,15 +45,15 @@ function read int ptr int -> int ptr int : SYS_read syscall3 end
 // const char *pathname, char *const argv[], char *const envp[]
 function execve ptr arr arr -> int : SYS_execve syscall3 end
 // int status
-function exit int -> exit : SYS_exit syscall1 drop end
+function exit int -> exit : SYS_exit syscall1 end
 
 // Returns: fd
 function open_file file_name -> int :
   dup O_RDONLY swap SYS_open syscall2
   if    dup ENOENT  ==  do swap "File '" puts puts "' does not exist.\n" puts exit
-  elif  dup EACCESS ==  do swap "Cannot open file '" puts puts "': Permission denied.\n" puts exit
+  elif  dup EACCESS ==  do swap "Cannot open file '" puts str puts "': Permission denied.\n" puts exit
   elif  dup 0 > do
-    swap "Error occurred while opening the file '" puts puts "'.\nError code: " puts print exit
+    swap "Error occurred while opening the file '" puts str puts "'.\nError code: " puts dup print exit
   endif
 end
 
