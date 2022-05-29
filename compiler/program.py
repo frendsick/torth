@@ -194,7 +194,7 @@ def type_check_program(program: Program) -> None:
 def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     CAST_BOOL explicitely casts the top element of the stack to BOOL type.
-    The top element must be BOOL or INT to be cast to BOOL.
+    The top element must be an integer to be cast to BOOL.
     """
     t = type_stack.pop()
     if t is None:
