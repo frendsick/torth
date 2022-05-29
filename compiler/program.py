@@ -21,22 +21,32 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.STR:
             op_type = OpType.PUSH_STR
+        elif token_value == 'BOOL':
+            op_type = OpType.CAST_BOOL
         elif token_value == 'BREAK':
             op_type = OpType.BREAK
+        elif token_value == 'CHAR':
+            op_type = OpType.CAST_CHAR
         elif token_value == 'DO':
             op_type = OpType.DO
         elif token_value == 'DONE':
             op_type = OpType.DONE
+        elif token_value == 'ELIF':
+            op_type = OpType.ELIF
+        elif token_value == 'ELSE':
+            op_type = OpType.ELSE
         elif token_value == 'END':
             op_type = OpType.END
         elif token_value == 'ENDIF':
             op_type = OpType.ENDIF
         elif token_value == 'IF':
             op_type = OpType.IF
-        elif token_value == 'ELIF':
-            op_type = OpType.ELIF
-        elif token_value == 'ELSE':
-            op_type = OpType.ELSE
+        elif token_value == 'INT':
+            op_type = OpType.CAST_INT
+        elif token_value == 'PTR':
+            op_type = OpType.CAST_PTR
+        elif token_value == 'STR':
+            op_type = OpType.CAST_STR
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
         elif intrinsic_exists(token_value):
@@ -77,7 +87,17 @@ def type_check_program(program: Program) -> None:
         token: Token = op.token
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
-        if op.type == OpType.DO:
+        if op.type == OpType.CAST_BOOL:
+            type_stack = type_check_cast_bool(token, type_stack)
+        elif op.type == OpType.CAST_CHAR:
+            type_stack = type_check_cast_char(token, type_stack)
+        elif op.type == OpType.CAST_INT:
+            type_stack = type_check_cast_int(token, type_stack)
+        elif op.type == OpType.CAST_PTR:
+            type_stack = type_check_cast_ptr(token, type_stack)
+        elif op.type == OpType.CAST_STR:
+            type_stack = type_check_cast_str(token, type_stack)
+        elif op.type == OpType.DO:
             type_stack = type_check_do(token, type_stack)
         elif op.type == OpType.PUSH_BOOL:
             type_stack = type_check_push_bool(type_stack)
@@ -149,6 +169,56 @@ def type_check_program(program: Program) -> None:
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
+
+def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
+    """
+    CAST_BOOL explicitely casts the top element of the stack to BOOL type.
+    The top element must be BOOL or INT to be cast to BOOL.
+    """
+    t = type_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
+    if t not in {TokenType.BOOL, TokenType.INT}:
+        compiler_error("VALUE_ERROR", f"Only BOOL or INT can be cast to BOOL. Got: {t}", token)
+    type_stack.push(TokenType.STR)
+    return type_stack
+
+def type_check_cast_char(token: Token, type_stack: TypeStack) -> TypeStack:
+    """
+    CAST_CHAR explicitely casts the top element of the stack to CHAR type.
+    The top element must be INT, PTR or STR to be cast to CHAR.
+    """
+    t = type_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
+    if t is not TokenType.INT:
+        compiler_error("VALUE_ERROR", f"Only INT can be cast to CHAR. Got: {t}", token)
+    type_stack.push(TokenType.CHAR)
+    return type_stack
+
+def type_check_cast_int(token: Token, type_stack: TypeStack) -> TypeStack:
+    """CAST_INT explicitely casts the top element of the stack to INT type."""
+    t = type_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
+    type_stack.push(TokenType.INT)
+    return type_stack
+
+def type_check_cast_ptr(token: Token, type_stack: TypeStack) -> TypeStack:
+    """CAST_PTR explicitely casts the top element of the stack to PTR type."""
+    t = type_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
+    type_stack.push(TokenType.PTR)
+    return type_stack
+
+def type_check_cast_str(token: Token, type_stack: TypeStack) -> TypeStack:
+    """CAST_STR explicitely casts the top element of the stack to STR type."""
+    t = type_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
+    type_stack.push(TokenType.STR)
+    return type_stack
 
 def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
     """DO Keyword pops two items from the stack"""

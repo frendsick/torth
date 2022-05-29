@@ -104,7 +104,14 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
 
 def get_op_asm(op: Op, program: Program) -> str:
     """Generate assembly code for certain Op. Return assembly for the Op."""
-    if op.type in [OpType.IF]:
+    if op.type in {
+        OpType.CAST_BOOL,   # Casts affect only the type checking
+        OpType.CAST_CHAR,
+        OpType.CAST_INT,
+        OpType.CAST_PTR,
+        OpType.CAST_STR,
+        OpType.IF           # If is just a keyword which starts an IF-block
+        }:
         return ''
     if op.type == OpType.BREAK:
         return get_break_asm(op, program)

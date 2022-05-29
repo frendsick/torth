@@ -16,7 +16,9 @@ COLORS: Dict[str, str] = {
 
 class Keyword(Enum):
     """Available keywords in the Torth language"""
+    BOOL=auto()
     BREAK=auto()
+    CHAR=auto()
     CONST=auto()
     DO=auto()
     DONE=auto()
@@ -26,7 +28,10 @@ class Keyword(Enum):
     ENDIF=auto()
     FUNCTION=auto()
     IF=auto()
+    INT=auto()
     MEMORY=auto()
+    PTR=auto()
+    STR=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -78,6 +83,11 @@ class Intrinsic(Enum):
 class OpType(Enum):
     """Available operand types in the Torth language"""
     BREAK=auto()
+    CAST_BOOL=auto()
+    CAST_CHAR=auto()
+    CAST_INT=auto()
+    CAST_PTR=auto()
+    CAST_STR=auto()
     DO=auto()
     DONE=auto()
     ELIF=auto()
