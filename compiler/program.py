@@ -381,7 +381,7 @@ def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:
     t1 = type_stack.pop()
     t2 = type_stack.pop()
     if t2 is None:
-        compiler_error("POP_FROM_EMPTY_STACK", "OVER intrinsic requires four values in the stack.", token)
+        compiler_error("POP_FROM_EMPTY_STACK", "OVER intrinsic requires two values in the stack.", token)
     type_stack.push(t2)
     type_stack.push(t1)
     type_stack.push(t2)
@@ -393,17 +393,17 @@ def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     error_message = f"PRINT intrinsic requires an integer. Got: {t}"
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
-    if t not in {TokenType.ANY, TokenType.INT}:
+    if t not in INTEGER_TYPES:
         compiler_error("TYPE_ERROR", error_message, token)
     return type_stack
 
 def type_check_puts(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop a pointer to string from the stack and print the null-terminated buffer to stdout."""
     t = type_stack.pop()
-    error_message = f"PUTS intrinsic requires a string. Got: {t}"
+    error_message = f"PUTS intrinsic requires a pointer to a string buffer. Got: {t}"
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
-    if t != TokenType.STR:
+    if t not in POINTER_TYPES:
         compiler_error("TYPE_ERROR", error_message, token)
     return type_stack
 
@@ -416,7 +416,7 @@ def type_check_rot(token: Token, type_stack: TypeStack) -> TypeStack:
     t2 = type_stack.pop()
     t3 = type_stack.pop()
     if t3 is None:
-        compiler_error("POP_FROM_EMPTY_STACK", "ROT intrinsic requires four values in the stack.", token)
+        compiler_error("POP_FROM_EMPTY_STACK", "ROT intrinsic requires three values in the stack.", token)
     type_stack.push(t2)
     type_stack.push(t1)
     type_stack.push(t3)
