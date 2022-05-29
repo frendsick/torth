@@ -5,7 +5,7 @@ import re
 import subprocess
 from typing import List
 from compiler.defs import Intrinsic, Memory, Op, OpType, Program
-from compiler.defs import STACK, Token, TokenType, TypeStack
+from compiler.defs import INTEGER_TYPES, POINTER_TYPES, STACK, Token, TokenType, TypeStack
 from compiler.utils import compiler_error
 
 def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
@@ -21,6 +21,8 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
             op_type = OpType.PUSH_INT
         elif token.type == TokenType.STR:
             op_type = OpType.PUSH_STR
+        elif token.type == TokenType.UINT8:
+            op_type = OpType.PUSH_UINT8
         elif token_value == 'BOOL':
             op_type = OpType.CAST_BOOL
         elif token_value == 'BREAK':
@@ -47,6 +49,8 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
             op_type = OpType.CAST_PTR
         elif token_value == 'STR':
             op_type = OpType.CAST_STR
+        elif token_value == 'UINT8':
+            op_type = OpType.CAST_UINT8
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
         elif intrinsic_exists(token_value):
@@ -109,6 +113,8 @@ def type_check_program(program: Program) -> None:
             type_stack = type_check_push_ptr(type_stack)
         elif op.type == OpType.PUSH_STR:
             type_stack = type_check_push_str(type_stack)
+        elif op.type == OpType.PUSH_UINT8:
+            type_stack = type_check_push_uint8(type_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "DIVMOD":
@@ -133,6 +139,8 @@ def type_check_program(program: Program) -> None:
                 type_stack = type_check_load(token, type_stack, TokenType.PTR)
             elif intrinsic == "LOAD_STR":
                 type_stack = type_check_load(token, type_stack, TokenType.STR)
+            elif intrinsic == "LOAD_UINT8":
+                type_stack = type_check_load(token, type_stack, TokenType.UINT8)
             elif intrinsic == "MINUS":
                 type_stack = type_check_calculations(token, type_stack)
             elif intrinsic == "MUL":
@@ -159,6 +167,8 @@ def type_check_program(program: Program) -> None:
                 type_stack = type_check_store(token, type_stack, TokenType.PTR)
             elif intrinsic == "STORE_STR":
                 type_stack = type_check_store(token, type_stack, TokenType.STR)
+            elif intrinsic == "STORE_UINT8":
+                type_stack = type_check_store(token, type_stack, TokenType.UINT8)
             elif intrinsic == "SWAP":
                 type_stack = type_check_swap(token, type_stack)
             elif intrinsic == "SWAP2":
@@ -178,9 +188,10 @@ def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    if t not in {TokenType.BOOL, TokenType.INT}:
-        compiler_error("VALUE_ERROR", f"Only BOOL or INT can be cast to BOOL. Got: {t}", token)
-    type_stack.push(TokenType.STR)
+    if t not in INTEGER_TYPES:
+        compiler_error("VALUE_ERROR", \
+            f"Only integer types can be cast to BOOL. Got: {t}\nInteger types: {INTEGER_TYPES}", token)
+    type_stack.push(TokenType.BOOL)
     return type_stack
 
 def type_check_cast_char(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -191,8 +202,8 @@ def type_check_cast_char(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    if t is not TokenType.INT:
-        compiler_error("VALUE_ERROR", f"Only INT can be cast to CHAR. Got: {t}", token)
+    if t not in INTEGER_TYPES:
+        compiler_error("VALUE_ERROR", f"Only integer types can be cast to CHAR. Got: {t}", token)
     type_stack.push(TokenType.CHAR)
     return type_stack
 
@@ -253,6 +264,11 @@ def type_check_push_str(type_stack: TypeStack) -> TypeStack:
     type_stack.push(TokenType.STR)
     return type_stack
 
+def type_check_push_uint8(type_stack: TypeStack) -> TypeStack:
+    """Push an unsigned 8-bit integer to the stack"""
+    type_stack.push(TokenType.UINT8)
+    return type_stack
+
 def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     Type check calculation intrinsics like PLUS or MINUS.
@@ -260,10 +276,11 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t1 not in {TokenType.ANY, TokenType.INT} \
-    or t2 not in {TokenType.ANY, TokenType.INT}:
+    if t1 not in INTEGER_TYPES \
+    or t2 not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers. Got: {t1}, {t2}"
         compiler_error("TYPE_ERROR", error_message, token)
+
     type_stack.push(TokenType.INT)
     return type_stack
 
@@ -288,8 +305,8 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t1 not in {TokenType.ANY, TokenType.INT} \
-    or t2 not in {TokenType.ANY, TokenType.INT}:
+    if t1 not in INTEGER_TYPES \
+    or t2 not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers. Got: {t1}, {t2}"
         compiler_error("TYPE_ERROR", error_message, token)
     type_stack.push(TokenType.INT)
@@ -320,9 +337,10 @@ def type_check_nth(token: Token, type_stack: TypeStack) -> TypeStack:
     Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
     """
     t = type_stack.pop()
-    if t not in {TokenType.ANY, TokenType.INT}:
+    if t not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires an integer. Got: {t}"
         compiler_error("TYPE_ERROR", error_message, token)
+    # The type of the value in stack is not always known if the value is from arbitrary memory location
     type_stack.push(TokenType.ANY)
     return type_stack
 
@@ -334,13 +352,13 @@ def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType)
     """
     LOAD variants load certain type of value from where a pointer is pointing to.
     It takes one pointer from the stack and pushes back the dereferenced pointer value.
-    Different LOAD variants: LOAD_BYTE, LOAD_QWORD.
+    Different LOAD variants: LOAD_BOOL, LOAD_CHAR, LOAD_INT, LOAD_PTR, LOAD_STR, LOAD_UINT8.
     """
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
-    if t != TokenType.PTR:
-        compiler_error("TYPE_ERROR", f"{token.value.upper()} requires PTR to the top of the stack Got: {t}")
+    if t not in POINTER_TYPES:
+        compiler_error("TYPE_ERROR", f"{token.value.upper()} requires a pointer. Got: {t}", token)
     type_stack.push(loaded_type)
     return type_stack
 
@@ -397,7 +415,7 @@ def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType
     """
     STORE variants store a value of certain type to where a pointer is pointing to.
     It takes a pointer and a value from the stack and loads the value to the pointer address.
-    Different STORE variants: STORE_BOOL, STORE_CHAR, STORE_INT, STORE_PTR, STORE_STR
+    Different STORE variants: STORE_BOOL, STORE_CHAR, STORE_INT, STORE_PTR, STORE_STR, STORE_UINT8
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()

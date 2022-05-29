@@ -32,6 +32,7 @@ class Keyword(Enum):
     MEMORY=auto()
     PTR=auto()
     STR=auto()
+    UINT8=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -53,6 +54,7 @@ class Intrinsic(Enum):
     LOAD_INT=auto()
     LOAD_PTR=auto()
     LOAD_STR=auto()
+    LOAD_UINT8=auto()
     LT=auto()
     MINUS=auto()
     MUL=auto()
@@ -70,6 +72,7 @@ class Intrinsic(Enum):
     STORE_INT=auto()
     STORE_PTR=auto()
     STORE_STR=auto()
+    STORE_UINT8=auto()
     SWAP=auto()
     SWAP2=auto()
     SYSCALL0=auto()
@@ -88,6 +91,7 @@ class OpType(Enum):
     CAST_INT=auto()
     CAST_PTR=auto()
     CAST_STR=auto()
+    CAST_UINT8=auto()
     DO=auto()
     DONE=auto()
     ELIF=auto()
@@ -101,6 +105,7 @@ class OpType(Enum):
     PUSH_INT=auto()
     PUSH_PTR=auto()
     PUSH_STR=auto()
+    PUSH_UINT8=auto()
     WHILE=auto()
 
 class TokenType(Enum):
@@ -112,7 +117,21 @@ class TokenType(Enum):
     KEYWORD=auto()
     PTR=auto()
     STR=auto()
+    UINT8=auto()
     WORD=auto()
+
+INTEGER_TYPES: List[TokenType] = [
+    TokenType.ANY,
+    TokenType.CHAR,
+    TokenType.INT,
+    TokenType.UINT8
+]
+
+POINTER_TYPES: List[TokenType] = [
+    TokenType.ANY,
+    TokenType.PTR,
+    TokenType.STR
+]
 
 @dataclass
 class TypeNode:
