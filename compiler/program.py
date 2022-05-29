@@ -117,7 +117,11 @@ def type_check_program(program: Program) -> None:
             type_stack = type_check_push_uint8(type_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
-            if intrinsic == "DIVMOD":
+            if intrinsic == "ARGC":
+                type_stack = type_check_push_int(type_stack)
+            elif intrinsic == "ARGV":
+                type_stack = type_check_push_ptr(type_stack)
+            elif intrinsic == "DIVMOD":
                 type_stack = type_check_divmod(token, type_stack)
             elif intrinsic == "DROP":
                 type_stack = type_check_drop(token, type_stack)
