@@ -46,3 +46,11 @@ end
   u139      // uint8
   - + print // 420 + 0x420 - 139 = 1337
 ```
+
+### PTR - Pointer
+
+Pointers are pointing to a location in the memory. Memories can be defined with the [MEMORY](./keywords.md#MEMORY)-keyword. [Strings](#STR---String) are also pointers to the null-terminated string buffer. Value can be stored to a pointer's location with STORE intrinsics and the dereferenced value can be pushed to the stack with LOAD intrinsics.
+
+### STR - String
+
+TODO
