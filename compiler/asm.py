@@ -65,7 +65,7 @@ def get_asm_file_start(constants: List[Constant]) -> str:
 %define success 0
 %define sys_exit 60
 {const_defines}
-section .rodata
+section .data
 '''
 
 def get_memory_definitions_asm(memories: List[Memory]) -> str:
