@@ -17,13 +17,11 @@ This is the documentation for different keywords available in the Torth language
 
 BREAK is unconditional jump to the operation after DONE of the current loop.
 
-### Examples
-
 ```pascal
 0 WHILE dup 10 > DO
   1 + print_int
   IF dup 3 == DO
-    "Breaking from loop..." puts
+    "Breaking from the loop...\n" puts
     BREAK
   ENDIF
 DONE
@@ -31,7 +29,7 @@ DONE
 1
 2
 3
-Breaking from loop...
+Breaking from the loop...
 ```
 
 ## CONST
@@ -68,11 +66,11 @@ DO is a conditional jump to the operation after next ELIF, ELSE, ENDIF or DONE.
 
 The conditional jump will occur if the condition does not match because if it does the block of code should be executed.
 
-### Examples
-
-#### IF, ELIF, ELSE
-
 With IF and ELIF statements, DO is a conditional jump to the operation after the next ELIF, ELSE or ENDIF keywords.
+
+In while loop, DO is a conditional jump to operation after DONE.
+
+### Examples
 
 ```pascal
 -4                                //  int i = -4;
@@ -86,10 +84,6 @@ ENDIF
 
 // Output: Negative number
 ```
-
-#### WHILE
-
-In while loop, DO is a conditional jump to operation after DONE.
 
 ```pascal
 0 WHILE dup 10 > DO                   //  int i=0; while (10 > i) {
@@ -107,8 +101,6 @@ DONE                               //  }
 ## DONE
 
 DONE is an unconditional jump to WHILE keyword. The loop's condition is always evaluated by the DO keyword after WHILE which is also a conditional jump to the operation after the DONE keyword.
-
-### Examples
 
 ```pascal
 0 WHILE dup 10 > DO                         //  int i=0; while (10 > i) {
@@ -129,8 +121,6 @@ DONE                                     //  }
 
 ELIF is an unconditional jump to the operation after ENDIF. It's also a keyword for DO to coditionally jump over.
 
-### Examples
-
 ELIF is a unconditional jump to the operation after ENDIF because the keyword is only reached if the previous IF or ELIF block's condition was true. DO keyword is a conditional jump to the operation after ELIF if the condition is false.
 
 ```pascal
@@ -149,8 +139,6 @@ ENDIF
 ## ELSE
 
 ELSE is an unconditional jump to the operation after ENDIF. It's also a keyword for DO to coditionally jump over.
-
-### Examples
 
 ELSE is a unconditional jump to the operation after ENDIF because the keyword is only reached if the previous IF or ELIF block's condition was true. DO keyword is a conditional jump to the operation after ELSE if the condition is false.
 
@@ -267,8 +255,6 @@ end
 
 IF is just a keyword which starts an IF-block. IF-block ends to (ENDIF)[#ENDIF].
 
-### Examples
-
 ```pascal
 4                                 //  int i = 4;
 IF dup 0 < DO                         //  if (0 < i)
@@ -282,8 +268,6 @@ ENDIF
 ## WHILE
 
 WHILE is a keyword for DONE to jump to.
-
-### Examples
 
 ```pascal
 0 WHILE dup 10 > DO                         //  int i=0; while (10 > i) {
