@@ -53,4 +53,4 @@ Pointers are pointing to a location in the memory. Memories can be defined with 
 
 ### STR - String
 
-TODO
+Strings are defined with double quotes. Defined string adds a null-terminated string buffer to .data section of the executable. The string can be used and modified with the same techniques as [pointers](#ptr---pointer). See Examples from [MEMORY documentation](./keywords.md#MEMORY).
