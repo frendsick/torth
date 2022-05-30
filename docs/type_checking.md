@@ -4,12 +4,12 @@ Torth language is statically typed. Each value pushed to the stack has a type as
 
 ## Types
 
-- BOOL
-- CHAR
-- INT
-- PTR
-- STR
-- UINT8
+- [BOOL](#bool---boolean)
+- [CHAR](#char---character)
+- [INT](#int-uint8---integer)
+- [PTR](#ptr---pointer)
+- [STR](#str---string)
+- [UINT8](#int-uint8---integer)
 
 ### BOOL - Boolean
 
