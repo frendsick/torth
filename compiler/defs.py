@@ -1,9 +1,10 @@
 """
 Definitions for classes, constants, and types used by the Torth compiler
 """
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 STACK: List[str] = []
 COLORS: Dict[str, str] = {
@@ -15,7 +16,9 @@ COLORS: Dict[str, str] = {
 
 class Keyword(Enum):
     """Available keywords in the Torth language"""
+    BOOL=auto()
     BREAK=auto()
+    CHAR=auto()
     CONST=auto()
     DO=auto()
     DONE=auto()
@@ -25,7 +28,11 @@ class Keyword(Enum):
     ENDIF=auto()
     FUNCTION=auto()
     IF=auto()
+    INT=auto()
     MEMORY=auto()
+    PTR=auto()
+    STR=auto()
+    UINT8=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -40,11 +47,14 @@ class Intrinsic(Enum):
     EQ=auto()
     GE=auto()
     GT=auto()
-    HERE=auto()
     INPUT=auto()
     LE=auto()
-    LOAD_BYTE=auto()
-    LOAD_QWORD=auto()
+    LOAD_BOOL=auto()
+    LOAD_CHAR=auto()
+    LOAD_INT=auto()
+    LOAD_PTR=auto()
+    LOAD_STR=auto()
+    LOAD_UINT8=auto()
     LT=auto()
     MINUS=auto()
     MUL=auto()
@@ -57,8 +67,12 @@ class Intrinsic(Enum):
     PRINT=auto()
     PUTS=auto()
     ROT=auto()
-    STORE_BYTE=auto()
-    STORE_QWORD=auto()
+    STORE_BOOL=auto()
+    STORE_CHAR=auto()
+    STORE_INT=auto()
+    STORE_PTR=auto()
+    STORE_STR=auto()
+    STORE_UINT8=auto()
     SWAP=auto()
     SWAP2=auto()
     SYSCALL0=auto()
@@ -72,6 +86,12 @@ class Intrinsic(Enum):
 class OpType(Enum):
     """Available operand types in the Torth language"""
     BREAK=auto()
+    CAST_BOOL=auto()
+    CAST_CHAR=auto()
+    CAST_INT=auto()
+    CAST_PTR=auto()
+    CAST_STR=auto()
+    CAST_UINT8=auto()
     DO=auto()
     DONE=auto()
     ELIF=auto()
@@ -80,25 +100,75 @@ class OpType(Enum):
     ENDIF=auto()
     IF=auto()
     INTRINSIC=auto()
-    PUSH_ARRAY=auto()
+    PUSH_BOOL=auto()
     PUSH_CHAR=auto()
-    PUSH_HEX=auto()
     PUSH_INT=auto()
     PUSH_PTR=auto()
     PUSH_STR=auto()
+    PUSH_UINT8=auto()
     WHILE=auto()
 
 class TokenType(Enum):
     """Available Types for Token objects"""
-    ARRAY=auto()
+    ANY=auto()
     BOOL=auto()
     CHAR=auto()
-    HEX=auto()
     INT=auto()
     KEYWORD=auto()
     PTR=auto()
     STR=auto()
+    UINT8=auto()
     WORD=auto()
+
+INTEGER_TYPES: List[TokenType] = [
+    TokenType.ANY,
+    TokenType.CHAR,
+    TokenType.INT,
+    TokenType.UINT8
+]
+
+POINTER_TYPES: List[TokenType] = [
+    TokenType.ANY,
+    TokenType.PTR,
+    TokenType.STR
+]
+
+@dataclass
+class TypeNode:
+    """Node for TypeStack linked list containing the current Token's type"""
+    value: TokenType
+    next_node: Union[TypeNode, None] = None
+
+class TypeStack:
+    """Linked list containing the types on the virtual stack used in type checking"""
+    def __init__(self) -> None:
+        self.head: Union[TypeNode, None] = None
+
+    def print(self) -> str:
+        """Print and return the contents of the TypeStack"""
+        head: TypeNode  = self.head
+        index: int      = 1  # The top element in the stack is number one
+        contents: str   = ''
+        while head is not None:
+            contents += f"[{index}] {head.value}\n"
+            head = head.next_node
+            index += 1
+        print(contents)
+        return contents
+
+    def pop(self):
+        """Remove the head element from the TypeStack linked list"""
+        if self.head is None:
+            return None
+        popped = self.head.value
+        self.head = self.head.next_node
+        return popped
+
+    def push(self, token_type: TokenType):
+        """Add new TypeNode item as the new head to TypeStack linked list"""
+        new_head = TypeNode(token_type)
+        new_head.next_node = self.head
+        self.head = new_head
 
 Location    = Tuple[str, int, int]      # Source file name, row, column
 Memory      = Tuple[str, str, Location] # Name, str(size), Location

@@ -36,4 +36,7 @@ end
 function Main -> :
   10001 // n
   print_nth_prime
+
+  // The program should exit during print_nth_prime function
+  "ERROR: Did not find the Nth prime.\n" puts drop2 drop
 end

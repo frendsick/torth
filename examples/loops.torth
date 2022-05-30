@@ -7,5 +7,5 @@ function Main -> :
             break                       //     break
         ENDIF                           //   }
         1 +                             //   i++;
-    DONE                                // }
+    DONE drop                           // }
 end

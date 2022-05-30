@@ -5,6 +5,7 @@ It's like [Porth](https://gitlab.com/tsoding/porth) but written by a first-time 
 Torth is planned to be
 
 - [x] Compiled
+- [x] Statically typed
 - [x] Native (Linux x86_64)
 - [x] Stack-based (just like Porth)
 - [x] [Turing complete](examples/rule110.torth)
@@ -24,6 +25,11 @@ function main -> : "Hello, World!\n" puts end
 $ ./torth.py --run hello.torth
 Hello, World!
 ```
+
+## Documentation
+
+- [Keywords](./docs/keywords.md)
+- [Type checking](./docs/type_checking.md)
 
 ## Examples
 
@@ -74,7 +80,3 @@ function Main -> :
     "Sum of all numbers not divisible by 3 or 5: " OutputRow
 end
 ```
-
-## Documentation
-
-- [Keywords](./docs/keywords.md)

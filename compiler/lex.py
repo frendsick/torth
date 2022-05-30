@@ -201,6 +201,9 @@ def get_token_from_match(match: list, file: str, newline_indexes: List[int]) -> 
     token_value: str        = get_token_value(match.group(0))  # type: ignore
     token_type: TokenType   = get_token_type(token_value)
     token_location          = get_token_location(file, match.start(), newline_indexes)  # type: ignore
+
+    if token_type == TokenType.UINT8:
+        token_value = token_value[1:]
     return Token(token_value, token_type, token_location)
 
 def get_token_value(token_value: str) -> str:
@@ -232,7 +235,8 @@ def get_token_value(token_value: str) -> str:
 def get_token_type(token_text: str) -> TokenType:
     """Return TokenType value corresponding to the Token.value."""
     keywords: List[str] = [
-        'BREAK', 'CONST', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'ENDIF', 'FUNCTION', 'IF', 'MEMORY', 'WHILE'
+        'BOOL', 'BREAK', 'CHAR', 'CONST', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
+        'ENDIF', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE'
     ]
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , \
@@ -241,16 +245,17 @@ def get_token_type(token_text: str) -> TokenType:
     # Keywords are case insensitive
     if token_text.upper() in keywords:
         return TokenType.KEYWORD
-    if re.search(r'ARRAY\(.+\)', token_text.upper()):
-        return TokenType.ARRAY
     if token_text.upper() in {'TRUE', 'FALSE'}:
         return TokenType.BOOL
     if len(token_text) == 3 and token_text[0] == token_text[-1] == "'":
         return TokenType.CHAR
     if token_text.startswith('0x'):
-        return TokenType.HEX
+        return TokenType.INT
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
+    # Numbers 0 - 255
+    if re.match(r'u([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])', token_text):
+        return TokenType.UINT8
     try:
         _integer = int(token_text)
         return TokenType.INT

@@ -2,7 +2,7 @@
 Functions used for generating assembly code from Torth code
 """
 from typing import Dict, List
-from compiler.defs import Constant, Memory, OpType, Op, Program, Token
+from compiler.defs import Constant, Memory, OpType, Op, Program, Token, TokenType
 from compiler.utils import compiler_error
 
 def initialize_asm(asm_file: str, constants: List[Constant], memories: List[Memory]) -> None:
@@ -65,7 +65,7 @@ def get_asm_file_start(constants: List[Constant]) -> str:
 %define success 0
 %define sys_exit 60
 {const_defines}
-section .rodata
+section .data
 '''
 
 def get_memory_definitions_asm(memories: List[Memory]) -> str:
@@ -86,14 +86,6 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
 
         if op.type == OpType.PUSH_STR:
             add_string_variable_asm(asm_file, token.value, op, constants)
-        elif token.value.upper() == "HERE":
-            add_string_variable_asm(asm_file, f'"{str(token.location)}"', op, constants)
-        elif op.type == OpType.PUSH_ARRAY:
-            value: str = token.value
-            elements: List[str] = value[value.find("(")+1:value.rfind(")")].split(',')
-            # Remove whitespaces from the elements list
-            elements = [element.strip().replace("'", '"') for element in elements]
-            add_array_asm(asm_file, elements, op, constants)
         elif token.value.upper() == 'INPUT':
             add_input_buffer_asm(asm_file, op, constants)
 
@@ -112,7 +104,14 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
 
 def get_op_asm(op: Op, program: Program) -> str:
     """Generate assembly code for certain Op. Return assembly for the Op."""
-    if op.type in [OpType.IF]:
+    if op.type in {
+        OpType.CAST_BOOL,   # Casts affect only the type checking
+        OpType.CAST_CHAR,
+        OpType.CAST_INT,
+        OpType.CAST_PTR,
+        OpType.CAST_STR,
+        OpType.IF           # If is just a keyword which starts an IF-block
+        }:
         return ''
     if op.type == OpType.BREAK:
         return get_break_asm(op, program)
@@ -126,18 +125,16 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_else_asm(op, program)
     if op.type == OpType.ENDIF:
         return get_endif_asm(op)
-    if op.type == OpType.PUSH_ARRAY:
-        return get_push_array_asm(op)
     if op.type == OpType.PUSH_CHAR:
         return get_push_char_asm(op)
-    if op.type == OpType.PUSH_HEX:
-        return get_push_hex_asm(op.token.value)
     if op.type == OpType.PUSH_INT:
         return get_push_int_asm(op.token.value)
     if op.type == OpType.PUSH_PTR:
         return get_push_ptr_asm(op.token.value)
     if op.type == OpType.PUSH_STR:
         return get_push_str_asm(op)
+    if op.type == OpType.PUSH_UINT8:
+        return get_push_int_asm(op.token.value)
     if op.type == OpType.WHILE:
         return get_while_asm(op)
     if op.type == OpType.INTRINSIC:
@@ -158,18 +155,24 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_ge_asm()
         if intrinsic == "GT":
             return get_gt_asm()
-        if intrinsic == "HERE":
-            return get_here_asm(op)
         if intrinsic == "INPUT":
             return get_input_asm(op)
         if intrinsic == "LE":
             return get_le_asm()
         if intrinsic == "LT":
             return get_lt_asm()
-        if intrinsic == "LOAD_BYTE":
-            return get_load_asm('BYTE')
-        if intrinsic == "LOAD_QWORD":
-            return get_load_asm('QWORD')
+        if intrinsic == "LOAD_BOOL":
+            return get_load_asm(TokenType.BOOL)
+        if intrinsic == "LOAD_CHAR":
+            return get_load_asm(TokenType.CHAR)
+        if intrinsic == "LOAD_INT":
+            return get_load_asm(TokenType.INT)
+        if intrinsic == "LOAD_PTR":
+            return get_load_asm(TokenType.PTR)
+        if intrinsic == "LOAD_STR":
+            return get_load_asm(TokenType.STR)
+        if intrinsic == "LOAD_UINT8":
+            return get_load_asm(TokenType.UINT8)
         if intrinsic == "MINUS":
             return get_minus_asm()
         if intrinsic == "MUL":
@@ -188,10 +191,18 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_puts_asm()
         if intrinsic == "ROT":
             return get_rot_asm()
-        if intrinsic == "STORE_BYTE":
-            return get_store_asm('BYTE')
-        if intrinsic == "STORE_QWORD":
-            return get_store_asm('QWORD')
+        if intrinsic == "STORE_BOOL":
+            return get_store_asm(TokenType.BOOL)
+        if intrinsic == "STORE_CHAR":
+            return get_store_asm(TokenType.CHAR)
+        if intrinsic == "STORE_INT":
+            return get_store_asm(TokenType.INT)
+        if intrinsic == "STORE_PTR":
+            return get_store_asm(TokenType.PTR)
+        if intrinsic == "STORE_STR":
+            return get_store_asm(TokenType.STR)
+        if intrinsic == "STORE_UINT8":
+            return get_store_asm(TokenType.UINT8)
         if intrinsic == "SWAP":
             return get_swap_asm()
         if intrinsic == "SWAP2":
@@ -268,24 +279,6 @@ def add_string_variable_asm(asm_file: str, string: str, op: Op, constants: List[
 
         # Rewrite lines except for the first line (section .rodata)
         len_asm_file_start: int = len(asm_file_start.split('\n')) - 1
-        for i in range(len_asm_file_start, len(file_lines)):
-            f.write(file_lines[i])
-
-def add_array_asm(asm_file: str, array: list, op: Op, constants: List[Constant]) -> None:
-    """Writes a new array variable to assembly file in the .rodata section."""
-    with open(asm_file, 'r', encoding='utf-8') as f:
-        file_lines: List[str] = f.readlines()
-    with open(asm_file, 'w', encoding='utf-8') as f:
-        f.write(get_asm_file_start(constants))
-        for i, item in enumerate(array):
-            f.write(f'  s{op.id}_{i}: db {item},0\n')
-        f.write(f'  s_arr{op.id}: dq ')
-        for i in range(len(array)):
-            f.write(f's{op.id}_{i}, ')
-        f.write('0\n') # Array ends at NULL byte
-
-        # Rewrite lines
-        len_asm_file_start: int = len(get_asm_file_start(constants).split('\n')) - 1
         for i in range(len_asm_file_start, len(file_lines)):
             f.write(file_lines[i])
 
@@ -420,21 +413,9 @@ def get_endif_asm(op: Op) -> str:
     """ENDIF is a keyword for DO, ELIF or ELSE to jump to without additional functionality."""
     return f'ENDIF{op.id}:\n'
 
-def get_push_array_asm(op: Op) -> str:
-    """PUSH_ARRAY pushes a pointer to the array to the stack."""
-    op_asm: str  = f'  mov rsi, s_arr{op.id} ; Pointer to array\n'
-    op_asm      +=  '  push rsi\n'
-    return op_asm
-
 def get_push_char_asm(op: Op) -> str:
     """Return the assembly code for PUSH_CHAR Operand."""
     op_asm: str  = f'  mov rax, {ord(op.token.value[1])}\n'
-    op_asm      +=  '  push rax\n'
-    return op_asm
-
-def get_push_hex_asm(hexadecimal: str) -> str:
-    """Return the assembly code for PUSH_HEX Operand."""
-    op_asm: str  = f'  mov rax, {hexadecimal}\n'
     op_asm      +=  '  push rax\n'
     return op_asm
 
@@ -540,10 +521,6 @@ def get_gt_asm() -> str:
     """
     return get_comparison_asm("cmovg")
 
-def get_here_asm(op: Op) -> str:
-    """HERE is supposed to be an intrinsic that prints the token's location to stdout."""
-    compiler_error("NOT_IMPLEMENTED", "HERE intrinsic is not implemented yet.", op.token)
-
 def get_input_asm(op: Op) -> str:
     """INPUT reads from stdin to buffer and pushes the pointer to the buffer."""
     op_asm: str  =  '  mov rax, 0   ; write\n'
@@ -570,17 +547,21 @@ def get_lt_asm() -> str:
     """
     return get_comparison_asm("cmovl")
 
-def get_load_asm(size: str) -> str:
+def get_load_asm(token_type: TokenType) -> str:
     """
     LOAD variants load certain size value from where a pointer is pointing to.
     It takes one pointer from the stack and pushes back the dereferenced pointer value.
-    Different LOAD variants: LOAD_BYTE, LOAD_QWORD.
+    Different LOAD variants: LOAD_BOOL, LOAD_CHAR, LOAD_INT, LOAD_PTR, LOAD_STR, LOAD_UINT8.
     """
-    register_sizes: Dict[str, str] = {
-        'BYTE'  : 'bl',
-        'QWORD' : 'rbx'
+    type_register_sizes: Dict[str, str] = {
+        TokenType.BOOL  : 'bl',
+        TokenType.CHAR  : 'bl',
+        TokenType.INT   : 'rbx',
+        TokenType.PTR   : 'rbx',
+        TokenType.STR   : 'rbx',
+        TokenType.UINT8 : 'bl'
     }
-    register: str = register_sizes[size]
+    register: str = type_register_sizes[token_type]
     op_asm: str  =  '  pop rax\n'
     op_asm      +=  '  xor rbx, rbx\n'
     op_asm      += f'  mov {register}, [rax]\n'
@@ -660,17 +641,21 @@ def get_rot_asm() -> str:
     op_asm      += '  push rcx\n'
     return op_asm
 
-def get_store_asm(size: str) -> str:
+def get_store_asm(token_type: TokenType) -> str:
     """
     STORE variants store certain size value from where a pointer is pointing to.
     It takes a pointer and a value from the stack and loads the value to the pointer address.
-    Different STORE variants: STORE_BYTE, STORE_QWORD.
+    Different STORE variants: STORE_BOOL, STORE_CHAR, STORE_INT, STORE_PTR, STORE_STR, STORE_UINT8.
     """
-    register_sizes: Dict[str, str] = {
-        'BYTE'  : 'bl',
-        'QWORD' : 'rbx'
+    type_register_sizes: Dict[str, str] = {
+        TokenType.BOOL : 'bl',
+        TokenType.CHAR : 'bl',
+        TokenType.INT  : 'rbx',
+        TokenType.PTR  : 'rbx',
+        TokenType.STR  : 'rbx',
+        TokenType.UINT8 : 'bl'
     }
-    register: str = register_sizes[size]
+    register: str = type_register_sizes[token_type]
     op_asm: str  =  '  pop rax\n'
     op_asm      +=  '  pop rbx\n'
     op_asm      += f'  mov [rax], {register}\n'
