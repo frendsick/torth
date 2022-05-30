@@ -265,6 +265,33 @@ ENDIF
 // Positive number
 ```
 
+## MEMORY
+
+Named memory locations with certain size can be defined with MEMORY keyword. These are named pointers to a read-write section .bss in the executable. A pointer to a memory can then be pushed to the stack by using the memory's name as a token. Values can then be stored to the memory location with STORE intrinsics and values are loaded from memory to the stack with LOAD intrinsics.
+
+### Syntax
+
+```pascal
+// Memory declaration should be in one line
+MEMORY <name> <size> END
+```
+
+### Examples
+
+```pascal
+include "lib/std.torth"
+memory leet int.size end  // int.size = 8
+memory feet ptr.size end  // ptr.size = 8
+function main -> :
+  1337 leet store_INT
+  leet load_INT print "\n" puts // Output: 1337
+
+  "pinky\n" feet store_STR
+  'k' feet load_PTR store_CHAR
+  feet load_STR puts            // Output: kinky
+end
+```
+
 ## WHILE
 
 WHILE is a keyword for DONE to jump to.
