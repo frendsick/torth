@@ -87,7 +87,7 @@ def type_check_program(program: Program) -> None:
     """
 
     branched_stacks: List[TypeStack] = [TypeStack()]
-    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELIF', 'ELSE', 'ENDIF', 'IF', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'ELIF', 'ELSE', 'IF', 'WHILE' ]
     for op in program:
         token: Token = op.token
         type_stack = copy.deepcopy(branched_stacks[-1])
@@ -105,6 +105,17 @@ def type_check_program(program: Program) -> None:
             branched_stacks[-1] = type_check_cast_str(token, type_stack)
         elif op.type == OpType.DO:
             branched_stacks[-1] = type_check_do(token, type_stack)
+            branched_stacks.append(type_stack)
+        elif op.type == OpType.DONE:
+            stack_after_while = branched_stacks.pop()
+            if stack_after_while.get_types() != branched_stacks[-1].get_types():
+                compiler_error("DIFFERENT_STACK_STATE_BETWEEN_BRANCHES", \
+                "Stack state should be the same after the WHILE block whether or not the condition was matched", token)
+        elif op.type == OpType.ENDIF:
+            stack_after_if = branched_stacks.pop()
+            if stack_after_if.get_types() != branched_stacks[-1].get_types():
+                compiler_error("DIFFERENT_STACK_STATE_BETWEEN_BRANCHES", \
+                "Stack state should be the same after the IF block whether or not the condition was matched", token)
         elif op.type == OpType.PUSH_BOOL:
             branched_stacks[-1] = type_check_push_bool(type_stack)
         elif op.type == OpType.PUSH_CHAR:
