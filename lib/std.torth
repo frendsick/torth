@@ -42,7 +42,7 @@ function read int ptr int -> int ptr int : SYS_read syscall3 end
 // const char *pathname, char *const argv[], char *const envp[]
 function execve ptr arr arr -> int : SYS_execve syscall3 end
 // int status
-function exit int -> exit : SYS_exit syscall1 end
+function exit int -> exit : SYS_exit syscall1 drop end
 
 // Returns: fd
 function open_file file_name -> int :
