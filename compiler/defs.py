@@ -144,8 +144,8 @@ class TypeStack:
     def __init__(self) -> None:
         self.head: Union[TypeNode, None] = None
 
-    def print(self) -> str:
-        """Print and return the contents of the TypeStack"""
+    def repr(self) -> str:
+        """Return the types in the TypeStack in printable fashion"""
         head: Optional[TypeNode] = self.head
         index: int      = 1  # The top element in the stack is number one
         contents: str   = ''
@@ -153,8 +153,11 @@ class TypeStack:
             contents += f"[{index}] {head.value}\n"
             head = head.next_node
             index += 1
-        print(contents)
         return contents
+
+    def print(self) -> None:
+        """Print the contents of the TypeStack"""
+        print(repr())
 
     def pop(self) -> Optional[TokenType]:
         """Remove the head element from the TypeStack linked list"""
