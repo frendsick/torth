@@ -156,19 +156,28 @@ class TypeStack:
         print(contents)
         return contents
 
-    def pop(self):
+    def pop(self) -> TokenType:
         """Remove the head element from the TypeStack linked list"""
         if self.head is None:
             return None
-        popped = self.head.value
+        popped: TokenType = self.head.value
         self.head = self.head.next_node
         return popped
 
-    def push(self, token_type: TokenType):
+    def push(self, token_type: TokenType) -> None:
         """Add new TypeNode item as the new head to TypeStack linked list"""
         new_head = TypeNode(token_type)
         new_head.next_node = self.head
         self.head = new_head
+
+    def get_types(self) -> List[TokenType]:
+        """Returns list of TokenTypes in the TypeStack"""
+        head: TypeNode = self.head
+        node_list: List[TokenType] = []
+        while head is not None:
+            node_list.append(head.value)
+            head = head.next_node
+        return node_list
 
 Location    = Tuple[str, int, int]      # Source file name, row, column
 Memory      = Tuple[str, str, Location] # Name, str(size), Location
