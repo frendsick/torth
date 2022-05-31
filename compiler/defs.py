@@ -157,7 +157,7 @@ class TypeStack:
 
     def print(self) -> None:
         """Print the contents of the TypeStack"""
-        print(repr())
+        print(self.repr())
 
     def pop(self) -> Optional[TokenType]:
         """Remove the head element from the TypeStack linked list"""
