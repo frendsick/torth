@@ -1,6 +1,7 @@
 """
 Functions for compile-time type checking and running the Torth program
 """
+import copy
 import re
 import subprocess
 from typing import List
@@ -86,99 +87,101 @@ def type_check_program(program: Program) -> None:
     """
 
     type_stack = TypeStack()
+    branched_stacks: List[TypeStack] = [type_stack]
     NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELIF', 'ELSE', 'ENDIF', 'IF', 'WHILE' ]
     for op in program:
         token: Token = op.token
+        type_stack = copy.deepcopy(branched_stacks[-1])
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
         if op.type == OpType.CAST_BOOL:
-            type_stack = type_check_cast_bool(token, type_stack)
+            branched_stacks[-1] = type_check_cast_bool(token, type_stack)
         elif op.type == OpType.CAST_CHAR:
-            type_stack = type_check_cast_char(token, type_stack)
+            branched_stacks[-1] = type_check_cast_char(token, type_stack)
         elif op.type == OpType.CAST_INT:
-            type_stack = type_check_cast_int(token, type_stack)
+            branched_stacks[-1] = type_check_cast_int(token, type_stack)
         elif op.type == OpType.CAST_PTR:
-            type_stack = type_check_cast_ptr(token, type_stack)
+            branched_stacks[-1] = type_check_cast_ptr(token, type_stack)
         elif op.type == OpType.CAST_STR:
-            type_stack = type_check_cast_str(token, type_stack)
+            branched_stacks[-1] = type_check_cast_str(token, type_stack)
         elif op.type == OpType.DO:
-            type_stack = type_check_do(token, type_stack)
+            branched_stacks[-1] = type_check_do(token, type_stack)
         elif op.type == OpType.PUSH_BOOL:
-            type_stack = type_check_push_bool(type_stack)
+            branched_stacks[-1] = type_check_push_bool(type_stack)
         elif op.type == OpType.PUSH_CHAR:
-            type_stack = type_check_push_char(type_stack)
+            branched_stacks[-1] = type_check_push_char(type_stack)
         elif op.type == OpType.PUSH_INT:
-            type_stack = type_check_push_int(type_stack)
+            branched_stacks[-1] = type_check_push_int(type_stack)
         elif op.type == OpType.PUSH_PTR:
-            type_stack = type_check_push_ptr(type_stack)
+            branched_stacks[-1] = type_check_push_ptr(type_stack)
         elif op.type == OpType.PUSH_STR:
-            type_stack = type_check_push_str(type_stack)
+            branched_stacks[-1] = type_check_push_str(type_stack)
         elif op.type == OpType.PUSH_UINT8:
-            type_stack = type_check_push_uint8(type_stack)
+            branched_stacks[-1] = type_check_push_uint8(type_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "ARGC":
-                type_stack = type_check_push_int(type_stack)
+                branched_stacks[-1] = type_check_push_int(type_stack)
             elif intrinsic == "ARGV":
-                type_stack = type_check_push_ptr(type_stack)
+                branched_stacks[-1] = type_check_push_ptr(type_stack)
             elif intrinsic == "DIVMOD":
-                type_stack = type_check_divmod(token, type_stack)
+                branched_stacks[-1] = type_check_divmod(token, type_stack)
             elif intrinsic == "DROP":
-                type_stack = type_check_drop(token, type_stack)
+                branched_stacks[-1] = type_check_drop(token, type_stack)
             elif intrinsic == "DUP":
-                type_stack = type_check_dup(token, type_stack)
+                branched_stacks[-1] = type_check_dup(token, type_stack)
             elif intrinsic == "ENVP":
-                type_stack = type_check_push_ptr(type_stack)
+                branched_stacks[-1] = type_check_push_ptr(type_stack)
             elif intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
-                type_stack = type_check_comparison(token, type_stack)
+                branched_stacks[-1] = type_check_comparison(token, type_stack)
             elif intrinsic == "INPUT":
-                type_stack = type_check_push_str(type_stack)
+                branched_stacks[-1] = type_check_push_str(type_stack)
             elif intrinsic == "LOAD_BOOL":
-                type_stack = type_check_load(token, type_stack, TokenType.BOOL)
+                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.BOOL)
             elif intrinsic == "LOAD_CHAR":
-                type_stack = type_check_load(token, type_stack, TokenType.CHAR)
+                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.CHAR)
             elif intrinsic == "LOAD_INT":
-                type_stack = type_check_load(token, type_stack, TokenType.INT)
+                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.INT)
             elif intrinsic == "LOAD_PTR":
-                type_stack = type_check_load(token, type_stack, TokenType.PTR)
+                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.PTR)
             elif intrinsic == "LOAD_STR":
-                type_stack = type_check_load(token, type_stack, TokenType.STR)
+                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.STR)
             elif intrinsic == "LOAD_UINT8":
-                type_stack = type_check_load(token, type_stack, TokenType.UINT8)
+                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.UINT8)
             elif intrinsic == "MINUS":
-                type_stack = type_check_calculations(token, type_stack)
+                branched_stacks[-1] = type_check_calculations(token, type_stack)
             elif intrinsic == "MUL":
-                type_stack = type_check_calculations(token, type_stack)
+                branched_stacks[-1] = type_check_calculations(token, type_stack)
             elif intrinsic == "NTH":
-                type_stack = type_check_nth(token, type_stack)
+                branched_stacks[-1] = type_check_nth(token, type_stack)
             elif intrinsic == "OVER":
-                type_stack = type_check_over(token, type_stack)
+                branched_stacks[-1] = type_check_over(token, type_stack)
             elif intrinsic == "PLUS":
-                type_stack = type_check_calculations(token, type_stack)
+                branched_stacks[-1] = type_check_calculations(token, type_stack)
             elif intrinsic == "PRINT":
-                type_stack = type_check_print(token, type_stack)
+                branched_stacks[-1] = type_check_print(token, type_stack)
             elif intrinsic == "PUTS":
-                type_stack = type_check_puts(token, type_stack)
+                branched_stacks[-1] = type_check_puts(token, type_stack)
             elif intrinsic == "ROT":
-                type_stack = type_check_rot(token, type_stack)
+                branched_stacks[-1] = type_check_rot(token, type_stack)
             elif intrinsic == "STORE_BOOL":
-                type_stack = type_check_store(token, type_stack, TokenType.BOOL)
+                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.BOOL)
             elif intrinsic == "STORE_CHAR":
-                type_stack = type_check_store(token, type_stack, TokenType.CHAR)
+                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.CHAR)
             elif intrinsic == "STORE_INT":
-                type_stack = type_check_store(token, type_stack, TokenType.INT)
+                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.INT)
             elif intrinsic == "STORE_PTR":
-                type_stack = type_check_store(token, type_stack, TokenType.PTR)
+                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.PTR)
             elif intrinsic == "STORE_STR":
-                type_stack = type_check_store(token, type_stack, TokenType.STR)
+                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.STR)
             elif intrinsic == "STORE_UINT8":
-                type_stack = type_check_store(token, type_stack, TokenType.UINT8)
+                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.UINT8)
             elif intrinsic == "SWAP":
-                type_stack = type_check_swap(token, type_stack)
+                branched_stacks[-1] = type_check_swap(token, type_stack)
             elif intrinsic == "SWAP2":
-                type_stack = type_check_swap2(token, type_stack)
+                branched_stacks[-1] = type_check_swap2(token, type_stack)
             elif re.fullmatch(r'SYSCALL[0-6]', intrinsic):
-                type_stack = type_check_syscall(token, type_stack, int(intrinsic[-1]))
+                branched_stacks[-1] = type_check_syscall(token, type_stack, int(intrinsic[-1]))
             else:
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
         else:
