@@ -87,7 +87,7 @@ def type_check_program(program: Program) -> None:
     """
 
     branched_stacks: List[TypeStack] = [TypeStack()]
-    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'ELIF', 'ELSE', 'IF', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'IF', 'WHILE' ]
     for op in program:
         token: Token = op.token
         type_stack = copy.deepcopy(branched_stacks[-1])
@@ -107,15 +107,14 @@ def type_check_program(program: Program) -> None:
             branched_stacks[-1] = type_check_do(token, type_stack)
             branched_stacks.append(type_stack)
         elif op.type == OpType.DONE:
-            stack_after_while = branched_stacks.pop()
-            if stack_after_while.get_types() != branched_stacks[-1].get_types():
-                compiler_error("DIFFERENT_STACK_STATE_BETWEEN_BRANCHES", \
-                "Stack state should be the same after the WHILE block whether or not the condition was matched", token)
+            branched_stacks = type_check_end_of_branch(token, branched_stacks)
+        elif op.type == OpType.ELIF:
+            branched_stacks = type_check_end_of_branch(token, branched_stacks)
+        elif op.type == OpType.ELSE:
+            branched_stacks = type_check_end_of_branch(token, branched_stacks)
+            branched_stacks.append(type_stack)
         elif op.type == OpType.ENDIF:
-            stack_after_if = branched_stacks.pop()
-            if stack_after_if.get_types() != branched_stacks[-1].get_types():
-                compiler_error("DIFFERENT_STACK_STATE_BETWEEN_BRANCHES", \
-                "Stack state should be the same after the IF block whether or not the condition was matched", token)
+            branched_stacks = type_check_end_of_branch(token, branched_stacks)
         elif op.type == OpType.PUSH_BOOL:
             branched_stacks[-1] = type_check_push_bool(type_stack)
         elif op.type == OpType.PUSH_CHAR:
@@ -203,6 +202,19 @@ def type_check_program(program: Program) -> None:
         compiler_error("UNHANDLED_DATA_IN_STACK", \
             "The stack should empty after the program has been executed.\n\n" + \
             f"Unhandled Token types:\n{type_stack.print()}", token)
+
+def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack]) -> List[TypeStack]:
+    """
+    Check if the stack state is the same after the branch block whether or not the branch condition is matched
+    Branch blocks (IF, WHILE) begin with DO and end with DONE, ELIF, ELSE or ENDIF
+    """
+    stack_after_branch = branched_stacks.pop()
+    print(stack_after_branch.get_types())
+    print(branched_stacks[-1].get_types())
+    if stack_after_branch.get_types() != branched_stacks[-1].get_types():
+        compiler_error("DIFFERENT_STACK_STATE_BETWEEN_BRANCHES", \
+            "Stack state should be the same after the block whether or not the condition was matched", token)
+    return branched_stacks
 
 def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
     """
