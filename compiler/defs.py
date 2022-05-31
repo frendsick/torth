@@ -4,7 +4,7 @@ Definitions for classes, constants, and types used by the Torth compiler
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 STACK: List[str] = []
 COLORS: Dict[str, str] = {
@@ -144,31 +144,43 @@ class TypeStack:
     def __init__(self) -> None:
         self.head: Union[TypeNode, None] = None
 
-    def print(self) -> str:
-        """Print and return the contents of the TypeStack"""
-        head: TypeNode  = self.head
+    def repr(self) -> str:
+        """Return the types in the TypeStack in printable fashion"""
+        head: Optional[TypeNode] = self.head
         index: int      = 1  # The top element in the stack is number one
         contents: str   = ''
         while head is not None:
             contents += f"[{index}] {head.value}\n"
             head = head.next_node
             index += 1
-        print(contents)
         return contents
 
-    def pop(self):
+    def print(self) -> None:
+        """Print the contents of the TypeStack"""
+        print(self.repr())
+
+    def pop(self) -> Optional[TokenType]:
         """Remove the head element from the TypeStack linked list"""
         if self.head is None:
             return None
-        popped = self.head.value
+        popped: TokenType = self.head.value
         self.head = self.head.next_node
         return popped
 
-    def push(self, token_type: TokenType):
+    def push(self, token_type: TokenType) -> None:
         """Add new TypeNode item as the new head to TypeStack linked list"""
         new_head = TypeNode(token_type)
         new_head.next_node = self.head
         self.head = new_head
+
+    def get_types(self) -> List[TokenType]:
+        """Returns list of TokenTypes in the TypeStack"""
+        head: Optional[TypeNode] = self.head
+        node_list: List[TokenType] = []
+        while head is not None:
+            node_list.append(head.value)
+            head = head.next_node
+        return node_list
 
 Location    = Tuple[str, int, int]      # Source file name, row, column
 Memory      = Tuple[str, str, Location] # Name, str(size), Location
