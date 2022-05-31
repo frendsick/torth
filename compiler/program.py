@@ -209,11 +209,22 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack]) -> 
     Branch blocks (IF, WHILE) begin with DO and end with DONE, ELIF, ELSE or ENDIF
     """
     stack_after_branch = branched_stacks.pop()
-    if stack_after_branch.get_types() != branched_stacks[-1].get_types():
-        error: str   = "Stack state should be the same after the block whether or not the condition was matched.\n\n"
-        error       += f"Stack state at the start of the block:\n{branched_stacks[-1].print()}\n"
-        error       += f"Stack state at the end of the block:\n{stack_after_branch.print()}"
-        compiler_error("DIFFERENT_STACK_STATE_BETWEEN_BRANCHES", error, token)
+    before_types: List[TokenType] = branched_stacks[-1].get_types()
+    after_types:  List[TokenType] = branched_stacks.pop().get_types()
+
+    # Initialize error message
+    error: str   = "Stack state should be the same after the block whether or not the condition was matched.\n\n"
+    error       += f"Stack state at the start of the block:\n{branched_stacks[-1].get_types()}\n"
+    error       += f"Stack state at the end of the block:\n{stack_after_branch.get_types()}"
+
+    # Check for different amount of elements in the stack
+    if len(before_types) != len(after_types):
+        compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
+
+    # Check for different types in certain positions in the stack
+    for before_type, after_type in zip(before_types, after_types):
+        if before_type != after_type and TokenType.ANY not in {before_type, after_type}:
+            compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
     return branched_stacks
 
 def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
