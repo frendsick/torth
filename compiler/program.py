@@ -209,11 +209,11 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack]) -> 
     Branch blocks (IF, WHILE) begin with DO and end with DONE, ELIF, ELSE or ENDIF
     """
     stack_after_branch = branched_stacks.pop()
-    print(stack_after_branch.get_types())
-    print(branched_stacks[-1].get_types())
     if stack_after_branch.get_types() != branched_stacks[-1].get_types():
-        compiler_error("DIFFERENT_STACK_STATE_BETWEEN_BRANCHES", \
-            "Stack state should be the same after the block whether or not the condition was matched", token)
+        error: str   = "Stack state should be the same after the block whether or not the condition was matched.\n\n"
+        error       += f"Stack state at the start of the block:\n{branched_stacks[-1].print()}\n"
+        error       += f"Stack state at the end of the block:\n{stack_after_branch.print()}"
+        compiler_error("DIFFERENT_STACK_STATE_BETWEEN_BRANCHES", error, token)
     return branched_stacks
 
 def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
