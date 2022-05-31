@@ -210,12 +210,12 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack]) -> 
     """
     stack_after_branch = branched_stacks.pop()
     before_types: List[TokenType] = branched_stacks[-1].get_types()
-    after_types:  List[TokenType] = branched_stacks.pop().get_types()
+    after_types:  List[TokenType] = stack_after_branch.get_types()
 
     # Initialize error message
     error: str   = "Stack state should be the same after the block whether or not the condition was matched.\n\n"
-    error       += f"Stack state at the start of the block:\n{branched_stacks[-1].get_types()}\n"
-    error       += f"Stack state at the end of the block:\n{stack_after_branch.get_types()}"
+    error       += f"Stack state at the start of the block:\n{branched_stacks[-1].repr()}\n"
+    error       += f"Stack state at the end of the block:\n{stack_after_branch.repr()}"
 
     # Check for different amount of elements in the stack
     if len(before_types) != len(after_types):
