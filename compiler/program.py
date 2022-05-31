@@ -86,8 +86,7 @@ def type_check_program(program: Program) -> None:
     Raise compiler error if the type checking fails.
     """
 
-    type_stack = TypeStack()
-    branched_stacks: List[TypeStack] = [type_stack]
+    branched_stacks: List[TypeStack] = [TypeStack()]
     NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'DONE', 'ELIF', 'ELSE', 'ENDIF', 'IF', 'WHILE' ]
     for op in program:
         token: Token = op.token
@@ -383,7 +382,7 @@ def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t2 is None:
+    if t1 is None or t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "OVER intrinsic requires two values in the stack.", token)
     type_stack.push(t2)
     type_stack.push(t1)
@@ -418,7 +417,7 @@ def type_check_rot(token: Token, type_stack: TypeStack) -> TypeStack:
     t1 = type_stack.pop()
     t2 = type_stack.pop()
     t3 = type_stack.pop()
-    if t3 is None:
+    if t1 is None or t2 is None or t3 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "ROT intrinsic requires three values in the stack.", token)
     type_stack.push(t2)
     type_stack.push(t1)
@@ -448,7 +447,7 @@ def type_check_swap(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t2 is None:
+    if t1 is None or t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "SWAP intrinsic requires two values in the stack.", token)
     type_stack.push(t1)
     type_stack.push(t2)
@@ -463,7 +462,7 @@ def type_check_swap2(token: Token, type_stack: TypeStack) -> TypeStack:
     t2 = type_stack.pop()
     t3 = type_stack.pop()
     t4 = type_stack.pop()
-    if t4 is None:
+    if t1 is None or t2 is None or t3 is None or t4 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "SWAP2 intrinsic requires four values in the stack.", token)
     type_stack.push(t2)
     type_stack.push(t1)

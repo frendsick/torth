@@ -553,7 +553,7 @@ def get_load_asm(token_type: TokenType) -> str:
     It takes one pointer from the stack and pushes back the dereferenced pointer value.
     Different LOAD variants: LOAD_BOOL, LOAD_CHAR, LOAD_INT, LOAD_PTR, LOAD_STR, LOAD_UINT8.
     """
-    type_register_sizes: Dict[str, str] = {
+    type_register_sizes: Dict[TokenType, str] = {
         TokenType.BOOL  : 'bl',
         TokenType.CHAR  : 'bl',
         TokenType.INT   : 'rbx',
@@ -647,7 +647,7 @@ def get_store_asm(token_type: TokenType) -> str:
     It takes a pointer and a value from the stack and loads the value to the pointer address.
     Different STORE variants: STORE_BOOL, STORE_CHAR, STORE_INT, STORE_PTR, STORE_STR, STORE_UINT8.
     """
-    type_register_sizes: Dict[str, str] = {
+    type_register_sizes: Dict[TokenType, str] = {
         TokenType.BOOL : 'bl',
         TokenType.CHAR : 'bl',
         TokenType.INT  : 'rbx',

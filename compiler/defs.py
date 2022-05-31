@@ -4,7 +4,7 @@ Definitions for classes, constants, and types used by the Torth compiler
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 STACK: List[str] = []
 COLORS: Dict[str, str] = {
@@ -146,7 +146,7 @@ class TypeStack:
 
     def print(self) -> str:
         """Print and return the contents of the TypeStack"""
-        head: TypeNode  = self.head
+        head: Optional[TypeNode] = self.head
         index: int      = 1  # The top element in the stack is number one
         contents: str   = ''
         while head is not None:
@@ -156,7 +156,7 @@ class TypeStack:
         print(contents)
         return contents
 
-    def pop(self) -> TokenType:
+    def pop(self) -> Optional[TokenType]:
         """Remove the head element from the TypeStack linked list"""
         if self.head is None:
             return None
@@ -172,7 +172,7 @@ class TypeStack:
 
     def get_types(self) -> List[TokenType]:
         """Returns list of TokenTypes in the TypeStack"""
-        head: TypeNode = self.head
+        head: Optional[TypeNode] = self.head
         node_list: List[TokenType] = []
         while head is not None:
             node_list.append(head.value)
