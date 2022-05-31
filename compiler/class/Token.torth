@@ -4,22 +4,22 @@
 //     type: TokenType
 //     location: Location
 const Token.size 40 end
-function Token.value  ptr -> any        :       load_QWORD end
-function Token.type   ptr -> TokenType  : 8   + load_QWORD  end
-function Token.file   ptr -> str        : 16  + load_QWORD end
-function Token.row    ptr -> int        : 24  + load_QWORD end
-function Token.col    ptr -> int        : 32  + load_QWORD end
+function Token.value  ptr -> any        :          load_STR end
+function Token.type   ptr -> TokenType  : 8   ptr+ load_INT end
+function Token.file   ptr -> str        : 16  ptr+ load_STR end
+function Token.row    ptr -> int        : 24  ptr+ load_INT end
+function Token.col    ptr -> int        : 32  ptr+ load_INT end
 
 // Pointer to the list of Tokens
 memory tokens MEMORY_CAPACITY end
 
 // *Token, value, TokenType, file, row, col
 function Token.store ptr str int str int int -> :
-  ptr.store ptr++   // Token.value
-  ptr.store ptr++   // Token.type
-  ptr.store ptr++   // Token.file
-  ptr.store ptr++   // Token.row
-  ptr.store ptr++   // Token.col
+  dup rot swap store_STR ptr++   // Token.value
+  dup rot swap store_INT ptr++   // Token.type
+  dup rot swap store_STR ptr++   // Token.file
+  dup rot swap store_INT ptr++   // Token.row
+  dup rot swap store_INT ptr++   // Token.col
   drop
 end
 
@@ -56,11 +56,11 @@ function Token.output ptr -> :
 end
 
 function Token.print ptr -> :
-  dup "Token    => " puts load_QWORD print "\n" puts
+  dup "Token    => " puts load_INT print "\n" puts
   Token.output
 end
 
 function Token.puts ptr -> :
-  dup "Token    => " puts load_QWORD puts "\n" puts
+  dup "Token    => " puts load_STR puts "\n" puts
   Token.output
 end

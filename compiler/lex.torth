@@ -21,18 +21,18 @@ end
 // Returns pointer to Token list
 function get_tokens -> ptr :
   1 1 "torth.torth" // File: torth.torth, Row: 1, Column: 1
-  420     tokens                  load_int_token
+  "420"     tokens                   load_int_token
   3 1 "torth.torth" // File: torth.torth, Row: 1, Column: 3
-  917     tokens Token.size +     load_int_token
+  "917"     tokens Token.size ptr+   load_int_token
   2 4 "torth.torth" // File: torth.torth, Row: 4, Column: 2
-  "+"     tokens Token.size 2 * + load_word_token
+  "+"     tokens Token.size 2 * ptr+ load_word_token
   9 6 "torth.torth" // File: torth.torth, Row: 6, Column: 9
-  "print" tokens Token.size 3 * + load_word_token
+  "print" tokens Token.size 3 * ptr+ load_word_token
 end
 
 function print_tokens -> :
   tokens                  Token.print
-  tokens Token.size +     Token.print
-  tokens Token.size 2 * + Token.puts
-  tokens Token.size 3 * + Token.puts
+  tokens Token.size ptr+     Token.print
+  tokens Token.size 2 * ptr+ Token.puts
+  tokens Token.size 3 * ptr+ Token.puts
 end
