@@ -133,6 +133,11 @@ def type_check_program(program: Program) -> None:
                 return_stack=if_block_return_stack.get_types())
         elif op.type == OpType.ELSE:
             else_present = True
+
+            # Save the state of the stack after the first part of the IF block
+            if not if_block_return_stack.head:
+                if_block_return_stack = copy.deepcopy(type_stack)
+
             branched_stacks = type_check_end_of_branch(token, branched_stacks, \
                 return_stack=if_block_return_stack.get_types())
 
