@@ -235,7 +235,7 @@ def get_token_value(token_value: str) -> str:
 def get_token_type(token_text: str) -> TokenType:
     """Return TokenType value corresponding to the Token.value."""
     keywords: List[str] = [
-        'BOOL', 'BREAK', 'CHAR', 'CONST', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
+        'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
         'ENDIF', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE'
     ]
     # Check if all keywords are taken into account
@@ -270,11 +270,11 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
     """
     col: int = position
     row: int = 1
-    for i, _ in enumerate(newline_indexes):
+    for i, newline_index in enumerate(newline_indexes):
         if i > 0:
             col = position - newline_indexes[i-1] - 1
             row +=1
-        if newline_indexes[i] > position:
+        if newline_index > position:
             return (filename, row, col+1)
 
     if newline_indexes:

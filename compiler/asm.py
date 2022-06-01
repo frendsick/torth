@@ -116,6 +116,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         return ''
     if op.type == OpType.BREAK:
         return get_break_asm(op, program)
+    if op.type == OpType.CONTINUE:
+        return get_continue_asm(op, program)
     if op.type == OpType.DO:
         return get_do_asm(op, program)
     if op.type == OpType.DONE:
@@ -375,6 +377,13 @@ def get_break_asm(op: Op, program: Program) -> str:
     parent_end:   Op = get_end_op_for_while(parent_while, program)
     return f'  jmp DONE{parent_end.id}\n'
 
+def get_continue_asm(op: Op, program: Program) -> str:
+    """CONTINUE is an unconditional jump to operand after current loop's WHILE."""
+    parent_while: Op = get_parent_while(op, program)
+    op_asm: str  = f'  jmp WHILE{parent_while.id}\n'
+    op_asm      += f'DONE{op.id}:\n'
+    return op_asm
+
 def generate_do_asm(jump_destination: str) -> str:
     """DO removes two elements from the stack and checks if the first element is zero."""
     op_asm: str  =  '  pop rax\n'
@@ -384,7 +393,7 @@ def generate_do_asm(jump_destination: str) -> str:
     return op_asm
 
 def get_done_asm(op: Op, program: Program) -> str:
-    """DONE is an unconditional jump to WHILE."""
+    """DONE is an unconditional jump to current loop's WHILE."""
     parent_while: Op = get_parent_while(op, program)
     op_asm: str  = f'  jmp WHILE{parent_while.id}\n'
     op_asm      += f'DONE{op.id}:\n'
