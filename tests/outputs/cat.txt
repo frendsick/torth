@@ -1,0 +1,1 @@
+Syntax: ./cat <file_name>
