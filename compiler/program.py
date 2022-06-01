@@ -30,6 +30,8 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
             op_type = OpType.BREAK
         elif token_value == 'CHAR':
             op_type = OpType.CAST_CHAR
+        elif token_value == 'CONTINUE':
+            op_type = OpType.CONTINUE
         elif token_value == 'DO':
             op_type = OpType.DO
         elif token_value == 'DONE':
@@ -87,7 +89,7 @@ def type_check_program(program: Program) -> None:
     """
 
     branched_stacks: List[TypeStack] = [TypeStack()]
-    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
     # to type check if-elif chains with different stack layouts than what it was before the block.
