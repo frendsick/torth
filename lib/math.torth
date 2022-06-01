@@ -17,3 +17,10 @@ function Pow int int -> int :
 
   DONE drop drop drop  // Leave only the power to the stack
 end
+
+// Slightly modified from https://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
+function gcd int int -> int :
+  while over over % 0 != do
+    dup rotr %
+  done swap drop
+end
