@@ -1,0 +1,15 @@
+Fizz      3
+Buzz      5
+Fizz      6
+Fizz      9
+Buzz      10
+Fizz      12
+FizzBuzz  15
+Fizz      18
+Buzz      20
+Fizz      21
+Fizz      24
+Buzz      25
+Fizz      27
+FizzBuzz  30
+Sum of all numbers not divisible by 3 or 5: 240

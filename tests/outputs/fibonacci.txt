@@ -1,0 +1,1 @@
+The 20. fibonacci number starting from 1 and 0 is: 6765
