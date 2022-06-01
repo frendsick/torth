@@ -41,6 +41,7 @@ print:
   sub     rdx, rax
   xor     eax, eax
   lea     rsi, [rsp+32+rdx]
+  dec     r8
   mov     rdx, r8
   mov     rax, 1
   syscall
