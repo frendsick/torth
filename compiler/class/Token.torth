@@ -43,6 +43,8 @@ function Token.getType ptr -> str :
     "TokenType.STR"
   elif dup TokenType.WORD == do
     "TokenType.WORD"
+  else
+    "ERROR: TokenType " puts dup print " is not defined.\n" puts 1 exit ""
   endif
   swap drop // Drop TokenType
 end

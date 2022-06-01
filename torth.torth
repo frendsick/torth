@@ -5,7 +5,7 @@ include "lib/std.torth"
 
 function main -> :
   get_tokens    // Returns pointer to Token list
-  // print_tokens
+  print_tokens
 
-  "TODO: Implement Torth compiler with itself\n" puts 1 exit drop
+  "TODO: Implement Torth compiler with itself\n" puts 1 exit
 end
