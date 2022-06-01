@@ -338,6 +338,7 @@ def get_do_asm(op: Op, program: Program) -> str:
 
     # Keeping the count of duplicate parent Ops allows for nested IF or WHILE blocks
     parent_op_count: int = 0
+    op_asm: str = ''
     for i in range(op.id + 1, len(program)):
         op_type: OpType = program[i].type
 
@@ -352,13 +353,16 @@ def get_do_asm(op: Op, program: Program) -> str:
             or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)) \
             or ( parent_op_type == OpType.WHILE and op_type == OpType.DONE ) ):
             jump_destination: str = program[i].type.name + str(i)
-            op_asm: str = generate_do_asm(jump_destination)
+            op_asm = generate_do_asm(jump_destination)
             break
 
         # Decrement counter when passing another block's ENDIF / DONE
         if (parent_op_type in [OpType.IF, OpType.ELIF] and op_type == OpType.ENDIF) \
         or (parent_op_type == OpType.WHILE and op_type == OpType.DONE):
             parent_op_count -= 1
+
+    if not op_asm:
+        compiler_error("UNKNOWN_ERROR", "Unknown error occurred while generating assembly for DO keyword.", op.token)
     return op_asm
 
 def get_parent_op_type_do(op: Op, program: Program) -> OpType:
