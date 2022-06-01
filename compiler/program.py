@@ -270,7 +270,7 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
 
     if return_stack:
         if not matching_stacks(return_stack, after_stack):
-            compiler_error("DIFFERENT_STACK_BETWEEN_ARTARTARBRANCHES", error, token)
+            compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
         return branched_stacks
 
     # Check for different amount of elements in the stack
