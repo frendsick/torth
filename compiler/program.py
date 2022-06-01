@@ -4,7 +4,7 @@ Functions for compile-time type checking and running the Torth program
 import copy
 import re
 import subprocess
-from typing import List
+from typing import List, Optional
 from compiler.defs import Intrinsic, Memory, Op, OpType, Program
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES, STACK, Token, TokenType, TypeStack
 from compiler.utils import compiler_error
@@ -87,10 +87,23 @@ def type_check_program(program: Program) -> None:
     """
 
     branched_stacks: List[TypeStack] = [TypeStack()]
-    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'IF', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'WHILE' ]
+
+    # Save the stack after previous IF / ELIF statements in the IF block to make it possible
+    # to type check if-elif chains with different stack layouts than what it was before the block.
+    # This is important when there is ELSE present because then we know that the ELSE block will be
+    # executed if the previous IF / ELIF conditions were not matched.
+    if_block_return_stack: TypeStack    = TypeStack()
+    if_block_original_stack: TypeStack  = TypeStack()
+
+    # Track if there was an ELSE clause in the IF block.
+    # Required for type checking IF blocks with each IF / ELIF keyword altering the stack state.
+    else_present: bool = False
+
     for op in program:
         token: Token = op.token
         type_stack = branched_stacks[-1]
+
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
         if op.type == OpType.CAST_BOOL:
@@ -110,13 +123,41 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.DONE:
             branched_stacks = type_check_end_of_branch(token, branched_stacks)
         elif op.type == OpType.ELIF:
-            branched_stacks = type_check_end_of_branch(token, branched_stacks)
+            # Save the state of the stack after the first part of the IF block
+            if not if_block_return_stack.head:
+                if_block_return_stack = copy.deepcopy(type_stack)
+
+            branched_stacks = type_check_end_of_branch(token, branched_stacks, \
+                return_stack=if_block_return_stack.get_types())
         elif op.type == OpType.ELSE:
-            branched_stacks = type_check_end_of_branch(token, branched_stacks)
-            type_stack = copy.deepcopy(type_stack)
-            branched_stacks.append(type_stack)
+            else_present = True
+            branched_stacks = type_check_end_of_branch(token, branched_stacks, \
+                return_stack=if_block_return_stack.get_types())
+
+            # Use IF block's original stack as the old stack
+            branched_stacks.append(if_block_original_stack)
         elif op.type == OpType.ENDIF:
-            branched_stacks = type_check_end_of_branch(token, branched_stacks)
+            branched_stacks = type_check_end_of_branch(token, branched_stacks, \
+                return_stack=if_block_return_stack.get_types())
+
+            # If IF block altered the stack state there MUST be an ELSE to catch all errors
+            # and the IF block's return stack must match with the curr
+            if not else_present and if_block_return_stack.head and \
+                branched_stacks[-1].get_types() != if_block_return_stack.get_types():
+                compiler_error("SYNTAX_ERROR", \
+                    "The stack state should be the same than at the start of the IF-block.\n" + \
+                    "Introduce an ELSE-block if you need to return different values from IF-blocks.\n" + \
+                    "The stack state should be the same with every branch of the block.", token)
+
+            # Make the IF block's return stack the new stack for the program
+            if if_block_return_stack.head:
+                branched_stacks[-1] = if_block_return_stack
+
+            # Reset IF-block variables
+            if_block_return_stack = TypeStack()
+            else_present = False
+        elif op.type == OpType.IF:
+            if_block_original_stack = copy.deepcopy(type_stack)
         elif op.type == OpType.PUSH_BOOL:
             branched_stacks[-1] = type_check_push_bool(type_stack)
         elif op.type == OpType.PUSH_CHAR:
@@ -203,30 +244,40 @@ def type_check_program(program: Program) -> None:
     if type_stack.head is not None:
         compiler_error("UNHANDLED_DATA_IN_STACK", \
             "The stack should empty after the program has been executed.\n\n" + \
-            f"Unhandled Token types:\n{type_stack.print()}", token)
+            f"Unhandled Token types:\n{type_stack.repr()}", token)
 
-def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack]) -> List[TypeStack]:
+def matching_stacks(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
+    """Check if two virtual stacks have matching types in them."""
+    return not any(type1 != type2 and TokenType.ANY not in {type1, type2} \
+        for type1, type2 in zip(stack1, stack2))
+
+def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
+    return_stack: Optional[List[TokenType]] = None) -> List[TypeStack]:
     """
     Check if the stack state is the same after the branch block whether or not the branch condition is matched
     Branch blocks (IF, WHILE) begin with DO and end with DONE, ELIF, ELSE or ENDIF
     """
     stack_after_branch = branched_stacks.pop()
-    before_types: List[TokenType] = branched_stacks[-1].get_types()
-    after_types:  List[TokenType] = stack_after_branch.get_types()
+    before_stack: List[TokenType] = branched_stacks[-1].get_types()
+    after_stack:  List[TokenType] = stack_after_branch.get_types()
 
     # Initialize error message
     error: str   = "Stack state should be the same after the block whether or not the condition was matched.\n\n"
     error       += f"Stack state at the start of the block:\n{branched_stacks[-1].repr()}\n"
     error       += f"Stack state at the end of the block:\n{stack_after_branch.repr()}"
 
+    if return_stack:
+        if not matching_stacks(return_stack, after_stack):
+            compiler_error("DIFFERENT_STACK_BETWEEN_ARTARTARBRANCHES", error, token)
+        return branched_stacks
+
     # Check for different amount of elements in the stack
-    if len(before_types) != len(after_types):
+    if len(before_stack) != len(after_stack):
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
 
-    # Check for different types in certain positions in the stack
-    for before_type, after_type in zip(before_types, after_types):
-        if before_type != after_type and TokenType.ANY not in {before_type, after_type}:
-            compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
+    if not matching_stacks(before_stack, after_stack):
+        compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
+
     return branched_stacks
 
 def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
