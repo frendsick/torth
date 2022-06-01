@@ -1,0 +1,40 @@
+// Project Euler Problem 9: Special Pythagorean triplet
+// There exists exactly one Pythagorean triplet for which a + b + c = 1000.
+// Find the product abc.
+
+include "lib/std.torth"
+function print_product int int int int -> exit :
+  "Product of pythagorean triplets that add up to " puts 4 nth print ":\n" puts
+  over over 5 nth * * print "\n" puts
+  0 exit
+end
+
+// Prints the pythagorean triplet if it can be found for parameter n
+function product_of_pythagorean_triplet int -> int :
+  // while a < n / 3
+  1 while over 3 / over < do
+    // while b < n / 2
+    dup while 3 nth 2 / over < do
+      // c = n - a - b
+      3 nth 3 nth 3 nth + -
+      if
+        // a² + b² == c²
+        3 nth dup *   // a
+        3 nth dup * + // b
+        over dup * == // c
+      do
+        // Print the product and exit
+        print_product
+      endif drop
+      1 +
+    done drop
+    1 +
+  done drop
+end
+
+function main -> :
+  1000 // n
+  product_of_pythagorean_triplet
+
+  "Could not find pythagorean triplet for number " puts print "\n" puts
+end 
