@@ -17,7 +17,7 @@ def link_object_file(obj_file: str, output_file: str) -> None:
     """Link the compiled object file with LD."""
     subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{output_file}', obj_file], check=True)
 
-def compile_code(input_file: str, output_file: str, \
+def compile_code(input_file: str, output_file_basename: str, \
     constants: List[Constant], functions: List[Function], memories: List[Memory]) -> None:
     """Generate assembly and compile it to statically linked ELF 64-bit executable."""
     # Get all tokens in the order of execution
@@ -35,7 +35,7 @@ def compile_code(input_file: str, output_file: str, \
 
     # Compile the assembly code with NASM and link it with LD
     compile_asm(asm_file)
-    link_object_file(asm_file.replace('.asm', '.o'), output_file)
+    link_object_file(asm_file.replace('.asm', '.o'), f'{output_file_basename}.bin')
 
 def remove_compilation_files(input_file: str, args: argparse.Namespace) -> None:
     """Clean the current directory from compilation files."""

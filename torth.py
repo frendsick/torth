@@ -29,7 +29,7 @@ def main():
     compile_code(code_file_basename, exe_file, constants, functions, memories)
     remove_compilation_files(code_file_basename, args)
     if args.run:
-        run_code(exe_file)
+        run_code(f"{exe_file}.bin")
 
 if __name__ == "__main__":
     main()

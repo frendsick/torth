@@ -2,6 +2,7 @@ output
 test
 __pycache__/
 *.asm
+*.bin
 *.o
 *.dot
 *.svg
