@@ -226,10 +226,6 @@ def get_token_value(token_value: str) -> str:
         return 'NE'
     if token_value == '+':
         return 'PLUS'
-    if token_value.upper() == 'TRUE':
-        return '1'
-    if token_value.upper() == 'FALSE':
-        return '0'
     return token_value
 
 def get_token_type(token_text: str) -> TokenType:

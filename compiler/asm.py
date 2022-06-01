@@ -128,6 +128,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_else_asm(op, program)
     if op.type == OpType.ENDIF:
         return get_endif_asm(op)
+    if op.type == OpType.PUSH_BOOL:
+        return get_push_bool_asm(op.token.value.upper())
     if op.type == OpType.PUSH_CHAR:
         return get_push_char_asm(op)
     if op.type == OpType.PUSH_INT:
@@ -422,6 +424,13 @@ def get_else_asm(op: Op, program: Program) -> str:
 def get_endif_asm(op: Op) -> str:
     """ENDIF is a keyword for DO, ELIF or ELSE to jump to without additional functionality."""
     return f'ENDIF{op.id}:\n'
+
+def get_push_bool_asm(boolean: str) -> str:
+    """Return the assembly code for PUSH_BOOL Operand."""
+    integer: int = 1 if boolean == 'TRUE' else 0
+    op_asm: str  = f'  mov rax, {integer}\n'
+    op_asm      +=  '  push rax\n'
+    return op_asm
 
 def get_push_char_asm(op: Op) -> str:
     """Return the assembly code for PUSH_CHAR Operand."""
