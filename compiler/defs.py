@@ -124,6 +124,7 @@ class TokenType(Enum):
 
 INTEGER_TYPES: List[TokenType] = [
     TokenType.ANY,
+    TokenType.BOOL,
     TokenType.CHAR,
     TokenType.INT,
     TokenType.UINT8
