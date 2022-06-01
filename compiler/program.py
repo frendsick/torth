@@ -90,7 +90,7 @@ def type_check_program(program: Program) -> None:
     NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'IF', 'WHILE' ]
     for op in program:
         token: Token = op.token
-        type_stack = copy.deepcopy(branched_stacks[-1])
+        type_stack = branched_stacks[-1]
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
         if op.type == OpType.CAST_BOOL:
@@ -105,6 +105,7 @@ def type_check_program(program: Program) -> None:
             branched_stacks[-1] = type_check_cast_str(token, type_stack)
         elif op.type == OpType.DO:
             branched_stacks[-1] = type_check_do(token, type_stack)
+            type_stack = copy.deepcopy(type_stack)
             branched_stacks.append(type_stack)
         elif op.type == OpType.DONE:
             branched_stacks = type_check_end_of_branch(token, branched_stacks)
@@ -112,6 +113,7 @@ def type_check_program(program: Program) -> None:
             branched_stacks = type_check_end_of_branch(token, branched_stacks)
         elif op.type == OpType.ELSE:
             branched_stacks = type_check_end_of_branch(token, branched_stacks)
+            type_stack = copy.deepcopy(type_stack)
             branched_stacks.append(type_stack)
         elif op.type == OpType.ENDIF:
             branched_stacks = type_check_end_of_branch(token, branched_stacks)
