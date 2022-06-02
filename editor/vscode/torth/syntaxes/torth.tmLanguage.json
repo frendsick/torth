@@ -73,7 +73,7 @@
       "patterns": [
         {
           "name": "keyword.control.torth",
-          "match": "\\b(?i)(break|do|done|elif|else|endif|if|include|while)\\b"
+          "match": "\\b(?i)(break|continue|do|done|elif|else|endif|if|include|while)\\b"
         }
       ]
     },
@@ -89,7 +89,7 @@
       "patterns": [
         {
           "name": "constant.numeric.torth",
-          "match": "\\b(\\d+)\\b"
+          "match": "\\b(\\d+|u([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))\\b"
         }
       ]
     },
