@@ -1,42 +1,80 @@
 // Problem 7: 10001st prime
+include "lib/std.torth"
 
-include "lib/math.torth"  // Pow
-include "lib/std.torth"   // %, dup2, exit
+// Array of prime integers
+memory prime_list MEMORY_CAPACITY end
+memory prime_list.size int.size  end
 
-function print_nth_prime n -> ret :
-  2     // Counter
-  3     // i
+function prime_list.get_size -> int :
+  prime_list.size load_INT
+end
 
-  // WHILE n² > i
-  WHILE dup 4 nth 2 Pow > DO
-    1 // k
+function prime_list.store int -> :
+  int.size * prime_list ptr+ store_INT
+end
 
-    // WHILE k > i
-    WHILE dup2 < DO
-      2 + // k += 2
+function prime_list.append int -> :
+  prime_list.get_size
 
-      // IF i % k == 0, then break
-      IF dup2 % 0 == DO break ENDIF
+  over  // prime_number
+  over  // prime_list.size
 
-      // IF k + 2 == i, then increment counter
-      IF dup2 2 + == DO rot 1 + rot rot ENDIF
+  // prime_list.append(prime_number)
+  prime_list.store
 
-      // IF counter == n, then print result and exit
-      IF 3 nth 5 nth == DO
-        // Output: 10001. prime is: 104743
-        4 nth print ". prime is: " puts swap dup print "\n" puts 0 exit
-      ENDIF
+  // prime_list.size += 1
+  1 + prime_list.size store_INT drop
+end
 
-    DONE drop
+function get_nth_prime int -> int :
+  int.size * prime_list ptr+ load_INT
+end
 
-    2 + // i += 2
-  DONE
+function get_last_prime -> int :
+  prime_list.get_size
+  1 - get_nth_prime
+end
+
+// Param:   num
+// Return:  num
+function append_if_prime int -> int :
+  0 // index
+
+  // index < prime_list.size
+  while dup get_nth_prime NULL != do
+
+    // num % prime == 0
+    if dup2 get_nth_prime % 0 == do
+      break
+    endif
+    1 + // index++
+  done
+
+  // If prime, append to prime_list
+  if dup get_nth_prime NULL == do
+    over prime_list.append
+  endif drop
+end
+
+// Param:   n
+// Return:  n
+function generate_prime_list int -> int :
+  2 prime_list.append
+  3 prime_list.append
+  5 // num
+
+  // prime_list.size < n
+  while over prime_list.get_size < do
+
+    // All primes are in 6n-1 or 6n+1 except 2 and 3
+    append_if_prime 2 + // 6n-1
+    append_if_prime 4 + // 6n+1
+  done drop
 end
 
 function Main -> :
   10001 // n
-  print_nth_prime
+  generate_prime_list
 
-  // The program should exit during print_nth_prime function
-  "ERROR: Did not find the Nth prime.\n" puts drop2 drop
+  print ". prime is: " puts get_last_prime print "\n" puts
 end
