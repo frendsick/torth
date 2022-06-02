@@ -47,14 +47,14 @@ function exit int -> exit : SYS_exit syscall1 drop end
 
 // Returns: fd
 function open_file file_name -> int :
-  O_RDONLY swap SYS_open syscall2
+  dup O_RDONLY swap SYS_open syscall2
 
-  // TODO: Implement error handling with type checking enabled
-  // if    dup ENOENT  ==  do swap "File '" puts puts "' does not exist.\n" puts exit
-  // elif  dup EACCESS ==  do swap "Cannot open file '" puts str puts "': Permission denied.\n" puts exit
-  // elif  dup 0 > do
-  //  swap "Error occurred while opening the file '" puts str puts "'.\nError code: " puts dup print exit
-  // endif
+  if    dup ENOENT  ==  do swap "File '" puts puts "' does not exist.\n" puts 1 exit
+  elif  dup EACCESS ==  do swap "Cannot open file '" puts str puts "': Permission denied.\n" puts 1 exit
+  elif  dup 0 > do
+    swap "Error occurred while opening the file '" puts str puts "'.\nError code: " puts dup print 1 exit
+  else swap drop // Drop the file name
+  endif
 end
 
 // Returns: the number of bytes read
