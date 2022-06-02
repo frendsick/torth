@@ -286,3 +286,12 @@ def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
             constant: Constant = Constant(func.name, func.tokens[0].value, func.tokens[0].location)
             constants.append(constant)
     return constants
+
+def remove_unused_constants(tokens: List[Token], constants: List[Constant], memories: List[Memory]) -> List[Constant]:
+    """Remove unused constants"""
+    return [
+        constant for constant in constants \
+        if constant.name == 'MEMORY_CAPACITY' \
+            or any(constant.value == token.value for token in tokens) \
+            or any(constant.name == memory[1] for memory in memories)
+        ]

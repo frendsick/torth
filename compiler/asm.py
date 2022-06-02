@@ -3,11 +3,11 @@ Functions used for generating assembly code from Torth code
 """
 from typing import Dict, List
 from compiler.defs import Constant, Memory, OpType, Op, Program, Token, TokenType
-from compiler.utils import compiler_error, get_file_contents
+from compiler.utils import compiler_error
 
-def initialize_asm(asm_file: str, constants: List[Constant], memories: List[Memory]) -> None:
+def initialize_asm(constants: List[Constant], memories: List[Memory]) -> str:
     """Initialize assembly code file with some common definitions."""
-    default_asm: str = f'''{get_asm_file_start(constants)}
+    return f'''{get_asm_file_start(constants)}
 section .bss
   args_ptr: resq 1
 {get_memory_definitions_asm(memories)}
@@ -52,11 +52,9 @@ global _start
 _start:
   mov [args_ptr], rsp   ; Pointer to argc
 '''
-    with open(asm_file, 'w', encoding='utf-8') as f:
-        f.write(default_asm)
 
 def get_asm_file_start(constants: List[Constant]) -> str:
-    """Return the contents of a beginning of the generated assembly file as a string."""
+    """Return the contents of the beginning of the generated assembly file."""
     const_defines: str = ''.join(f'%define {const.name} {const.value}\n' for const in constants)
 
     return f'''default rel
@@ -69,6 +67,13 @@ def get_asm_file_start(constants: List[Constant]) -> str:
 section .data
 '''
 
+def get_asm_file_end() -> str:
+    """Returns the contents of the beginning of the generated assembly file"""
+    return ''';; -- exit syscall
+  mov rax, sys_exit
+  mov rdi, success
+  syscall'''
+
 def get_memory_definitions_asm(memories: List[Memory]) -> str:
     """Generates assembly code of memory definitions. Returns the memory definitions."""
     asm: str = ''
@@ -80,32 +85,28 @@ def get_memory_definitions_asm(memories: List[Memory]) -> str:
         asm += f'  {name}: RESB {size}\n'
     return asm
 
-def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> None:
+def generate_asm(assembly: str, constants: List[Constant], program: Program) -> str:
     """Generate assembly file and write it to a file."""
     for op in program:
         token: Token = op.token
 
         if op.type == OpType.PUSH_STR:
-            add_string_variable_asm(asm_file, token.value, op, constants)
+            assembly = add_string_variable_asm(assembly, token.value, op, constants)
         elif token.value.upper() == 'INPUT':
-            add_input_buffer_asm(asm_file, op, constants)
+            assembly = add_input_buffer_asm(assembly, op)
 
-        with open(asm_file, 'a', encoding='utf-8') as f:
-            f.write(get_op_comment_asm(op, op.type))
-            op_asm: str = get_op_asm(op, program=program)
-            if op_asm != "":
-                f.write(op_asm)
+        assembly += get_op_comment_asm(op, op.type)
 
-    with open(asm_file, 'a', encoding='utf-8') as f:
-        f.write( ';; -- exit syscall\n')
-        f.write( '  mov rax, sys_exit\n')
-        f.write( '  mov rdi, success\n')
-        f.write( '  syscall')
-        f.close()
+        # Get assembly for the current Op
+        op_asm: str = get_op_asm(op, program=program)
+        if op_asm != "":
+            assembly += op_asm
 
-def clean_asm(asm_file: str) -> None:
+    assembly += get_asm_file_end()
+    return assembly
+
+def clean_asm(original_assembly: str) -> str:
     """Remove unused code from assembly file"""
-    original_assembly: str  = get_file_contents(asm_file)
     cleaned_assembly: str   = ''
     rows: List[str]         = original_assembly.split('\n')
 
@@ -118,9 +119,7 @@ def clean_asm(asm_file: str) -> None:
 
         # Append row for the final assembly
         cleaned_assembly += f"{row}\n"
-
-    with open(asm_file, 'w', encoding='utf-8') as f:
-        f.write(cleaned_assembly)
+    return cleaned_assembly
 
 def get_op_asm(op: Op, program: Program) -> str:
     """Generate assembly code for certain Op. Return assembly for the Op."""
@@ -289,41 +288,37 @@ def get_arithmetic_asm(operand: str) -> str:
     arithmetic_asm      +=  '  push rax\n'
     return arithmetic_asm
 
-def add_string_variable_asm(asm_file: str, string: str, op: Op, constants: List[Constant]) -> None:
+def add_string_variable_asm(assembly: str, string: str, op: Op, constants: List[Constant]) -> str:
     """Writes a new string variable to assembly file in the .rodata section."""
-    with open(asm_file, 'r', encoding='utf-8') as f:
-        file_lines: List[str] = f.readlines()
-    with open(asm_file, 'w', encoding='utf-8') as f:
-        asm_file_start: str = get_asm_file_start(constants)
-        f.write(asm_file_start)
+    assembly_lines: List[str] = assembly.split('\n')
+    assembly = get_asm_file_start(constants)
 
-        # Replace \n with nasm approved 10s for newline
-        string = string.replace('\\n','",10,"')
-        f.write(f'  s{op.id} db {string},0\n')
+    # Replace \n with nasm approved 10s for newline
+    string = string.replace('\\n','",10,"')
+    assembly += f'  s{op.id} db {string},0\n'
 
-        # Rewrite lines except for the first line (section .rodata)
-        len_asm_file_start: int = len(asm_file_start.split('\n')) - 1
-        for i in range(len_asm_file_start, len(file_lines)):
-            f.write(file_lines[i])
+    # Rewrite lines except for the first line (section .rodata)
+    len_asm_file_start: int = len(assembly.split('\n')) - 2
+    for i in range(len_asm_file_start, len(assembly_lines)):
+        assembly += f"{assembly_lines[i]}\n"
+    return assembly
 
-def add_input_buffer_asm(asm_file: str, op: Op, constants: List[Constant]):
+def add_input_buffer_asm(assembly: str, op: Op) -> str:
     """Writes a new input buffer variable to assembly file in the .rodata section."""
-    with open(asm_file, 'r', encoding='utf-8') as f:
-        file_lines: List[str] = f.readlines()
-    with open(asm_file, 'w', encoding='utf-8') as f:
-        asm_file_start: str = get_asm_file_start(constants)
-        f.write(asm_file_start)
-        row: int = len(asm_file_start.splitlines()) - 1
-        while row < len(file_lines):
-            row += 1
-            f.write(file_lines[row])
-            if file_lines[row] == "section .bss\n":
-                break
-        f.write(f'  buffer{op.id}: resb buffer_len\n')
+    assembly_lines: List[str] = assembly.split('\n')
+    assembly = ''
+    bss_index: int = 0
+    for i, row in enumerate(assembly_lines):
+        assembly += f"{row}\n"
+        if row == "section .bss":
+            bss_index = i
+            break
+    assembly += f'  buffer{op.id}: resb buffer_len\n'
 
-        # Rewrite lines
-        for i in range(row+1, len(file_lines)):
-            f.write(file_lines[i])
+    # Rewrite lines
+    for i in range(bss_index, len(assembly_lines)):
+        assembly += f"{assembly_lines[i]}\n"
+    return assembly
 
 def get_end_op_for_while(op: Op, program: Program) -> Op:
     """Returns the END Operand for the current WHILE Operand which closes the WHILE loop."""

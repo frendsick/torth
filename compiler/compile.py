@@ -20,19 +20,25 @@ def link_object_file(obj_file: str, output_file: str) -> None:
 def compile_code(input_file: str, output_file_basename: str, \
     constants: List[Constant], functions: List[Function], memories: List[Memory]) -> None:
     """Generate assembly and compile it to statically linked ELF 64-bit executable."""
+
     # Get all tokens in the order of execution
     tokens: List[Token] = get_tokens_from_functions(functions, input_file)
 
     # Generate Program from tokens and type check it with virtual stack
     program: Program = generate_program(tokens, memories)
 
+    # Type check the program
     type_check_program(program)
 
     # Generate assembly from Program
+    assembly: str = initialize_asm(constants, memories)
+    assembly      = generate_asm(assembly, constants, program)
+    assembly      = clean_asm(assembly)  # Remove unused code from the assembly
+
+    # Write assembly to a file
     asm_file: str = input_file.replace('.torth', '.asm')
-    initialize_asm(asm_file, constants, memories)
-    generate_asm(asm_file, constants, program)
-    clean_asm(asm_file)  # Remove unused code from the assembly
+    with open(asm_file, 'w', encoding='utf-8') as f:
+        f.write(assembly)
 
     # Compile the assembly code with NASM and link it with LD
     compile_asm(asm_file)
