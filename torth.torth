@@ -2,7 +2,6 @@ include "compiler/defs.torth"
 include "compiler/lex.torth"
 include "lib/std.torth"
 
-
 function main -> :
   get_tokens    // Returns pointer to Token list
   print_tokens

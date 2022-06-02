@@ -1,7 +1,7 @@
 function get_next_word ptr -> :
   dup
-  0 while over over + load_BYTE NULL != do
-    if over over + load_BYTE 32 == do
+  0 while dup2 + load_BYTE NULL != do
+    if dup2 + load_BYTE 32 == do
       "Word: " puts swap drop swap stdout write "\n" puts break
     endif
     1 +

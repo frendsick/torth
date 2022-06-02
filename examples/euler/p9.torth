@@ -5,7 +5,7 @@
 include "lib/std.torth"
 function print_product int int int int -> exit :
   "Product of pythagorean triplets that add up to " puts 4 nth print ":\n" puts
-  over over 5 nth * * print "\n" puts
+  dup2 5 nth * * print "\n" puts
   0 exit
 end
 
@@ -37,4 +37,4 @@ function main -> :
   product_of_pythagorean_triplet
 
   "Could not find pythagorean triplet for number " puts print "\n" puts
-end 
+end

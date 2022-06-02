@@ -20,7 +20,7 @@ end
 
 // Slightly modified from https://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
 function gcd int int -> int :
-  while over over % 0 != do
+  while dup2 % 0 != do
     dup rotr %
   done swap drop
 end
