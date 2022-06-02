@@ -4,7 +4,7 @@ Functions required for compiling a Torth program
 import argparse
 import subprocess
 from typing import List
-from compiler.asm import generate_asm, initialize_asm
+from compiler.asm import clean_asm, generate_asm, initialize_asm
 from compiler.defs import Constant, Function, Memory, Program, Token
 from compiler.lex import get_tokens_from_functions
 from compiler.program import generate_program, type_check_program
@@ -32,6 +32,7 @@ def compile_code(input_file: str, output_file_basename: str, \
     asm_file: str = input_file.replace('.torth', '.asm')
     initialize_asm(asm_file, constants, memories)
     generate_asm(asm_file, constants, program)
+    clean_asm(asm_file)  # Remove unused code from the assembly
 
     # Compile the assembly code with NASM and link it with LD
     compile_asm(asm_file)

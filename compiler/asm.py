@@ -3,7 +3,7 @@ Functions used for generating assembly code from Torth code
 """
 from typing import Dict, List
 from compiler.defs import Constant, Memory, OpType, Op, Program, Token, TokenType
-from compiler.utils import compiler_error
+from compiler.utils import compiler_error, get_file_contents
 
 def initialize_asm(asm_file: str, constants: List[Constant], memories: List[Memory]) -> None:
     """Initialize assembly code file with some common definitions."""
@@ -100,8 +100,27 @@ def generate_asm(asm_file: str, constants: List[Constant], program: Program) -> 
         f.write( ';; -- exit syscall\n')
         f.write( '  mov rax, sys_exit\n')
         f.write( '  mov rdi, success\n')
-        f.write( '  syscall\n')
+        f.write( '  syscall')
         f.close()
+
+def clean_asm(asm_file: str) -> None:
+    """Remove unused code from assembly file"""
+    original_assembly: str  = get_file_contents(asm_file)
+    cleaned_assembly: str   = ''
+    rows: List[str]         = original_assembly.split('\n')
+
+    for i, row in enumerate(rows):
+        words: List[str] = row.split()
+
+        # Remove unused defines
+        if words and words[0] == '%define' and all(words[1] not in word.split() for word in rows[:i] + rows[i+1:]):
+            continue
+
+        # Append row for the final assembly
+        cleaned_assembly += f"{row}\n"
+
+    with open(asm_file, 'w', encoding='utf-8') as f:
+        f.write(cleaned_assembly)
 
 def get_op_asm(op: Op, program: Program) -> str:
     """Generate assembly code for certain Op. Return assembly for the Op."""
