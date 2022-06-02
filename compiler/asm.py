@@ -301,7 +301,7 @@ def add_string_variable_asm(assembly: str, string: str, op: Op, constants: List[
     len_asm_file_start: int = len(assembly.split('\n')) - 2
     for i in range(len_asm_file_start, len(assembly_lines)):
         assembly += f"{assembly_lines[i]}\n"
-    return assembly
+    return assembly[:-1]
 
 def add_input_buffer_asm(assembly: str, op: Op) -> str:
     """Writes a new input buffer variable to assembly file in the .rodata section."""
@@ -318,7 +318,7 @@ def add_input_buffer_asm(assembly: str, op: Op) -> str:
     # Rewrite lines
     for i in range(bss_index, len(assembly_lines)):
         assembly += f"{assembly_lines[i]}\n"
-    return assembly
+    return assembly[:-1]
 
 def get_end_op_for_while(op: Op, program: Program) -> Op:
     """Returns the END Operand for the current WHILE Operand which closes the WHILE loop."""
