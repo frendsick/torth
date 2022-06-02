@@ -1,5 +1,6 @@
 include "lib/errno.torth"
 include "lib/sys.torth"
+include "lib/math.torth"
 const NULL 0 end
 
 // Memory

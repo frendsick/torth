@@ -1,8 +1,5 @@
 // Problem 6: Sum square difference
-
-// Pow function
-include "lib/math.torth"  // Pow
-include "lib/std.torth"   // dup2
+include "lib/std.torth"
 
 function sum_of_squares Limit -> int int :
   0     // Squares total
@@ -26,7 +23,6 @@ function square_of_sum Limit -> int :
   
   2 Pow  // Square the Sum total
 end
-
 
 function Main -> :
   100 // Limit
