@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, List, Optional, Tuple, Union
 
-STACK: List[str] = []
 COLORS: Dict[str, str] = {
     'FAIL'      : '\033[91m',
     'HEADER'    : '\033[95m',
@@ -221,8 +220,3 @@ class Op:
     token: Token
 
 Program = List[Op]
-TYPE_REGEX: Dict[str, str] = {
-    'INT': r'-?\d+',
-    'PTR': r'\*ptr \S+',
-    'STR': r'\*buf s_\S+'
-}

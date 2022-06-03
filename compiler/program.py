@@ -6,7 +6,7 @@ import re
 import subprocess
 from typing import List, Optional
 from compiler.defs import Intrinsic, Memory, Op, OpType, Program
-from compiler.defs import INTEGER_TYPES, POINTER_TYPES, STACK, Token, TokenType, TypeStack
+from compiler.defs import INTEGER_TYPES, POINTER_TYPES, Token, TokenType, TypeStack
 from compiler.utils import compiler_error
 
 def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
@@ -531,12 +531,13 @@ def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
+    required_values_str: str = f"{token.value.upper()} intrinsic requires two values on the stack, PTR and value."
     if t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", \
-            f"{token.value.upper()} intrinsic requires two values on the stack, PTR and value.", token)
+            f"{required_values_str}", token)
     if t1.value not in POINTER_TYPES \
     or t2.value not in {TokenType.ANY, stored_type}:
-        compiler_error("TYPE_ERROR", f"{token.value.upper()} intrinsic requires two values on the stack, PTR and value.\n\n" + \
+        compiler_error("TYPE_ERROR", f"{required_values_str}\n\n" + \
             f"Expected types:\n{TokenType.PTR}\n{stored_type}\n\n" + \
             f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}", token)
     return type_stack
