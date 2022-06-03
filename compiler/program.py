@@ -386,7 +386,7 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t2 is None:
+    if t1 is None or t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "EQ requires two values to the stack.", token)
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
@@ -418,6 +418,8 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
+    if t1 is None or t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "DIVMOD requires two values to the stack.", token)
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
@@ -451,8 +453,10 @@ def type_check_nth(token: Token, type_stack: TypeStack) -> TypeStack:
     Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
     """
     t = type_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "NTH intrinsic requires an integer.", token)
     if t.value not in INTEGER_TYPES:
-        error_message = f"{token.value.upper()} intrinsic requires an integer.\n\n" + \
+        error_message = "NTH intrinsic requires an integer.\n\n" + \
             f"Popped type:\n{t.value} {t.location}"
         compiler_error("TYPE_ERROR", error_message, token)
     # The type of the value in stack is not always known if the value is from arbitrary memory location
@@ -491,21 +495,21 @@ def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:
 def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop an integer from the stack and print the value of it to the stdout."""
     t = type_stack.pop()
-    error_message = f"PRINT intrinsic requires an integer.\n\nPopped type:\n{t.value} {t.location}"
+    error_message = "PRINT intrinsic requires an integer."
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
     if t.value not in INTEGER_TYPES:
-        compiler_error("TYPE_ERROR", error_message, token)
+        compiler_error("TYPE_ERROR", f"{error_message}\n\nPopped type:\n{t.value} {t.location}", token)
     return type_stack
 
 def type_check_puts(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop a pointer to string from the stack and print the null-terminated buffer to stdout."""
     t = type_stack.pop()
-    error_message = f"PUTS intrinsic requires a string. Got: {t}"
+    error_message = "PUTS intrinsic requires a string."
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
     if t.value not in POINTER_TYPES:
-        compiler_error("TYPE_ERROR", error_message, token)
+        compiler_error("TYPE_ERROR", f"{error_message}\n\nPopped type:\n{t.value} {t.location}", token)
     return type_stack
 
 def type_check_rot(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -532,7 +536,7 @@ def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType
     t1 = type_stack.pop()
     t2 = type_stack.pop()
     required_values_str: str = f"{token.value.upper()} intrinsic requires two values on the stack, PTR and value."
-    if t2 is None:
+    if t1 is None or t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", \
             f"{required_values_str}", token)
     if t1.value not in POINTER_TYPES \
