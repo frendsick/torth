@@ -140,6 +140,7 @@ POINTER_TYPES: List[TokenType] = [
 class TypeNode:
     """Node for TypeStack linked list containing the current Token's type"""
     value: TokenType
+    location: Location
     next_node: Union[TypeNode, None] = None
 
 class TypeStack:
@@ -153,7 +154,7 @@ class TypeStack:
         index: int      = 1  # The top element in the stack is number one
         contents: str   = ''
         while head is not None:
-            contents += f"[{index}] {head.value}\n"
+            contents += f"[{index}] {head.value} {head.location}\n"
             head = head.next_node
             index += 1
         return contents
@@ -162,17 +163,17 @@ class TypeStack:
         """Print the contents of the TypeStack"""
         print(self.repr())
 
-    def pop(self) -> Optional[TokenType]:
+    def pop(self) -> Optional[TypeNode]:
         """Remove the head element from the TypeStack linked list"""
         if self.head is None:
             return None
-        popped: TokenType = self.head.value
+        popped: TypeNode = self.head
         self.head = self.head.next_node
         return popped
 
-    def push(self, token_type: TokenType) -> None:
+    def push(self, token_type: TokenType, location: Location) -> None:
         """Add new TypeNode item as the new head to TypeStack linked list"""
-        new_head = TypeNode(token_type)
+        new_head = TypeNode(token_type, location)
         new_head.next_node = self.head
         self.head = new_head
 

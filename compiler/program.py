@@ -166,23 +166,23 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.IF:
             if_block_original_stack = copy.deepcopy(type_stack)
         elif op.type == OpType.PUSH_BOOL:
-            branched_stacks[-1] = type_check_push_bool(type_stack)
+            branched_stacks[-1] = type_check_push_bool(token, type_stack)
         elif op.type == OpType.PUSH_CHAR:
-            branched_stacks[-1] = type_check_push_char(type_stack)
+            branched_stacks[-1] = type_check_push_char(token, type_stack)
         elif op.type == OpType.PUSH_INT:
-            branched_stacks[-1] = type_check_push_int(type_stack)
+            branched_stacks[-1] = type_check_push_int(token, type_stack)
         elif op.type == OpType.PUSH_PTR:
-            branched_stacks[-1] = type_check_push_ptr(type_stack)
+            branched_stacks[-1] = type_check_push_ptr(token, type_stack)
         elif op.type == OpType.PUSH_STR:
-            branched_stacks[-1] = type_check_push_str(type_stack)
+            branched_stacks[-1] = type_check_push_str(token, type_stack)
         elif op.type == OpType.PUSH_UINT8:
-            branched_stacks[-1] = type_check_push_uint8(type_stack)
+            branched_stacks[-1] = type_check_push_uint8(token, type_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "ARGC":
-                branched_stacks[-1] = type_check_push_int(type_stack)
+                branched_stacks[-1] = type_check_push_int(token, type_stack)
             elif intrinsic == "ARGV":
-                branched_stacks[-1] = type_check_push_ptr(type_stack)
+                branched_stacks[-1] = type_check_push_ptr(token, type_stack)
             elif intrinsic == "DIVMOD":
                 branched_stacks[-1] = type_check_divmod(token, type_stack)
             elif intrinsic == "DROP":
@@ -190,11 +190,11 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "DUP":
                 branched_stacks[-1] = type_check_dup(token, type_stack)
             elif intrinsic == "ENVP":
-                branched_stacks[-1] = type_check_push_ptr(type_stack)
+                branched_stacks[-1] = type_check_push_ptr(token, type_stack)
             elif intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
                 branched_stacks[-1] = type_check_comparison(token, type_stack)
             elif intrinsic == "INPUT":
-                branched_stacks[-1] = type_check_push_str(type_stack)
+                branched_stacks[-1] = type_check_push_str(token, type_stack)
             elif intrinsic == "LOAD_BOOL":
                 branched_stacks[-1] = type_check_load(token, type_stack, TokenType.BOOL)
             elif intrinsic == "LOAD_CHAR":
@@ -297,8 +297,9 @@ def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
     if t not in INTEGER_TYPES:
         compiler_error("VALUE_ERROR", \
-            f"Only integer types can be cast to BOOL. Got: {t}\nInteger types: {INTEGER_TYPES}", token)
-    type_stack.push(TokenType.BOOL)
+            f"Only integer types can be cast to BOOL.\nInteger types: {INTEGER_TYPES}\n\n" + \
+            f"Popped type:\n{t.value} {t.location}", token)
+    type_stack.push(TokenType.BOOL, token.location)
     return type_stack
 
 def type_check_cast_char(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -309,9 +310,11 @@ def type_check_cast_char(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    if t not in INTEGER_TYPES:
-        compiler_error("VALUE_ERROR", f"Only integer types can be cast to CHAR. Got: {t}", token)
-    type_stack.push(TokenType.CHAR)
+    if t.value not in INTEGER_TYPES:
+        compiler_error("VALUE_ERROR", \
+            f"Only integer types can be cast to CHAR.\nInteger types: {INTEGER_TYPES}\n\n" + \
+            f"Popped type:\n{t.value} {t.location}", token)
+    type_stack.push(TokenType.CHAR, token.location)
     return type_stack
 
 def type_check_cast_int(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -319,7 +322,7 @@ def type_check_cast_int(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    type_stack.push(TokenType.INT)
+    type_stack.push(TokenType.INT, token.location)
     return type_stack
 
 def type_check_cast_ptr(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -327,7 +330,7 @@ def type_check_cast_ptr(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    type_stack.push(TokenType.PTR)
+    type_stack.push(TokenType.PTR, token.location)
     return type_stack
 
 def type_check_cast_str(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -335,7 +338,7 @@ def type_check_cast_str(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    type_stack.push(TokenType.STR)
+    type_stack.push(TokenType.STR, token.location)
     return type_stack
 
 def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -346,34 +349,34 @@ def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
         compiler_error("POP_FROM_EMPTY_STACK", "DO requires two values to the stack.", token)
     return type_stack
 
-def type_check_push_bool(type_stack: TypeStack) -> TypeStack:
+def type_check_push_bool(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push a boolean to the stack"""
-    type_stack.push(TokenType.BOOL)
+    type_stack.push(TokenType.BOOL, token.location)
     return type_stack
 
-def type_check_push_char(type_stack: TypeStack) -> TypeStack:
+def type_check_push_char(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push a character to the stack"""
-    type_stack.push(TokenType.CHAR)
+    type_stack.push(TokenType.CHAR, token.location)
     return type_stack
 
-def type_check_push_int(type_stack: TypeStack) -> TypeStack:
+def type_check_push_int(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push an integer to the stack"""
-    type_stack.push(TokenType.INT)
+    type_stack.push(TokenType.INT, token.location)
     return type_stack
 
-def type_check_push_ptr(type_stack: TypeStack) -> TypeStack:
+def type_check_push_ptr(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push a pointer to the stack"""
-    type_stack.push(TokenType.PTR)
+    type_stack.push(TokenType.PTR, token.location)
     return type_stack
 
-def type_check_push_str(type_stack: TypeStack) -> TypeStack:
+def type_check_push_str(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push a string to the stack"""
-    type_stack.push(TokenType.STR)
+    type_stack.push(TokenType.STR, token.location)
     return type_stack
 
-def type_check_push_uint8(type_stack: TypeStack) -> TypeStack:
+def type_check_push_uint8(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push an unsigned 8-bit integer to the stack"""
-    type_stack.push(TokenType.UINT8)
+    type_stack.push(TokenType.UINT8, token.location)
     return type_stack
 
 def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -383,12 +386,15 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t1 not in INTEGER_TYPES \
-    or t2 not in INTEGER_TYPES:
-        error_message = f"{token.value.upper()} intrinsic requires two integers. Got: {t1}, {t2}"
+    if t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "EQ requires two values to the stack.", token)
+    if t1.value not in INTEGER_TYPES \
+    or t2.value not in INTEGER_TYPES:
+        error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
+            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
         compiler_error("TYPE_ERROR", error_message, token)
 
-    type_stack.push(TokenType.INT)
+    type_stack.push(TokenType.INT, token.location)
     return type_stack
 
 def type_check_comparison(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -401,8 +407,8 @@ def type_check_comparison(token: Token, type_stack: TypeStack) -> TypeStack:
     t2 = type_stack.pop()
     if t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "EQ requires two values to the stack.", token)
-    type_stack.push(t2)
-    type_stack.push(TokenType.BOOL)
+    type_stack.push(t2.value, t2.location)
+    type_stack.push(TokenType.BOOL, token.location)
     return type_stack
 
 def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -412,12 +418,13 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t1 not in INTEGER_TYPES \
-    or t2 not in INTEGER_TYPES:
-        error_message = f"{token.value.upper()} intrinsic requires two integers. Got: {t1}, {t2}"
+    if t1.value not in INTEGER_TYPES \
+    or t2.value not in INTEGER_TYPES:
+        error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
+            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
         compiler_error("TYPE_ERROR", error_message, token)
-    type_stack.push(TokenType.INT)
-    type_stack.push(TokenType.INT)
+    type_stack.push(TokenType.INT, token.location)
+    type_stack.push(TokenType.INT, token.location)
     return type_stack
 
 def type_check_drop(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -432,8 +439,8 @@ def type_check_dup(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "Cannot duplicate value from empty stack.", token)
-    type_stack.push(t)
-    type_stack.push(t)
+    type_stack.push(t.value, t.location)
+    type_stack.push(t.value, t.location)
     return type_stack
 
 # TODO: Push the correct type from the stack instead of TokenType.ANY
@@ -444,16 +451,13 @@ def type_check_nth(token: Token, type_stack: TypeStack) -> TypeStack:
     Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
     """
     t = type_stack.pop()
-    if t not in INTEGER_TYPES:
-        error_message = f"{token.value.upper()} intrinsic requires an integer. Got: {t}"
+    if t.value not in INTEGER_TYPES:
+        error_message = f"{token.value.upper()} intrinsic requires an integer.\n\n" + \
+            f"Popped type:\n{t.value} {t.location}"
         compiler_error("TYPE_ERROR", error_message, token)
     # The type of the value in stack is not always known if the value is from arbitrary memory location
-    type_stack.push(TokenType.ANY)
+    type_stack.push(TokenType.ANY, token.location)
     return type_stack
-
-def type_check_input() -> None:
-    """INPUT reads from stdin to buffer and pushes the pointer to the buffer."""
-    STACK.append("*buf s_buffer")
 
 def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType) -> TypeStack:
     """
@@ -464,9 +468,10 @@ def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType)
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
-    if t not in POINTER_TYPES:
-        compiler_error("TYPE_ERROR", f"{token.value.upper()} requires a pointer. Got: {t}", token)
-    type_stack.push(loaded_type)
+    if t.value not in POINTER_TYPES:
+        compiler_error("TYPE_ERROR", f"{token.value.upper()} requires a pointer.\n\n" + \
+            f"Popped type:\n{t.value} {t.location}", token)
+    type_stack.push(loaded_type, token.location)
     return type_stack
 
 def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -478,28 +483,28 @@ def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:
     t2 = type_stack.pop()
     if t1 is None or t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "OVER intrinsic requires two values in the stack.", token)
-    type_stack.push(t2)
-    type_stack.push(t1)
-    type_stack.push(t2)
+    type_stack.push(t2.value, t2.location)
+    type_stack.push(t1.value, t1.location)
+    type_stack.push(t2.value, t2.location)
     return type_stack
 
 def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop an integer from the stack and print the value of it to the stdout."""
     t = type_stack.pop()
-    error_message = f"PRINT intrinsic requires an integer. Got: {t}"
+    error_message = f"PRINT intrinsic requires an integer.\n\nPopped type:\n{t.value} {t.location}"
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
-    if t not in INTEGER_TYPES:
+    if t.value not in INTEGER_TYPES:
         compiler_error("TYPE_ERROR", error_message, token)
     return type_stack
 
 def type_check_puts(token: Token, type_stack: TypeStack) -> TypeStack:
     """Pop a pointer to string from the stack and print the null-terminated buffer to stdout."""
     t = type_stack.pop()
-    error_message = f"PUTS intrinsic requires a pointer to a string buffer. Got: {t}"
+    error_message = f"PUTS intrinsic requires a string. Got: {t}"
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
-    if t not in POINTER_TYPES:
+    if t.value not in POINTER_TYPES:
         compiler_error("TYPE_ERROR", error_message, token)
     return type_stack
 
@@ -513,9 +518,9 @@ def type_check_rot(token: Token, type_stack: TypeStack) -> TypeStack:
     t3 = type_stack.pop()
     if t1 is None or t2 is None or t3 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "ROT intrinsic requires three values in the stack.", token)
-    type_stack.push(t2)
-    type_stack.push(t1)
-    type_stack.push(t3)
+    type_stack.push(t2.value, t2.location)
+    type_stack.push(t1.value, t1.location)
+    type_stack.push(t3.value, t3.location)
     return type_stack
 
 def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType) -> TypeStack:
@@ -528,10 +533,12 @@ def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType
     t2 = type_stack.pop()
     if t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", \
-            f"{token.value.upper()} requires two values on the stack, PTR and value.", token)
-    if t1 not in POINTER_TYPES \
-    or t2 not in {TokenType.ANY, stored_type}:
-        compiler_error("TYPE_ERROR", f"Expected: {TokenType.PTR}, {stored_type}.\nGot: {t1}, {t2}", token)
+            f"{token.value.upper()} intrinsic requires two values on the stack, PTR and value.", token)
+    if t1.value not in POINTER_TYPES \
+    or t2.value not in {TokenType.ANY, stored_type}:
+        compiler_error("TYPE_ERROR", f"{token.value.upper()} intrinsic requires two values on the stack, PTR and value.\n\n" + \
+            f"Expected types:\n{TokenType.PTR}\n{stored_type}\n\n" + \
+            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}", token)
     return type_stack
 
 def type_check_swap(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -543,8 +550,8 @@ def type_check_swap(token: Token, type_stack: TypeStack) -> TypeStack:
     t2 = type_stack.pop()
     if t1 is None or t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "SWAP intrinsic requires two values in the stack.", token)
-    type_stack.push(t1)
-    type_stack.push(t2)
+    type_stack.push(t1.value, t1.location)
+    type_stack.push(t2.value, t2.location)
     return type_stack
 
 def type_check_swap2(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -558,10 +565,10 @@ def type_check_swap2(token: Token, type_stack: TypeStack) -> TypeStack:
     t4 = type_stack.pop()
     if t1 is None or t2 is None or t3 is None or t4 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "SWAP2 intrinsic requires four values in the stack.", token)
-    type_stack.push(t2)
-    type_stack.push(t1)
-    type_stack.push(t4)
-    type_stack.push(t3)
+    type_stack.push(t2.value, t2.location)
+    type_stack.push(t1.value, t1.location)
+    type_stack.push(t4.value, t4.location)
+    type_stack.push(t3.value, t4.location)
     return type_stack
 
 def type_check_syscall(token: Token, type_stack: TypeStack, param_count: int) -> TypeStack:
@@ -579,5 +586,5 @@ def type_check_syscall(token: Token, type_stack: TypeStack, param_count: int) ->
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", \
             f"{token.value.upper()} intrinsic requires {param_count+1} values in the stack.", token)
-    type_stack.push(TokenType.INT)  # Syscall return code
+    type_stack.push(TokenType.INT, token.location)  # Syscall return code
     return type_stack
