@@ -4,7 +4,7 @@
 //     type: TokenType
 //     location: Location
 const Token.size 40 end
-function Token.value  ptr -> any        :          load_STR end
+function Token.value  ptr -> str        :          load_STR end
 function Token.type   ptr -> TokenType  : 8   ptr+ load_INT end
 function Token.file   ptr -> str        : 16  ptr+ load_STR end
 function Token.row    ptr -> int        : 24  ptr+ load_INT end
@@ -55,11 +55,6 @@ function Token.output ptr -> :
   dup ", Row: " puts Token.row print
   dup ", Column: " puts Token.col print "\n" puts
   drop
-end
-
-function Token.print ptr -> :
-  dup "Token    => " puts load_INT print "\n" puts
-  Token.output
 end
 
 function Token.puts ptr -> :

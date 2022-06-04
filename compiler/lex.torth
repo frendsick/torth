@@ -25,7 +25,7 @@ function get_tokens -> ptr :
   3 1 "torth.torth" // File: torth.torth, Row: 1, Column: 3
   "917"   tokens Token.size     ptr+ load_int_token
   2 4 "torth.torth" // File: torth.torth, Row: 4, Column: 2
-  "+"     tokens Token.size 2 * ptr+ load_word_token
+  "PLUS"  tokens Token.size 2 * ptr+ load_word_token
   9 6 "torth.torth" // File: torth.torth, Row: 6, Column: 9
   "print" tokens Token.size 3 * ptr+ load_word_token
 end
