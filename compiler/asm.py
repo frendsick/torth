@@ -3,7 +3,8 @@ Functions used for generating assembly code from Torth code
 """
 from typing import Dict, List
 from compiler.defs import Constant, Memory, OpType, Op, Program, Token, TokenType
-from compiler.utils import compiler_error
+from compiler.utils import compiler_error, get_parent_op_type_do, get_parent_while
+from compiler.utils import get_end_op_for_while
 
 def initialize_asm(constants: List[Constant], memories: List[Memory]) -> str:
     """Initialize assembly code file with some common definitions."""
@@ -320,32 +321,6 @@ def add_input_buffer_asm(assembly: str, op: Op) -> str:
         assembly += f"{assembly_lines[i]}\n"
     return assembly[:-1]
 
-def get_end_op_for_while(op: Op, program: Program) -> Op:
-    """Returns the END Operand for the current WHILE Operand which closes the WHILE loop."""
-    while_count: int = 0
-    for i in range(op.id, len(program)):
-        if program[i].type == OpType.DONE:
-            while_count -= 1
-            if while_count == 0:
-                return program[i]
-        if program[i].type == OpType.WHILE:
-            while_count += 1
-    compiler_error("AMBIGUOUS_BREAK", "WHILE loop does not have DONE.", op.token)
-
-def get_parent_while(op: Op, program: Program) -> Op:
-    """Returns the parent WHILE Operand for the current Operand."""
-    done_count: int = 0
-    for i in range(op.id - 1, -1, -1):
-        if program[i].type == OpType.WHILE:
-            if done_count == 0:
-                return program[i]
-            done_count -= 1
-        if program[i].type == OpType.DONE:
-            done_count += 1
-
-    compiler_error(f"AMBIGUOUS_{op.token.value.upper()}", \
-        f"{op.token.value.upper()} operand without parent WHILE.", op.token)
-
 def get_do_asm(op: Op, program: Program) -> str:
     """DO is conditional jump to operand after ELIF, ELSE, END or ENDIF."""
     parent_op_type: OpType = get_parent_op_type_do(op, program)
@@ -379,26 +354,14 @@ def get_do_asm(op: Op, program: Program) -> str:
         compiler_error("UNKNOWN_ERROR", "Unknown error occurred while generating assembly for DO keyword.", op.token)
     return op_asm
 
-def get_parent_op_type_do(op: Op, program: Program) -> OpType:
-    """Get the parent OpType for the current DO Operand like IF or WHILE"""
-    parent_count: int = 0
-    for i in range(op.id - 1, -1, -1):
-        if program[i].type in (OpType.IF, OpType.ELIF, OpType.WHILE):
-            if parent_count == 0:
-                return program[i].type
-            parent_count -= 1
-        if program[i].type in (OpType.DONE, OpType.ENDIF):
-            parent_count += 1
-    compiler_error("AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE", op.token)
-
 def get_break_asm(op: Op, program: Program) -> str:
-    """BREAK is an unconditional jump to operand after current loop's END."""
+    """BREAK is an unconditional jump to operand after current loop's DONE."""
     parent_while: Op = get_parent_while(op, program)
     parent_end:   Op = get_end_op_for_while(parent_while, program)
     return f'  jmp DONE{parent_end.id}\n'
 
 def get_continue_asm(op: Op, program: Program) -> str:
-    """CONTINUE is an unconditional jump to operand after current loop's WHILE."""
+    """CONTINUE is an unconditional jump to current loop's WHILE."""
     parent_while: Op = get_parent_while(op, program)
     op_asm: str  = f'  jmp WHILE{parent_while.id}\n'
     op_asm      += f'DONE{op.id}:\n'

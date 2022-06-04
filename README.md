@@ -16,6 +16,7 @@ Torth is planned to be
 - Python3.6 or newer
 - NASM
 - LD
+- Graphviz (Only required for creating Graphviz graphs with **-g** argument)
 
 ## Usage
 
