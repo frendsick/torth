@@ -1,0 +1,69 @@
+// https://leetcode.com/problems/valid-palindrome/
+include "lib/std.torth"
+
+function is_alphanumeric -> :
+  // TODO: Implement AND and OR
+  if dup2 str.char_at '0' > do
+    False
+  elif dup2 str.char_at '9' < do
+    if dup2 str.char_at 'A' > do
+      False
+    elif dup2 str.char_at 'Z' < do
+      if dup2 str.char_at 'a' > do
+        False
+      elif dup2 str.char_at 'z' < do
+        False
+      else
+        True
+      endif
+    else
+      True
+    endif
+  else
+    True
+  endif
+end
+
+memory temp_str MEMORY_CAPACITY end
+function lower_without_alphanumerics str -> str :
+  temp_str str.empty
+  0 while over str.len over < do
+    if is_alphanumeric not do
+      1 +
+      continue
+    endif
+
+    dup2 str.char_at char.lower
+    temp_str str.append
+    1 +
+  done over str.len temp_str ptr+ NULL char swap store_CHAR drop2
+  // Insert NULL-byte to the end of the reversed string
+  
+  temp_str str
+end
+
+function is_palindrome str -> bool :
+  dup str.reverse streq
+end
+
+// Params: non-alpanumeric_string, original_str
+function output_is_palindrome str str -> :
+  "'" puts swap puts
+  if is_palindrome do
+    "' is palindrome\n"
+  else
+    "' is not palindrome\n"
+  endif puts
+end
+
+function valid_palindrome str -> :
+  dup lower_without_alphanumerics output_is_palindrome
+end
+
+function main -> :
+  "A man, a plan, a canal: Panama" valid_palindrome
+  "race a car" valid_palindrome
+  " " valid_palindrome
+  "Ed, I saw Harpo Marx ram Oprah W. aside." valid_palindrome
+  "Doc, note I dissent: a fast never prevents a fatness. I diet on cod." valid_palindrome
+end
