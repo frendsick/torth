@@ -67,7 +67,7 @@ const OpType.END            5  end
 const OpType.ENDIF          6  end
 const OpType.IF             7  end
 const OpType.INTRINSIC      8  end
-const OpType.PUSH_ARRAY     9  end
+const OpType.PUSH_BOOL      9  end
 const OpType.PUSH_CHAR      10 end
 const OpType.PUSH_HEX       11 end
 const OpType.PUSH_INT       12 end
@@ -102,5 +102,3 @@ const Memory.size 40 end
 // # param types, return types
 // Signature   = Tuple[List[str], List[str]]
 const Signature 16 end
-
-memory Program ptr.size end
