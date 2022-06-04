@@ -106,8 +106,11 @@ def type_check_program(program: Program) -> None:
     # to type check if-elif chains with different stack layouts than what it was before the block.
     # This is important when there is ELSE present because then we know that the ELSE block will be
     # executed if the previous IF / ELIF conditions were not matched.
-    if_block_return_stack: TypeStack    = TypeStack()
-    if_block_original_stack: TypeStack  = TypeStack()
+    if_block_return_stack: TypeStack = TypeStack()
+
+    # Save the stack at the beginning of the IF block to enable altering the stack state during IF block.
+    # This is a list of stacks to enable nested IF blocks.
+    if_block_original_stacks: List[TypeStack] = [TypeStack()]
 
     # Track if there was an ELSE clause in the IF block.
     # Required for type checking IF blocks with each IF / ELIF keyword altering the stack state.
@@ -153,7 +156,7 @@ def type_check_program(program: Program) -> None:
                 return_stack=if_block_return_stack.get_types())
 
             # Use IF block's original stack as the old stack
-            branched_stacks.append(if_block_original_stack)
+            branched_stacks.append(if_block_original_stacks[-1])
         elif op.type == OpType.ENDIF:
             branched_stacks = type_check_end_of_branch(token, branched_stacks, \
                 return_stack=if_block_return_stack.get_types())
@@ -172,10 +175,11 @@ def type_check_program(program: Program) -> None:
                 branched_stacks[-1] = if_block_return_stack
 
             # Reset IF-block variables
+            if_block_original_stacks.pop()
             if_block_return_stack = TypeStack()
             else_present = False
         elif op.type == OpType.IF:
-            if_block_original_stack = copy.deepcopy(type_stack)
+            if_block_original_stacks.append(copy.deepcopy(type_stack))
         elif op.type == OpType.PUSH_BOOL:
             branched_stacks[-1] = type_check_push_bool(token, type_stack)
         elif op.type == OpType.PUSH_CHAR:
