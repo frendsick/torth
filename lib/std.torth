@@ -36,6 +36,34 @@ function ptr+   ptr int -> ptr :
   int swap int + ptr
 end
 
+memory is_equal bool.size end
+
+// Str functions
+function streq str str -> bool :
+  True is_equal store_BOOL // is_equal = True
+  0 // index
+  // while index < len(str1)
+  while dup2  ptr+ load_CHAR NULL != do
+    if // str1[index] != str2[index]
+      dup2        ptr+ load_CHAR
+      over 5 nth  ptr+ load_CHAR
+      !=
+    do
+      False is_equal store_BOOL // is_equal = False
+      break
+    endif
+    1 +
+  done
+
+  if dup 4 nth ptr+ load_CHAR NULL != do
+    False is_equal store_BOOL // is_equal = False
+  endif
+  drop drop drop // Drop strings and index
+
+  // return is_equal
+  is_equal load_BOOL
+end
+
 // int fd, void *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
 // int fd, void *buf, size_t count
