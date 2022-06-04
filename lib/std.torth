@@ -54,6 +54,29 @@ function char.upper char -> char :
   endif
 end
 
+function char.is_alphanumeric str int -> :
+  // TODO: Implement AND and OR
+  if dup2 str.char_at '0' > do
+    False
+  elif dup2 str.char_at '9' < do
+    if dup2 str.char_at 'A' > do
+      False
+    elif dup2 str.char_at 'Z' < do
+      if dup2 str.char_at 'a' > do
+        False
+      elif dup2 str.char_at 'z' < do
+        False
+      else
+        True
+      endif
+    else
+      True
+    endif
+  else
+    True
+  endif
+end
+
 // Str functions
 function str.len str -> int :
   0 while dup2 ptr+ load_CHAR NULL != do
