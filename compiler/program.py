@@ -398,7 +398,7 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     t1 = type_stack.pop()
     t2 = type_stack.pop()
     if t1 is None or t2 is None:
-        compiler_error("POP_FROM_EMPTY_STACK", "EQ requires two values to the stack.", token)
+        compiler_error("POP_FROM_EMPTY_STACK", f"{token.value} requires two values to the stack.", token)
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
