@@ -36,8 +36,6 @@ function ptr+   ptr int -> ptr :
   int swap int + ptr
 end
 
-memory is_equal bool.size end
-
 // Str functions
 function str.len str -> int :
   0 while dup2 ptr+ load_CHAR NULL != do
@@ -45,6 +43,7 @@ function str.len str -> int :
   done swap drop
 end
 
+memory is_equal bool.size end
 function streq str str -> bool :
   True is_equal store_BOOL // is_equal = True
   0 // index
