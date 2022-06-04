@@ -70,6 +70,18 @@ function streq str str -> bool :
   is_equal load_BOOL
 end
 
+memory reversed_str str.size end
+function str.reverse str -> str :
+  dup str.len // index
+  while 0 over > do
+    1 -
+    dup2 ptr+ load_CHAR // str[index]
+
+    // reversed_str[index + 1 - str.len] = str[index]
+    over 1 + 4 nth str.len swap - reversed_str ptr+ store_CHAR
+  done drop2 reversed_str // Return reversed
+end
+
 // int fd, void *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
 // int fd, void *buf, size_t count
