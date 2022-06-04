@@ -39,11 +39,17 @@ end
 memory is_equal bool.size end
 
 // Str functions
+function str.len str -> int :
+  0 while dup2 ptr+ load_CHAR NULL != do
+    1 +
+  done swap drop
+end
+
 function streq str str -> bool :
   True is_equal store_BOOL // is_equal = True
   0 // index
   // while index < len(str1)
-  while dup2  ptr+ load_CHAR NULL != do
+  while dup2 swap str.len > do
     if // str1[index] != str2[index]
       dup2        ptr+ load_CHAR
       over 5 nth  ptr+ load_CHAR
