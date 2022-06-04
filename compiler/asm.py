@@ -494,24 +494,6 @@ def get_ge_asm() -> str:
     """
     return get_comparison_asm("cmovge")
 
-# Copies Nth element from the stack to the top of the stack
-def get_nth_asm() -> str:
-    """
-    NTH pops one integer from the stack and pushes the Nth element from stack back to stack.
-    Note that the Nth is counted without the popped integer.
-    Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
-    """
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  sub rax, 1\n'
-    op_asm      += '  mov rbx, 8\n'
-    op_asm      += '  mul rbx\n'
-    op_asm      += '  add rsp, rax ; Stack pointer to the Nth element\n'
-    op_asm      += '  pop rbx      ; Get Nth element to rax\n'
-    op_asm      += '  add rax, 8\n'
-    op_asm      += '  sub rsp, rax ; Return stack pointer\n'
-    op_asm      += '  push rbx\n'
-    return op_asm
-
 def get_gt_asm() -> str:
     """
     GT takes two elements from the stack and checks if the top element > the other.
@@ -584,6 +566,24 @@ def get_ne_asm() -> str:
     It pushes the second element back to the stack and a boolean value of the comparison.
     """
     return get_comparison_asm("cmovne")
+
+# Copies Nth element from the stack to the top of the stack
+def get_nth_asm() -> str:
+    """
+    NTH pops one integer from the stack and pushes the Nth element from stack back to stack.
+    Note that the Nth is counted without the popped integer.
+    Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
+    """
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  sub rax, 1\n'
+    op_asm      += '  mov rbx, 8\n'
+    op_asm      += '  mul rbx\n'
+    op_asm      += '  add rsp, rax ; Stack pointer to the Nth element\n'
+    op_asm      += '  pop rbx      ; Get Nth element to rax\n'
+    op_asm      += '  add rax, 8\n'
+    op_asm      += '  sub rsp, rax ; Return stack pointer\n'
+    op_asm      += '  push rbx\n'
+    return op_asm
 
 def get_over_asm() -> str:
     """
