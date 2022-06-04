@@ -1,22 +1,23 @@
 // https://leetcode.com/problems/valid-palindrome/
 include "lib/std.torth"
 
-memory temp_str MEMORY_CAPACITY end
+memory non_alphanumeric_string MEMORY_CAPACITY end
 function lower_without_alphanumerics str -> str :
-  temp_str str.empty
+  non_alphanumeric_string str.empty
   0 while over str.len over < do
+    // Skip non-alphanumeric characters
     if char.is_alphanumeric not do
       1 +
       continue
     endif
 
+    // Append lower case character to non_alphanumeric_string
     dup2 str.char_at char.lower
-    temp_str str.append
+    non_alphanumeric_string str.append
     1 +
-  done over str.len temp_str ptr+ NULL char swap store_CHAR drop2
-  // Insert NULL-byte to the end of the reversed string
+  done drop2
   
-  temp_str str
+  non_alphanumeric_string str
 end
 
 function is_palindrome str -> bool :
