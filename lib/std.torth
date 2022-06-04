@@ -36,6 +36,23 @@ function ptr+   ptr int -> ptr :
   int swap int + ptr
 end
 
+// Char functions
+function char.lower char -> char :
+  if dup 'A' <= do
+    if dup 'Z' >= do
+      32 + char
+    endif
+  endif
+end
+
+function char.upper char -> char :
+  if dup 'a' <= do
+    if dup 'z' >= do
+      32 - char
+    endif
+  endif
+end
+
 // Str functions
 function str.len str -> int :
   0 while dup2 ptr+ load_CHAR NULL != do
