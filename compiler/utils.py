@@ -16,13 +16,15 @@ def usage() -> NoReturn:
 def get_command_line_arguments() -> argparse.Namespace:
     """Initialize ArgumendParser with command-line arguments and return the parser's Namespace"""
     parser = argparse.ArgumentParser(description='Compile Torth code')
-    parser.add_argument('--output', '-o', help='Output file', metavar='file')
+    parser.add_argument('-o', '--out', help='Output file', metavar='FILE')
+    parser.add_argument('-d', '--debug', action='store_true', \
+        help="Do not strip the resulting binary")
+    parser.add_argument('-g', '--graph', action='store_true', \
+        help="Generate Graphviz graph from the program's control flow")
     parser.add_argument('-r', '--run', action='store_true', \
         help="Run program after compilation")
     parser.add_argument('-s', '--save-asm', action='store_true', \
-        help="Save assembly file as <code_file>.asm")
-    parser.add_argument('-g', '--graph', action='store_true', \
-        help="Generate Graphviz graph from the program's control flow")
+        help="Save assembly file named after code_file with .asm extension")
     parser.add_argument('code_file', help='Input file')
 
     args: argparse.Namespace = parser.parse_args(sys.argv[1:])
@@ -51,24 +53,27 @@ def get_token_location_info(token: Token) -> str:
 {COLORS['HEADER']}Row{COLORS['NC']}: {token.location[1]}
 {COLORS['HEADER']}Column{COLORS['NC']}: {token.location[2]}'''
 
-def handle_arguments(args, exe_file: str, program: Program) -> None:
+def handle_arguments(input_file: str, executable_file: str, program: Program, args) -> None:
     """Handle special command line arguments"""
     if args.graph:
-        graph_contents: str = generate_graph(program)
-        base_file_name: str = exe_file.removesuffix('.bin')
-        with open(f'{base_file_name}.dot', 'w', encoding='utf-8') as f:
-            f.write(graph_contents)
-        subprocess.run(['dot', '-Tsvg', f'-o{base_file_name}.svg', f'{base_file_name}.dot'], check=True)
-        subprocess.run(['rm', '-f', f'{base_file_name}.dot'], check=True)
-
+        generate_graph_file(input_file, program)
     if args.run:
-        run_code(exe_file)
+        run_code(executable_file)
 
-def run_code(exe_file: str) -> None:
+def generate_graph_file(input_file: str, program: Program) -> None:
+    """Generate SVG file displaying the control flow of the program"""
+    graph_contents: str = get_graph_contents(program)
+    base_file_name: str = input_file.removesuffix('.torth')
+    with open(f'{base_file_name}.dot', 'w', encoding='utf-8') as f:
+        f.write(graph_contents)
+    subprocess.run(['dot', '-Tsvg', f'-o{base_file_name}.svg', f'{base_file_name}.dot'], check=True)
+    subprocess.run(['rm', '-f', f'{base_file_name}.dot'], check=True)
+
+def run_code(executable_file: str) -> None:
     """Run an executable"""
-    subprocess.run([f'./{exe_file}'], check=True)
+    subprocess.run([f'./{executable_file}'], check=True)
 
-def generate_graph(program: Program) -> str:
+def get_graph_contents(program: Program) -> str:
     """Return Graphviz graph from Program's control flow"""
     graph_contents: str = initialize_graph(program)
 

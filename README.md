@@ -26,20 +26,20 @@ function main -> : "Hello, World!\n" puts end
 $ ./torth.py --run hello.torth
 Hello, World!
 $ ./torth.py --help
-usage: torth.py [-h] [--output file] [-r] [-s] [-g] code_file
+usage: torth.py [-h] [-o FILE] [-d] [-g] [-r] [-s] code_file
 
 Compile Torth code
 
 positional arguments:
-  code_file             Input file
+  code_file            Input file
 
 optional arguments:
-  -h, --help            show this help message and exit
-  --output file, -o file
-                        Output file
-  -r, --run             Run program after compilation
-  -s, --save-asm        Save assembly file as <code_file>.asm
-  -g, --graph           Generate Graphviz graph from the program's control flow
+  -h, --help           show this help message and exit
+  -o FILE, --out FILE  Output file
+  -d, --debug          Do not strip the resulting binary
+  -g, --graph          Generate Graphviz graph from the program's control flow
+  -r, --run            Run program after compilation
+  -s, --save-asm       Save assembly file named after code_file with .asm extension
 ```
 
 ## Documentation

@@ -12,11 +12,15 @@ def compile_asm(asm_file: str) -> None:
     """Compile the generated assembly source code with NASM."""
     subprocess.run(['nasm', '-felf64', f'-o{asm_file.replace(".asm", ".o")}', asm_file], check=True)
 
-def link_object_file(obj_file: str, output_file: str) -> None:
+def link_object_file(input_file: str, executable_file: str, cmd_args) -> None:
     """Link the compiled object file with LD."""
-    subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{output_file}', obj_file], check=True)
+    object_file: str = input_file.replace('.torth', '.o')
+    if cmd_args.debug:
+        subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{executable_file}', object_file], check=True)
+    else:
+        subprocess.run(['ld', '--strip-all', '-m', 'elf_x86_64', f'-o{executable_file}', object_file], check=True)
 
-def compile_code(input_file: str, output_file_basename: str, tokens: List[Token], \
+def compile_code(input_file: str, tokens: List[Token], \
     constants: List[Constant], memories: List[Memory]) -> Program:
     """Generate assembly and compile it to statically linked ELF 64-bit executable."""
 
@@ -36,9 +40,8 @@ def compile_code(input_file: str, output_file_basename: str, tokens: List[Token]
     with open(asm_file, 'w', encoding='utf-8') as f:
         f.write(assembly)
 
-    # Compile the assembly code with NASM and link it with LD
+    # Compile the assembly code with NASM
     compile_asm(asm_file)
-    link_object_file(asm_file.replace('.asm', '.o'), f'{output_file_basename}')
     return program
 
 def remove_compilation_files(input_file: str, args: argparse.Namespace) -> None:

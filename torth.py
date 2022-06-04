@@ -5,7 +5,7 @@ Driver code for the Torth compiler
 import argparse
 import os
 from typing import List
-from compiler.compile import compile_code, remove_compilation_files
+from compiler.compile import compile_code, link_object_file, remove_compilation_files
 from compiler.defs import Constant, Function, Memory, Program, Token
 from compiler.lex import get_constants_from_functions, get_functions_from_files
 from compiler.lex import get_included_files, get_memories_from_code, get_tokens_from_functions
@@ -19,18 +19,21 @@ def main():
     functions: List[Function]   = get_functions_from_files(args.code_file, included_files)
     constants: List[Constant]   = get_constants_from_functions(functions)
     memories: List[Memory]      = get_memories_from_code(included_files, constants)
-
-    # Executable's file name is code file name without extension by default
-    code_file_basename: str = os.path.basename(args.code_file)
-    exe_file: str = args.output if args.output is not None \
-        else code_file_basename.replace('.torth', '.bin')
+    code_file_basename: str     = os.path.basename(args.code_file)
 
     # Get all tokens in the order of execution
     tokens: List[Token] = get_tokens_from_functions(functions, code_file_basename)
-    program: Program = compile_code(code_file_basename, exe_file, tokens, constants, memories)
+
+    # Compile code into object file
+    program: Program = compile_code(code_file_basename, tokens, constants, memories)
+
+    # Link the object file to a binary and remove compilation files
+    executable_file: str = args.out or code_file_basename.replace('.torth', '.bin')
+    link_object_file(code_file_basename, executable_file, args)
     remove_compilation_files(code_file_basename, args)
 
-    handle_arguments(args, exe_file, program)
+    # Handle special arguments --graph and --run
+    handle_arguments(code_file_basename, executable_file, program, args)
 
 if __name__ == "__main__":
     main()
