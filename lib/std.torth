@@ -60,6 +60,14 @@ function str.len str -> int :
   done swap drop
 end
 
+function str.append str char -> :
+  dup str.len ptr+ store_CHAR
+end
+
+function str.char_at str int -> char :
+  ptr+ load_CHAR
+end
+
 memory is_equal bool.size end
 function streq str str -> bool :
   True is_equal store_BOOL // is_equal = True
