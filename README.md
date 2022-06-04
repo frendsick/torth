@@ -16,6 +16,7 @@ Torth is planned to be
 - Python3.6 or newer
 - NASM
 - LD
+- Graphviz (Only required for creating Graphviz graphs with **-g** argument)
 
 ## Usage
 
@@ -24,6 +25,21 @@ $ cat hello.torth
 function main -> : "Hello, World!\n" puts end
 $ ./torth.py --run hello.torth
 Hello, World!
+$ ./torth.py --help
+usage: torth.py [-h] [--output file] [-r] [-s] [-g] code_file
+
+Compile Torth code
+
+positional arguments:
+  code_file             Input file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --output file, -o file
+                        Output file
+  -r, --run             Run program after compilation
+  -s, --save-asm        Save assembly file as <code_file>.asm
+  -g, --graph           Generate Graphviz graph from the program's control flow
 ```
 
 ## Documentation

@@ -3,11 +3,26 @@ Functions for compile-time type checking and running the Torth program
 """
 import copy
 import re
-import subprocess
-from typing import List, Optional
-from compiler.defs import Intrinsic, Memory, Op, OpType, Program
+import sys
+from typing import List, NoReturn, Optional
+from compiler.defs import COLORS, Intrinsic, Memory, Op, OpType, Program
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES, Token, TokenType, TypeStack
-from compiler.utils import compiler_error
+
+def compiler_error(error_type: str, error_message: str, token: Optional[Token] = None) -> NoReturn:
+    """Output compiler error message to the console and exit with non-zero exit code"""
+    print(f"{COLORS['HEADER']}Compiler error {COLORS['FAIL']}{error_type}{COLORS['NC']}" \
+        + f":\n{error_message}")
+    if token:
+        print(get_token_location_info(token))
+    sys.exit(1)
+
+def get_token_location_info(token: Token) -> str:
+    """Returns a string containing Token object's location in the source code"""
+    return f'''
+{COLORS['HEADER']}Operand{COLORS['NC']}: {token.value}
+{COLORS['HEADER']}File{COLORS['NC']}: {token.location[0]}
+{COLORS['HEADER']}Row{COLORS['NC']}: {token.location[1]}
+{COLORS['HEADER']}Column{COLORS['NC']}: {token.location[2]}'''
 
 def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
@@ -77,10 +92,6 @@ def function_name_exists(token: str, memories: List[Memory]) -> bool:
         if memory_name.upper() == token:
             return True
     return False
-
-def run_code(exe_file: str) -> None:
-    """Run an executable"""
-    subprocess.run([f'./{exe_file}'], check=True)
 
 def type_check_program(program: Program) -> None:
     """
