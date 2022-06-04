@@ -353,11 +353,13 @@ def type_check_cast_str(token: Token, type_stack: TypeStack) -> TypeStack:
     return type_stack
 
 def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
-    """DO Keyword pops two items from the stack"""
-    _  = type_stack.pop()
-    t2 = type_stack.pop()
-    if t2 is None:
+    """DO Keyword pops one boolean from the stack"""
+    t = type_stack.pop()
+    if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "DO requires two values to the stack.", token)
+    if t.value not in { TokenType.BOOL, TokenType.ANY }:
+        compiler_error("TYPE_ERROR", "DO requires a boolean.\n\n" + \
+            f"Popped types:\n{t.value} {t.location}", token)
     return type_stack
 
 def type_check_push_bool(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -412,13 +414,12 @@ def type_check_comparison(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     Type check calculation comparison intrinsics like EQ or GE.
     Comparison intrinsics take two elements from the stack and compares them.
-    It pushes the second element back to the stack and a boolean value of the comparison.
+    It pushes a boolean value of the comparison.
     """
     _  = type_stack.pop()
     t2 = type_stack.pop()
     if t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", "EQ requires two values to the stack.", token)
-    type_stack.push(t2.value, t2.location)
     type_stack.push(TokenType.BOOL, token.location)
     return type_stack
 

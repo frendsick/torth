@@ -277,7 +277,6 @@ def get_comparison_asm(cmov_operand: str) -> str:
     comparison_asm      +=  '  mov rdx, 1\n'
     comparison_asm      +=  '  cmp rax, rbx\n'
     comparison_asm      += f'  {cmov_operand} rcx, rdx\n'
-    comparison_asm      +=  '  push rbx\n'
     comparison_asm      +=  '  push rcx\n'
     return comparison_asm
 
@@ -368,9 +367,8 @@ def get_continue_asm(op: Op, program: Program) -> str:
     return op_asm
 
 def generate_do_asm(jump_destination: str) -> str:
-    """DO removes two elements from the stack and checks if the first element is zero."""
+    """DO pops an element from the stack and checks if it is zero."""
     op_asm: str  =  '  pop rax\n'
-    op_asm      +=  '  add rsp, 8\n'
     op_asm      +=  '  test rax, rax\n'
     op_asm      += f'  jz {jump_destination}\n'
     return op_asm
