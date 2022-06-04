@@ -20,14 +20,10 @@ function lower_without_alphanumerics str -> str :
   non_alphanumeric_string str
 end
 
-function is_palindrome str -> bool :
-  dup str.reverse streq
-end
-
 // Params: non-alpanumeric_string, original_str
 function output_is_palindrome str str -> :
   "'" puts swap puts
-  if is_palindrome do
+  if str.is_palindrome do
     "' is palindrome\n"
   else
     "' is not palindrome\n"

@@ -139,6 +139,10 @@ function str.reverse str -> str :
   reversed_str // Return reversed string
 end
 
+function str.is_palindrome str -> bool :
+  dup str.reverse streq
+end
+
 // int fd, void *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
 // int fd, void *buf, size_t count
