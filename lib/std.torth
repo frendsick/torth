@@ -94,7 +94,7 @@ function streq str str -> bool :
   is_equal load_BOOL
 end
 
-memory reversed_str str.size end
+memory reversed_str MEMORY_CAPACITY end
 function str.reverse str -> str :
   dup str.len // index
   while 0 over > do
