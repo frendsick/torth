@@ -6,7 +6,8 @@ import re
 import sys
 from typing import List, NoReturn, Optional
 from compiler.defs import COLORS, Intrinsic, Memory, Op, OpType, Program
-from compiler.defs import INTEGER_TYPES, POINTER_TYPES, Token, TokenType, TypeStack
+from compiler.defs import INTEGER_TYPES, POINTER_TYPES
+from compiler.defs import Token, TokenType, TypeStack
 
 def compiler_error(error_type: str, error_message: str, token: Optional[Token] = None) -> NoReturn:
     """Output compiler error message to the console and exit with non-zero exit code"""
@@ -325,10 +326,8 @@ def type_check_cast_char(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    if t.value not in INTEGER_TYPES:
-        compiler_error("VALUE_ERROR", \
-            f"Only integer types can be cast to CHAR.\nInteger types: {INTEGER_TYPES}\n\n" + \
-            f"Popped type:\n{t.value} {t.location}", token)
+    if t.value == TokenType.BOOL:
+        compiler_error("VALUE_ERROR", "A boolean value cannot be cast to CHAR.", token)
     type_stack.push(TokenType.CHAR, token.location)
     return type_stack
 
