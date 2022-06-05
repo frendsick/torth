@@ -39,18 +39,10 @@ function execve ptr arr arr -> int : SYS_execve syscall3 end
 // int status
 function exit int -> exit : SYS_exit syscall1 drop end
 
-function puts str -> :
-  dup str.len swap stdout write drop
-end
-
-function eputs str -> :
-  dup str.len swap stderr write drop
-end
-
 // int fd, char *buf
-function fputs int str -> :
-  swap dup str.len swap rot write drop
-end
+function fputs int str  -> : swap dup str.len swap rot write drop end
+function puts  str      -> : stdout fputs end
+function eputs str      -> : stderr fputs end
 
 // Ptr functions
 function int++      ptr -> : dup load_INT 1 + store_INT end // Increment pointed value
