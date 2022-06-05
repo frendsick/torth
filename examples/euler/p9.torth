@@ -36,5 +36,5 @@ function main -> :
   1000 // n
   product_of_pythagorean_triplet
 
-  "Could not find pythagorean triplet for number " puts print "\n" puts
+  "Could not find pythagorean triplet for number " eputs print "\n" eputs
 end

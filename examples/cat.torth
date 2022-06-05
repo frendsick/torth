@@ -9,7 +9,7 @@ function get_argv1 -> ptr :
   if argc 1 >= do
     print_help
   elif argc 2 < do
-    "The program cannot yet output more than one file.\n" puts
+    "The program cannot yet output more than one file.\n" eputs
     print_help
   endif
   argv int.size ptr+ load_STR
