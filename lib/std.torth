@@ -14,6 +14,12 @@ const int.size  8 end
 const ptr.size  8 end
 const str.size  8 end
 
+// Temporary memories
+memory bool.temp  bool.size   end
+memory char.temp  char.size   end
+memory int.temp   int.size    end
+memory uint8.temp uint8.size  end
+
 // File descriptors
 const stdin  0 end
 const stdout 1 end
