@@ -205,6 +205,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_ne_asm()
         if intrinsic == "NTH":
             return get_nth_asm()
+        if intrinsic == "OR":
+            return get_or_asm()
         if intrinsic == "OVER":
             return get_over_asm()
         if intrinsic == "PLUS":
@@ -580,6 +582,14 @@ def get_nth_asm() -> str:
     op_asm      += '  pop rbx      ; Get Nth element to rax\n'
     op_asm      += '  add rax, 8\n'
     op_asm      += '  sub rsp, rax ; Return stack pointer\n'
+    op_asm      += '  push rbx\n'
+    return op_asm
+
+def get_or_asm() -> str:
+    """OR performs bitwise-OR operation to two integers."""
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  or rbx, rax\n'
     op_asm      += '  push rbx\n'
     return op_asm
 
