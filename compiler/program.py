@@ -195,7 +195,9 @@ def type_check_program(program: Program) -> None:
             branched_stacks[-1] = type_check_push_uint8(token, type_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
-            if intrinsic == "ARGC":
+            if intrinsic == "AND":
+                branched_stacks[-1] = type_check_bitwise(token, type_stack)
+            elif intrinsic == "ARGC":
                 branched_stacks[-1] = type_check_push_int(token, type_stack)
             elif intrinsic == "ARGV":
                 branched_stacks[-1] = type_check_push_ptr(token, type_stack)
@@ -230,7 +232,7 @@ def type_check_program(program: Program) -> None:
             elif intrinsic == "NTH":
                 branched_stacks[-1] = type_check_nth(token, type_stack)
             elif intrinsic == "OR":
-                branched_stacks[-1] = type_check_or(token, type_stack)
+                branched_stacks[-1] = type_check_bitwise(token, type_stack)
             elif intrinsic == "OVER":
                 branched_stacks[-1] = type_check_over(token, type_stack)
             elif intrinsic == "PLUS":
@@ -397,6 +399,19 @@ def type_check_push_uint8(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(TokenType.UINT8, token.location)
     return type_stack
 
+def type_check_bitwise(token: Token, type_stack: TypeStack) -> TypeStack:
+    """AND performs bitwise-AND operation to two integers."""
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t1 is None or t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", f"{token.value} intrinsic requires two integers.", token)
+    if t1.value not in INTEGER_TYPES or t2.value not in INTEGER_TYPES:
+        error_message = f"{token.value} intrinsic requires two integers.\n\n" + \
+            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+        compiler_error("TYPE_ERROR", error_message, token)
+    type_stack.push(TokenType.INT, token.location)
+    return type_stack
+
 def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     Type check calculation intrinsics like PLUS or MINUS.
@@ -495,19 +510,6 @@ def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType)
         compiler_error("TYPE_ERROR", f"{token.value.upper()} requires a pointer.\n\n" + \
             f"Popped type:\n{t.value} {t.location}", token)
     type_stack.push(loaded_type, token.location)
-    return type_stack
-
-def type_check_or(token: Token, type_stack: TypeStack) -> TypeStack:
-    """OR performs bitwise-OR operation to two integers."""
-    t1 = type_stack.pop()
-    t2 = type_stack.pop()
-    if t1 is None or t2 is None:
-        compiler_error("POP_FROM_EMPTY_STACK", "OR intrinsic requires two integers.", token)
-    if t1.value not in INTEGER_TYPES or t2.value not in INTEGER_TYPES:
-        error_message = "OR intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
-        compiler_error("TYPE_ERROR", error_message, token)
-    type_stack.push(TokenType.INT, token.location)
     return type_stack
 
 def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:

@@ -163,7 +163,9 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_while_asm(op)
     if op.type == OpType.INTRINSIC:
         intrinsic: str = op.token.value.upper()
-        if   intrinsic == "ARGC":
+        if intrinsic == "AND":
+            return get_and_asm()
+        if intrinsic == "ARGC":
             return get_argc_asm()
         if intrinsic == "ARGV":
             return get_argv_asm()
@@ -441,6 +443,14 @@ def get_while_asm(op: Op) -> str:
     Return the assembly code for WHILE Operand.
     """
     return f'WHILE{op.id}:\n'
+
+def get_and_asm() -> str:
+    """AND performs bitwise-AND operation to two integers."""
+    op_asm: str  = '  pop rax\n'
+    op_asm      += '  pop rbx\n'
+    op_asm      += '  and rbx, rax\n'
+    op_asm      += '  push rbx\n'
+    return op_asm
 
 def get_argc_asm() -> str:
     """ARGC pushes the argument count to the stack."""
