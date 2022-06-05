@@ -29,6 +29,7 @@ function dup2   any         -> any any      : over over end
 function rev    any any any -> any any any  : swap rot end // Reverse the top 3 elements
 function rotr   any any any -> any any any  : rot rot end // Reverse rot
 function and    bool bool   -> bool         : if True == do True == else drop False endif end
+function or     bool bool   -> bool         : if False == do True == else drop True endif end
 function not    bool        -> bool         : if dup do False else True endif swap drop end
 
 // int fd, char *buf, size_t count
