@@ -309,7 +309,7 @@ def type_check_cast_bool(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
-    if t not in INTEGER_TYPES:
+    if t.value not in INTEGER_TYPES:
         compiler_error("VALUE_ERROR", \
             f"Only integer types can be cast to BOOL.\nInteger types: {INTEGER_TYPES}\n\n" + \
             f"Popped type:\n{t.value} {t.location}", token)
