@@ -79,7 +79,19 @@ function char.upper char -> char :
   endif
 end
 
-function char.is_alphanumeric str int -> :
+function char.is_numeric char -> bool :
+  if
+    dup '0' <=
+    over '9' >=
+    &&
+  do
+    True
+  else
+    False
+  endif swap drop
+end
+
+function char.is_alphanumeric str int -> bool :
   if
     dup2        str.char_at 'z' <
     3 nth 3 nth str.char_at '0' > lor
