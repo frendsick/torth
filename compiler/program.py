@@ -145,7 +145,7 @@ def type_check_program(program: Program) -> None:
                 if_block_return_stack = copy.deepcopy(type_stack)
 
             branched_stacks = type_check_end_of_branch(token, branched_stacks, \
-                return_stack=if_block_return_stack.get_types())
+                return_stack=if_block_return_stack)
         elif op.type == OpType.ELSE:
             else_present = True
 
@@ -154,13 +154,13 @@ def type_check_program(program: Program) -> None:
                 if_block_return_stack = copy.deepcopy(type_stack)
 
             branched_stacks = type_check_end_of_branch(token, branched_stacks, \
-                return_stack=if_block_return_stack.get_types())
+                return_stack=if_block_return_stack)
 
             # Use IF block's original stack as the old stack
             branched_stacks.append(if_block_original_stacks[-1])
         elif op.type == OpType.ENDIF:
             branched_stacks = type_check_end_of_branch(token, branched_stacks, \
-                return_stack=if_block_return_stack.get_types())
+                return_stack=if_block_return_stack)
 
             # If IF block altered the stack state there MUST be an ELSE to catch all errors
             # and the IF block's return stack must match with the curr
@@ -273,30 +273,32 @@ def matching_stacks(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
         for type1, type2 in zip(stack1, stack2))
 
 def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
-    return_stack: Optional[List[TokenType]] = None) -> List[TypeStack]:
+    return_stack: Optional[TypeStack] = None) -> List[TypeStack]:
     """
     Check if the stack state is the same after the branch block whether or not the branch condition is matched
     Branch blocks (IF, WHILE) begin with DO and end with DONE, ELIF, ELSE or ENDIF
     """
     stack_after_branch = branched_stacks.pop()
-    before_stack: List[TokenType] = branched_stacks[-1].get_types()
-    after_stack:  List[TokenType] = stack_after_branch.get_types()
+    before_types: List[TokenType] = branched_stacks[-1].get_types()
+    after_types:  List[TokenType] = stack_after_branch.get_types()
 
-    # Initialize error message
-    error: str   = "Stack state should be the same after the block whether or not the condition was matched.\n\n"
-    error       += f"Stack state at the start of the block:\n{branched_stacks[-1].repr()}\n"
-    error       += f"Stack state at the end of the block:\n{stack_after_branch.repr()}"
-
+    # Check if stack states are different between sections inside IF block
     if return_stack:
-        if not matching_stacks(return_stack, after_stack):
+        return_types: List[TokenType] = return_stack.get_types()
+        if not matching_stacks(return_types, after_types):
+            error: str   =  "Stack state should be the same after each section in the IF block.\n\n"
+            error       += f"Stack state after previous sections:\n{return_stack.repr()}\n"
+            error       += f"Stack state after the current section:\n{stack_after_branch.repr()}"
             compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
         return branched_stacks
 
-    # Check for different amount of elements in the stack
-    if len(before_stack) != len(after_stack):
+    # Check for different stack states before and after the block
+    error  = "Stack state should be the same after the block whether or not the condition was matched.\n\n"
+    error += f"Stack state at the start of the block:\n{branched_stacks[-1].repr()}\n"
+    error += f"Stack state at the end of the block:\n{stack_after_branch.repr()}"
+    if len(before_types) != len(after_types):
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
-
-    if not matching_stacks(before_stack, after_stack):
+    if not matching_stacks(before_types, after_types):
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
 
     return branched_stacks
