@@ -289,7 +289,7 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
             error: str   =  "Stack state should be the same after each section in the IF block.\n\n"
             error       += f"Stack state after previous sections:\n{return_stack.repr()}\n"
             error       += f"Stack state after the current section:\n{stack_after_branch.repr()}"
-            compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
+            compiler_error("DIFFERENT_STACK_BETWEEN_SECTIONS", error, token)
         return branched_stacks
 
     # Check for different stack states before and after the block
