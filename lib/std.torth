@@ -55,10 +55,12 @@ function ptr++  ptr     ->      : ptr.size ptr+ end
 
 // Char functions
 function char.lower char -> char :
-  if dup 'A' <= do
-    if dup 'Z' >= do
-      32 + char
-    endif
+  if
+    dup 'A' <=
+    over 'Z' >=
+    &&
+  do
+    32 + char
   endif
 end
 
@@ -71,23 +73,15 @@ function char.upper char -> char :
 end
 
 function char.is_alphanumeric str int -> :
-  // TODO: Implement AND and OR
-  if dup2 str.char_at '0' > do
+  if
+    dup2        str.char_at 'z' <
+    3 nth 3 nth str.char_at '0' > lor
+    3 nth 3 nth str.char_at '9' <
+    4 nth 4 nth str.char_at 'A' > land lor
+    3 nth 3 nth str.char_at 'Z' <
+    4 nth 4 nth str.char_at 'a' > land lor
+  do
     False
-  elif dup2 str.char_at '9' < do
-    if dup2 str.char_at 'A' > do
-      False
-    elif dup2 str.char_at 'Z' < do
-      if dup2 str.char_at 'a' > do
-        False
-      elif dup2 str.char_at 'z' < do
-        False
-      else
-        True
-      endif
-    else
-      True
-    endif
   else
     True
   endif
