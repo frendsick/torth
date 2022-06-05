@@ -30,6 +30,28 @@ function rev any any any -> any any any : swap rot end // Reverse the top 3 elem
 function rotr any any any -> any any any : rot rot end // Reverse rot
 function not bool -> bool : if dup do False else True endif swap drop end
 
+// int fd, char *buf, size_t count
+function write int ptr int -> int : SYS_write syscall3 end
+// int fd, char *buf, size_t count
+function read int ptr int -> int ptr int : SYS_read syscall3 end
+// const char *pathname, char *const argv[], char *const envp[]
+function execve ptr arr arr -> int : SYS_execve syscall3 end
+// int status
+function exit int -> exit : SYS_exit syscall1 drop end
+
+function puts str -> :
+  dup str.len swap stdout write drop
+end
+
+function eputs str -> :
+  dup str.len swap stderr write drop
+end
+
+// int fd, char *buf
+function fputs int str -> :
+  swap dup str.len swap rot write drop
+end
+
 // Ptr functions
 function int++      ptr -> : dup load_INT 1 + store_INT end // Increment pointed value
 function ptr++      ptr -> : ptr.size ptr+ end
@@ -142,15 +164,6 @@ end
 function str.is_palindrome str -> bool :
   dup str.reverse streq
 end
-
-// int fd, void *buf, size_t count
-function write int ptr int -> int : SYS_write syscall3 end
-// int fd, void *buf, size_t count
-function read int ptr int -> int ptr int : SYS_read syscall3 end
-// const char *pathname, char *const argv[], char *const envp[]
-function execve ptr arr arr -> int : SYS_execve syscall3 end
-// int status
-function exit int -> exit : SYS_exit syscall1 drop end
 
 // Returns: fd
 function open_file file_name -> int :

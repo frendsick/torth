@@ -235,8 +235,6 @@ def type_check_program(program: Program) -> None:
                 branched_stacks[-1] = type_check_calculations(token, type_stack)
             elif intrinsic == "PRINT":
                 branched_stacks[-1] = type_check_print(token, type_stack)
-            elif intrinsic == "PUTS":
-                branched_stacks[-1] = type_check_puts(token, type_stack)
             elif intrinsic == "ROT":
                 branched_stacks[-1] = type_check_rot(token, type_stack)
             elif intrinsic == "STORE_BOOL":
@@ -516,16 +514,6 @@ def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
     if t.value not in INTEGER_TYPES:
-        compiler_error("TYPE_ERROR", f"{error_message}\n\nPopped type:\n{t.value} {t.location}", token)
-    return type_stack
-
-def type_check_puts(token: Token, type_stack: TypeStack) -> TypeStack:
-    """Pop a pointer to string from the stack and print the null-terminated buffer to stdout."""
-    t = type_stack.pop()
-    error_message = "PUTS intrinsic requires a string."
-    if t is None:
-        compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
-    if t.value not in POINTER_TYPES:
         compiler_error("TYPE_ERROR", f"{error_message}\n\nPopped type:\n{t.value} {t.location}", token)
     return type_stack
 

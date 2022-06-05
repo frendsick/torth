@@ -1,3 +1,4 @@
+include "lib/std.torth"
 function Main -> :
     "WHILE loop:\n" puts                // puts("WHILE loop");
     1                                   // i = 1;

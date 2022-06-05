@@ -65,7 +65,6 @@ class Intrinsic(Enum):
     OVER=auto()
     PLUS=auto()
     PRINT=auto()
-    PUTS=auto()
     ROT=auto()
     STORE_BOOL=auto()
     STORE_CHAR=auto()

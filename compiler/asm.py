@@ -211,8 +211,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_plus_asm()
         if intrinsic == "PRINT":
             return get_print_asm()
-        if intrinsic == "PUTS":
-            return get_puts_asm()
         if intrinsic == "ROT":
             return get_rot_asm()
         if intrinsic == "STORE_BOOL":
@@ -605,25 +603,6 @@ def get_print_asm() -> str:
     """Pop an integer from the stack and print the value of it to the stdout."""
     op_asm: str  =  '  pop rdi\n'
     op_asm      +=  '  call print\n'
-    return op_asm
-
-# https://localcoder.org/how-to-print-a-string-to-the-terminal-in-x86-64-assembly-nasm-without-syscall
-def get_puts_asm() -> str:
-    """Pop a pointer from the stack and print the null-terminated buffer to stdout."""
-    op_asm: str  =  '  pop r9\n'
-    op_asm      +=  '  mov rdi, r9      ; pointer to string\n'
-    op_asm      +=  '  xor rcx, rcx     ; zero rcx\n'
-    op_asm      +=  '  not rcx          ; set rcx = -1\n'
-    op_asm      +=  '  xor al, al       ; zero the al register (initialize to NUL)\n'
-    op_asm      +=  '  cld              ; clear the direction flag\n'
-    op_asm      +=  '  repnz scasb      ; get the string length (dec rcx through NUL)\n'
-    op_asm      +=  '  not rcx          ; rev all bits of negative results in absolute value\n'
-    op_asm      +=  '  dec rcx          ; -1 to skip the null-terminator, rcx contains length\n'
-    op_asm      +=  '  mov rdx, rcx     ; put length in rdx\n'
-    op_asm      +=  '  mov rsi, r9\n'
-    op_asm      +=  '  mov rax, 1       ; stdout\n'
-    op_asm      +=  '  mov rdi, rax     ; write syscall\n'
-    op_asm      +=  '  syscall\n'
     return op_asm
 
 def get_rot_asm() -> str:
