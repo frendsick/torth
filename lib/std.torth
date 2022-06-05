@@ -28,9 +28,9 @@ function drop2  any any     ->              : drop drop end
 function dup2   any         -> any any      : over over end
 function rev    any any any -> any any any  : swap rot end // Reverse the top 3 elements
 function rotr   any any any -> any any any  : rot rot end // Reverse rot
-function and    bool bool   -> bool         : if True ==  do True ==  else drop False endif           end
-function or     bool bool   -> bool         : if False == do True ==  else drop True  endif           end
-function not    bool        -> bool         : if dup      do False    else True       endif swap drop end
+function and    bool bool   -> bool         : if      do True ==  else False  endif end
+function or     bool bool   -> bool         : if not  do True ==  else True   endif end
+function not    bool        -> bool         : True != end
 
 // int fd, char *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
