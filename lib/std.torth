@@ -8,11 +8,12 @@ const MEMORY_CAPACITY 430080 end  // 420 * 1024 => 420kb
 memory file_buf MEMORY_CAPACITY end
 
 // Data types
-const bool.size 1 end
-const char.size 1 end
-const int.size  8 end
-const ptr.size  8 end
-const str.size  8 end
+const bool.size   1 end
+const char.size   1 end
+const int.size    8 end
+const ptr.size    8 end
+const str.size    8 end
+const uint8.size  1 end
 
 // Temporary memories
 memory bool.temp  bool.size   end
@@ -122,6 +123,37 @@ function str.empty str -> :
     dup2 ptr+ NULL char swap store_CHAR
     1 +
   done drop2
+end
+
+// Return integer representation of a string
+function atoi str -> int :
+  // Iterate the string character by character
+  0 while dup2 ptr+ char.is_null not do
+    dup2 str.char_at
+
+    // Raise an error if the character is not a number
+    if dup char.is_numeric not do
+      "[ERROR] atoi function failed:" eputs
+      " '" eputs 3 nth eputs "' is not an integer.\n" eputs
+      1 exit
+    endif
+
+    // Get the numeric representation of an ASCII number
+    '0' -
+
+    // Multiply the number from temporary memory by 10
+    int.temp load_INT 10 *
+
+    // Add the current number and store the result
+    + int.temp store_INT
+
+    1 +
+  done drop2
+  // Return the integer
+  int.temp load_INT
+
+  // Zero the memory of temporary integer
+  NULL int.temp store_INT
 end
 
 memory is_equal bool.size end
