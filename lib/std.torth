@@ -20,15 +20,15 @@ const stdout 1 end
 const stderr 2 end
 
 // Extra intrinsics
-function div int int -> int : divmod swap drop end
-function mod int int -> int : divmod drop end
-function / int int -> int : div end
-function % int int -> int : mod end
-function drop2 any any -> : drop drop end
-function dup2 any -> any any : over over end
-function rev any any any -> any any any : swap rot end // Reverse the top 3 elements
-function rotr any any any -> any any any : rot rot end // Reverse rot
-function not bool -> bool : if dup do False else True endif swap drop end
+function div    int int     -> int          : divmod swap drop end
+function mod    int int     -> int          : divmod drop end
+function /      int int     -> int          : div end
+function %      int int     -> int          : mod end
+function drop2  any any     ->              : drop drop end
+function dup2   any         -> any any      : over over end
+function rev    any any any -> any any any  : swap rot end // Reverse the top 3 elements
+function rotr   any any any -> any any any  : rot rot end // Reverse rot
+function not    bool        -> bool         : if dup do False else True endif swap drop end
 
 // int fd, char *buf, size_t count
 function write int ptr int -> int : SYS_write syscall3 end
@@ -45,11 +45,9 @@ function puts  str      -> : stdout fputs end
 function eputs str      -> : stderr fputs end
 
 // Ptr functions
-function int++      ptr -> : dup load_INT 1 + store_INT end // Increment pointed value
-function ptr++      ptr -> : ptr.size ptr+ end
-function ptr+   ptr int -> ptr :
-  int swap int + ptr
-end
+function int++  ptr     ->      : dup load_INT 1 + store_INT end  // Increment pointed value
+function ptr+   ptr int -> ptr  : int swap int + ptr end
+function ptr++  ptr     ->      : ptr.size ptr+ end
 
 // Char functions
 function char.lower char -> char :
@@ -98,13 +96,9 @@ function str.len str -> int :
   done swap drop
 end
 
-function str.append str char -> :
-  dup str.len ptr+ store_CHAR
-end
-
-function str.char_at str int -> char :
-  ptr+ load_CHAR
-end
+function str.append         str char  ->      : dup str.len ptr+ store_CHAR end
+function str.char_at        str int   -> char : ptr+ load_CHAR end
+function str.is_palindrome  str       -> bool : dup str.reverse streq end
 
 function str.empty str -> :
   0 while dup2 ptr+ load_CHAR NULL != do
@@ -151,10 +145,6 @@ function str.reverse str -> str :
     over 1 + 4 nth str.len swap - reversed_str ptr+ store_CHAR
   done drop2
   reversed_str // Return reversed string
-end
-
-function str.is_palindrome str -> bool :
-  dup str.reverse streq
 end
 
 // Returns: fd
