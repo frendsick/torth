@@ -1,9 +1,0 @@
-// @dataclass
-// class Function:
-//     name: str
-//     signature: Signature
-//     tokens: List[Token]
-const Function.size 24 end
-function Function.name      ptr -> str        :       load_QWORD end
-function Function.signature ptr -> Signature  : 8   + load_QWORD end
-function Function.tokens    ptr -> ptr        : 16  + load_QWORD end
