@@ -54,6 +54,7 @@ function ptr+   ptr int -> ptr  : int swap int + ptr end
 function ptr++  ptr     ->      : ptr.size ptr+ end
 
 // Char functions
+function char.is_null char -> bool : load_CHAR NULL == end
 function char.lower char -> char :
   if
     dup 'A' <=
@@ -89,7 +90,7 @@ end
 
 // Str functions
 function str.len str -> int :
-  0 while dup2 ptr+ load_CHAR NULL != do
+  0 while dup2 ptr+ char.is_null not do
     1 +
   done swap drop
 end
@@ -99,7 +100,7 @@ function str.char_at        str int   -> char : ptr+ load_CHAR end
 function str.is_palindrome  str       -> bool : dup str.reverse streq end
 
 function str.empty str -> :
-  0 while dup2 ptr+ load_CHAR NULL != do
+  0 while dup2 ptr+ char.is_null not do
     dup2 ptr+ NULL char swap store_CHAR
     1 +
   done drop2
@@ -122,7 +123,7 @@ function streq str str -> bool :
     1 +
   done
 
-  if dup 4 nth ptr+ load_CHAR NULL != do
+  if dup 4 nth ptr+ char.is_null not do
     False is_equal store_BOOL // is_equal = False
   endif
   drop drop drop // Drop strings and index
