@@ -225,6 +225,11 @@ function read_file file_name -> int :
   MEMORY_CAPACITY file_buf rot read
 end
 
+// Params:  const char *pathname, mode_t mode
+function touch_file str int -> :
+  SYS_creat syscall2
+end
+
 // Returns: the number of bytes written
 function print_file file_name -> int :
   read_file
