@@ -31,7 +31,7 @@ const mode_777 0x1ff end
 const mode_755 0x1ed end
 const mode_750 0x1e8 end
 const mode_700 0x1c0 end
-const mode_644 0x1b6 end
+const mode_644 0x1a4 end
 const mode_640 0x1a0 end
 const mode_600 0x180 end
 
@@ -229,6 +229,14 @@ end
 // Params:  const char *pathname, mode_t mode
 function touch_file str int -> :
   SYS_creat syscall2
+end
+
+// Params:  const char *filename, const void *buf
+// Returns: ssize_t written_bytes
+function write_file str str -> int :
+  mode_644 swap touch_file
+  over dup str.len // size_t count
+  swap rot SYS_write syscall3
 end
 
 // Params:  const char *pathname
