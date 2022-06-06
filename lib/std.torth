@@ -26,6 +26,15 @@ const stdin  0 end
 const stdout 1 end
 const stderr 2 end
 
+// Usual file modes
+const mode_777 0x1ff end
+const mode_755 0x1ed end
+const mode_750 0x1e8 end
+const mode_700 0x1c0 end
+const mode_644 0x1b6 end
+const mode_640 0x1a0 end
+const mode_600 0x180 end
+
 // Extra intrinsics
 function div    int int     -> int          : divmod swap drop end
 function mod    int int     -> int          : divmod drop end
