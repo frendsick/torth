@@ -82,8 +82,8 @@ end
 
 function char.is_numeric char -> bool :
   if
-    dup '0' <=
-    over '9' >=
+    dup   '0' <=
+    over  '9' >=
     &&
   do
     True
@@ -92,19 +92,19 @@ function char.is_numeric char -> bool :
   endif swap drop
 end
 
-function char.is_alphanumeric str int -> bool :
+function char.is_alphanumeric char -> bool :
   if
-    dup2        str.char_at 'z' <
-    3 nth 3 nth str.char_at '0' > lor
-    3 nth 3 nth str.char_at '9' <
-    4 nth 4 nth str.char_at 'A' > land lor
-    3 nth 3 nth str.char_at 'Z' <
-    4 nth 4 nth str.char_at 'a' > land lor
+    dup   'z' <
+    over  '0' > lor
+    over  '9' <
+    3 nth 'A' > land lor
+    over  'Z' <
+    3 nth 'a' > land lor
   do
     False
   else
     True
-  endif
+  endif swap drop
 end
 
 // Str functions
