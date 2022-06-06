@@ -72,7 +72,7 @@ function ptr++  ptr     ->      : ptr.size ptr+ end
 
 // Char functions
 function char.is_null char -> bool : load_CHAR NULL == end
-function char.lower char -> char :
+function char.lower   char -> char :
   if
     dup 'A' <=
     over 'Z' >=
@@ -219,8 +219,9 @@ function open_file int str -> int :
   endif
 end
 
+// Params:  const char *pathname
 // Returns: the number of bytes read
-function read_file file_name -> int :
+function read_file str -> int :
   O_RDONLY open_file
   MEMORY_CAPACITY file_buf rot read
 end
@@ -230,8 +231,9 @@ function touch_file str int -> :
   SYS_creat syscall2
 end
 
+// Params:  const char *pathname
 // Returns: the number of bytes written
-function print_file file_name -> int :
+function print_file str -> int :
   read_file
   file_buf stdout write "\n" puts
 end
