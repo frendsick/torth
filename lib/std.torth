@@ -196,9 +196,10 @@ function str.reverse str -> str :
   reversed_str // Return reversed string
 end
 
+// Params:  int oflag, const char *path
 // Returns: fd
-function open_file file_name -> int :
-  dup O_RDONLY swap SYS_open syscall2
+function open_file int str -> int :
+  over SYS_open syscall2
 
   if    dup ENOENT  ==  do swap "File '" eputs eputs "' does not exist.\n" eputs 1 exit
   elif  dup EACCESS ==  do swap "Cannot open file '" eputs eputs "': Permission denied.\n" eputs 1 exit
@@ -210,7 +211,7 @@ end
 
 // Returns: the number of bytes read
 function read_file file_name -> int :
-  open_file
+  O_RDONLY open_file
   MEMORY_CAPACITY file_buf rot read
 end
 
