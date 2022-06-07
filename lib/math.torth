@@ -1,6 +1,20 @@
-// Args: exponent, base
-// Returns: base^exponent
 function pow int int -> int :
+  // x ^ 0 == 1
+  if dup 0 == do
+    drop2 1
+  elif dup 0 > do
+    "TODO: Calculating power for negative exponent is not implemented yet.\n" eputs drop 1 exit
+  else calculate_pow endif
+end
+
+// Slightly modified from https://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
+function gcd int int -> int :
+  while dup2 % 0 != do
+    dup rotr %
+  done swap drop
+end
+
+function calculate_pow int int -> int :
   over  // o = n  (original value)
   1     // c = 1  (count)
 
@@ -16,11 +30,4 @@ function pow int int -> int :
     rot swap2 swap 1 +  // n e o c
 
   DONE drop drop drop  // Leave only the power to the stack
-end
-
-// Slightly modified from https://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
-function gcd int int -> int :
-  while dup2 % 0 != do
-    dup rotr %
-  done swap drop
 end
