@@ -118,6 +118,52 @@ function char.is_alphanumeric char -> bool :
   endif swap drop
 end
 
+// Int functions
+function int.get_digits int -> int :
+  // The amount of digits == 1 if the integer is 0
+  if dup 0 == do
+    drop 1
+  else
+    0 swap while dup 0 != do
+      10 /
+      swap 1 + swap
+    done drop
+  endif
+end
+
+memory int_digits int.size end
+function itoa int -> str :
+  // Store the original integer and the amount of digits
+  dup int.temp store_INT
+  int.get_digits int_digits store_INT
+
+  ""  // The string representation of the string
+  0   // index
+  while dup int_digits load_INT > do
+    // Get the current power of 10
+    // 10 ^ (int_digits - 1 - index)
+    int_digits load_INT
+    1 - over - 10 swap pow
+
+    // Store the remainder of the number / the current power of 10 to int.temp
+    int.temp load_INT
+    swap divmod swap
+    int.temp store_INT
+
+    // Store the quotient of the number / the current power of 10 to the string representation
+    '0' + char
+    over 4 nth ptr+ store_CHAR
+
+    // index++
+    1 +
+  done
+  // Insert NULL-byte to the end of the string
+  over ptr+ NULL char swap store_CHAR
+
+  // Zero int.temp
+  NULL int.temp store_INT
+end
+
 // Str functions
 function str.len str -> int :
   0 while dup2 ptr+ char.is_null not do
