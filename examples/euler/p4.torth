@@ -1,0 +1,20 @@
+include "lib/std.torth"
+function get_largest_palindrome_product -> int :
+  100 while dup 999 >= do
+    100 while dup 999 >= do
+      // Store new highest palindrome IF i*j > temp AND i*j == reverse(i*j)
+      if dup2 * dup int.temp load_INT < swap dup int.reverse == land do
+        dup2 * int.temp store_INT
+      endif
+      1 +
+    done drop
+    1 +
+  done drop
+  int.temp load_INT
+end
+
+function main -> :
+  get_largest_palindrome_product
+  "The largest palindrome product of two 3-digit numbers: " puts
+  print "\n" puts
+end

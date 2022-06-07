@@ -131,6 +131,13 @@ function int.get_digits int -> int :
   endif
 end
 
+function int.reverse int -> int :
+  0 while over 0 < do
+    10 * swap dup 10 % rot +
+    swap 10 / swap
+  done swap drop
+end
+
 memory int_digits int.size end
 function itoa int -> str :
   // Store the original integer and the amount of digits
