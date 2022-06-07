@@ -6,7 +6,7 @@ function sum_of_squares Limit -> int int :
   1     // Loop index
   rot   // Limit
   WHILE dup2 >= DO // While Limit >= Loop index
-    swap dup 2 Pow      // Square the current Loop index
+    swap dup 2 pow      // Square the current Loop index
     swap2 rot rot +     // Add current index square to Squares total
     rot 1 + rot         // Loop index += 1
   DONE swap drop        // Leave Limit and Squares total to the stack
@@ -21,7 +21,7 @@ function square_of_sum Limit -> int :
     swap 1 + rot        // Increment Loop index by one
   DONE drop2            // Leave Sum total to the stack
   
-  2 Pow  // Square the Sum total
+  2 pow  // Square the Sum total
 end
 
 function Main -> :

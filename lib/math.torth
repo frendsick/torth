@@ -1,6 +1,6 @@
 // Args: exponent, base
 // Returns: base^exponent
-function Pow int int -> int :
+function pow int int -> int :
   over  // o = n  (original value)
   1     // c = 1  (count)
 

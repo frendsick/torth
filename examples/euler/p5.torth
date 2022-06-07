@@ -6,5 +6,5 @@ include "lib/std.torth"
 // Least common multiple is 2⁴ * 3² * 5 * 7 * 11 * 13 * 17 * 19
 function Main -> :
   "Least common multiple for numbers from 1 to 20: " puts
-  2 4 Pow 3 2 Pow * 5 * 7 * 11 * 13 * 17 * 19 * print "\n" puts // Answer: 232792560
+  2 4 pow 3 2 pow * 5 * 7 * 11 * 13 * 17 * 19 * print "\n" puts // Answer: 232792560
 end

@@ -40,6 +40,7 @@ function div    int int     -> int          : divmod swap drop end
 function mod    int int     -> int          : divmod drop end
 function /      int int     -> int          : div end
 function %      int int     -> int          : mod end
+function ^      int int     -> int          : pow end
 function drop2  any any     ->              : drop drop end
 function dup2   any         -> any any      : over over end
 function rev    any any any -> any any any  : swap rot end // Reverse the top 3 elements
