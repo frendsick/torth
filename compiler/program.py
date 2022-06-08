@@ -5,7 +5,7 @@ import copy
 import re
 import sys
 from typing import List, NoReturn, Optional
-from compiler.defs import COLORS, Intrinsic, Memory, Op, OpType, Program
+from compiler.defs import COLORS, Function, Intrinsic, Memory, Op, OpType, Program
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
 from compiler.defs import Token, TokenType, TypeStack
 
@@ -25,7 +25,7 @@ def get_token_location_info(token: Token) -> str:
 {COLORS['HEADER']}Row{COLORS['NC']}: {token.location[1]}
 {COLORS['HEADER']}Column{COLORS['NC']}: {token.location[2]}'''
 
-def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
+def generate_program(tokens: List[Token], functions: List[Function], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
     program: List[Op] = []
     for op_id, token in enumerate(tokens):
@@ -79,8 +79,17 @@ def generate_program(tokens: List[Token], memories: List[Memory]) -> Program:
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found", token)
 
-        program.append( Op(op_id, op_type, token) )
+        func: Function = get_tokens_function(token, functions)
+        program.append( Op(op_id, op_type, token, func) )
     return program
+
+def get_tokens_function(token: Token, functions: List[Function]) -> Function:
+    for func in functions:
+        for func_token in func.tokens:
+            if token.location == func_token.location:
+                return func
+    compiler_error("COMPILER_ERROR", \
+        f"Could not determine corresponding Function for Token '{token.value}'", token)
 
 def intrinsic_exists(token_value: str) -> bool:
     """Return boolean value whether or not certain Intrinsic exists."""

@@ -213,9 +213,10 @@ class Function:
 
 @dataclass
 class Op:
-    """Operands stores Token's information which is used in assembly code generation"""
+    """Operands are commands in the intermediate representetion used in assembly code generation"""
     id: int
     type: OpType
     token: Token
+    func: Function
 
 Program = List[Op]
