@@ -202,7 +202,16 @@ class Token:
     location: Location
 
 # param types, return types
-Signature   = Tuple[List[str], List[str]]
+Signature = Tuple[List[TokenType], List[TokenType]]
+SIGNATURE_MAP: Dict[str, TokenType] = {
+    'ANY':      TokenType.ANY,
+    'BOOL':     TokenType.BOOL,
+    'CHAR':     TokenType.CHAR,
+    'INT':      TokenType.INT,
+    'PTR':      TokenType.PTR,
+    'STR':      TokenType.PTR,
+    'UINT8':    TokenType.UINT8
+}
 
 @dataclass
 class Function:
