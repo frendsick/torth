@@ -72,6 +72,10 @@ def generate_program(tokens: List[Token], functions: List[Function], memories: L
             op_type = OpType.CAST_UINT8
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
+        elif token_value == 'FUNCTION_CALL':
+            op_type = OpType.FUNCTION_CALL
+        elif token_value == 'FUNCTION_RETURN':
+            op_type = OpType.FUNCTION_RETURN
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
         elif function_name_exists(token_value, memories):
@@ -128,7 +132,7 @@ def type_check_program(program: Program) -> None:
 
     for op in program:
         token: Token = op.token
-        type_stack = branched_stacks[-1]
+        type_stack: TypeStack = branched_stacks[-1]
 
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
@@ -188,6 +192,12 @@ def type_check_program(program: Program) -> None:
             if_block_original_stacks.pop()
             if_block_return_stack = TypeStack()
             else_present = False
+        elif op.type == OpType.FUNCTION_CALL:
+            type_check_function_call(op, op.func.signature[0], type_stack)
+            continue
+        elif op.type == OpType.FUNCTION_RETURN:
+            type_check_function_return(op, op.func.signature[1], type_stack)
+            continue
         elif op.type == OpType.IF:
             if_block_original_stacks.append(copy.deepcopy(type_stack))
         elif op.type == OpType.PUSH_BOOL:
@@ -279,6 +289,39 @@ def type_check_program(program: Program) -> None:
         compiler_error("UNHANDLED_DATA_IN_STACK", \
             "The stack should empty after the program has been executed.\n\n" + \
             f"Unhandled Token types:\n{type_stack.repr()}", token)
+
+def type_check_function_call(op: Op, param_types: List[TokenType], type_stack: TypeStack) -> None:
+    temp_stack = copy.deepcopy(type_stack)
+    for param_type in param_types:
+        if not temp_stack.head:
+            compiler_error("FUNCTION_CALL_TYPE_ERROR", \
+                f"Function '{op.func.name}' requires more values to the stack.\n\n" + \
+                f"Expected: {param_types}\nGot: {type_stack.repr()}", op.token)
+        top_type: TokenType = temp_stack.pop().value  # type: ignore
+        # STR counts as a pointer in the function type checking
+        if param_type == TokenType.ANY or top_type == TokenType.ANY or \
+            (param_type in POINTER_TYPES and top_type in POINTER_TYPES):
+            continue
+        if param_type not in [top_type, TokenType.ANY]:
+            compiler_error("FUNCTION_CALL_TYPE_ERROR", \
+                f"Function '{op.func.name}' has wrong parameter types in the stack.\n\n" + \
+                f"Expected: {param_types}\nStack: {type_stack.repr()}", op.token)
+
+def type_check_function_return(op: Op, return_types: List[TokenType], type_stack: TypeStack) -> None:
+    temp_stack = copy.deepcopy(type_stack)
+    for return_type in return_types:
+        if not temp_stack.head:
+            compiler_error("FUNCTION_RETURN_TYPE_ERROR", \
+                f"Function '{op.func.name}' requires more values to the stack.\n\n" + \
+                f"Expected: {return_types}\nGot: {type_stack.repr()}", op.token)
+        top_type: TokenType = temp_stack.pop().value  # type: ignore
+        if return_type == TokenType.ANY or top_type == TokenType.ANY \
+            or (return_type in POINTER_TYPES and top_type in POINTER_TYPES):
+            continue
+        if return_type not in [top_type, TokenType.ANY]:
+            compiler_error("FUNCTION_RETURN_TYPE_ERROR", \
+                f"Function '{op.func.name}' has wrong return types in the stack.\n\n" + \
+                f"Expected: {return_types}\nStack: {type_stack.repr()}", op.token)
 
 def matching_stacks(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
     """Check if two virtual stacks have matching types in them."""

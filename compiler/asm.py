@@ -130,6 +130,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         OpType.CAST_INT,
         OpType.CAST_PTR,
         OpType.CAST_STR,
+        OpType.FUNCTION_CALL,
+        OpType.FUNCTION_RETURN,
         OpType.IF           # If is just a keyword which starts an IF-block
         }:
         return ''

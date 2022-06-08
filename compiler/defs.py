@@ -98,6 +98,8 @@ class OpType(Enum):
     ELSE=auto()
     END=auto()
     ENDIF=auto()
+    FUNCTION_CALL=auto()
+    FUNCTION_RETURN=auto()
     IF=auto()
     INTRINSIC=auto()
     PUSH_BOOL=auto()
