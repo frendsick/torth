@@ -94,7 +94,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
             # Append Function and reset variables when function is fully lexed
             if token_value.upper() == 'END':
                 signature: Signature = (param_types, return_types)
-                tokens.append(Token(f'FUNCTION_RETURN', TokenType.KEYWORD, tokens[-1].location))
+                tokens.append(Token(f'{name}_RETURN', TokenType.KEYWORD, tokens[-1].location))
                 functions.append( Function(name, signature, tokens) )
                 name            = ''
                 param_types     = []
@@ -119,7 +119,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
         elif current_part == 4:
             token: Token = get_token_from_match(match, file, newline_indexes)
             if not tokens:
-                tokens.append(Token(f'FUNCTION_CALL', TokenType.KEYWORD, token.location))
+                tokens.append(Token(f'{name}_CALL', TokenType.KEYWORD, token.location))
             tokens.append(token)
     return functions
 
