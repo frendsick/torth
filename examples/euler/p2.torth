@@ -1,3 +1,4 @@
+// Project Euler Problem 2: Even Fibonacci numbers
 include "lib/std.torth"
 function sum_current_with_previous int int -> int int :
   dup rot +
@@ -10,21 +11,20 @@ function add_if_even int int int -> int int int :
   ENDIF
 end
 
-// Problem 2: Even Fibonacci numbers
-function sum_of_even_fibonacci int int int int -> int :
-  WHILE dup 5 nth >= DO
+function sum_of_even_fibonacci int -> int :
+  int.temp store_INT  // Limit
+  2                   // Total
+  1                   // Previous
+  2                   // Current
+  WHILE dup int.temp load_INT >= DO
     sum_current_with_previous
     add_if_even
   DONE
-  drop2 swap drop
+  drop2
 end
 
 function main -> :
   4000000 // Limit
-  2       // Total
-  1       // Previous
-  2       // Current
-
-  "Sum of even fibonacci numbers under 4000000: " puts
+  "Sum of even fibonacci numbers under " puts dup print ": " puts
   sum_of_even_fibonacci print "\n" puts // Answer: 4613732
 end

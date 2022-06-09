@@ -8,7 +8,10 @@ FUNCTION add_to_total int -> int :
   dup rot + swap
 END
 
-FUNCTION get_fizzbuzz_sum int int int -> int :
+// Params: limit
+FUNCTION get_fizzbuzz_sum int -> int :
+  0 // total
+  3 // index
   // WHILE limit > index
   WHILE dup 4 nth > DO
     IF dup 3 % 0 == over 5 % 0 == || DO
@@ -20,8 +23,6 @@ END
 
 FUNCTION main -> :
   1000  // limit
-  0     // total
-  3     // index
   get_fizzbuzz_sum  // Returns: sum
   "Sum of all numbers divisible by 3 or 5: " puts print "\n" puts // Answer: 233168
 END
