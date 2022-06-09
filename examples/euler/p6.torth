@@ -1,7 +1,7 @@
 // Problem 6: Sum square difference
 include "lib/std.torth"
 
-function sum_of_squares Limit -> int int :
+function sum_of_squares int -> int int :
   0     // Squares total
   1     // Loop index
   rot   // Limit
@@ -12,7 +12,7 @@ function sum_of_squares Limit -> int int :
   DONE swap drop        // Leave Limit and Squares total to the stack
 end
 
-function square_of_sum Limit -> int :
+function square_of_sum int -> int :
   0     // Sum total
   1     // Loop index
   rot   // Limit

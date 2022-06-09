@@ -1,13 +1,13 @@
 include "lib/std.torth"
-function OutputRow str_buf* str_len number -> number :
+function OutputRow str int -> int :
     puts dup print "\n" puts
 end
 
-function AddTotal row total -> row total :
+function AddTotal int int -> int int :
     dup rot + swap
 end
 
-function FizzBuzz index sum limit -> sum :
+function FizzBuzz int int int -> int :
     // WHILE limit >= index
     WHILE dup 4 nth >= DO
         IF dup 15 % 0 == DO

@@ -1,5 +1,5 @@
 include "lib/std.torth"
-function Fib F1 F0 Limit -> Fx :
+function Fib int int int -> int :
   1 // The counter for WHILE loop
   WHILE 4 nth over < DO
     // Duplicate Current to use it next iteration as Previous
@@ -8,7 +8,7 @@ function Fib F1 F0 Limit -> Fx :
     rot swap2 + swap
     // Increment counter for WHILE loop
     1 +
-  DONE drop swap drop
+  DONE drop rotr drop2
 end
 
 function Main -> :
@@ -19,5 +19,4 @@ function Main -> :
   "The " puts rot dup print rotr ". fibonacci number starting from " puts
   dup print " and " puts over print " is: " puts
   Fib print "\n" puts  // Answer: 6765
-  drop  // Limit
 end

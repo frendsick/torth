@@ -3,7 +3,7 @@
 // Find the product abc.
 
 include "lib/std.torth"
-function print_product int int int int -> exit :
+function print_product int int int int -> int int int int :
   "Product of pythagorean triplets that add up to " puts 4 nth print ":\n" puts
   dup2 5 nth * * print "\n" puts
   0 exit
