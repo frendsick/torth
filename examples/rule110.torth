@@ -29,8 +29,8 @@ end
 // Sync previous_board with current_board
 function sync_boards -> :
   0 while dup BOARD_SIZE > do
-    dup current_board ptr+ load_uint8
-    over previous_board ptr+ store_uint8
+    current_board over ptr+ load_uint8
+    over previous_board swap ptr+ store_uint8
     1 +
   done drop
 end
@@ -40,7 +40,7 @@ function print_iteration -> :
   0 while dup BOARD_SIZE > do
 
     // if(current_board[j] == 1)
-    if dup current_board ptr+ load_uint8 1 == do
+    if current_board over ptr+ load_uint8 1 == do
       "*" puts
     else
       " " puts
@@ -50,11 +50,11 @@ function print_iteration -> :
   "\n" puts
 end
 
-function get_pattern board_index -> int :
+function get_pattern int -> int :
   previous_board
-  over 1 - over ptr+ load_uint8 pattern        store_uint8  // pattern[0] = previous_board[j-1]
-  over     over ptr+ load_uint8 pattern 1 ptr+ store_uint8  // pattern[1] = previous_board[j]
-  over 1 + over ptr+ load_uint8 pattern 2 ptr+ store_uint8  // pattern[2] = previous_board[j+1]
+  over 1 - over swap ptr+ load_uint8 pattern        store_uint8  // pattern[0] = previous_board[j-1]
+  over     over swap ptr+ load_uint8 pattern 1 ptr+ store_uint8  // pattern[1] = previous_board[j]
+  over 1 + over swap ptr+ load_uint8 pattern 2 ptr+ store_uint8  // pattern[2] = previous_board[j+1]
   drop
 end
 
@@ -65,16 +65,12 @@ function output_board -> :
   done drop "\n" puts
  end
 
-function set_board_index rule_index pattern_ptr -> :
-  rules ptr+ load_uint8 3 nth current_board ptr+ store_uint8
-end
-
-function set_board_index rule_index board_index -> :
-  rules ptr+ load_uint8 over current_board ptr+ store_uint8
+function set_board_index int -> :
+  rules swap ptr+ load_uint8 current_board 4 nth ptr+ store_uint8
 end
 
 // Sets the current_board index according to rules
-function update_board_index board_index -> int :
+function update_board_index int -> int :
   pattern
   if   dup load_int 0x10101 == do // 111
     0 set_board_index

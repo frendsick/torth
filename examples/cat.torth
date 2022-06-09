@@ -1,6 +1,6 @@
 include "lib/std.torth"
 
-function print_help -> ret :
+function print_help -> :
   "Syntax: ./cat <file_name>\n" puts 1 exit
 end
 

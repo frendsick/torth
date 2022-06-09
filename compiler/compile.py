@@ -5,7 +5,7 @@ import argparse
 import subprocess
 from typing import List
 from compiler.asm import clean_asm, generate_asm, initialize_asm
-from compiler.defs import Constant, Memory, Program, Token
+from compiler.defs import Constant, Function, Memory, Program, Token
 from compiler.program import generate_program, type_check_program
 
 def compile_asm(asm_file: str) -> None:
@@ -21,11 +21,11 @@ def link_object_file(input_file: str, executable_file: str, cmd_args) -> None:
         subprocess.run(['ld', '--strip-all', '-m', 'elf_x86_64', f'-o{executable_file}', object_file], check=True)
 
 def compile_code(input_file: str, tokens: List[Token], \
-    constants: List[Constant], memories: List[Memory]) -> Program:
+    constants: List[Constant], functions: List[Function], memories: List[Memory]) -> Program:
     """Generate assembly and compile it to statically linked ELF 64-bit executable."""
 
     # Generate Program from tokens and type check it with virtual stack
-    program: Program = generate_program(tokens, memories)
+    program: Program = generate_program(tokens, functions, memories)
 
     # Type check the program
     type_check_program(program)

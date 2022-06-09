@@ -7,8 +7,8 @@ memory series_length    int.size end
 memory largest_product  int.size end
 
 // Store the current subseries' product to a temporary integer
-function store_series_product int str -> int :
-  dup2 dup rot ptr+
+function store_series_product int str -> int str :
+  dup2 dup rot swap ptr+
   0 while dup series_length load_INT > do
     dup2 ptr+ load_CHAR '0' -
     if int.temp load_INT 0 == do

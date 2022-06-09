@@ -98,6 +98,8 @@ class OpType(Enum):
     ELSE=auto()
     END=auto()
     ENDIF=auto()
+    FUNCTION_CALL=auto()
+    FUNCTION_RETURN=auto()
     IF=auto()
     INTRINSIC=auto()
     PUSH_BOOL=auto()
@@ -202,7 +204,16 @@ class Token:
     location: Location
 
 # param types, return types
-Signature   = Tuple[List[str], List[str]]
+Signature = Tuple[List[TokenType], List[TokenType]]
+SIGNATURE_MAP: Dict[str, TokenType] = {
+    'ANY':      TokenType.ANY,
+    'BOOL':     TokenType.BOOL,
+    'CHAR':     TokenType.CHAR,
+    'INT':      TokenType.INT,
+    'PTR':      TokenType.PTR,
+    'STR':      TokenType.PTR,
+    'UINT8':    TokenType.UINT8
+}
 
 @dataclass
 class Function:
@@ -213,9 +224,10 @@ class Function:
 
 @dataclass
 class Op:
-    """Operands stores Token's information which is used in assembly code generation"""
+    """Operands are commands in the intermediate representetion used in assembly code generation"""
     id: int
     type: OpType
     token: Token
+    func: Function
 
 Program = List[Op]

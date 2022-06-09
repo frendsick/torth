@@ -4,7 +4,8 @@ The module implements lexing functions that parses Tokens from code files
 import itertools
 import re
 from typing import List, Optional
-from compiler.defs import Constant, Function, Keyword, Location, Memory, Signature, Token, TokenType
+from compiler.defs import Constant, Function, Keyword, Location, Memory
+from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
 
 def get_included_files(code: str):
@@ -36,6 +37,8 @@ def get_tokens_from_functions(functions: List[Function], file: str) -> List[Toke
     """
     try:
         main_function: Function = [ func for func in functions if func.name.upper() == 'MAIN' ][0]
+        if not main_function.tokens:
+            return []
     except IndexError:
         compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a main function")
     return get_tokens_from_function(main_function, functions)
@@ -58,12 +61,12 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
     Return list of Function objects.
     """
     # Initialize variables
-    functions: List[Function]   = []
-    current_part: int           = 0
-    name: str                   = ''
-    param_types: List[str]      = []
-    return_types: List[str]     = []
-    tokens: List[Token]         = []
+    functions: List[Function]       = []
+    current_part: int               = 0
+    name: str                       = ''
+    param_types: List[TokenType]    = []
+    return_types: List[TokenType]   = []
+    tokens: List[Token]             = []
 
     # CONST is a constant integer so a function with Signature( [], ['INT'] )
     is_const: bool = False
@@ -91,6 +94,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
             # Append Function and reset variables when function is fully lexed
             if token_value.upper() == 'END':
                 signature: Signature = (param_types, return_types)
+                tokens.append(Token(f'{name}_RETURN', TokenType.KEYWORD, tokens[-1].location))
                 functions.append( Function(name, signature, tokens) )
                 name            = ''
                 param_types     = []
@@ -101,19 +105,21 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
         elif current_part == 1:
             name = token_value
             if is_const:
-                # CONST is a constant integer so a function with Signature( [], ['INT'] )
-                return_types.append('INT')
+                # CONST is a constant integer so a function with Signature( [], [TokenType.INT] )
+                return_types.append(TokenType.INT)
 
                 # Defining CONST skips -> and : delimiters
                 next(function_parts)
                 next(function_parts)
             current_part = next(function_parts)
         elif current_part == 2:
-            param_types.append(token_value.upper())
+            param_types.append(SIGNATURE_MAP[token_value.upper()])
         elif current_part == 3:
-            return_types.append(token_value.upper())
+            return_types.append(SIGNATURE_MAP[token_value.upper()])
         elif current_part == 4:
             token: Token = get_token_from_match(match, file, newline_indexes)
+            if not tokens:
+                tokens.append(Token(f'{name}_CALL', TokenType.KEYWORD, token.location))
             tokens.append(token)
     return functions
 
@@ -282,8 +288,8 @@ def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
     """Parse Constants from list of Function objects. Return the list of Constant objects"""
     constants: List[Constant] = []
     for func in functions:
-        if len(func.tokens) == 1 and func.signature == ( [], ['INT'] ):
-            constant: Constant = Constant(func.name, func.tokens[0].value, func.tokens[0].location)
+        if len(func.tokens) == 3 and func.signature == ( [], [TokenType.INT] ):
+            constant: Constant = Constant(func.name, func.tokens[1].value, func.tokens[1].location)
             constants.append(constant)
     return constants
 

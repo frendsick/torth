@@ -9,8 +9,8 @@ function prime_list.get_size -> int :
   prime_list.size load_INT
 end
 
-function prime_list.store int -> :
-  int.size * prime_list ptr+ store_INT
+function prime_list.store int int -> :
+  int.size * prime_list swap ptr+ store_INT
 end
 
 function prime_list.append int -> :
@@ -27,7 +27,7 @@ function prime_list.append int -> :
 end
 
 function get_nth_prime int -> int :
-  int.size * prime_list ptr+ load_INT
+  int.size * prime_list swap ptr+ load_INT
 end
 
 function get_last_prime -> int :
