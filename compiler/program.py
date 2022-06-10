@@ -437,6 +437,8 @@ def type_check_cast_str(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
+    if t.value in INTEGER_TYPES:
+        compiler_error("VALUE_ERROR", "An integer value cannot be cast to STR.", token)
     type_stack.push(TokenType.STR, token.location)
     return type_stack
 
