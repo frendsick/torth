@@ -146,6 +146,8 @@ def type_check_program(program: Program) -> None:
             branched_stacks[-1] = type_check_cast_ptr(token, type_stack)
         elif op.type == OpType.CAST_STR:
             branched_stacks[-1] = type_check_cast_str(token, type_stack)
+        elif op.type == OpType.CAST_UINT8:
+            branched_stacks[-1] = type_check_cast_uint8(token, type_stack)
         elif op.type == OpType.DO:
             branched_stacks[-1] = type_check_do(token, type_stack)
             type_stack = copy.deepcopy(type_stack)
@@ -436,6 +438,16 @@ def type_check_cast_str(token: Token, type_stack: TypeStack) -> TypeStack:
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
     type_stack.push(TokenType.STR, token.location)
+    return type_stack
+
+def type_check_cast_uint8(token: Token, type_stack: TypeStack) -> TypeStack:
+    """CAST_UINT8 explicitely casts the top element of the stack to UINT8 type."""
+    t = type_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
+    if t.value in POINTER_TYPES:
+        compiler_error("VALUE_ERROR", "A pointer value cannot be cast to STR.", token)
+    type_stack.push(TokenType.UINT8, token.location)
     return type_stack
 
 def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
