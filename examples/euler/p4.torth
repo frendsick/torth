@@ -3,14 +3,14 @@ function get_largest_palindrome_product -> int :
   100 while dup 999 >= do
     100 while dup 999 >= do
       // Store new highest palindrome IF i*j > temp AND i*j == reverse(i*j)
-      if dup2 * dup int.temp int.load < swap dup int.reverse == land do
-        dup2 * int.temp int.store
+      if dup2 * dup temp_int int.load < swap dup int.reverse == land do
+        dup2 * temp_int int.store
       endif
       1 +
     done drop
     1 +
   done drop
-  int.temp int.load
+  temp_int int.load
 end
 
 function main -> :

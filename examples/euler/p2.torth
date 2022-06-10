@@ -12,11 +12,11 @@ function add_if_even int int int -> int int int :
 end
 
 function sum_of_even_fibonacci int -> int :
-  int.temp int.store  // Limit
+  temp_int int.store  // Limit
   2                   // Total
   1                   // Previous
   2                   // Current
-  WHILE dup int.temp int.load >= DO
+  WHILE dup temp_int int.load >= DO
     sum_current_with_previous
     add_if_even
   DONE

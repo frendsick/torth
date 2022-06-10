@@ -11,11 +11,11 @@ function store_series_product int str -> int str :
   dup2 dup rot swap ptr+
   0 while dup series_length int.load > do
     dup2 ptr+ char.load '0' -
-    if int.temp int.load 0 == do
-      int.temp int.store
+    if temp_int int.load 0 == do
+      temp_int int.store
     else
-      int.temp int.load swap * // dup print "\n" puts
-      int.temp int.store
+      temp_int int.load swap * // dup print "\n" puts
+      temp_int int.store
     endif
     1 +
   done drop2 drop
@@ -27,12 +27,12 @@ function largest_product_in_series int str -> int :
     store_series_product
 
     // Store current subseries' product if it is the largest so far
-    if largest_product int.load int.temp int.load > do
-      int.temp int.load largest_product int.store
+    if largest_product int.load temp_int int.load > do
+      temp_int int.load largest_product int.store
     endif
 
     // Zero temporary integer
-    NULL int.temp int.store
+    NULL temp_int int.store
     1 +
   done drop2
   largest_product int.load
