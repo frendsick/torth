@@ -187,13 +187,13 @@ class TypeStack:
         return node_list
 
 Location    = Tuple[str, int, int]      # Source file name, row, column
-Memory      = Tuple[str, str, Location] # Name, str(size), Location
+Memory      = Tuple[str, int, Location] # Name, size, Location
 
 @dataclass
 class Constant:
     """CONST keyword can be used to create a named immutable integer value"""
     name: str
-    value: str
+    value: int
     location: Location
 
 @dataclass

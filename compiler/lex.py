@@ -137,7 +137,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], con
     """Parse Memory objects from a single code file. Return list of Memory objects."""
     memories: List[Memory]  = []
     name: str               = ''
-    size: str               = ''
+    size: Optional[int]     = None
     defining_memory: bool   = False
     for match in token_matches:
         token_value: str = match.group(0)
@@ -155,7 +155,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], con
 
                 # Reset variables
                 name = ''
-                size = ''
+                size = None
                 continue
         if token_value.upper() == 'MEMORY':
             defining_memory = True
@@ -168,19 +168,18 @@ def get_memory_name(token_value: str, memories: List[Memory]) -> str:
         compiler_error("MEMORY_REDEFINITION", f"Memory '{token_value}' already exists. Memory name should be unique.")
     return token_value
 
-def get_memory_size(token_value: str, constants: List[Constant]) -> str:
+def get_memory_size(token_value: str, constants: List[Constant]) -> int:
     """Verify if the size parameter given to Memory is an integer. Return the size of the Memory to be allocated."""
     # Check if function with the token_value exists which only returns an integer
     for constant in constants:
         if constant.name == token_value:
-            return token_value
+            return constant.value
 
     # Test if token is an integer
     try:
-        int(token_value)
+        return int(token_value)
     except ValueError:
         compiler_error("MEMORY_SIZE_VALUE_ERROR", f"The memory size should be an integer. Got: {token_value}")
-    return token_value
 
 def get_token_matches(code: str) -> list:
     """Parse tokens that matches a TOKEN_REGEX pattern from a code string. Return list of re.Match objects."""
@@ -295,8 +294,11 @@ def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
     constants: List[Constant] = []
     for func in functions:
         if len(func.tokens) == 3 and func.signature == ( [], [TokenType.INT] ):
-            constant: Constant = Constant(func.name, func.tokens[1].value, func.tokens[1].location)
-            constants.append(constant)
+            try:
+                constant: Constant = Constant(func.name, int(func.tokens[1].value), func.tokens[1].location)
+                constants.append(constant)
+            except ValueError:
+                compiler_error("VALUE_ERROR", "Constant is not an integer.", func.tokens[1])
     return constants
 
 def remove_unused_constants(tokens: List[Token], constants: List[Constant], memories: List[Memory]) -> List[Constant]:
