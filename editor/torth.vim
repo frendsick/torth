@@ -33,7 +33,7 @@ syntax region torthNumber start=/\s\d/  skip=/\d/ end=/\s/
 syntax region torthUint   start=/\su\d/ skip=/\d/ end=/\s/
 
 " Type names the compiler recognizes
-syntax keyword torthTypeNames array bool char int ptr str
+syntax keyword torthTypeNames any bool char int ptr str uint8
 
 " Set highlights
 highlight default link torthTodos Todo
