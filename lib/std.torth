@@ -67,11 +67,18 @@ function puts  str      -> : stdout fputs end
 function eputs str      -> : stderr fputs end
 
 // Ptr functions
-function int++  ptr     ->      : dup load_INT 1 + store_INT end  // Increment pointed value
+function int++  ptr     ->      : dup int.load 1 + int.store end  // Increment pointed value
 function ptr+   int ptr -> ptr  : swap int + ptr end
 function ptr++  ptr     ->      : ptr.size ptr+ end
 
+// Bool functions
+function bool.load  ptr       -> bool : LOAD_BOOL   end
+function bool.store ptr bool  ->      : STORE_BOOL  end
+
 // Char functions
+function char.load  ptr       -> char : LOAD_CHAR   end
+function char.store ptr char  ->      : STORE_CHAR  end
+
 function char.lower   char -> char :
   if
     dup 'A' <=
@@ -118,6 +125,10 @@ function char.is_alphanumeric char -> bool :
 end
 
 // Int functions
+function int.load     ptr       -> int    : LOAD_INT    end
+function int.store    ptr int   ->        : STORE_INT   end
+function uint8.load   ptr       -> uint8  : LOAD_UINT8  end
+function uint8.store  ptr uint8 ->        : STORE_UINT8 end
 function int.get_digits int -> int :
   // The amount of digits == 1 if the integer is 0
   if dup 0 == do
@@ -140,50 +151,52 @@ end
 memory int_digits int.size end
 function itoa int -> str :
   // Store the original integer and the amount of digits
-  dup int.temp store_INT
-  int.get_digits int_digits store_INT
+  dup int.temp int.store
+  int.get_digits int_digits int.store
 
   ""  // The string representation of the string
   0   // index
-  while dup int_digits load_INT > do
+  while dup int_digits int.load > do
     // Get the current power of 10
     // 10 ^ (int_digits - 1 - index)
-    int_digits load_INT
+    int_digits int.load
     1 - over - 10 swap pow
 
     // Store the remainder of the number / the current power of 10 to int.temp
-    int.temp load_INT
+    int.temp int.load
     swap divmod swap
-    int.temp store_INT
+    int.temp int.store
 
     // Store the quotient of the number / the current power of 10 to the string representation
     '0' + char
-    over 4 nth ptr+ store_CHAR
+    over 4 nth ptr+ char.store
 
     // index++
     1 +
   done
   // Insert NULL-byte to the end of the string
-  over ptr+ NULL char swap store_CHAR
+  over ptr+ NULL char swap char.store
 
   // Zero int.temp
-  NULL int.temp store_INT
+  NULL int.temp int.store
 end
 
 // Str functions
+function str.load     ptr       -> str  : LOAD_STR    end
+function str.store    ptr str   ->      : STORE_STR   end
 function str.len str -> int :
-  0 while dup2 ptr+ load_CHAR NULL != do
+  0 while dup2 ptr+ char.load NULL != do
     1 +
   done swap drop
 end
 
-function str.append         str char  ->      : dup str.len ptr+ store_CHAR end
-function str.char_at        int str   -> char : ptr+ load_CHAR end
+function str.append         str char  ->      : dup str.len ptr+ char.store end
+function str.char_at        int str   -> char : ptr+ char.load end
 function str.is_palindrome  str       -> bool : dup str.reverse streq end
 
 function str.empty str -> :
-  0 while dup2 ptr+ load_CHAR NULL != do
-    dup2 ptr+ NULL char swap store_CHAR
+  0 while dup2 ptr+ char.load NULL != do
+    dup2 ptr+ NULL char swap char.store
     1 +
   done drop2
 end
@@ -191,7 +204,7 @@ end
 // Return integer representation of a string
 function atoi str -> int :
   // Iterate the string character by character
-  0 while dup2 ptr+ load_CHAR NULL != do
+  0 while dup2 ptr+ char.load NULL != do
     dup2 str.char_at
 
     // Raise an error if the character is not a number
@@ -205,44 +218,44 @@ function atoi str -> int :
     '0' -
 
     // Multiply the number from temporary memory by 10
-    int.temp load_INT 10 *
+    int.temp int.load 10 *
 
     // Add the current number and store the result
-    + int.temp store_INT
+    + int.temp int.store
 
     1 +
   done drop2
   // Return the integer
-  int.temp load_INT
+  int.temp int.load
 
   // Zero the memory of temporary integer
-  NULL int.temp store_INT
+  NULL int.temp int.store
 end
 
 memory is_equal bool.size end
 function streq str str -> bool :
-  True is_equal store_BOOL // is_equal = True
+  True is_equal bool.store // is_equal = True
   0 // index
   // while index < len(str1)
   while dup2 swap str.len > do
     if // str1[index] != str2[index]
-      dup2            ptr+ load_CHAR
-      over 5 nth swap ptr+ load_CHAR
+      dup2            ptr+ char.load
+      over 5 nth swap ptr+ char.load
       !=
     do
-      False is_equal store_BOOL // is_equal = False
+      False is_equal bool.store // is_equal = False
       break
     endif
     1 +
   done
 
-  if dup 4 nth swap ptr+ load_CHAR NULL != do
-    False is_equal store_BOOL // is_equal = False
+  if dup 4 nth swap ptr+ char.load NULL != do
+    False is_equal bool.store // is_equal = False
   endif
   drop drop drop // Drop strings and index
 
   // return is_equal
-  is_equal load_BOOL
+  is_equal bool.load
 end
 
 memory reversed_str MEMORY_CAPACITY end
@@ -251,10 +264,10 @@ function str.reverse str -> str :
   dup str.len // index
   while 0 over > do
     1 -
-    dup2 ptr+ load_CHAR // str[index]
+    dup2 ptr+ char.load // str[index]
 
     // reversed_str[index + 1 - str.len] = str[index]
-    over 1 + 4 nth str.len swap - reversed_str swap ptr+ store_CHAR
+    over 1 + 4 nth str.len swap - reversed_str swap ptr+ char.store
   done drop2
   reversed_str // Return reversed string
 end

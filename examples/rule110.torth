@@ -9,28 +9,28 @@ memory pattern 3 end                  // int pattern[3]
 
 function initialize_rules -> :
   rules                        // Pointer to table
-  u0 over        store_uint8   // table[0] == 0  // 111
-  u1 over 1 ptr+ store_uint8   // table[1] == 1  // 110
-  u1 over 2 ptr+ store_uint8   // table[2] == 1  // 101
-  u0 over 3 ptr+ store_uint8   // table[3] == 0  // 100
-  u1 over 4 ptr+ store_uint8   // table[4] == 1  // 011
-  u1 over 5 ptr+ store_uint8   // table[5] == 1  // 010
-  u1 over 6 ptr+ store_uint8   // table[6] == 1  // 001
-  u0 over 7 ptr+ store_uint8   // table[7] == 0  // 000
+  u0 over        uint8.store   // table[0] == 0  // 111
+  u1 over 1 ptr+ uint8.store   // table[1] == 1  // 110
+  u1 over 2 ptr+ uint8.store   // table[2] == 1  // 101
+  u0 over 3 ptr+ uint8.store   // table[3] == 0  // 100
+  u1 over 4 ptr+ uint8.store   // table[4] == 1  // 011
+  u1 over 5 ptr+ uint8.store   // table[5] == 1  // 010
+  u1 over 6 ptr+ uint8.store   // table[6] == 1  // 001
+  u0 over 7 ptr+ uint8.store   // table[7] == 0  // 000
   drop
 end
 
 function initialize_board -> :
   current_board
-  u1 over 2 ptr+ store_uint8   // current_board[2] = 1
+  u1 over 2 ptr+ uint8.store   // current_board[2] = 1
   drop
 end
 
 // Sync previous_board with current_board
 function sync_boards -> :
   0 while dup BOARD_SIZE > do
-    current_board over ptr+ load_uint8
-    over previous_board swap ptr+ store_uint8
+    current_board over ptr+ uint8.load
+    over previous_board swap ptr+ uint8.store
     1 +
   done drop
 end
@@ -40,7 +40,7 @@ function print_iteration -> :
   0 while dup BOARD_SIZE > do
 
     // if(current_board[j] == 1)
-    if current_board over ptr+ load_uint8 1 == do
+    if current_board over ptr+ uint8.load 1 == do
       "*" puts
     else
       " " puts
@@ -52,41 +52,41 @@ end
 
 function get_pattern int -> int :
   previous_board
-  over 1 - over swap ptr+ load_uint8 pattern        store_uint8  // pattern[0] = previous_board[j-1]
-  over     over swap ptr+ load_uint8 pattern 1 ptr+ store_uint8  // pattern[1] = previous_board[j]
-  over 1 + over swap ptr+ load_uint8 pattern 2 ptr+ store_uint8  // pattern[2] = previous_board[j+1]
+  over 1 - over swap ptr+ uint8.load pattern        uint8.store  // pattern[0] = previous_board[j-1]
+  over     over swap ptr+ uint8.load pattern 1 ptr+ uint8.store  // pattern[1] = previous_board[j]
+  over 1 + over swap ptr+ uint8.load pattern 2 ptr+ uint8.store  // pattern[2] = previous_board[j+1]
   drop
 end
 
 function output_board -> :
   "Board iteration: " puts
   current_board while dup current_board BOARD_SIZE ptr+ > do
-    dup load_char print
+    dup char.load print
   done drop "\n" puts
  end
 
 function set_board_index int -> :
-  rules swap ptr+ load_uint8 current_board 4 nth ptr+ store_uint8
+  rules swap ptr+ uint8.load current_board 4 nth ptr+ uint8.store
 end
 
 // Sets the current_board index according to rules
 function update_board_index int -> int :
   pattern
-  if   dup load_int 0x10101 == do // 111
+  if   dup int.load 0x10101 == do // 111
     0 set_board_index
-  elif dup load_int 0x10100 == do // 110
+  elif dup int.load 0x10100 == do // 110
     1 set_board_index
-  elif dup load_int 0x10001 == do // 101
+  elif dup int.load 0x10001 == do // 101
     2 set_board_index
-  elif dup load_int 0x10000 == do // 100
+  elif dup int.load 0x10000 == do // 100
     3 set_board_index
-  elif dup load_int 0x00101 == do // 011
+  elif dup int.load 0x00101 == do // 011
     4 set_board_index
-  elif dup load_int 0x00100 == do // 010
+  elif dup int.load 0x00100 == do // 010
     5 set_board_index
-  elif dup load_int 0x00001 == do // 001
+  elif dup int.load 0x00001 == do // 001
     6 set_board_index
-  elif dup load_int 0x00000 == do // 000
+  elif dup int.load 0x00000 == do // 000
     7 set_board_index
   endif
   drop

@@ -6,11 +6,11 @@ memory prime_list MEMORY_CAPACITY end
 memory prime_list.size int.size  end
 
 function prime_list.get_size -> int :
-  prime_list.size load_INT
+  prime_list.size int.load
 end
 
 function prime_list.store int int -> :
-  int.size * prime_list swap ptr+ store_INT
+  int.size * prime_list swap ptr+ int.store
 end
 
 function prime_list.append int -> :
@@ -23,11 +23,11 @@ function prime_list.append int -> :
   prime_list.store
 
   // prime_list.size += 1
-  1 + prime_list.size store_INT drop
+  1 + prime_list.size int.store drop
 end
 
 function get_nth_prime int -> int :
-  int.size * prime_list swap ptr+ load_INT
+  int.size * prime_list swap ptr+ int.load
 end
 
 function get_last_prime -> int :
