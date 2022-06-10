@@ -186,14 +186,20 @@ class TypeStack:
             head = head.next_node
         return node_list
 
-Location    = Tuple[str, int, int]      # Source file name, row, column
-Memory      = Tuple[str, int, Location] # Name, size, Location
+Location = Tuple[str, int, int]      # Source file name, row, column
 
 @dataclass
 class Constant:
     """CONST keyword can be used to create a named immutable integer value"""
     name: str
     value: int
+    location: Location
+
+@dataclass
+class Memory:
+    """MEMORY is a named memory location with a size"""
+    name: str
+    size: int
     location: Location
 
 @dataclass

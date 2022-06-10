@@ -102,11 +102,7 @@ def intrinsic_exists(token_value: str) -> bool:
 
 def function_name_exists(token: str, memories: List[Memory]) -> bool:
     """Return boolean value whether or not certain Function exists."""
-    for memory in memories:
-        memory_name = memory[0]
-        if memory_name.upper() == token:
-            return True
-    return False
+    return any(memory.name.upper() == token for memory in memories)
 
 def type_check_program(program: Program) -> None:
     """

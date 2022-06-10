@@ -79,11 +79,9 @@ def get_memory_definitions_asm(memories: List[Memory]) -> str:
     """Generates assembly code of memory definitions. Returns the memory definitions."""
     asm: str = ''
     for memory in memories:
-        name: str           = memory[0]
-        size: str           = memory[1]
-        file, row, col      = memory[2]
-        asm += get_token_info_comment_asm(f'MEMORY {name}', file, row, col)
-        asm += f'  {name}: RESB {size}\n'
+        file, row, col = memory.location
+        asm += get_token_info_comment_asm(f'MEMORY {memory.name}', file, row, col)
+        asm += f'  {memory.name}: RESB {memory.size}\n'
     return asm
 
 def generate_asm(assembly: str, constants: List[Constant], program: Program) -> str:

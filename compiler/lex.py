@@ -149,7 +149,7 @@ def get_memories(file: str, token_matches: list, newline_indexes: List[int], con
 
             if not size:
                 size = get_memory_size(token_value, constants)
-                memory: Memory = (name, size, location)
+                memory: Memory = Memory(name, size, location)
                 memories.append(memory)
                 defining_memory = False
 
@@ -307,5 +307,5 @@ def remove_unused_constants(tokens: List[Token], constants: List[Constant], memo
         constant for constant in constants \
         if constant.name == 'MEMORY_CAPACITY' \
             or any(constant.value == token.value for token in tokens) \
-            or any(constant.name == memory[1] for memory in memories)
+            or any(constant.name == memory.name for memory in memories)
         ]
