@@ -17,7 +17,7 @@ syntax keyword torthTodos TODO NOTE
 " Language keywords
 syntax keyword torthKeywords BREAK CONTINUE DO DONE ELIF ELSE END ENDIF IF INCLUDE WHILE
 
-syntax keyword torthFunctionDefs CONST FUNCTION MEMORY -- RET END
+syntax keyword torthFunctionDefs CONST FUNCTION MEMORY VAR -- RET END
 
 " Comments
 syntax region torthCommentLine start="//" end="$"   contains=torthTodos
