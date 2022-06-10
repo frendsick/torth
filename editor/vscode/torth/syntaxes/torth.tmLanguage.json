@@ -3,6 +3,9 @@
   "name": "Torth",
   "patterns": [
     {
+      "include": "#characters"
+    },
+    {
       "include": "#comments"
     },
     {
@@ -34,6 +37,17 @@
           "name": "comment.line.double-slash.torth",
           "begin": "//",
           "end": "$"
+        }
+      ]
+    },
+    "characters": {
+      "name": "string.quoted.single.torth",
+      "begin": "'",
+      "end": "'",
+      "patterns": [
+        {
+          "name": "constant.character.escape.torth",
+          "match": "\\\\."
         }
       ]
     },
