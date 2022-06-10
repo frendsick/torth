@@ -232,6 +232,12 @@ def get_token_value(token_value: str) -> str:
         return 'NE'
     if token_value == '+':
         return 'PLUS'
+    if token_value.startswith('0x'):
+        try:
+            return str(int(token_value, 16))
+        except ValueError:
+            compiler_error("VALUE_ERROR", "Token beginning with '0x' should be a hexadecimal number.\n" + \
+                f"Value '{token_value}' is not a valid hexadecimal number.")
     return token_value
 
 def get_token_type(token_text: str) -> TokenType:
