@@ -31,6 +31,7 @@ syntax match torthEscapes display contained "\\[nr\"']"
 " Number literals
 syntax region torthNumber start=/\s\d/  skip=/\d/ end=/\s/
 syntax region torthUint   start=/\su\d/ skip=/\d/ end=/\s/
+syntax keyword torthNull  NULL
 
 " Type names the compiler recognizes
 syntax keyword torthTypeNames any bool char int ptr str uint8
@@ -41,6 +42,7 @@ highlight default link torthKeywords Keyword
 highlight default link torthFunctionDefs Macro
 highlight default link torthCommentLine Comment
 highlight default link torthString String
+highlight default link torthNull Number
 highlight default link torthNumber Number
 highlight default link torthUint Number
 highlight default link torthTypeNames Type
