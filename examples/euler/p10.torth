@@ -1,0 +1,46 @@
+// Problem 10: Summation of primes
+// The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+// Find the sum of all the primes below two million.
+include "lib/std.torth"
+const   max_prime 2000000   end
+memory  sieve     max_prime end
+memory  prime_sum int.size  end
+
+function mark_multiples_to_sieve int -> :
+  dup dup * // prime*prime
+
+  // for i in range(prime*prime, max_prime, prime)
+  while dup max_prime > do
+    // sieve[i] = True
+    sieve over ptr+ True uint8 swap uint8.store
+    over +
+  done drop2
+end
+
+// Params: prime
+function add_prime int -> :
+  // sum += prime
+  prime_sum int.load +
+  prime_sum int.store
+end
+
+function summation_of_primes int -> int :
+  2 add_prime
+  3 add_prime
+  5 while dup max_prime > do
+    // If current number is prime add it to prime_sum
+    if sieve over ptr+ uint8.load NULL == do
+      dup add_prime
+      dup mark_multiples_to_sieve
+    endif
+    
+    // All primes except for 2 and 3 are 6n±1
+    if dup 6 % 1 == do 4 + else 2 + endif
+  done drop2
+  prime_sum int.load
+end
+
+function Main -> :
+  max_prime summation_of_primes
+  "The sum of primes below " puts max_prime print ": " puts print "\n" puts
+end
