@@ -63,7 +63,7 @@ def handle_arguments(input_file: str, executable_file: str, program: Program, ar
 def generate_graph_file(input_file: str, program: Program) -> None:
     """Generate SVG file displaying the control flow of the program"""
     graph_contents: str = get_graph_contents(program)
-    base_file_name: str = input_file.removesuffix('.torth')
+    base_file_name: str = input_file.replace('.torth', '')
     with open(f'{base_file_name}.dot', 'w', encoding='utf-8') as f:
         f.write(graph_contents)
     subprocess.run(['dot', '-Tsvg', f'-o{base_file_name}.svg', f'{base_file_name}.dot'], check=True)
