@@ -1,0 +1,56 @@
+include "lib/std.torth"
+
+const DIVISORS_CAP 100 end
+memory number_of_divisors int.size end
+
+function get_triangle_number int -> int :
+  dup
+  while dup 0 < do
+    // i-1 i-1 sum
+    1 - dup rot + swap
+  done drop
+end
+
+function get_number_of_divisors int -> int :
+  NULL number_of_divisors int.store
+  get_triangle_number
+  if dup 1 < do
+    1 // i
+    while dup2 swap 1 + > do
+      // triangle i
+      if dup2 % 0 == do
+        number_of_divisors int.load 1 +
+        number_of_divisors int.store
+      endif
+      1 +
+    done drop
+  else
+    dup number_of_divisors int.store
+  endif drop
+  number_of_divisors int.load
+end
+
+function highly_divisible_triangular_number -> int :
+  if 100 DIVISORS_CAP > do
+    "Calculating the triangular number with over " puts
+    DIVISORS_CAP print " divisors.\n" puts
+    "This will take a while...\n" puts
+  endif
+
+  1 // Current natural number
+  while True do
+    1 while dup2 < do
+      1 +
+    done drop
+    if dup get_number_of_divisors DIVISORS_CAP < do
+      break
+    endif
+    1 +
+  done get_triangle_number
+end
+
+function main -> :
+  highly_divisible_triangular_number
+  "The first triangular number to have over " puts
+  DIVISORS_CAP print " divisors: " puts print "\n" puts
+end
