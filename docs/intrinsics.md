@@ -22,14 +22,14 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [LOAD_STR](#LOAD_STR)
 - [LOAD_UINT8](#LOAD_UINT8)
 - [LT](#Comparisons)
-- [MINUS](#MINUS)
-- [MUL](#MUL)
+- [MINUS](#Calculations)
+- [MUL](#Calculations)
 - [NE](#Comparisons)
 - [NOT](#NOT)
 - [NTH](#NTH)
 - [OR](#OR)
 - [OVER](#OVER)
-- [PLUS](#PLUS)
+- [PLUS](#Calculations)
 - [PRINT](#PRINT)
 - [ROT](#ROT)
 - [STORE_BOOL](#STORE_BOOL)
@@ -47,6 +47,20 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [SYSCALL4](#SYSCALL4)
 - [SYSCALL5](#SYSCALL5)
 - [SYSCALL6](#SYSCALL6)
+
+## Calculations
+
+Perform a calculation operation for two [integers](definitions.md#integer-types) and push the result.
+
+1. Pop two [integers](definitions.md#integer-types) from the stack
+2. Perform a calculation operation to the popped values
+3. Push result
+
+Different calculation intrinsics:
+
+- PLUS (+)
+- MINUS (-)
+- MUL (\*)
 
 ## Comparisons
 
