@@ -112,3 +112,7 @@ Different LOAD-intrinsics:
 - LOAD_PTR
 - LOAD_STR
 - LOAD_UINT8
+
+## OVER
+
+Push a copy of the second element of the stack.

@@ -607,7 +607,7 @@ def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType)
 
 def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:
     """
-    OVER Intrinsic pushes a copy of the element one behind the top element of the stack.
+    OVER Intrinsic pushes a copy of the second element of the stack.
     Example with the stack's top element being the rightmost: a b -> a b a
     """
     t1 = type_stack.pop()
