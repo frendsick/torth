@@ -176,3 +176,12 @@ Different STORE-intrinsics:
 ## SWAP
 
 Swap the top two elements in the stack.
+
+## SYSCALL
+
+SYSCALL-intrinsic variants call a Linux syscall. Syscalls require different amount of arguments from 0 to 6. Different variants are named SYSCALL0 - SYSCALL6 by the amount of arguments. The first argument should be an [integer](definitions.md#integer-types).
+
+1. Pop the top element and the required number of arguments from the stack
+2. Call the syscall which match the first popped element
+
+The different syscall constants can be found from lib/sys.torth. Naming convention (case sensitive): SYS\_<syscall>. For example **SYS_write**.
