@@ -112,7 +112,7 @@ Push the environment pointer to the stack.
 
 ## LOAD
 
-LOAD-intrinsics pushes a value pointed by a [pointer](types.md#ptr---pointer) type value to the stack. The type of the pushed value depends of the used LOAD-intrinsic.
+LOAD-intrinsics push a value pointed by a [pointer](types.md#ptr---pointer) type value to the stack. The type of the pushed value depends of the used LOAD-intrinsic.
 
 1. Pop a [PTR](types.md#ptr---pointer) type value from the stack
 2. Push the value pointed by the popped pointer to the stack
@@ -153,3 +153,22 @@ Pop and print an [integer](definitions.md#integer-types) from the stack to the c
 ## ROT
 
 Rotate the top three items on the stack so that the third element moves to the top and the other two move one spot deeper in the stack.
+
+## STORE
+
+STORE-intrinsics pop two values from the stack. The second item of the stack is stored to the memory address pointed by the first.
+
+STORE-intrinsics require two items on the stack:
+
+- Top element should be of type [PTR](types.md#ptr---pointer)
+- The type of the second element should match with the used STORE-intrinsic
+  - For example, to store an integer use STORE_INT intrinsic
+
+Different STORE-intrinsics:
+
+- STORE_BOOL
+- STORE_CHAR
+- STORE_INT
+- STORE_PTR
+- STORE_STR
+- STORE_UINT8
