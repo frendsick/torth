@@ -83,7 +83,7 @@ Perform bitwise AND for two [integer](definitions.md#integer-types) values.
 
 1. Pop two [integers](definitions.md#integer-types) from the stack
 2. Perform bitwise AND operation to the popped values
-3. Push the result of the bitwise operator as [INT](types.md#int-uint8---integer)
+3. Push the result of the bitwise operation as [INT](types.md#int-uint8---integer)
 
 ## ARGC
 
@@ -133,6 +133,14 @@ Pop one [integer](definitions.md#integer-types) from the stack and push the Nth 
 ```
 30 20 10 3 NTH print // Output: 30 (30 is 3rd element without the popped 3).
 ```
+
+## OR
+
+Perform bitwise OR for two [integer](definitions.md#integer-types) values.
+
+1. Pop two [integers](definitions.md#integer-types) from the stack
+2. Perform bitwise OR operation to the popped values
+3. Push the result of the bitwise operation as [INT](types.md#int-uint8---integer)
 
 ## OVER
 
