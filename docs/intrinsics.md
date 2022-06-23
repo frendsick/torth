@@ -172,3 +172,7 @@ Different STORE-intrinsics:
 - STORE_PTR
 - STORE_STR
 - STORE_UINT8
+
+## SWAP
+
+Swap the top two elements in the stack.
