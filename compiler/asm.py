@@ -61,7 +61,6 @@ def get_asm_file_start(constants: List[Constant]) -> str:
     return f'''default rel
 
 ;; DEFINES
-%define buffer_len 65535 ; User input buffer length
 %define success 0
 %define sys_exit 60
 {const_defines}
@@ -91,8 +90,6 @@ def generate_asm(assembly: str, constants: List[Constant], program: Program) -> 
 
         if op.type == OpType.PUSH_STR:
             assembly = add_string_variable_asm(assembly, token.value, op, constants)
-        elif token.value.upper() == 'INPUT':
-            assembly = add_input_buffer_asm(assembly, op)
 
         assembly += get_op_comment_asm(op, op.type)
 
@@ -182,8 +179,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_ge_asm()
         if intrinsic == "GT":
             return get_gt_asm()
-        if intrinsic == "INPUT":
-            return get_input_asm(op)
         if intrinsic == "LE":
             return get_le_asm()
         if intrinsic == "LT":
@@ -303,23 +298,6 @@ def add_string_variable_asm(assembly: str, string: str, op: Op, constants: List[
     # Rewrite lines except for the first line (section .rodata)
     len_asm_file_start: int = len(assembly.split('\n')) - 2
     for i in range(len_asm_file_start, len(assembly_lines)):
-        assembly += f"{assembly_lines[i]}\n"
-    return assembly[:-1]
-
-def add_input_buffer_asm(assembly: str, op: Op) -> str:
-    """Writes a new input buffer variable to assembly file in the .rodata section."""
-    assembly_lines: List[str] = assembly.split('\n')
-    assembly = ''
-    bss_index: int = 0
-    for i, row in enumerate(assembly_lines):
-        assembly += f"{row}\n"
-        if row == "section .bss":
-            bss_index = i
-            break
-    assembly += f'  buffer{op.id}: resb buffer_len\n'
-
-    # Rewrite lines
-    for i in range(bss_index, len(assembly_lines)):
         assembly += f"{assembly_lines[i]}\n"
     return assembly[:-1]
 
@@ -511,18 +489,6 @@ def get_gt_asm() -> str:
     It pushes the second element back to the stack and a boolean value of the comparison.
     """
     return get_comparison_asm("cmovg")
-
-def get_input_asm(op: Op) -> str:
-    """INPUT reads from stdin to buffer and pushes the pointer to the buffer."""
-    op_asm: str  =  '  mov rax, 0   ; write\n'
-    op_asm      +=  '  mov rdi, 1   ; stdin\n'
-    op_asm      += f'  mov rsi, buffer{op.id}\n'
-    op_asm      +=  '  mov rdx, 65535\n'
-    op_asm      +=  '  syscall\n'
-    op_asm      +=  '  xor rdx, rdx\n'
-    op_asm      += f'  mov [buffer{op.id}+rax-1], dl  ; Change newline character to NULL\n'
-    op_asm      += f'  push buffer{op.id}\n'
-    return op_asm
 
 def get_le_asm() -> str:
     """

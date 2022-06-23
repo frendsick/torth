@@ -234,8 +234,6 @@ def type_check_program(program: Program) -> None:
                 branched_stacks[-1] = type_check_push_ptr(token, type_stack)
             elif intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
                 branched_stacks[-1] = type_check_comparison(token, type_stack)
-            elif intrinsic == "INPUT":
-                branched_stacks[-1] = type_check_push_str(token, type_stack)
             elif intrinsic == "LOAD_BOOL":
                 branched_stacks[-1] = type_check_load(token, type_stack, TokenType.BOOL)
             elif intrinsic == "LOAD_CHAR":

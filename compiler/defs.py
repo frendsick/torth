@@ -47,7 +47,6 @@ class Intrinsic(Enum):
     EQ=auto()
     GE=auto()
     GT=auto()
-    INPUT=auto()
     LE=auto()
     LOAD_BOOL=auto()
     LOAD_CHAR=auto()
