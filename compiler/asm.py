@@ -581,7 +581,7 @@ def get_or_asm() -> str:
 
 def get_over_asm() -> str:
     """
-    OVER Intrinsic pushes a copy of the element one behind the top element of the stack.
+    OVER Intrinsic pushes a copy of the second element of the stack.
     Example with the stack's top element being the rightmost: a b -> a b a
     """
     op_asm: str  = '  pop rax\n'
