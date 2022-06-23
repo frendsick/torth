@@ -145,3 +145,7 @@ Perform bitwise OR for two [integer](definitions.md#integer-types) values.
 ## OVER
 
 Push a copy of the second element of the stack.
+
+## PRINT
+
+Pop and print an [integer](definitions.md#integer-types) from the stack to the console.
