@@ -457,9 +457,9 @@ def get_divmod_asm() -> str:
     op_asm      += '  push rax ; Quotient\n'
     return op_asm
 
-def get_drop_asm(count: int = 1) -> str:
+def get_drop_asm() -> str:
     """DROP removes one element from the stack."""
-    return f'  add rsp, {8*count}\n'
+    return f'  add rsp, 8\n'
 
 def get_dup_asm() -> str:
     """
