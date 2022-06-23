@@ -55,3 +55,11 @@ Perform bitwise AND for two [integer](definitions.md#integer-types) values.
 1. Pop two [integers](definitions.md#integer-types) from the stack
 2. Perform bitwise AND operation to the popped values
 3. Push the result of the bitwise operator as [INT](types.md#int-uint8---integer)
+
+## ARGC
+
+Push the command line argument count to the stack.
+
+## ARGV
+
+Push the pointer to the command line argument array to the stack.
