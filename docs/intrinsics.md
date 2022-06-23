@@ -126,6 +126,14 @@ Different LOAD-intrinsics:
 - LOAD_STR
 - LOAD_UINT8
 
+## NTH
+
+Pop one [integer](definitions.md#integer-types) from the stack and push the Nth element from stack. The "Nth" is counted without the popped integer starting from 1.
+
+```
+30 20 10 3 NTH print // Output: 30 (30 is 3rd element without the popped 3).
+```
+
 ## OVER
 
 Push a copy of the second element of the stack.
