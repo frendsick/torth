@@ -96,3 +96,19 @@ Remove the top element from the stack.
 ## ENVP
 
 Push the environment pointer to the stack.
+
+## LOAD
+
+LOAD-intrinsics pushes a value pointed by a [pointer](types.md#ptr---pointer) type value to the stack. The type of the pushed value depends of the used LOAD-intrinsic.
+
+1. Pop a [PTR](types.md#ptr---pointer) type value from the stack
+2. Push the value pointed by the popped pointer to the stack
+
+Different LOAD-intrinsics:
+
+- LOAD_BOOL
+- LOAD_CHAR
+- LOAD_INT
+- LOAD_PTR
+- LOAD_STR
+- LOAD_UINT8
