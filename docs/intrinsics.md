@@ -106,6 +106,10 @@ Perform a division operation for two [integers](definitions.md#integer-types) an
 
 Remove the top element from the stack.
 
+## DUP
+
+Duplicate the top element of the stack.
+
 ## ENVP
 
 Push the environment pointer to the stack.
