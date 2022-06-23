@@ -149,3 +149,7 @@ Push a copy of the second element of the stack.
 ## PRINT
 
 Pop and print an [integer](definitions.md#integer-types) from the stack to the console.
+
+## ROT
+
+Rotate the top three items on the stack so that the third element moves to the top and the other two move one spot deeper in the stack.
