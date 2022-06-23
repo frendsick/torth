@@ -59,7 +59,6 @@ class Intrinsic(Enum):
     MINUS=auto()
     MUL=auto()
     NE=auto()
-    NOT=auto()
     NTH=auto()
     OR=auto()
     OVER=auto()

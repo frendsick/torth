@@ -25,7 +25,6 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [MINUS](#Calculations)
 - [MUL](#Calculations)
 - [NE](#Comparisons)
-- [NOT](#NOT)
 - [NTH](#NTH)
 - [OR](#OR)
 - [OVER](#OVER)
