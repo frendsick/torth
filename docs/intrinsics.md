@@ -72,3 +72,7 @@ Perform a division operation for two [integers](definitions.md#integer-types) an
 2. Perform a division operation to the popped values
 3. Push remainder
 4. Push quotient
+
+## DROP
+
+Remove the top element from the stack.
