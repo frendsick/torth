@@ -173,6 +173,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_drop_asm()
         if intrinsic == "DUP":
             return get_dup_asm()
+        if intrinsic == "ENVP":
+            return get_envp_asm()
         if intrinsic == "EQ":
             return get_eq_asm()
         if intrinsic == "GE":
@@ -466,6 +468,13 @@ def get_dup_asm() -> str:
     """
     op_asm: str  = '  pop rax\n'
     op_asm      += '  push rax\n'
+    op_asm      += '  push rax\n'
+    return op_asm
+
+def get_envp_asm() -> str:
+    """ENVP pushes the environment pointer to the stack."""
+    op_asm: str  = '  mov rax, [args_ptr]\n'
+    op_asm      += '  add rax, 24\n'
     op_asm      += '  push rax\n'
     return op_asm
 
