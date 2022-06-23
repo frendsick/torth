@@ -1,3 +1,11 @@
+// errno.torth - Library of constants from C-languages <errno.h> header file
+// https://man7.org/linux/man-pages/man3/errno.3.html
+
+// DESCRIPTION
+// The <errno.h> header file defines the integer variable errno,
+// which is set by system calls and some library functions in the
+// event of an error to indicate what went wrong.
+
 const EACCESS -13 end
 const EBADF -9 end
 const EBUSY -16 end

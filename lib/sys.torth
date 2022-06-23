@@ -1,3 +1,6 @@
+// sys.torth - Library of Linux syscall related constants
+// https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#x86_64-64_bit
+
 const SYS_read 0 end
 const SYS_write 1 end
 const SYS_open 2 end

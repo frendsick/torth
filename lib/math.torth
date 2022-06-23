@@ -1,3 +1,7 @@
+// math.torth - Library of mathematical functions
+
+// Params: exponent, number
+// Return: power
 function pow int int -> int :
   // x ^ 0 == 1
   if dup 0 == do
@@ -7,13 +11,18 @@ function pow int int -> int :
   else calculate_pow endif
 end
 
-// Slightly modified from https://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
+// Slightly modified GCD function from https://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
+// Params: num1, num2
+// Return: gcd
 function gcd int int -> int :
   while dup2 % 0 != do
     dup rotr %
   done swap drop
 end
 
+// Utility function for pow
+// Params: exponent, number
+// Return: power
 function calculate_pow int int -> int :
   over  // o = n  (original value)
   1     // c = 1  (count)
