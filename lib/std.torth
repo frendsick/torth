@@ -1,6 +1,12 @@
+// std.torth - Standard library for Torth
+// A collection of common functions
+
+// Include libraries
 include "lib/errno.torth"
 include "lib/sys.torth"
 include "lib/math.torth"
+
+// Common constants
 const NULL 0 end
 
 // Memory
@@ -52,22 +58,36 @@ function land   bool bool   -> bool             : int swap int and bool end
 function ||     bool bool   -> bool             : lor end
 function &&     bool bool   -> bool             : land end
 
-// int fd, char *buf, size_t count
+// Write a string to a file descriptor
+// Params: int fd, char *buf, size_t count
+// Return: ssize_t written_bytes
 function write int ptr int -> int : SYS_write syscall3 end
-// int fd, char *buf, size_t count
+
+// Read <count> bytes from a file descriptor
+// Params: int fd, char *buf, size_t count
+// Return: ssize_t read_bytes
 function read int ptr int -> int : SYS_read syscall3 end
-// const char *pathname, char *const argv[], char *const envp[]
+
+// Execute the command referred to by <pathname>
+// Params: const char *pathname, char *const argv[], char *const envp[]
+// Return: On success, execve does not return, on error -1 is returned
 function execve str ptr ptr -> int : SYS_execve syscall3 end
-// int status
+
+// Exit from the program with a <status> code
+// Params: int status
 function exit int -> : SYS_exit syscall1 drop end
 
-// int fd, char *buf
-function fputs int str  -> : swap dup str.len swap rot write drop end
-function puts  str      -> : stdout fputs end
-function eputs str      -> : stderr fputs end
+// Print a string to a file descriptor
+// Params: int fd, char *buf
+function fputs int str -> : swap dup str.len swap rot write drop end
+
+// Print a string to stdout
+function puts  str -> : stdout fputs end
+
+// Print a string to stderr
+function eputs str -> : stderr fputs end
 
 // Ptr functions
-function int++  ptr     ->      : dup int.load 1 + int.store end  // Increment pointed value
 function ptr+   int ptr -> ptr  : swap int + ptr end
 function ptr++  ptr     ->      : ptr.size ptr+ end
 
@@ -79,6 +99,7 @@ function bool.store ptr bool  ->      : STORE_BOOL  end
 function char.load  ptr       -> char : LOAD_CHAR   end
 function char.store ptr char  ->      : STORE_CHAR  end
 
+// Return the lowercase character for the given character
 function char.lower   char -> char :
   if
     dup 'A' <=
@@ -89,6 +110,7 @@ function char.lower   char -> char :
   endif
 end
 
+// Return the uppercase character for the given character
 function char.upper char -> char :
   if dup 'a' <= do
     if dup 'z' >= do
@@ -97,6 +119,7 @@ function char.upper char -> char :
   endif
 end
 
+// Test if character is a number
 function char.is_numeric char -> bool :
   if
     dup   '0' <=
@@ -109,6 +132,7 @@ function char.is_numeric char -> bool :
   endif swap drop
 end
 
+// Test if character is either a letter or a number
 function char.is_alphanumeric char -> bool :
   if
     dup   'z' <
@@ -129,6 +153,14 @@ function int.load     ptr       -> int    : LOAD_INT    end
 function int.store    ptr int   ->        : STORE_INT   end
 function uint8.load   ptr       -> uint8  : LOAD_UINT8  end
 function uint8.store  ptr uint8 ->        : STORE_UINT8 end
+
+// Increment pointed value
+function int++ ptr -> : dup int.load 1 + int.store end
+
+// Get the amount of digits in an integer
+// Params: number
+// Return: amount_of_digits
+// Example: 1234 -> 4
 function int.get_digits int -> int :
   // The amount of digits == 1 if the integer is 0
   if dup 0 == do
@@ -141,6 +173,8 @@ function int.get_digits int -> int :
   endif
 end
 
+// Reverse an integer
+// Example: 1234 --> 4321
 function int.reverse int -> int :
   0 while over 0 < do
     10 * swap dup 10 % rot +
@@ -148,6 +182,7 @@ function int.reverse int -> int :
   done swap drop
 end
 
+// Get a string representation of an integer
 memory int_digits int.size end
 function itoa int -> str :
   // Store the original integer and the amount of digits
@@ -181,19 +216,31 @@ function itoa int -> str :
   NULL int.temp int.store
 end
 
-// Str functions
+// String functions
 function str.load     ptr       -> str  : LOAD_STR    end
 function str.store    ptr str   ->      : STORE_STR   end
+
+// Get the length of a string
+// Example: "Test string" -> 11
 function str.len str -> int :
   0 while dup2 ptr+ char.load NULL != do
     1 +
   done swap drop
 end
 
-function str.append         str char  ->      : dup str.len ptr+ char.store end
-function str.char_at        int str   -> char : ptr+ char.load end
-function str.is_palindrome  str       -> bool : dup str.reverse streq end
+// Append a character to the end of a string buffer
+// Params: string, character
+function str.append str char -> : dup str.len ptr+ char.store end
 
+// Get the character at a certain index of a string
+// Params: index, string
+// Return: character_at_index
+function str.char_at int str -> char : ptr+ char.load end
+
+// Test if a string is a palindrome (reads the same backward or forward)
+function str.is_palindrome str -> bool : dup str.reverse streq end
+
+// Overwrite a string with NULL-bytes
 function str.empty str -> :
   0 while dup2 ptr+ char.load NULL != do
     dup2 ptr+ NULL char swap char.store
@@ -201,7 +248,7 @@ function str.empty str -> :
   done drop2
 end
 
-// Return integer representation of a string
+// Get an integer representation of a string
 function atoi str -> int :
   // Iterate the string character by character
   0 while dup2 ptr+ char.load NULL != do
@@ -232,6 +279,7 @@ function atoi str -> int :
   NULL int.temp int.store
 end
 
+// Tests if two strings are equal
 memory is_equal bool.size end
 function streq str str -> bool :
   True is_equal bool.store // is_equal = True
@@ -258,6 +306,7 @@ function streq str str -> bool :
   is_equal bool.load
 end
 
+// Reverse a string
 memory reversed_str MEMORY_CAPACITY end
 function str.reverse str -> str :
   reversed_str str.empty
@@ -272,8 +321,9 @@ function str.reverse str -> str :
   reversed_str // Return reversed string
 end
 
-// Params:  int oflag, const char *path
-// Returns: fd
+// Open a file with open-syscall
+// Params: int oflag, const char *path
+// Return: fd
 function open_file int str -> int :
   over SYS_open syscall2
 
@@ -285,28 +335,32 @@ function open_file int str -> int :
   endif
 end
 
-// Params:  const char *pathname
-// Returns: the number of bytes read
+// Read a file to a file buffer (file_buf)
+// Params: const char *pathname
+// Return: ssize_t read_bytes
 function read_file str -> int :
   O_RDONLY open_file
   MEMORY_CAPACITY file_buf rot read
 end
 
-// Params:  const char *pathname, mode_t mode
+// Create a file
+// Params: const char *pathname, mode_t mode
 function touch_file str int -> :
   SYS_creat syscall2
 end
 
-// Params:  const char *filename, const void *buf
-// Returns: ssize_t written_bytes
-function write_file str str -> int :
-  mode_644 swap touch_file
+// Write a string to a file
+// Params: const char *filename, mode_t mode, const void *buf
+// Return: ssize_t written_bytes
+function write_file str int str -> int :
+  touch_file
   over dup str.len // size_t count
   swap rot SYS_write syscall3
 end
 
-// Params:  const char *pathname
-// Returns: the number of bytes written
+// Print file contents to stdout
+// Params: const char *pathname
+// Return: ssize_t written_bytes
 function print_file str -> int :
   read_file
   file_buf stdout write "\n" puts
