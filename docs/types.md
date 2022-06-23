@@ -1,5 +1,7 @@
 # Types
 
+Torth language is statically typed. Each value pushed to the stack has a type associated with it. Typing tries to ensure that the user only performs operations that are appropriate to the values of specific types.
+
 ## BOOL - Boolean
 
 Boolean values are True and False. The boolean words are case insensitive.

@@ -45,7 +45,7 @@ optional arguments:
 ## Documentation
 
 - [Keywords](./docs/keywords.md)
-- [Type checking](./docs/type_checking.md)
+- [Types](./docs/types.md)
 
 ## Examples
 
