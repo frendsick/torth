@@ -72,7 +72,9 @@ function AddTotal int int -> int int :
     dup rot + swap
 end
 
-function FizzBuzz int int int -> int :
+function FizzBuzz int -> int :
+    0   // sum
+    1   // index
     // WHILE limit >= index
     WHILE dup 4 nth >= DO
         IF dup 15 % 0 == DO
@@ -91,12 +93,9 @@ end
 
 function Main -> :
     30  // limit
-    0   // sum
-    1   // index
-
     FizzBuzz
 
     "Sum of all numbers not divisible by 3 or 5: " OutputRow
-    drop
+    drop  // Sum
 end
 ```
