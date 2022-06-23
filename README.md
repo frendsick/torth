@@ -50,7 +50,9 @@ optional arguments:
 
 ## Examples
 
-Hello World
+More examples are found from the [examples](./examples/)-folder.
+
+### Hello World
 
 ```pascal
 function Main -> :
@@ -58,19 +60,19 @@ function Main -> :
 end
 ```
 
-FizzBuzz which also counts the sum of the numbers not divisible by 3 or 5
+### FizzBuzz
 
 ```pascal
 include "lib/std.torth"
-function OutputRow str_buf* str_len number -> int :
+function OutputRow str int -> int :
     puts dup print "\n" puts
 end
 
-function AddTotal row total -> int int :
+function AddTotal int int -> int int :
     dup rot + swap
 end
 
-function FizzBuzz index sum limit -> int :
+function FizzBuzz int int int -> int :
     // WHILE limit >= index
     WHILE dup 4 nth >= DO
         IF dup 15 % 0 == DO
@@ -95,5 +97,6 @@ function Main -> :
     FizzBuzz
 
     "Sum of all numbers not divisible by 3 or 5: " OutputRow
+    drop
 end
 ```
