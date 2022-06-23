@@ -47,3 +47,11 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [SYSCALL4](#SYSCALL4)
 - [SYSCALL5](#SYSCALL5)
 - [SYSCALL6](#SYSCALL6)
+
+## AND
+
+Perform bitwise AND for two [integer](definitions.md#integer-types) values.
+
+1. Pop two [integers](definitions.md#integer-types) from the stack
+2. Perform bitwise AND operation to the popped values
+3. Push the result of the bitwise operator as [INT](types.md#int-uint8---integer)
