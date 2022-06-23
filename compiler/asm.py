@@ -459,7 +459,7 @@ def get_divmod_asm() -> str:
 
 def get_drop_asm() -> str:
     """DROP removes one element from the stack."""
-    return f'  add rsp, 8\n'
+    return '  add rsp, 8\n'
 
 def get_dup_asm() -> str:
     """

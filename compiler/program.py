@@ -528,11 +528,16 @@ def type_check_comparison(token: Token, type_stack: TypeStack) -> TypeStack:
     Comparison intrinsics take two elements from the stack and compares them.
     It pushes a boolean value of the comparison.
     """
-    _  = type_stack.pop()
+    t1 = type_stack.pop()
     t2 = type_stack.pop()
-    if t2 is None:
+    if t1 is None or t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", f"{token.value} requires two values to the stack.\n\n" \
             f"Stack contents:\n{type_stack.repr()}", token)
+    if t1.value not in INTEGER_TYPES \
+    or t2.value not in INTEGER_TYPES:
+        error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
+            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+        compiler_error("TYPE_ERROR", error_message, token)
     type_stack.push(TokenType.BOOL, token.location)
     return type_stack
 
