@@ -100,23 +100,13 @@ function char.load  ptr       -> char : LOAD_CHAR   end
 function char.store ptr char  ->      : STORE_CHAR  end
 
 // Return the lowercase character for the given character
-function char.lower   char -> char :
-  if
-    dup 'A' <=
-    over 'Z' >=
-    &&
-  do
-    32 + char
-  endif
+function char.lower char -> char :
+  if dup char.is_uppercase do 32 + char endif
 end
 
 // Return the uppercase character for the given character
 function char.upper char -> char :
-  if dup 'a' <= do
-    if dup 'z' >= do
-      32 - char
-    endif
-  endif
+  if dup char.is_lowercase do 32 - char endif
 end
 
 // Test if character is a number
@@ -125,26 +115,52 @@ function char.is_numeric char -> bool :
     dup   '0' <=
     over  '9' >=
     &&
-  do
-    True
-  else
-    False
+  do True
+  else False
   endif swap drop
 end
 
-// Test if character is either a letter or a number
+// Test if a character is a lowercase letter
+function char.is_lowercase char -> bool :
+  if
+    dup  'a' <=
+    over 'z' >=
+    &&
+  do True
+  else False
+  endif swap drop
+end
+
+// Test if a character is an uppercase letter
+function char.is_uppercase char -> bool :
+  if
+    dup  'A' <=
+    over 'Z' >=
+    &&
+  do True
+  else False
+  endif swap drop
+end
+
+// Test if a character is a letter
+function char.is_letter char -> bool :
+  if
+    dup  char.is_uppercase
+    over char.is_lowercase
+    ||
+  do True
+  else False
+  endif swap drop
+end
+
+// Test if a character is either a letter or a number
 function char.is_alphanumeric char -> bool :
   if
-    dup   'z' <
-    over  '0' > lor
-    over  '9' <
-    3 nth 'A' > land lor
-    over  'Z' <
-    3 nth 'a' > land lor
-  do
-    False
-  else
-    True
+    dup  char.is_letter
+    over char.is_numeric
+    ||
+  do True
+  else False
   endif swap drop
 end
 
