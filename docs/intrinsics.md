@@ -76,3 +76,7 @@ Perform a division operation for two [integers](definitions.md#integer-types) an
 ## DROP
 
 Remove the top element from the stack.
+
+## ENVP
+
+Push the environment pointer to the stack.
