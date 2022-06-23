@@ -11,20 +11,20 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [DROP](#DROP)
 - [DUP](#DUP)
 - [ENVP](#ENVP)
-- [EQ](#EQ)
-- [GE](#GE)
-- [GT](#GT)
-- [LE](#LE)
+- [EQ](#Comparisons)
+- [GE](#Comparisons)
+- [GT](#Comparisons)
+- [LE](#Comparisons)
 - [LOAD_BOOL](#LOAD_BOOL)
 - [LOAD_CHAR](#LOAD_CHAR)
 - [LOAD_INT](#LOAD_INT)
 - [LOAD_PTR](#LOAD_PTR)
 - [LOAD_STR](#LOAD_STR)
 - [LOAD_UINT8](#LOAD_UINT8)
-- [LT](#LT)
+- [LT](#Comparisons)
 - [MINUS](#MINUS)
 - [MUL](#MUL)
-- [NE](#NE)
+- [NE](#Comparisons)
 - [NOT](#NOT)
 - [NTH](#NTH)
 - [OR](#OR)
@@ -47,6 +47,22 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [SYSCALL4](#SYSCALL4)
 - [SYSCALL5](#SYSCALL5)
 - [SYSCALL6](#SYSCALL6)
+
+## Comparisons
+
+Perform a certain comparison operation to two [integers](definitions.md#integer-types).
+
+1. Pop two [integers](definitions.md#integer-types) from the stack
+2. Push the result of the comparison as [BOOL](types.md#bool---boolean)
+
+Different comparison intrinsics:
+
+- **EQ**: Equal (==)
+- **GE**: Greater than or equal (>=)
+- **GT**: Greater than (>)
+- **LE**: Less than or equal (<=)
+- **LT**: Less than (<)
+- **NE**: Not equal (!=)
 
 ## AND
 
