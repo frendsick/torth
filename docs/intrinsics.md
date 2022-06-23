@@ -38,7 +38,6 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [STORE_STR](#STORE)
 - [STORE_UINT8](#STORE)
 - [SWAP](#SWAP)
-- [SWAP2](#SWAP2)
 - [SYSCALL0](#SYSCALL)
 - [SYSCALL1](#SYSCALL)
 - [SYSCALL2](#SYSCALL)

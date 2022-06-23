@@ -276,8 +276,6 @@ def type_check_program(program: Program) -> None:
                 branched_stacks[-1] = type_check_store(token, type_stack, TokenType.UINT8)
             elif intrinsic == "SWAP":
                 branched_stacks[-1] = type_check_swap(token, type_stack)
-            elif intrinsic == "SWAP2":
-                branched_stacks[-1] = type_check_swap2(token, type_stack)
             elif re.fullmatch(r'SYSCALL[0-6]', intrinsic):
                 branched_stacks[-1] = type_check_syscall(token, type_stack, int(intrinsic[-1]))
             else:
@@ -677,23 +675,6 @@ def type_check_swap(token: Token, type_stack: TypeStack) -> TypeStack:
         compiler_error("POP_FROM_EMPTY_STACK", "SWAP intrinsic requires two values in the stack.", token)
     type_stack.push(t1.value, t1.location)
     type_stack.push(t2.value, t2.location)
-    return type_stack
-
-def type_check_swap2(token: Token, type_stack: TypeStack) -> TypeStack:
-    """
-    SWAP2 Intrinsic swaps the two pairs of two top elements in the stack.
-    Example with the stack's top element being the rightmost: a b c d -> c d a b
-    """
-    t1 = type_stack.pop()
-    t2 = type_stack.pop()
-    t3 = type_stack.pop()
-    t4 = type_stack.pop()
-    if t1 is None or t2 is None or t3 is None or t4 is None:
-        compiler_error("POP_FROM_EMPTY_STACK", "SWAP2 intrinsic requires four values in the stack.", token)
-    type_stack.push(t2.value, t2.location)
-    type_stack.push(t1.value, t1.location)
-    type_stack.push(t4.value, t4.location)
-    type_stack.push(t3.value, t4.location)
     return type_stack
 
 def type_check_syscall(token: Token, type_stack: TypeStack, param_count: int) -> TypeStack:

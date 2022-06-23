@@ -23,20 +23,19 @@ end
 // Utility function for pow
 // Params: exponent, number
 // Return: power
+memory pow_original_value 8 end
 function calculate_pow int int -> int :
-  over  // o = n  (original value)
-  1     // c = 1  (count)
+  over pow_original_value STORE_INT
+  1 // count
 
-  // Initial stack alignment (rightmost is on the top): n e o c
-
-  // If exponent > count then we need to multiple the number at least one more time
-  WHILE 3 nth over < DO  // n e o c
+  // If count < exponent then we need to multiple the number at least one more time
+  WHILE over over < DO
 
     // Multiply n with the original number to get new n
-    rot swap2 dup rot * // c e o n
+    rot pow_original_value LOAD_INT * rotr
 
-    // Align the stack as it was initially before WHILE loop
-    rot swap2 swap 1 +  // n e o c
+    // Increment count
+    1 +
 
-  DONE drop drop drop  // Leave only the power to the stack
+  DONE drop drop  // Leave only the power to the stack
 end

@@ -229,8 +229,6 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_store_asm(TokenType.UINT8)
         if intrinsic == "SWAP":
             return get_swap_asm()
-        if intrinsic == "SWAP2":
-            return get_swap2_asm()
         if intrinsic == "SYSCALL0":
             return get_syscall_asm(param_count=0)
         if intrinsic == "SYSCALL1":
@@ -643,21 +641,6 @@ def get_swap_asm() -> str:
     op_asm      += '  pop rbx\n'
     op_asm      += '  push rax\n'
     op_asm      += '  push rbx\n'
-    return op_asm
-
-def get_swap2_asm() -> str:
-    """
-    SWAP2 Intrinsic swaps the two pairs of two top elements in the stack.
-    Example with the stack's top element being the rightmost: a b c d -> c d a b
-    """
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  pop rcx\n'
-    op_asm      += '  pop rdx\n'
-    op_asm      += '  push rbx\n'
-    op_asm      += '  push rax\n'
-    op_asm      += '  push rdx\n'
-    op_asm      += '  push rcx\n'
     return op_asm
 
 def get_syscall_asm(param_count: int) -> str:
