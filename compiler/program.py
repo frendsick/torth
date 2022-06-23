@@ -456,7 +456,7 @@ def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "DO requires two values to the stack.", token)
     if t.value not in { TokenType.BOOL, TokenType.ANY }:
-        compiler_error("TYPE_ERROR", "DO requires a boolean.\n\n" + \
+        compiler_error("VALUE_ERROR", "DO requires a boolean.\n\n" + \
             f"Popped types:\n{t.value} {t.location}", token)
     return type_stack
 
@@ -499,7 +499,7 @@ def type_check_bitwise(token: Token, type_stack: TypeStack) -> TypeStack:
     if t1.value not in INTEGER_TYPES or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value} intrinsic requires two integers.\n\n" + \
             f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
-        compiler_error("TYPE_ERROR", error_message, token)
+        compiler_error("VALUE_ERROR", error_message, token)
     type_stack.push(TokenType.INT, token.location)
     return type_stack
 
@@ -517,7 +517,7 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> TypeStack:
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
             f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
-        compiler_error("TYPE_ERROR", error_message, token)
+        compiler_error("VALUE_ERROR", error_message, token)
 
     type_stack.push(TokenType.INT, token.location)
     return type_stack
@@ -554,7 +554,7 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> TypeStack:
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
             f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
-        compiler_error("TYPE_ERROR", error_message, token)
+        compiler_error("VALUE_ERROR", error_message, token)
     type_stack.push(TokenType.INT, token.location)
     type_stack.push(TokenType.INT, token.location)
     return type_stack
@@ -588,7 +588,7 @@ def type_check_nth(token: Token, type_stack: TypeStack) -> TypeStack:
     if t.value not in INTEGER_TYPES:
         error_message = "NTH intrinsic requires an integer.\n\n" + \
             f"Popped type:\n{t.value} {t.location}"
-        compiler_error("TYPE_ERROR", error_message, token)
+        compiler_error("VALUE_ERROR", error_message, token)
     # The type of the value in stack is not always known if the value is from arbitrary memory location
     type_stack.push(TokenType.ANY, token.location)
     return type_stack
@@ -603,7 +603,7 @@ def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType)
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
     if t.value not in POINTER_TYPES:
-        compiler_error("TYPE_ERROR", f"{token.value.upper()} requires a pointer.\n\n" + \
+        compiler_error("VALUE_ERROR", f"{token.value.upper()} requires a pointer.\n\n" + \
             f"Popped type:\n{t.value} {t.location}", token)
     type_stack.push(loaded_type, token.location)
     return type_stack
@@ -629,7 +629,7 @@ def type_check_print(token: Token, type_stack: TypeStack) -> TypeStack:
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
     if t.value not in INTEGER_TYPES:
-        compiler_error("TYPE_ERROR", f"{error_message}\n\nPopped type:\n{t.value} {t.location}", token)
+        compiler_error("VALUE_ERROR", f"{error_message}\n\nPopped type:\n{t.value} {t.location}", token)
     return type_stack
 
 def type_check_rot(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -661,7 +661,7 @@ def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType
             f"{required_values_str}", token)
     if t1.value not in POINTER_TYPES \
     or t2.value not in {TokenType.ANY, stored_type}:
-        compiler_error("TYPE_ERROR", f"{required_values_str}\n\n" + \
+        compiler_error("VALUE_ERROR", f"{required_values_str}\n\n" + \
             f"Expected types:\n{TokenType.PTR}\n{stored_type}\n\n" + \
             f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}", token)
     return type_stack
