@@ -706,7 +706,13 @@ def type_check_syscall(token: Token, type_stack: TypeStack, param_count: int) ->
 
     https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#tables
     """
-    for _ in range(param_count+1):
+    t = type_stack.pop()
+    if t.value not in INTEGER_TYPES:
+        compiler_error("VALUE_ERROR", \
+            f"The first argument of {token.value.upper()} should be the number of the syscall.\n" + \
+            f"Integer types: {INTEGER_TYPES}\n\n" + \
+            f"Popped type:\n{t.value} {t.location}", token)
+    for _ in range(param_count):
         t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", \
