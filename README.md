@@ -44,6 +44,7 @@ optional arguments:
 
 ## Documentation
 
+- [Intrinsics](./docs/intrinsics.md)
 - [Keywords](./docs/keywords.md)
 - [Types](./docs/types.md)
 
