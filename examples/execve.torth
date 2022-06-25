@@ -1,0 +1,23 @@
+include "lib/std.torth"
+memory execve_argv ptr.size end
+
+function main -> :
+  SYS_fork SYSCALL0
+  
+  if dup 0 == do
+    "Child is sleeping...\n" puts
+
+    // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
+    "sleep" execve_argv str.store
+    "0.01" execve_argv ptr.size ptr+ str.store
+    envp execve_argv "/usr/bin/sleep" execve drop
+  elif dup -1 != do
+    "Successfully forked child!\n" puts
+    NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
+    "Child exited!\n" puts
+  else
+    "Error occured while calling SYS_fork\n" puts
+  endif drop
+
+  "Continuing execution in the parent process.\n" puts
+end
