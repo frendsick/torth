@@ -15,22 +15,9 @@ This is the documentation for different keywords available in the Torth language
 
 ## BREAK
 
-BREAK is unconditional jump to the operation after DONE of the current loop.
+BREAK is unconditional jump to the operation after [DONE](#done) of the current loop.
 
-```pascal
-0 WHILE dup 10 > DO
-  1 + print_int
-  IF dup 3 == DO
-    "Breaking from the loop...\n" puts
-    BREAK
-  ENDIF
-DONE
-// Output:
-1
-2
-3
-Breaking from the loop...
-```
+- [How to use BREAK?](control_flow.md#break-statement)
 
 ## CONST
 
@@ -39,6 +26,7 @@ Constants are named integer values that cannot be modified. The constant name ca
 ### Syntax
 
 ```pascal
+// Constant declarations should be in one line
 CONST <name> <integer> END
 ```
 
@@ -59,146 +47,62 @@ function main -> :
 end  // Expected output: 13371337
 ```
 
+## CONTINUE
+
+CONTINUE is unconditional jump to the current loop's [WHILE](#while).
+
+- [How to use CONTINUE?](control_flow.md#continue-statement)
+
 ## DO
 
-DO is a conditional jump to the operation after next ELIF, ELSE, ENDIF or DONE.
+DO is a conditional jump to the operation after next [ELIF](#elif), [ELSE](#else), [ENDIF](#endif) or [DONE](#done).
 
 The conditional jump will occur if the condition does not match because if it does the block of code should be executed.
 
-With IF and ELIF statements, DO is a conditional jump to the operation after the next ELIF, ELSE or ENDIF keywords.
+With [IF](#if) and [ELIF](#elif) statements, DO is a conditional jump to the operation after the next [ELIF](#elif), [ELSE](#else) or [ENDIF](#endif) keywords.
 
-In WHILE loop, DO is a conditional jump to operation after DONE.
+In [WHILE](#while) loop, DO is a conditional jump to operation after [DONE](#done).
 
-### Examples
+See also:
 
-```pascal
--4                                //  int i = -4;
-IF dup 0 < DO                     //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ELIF dup 0 == DO                  //  else if (0 == i)
-  "Zero" puts                     //    puts("Zero");
-ELSE                              //  else
-  "Negative number" puts          //    puts("Negative number");
-ENDIF
-
-// Output: Negative number
-```
-
-```pascal
-0 WHILE dup 10 > DO                   //  int i=0; while (10 > i) {
-  1 +                             //    i++;
-  "This is row " print print_int  //    printf("This is row %d\n", i);
-DONE                               //  }
-
-// Output:
-// This is row 1
-// This is row 2
-// ...
-// This is row 10
-```
+- [IF Blocks](control_flow.md#if-blocks)
+- [WHILE Loops](control_flow.md#while-loops)
 
 ## DONE
 
-DONE is an unconditional jump to WHILE keyword. The loop's condition is always evaluated by the DO keyword after WHILE which is also a conditional jump to the operation after the DONE keyword.
+DONE is an unconditional jump to [WHILE](#while) keyword. The loop's condition is always evaluated by the [DO](#do) keyword after [WHILE](#while) which is also a conditional jump to the operation after the DONE keyword.
 
-```pascal
-0 WHILE dup 10 > DO                         //  int i=0; while (10 > i) {
-  1 +                                   //    i++;
-  "This is row " print print_int        //    printf("This is row %d\n", i);
-DONE                                     //  }
-"Loop over after row " print print_int  //  printf("Loop over after row %d\n", i);
+See also:
 
-// Output:
-// This is row 1
-// This is row 2
-// ...
-// This is row 10
-// Loop over after row 10
-```
+- [WHILE Loops](control_flow.md#while-loops)
 
 ## ELIF
 
-ELIF is an unconditional jump to the operation after ENDIF. It's also a keyword for DO to coditionally jump over.
+ELIF is an unconditional jump to the operation after [ENDIF](#endif). It's also a keyword for [DO](#do) to coditionally jump over.
 
-ELIF is a unconditional jump to the operation after ENDIF because the keyword is only reached if the previous IF or ELIF block's condition was true. DO keyword is a conditional jump to the operation after ELIF if the condition is false.
+ELIF is a unconditional jump to the operation after [ENDIF](#endif) because the keyword is only reached if the previous [IF](#if) or ELIF block's condition was true. [DO](#do) keyword is a conditional jump to the operation after ELIF if the condition is false.
 
-```pascal
-4                                 //  int i = 4;
-IF dup 0 < DO                         //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ELIF dup 0 == DO                      //  else if (0 == i)
-  "Zero" puts                     //    puts("Zero");
-ELSE                              //  else
-  "Negative number" puts          //    puts("Negative number");
-ENDIF
+See also:
 
-// Output: Positive number
-```
+- [IF Blocks](control_flow.md#if-block)
 
 ## ELSE
 
-ELSE is an unconditional jump to the operation after ENDIF. It's also a keyword for DO to coditionally jump over.
+ELSE is an unconditional jump to the operation after [ENDIF](#endif). It's also a keyword for [DO](#do) to coditionally jump over.
 
-ELSE is a unconditional jump to the operation after ENDIF because the keyword is only reached if the previous IF or ELIF block's condition was true. DO keyword is a conditional jump to the operation after ELSE if the condition is false.
+ELSE is a unconditional jump to the operation after [ENDIF](#endif) because the keyword is only reached if the previous [IF](#if) or [ELIF](#elif) block's condition was true. [DO](#do) keyword is a conditional jump to the operation after ELSE if the condition is false.
 
-```pascal
-0                                 //  int i = 0;
-IF dup 0 < DO                         //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ELIF dup 0 == DO                      //  else if (0 == i)
-  "Zero" puts                     //    puts("Zero");
-ELSE                              //  else
-  "Negative number" puts          //    puts("Negative number");
-ENDIF
+See also:
 
-// Output: Zero
-```
+- [IF Blocks](control_flow.md#if-block)
 
 ## ENDIF
 
-ENDIF is a keyword for DO, ELIF, or ELSE keywords to jump over.
+ENDIF is a keyword for [DO](#do), [ELIF](#elif), or [ELSE](#else) keywords to jump over.
 
-### Examples
+See also:
 
-```pascal
-0                                 //  int i = 0;
-IF 0 < DO                         //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ENDIF
-"This is after ENDIF" puts        //  puts("This is after ENDIF");
-
-// Output: This is after ENDIF
-```
-
-```pascal
-4                                 //  int i = 0;
-IF dup 0 < DO                         //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ELIF dup 0 == DO                      //  else if (0 == i)
-  "Zero" puts                     //    puts("Zero");
-ENDIF
-"This is after ENDIF" puts        //  puts("This is after ENDIF");
-
-// Output:
-// Positive number
-// This is after ENDIF
-```
-
-```pascal
-0                                 //  int i = 0;
-IF dup 0 < DO                         //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ELIF dup 0 == DO                      //  else if (0 == i)
-  "Zero" puts                     //    puts("Zero");
-ELSE                              //  else
-  "Negative number" puts          //    puts("Negative number");
-ENDIF
-"This is after ENDIF" puts        //  puts("This is after ENDIF");
-
-// Output:
-// Zero
-// This is after ENDIF
-```
+- [IF Blocks](control_flow.md#if-block)
 
 ## FUNCTION
 
@@ -218,7 +122,7 @@ FUNCION <name> <args> -> <return_values> END
 ```pascal
 // Example with name and age as parameters, name is on top of the stack
 // Note: Strings pushes two items to the stack, it's length and pointer to the string buffer
-function is_adult str_buf* int int -> bool :
+function is_adult str int int -> bool :
   print // Prints name
   if dup 18 > do
     False " you are not an adult"
@@ -229,7 +133,7 @@ end
 
 function main -> :
   42 "Teemu" is_adult
-  "Return value: " print print_int // Output: 40
+  "Return value: " puts print "\n" puts // Output: 40
 end
 ```
 
@@ -246,23 +150,13 @@ function MultiplyByFour
 end
 
 function main -> :
-  5 multiply_by_two MultiplyByFour print_int  // Output: 40
+  5 multiply_by_two MultiplyByFour print "\n" puts // Output: 40
 end
 ```
 
 ## IF
 
-IF is just a keyword which starts an IF-block. IF-block ends to (ENDIF)[#ENDIF].
-
-```pascal
-4                                 //  int i = 4;
-IF dup 0 < DO                         //  if (0 < i)
-  "Positive number" puts          //    puts("Positive number");
-ENDIF
-
-// Output:
-// Positive number
-```
+IF is just a keyword which starts an [IF block](control_flow.md#if-blocks). IF-block ends to (ENDIF)[#ENDIF].
 
 ## MEMORY
 
@@ -282,30 +176,17 @@ include "lib/std.torth"
 memory leet int.size end  // int.size = 8
 memory feet ptr.size end  // ptr.size = 8
 function main -> :
-  1337 leet store_INT
-  leet load_INT print "\n" puts // Output: 1337
+  1337 leet int.store
+  leet int.load print "\n" puts // Output: 1337
 
-  "pinky\n" feet store_STR
-  'k' feet load_PTR store_CHAR
-  feet load_STR puts            // Output: kinky
+  "pinky\n" feet str.store
+  'k' feet ptr.load char.store
+  feet str.load puts            // Output: kinky
 end
 ```
 
 ## WHILE
 
-WHILE is a keyword for DONE to jump to.
+WHILE is a keyword for [DONE](#done) to jump to.
 
-```pascal
-0 WHILE dup 10 > DO                         //  int i=0; while (10 > i) {
-  1 +                                   //    i++;
-  "This is row " print print_int        //    printf("This is row %d\n", i);
-DONE                                     //  }
-"Loop over after row " print print_int  //  printf("Loop over after row %d\n", i);
-
-// Output:
-// This is row 1
-// This is row 2
-// ...
-// This is row 10
-// Loop over after row 10
-```
+[How to use WHILE Loops?](control_flow.md#while-loops)

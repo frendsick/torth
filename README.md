@@ -44,9 +44,10 @@ optional arguments:
 
 ## Documentation
 
-- [Intrinsics](./docs/intrinsics.md)
-- [Keywords](./docs/keywords.md)
 - [Types](./docs/types.md)
+- [Keywords](./docs/keywords.md)
+- [Intrinsics](./docs/intrinsics.md)
+- [Control flow statements](./docs/control_flow.md)
 
 ## Examples
 
