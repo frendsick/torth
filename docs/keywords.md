@@ -106,15 +106,15 @@ See also:
 
 ## FUNCTION
 
-Functions are defined using FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as token. When called, the function's name is replaced with the contents of the function during compilation. Functions should be defined before calling. Defined functions are case sensitive tokens unlike most other keywords in Torth.
+Functions are defined using FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as token. When called, the function's name is replaced with the contents of the function (**function_body** in the [Function syntax](#function-syntax) section) during compilation. Defined functions are case sensitive tokens unlike most other keywords in Torth.
 
-Functions do not take parameters but instead use the current stack. Function syntax encourages the programmer to document the params used in the function and how it alters stack's state during it's execution.
+Functions do not take parameters but instead use the current stack. The required topmost items in the stack before and after the function execution are defined in the function declaration (**argument_types** and **return_types** in the following [Function syntax](#function-syntax) section). Compiler verifies at compile time if the topmost types in the stack would match with the function signature before and after its execution. If there is more items in the return types than argument types then the compiler will assume that there should be more elements in the stack after the execution than before calling the function and vice versa.
 
-### Syntax
+### Function syntax
 
 ```pascal
 // Different tokens or words can be on different lines
-FUNCION <name> <args> -> <return_values> END
+FUNCION <name> <argument_types> -> <return_types> : <function_body> END
 ```
 
 ### Examples
