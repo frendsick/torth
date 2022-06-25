@@ -202,7 +202,7 @@ end
 memory int_digits int.size end
 function itoa int -> str :
   // Store the original integer and the amount of digits
-  dup int.temp int.store
+  dup temp_int int.store
   int.get_digits int_digits int.store
 
   ""  // The string representation of the string
@@ -213,10 +213,10 @@ function itoa int -> str :
     int_digits int.load
     1 - over - 10 swap pow
 
-    // Store the remainder of the number / the current power of 10 to int.temp
-    int.temp int.load
+    // Store the remainder of the number / the current power of 10 to temp_int
+    temp_int int.load
     swap divmod swap
-    int.temp int.store
+    temp_int int.store
 
     // Store the quotient of the number / the current power of 10 to the string representation
     '0' + char
@@ -228,8 +228,8 @@ function itoa int -> str :
   // Insert NULL-byte to the end of the string
   over ptr+ NULL char swap char.store
 
-  // Zero int.temp
-  NULL int.temp int.store
+  // Zero temp_int
+  NULL temp_int int.store
 end
 
 // String functions
@@ -281,18 +281,18 @@ function atoi str -> int :
     '0' -
 
     // Multiply the number from temporary memory by 10
-    int.temp int.load 10 *
+    temp_int int.load 10 *
 
     // Add the current number and store the result
-    + int.temp int.store
+    + temp_int int.store
 
     1 +
   done drop2
   // Return the integer
-  int.temp int.load
+  temp_int int.load
 
   // Zero the memory of temporary integer
-  NULL int.temp int.store
+  NULL temp_int int.store
 end
 
 // Tests if two strings are equal
