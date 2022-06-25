@@ -300,12 +300,3 @@ def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
             except ValueError:
                 compiler_error("VALUE_ERROR", "Constant is not an integer.", func.tokens[1])
     return constants
-
-def remove_unused_constants(tokens: List[Token], constants: List[Constant], memories: List[Memory]) -> List[Constant]:
-    """Remove unused constants"""
-    return [
-        constant for constant in constants \
-        if constant.name == 'MEMORY_CAPACITY' \
-            or any(constant.value == token.value for token in tokens) \
-            or any(constant.name == memory.name for memory in memories)
-        ]
