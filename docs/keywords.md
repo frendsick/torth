@@ -34,29 +34,28 @@ Breaking from the loop...
 
 ## CONST
 
-CONST keyword is an alternative way of declarating a [FUNCTION](#FUNCTION) which does not take any parameters and only returns an integer. CONSTs can be used in [MEMORY](#MEMORY) declarations when defining the size of the memory.
+Constants are named integer values that cannot be modified. The constant name can be used in code to push the constant's integer value to the stack. Constants can also be used in [MEMORY](#MEMORY) declarations when defining the size of the memory. However, constants cannot be used in defining other constants at least for now.
 
 ### Syntax
 
 ```pascal
-// Different tokens or words can be on different lines
-FUNCION <name> <integer> END
+CONST <name> <integer> END
 ```
 
 ### Examples
 
 ```pascal
-include "lib/sys.torth"
+include "lib/std.torth"
 const ptr.size 8 end
 memory dst ptr.size end
 memory src ptr.size end
 
 function main -> :
-  1337 src store      // Store 1337 to src
-  9001 dst store      // Store 9001 to dst
-  src load dst store  // Copy the value from src to dst
-  src load print      // Print the value 1337 from src
-  dst load print      // Print the value 1337 from dst
+  1337 src int.store          // Store 1337 to src
+  9001 dst int.store          // Store 9001 to dst
+  src int.load dst int.store  // Copy the value from src to dst
+  src int.load print          // Print the value 1337 from src
+  dst int.load print          // Print the value 1337 from dst
 end  // Expected output: 13371337
 ```
 
