@@ -256,7 +256,10 @@ def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     col: int        = op.token.location[2]
     op_name: str    = op_type.name
     if op_name == "INTRINSIC":
-        op_name = f'{op_type.name} {op.token.value}'
+        op_name = f'{op_name} {op.token.value}'
+    elif op_name in {"FUNCTION_CALL", "FUNCTION_RETURN"}:
+        function_name: str = op.token.value.replace('_CALL', '').replace('_RETURN', '')
+        op_name = f'{op_name} {function_name}'
     return get_token_info_comment_asm(op_name, src_file, row, col)
 
 def get_token_info_comment_asm(name: str, file: str, row: int, col: int) -> str:
