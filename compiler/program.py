@@ -149,9 +149,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.CAST_UINT8:
             branched_stacks[-1] = type_check_cast_uint8(token, type_stack)
         elif op.type == OpType.DO:
-            branched_stacks[-1] = type_check_do(token, type_stack)
-            type_stack = copy.deepcopy(type_stack)
-            branched_stacks.append(type_stack)
+            branched_stacks[-1] = type_check_do(token, type_stack, branched_stacks)
         elif op.type == OpType.DONE:
             branched_stacks = type_check_end_of_branch(token, branched_stacks)
         elif op.type == OpType.ELIF:
@@ -448,7 +446,7 @@ def type_check_cast_uint8(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(TokenType.UINT8, token.location)
     return type_stack
 
-def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
+def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[TypeStack]) -> TypeStack:
     """DO Keyword pops one boolean from the stack"""
     t = type_stack.pop()
     if t is None:
@@ -456,6 +454,9 @@ def type_check_do(token: Token, type_stack: TypeStack) -> TypeStack:
     if t.value not in { TokenType.BOOL, TokenType.ANY }:
         compiler_error("VALUE_ERROR", "DO requires a boolean.\n\n" + \
             f"Popped types:\n{t.value} {t.location}", token)
+    
+    type_stack = copy.deepcopy(type_stack)
+    branched_stacks.append(type_stack)
     return type_stack
 
 def type_check_push_bool(token: Token, type_stack: TypeStack) -> TypeStack:
