@@ -193,13 +193,9 @@ def type_check_program(program: Program) -> None:
             if_block_return_stack = TypeStack()
             else_present = False
         elif op.type == OpType.FUNCTION_CALL:
-            parameter_types: List[TokenType] = op.func.signature[0]
-            original_function_stacks.append(copy.deepcopy(type_stack))
-            type_check_function_call(op, parameter_types, type_stack)
-            continue
+            type_check_function_call(op, type_stack, original_function_stacks)
         elif op.type == OpType.FUNCTION_RETURN:
             type_check_function_return(op, op.func.signature, type_stack, original_function_stacks.pop())
-            continue
         elif op.type == OpType.IF:
             if_block_original_stacks.append(copy.deepcopy(type_stack))
         elif op.type == OpType.PUSH_BOOL:
@@ -288,11 +284,14 @@ def type_check_program(program: Program) -> None:
             "The stack should empty after the program has been executed.\n\n" + \
             f"Unhandled Token types:\n{type_stack.repr()}", token)
 
-def type_check_function_call(op: Op, param_types: List[TokenType], type_stack: TypeStack) -> List[TokenType]:
+def type_check_function_call(op: Op, type_stack: TypeStack, \
+    original_function_stacks: List[TypeStack]) -> List[TokenType]:
     """
     Type check the function parameter types.
     Returns the types in stack when the parameters are popped out.
     """
+    param_types: List[TokenType] = op.func.signature[0]
+    original_function_stacks.append(copy.deepcopy(type_stack))
     temp_stack = copy.deepcopy(type_stack)
     for param_type in param_types:
         if not temp_stack.head:
@@ -454,7 +453,7 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
     if t.value not in { TokenType.BOOL, TokenType.ANY }:
         compiler_error("VALUE_ERROR", "DO requires a boolean.\n\n" + \
             f"Popped types:\n{t.value} {t.location}", token)
-    
+
     type_stack = copy.deepcopy(type_stack)
     branched_stacks.append(type_stack)
     return type_stack
