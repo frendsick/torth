@@ -78,7 +78,7 @@ def generate_program(tokens: List[Token], functions: List[Function], memories: L
             op_type = OpType.FUNCTION_RETURN
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
-        elif function_name_exists(token_value, memories):
+        elif memory_exists(token_value, memories):
             op_type = OpType.PUSH_PTR
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found", token)
@@ -100,8 +100,8 @@ def intrinsic_exists(token_value: str) -> bool:
     """Return boolean value whether or not certain Intrinsic exists."""
     return bool(hasattr(Intrinsic, token_value))
 
-def function_name_exists(token: str, memories: List[Memory]) -> bool:
-    """Return boolean value whether or not certain Function exists."""
+def memory_exists(token: str, memories: List[Memory]) -> bool:
+    """Return boolean value whether or not certain Memory exists."""
     return any(memory.name.upper() == token for memory in memories)
 
 def type_check_program(program: Program) -> None:
