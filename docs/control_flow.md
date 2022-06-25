@@ -30,7 +30,7 @@ IF dup 1337 == DO
   "Elite\n" puts
 ELIF dup 69 == DO
   "Nice\n" puts
-ELIF dup 42 DO
+ELIF dup 42 == DO
   "Right answer!\n" puts
 ELSE
   "Else\n" puts
