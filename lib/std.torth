@@ -81,6 +81,19 @@ function exit int -> : SYS_exit syscall1 drop end
 // Params: int fd, char *buf
 function fputs int str -> : swap dup str.len swap rot write drop end
 
+// Allocate read-write memory and return the pointer to the allocated memory
+function malloc int -> ptr :
+  temp_int int.store
+  NULL NULL
+  MAP_ANONYMOUS MAP_PRIVATE |
+  PROT_READ PROT_WRITE |
+  temp_int int.load
+  NULL SYS_mmap SYSCALL6 ptr
+
+  // Zero the memory of temporary integer
+  NULL temp_int int.store
+end
+
 // Print a string to stdout
 function puts  str -> : stdout fputs end
 
