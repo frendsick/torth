@@ -52,7 +52,7 @@ function dup2   any any     -> any any any any  : over over end
 function rev    any any any -> any any any      : swap rot end // Reverse the top 3 elements
 function rotr   any any any -> any any any      : rot rot end // Reverse rot
 function not    bool        -> bool             : True != end
-function |      int         -> int              : or end
+function |      int int     -> int              : or end
 function lor    bool bool   -> bool             : int swap int or bool end
 function land   bool bool   -> bool             : int swap int and bool end
 function ||     bool bool   -> bool             : lor end
