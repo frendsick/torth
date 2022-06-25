@@ -58,6 +58,16 @@ function land   bool bool   -> bool             : int swap int and bool end
 function ||     bool bool   -> bool             : lor end
 function &&     bool bool   -> bool             : land end
 
+// Get user input from stdin
+function input -> str :
+  // Allocate memory for the user input
+  MEMORY_CAPACITY malloc
+  MEMORY_CAPACITY over stdin read // Returns the amount of bytes read
+
+  // Remove the newline character from the end
+  over swap 1 - ptr+ NULL char swap char.store
+end
+
 // Write a string to a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t written_bytes
