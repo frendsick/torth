@@ -67,15 +67,15 @@ The conditional jump will occur if the condition does not match because if it do
 
 With IF and ELIF statements, DO is a conditional jump to the operation after the next ELIF, ELSE or ENDIF keywords.
 
-In while loop, DO is a conditional jump to operation after DONE.
+In WHILE loop, DO is a conditional jump to operation after DONE.
 
 ### Examples
 
 ```pascal
 -4                                //  int i = -4;
-IF dup 0 < DO                         //  if (0 < i)
+IF dup 0 < DO                     //  if (0 < i)
   "Positive number" puts          //    puts("Positive number");
-ELIF dup 0 == DO                      //  else if (0 == i)
+ELIF dup 0 == DO                  //  else if (0 == i)
   "Zero" puts                     //    puts("Zero");
 ELSE                              //  else
   "Negative number" puts          //    puts("Negative number");

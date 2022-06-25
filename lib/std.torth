@@ -88,8 +88,10 @@ function puts  str -> : stdout fputs end
 function eputs str -> : stderr fputs end
 
 // Ptr functions
-function ptr+   int ptr -> ptr  : swap int + ptr end
-function ptr++  ptr     ->      : ptr.size ptr+ end
+function ptr+       int ptr -> ptr : swap int + ptr end
+function ptr++      ptr     ->     : ptr.size ptr+  end
+function ptr.load   ptr     -> ptr : LOAD_PTR       end
+function ptr.store  ptr ptr -> ptr : STORE_PTR      end
 
 // Bool functions
 function bool.load  ptr       -> bool : LOAD_BOOL   end
