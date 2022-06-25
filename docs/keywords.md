@@ -156,7 +156,7 @@ end
 
 ## IF
 
-IF is just a keyword which starts an [IF block](control_flow.md#if-blocks). IF-block ends to (ENDIF)[#ENDIF].
+IF is just a keyword which starts an [IF block](control_flow.md#if-blocks). IF-block ends to [ENDIF](#ENDIF).
 
 ## MEMORY
 
