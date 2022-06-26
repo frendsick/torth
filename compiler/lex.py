@@ -8,13 +8,13 @@ from compiler.defs import Constant, Function, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
 
-def get_included_files(code: str):
+def get_included_files(code: str, compiler_directory: str):
     """Parse included files from a code string. Return the list of files."""
     INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', flags=re.MULTILINE | re.IGNORECASE)
-    included_files: List[str] = INCLUDE_REGEX.findall(code)
+    included_files: List[str] = [f'{compiler_directory}/{file}' for file in INCLUDE_REGEX.findall(code)]
     for file in included_files:
         included_code: str = get_file_contents(file)
-        included_files += get_included_files(included_code)
+        included_files += get_included_files(included_code, compiler_directory)
     return included_files
 
 def get_functions_from_files(file_name: str, included_files: List[str]) -> List[Function]:
