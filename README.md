@@ -1,6 +1,6 @@
 # Torth
 
-Stack based programming language inspired by [Porth](https://gitlab.com/tsoding/porth).
+Stack based programming language inspired by [Porth](https://gitlab.com/tsoding/porth) that uses [Reverse Polish notation](./docs/definitions.md#reverse-polish-notation).
 
 Torth is planned to be
 
