@@ -267,8 +267,11 @@ def get_token_type(token_text: str) -> TokenType:
     if token_text[0] == token_text[-1] == '"':
         return TokenType.STR
     # Numbers 0 - 255
-    if re.match(r'u([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])', token_text):
-        return TokenType.UINT8
+    if re.match(r'^u\d+$', token_text):
+        if re.match(r'^u([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$', token_text):
+            return TokenType.UINT8
+        else:
+            compiler_error("VALUE_ERROR", f"Token '{token_text}' is not a valid 8-bit unsigned integer.")
     try:
         _integer = int(token_text)
         return TokenType.INT

@@ -1,1 +1,4 @@
-Syntax: ./cat.bin <file_name>
+Print the contents of the files given as command line arguments.
+You can give one or more file names as arguments.
+
+Syntax: ./cat.bin <file1> <file2>
