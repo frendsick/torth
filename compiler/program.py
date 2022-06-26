@@ -406,6 +406,8 @@ def type_check_cast_char(token: Token, type_stack: TypeStack) -> TypeStack:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
     if t.value == TokenType.BOOL:
         compiler_error("VALUE_ERROR", "A boolean value cannot be cast to CHAR.", token)
+    if t.value not in INTEGER_TYPES:
+        compiler_error("VALUE_ERROR", "Only integer-like values can be cast to CHAR.", token)
     type_stack.push(TokenType.CHAR, token.location)
     return type_stack
 
@@ -422,6 +424,8 @@ def type_check_cast_ptr(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
+    if t.value in {TokenType.BOOL, TokenType.CHAR}:
+        compiler_error("VALUE_ERROR", f"{t.value} cannot be cast to PTR.", token)
     type_stack.push(TokenType.PTR, token.location)
     return type_stack
 
