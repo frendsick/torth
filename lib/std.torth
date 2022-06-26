@@ -92,15 +92,20 @@ function exit int -> : SYS_exit syscall1 drop end
 function fputs int str -> : swap dup str.len swap rot write drop end
 
 // Allocate read-write memory and return the pointer to the allocated memory
+// Params: size_t length
+// Return: Pointer to the start of the allocated memory
 function malloc int -> ptr :
+  // Store the length-parameter in temporary integer
   temp_int int.store
-  NULL NULL
+
+  // mmap ( NULL, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0 );
+  0 0
   MAP_ANONYMOUS MAP_PRIVATE |
   PROT_READ PROT_WRITE |
-  temp_int int.load
+  temp_int int.load // length
   NULL SYS_mmap SYSCALL6 ptr
 
-  // Zero the memory of temporary integer
+  // Zero the memory of the temporary integer
   NULL temp_int int.store
 end
 
