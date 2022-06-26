@@ -2,6 +2,15 @@
 
 Torth language is statically typed. Each value pushed to the stack has a type associated with it. Typing tries to ensure that the user only performs operations that are appropriate to the values of specific types.
 
+The language supports the following types:
+
+- [BOOL](#bool---boolean)
+- [CHAR](#char---character)
+- [INT](#int-uint8---integer)
+- [PTR](#ptr---pointer)
+- [STR](#str---string)
+- [UINT8](#int-uint8---integer)
+
 ## BOOL - Boolean
 
 Boolean values are True and False. The boolean words are case insensitive.
