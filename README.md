@@ -23,6 +23,7 @@ Torth is planned to be
 
 ```pascal
 $ cat hello.torth
+include "lib/std.torth"
 function main : "Hello, World!\n" puts end
 $ ./torth.py --run hello.torth
 Hello, World!
@@ -50,6 +51,7 @@ More examples are found from the [examples](./examples/)-folder.
 ### Hello World
 
 ```pascal
+include "lib/std.torth"
 function Main :
     "Hello, World!\n" puts
 end
