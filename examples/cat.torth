@@ -1,21 +1,39 @@
 include "lib/std.torth"
 
-function print_help :
-  "Syntax: ./cat <file_name>\n" puts 1 exit
-end
-
-// Returns: *argv[1]
-function get_argv1 -> ptr :
+// Print the help and exit if no arguments were given
+function check_arguments :
   if argc 1 >= do
-    print_help
-  elif argc 2 < do
-    "The program cannot yet output more than one file.\n" eputs
-    print_help
+    "Print the contents of the files given as command line arguments.\n" eputs
+    "You can give one or more file names as arguments.\n\n" eputs
+    "Syntax: ./cat.bin <file1> <file2>\n" eputs 1 exit
   endif
-  argv int.size ptr+ str.load
 end
 
-// TODO: Outputting multiple files from multiple arguments 
+// Params: index
+// Return: *argv[index]
+function get_argument int -> str :
+  int.size * argv swap ptr+ str.load
+end
+
+// Print the contents of the files given as command line arguments
+function cat_files :
+  1 // index
+  while True do
+    // Get the current index' argument
+    dup get_argument
+
+    // get_argument returns NULL if all arguments are handled
+    if dup int NULL == do
+      break
+    endif
+
+    // Print the file
+    print_file drop
+    1 + // index++
+  done drop
+end
+
 function main :
-  get_argv1 print_file drop
+  check_arguments
+  cat_files
 end
