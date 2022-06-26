@@ -39,3 +39,10 @@ function calculate_pow int int -> int :
 
   DONE drop drop  // Leave only the power to the stack
 end
+
+// Return the square root of an integer rounded up to closest integer
+function sqrt int -> int :
+  0 while over over dup * < do
+    1 +
+  done swap drop
+end
