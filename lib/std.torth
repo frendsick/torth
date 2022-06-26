@@ -25,6 +25,8 @@ const uint8.size  1 end
 memory temp_bool  bool.size   end
 memory temp_char  char.size   end
 memory temp_int   int.size    end
+memory temp_ptr   ptr.size    end
+memory temp_str   str.size    end
 memory temp_uint8 uint8.size  end
 
 // File descriptors
