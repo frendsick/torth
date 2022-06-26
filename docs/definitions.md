@@ -21,7 +21,9 @@ The following types count as integer-like types whenever an intrinsic requires t
 - [INT](types.md#int-uint8---integer)
 - [UINT8](types.md#int-uint8---integer)
 
-Note: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast an integer-like type to another integer-like type by using the type as token. For example, if you want to cast any integer-like type to CHAR, use `char` keyword.
+**Note**: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast another type to integer-like type by using the type as token. For example, if you want to cast a value to [INT](types.md#int-uint8---integer), use `int` keyword.
+
+See also: [Casting](keywords.md#casting)
 
 ## Pointer types
 
@@ -30,4 +32,6 @@ The following types count as pointer-like types whenever an intrinsic requires t
 - [PTR](types.md#ptr---pointer)
 - [STR](types.md#str---string)
 
-Note: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast an pointer-like type to another pointer-like type by using the type as token. For example, if you want to cast any pointer-like type to STR, use `str` keyword.
+Note: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast an pointer-like type to another pointer-like type by using the type as token. Also, you can cast some integer-like types to [PTR](types.md#ptr---pointer). For example, if you want to cast a value to PTR, use `ptr` keyword.
+
+See also: [Casting](keywords.md#casting)
