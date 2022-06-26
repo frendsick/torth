@@ -1,6 +1,6 @@
 # Torth
 
-It's like [Porth](https://gitlab.com/tsoding/porth) but written by a first-time programming language developer.
+Stack based programming language inspired by [Porth](https://gitlab.com/tsoding/porth).
 
 Torth is planned to be
 
@@ -11,12 +11,13 @@ Torth is planned to be
 - [x] [Turing complete](examples/rule110.torth)
 - [ ] Self-hosted
 
-## Requirements
+## Documentation
 
-- Python3.6 or newer
-- NASM
-- LD
-- Graphviz (Only required for creating Graphviz graphs with **-g** argument)
+- [Getting started](./docs/getting_started.md)
+- [Types](./docs/types.md)
+- [Keywords](./docs/keywords.md)
+- [Intrinsics](./docs/intrinsics.md)
+- [Control flow statements](./docs/control_flow.md)
 
 ## Usage
 
@@ -41,13 +42,6 @@ optional arguments:
   -r, --run            Run program after compilation
   -s, --save-asm       Save assembly file named after code_file with .asm extension
 ```
-
-## Documentation
-
-- [Types](./docs/types.md)
-- [Keywords](./docs/keywords.md)
-- [Intrinsics](./docs/intrinsics.md)
-- [Control flow statements](./docs/control_flow.md)
 
 ## Examples
 
