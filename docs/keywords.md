@@ -2,8 +2,11 @@
 
 This is the documentation for different keywords available in the Torth language.
 
+- [BOOL](#Casting)
 - [BREAK](#BREAK)
+- [CHAR](#Casting)
 - [CONST](#CONST)
+- [CONTINUE](#CONTINUE)
 - [DO](#DO)
 - [DONE](#DONE)
 - [ELIF](#ELIF)
@@ -11,7 +14,24 @@ This is the documentation for different keywords available in the Torth language
 - [ENDIF](#ENDIF)
 - [FUNCTION](#FUNCTION)
 - [IF](#IF)
+- [INT](#Casting)
+- [MEMORY](#MEMORY)
+- [PTR](#Casting)
+- [STR](#Casting)
+- [UINT8](#Casting)
 - [WHILE](#WHILE)
+
+## Casting
+
+The supported [types](types.md) can be used as keywords to cast a topmost value in the stack to the keyword's type. For example, if you want to cast a value to INT, just use `int` keyword.
+
+There are some limitations on what type of values can be cast to another:
+
+- Only [integer-like](definitions.md#integer-types) types can be cast to [BOOL](types.md#bool---boolean)
+- Only [integer-like](definitions.md#integer-types) types can be cast to [CHAR](types.md#char---character)
+  - Exeption: [BOOL](types.md#bool---boolean) type cannot be cast to [CHAR](types.md#char---character)
+- [BOOL](types.md#bool---boolean) and [CHAR](types.md#char---character) types cannot be cast to [PTR](types.md#ptr---pointer)
+- [Integer-like](definitions.md#integer-types) types cannot be cast to [STR](types.md#str---string)
 
 ## BREAK
 
