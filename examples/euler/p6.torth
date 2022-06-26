@@ -24,7 +24,7 @@ function square_of_sum int -> int :
   2 pow  // Square the Sum total
 end
 
-function Main -> :
+function Main :
   100 // Limit
   sum_of_squares
   square_of_sum

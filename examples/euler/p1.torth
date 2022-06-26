@@ -21,7 +21,7 @@ FUNCTION get_fizzbuzz_sum int -> int :
   DONE drop swap drop // Drop loop index and limit from stack
 END
 
-FUNCTION main -> :
+FUNCTION main :
   1000  // limit
   get_fizzbuzz_sum  // Returns: sum
   "Sum of all numbers divisible by 3 or 5: " puts print "\n" puts // Answer: 233168

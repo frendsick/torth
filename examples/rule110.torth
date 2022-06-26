@@ -7,7 +7,7 @@ memory current_board BOARD_SIZE end   // int current_board[BOARD_SIZE]
 memory previous_board BOARD_SIZE end  // int previous_board[BOARD_SIZE]
 memory pattern 3 end                  // int pattern[3]
 
-function initialize_rules -> :
+function initialize_rules :
   rules                        // Pointer to table
   u0 over        uint8.store   // table[0] == 0  // 111
   u1 over 1 ptr+ uint8.store   // table[1] == 1  // 110
@@ -20,14 +20,14 @@ function initialize_rules -> :
   drop
 end
 
-function initialize_board -> :
+function initialize_board :
   current_board
   u1 over 2 ptr+ uint8.store   // current_board[2] = 1
   drop
 end
 
 // Sync previous_board with current_board
-function sync_boards -> :
+function sync_boards :
   0 while dup BOARD_SIZE > do
     current_board over ptr+ uint8.load
     over previous_board swap ptr+ uint8.store
@@ -35,7 +35,7 @@ function sync_boards -> :
   done drop
 end
 
-function print_iteration -> :
+function print_iteration :
   // j = 0; while(i < BOARD_SIZE - 2)
   0 while dup BOARD_SIZE > do
 
@@ -58,14 +58,14 @@ function get_pattern int -> int :
   drop
 end
 
-function output_board -> :
+function output_board :
   "Board iteration: " puts
   current_board while dup current_board BOARD_SIZE ptr+ > do
     dup char.load print
   done drop "\n" puts
  end
 
-function set_board_index int -> :
+function set_board_index int :
   rules swap ptr+ uint8.load current_board 4 nth ptr+ uint8.store
 end
 
@@ -92,7 +92,7 @@ function update_board_index int -> int :
   drop
 end
 
-function calculate_next_iteration -> :
+function calculate_next_iteration :
   // j = 1; while(j < BOARD_SIZE - 1)
   1 while dup BOARD_SIZE > do
     get_pattern
@@ -101,7 +101,7 @@ function calculate_next_iteration -> :
   done drop
 end
 
-function rule110 -> :
+function rule110 :
   // i = 0; while(i < BOARD_SIZE - 2)
   0 while dup BOARD_SIZE 2 - > do
     sync_boards // Copy current_board to previous_board
@@ -111,7 +111,7 @@ function rule110 -> :
   done drop
 end
 
-function main -> :
+function main :
   initialize_rules
   initialize_board
   rule110

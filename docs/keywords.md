@@ -38,7 +38,7 @@ const ptr.size 8 end
 memory dst ptr.size end
 memory src ptr.size end
 
-function main -> :
+function main :
   1337 src int.store          // Store 1337 to src
   9001 dst int.store          // Store 9001 to dst
   src int.load dst int.store  // Copy the value from src to dst
@@ -110,11 +110,16 @@ Functions are defined using FUNCTION keyword. Functions are pieces of code that 
 
 Functions do not take parameters but instead use the current stack. The required topmost items in the stack before and after the function execution are defined in the function declaration (**argument_types** and **return_types** in the following [Function syntax](#function-syntax) section). Compiler verifies at compile time if the topmost types in the stack would match with the function signature before and after its execution. If there is more items in the return types than argument types then the compiler will assume that there should be more elements in the stack after the execution than before calling the function and vice versa.
 
+If the function does not return anything it can be declared without the `->` token (See [Function syntax](#function-syntax)).
+
 ### Function syntax
 
 ```pascal
 // Different tokens or words can be on different lines
-FUNCION <name> <argument_types> -> <return_types> : <function_body> END
+FUNCTION <name> <argument_types> -> <return_types> : <function_body> END
+
+// Functions without return types can be defined without the '->' token
+FUNCTION <name> <argument_types> : <function_body> END
 ```
 
 ### Examples
@@ -131,8 +136,8 @@ function is_adult str int int -> bool :
   endif puts // Prints
 end
 
-function main -> :
-  42 "Teemu" is_adult
+function main :
+  42 "CyberPaddy" is_adult
   "Return value: " puts print "\n" puts // Output: 40
 end
 ```
@@ -149,7 +154,7 @@ function MultiplyByFour
     multiply_by_two
 end
 
-function main -> :
+function main :
   5 multiply_by_two MultiplyByFour print "\n" puts // Output: 40
 end
 ```

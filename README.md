@@ -23,7 +23,7 @@ Torth is planned to be
 
 ```pascal
 $ cat hello.torth
-function main -> : "Hello, World!\n" puts end
+function main : "Hello, World!\n" puts end
 $ ./torth.py --run hello.torth
 Hello, World!
 $ ./torth.py --help
@@ -50,7 +50,7 @@ More examples are found from the [examples](./examples/)-folder.
 ### Hello World
 
 ```pascal
-function Main -> :
+function Main :
     "Hello, World!\n" puts
 end
 ```
@@ -86,7 +86,7 @@ function FizzBuzz int -> int :
     DONE drop swap drop // Drop the counter and limit from the stack
 end
 
-function Main -> :
+function Main :
     30  // limit
     FizzBuzz
 

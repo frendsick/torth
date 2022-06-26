@@ -49,7 +49,7 @@ function highly_divisible_triangular_number -> int :
   done get_triangle_number
 end
 
-function main -> :
+function main :
   highly_divisible_triangular_number
   "The first triangular number to have over " puts
   DIVISORS_CAP print " divisors: " puts print "\n" puts

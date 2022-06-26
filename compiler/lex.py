@@ -112,6 +112,12 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
                 next(function_parts)
                 next(function_parts)
             current_part = next(function_parts)
+
+        # Enable defining functions that do not return anything without the -> token:
+        # FUNCTION <name> <param_types> : <function_body> END
+        elif current_part == 2 and token_value == ':':
+            current_part = next(function_parts)
+            current_part = next(function_parts)
         elif current_part == 2:
             param_types.append(SIGNATURE_MAP[token_value.upper()])
         elif current_part == 3:

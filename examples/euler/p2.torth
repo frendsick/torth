@@ -23,7 +23,7 @@ function sum_of_even_fibonacci int -> int :
   drop2
 end
 
-function main -> :
+function main :
   4000000 // Limit
   "Sum of even fibonacci numbers under " puts dup print ": " puts
   sum_of_even_fibonacci print "\n" puts // Answer: 4613732

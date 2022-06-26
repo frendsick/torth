@@ -23,7 +23,7 @@ function lower_without_alphanumerics str -> str :
 end
 
 // Params: non-alpanumeric_string, original_str
-function output_is_palindrome str str -> :
+function output_is_palindrome str str :
   "'" puts swap puts
   if str.is_palindrome do
     "' is palindrome\n"
@@ -32,11 +32,11 @@ function output_is_palindrome str str -> :
   endif puts
 end
 
-function valid_palindrome str -> :
+function valid_palindrome str :
   dup lower_without_alphanumerics output_is_palindrome
 end
 
-function main -> :
+function main :
   "A man, a plan, a canal: Panama" valid_palindrome
   "race a car" valid_palindrome
   " " valid_palindrome

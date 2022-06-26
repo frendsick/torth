@@ -26,7 +26,7 @@ function FizzBuzz int -> int :
     DONE drop swap drop // Drop the counter and limit from the stack
 end
 
-function Main -> :
+function Main :
     30  // limit
     FizzBuzz
 

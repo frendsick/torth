@@ -1,6 +1,6 @@
 include "lib/std.torth"
 
-function print_help -> :
+function print_help :
   "Syntax: ./cat <file_name>\n" puts 1 exit
 end
 
@@ -16,6 +16,6 @@ function get_argv1 -> ptr :
 end
 
 // TODO: Outputting multiple files from multiple arguments 
-function main -> :
+function main :
   get_argv1 print_file drop
 end

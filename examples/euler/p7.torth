@@ -4,7 +4,7 @@ const   prime_limit     10001   end
 const   upper_boundary  114320  end
 memory  sieve upper_boundary    end
 
-function mark_multiples_to_sieve int -> :
+function mark_multiples_to_sieve int :
   dup dup * // prime*prime
 
   // for i in range(prime*prime, max_prime, prime)
@@ -34,7 +34,7 @@ function get_nth_prime int -> int :
   done drop
 end
 
-function Main -> :
+function Main :
   prime_limit get_nth_prime
   prime_limit print ". prime is: " puts print "\n" puts
 end

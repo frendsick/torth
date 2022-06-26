@@ -85,11 +85,11 @@ function execve str ptr ptr -> int : SYS_execve syscall3 end
 
 // Exit from the program with a <status> code
 // Params: int status
-function exit int -> : SYS_exit syscall1 drop end
+function exit int : SYS_exit syscall1 drop end
 
 // Print a string to a file descriptor
 // Params: int fd, char *buf
-function fputs int str -> : swap dup str.len swap rot write drop end
+function fputs int str : swap dup str.len swap rot write drop end
 
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
@@ -110,10 +110,10 @@ function malloc int -> ptr :
 end
 
 // Print a string to stdout
-function puts  str -> : stdout fputs end
+function puts  str : stdout fputs end
 
 // Print a string to stderr
-function eputs str -> : stderr fputs end
+function eputs str : stderr fputs end
 
 // Ptr functions
 function ptr+       int ptr -> ptr : swap int + ptr end
@@ -201,7 +201,7 @@ function uint8.load   ptr       -> uint8  : LOAD_UINT8  end
 function uint8.store  ptr uint8 ->        : STORE_UINT8 end
 
 // Increment pointed value
-function int++ ptr -> : dup int.load 1 + int.store end
+function int++ ptr : dup int.load 1 + int.store end
 
 // Get the amount of digits in an integer
 // Params: number
@@ -276,7 +276,7 @@ end
 
 // Append a character to the end of a string buffer
 // Params: string, character
-function str.append str char -> : dup str.len ptr+ char.store end
+function str.append str char : dup str.len ptr+ char.store end
 
 // Get the character at a certain index of a string
 // Params: index, string
@@ -287,7 +287,7 @@ function str.char_at int str -> char : ptr+ char.load end
 function str.is_palindrome str -> bool : dup str.reverse streq end
 
 // Overwrite a string with NULL-bytes
-function str.empty str -> :
+function str.empty str :
   0 while dup2 ptr+ char.load NULL != do
     dup2 ptr+ NULL char swap char.store
     1 +
@@ -391,7 +391,7 @@ end
 
 // Create a file
 // Params: const char *pathname, mode_t mode
-function touch_file str int -> :
+function touch_file str int :
   SYS_creat syscall2
 end
 

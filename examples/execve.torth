@@ -1,13 +1,13 @@
 include "lib/std.torth"
 memory execve_argv ptr.size end
-function sleep -> :
+function sleep :
   // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
   "sleep" execve_argv str.store
   "0.01" execve_argv ptr.size ptr+ str.store
   envp execve_argv "/usr/bin/sleep" execve drop
 end
 
-function main -> :
+function main :
   SYS_fork SYSCALL0
   
   if dup 0 == do

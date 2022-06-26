@@ -6,7 +6,7 @@ const   max_prime 2000000   end
 memory  sieve     max_prime end
 memory  prime_sum int.size  end
 
-function mark_multiples_to_sieve int -> :
+function mark_multiples_to_sieve int :
   dup dup * // prime*prime
 
   // for i in range(prime*prime, max_prime, prime)
@@ -18,7 +18,7 @@ function mark_multiples_to_sieve int -> :
 end
 
 // Params: prime
-function add_prime int -> :
+function add_prime int :
   // sum += prime
   prime_sum int.load +
   prime_sum int.store
@@ -40,7 +40,7 @@ function summation_of_primes int -> int :
   prime_sum int.load
 end
 
-function Main -> :
+function Main :
   max_prime summation_of_primes
   "The sum of primes below " puts max_prime print ": " puts print "\n" puts
 end

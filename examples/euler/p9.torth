@@ -32,7 +32,7 @@ function product_of_pythagorean_triplet int -> int :
   done drop
 end
 
-function main -> :
+function main :
   1000 // n
   product_of_pythagorean_triplet
 

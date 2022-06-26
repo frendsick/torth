@@ -1,5 +1,5 @@
 include "lib/std.torth"
-function Main -> :
+function Main :
     "WHILE loop:\n" puts                // puts("WHILE loop");
     1                                   // i = 1;
     WHILE dup 100 >= DO                 // while (100 >= i) {
