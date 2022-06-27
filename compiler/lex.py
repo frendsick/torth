@@ -182,6 +182,12 @@ def get_memory_size(token_value: str, constants: List[Constant]) -> int:
             return constant.value
 
     # Test if token is an integer
+    if token_value.startswith('0x'):
+        try:
+            return int(token_value, 16)
+        except ValueError:
+            compiler_error("VALUE_ERROR", "Token beginning with '0x' should be a hexadecimal number.\n" + \
+                f"Value '{token_value}' is not a valid hexadecimal number.")
     try:
         return int(token_value)
     except ValueError:
