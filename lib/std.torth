@@ -202,8 +202,9 @@ function int.store    ptr int   ->        : STORE_INT   end
 function uint8.load   ptr       -> uint8  : LOAD_UINT8  end
 function uint8.store  ptr uint8 ->        : STORE_UINT8 end
 
-// Increment pointed value
-function int++ ptr : dup int.load 1 + int.store end
+// Increment/decrement pointed value
+function int++ ptr : dup int.load 1 + swap int.store end
+function int-- ptr : dup int.load 1 - swap int.store end
 
 // Get the amount of digits in an integer
 // Params: number
