@@ -334,7 +334,9 @@ def get_do_asm(op: Op, program: Program) -> str:
             parent_op_count -= 1
 
     if not op_asm:
-        compiler_error("UNKNOWN_ERROR", "Unknown error occurred while generating assembly for DO keyword.", op.token)
+        block_type: str = 'WHILE' if parent_op_type == OpType.WHILE else 'IF'
+        block_end: str  = 'DONE'  if parent_op_type == OpType.WHILE else 'ENDIF'
+        compiler_error("UNCLOSED_BLOCK", f"The current {block_type} block is missing {block_end} keyword.", op.token)
     return op_asm
 
 def get_break_asm(op: Op, program: Program) -> str:
