@@ -357,7 +357,11 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
     Branch blocks (IF, WHILE) begin with DO and end with DONE, ELIF, ELSE or ENDIF
     """
     stack_after_branch = branched_stacks.pop()
-    before_types: List[TokenType] = branched_stacks[-1].get_types()
+    try:
+        before_types: List[TokenType] = branched_stacks[-1].get_types()
+    except IndexError:
+        block_type: str = 'IF' if token.value.upper() == 'ENDIF' else 'WHILE'
+        compiler_error("SYNTAX_ERROR", f"{token.value.upper()} token found outside {block_type} block.", token)
     after_types:  List[TokenType] = stack_after_branch.get_types()
 
     # Check if stack states are different between sections inside IF block
