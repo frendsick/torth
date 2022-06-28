@@ -2,31 +2,51 @@
 The module implements lexing functions that parses Tokens from code files
 """
 import itertools
+import os
 import re
 from typing import List, Optional
-from compiler.defs import Constant, Function, Keyword, Location, Memory
+from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
 
 def get_included_files(code: str, compiler_directory: str):
     """Parse included files from a code string. Return the list of files."""
     INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', flags=re.MULTILINE | re.IGNORECASE)
-    included_files: List[str] = [f'{compiler_directory}/{file}' for file in INCLUDE_REGEX.findall(code)]
-    for file in included_files:
-        included_code: str = get_file_contents(file)
+    included_files: List[str] = []
+    for index, f in enumerate(INCLUDE_REGEX.findall(code)):
+        if os.path.exists(f):
+            included_files.append(f)
+        else:
+            included_file_with_path = include_file_from_path(f, compiler_directory, included_files)
+        # Import failed if no file path was appended to included_files
+        if len(included_files) <= index:
+            compiler_error("INCLUDE_ERROR", f"File matching '{included_file_with_path}' does not exist.")
+
+    for f in included_files:
+        included_code: str = get_file_contents(f)
         included_files += get_included_files(included_code, compiler_directory)
+    return included_files
+
+def include_file_from_path(file_name: str, compiler_directory: str, included_files: List[str]) -> List[str]:
+    """Include file from INCLUDE_PATHS"""
+    for path in INCLUDE_PATHS:
+        included_file_with_path: str = f'{compiler_directory}/{path}/{file_name}'
+        if os.path.exists(included_file_with_path):
+            included_files.append(included_file_with_path)
+        elif os.path.exists(f'{included_file_with_path}.torth'):
+            included_files.append(f'{included_file_with_path}.torth')
     return included_files
 
 def get_functions_from_files(file_name: str, included_files: List[str]) -> List[Function]:
     """Parse declared functions from code file and included files. Return list of Function objects."""
     functions: List[Function] = []
     included_files.append(file_name)
-    for file in included_files:
-        included_code: str = get_file_contents(file)
+    for f in included_files:
+        included_code: str = get_file_contents(f)
         token_matches: list = get_token_matches(included_code)
         # Newlines are used to determine when a comment ends and when new line starts
         newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
-        functions += get_functions(file, token_matches, newline_indexes)
+        functions += get_functions(f, token_matches, newline_indexes)
     return functions
 
 def get_tokens_from_functions(functions: List[Function], file: str) -> List[Token]:
@@ -132,11 +152,11 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
 def get_memories_from_code(included_files: List[str], constants: List[Constant]) -> List[Memory]:
     """Parse Memory objects from code file and included files. Return list of Memory objects."""
     memories: List[Memory] = []
-    for file in included_files:
-        included_code: str = get_file_contents(file)
+    for f in included_files:
+        included_code: str = get_file_contents(f)
         token_matches: list = get_token_matches(included_code)
         newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
-        memories += get_memories(file, token_matches, newline_indexes, constants)
+        memories += get_memories(f, token_matches, newline_indexes, constants)
     return memories
 
 def get_memories(file: str, token_matches: list, newline_indexes: List[int], constants: List[Constant]) -> List[Memory]:
