@@ -35,3 +35,17 @@ The following types count as pointer-like types whenever an intrinsic requires t
 Note: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast an pointer-like type to another pointer-like type by using the type as token. Also, you can cast some integer-like types to [PTR](types.md#ptr---pointer). For example, if you want to cast a value to PTR, use `ptr` keyword.
 
 See also: [Casting](keywords.md#casting)
+
+## PATH
+
+PATH defines relative directories compared to the compiler file [torth.py](../torth.py) from which additional files can be included to the code with [INCLUDE](keywords.md#include) keyword. The files at the same directory as the compiler will always take precedence over any files from PATH.
+
+Default directories in PATH:
+
+```python
+PATH = [
+  'lib'
+]
+```
+
+When including a file, the first matching file in PATH will be included. Additional directories can added to PATH with the `--path` command line argument to [torth.py](../torth.py). It is a comma separated list of directories that are added to PATH. Directories defined in the command line argument take precedence over the default PATH directories.

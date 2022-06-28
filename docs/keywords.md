@@ -186,14 +186,7 @@ IF is just a keyword which starts an [IF block](control_flow.md#if-blocks). IF-b
 
 ## INCLUDE
 
-With INCLUDE keyword you can include code from another files. The INCLUDE statement consists of the keyword INCLUDE and the file to be imported in double quotes ("). The file name should be either its absolute file path or the relative path compared to the compiler file [torth.py](../torth.py) appended with any of the entries in PATH as parent directory (see below).
-
-```python
-PATH = [
-  '.',  # The directory of torth.py
-  'lib'
-]
-```
+With INCLUDE keyword you can include code from another files. The INCLUDE statement consists of the keyword INCLUDE and the file to be imported in double quotes ("). The file name should be either its absolute file path or the relative path compared to the compiler file [torth.py](../torth.py). The file can also refer to a relative path from compiler file with any of the entries in [PATH](definitions.md#path) as the parent directory.
 
 ### Syntax
 

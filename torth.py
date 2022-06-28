@@ -16,7 +16,7 @@ def main():
     args: argparse.Namespace    = get_command_line_arguments()
     code: str                   = get_file_contents(args.code_file)
     compiler_directory: str     = os.path.dirname(os.path.abspath(__file__))
-    included_files: List[str]   = get_included_files(code, compiler_directory)
+    included_files: List[str]   = get_included_files(code, compiler_directory, args.path)
     functions: List[Function]   = get_functions_from_files(args.code_file, included_files)
     constants: List[Constant]   = get_constants_from_functions(functions)
     memories: List[Memory]      = get_memories_from_code(included_files, constants)

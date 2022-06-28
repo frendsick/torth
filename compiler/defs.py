@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, List, Optional, Tuple, Union
 
-INCLUDE_PATHS: List[str] = ['.', 'lib']
+INCLUDE_PATHS: List[str] = ['lib']
 
 COLORS: Dict[str, str] = {
     'FAIL'      : '\033[91m',

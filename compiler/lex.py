@@ -9,33 +9,44 @@ from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, 
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
 
-def get_included_files(code: str, compiler_directory: str):
+def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Optional[str]):
     """Parse included files from a code string. Return the list of files."""
     INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', flags=re.MULTILINE | re.IGNORECASE)
     included_files: List[str] = []
-    for index, f in enumerate(INCLUDE_REGEX.findall(code)):
-        if os.path.exists(f):
-            included_files.append(f)
+    for file_name in INCLUDE_REGEX.findall(code):
+        # Append .torth file extension if it is not present
+        if '.torth' not in file_name:
+            file_name = f'{file_name}.torth'
+        if os.path.isfile(file_name):
+            included_files.append(file_name)
         else:
-            included_file_with_path = include_file_from_path(f, compiler_directory, included_files)
-        # Import failed if no file path was appended to included_files
-        if len(included_files) <= index:
-            compiler_error("INCLUDE_ERROR", f"File matching '{included_file_with_path}' does not exist.")
+            included_files.append(
+                get_file_name_from_path(file_name, compiler_directory, extra_path_dirs)
+            )
 
-    for f in included_files:
-        included_code: str = get_file_contents(f)
-        included_files += get_included_files(included_code, compiler_directory)
+    for included_file in included_files:
+        included_code: str = get_file_contents(included_file)
+        included_files += get_included_files(included_code, compiler_directory, extra_path_dirs)
     return included_files
 
-def include_file_from_path(file_name: str, compiler_directory: str, included_files: List[str]) -> List[str]:
+def get_file_name_from_path(file_name: str, compiler_directory: str, extra_path_dirs: Optional[str]) -> str:
     """Include file from INCLUDE_PATHS"""
-    for path in INCLUDE_PATHS:
+    included_file_path: str = ''
+    paths: List[str] = INCLUDE_PATHS
+    # Add comma separated directory list from --path argument to the front of PATH
+    if extra_path_dirs:
+        paths = extra_path_dirs.split(',') + paths
+
+    # Get the first matching file path from PATH
+    for path in paths:
         included_file_with_path: str = f'{compiler_directory}/{path}/{file_name}'
-        if os.path.exists(included_file_with_path):
-            included_files.append(included_file_with_path)
-        elif os.path.exists(f'{included_file_with_path}.torth'):
-            included_files.append(f'{included_file_with_path}.torth')
-    return included_files
+        if os.path.isfile(included_file_with_path):
+            included_file_path = included_file_with_path
+            break
+
+    if not included_file_path:
+        compiler_error("INCLUDE_ERROR", f"File matching '{included_file_path}' does not exist in PATH.\nPATH: {paths}")
+    return included_file_path
 
 def get_functions_from_files(file_name: str, included_files: List[str]) -> List[Function]:
     """Parse declared functions from code file and included files. Return list of Function objects."""
