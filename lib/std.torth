@@ -2,9 +2,9 @@
 // A collection of common functions
 
 // Include libraries
-include "lib/errno.torth"
-include "lib/sys.torth"
-include "lib/math.torth"
+include "errno"
+include "math"
+include "sys"
 
 // Common constants
 const NULL 0 end
