@@ -54,7 +54,7 @@ CONST <name> <integer> END
 ### Examples
 
 ```pascal
-include "lib/std.torth"
+include "std"
 const ptr.size 8 end
 memory dst ptr.size end
 memory src ptr.size end
@@ -234,7 +234,7 @@ MEMORY <name> <size> END
 ### Examples
 
 ```pascal
-include "lib/std.torth"
+include "std"
 memory leet int.size end  // int.size = 8
 memory feet ptr.size end  // ptr.size = 8
 function main -> :

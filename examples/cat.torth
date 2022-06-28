@@ -1,4 +1,4 @@
-include "lib/std.torth"
+include "std"
 
 // Print the help and exit if no arguments were given
 function check_arguments :

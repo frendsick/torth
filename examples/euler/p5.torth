@@ -1,4 +1,4 @@
-include "lib/std.torth"
+include "std"
 // For each prime factor, find where it occurs most often as a factor and write it that many times in a new list.
 // 2 => 16  = 2⁴
 // 3 => 9   = 3²

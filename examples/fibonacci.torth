@@ -1,4 +1,4 @@
-include "lib/std.torth"
+include "std"
 function Fib int -> int :
   0   // Previous
   1   // Current

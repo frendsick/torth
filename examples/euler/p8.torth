@@ -1,7 +1,7 @@
 // Project Euler Problem 8: Largest product in a series
 // Find the thirteen adjacent digits in the 1000-digit number that have the greatest product.
 // What is the value of this product?
-include "lib/std.torth"
+include "std"
 memory current_series   str.size end
 memory series_length    int.size end
 memory largest_product  int.size end

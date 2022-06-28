@@ -1,4 +1,4 @@
-include "lib/std.torth"
+include "std"
 
 const DIVISORS_CAP 100 end
 memory number_of_divisors int.size end

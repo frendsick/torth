@@ -1,4 +1,4 @@
-include "lib/std.torth"
+include "std"
 function OutputRow str int -> int :
     puts dup print "\n" puts
 end

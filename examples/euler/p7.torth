@@ -1,5 +1,5 @@
 // Problem 7: 10001st prime
-include "lib/std.torth"
+include "std"
 const   prime_limit     10001   end
 const   upper_boundary  114320  end
 memory  sieve upper_boundary    end

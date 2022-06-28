@@ -1,4 +1,4 @@
-include "lib/std.torth"
+include "std"
 function get_largest_palindrome_product -> int :
   100 while dup 999 >= do
     100 while dup 999 >= do

@@ -1,4 +1,4 @@
-include "lib/std.torth"
+include "std"
 const RULES_COUNT 8 end
 const BOARD_SIZE 40 end
 

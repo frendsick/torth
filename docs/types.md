@@ -20,7 +20,7 @@ Boolean values are True and False. The boolean words are case insensitive.
 Characters are defined with single quotes. They are pushed to stack as the integer representation of the character. Thus, character can be cast to any integer type. To print the characted it should be stored to a named [memory](keywords.md#memory) location like in the examble below.
 
 ```pascal
-include "lib/std.torth"
+include "std"
 memory char_array str.size end
 function main -> :
   // char char_array[] = "abc";

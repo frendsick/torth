@@ -1,4 +1,4 @@
-include "lib/std.torth"
+include "std"
 memory execve_argv ptr.size end
 function sleep :
   // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)

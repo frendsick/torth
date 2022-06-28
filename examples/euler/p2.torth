@@ -1,5 +1,5 @@
 // Project Euler Problem 2: Even Fibonacci numbers
-include "lib/std.torth"
+include "std"
 function sum_current_with_previous int int -> int int :
   dup rot +
 end

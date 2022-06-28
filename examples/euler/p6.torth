@@ -1,5 +1,5 @@
 // Problem 6: Sum square difference
-include "lib/std.torth"
+include "std"
 
 function sum_of_squares int -> int int :
   0     // Squares total

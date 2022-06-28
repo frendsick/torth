@@ -1,5 +1,5 @@
 // https://leetcode.com/problems/valid-palindrome/
-include "lib/std.torth"
+include "std"
 
 memory non_alphanumeric_string MEMORY_CAPACITY end
 function lower_without_alphanumerics str -> str :
