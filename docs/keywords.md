@@ -14,6 +14,7 @@ This is the documentation for different keywords available in the Torth language
 - [ENDIF](#ENDIF)
 - [FUNCTION](#FUNCTION)
 - [IF](#IF)
+- [INCLUDE](#INCLUDE)
 - [INT](#Casting)
 - [MEMORY](#MEMORY)
 - [PTR](#Casting)
@@ -182,6 +183,42 @@ end
 ## IF
 
 IF is just a keyword which starts an [IF block](control_flow.md#if-blocks). IF-block ends to [ENDIF](#ENDIF).
+
+## INCLUDE
+
+With INCLUDE keyword you can include code from another files. The INCLUDE statement consists of the keyword INCLUDE and the file to be imported in double quotes ("). The file name should be either its absolute file path or the relative path compared to the compiler file [torth.py](../torth.py) appended with any of the entries in PATH as parent directory (see below).
+
+```python
+PATH = [
+  '.',  # The directory of torth.py
+  'lib'
+]
+```
+
+### Syntax
+
+```pascal
+// The whole statement has to be in one line
+INCLUDE "<file>"
+```
+
+### Limitations
+
+There are some limitations in using INCLUDE statements:
+
+- Statement MUST be outside a function
+- Statement MUST be in one line
+
+### Examples
+
+```pascal
+// Different styles of including the std-library
+INCLUDE "std"
+INCLUDE "std.torth"
+INCLUDE "lib/std"
+INCLUDE "lib/std.torth"
+INCLUDE "path/to/torth/lib/std.torth"
+```
 
 ## MEMORY
 
