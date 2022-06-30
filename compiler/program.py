@@ -295,7 +295,7 @@ def type_check_function_call(op: Op, type_stack: TypeStack, \
     temp_stack = copy.deepcopy(type_stack)
     for param_type in param_types:
         if not temp_stack.head:
-            compiler_error("FUNCTION_CALL_TYPE_ERROR", \
+            compiler_error("FUNCTION_SIGNATURE_ERROR", \
                 f"Function '{op.func.name}' requires more values to the stack.\n\n" + \
                 f"Expected parameter types: {param_types}\nStack: {type_stack.repr()}", op.token)
         top_type: TokenType = temp_stack.pop().value  # type: ignore
@@ -306,7 +306,7 @@ def type_check_function_call(op: Op, type_stack: TypeStack, \
             continue
         # Check all other types
         if param_type not in [top_type, TokenType.ANY]:
-            compiler_error("FUNCTION_CALL_TYPE_ERROR", \
+            compiler_error("FUNCTION_SIGNATURE_ERROR", \
                 f"Function '{op.func.name}' has wrong parameter types in the stack.\n\n" + \
                 f"Expected parameter types: {param_types}\nStack: {type_stack.repr()}", op.token)
     return temp_stack.get_types()
@@ -318,8 +318,8 @@ def type_check_function_return(op: Op, function_signature: Signature, \
     temp_stack = copy.deepcopy(type_stack)
     for return_type in return_types:
         if not temp_stack.head:
-            compiler_error("FUNCTION_RETURN_TYPE_ERROR", \
-                f"Function '{op.func.name}' requires more values to the stack.\n\n" + \
+            compiler_error("FUNCTION_SIGNATURE_ERROR", \
+                f"Function '{op.func.name}' requires more values in the stack when function returns.\n\n" + \
                 f"Expected return types: {return_types}\nStack:\n{type_stack.repr()}", op.token)
 
         # Check for any type and pointers
