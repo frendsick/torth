@@ -148,6 +148,7 @@ FUNCTION <name> <argument_types> : <function_body> END
 ### Examples
 
 ```pascal
+include "std"
 // Example with name and age as parameters, name is on top of the stack
 // Note: Strings pushes two items to the stack, it's length and pointer to the string buffer
 function is_adult str int int -> bool :
@@ -166,6 +167,7 @@ end
 ```
 
 ```pascal
+INCLUDE "std"
 FUNCTION multiply_by_two int -> int : 2 * END
 
 // Functions can be called from within another function
@@ -179,6 +181,15 @@ end
 
 function main :
   5 multiply_by_two MultiplyByFour print "\n" puts // Output: 40
+end
+```
+
+```pascal
+// Non-zero exit code example
+include "std"
+function main -> int :
+  42 dup
+  "This program will return with exit code " puts print "\n" puts
 end
 ```
 
