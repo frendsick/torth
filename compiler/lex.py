@@ -357,5 +357,6 @@ def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
                 constant: Constant = Constant(func.name, int(func.tokens[1].value), func.tokens[1].location)
                 constants.append(constant)
             except ValueError:
-                compiler_error("VALUE_ERROR", "Constant is not an integer.", func.tokens[1])
+                compiler_error("VALUE_ERROR", \
+                    f"Could not define Constant: '{func.tokens[1].value}' is not an integer.", func.tokens[1])
     return constants
