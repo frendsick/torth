@@ -277,12 +277,12 @@ def type_check_program(program: Program) -> None:
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
 
-    # The stack should be empty when the program ends.
+    # There should be one INT in the stack when the program ends.
     # Output the remaining elements in the stack.
-    if type_stack.head is not None:
-        compiler_error("UNHANDLED_DATA_IN_STACK", \
-            "The stack should empty after the program has been executed.\n\n" + \
-            f"Unhandled Token types:\n{type_stack.repr()}", token)
+    if type_stack.get_types() != [TokenType.INT]:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", \
+            "Only the integer return value of the program should be in the stack when program exits.\n\n" + \
+            f"Stack after the MAIN function:\n{type_stack.repr()}")
 
 def type_check_function_call(op: Op, type_stack: TypeStack, \
     original_function_stacks: List[TypeStack]) -> List[TokenType]:

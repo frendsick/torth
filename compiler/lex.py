@@ -74,6 +74,29 @@ def get_functions_from_files(file_name: str, included_files: List[str]) -> List[
         functions += get_functions(f, token_matches, newline_indexes)
     return functions
 
+def valid_main_function_signature(signature: Signature) -> bool:
+    """
+    Test if the MAIN Function has a valid Signature.
+    - There should not be any parameters
+    - The return type should either be empty or only one INT
+    """
+    param_types: List[TokenType]  = signature[0]
+    return_types: List[TokenType] = signature[1]
+    # MAIN function cannot take parameters
+    if param_types:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", "MAIN function cannot take parameters.")
+    # MAIN function can either return nothing or one integer as the program's return value
+    if len(return_types) > 1:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", \
+            "Too many return values for MAIN function.\n" + \
+            "The MAIN function can either return nothing or the program's return value as INT.\n" + \
+            f"Given return types: {return_types}")
+    if return_types and return_types[0] != TokenType.INT:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", \
+            "The MAIN function can either return nothing or the program's return value as INT.\n" + \
+            f"Given return types: {return_types}")
+    return True
+
 def get_tokens_from_functions(functions: List[Function], file: str) -> List[Token]:
     """
     Check if a main function is present in code file and parse Tokens from Functions.
@@ -82,11 +105,22 @@ def get_tokens_from_functions(functions: List[Function], file: str) -> List[Toke
     """
     try:
         main_function: Function = [ func for func in functions if func.name.upper() == 'MAIN' ][0]
-        if not main_function.tokens:
-            return []
     except IndexError:
-        compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a main function")
-    return get_tokens_from_function(main_function, functions)
+        compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a MAIN function")
+
+    # Empty MAIN function
+    if not main_function.tokens:
+        if main_function.signature[1]:
+            compiler_error("FUNCTION_SIGNATURE_ERROR", "Empty MAIN function cannot return values.")
+        return []
+
+    if not valid_main_function_signature(main_function.signature):
+        compiler_error("FUNCTION_SIGNATURE_ERROR", "Could not validate Signature for MAIN function")
+
+    tokens: List[Token] = get_tokens_from_function(main_function, functions)
+    if not main_function.signature[1]:
+        tokens.append(Token('0', TokenType.INT, main_function.tokens[-1].location))
+    return tokens
 
 def get_tokens_from_function(parent_function: Function, functions: List[Function]) -> List[Token]:
     """Parse Tokens from a single Function object. Return a list of Token objects."""
@@ -128,6 +162,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
 
     for match in token_matches:
         token_value: str = match.group(0)
+        token: Token = get_token_from_match(match, file, newline_indexes)
         if token_value.upper() == 'CONST':
             is_const = True
             token_value = token_value.upper().replace('CONST', 'FUNCTION')
@@ -139,7 +174,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
             # Append Function and reset variables when function is fully lexed
             if token_value.upper() == 'END':
                 signature: Signature = (param_types, return_types)
-                tokens.append(Token(f'{name}_RETURN', TokenType.KEYWORD, tokens[-1].location))
+                tokens.append(Token(f'{name}_RETURN', TokenType.KEYWORD, token.location))
                 functions.append( Function(name, signature, tokens) )
                 name            = ''
                 param_types     = []
@@ -168,7 +203,6 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
         elif current_part == 3:
             return_types.append(SIGNATURE_MAP[token_value.upper()])
         elif current_part == 4:
-            token: Token = get_token_from_match(match, file, newline_indexes)
             if not tokens:
                 tokens.append(Token(f'{name}_CALL', TokenType.KEYWORD, token.location))
             tokens.append(token)
@@ -357,5 +391,6 @@ def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
                 constant: Constant = Constant(func.name, int(func.tokens[1].value), func.tokens[1].location)
                 constants.append(constant)
             except ValueError:
-                compiler_error("VALUE_ERROR", "Constant is not an integer.", func.tokens[1])
+                compiler_error("VALUE_ERROR", \
+                    f"Could not define Constant: '{func.tokens[1].value}' is not an integer.", func.tokens[1])
     return constants
