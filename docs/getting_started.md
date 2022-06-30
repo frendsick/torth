@@ -18,4 +18,4 @@ The requirements can probably be installed via your distro's package manager.
 
 ## Check examples
 
-The [examples](../examples/) folder contains some example programs that show how the language can be used. For example there is [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as some [Project Euler problems](../examples/euler/) implemented.
+The [examples](../examples/) folder contains some example programs that show how the language can be used. For example, there are [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as implementations of some [Project Euler problems](../examples/euler/).

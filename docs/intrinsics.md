@@ -187,4 +187,4 @@ SYSCALL-intrinsic variants call a Linux syscall. Syscalls require different amou
 1. Pop the top element and the required number of arguments from the stack
 2. Call the syscall which match the first popped element
 
-The different syscall constants can be found from lib/sys.torth. Naming convention (case sensitive): SYS\_<syscall>. For example **SYS_write**.
+The different syscall constants can be found from lib/sys.torth. Naming convention (case sensitive): SYS\_<syscall>. For example, **SYS_write**.
