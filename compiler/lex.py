@@ -74,6 +74,29 @@ def get_functions_from_files(file_name: str, included_files: List[str]) -> List[
         functions += get_functions(f, token_matches, newline_indexes)
     return functions
 
+def valid_main_function_signature(signature: Signature) -> bool:
+    """
+    Test if the MAIN Function has a valid Signature.
+    - There should not be any parameters
+    - The return type should either be empty or only one INT
+    """
+    param_types: List[TokenType]  = signature[0]
+    return_types: List[TokenType] = signature[1]
+    # MAIN function cannot take parameters
+    if param_types:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", "MAIN function cannot take parameters.")
+    # MAIN function can either return nothing or one integer as the program's return value
+    if len(return_types) > 1:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", \
+            "Too many return values for MAIN function.\n" + \
+            "The MAIN function can either return nothing or the program's return value as INT.\n" + \
+            f"Given return types: {return_types}")
+    if return_types and return_types[0] != TokenType.INT:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", \
+            "The MAIN function can either return nothing or the program's return value as INT.\n" + \
+            f"Given return types: {return_types}")
+    return True
+
 def get_tokens_from_functions(functions: List[Function], file: str) -> List[Token]:
     """
     Check if a main function is present in code file and parse Tokens from Functions.
@@ -82,10 +105,18 @@ def get_tokens_from_functions(functions: List[Function], file: str) -> List[Toke
     """
     try:
         main_function: Function = [ func for func in functions if func.name.upper() == 'MAIN' ][0]
-        if not main_function.tokens:
-            return []
     except IndexError:
-        compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a main function")
+        compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a MAIN function")
+
+    # Empty MAIN function
+    if not main_function.tokens:
+        if main_function.signature[1]:
+            compiler_error("FUNCTION_SIGNATURE_ERROR", "Empty MAIN function cannot return values.")
+        return []
+
+    if not valid_main_function_signature(main_function.signature):
+        compiler_error("FUNCTION_SIGNATURE_ERROR", "Could not validate Signature for MAIN function")
+
     return get_tokens_from_function(main_function, functions)
 
 def get_tokens_from_function(parent_function: Function, functions: List[Function]) -> List[Token]:
