@@ -250,15 +250,16 @@ def get_op_asm(op: Op, program: Program) -> str:
 
 def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     """Generate assembly comment for the Op. Return the comment string."""
+    # Function calls and returns should not generate any output
+    op_name: str    = op_type.name
+    if op_name in {"FUNCTION_CALL", "FUNCTION_RETURN"}:
+        return ''
+
     src_file: str   = op.token.location[0]
     row: int        = op.token.location[1]
     col: int        = op.token.location[2]
-    op_name: str    = op_type.name
     if op_name == "INTRINSIC":
         op_name = f'{op_name} {op.token.value}'
-    elif op_name in {"FUNCTION_CALL", "FUNCTION_RETURN"}:
-        function_name: str = op.token.value.replace('_CALL', '').replace('_RETURN', '')
-        op_name = f'{op_name} {function_name}'
     return get_token_info_comment_asm(op_name, src_file, row, col, function_name=op.func.name)
 
 def get_token_info_comment_asm(name: str, file: str, row: int, col: int, function_name: Optional[str] = None) -> str:
