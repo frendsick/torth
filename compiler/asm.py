@@ -61,7 +61,6 @@ def get_asm_file_start(constants: List[Constant]) -> str:
     return f'''default rel
 
 ;; DEFINES
-%define success 0
 %define sys_exit 60
 {const_defines}
 section .data
@@ -71,7 +70,7 @@ def get_asm_file_end() -> str:
     """Returns the contents of the beginning of the generated assembly file"""
     return ''';; -- exit syscall
   mov rax, sys_exit
-  mov rdi, success
+  pop rdi
   syscall'''
 
 def get_memory_definitions_asm(memories: List[Memory]) -> str:
