@@ -1,7 +1,7 @@
 """
 Functions used for generating assembly code from Torth code
 """
-from typing import Dict, List
+from typing import Dict, List, Optional
 from compiler.defs import Constant, Memory, OpType, Op, Program, Token, TokenType
 from compiler.utils import compiler_error, get_parent_op_type_do, get_parent_while
 from compiler.utils import get_end_op_for_while
@@ -259,10 +259,12 @@ def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     elif op_name in {"FUNCTION_CALL", "FUNCTION_RETURN"}:
         function_name: str = op.token.value.replace('_CALL', '').replace('_RETURN', '')
         op_name = f'{op_name} {function_name}'
-    return get_token_info_comment_asm(op_name, src_file, row, col)
+    return get_token_info_comment_asm(op_name, src_file, row, col, function_name=op.func.name)
 
-def get_token_info_comment_asm(name: str, file: str, row: int, col: int) -> str:
+def get_token_info_comment_asm(name: str, file: str, row: int, col: int, function_name: Optional[str] = None) -> str:
     """Return formatted informative string for the current Op"""
+    if function_name:
+        return f';; [{function_name}] {name} | File: {file}, Row: {row}, Col: {col}' + '\n'
     return f';; -- {name} | File: {file}, Row: {row}, Col: {col}' + '\n'
 
 def get_comparison_asm(cmov_operand: str) -> str:
