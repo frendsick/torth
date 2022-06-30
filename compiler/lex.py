@@ -15,15 +15,31 @@ def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Opti
     included_files: List[str] = []
     for file_name in INCLUDE_REGEX.findall(code):
         # Append .torth file extension if it is not present
-        if '.torth' not in file_name:
+        # and the file does not exist as is
+        if '.torth' not in file_name \
+        and not os.path.isfile(file_name) \
+        and not os.path.isfile(f'{compiler_directory}/{file_name}') \
+        and not get_file_name_from_path(file_name, compiler_directory, extra_path_dirs):
             file_name = f'{file_name}.torth'
+
+        # Absolute path
         if os.path.isfile(file_name):
             included_files.append(file_name)
+        # Relative path from compiler
+        elif os.path.isfile(f'{compiler_directory}/{file_name}'):
+            included_files.append(f'{compiler_directory}/{file_name}')
+            continue
+        # Relative path from compiler including directories in PATH
         else:
-            included_files.append(
+            included_file_path: str = \
                 get_file_name_from_path(file_name, compiler_directory, extra_path_dirs)
-            )
 
+            if not included_file_path:
+                compiler_error("INCLUDE_ERROR", \
+                    f"File matching '{file_name}' does not exist in PATH.\nPATH: {INCLUDE_PATHS}")
+            included_files.append(included_file_path)
+
+    # Get the inclusions recursively from the included files
     for included_file in included_files:
         included_code: str = get_file_contents(included_file)
         included_files += get_included_files(included_code, compiler_directory, extra_path_dirs)
@@ -44,8 +60,6 @@ def get_file_name_from_path(file_name: str, compiler_directory: str, extra_path_
             included_file_path = included_file_with_path
             break
 
-    if not included_file_path:
-        compiler_error("INCLUDE_ERROR", f"File matching '{included_file_path}' does not exist in PATH.\nPATH: {paths}")
     return included_file_path
 
 def get_functions_from_files(file_name: str, included_files: List[str]) -> List[Function]:
