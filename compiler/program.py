@@ -1,9 +1,9 @@
 """
 Functions for compile-time type checking and running the Torth program
 """
-import copy
 import re
 import sys
+from copy import copy
 from typing import List, NoReturn, Optional
 from compiler.defs import COLORS, Function, Intrinsic, Memory, Op, OpType, Program, Signature
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
@@ -155,7 +155,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.ELIF:
             # Save the state of the stack after the first part of the IF block
             if not if_block_return_stack.head:
-                if_block_return_stack = copy.deepcopy(type_stack)
+                if_block_return_stack = copy(type_stack)
 
             branched_stacks = type_check_end_of_branch(token, branched_stacks, \
                 if_block_return_stack=if_block_return_stack)
@@ -164,7 +164,7 @@ def type_check_program(program: Program) -> None:
 
             # Save the state of the stack after the first part of the IF block
             if not if_block_return_stack.head:
-                if_block_return_stack = copy.deepcopy(type_stack)
+                if_block_return_stack = copy(type_stack)
 
             branched_stacks = type_check_end_of_branch(token, branched_stacks, \
                 if_block_return_stack=if_block_return_stack)
@@ -197,7 +197,7 @@ def type_check_program(program: Program) -> None:
         elif op.type == OpType.FUNCTION_RETURN:
             type_check_function_return(op, op.func.signature, type_stack, original_function_stacks.pop())
         elif op.type == OpType.IF:
-            if_block_original_stacks.append(copy.deepcopy(type_stack))
+            if_block_original_stacks.append(copy(type_stack))
         elif op.type == OpType.PUSH_BOOL:
             branched_stacks[-1] = type_check_push_bool(token, type_stack)
         elif op.type == OpType.PUSH_CHAR:
@@ -291,8 +291,8 @@ def type_check_function_call(op: Op, type_stack: TypeStack, \
     Returns the types in stack when the parameters are popped out.
     """
     param_types: List[TokenType] = op.func.signature[0]
-    original_function_stacks.append(copy.deepcopy(type_stack))
-    temp_stack = copy.deepcopy(type_stack)
+    original_function_stacks.append(copy(type_stack))
+    temp_stack = copy(type_stack)
     for param_type in param_types:
         if not temp_stack.head:
             compiler_error("FUNCTION_SIGNATURE_ERROR", \
@@ -315,7 +315,7 @@ def type_check_function_return(op: Op, function_signature: Signature, \
     type_stack: TypeStack, function_call_stack: TypeStack) -> None:
     """Type check the function return types"""
     return_types: List[TokenType] = function_signature[1]
-    temp_stack = copy.deepcopy(type_stack)
+    temp_stack = copy(type_stack)
     for return_type in return_types:
         if not temp_stack.head:
             compiler_error("FUNCTION_SIGNATURE_ERROR", \
@@ -336,7 +336,7 @@ def type_check_function_return(op: Op, function_signature: Signature, \
     # Check if the function consumes the correct amount of values from the stack
     stack_difference: int = len(function_signature[0]) - len(return_types)
     if stack_difference != len(function_call_stack.get_types()) - len(type_stack.get_types()):
-        expected_types: TypeStack = copy.deepcopy(type_stack)
+        expected_types: TypeStack = copy(type_stack)
         for _ in return_types:
             expected_types.pop()
         compiler_error("FUNCTION_SIGNATURE_MISMATCH", \
@@ -462,7 +462,7 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
         compiler_error("VALUE_ERROR", "DO requires a boolean.\n\n" + \
             f"Popped types:\n{t.value} {t.location}", token)
 
-    type_stack = copy.deepcopy(type_stack)
+    type_stack = copy(type_stack)
     branched_stacks.append(type_stack)
     return type_stack
 
