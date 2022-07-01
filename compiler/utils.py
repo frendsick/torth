@@ -50,6 +50,7 @@ def compiler_error(error_type: str, error_message: str, token: Optional[Token] =
     sys.exit(1)
 
 def print_if_verbose(message: str, is_verbose: bool) -> None:
+    """Print message if --verbose compiler argument is present"""
     if is_verbose:
         print(f"[{COLORS['HEADER']}VERBOSE{COLORS['NC']}] {message}")
 
