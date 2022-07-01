@@ -14,9 +14,9 @@ Torth is planned to be
 ## Documentation
 
 - [Getting started](./docs/getting_started.md)
-- [Types](./docs/types.md)
-- [Keywords](./docs/keywords.md)
 - [Intrinsics](./docs/intrinsics.md)
+- [Keywords](./docs/keywords.md)
+- [Types](./docs/types.md)
 - [Control flow statements](./docs/control_flow.md)
 
 ## Usage
