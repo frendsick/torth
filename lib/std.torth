@@ -333,6 +333,26 @@ function str.upper str -> str :
   done drop2
 end
 
+// Strip all non-alphanumeric characters from a string
+memory alphanumeric_string MEMORY_CAPACITY end
+function str.alphanumeric str -> str :
+  alphanumeric_string str.empty
+  0 while over str.len over < do
+    dup2 str.char_at dup
+
+    // Skip non-alphanumeric characters
+    if char.is_alphanumeric not do
+      drop 1 +
+      continue
+    endif
+
+    // Append lower case character to alphanumeric_string
+    alphanumeric_string str.append
+    1 +
+  done drop2
+  alphanumeric_string str
+end
+
 // Get an integer representation of a string
 function atoi str -> int :
   // Iterate the string character by character
