@@ -123,14 +123,14 @@ def get_tokens_from_functions(functions: List[Function], file: str) -> List[Toke
     return tokens
 
 def get_tokens_from_function(parent_function: Function, functions: List[Function]) -> List[Token]:
-    """Parse Tokens from a single Function object. Return a list of Token objects."""
+    """Parse Tokens recursively from every child Function of a single Function object."""
     tokens: List[Token] = parent_function.tokens
     i = 0
     while i < len(tokens):
         for func in functions:
-            child_function: Optional[Function] = func if tokens[i].value == func.name else None
-            if child_function:
-                tokens = tokens[:i] + get_tokens_from_function(child_function, functions) + tokens[i+1:]
+            child_found: bool = tokens[i].value == func.name
+            if child_found:
+                tokens = tokens[:i] + get_tokens_from_function(func, functions) + tokens[i+1:]
         i += 1
     return tokens
 
