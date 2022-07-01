@@ -1,20 +1,19 @@
 // https://leetcode.com/problems/valid-palindrome/
 include "std"
 
-// Params: non-alpanumeric_string, original_str
-function output_is_palindrome str str :
-  "'" puts swap puts
-  if str.is_palindrome do
-    "' is palindrome\n"
-  else
-    "' is not palindrome\n"
-  endif puts
-end
-
 function valid_palindrome str :
+  // Print the original string in 'single quotes'
+  "'" dup puts over puts puts
+
   // Generate a lowercase copy of the string with only alphanumeric characters
-  dup str.alphanumeric str.lower
-  output_is_palindrome
+  str.alphanumeric str.lower
+
+  // Print whether or not the string is palindrome
+  if str.is_palindrome do
+    " is palindrome\n"
+  else
+    " is not palindrome\n"
+  endif puts
 end
 
 function main :
