@@ -297,6 +297,42 @@ function str.empty str :
   done drop2
 end
 
+// Convert string to lowercase letters
+function str.lower str -> str :
+  dup str.len
+  0 // index
+  while dup2 < do
+    3 nth // str
+
+    // Get the character at the current index
+    over str.char_at
+
+    // Swap possible uppercase character with lowercase counterpart
+    char.lower
+    over 5 nth
+    swap ptr+ char.store
+    1 + // index++
+  done drop2
+end
+
+// Convert string to uppercase letters
+function str.upper str -> str :
+  dup str.len
+  0 // index
+  while dup2 < do
+    3 nth // str
+
+    // Get the character at the current index
+    over str.char_at
+
+    // Swap possible lowercase character with uppercase counterpart
+    char.upper
+    over 5 nth
+    swap ptr+ char.store
+    1 + // index++
+  done drop2
+end
+
 // Get an integer representation of a string
 function atoi str -> int :
   // Iterate the string character by character
