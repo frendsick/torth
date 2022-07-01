@@ -27,6 +27,8 @@ def get_command_line_arguments() -> argparse.Namespace:
         help="Run program after compilation")
     parser.add_argument('-s', '--save-asm', action='store_true', \
         help="Save assembly file named after code_file with .asm extension")
+    parser.add_argument('-v', '--verbose', action='store_true', \
+        help="Output compilation steps")
     parser.add_argument('code_file', help='Input file')
 
     args: argparse.Namespace = parser.parse_args(sys.argv[1:])
@@ -47,6 +49,10 @@ def compiler_error(error_type: str, error_message: str, token: Optional[Token] =
         print(get_token_location_info(token))
     sys.exit(1)
 
+def print_if_verbose(message: str, is_verbose: bool) -> None:
+    if is_verbose:
+        print(f"[{COLORS['HEADER']}VERBOSE{COLORS['NC']}] {message}")
+
 def get_token_location_info(token: Token) -> str:
     """Returns a string containing Token object's location in the source code"""
     return f'''
@@ -58,8 +64,10 @@ def get_token_location_info(token: Token) -> str:
 def handle_arguments(input_file: str, executable_file: str, program: Program, args) -> None:
     """Handle special command line arguments"""
     if args.graph:
+        print_if_verbose("Generating Graphviz graph from the program", args.verbose)
         generate_graph_file(input_file, program)
     if args.run:
+        print_if_verbose(f"Running the executable {executable_file}", args.verbose)
         run_code(executable_file)
 
 def generate_graph_file(input_file: str, program: Program) -> None:

@@ -28,7 +28,7 @@ function main : "Hello, World!\n" puts end
 $ ./torth.py --run hello.torth
 Hello, World!
 $ ./torth.py --help
-usage: torth.py [-h] [-o FILE] [-p DIRS] [-d] [-g] [-r] [-s] code_file
+usage: torth.py [-h] [-o FILE] [-p DIRS] [-d] [-g] [-r] [-s] [-v] code_file
 
 Compile Torth code
 
@@ -43,6 +43,7 @@ optional arguments:
   -g, --graph           Generate Graphviz graph from the program's control flow
   -r, --run             Run program after compilation
   -s, --save-asm        Save assembly file named after code_file with .asm extension
+  -v, --verbose         Output compilation steps
 ```
 
 ## Examples
