@@ -25,6 +25,13 @@ The following requirements can probably be installed via your distro's package m
 3. Compile the program: `./torth.py hello.torth`
 4. Run the program: `./hello.bin`
 
+## Read documentation
+
+- [Intrinsics](./docs/intrinsics.md)
+- [Keywords](./docs/keywords.md)
+- [Types](./docs/types.md)
+- [Control flow statements](./docs/control_flow.md)
+
 ## Check examples
 
 The [examples](../examples/) folder contains some example programs that show how the language can be used. For example, there are [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as implementations of some [Project Euler problems](../examples/euler/).
