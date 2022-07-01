@@ -100,22 +100,6 @@ def generate_asm(assembly: str, constants: List[Constant], program: Program) -> 
     assembly += get_asm_file_end()
     return assembly
 
-def clean_asm(original_assembly: str) -> str:
-    """Remove unused code from assembly file"""
-    cleaned_assembly: str   = ''
-    rows: List[str]         = original_assembly.split('\n')
-
-    for i, row in enumerate(rows):
-        words: List[str] = row.split()
-
-        # Remove unused defines
-        if words and words[0] == '%define' and all(words[1] not in word.split() for word in rows[:i] + rows[i+1:]):
-            continue
-
-        # Append row for the final assembly
-        cleaned_assembly += f"{row}\n"
-    return cleaned_assembly
-
 def get_op_asm(op: Op, program: Program) -> str:
     """Generate assembly code for certain Op. Return assembly for the Op."""
     if op.type in {

@@ -4,7 +4,7 @@ Functions required for compiling a Torth program
 import argparse
 import subprocess
 from typing import List
-from compiler.asm import clean_asm, generate_asm, initialize_asm
+from compiler.asm import generate_asm, initialize_asm
 from compiler.defs import Constant, Function, Memory, Program, Token
 from compiler.program import generate_program, type_check_program
 from compiler.utils import print_if_verbose
@@ -36,7 +36,6 @@ def compile_code(input_file: str, tokens: List[Token], constants: List[Constant]
     print_if_verbose("Generating Assembly from the intermediate representation", is_verbose)
     assembly: str = initialize_asm(constants, memories)
     assembly      = generate_asm(assembly, constants, program)
-    assembly      = clean_asm(assembly)  # Remove unused code from the assembly
 
     # Write assembly to a file
     asm_file: str = input_file.replace('.torth', '.asm')
