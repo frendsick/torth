@@ -1,27 +1,6 @@
 // https://leetcode.com/problems/valid-palindrome/
 include "std"
 
-memory non_alphanumeric_string MEMORY_CAPACITY end
-function lower_without_alphanumerics str -> str :
-  non_alphanumeric_string str.empty
-  0 while over str.len over < do
-    dup2 str.char_at dup
-
-    // Skip non-alphanumeric characters
-    if char.is_alphanumeric not do
-      drop 1 +
-      continue
-    endif
-
-    // Append lower case character to non_alphanumeric_string
-    char.lower
-    non_alphanumeric_string str.append
-    1 +
-  done drop2
-  
-  non_alphanumeric_string str
-end
-
 // Params: non-alpanumeric_string, original_str
 function output_is_palindrome str str :
   "'" puts swap puts
@@ -33,7 +12,9 @@ function output_is_palindrome str str :
 end
 
 function valid_palindrome str :
-  dup lower_without_alphanumerics output_is_palindrome
+  // Generate a lowercase copy of the string with only alphanumeric characters
+  dup str.alphanumeric str.lower
+  output_is_palindrome
 end
 
 function main :
