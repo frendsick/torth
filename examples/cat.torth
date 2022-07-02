@@ -28,7 +28,7 @@ function cat_files :
     endif
 
     // Print the file
-    print_file drop
+    print_file
     1 + // index++
   done drop
 end

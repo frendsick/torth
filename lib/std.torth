@@ -11,7 +11,6 @@ const NULL 0 end
 
 // Memory
 const MEMORY_CAPACITY 430080 end  // 420 * 1024 => 420kb
-memory file_buf MEMORY_CAPACITY end
 
 // Data types
 const bool.size   1 end
@@ -455,12 +454,16 @@ function open_file int str -> int :
   endif
 end
 
-// Read a file to a file buffer (file_buf)
+// Read a file to a newly allocated memory
 // Params: const char *pathname
 // Return: ssize_t read_bytes
-function read_file str -> int :
+function read_file str -> str :
   O_RDONLY open_file
-  MEMORY_CAPACITY file_buf rot read
+  MEMORY_CAPACITY malloc dup  // buf*
+  rot                         // fd
+  MEMORY_CAPACITY             // count
+  rotr                        // Align stack
+  read drop str               // Return the allocated memory location as string
 end
 
 // Create a file
@@ -481,7 +484,6 @@ end
 // Print file contents to stdout
 // Params: const char *pathname
 // Return: ssize_t written_bytes
-function print_file str -> int :
-  read_file
-  file_buf stdout write "\n" puts
+function print_file str :
+  read_file puts
 end
