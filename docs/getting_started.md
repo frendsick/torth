@@ -20,10 +20,12 @@ The following requirements can probably be installed via your distro's package m
 
 ## Compile your first program
 
-1. Create a file with .torth extension. Let's do _hello.torth_.
-2. Include the code from [Hello World](../examples/hello_world.torth) example.
-3. Compile the program: `./torth.py hello.torth`
-4. Run the program: `./hello.bin`
+1. Clone the repository `git clone https://github.com/CyberPaddy/torth`
+2. Change directory to the cloned repository `cd torth`
+3. Create a file with .torth extension. Let's do _hello.torth_.
+4. Include the code from [Hello World](../examples/hello_world.torth) example.
+5. Compile the program: `./torth.py hello.torth`
+6. Run the program: `./hello.bin`
 
 ## Read documentation
 
