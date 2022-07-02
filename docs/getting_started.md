@@ -17,6 +17,7 @@ The following requirements can probably be installed via your distro's package m
 - NASM
 - LD
 - Graphviz (Only required for creating Graphviz graphs with **-g** argument)
+- Git (For cloning the repository, not required)
 
 ## Compile your first program
 
