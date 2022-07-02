@@ -269,6 +269,21 @@ end
 function str.load     ptr       -> str  : LOAD_STR    end
 function str.store    ptr str   ->      : STORE_STR   end
 
+// Copy string to a newly allocated memory location and return the copied string
+function str.copy str -> str :
+  // Allocate memory which can store the string
+  dup str.len malloc
+  swap  // str
+  0     // index
+
+  // Loop through every character of the string
+  while dup2 str.char_at NULL != do
+    dup2 str.char_at
+    over 5 nth swap ptr+ char.store
+    1 +
+  done drop2 str
+end
+
 // Get the length of a string
 // Example: "Test string" -> 11
 function str.len str -> int :
