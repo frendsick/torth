@@ -10,7 +10,7 @@ memory largest_product  int.size end
 function store_series_product int str -> int str :
   dup2 dup rot swap ptr+
   0 while dup series_length int.load > do
-    dup2 ptr+ char.load '0' -
+    dup2 str.char_at '0' -
     if temp_int int.load 0 == do
       temp_int int.store
     else
@@ -23,7 +23,7 @@ end
 
 function largest_product_in_series int str -> int :
   series_length int.store
-  0 while dup2 series_length int.load + ptr+ char.load NULL != do
+  0 while dup2 series_length int.load + str.char_at NULL != do
     store_series_product
 
     // Store current subseries' product if it is the largest so far

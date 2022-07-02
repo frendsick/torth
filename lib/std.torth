@@ -272,7 +272,7 @@ function str.store    ptr str   ->      : STORE_STR   end
 // Get the length of a string
 // Example: "Test string" -> 11
 function str.len str -> int :
-  0 while dup2 ptr+ char.load NULL != do
+  0 while dup2 str.char_at NULL != do
     1 +
   done swap drop
 end
@@ -291,7 +291,7 @@ function str.is_palindrome str -> bool : dup str.reverse streq end
 
 // Overwrite a string with NULL-bytes
 function str.empty str :
-  0 while dup2 ptr+ char.load NULL != do
+  0 while dup2 str.char_at NULL != do
     dup2 ptr+ NULL char swap char.store
     1 +
   done drop2
@@ -356,7 +356,7 @@ end
 // Get an integer representation of a string
 function atoi str -> int :
   // Iterate the string character by character
-  0 while dup2 ptr+ char.load NULL != do
+  0 while dup2 str.char_at NULL != do
     dup2 str.char_at
 
     // Raise an error if the character is not a number
@@ -392,8 +392,8 @@ function streq str str -> bool :
   // while index < len(str1)
   while dup2 swap str.len > do
     if // str1[index] != str2[index]
-      dup2            ptr+ char.load
-      over 5 nth swap ptr+ char.load
+      dup2            str.char_at
+      over 5 nth swap str.char_at
       !=
     do
       False is_equal bool.store // is_equal = False
@@ -402,7 +402,7 @@ function streq str str -> bool :
     1 +
   done
 
-  if dup 4 nth swap ptr+ char.load NULL != do
+  if dup 4 nth swap str.char_at NULL != do
     False is_equal bool.store // is_equal = False
   endif
   drop drop drop // Drop strings and index
@@ -418,7 +418,7 @@ function str.reverse str -> str :
   dup str.len // index
   while 0 over > do
     1 -
-    dup2 ptr+ char.load // str[index]
+    dup2 str.char_at // str[index]
 
     // reversed_str[index + 1 - str.len] = str[index]
     over 1 + 4 nth str.len swap - reversed_str swap ptr+ char.store
