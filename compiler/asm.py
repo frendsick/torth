@@ -2,7 +2,7 @@
 Functions used for generating assembly code from Torth code
 """
 from typing import Dict, List, Optional
-from compiler.defs import Constant, Memory, OpType, Op, Program, Token, TokenType
+from compiler.defs import Constant, Memory, OpType, Op, Program, Token
 from compiler.utils import compiler_error, get_parent_op_type_do, get_parent_while
 from compiler.utils import get_end_op_for_while
 
@@ -168,18 +168,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_le_asm()
         if intrinsic == "LT":
             return get_lt_asm()
-        if intrinsic == "LOAD_BOOL":
-            return get_load_asm(TokenType.BOOL)
-        if intrinsic == "LOAD_CHAR":
-            return get_load_asm(TokenType.CHAR)
-        if intrinsic == "LOAD_INT":
-            return get_load_asm(TokenType.INT)
-        if intrinsic == "LOAD_PTR":
-            return get_load_asm(TokenType.PTR)
-        if intrinsic == "LOAD_STR":
-            return get_load_asm(TokenType.STR)
-        if intrinsic == "LOAD_UINT8":
-            return get_load_asm(TokenType.UINT8)
+        if intrinsic.startswith("LOAD_"):
+            return get_load_asm(intrinsic)
         if intrinsic == "MINUS":
             return get_minus_asm()
         if intrinsic == "MUL":
@@ -198,18 +188,8 @@ def get_op_asm(op: Op, program: Program) -> str:
             return get_print_asm()
         if intrinsic == "ROT":
             return get_rot_asm()
-        if intrinsic == "STORE_BOOL":
-            return get_store_asm(TokenType.BOOL)
-        if intrinsic == "STORE_CHAR":
-            return get_store_asm(TokenType.CHAR)
-        if intrinsic == "STORE_INT":
-            return get_store_asm(TokenType.INT)
-        if intrinsic == "STORE_PTR":
-            return get_store_asm(TokenType.PTR)
-        if intrinsic == "STORE_STR":
-            return get_store_asm(TokenType.STR)
-        if intrinsic == "STORE_UINT8":
-            return get_store_asm(TokenType.UINT8)
+        if intrinsic.startswith("STORE_"):
+            return get_store_asm(intrinsic)
         if intrinsic == "SWAP":
             return get_swap_asm()
         if intrinsic == "SYSCALL0":
@@ -502,21 +482,19 @@ def get_lt_asm() -> str:
     """
     return get_comparison_asm("cmovl")
 
-def get_load_asm(token_type: TokenType) -> str:
+def get_load_asm(load_variant: str) -> str:
     """
     LOAD variants load certain size value from where a pointer is pointing to.
     It takes one pointer from the stack and pushes back the dereferenced pointer value.
-    Different LOAD variants: LOAD_BOOL, LOAD_CHAR, LOAD_INT, LOAD_PTR, LOAD_STR, LOAD_UINT8.
+    Different LOAD variants: LOAD_BYTE, LOAD_WORD, LOAD_DWORD, LOAD_QWORD
     """
-    type_register_sizes: Dict[TokenType, str] = {
-        TokenType.BOOL  : 'bl',
-        TokenType.CHAR  : 'bl',
-        TokenType.INT   : 'rbx',
-        TokenType.PTR   : 'rbx',
-        TokenType.STR   : 'rbx',
-        TokenType.UINT8 : 'bl'
+    variant_register_sizes: Dict[str, str] = {
+        'LOAD_BYTE'    : 'bl',
+        'LOAD_WORD'    : 'bx',
+        'LOAD_DWORD'   : 'ebx',
+        'LOAD_QWORD'   : 'rbx'
     }
-    register: str = type_register_sizes[token_type]
+    register: str = variant_register_sizes[load_variant]
     op_asm: str  =  '  pop rax\n'
     op_asm      +=  '  xor rbx, rbx\n'
     op_asm      += f'  mov {register}, [rax]\n'
@@ -603,21 +581,19 @@ def get_rot_asm() -> str:
     op_asm      += '  push rcx\n'
     return op_asm
 
-def get_store_asm(token_type: TokenType) -> str:
+def get_store_asm(store_variant: str) -> str:
     """
     STORE variants store certain size value from where a pointer is pointing to.
     It takes a pointer and a value from the stack and loads the value to the pointer address.
-    Different STORE variants: STORE_BOOL, STORE_CHAR, STORE_INT, STORE_PTR, STORE_STR, STORE_UINT8.
+    Different STORE variants: STORE_BYTE, STORE_WORD, STORE_DWORD, STORE_QWORD
     """
-    type_register_sizes: Dict[TokenType, str] = {
-        TokenType.BOOL : 'bl',
-        TokenType.CHAR : 'bl',
-        TokenType.INT  : 'rbx',
-        TokenType.PTR  : 'rbx',
-        TokenType.STR  : 'rbx',
-        TokenType.UINT8 : 'bl'
+    variant_register_sizes: Dict[str, str] = {
+        'STORE_BYTE'    : 'bl',
+        'STORE_WORD'    : 'bx',
+        'STORE_DWORD'   : 'ebx',
+        'STORE_QWORD'   : 'rbx'
     }
-    register: str = type_register_sizes[token_type]
+    register: str = variant_register_sizes[store_variant]
     op_asm: str  =  '  pop rax\n'
     op_asm      +=  '  pop rbx\n'
     op_asm      += f'  mov [rax], {register}\n'

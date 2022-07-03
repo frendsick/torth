@@ -29,14 +29,14 @@ end
 // Return: power
 memory pow_original_value 8 end
 function calculate_pow int int -> int :
-  over pow_original_value STORE_INT
+  over pow_original_value STORE_QWORD
   1 // count
 
   // If count < exponent then we need to multiple the number at least one more time
   WHILE over over < DO
 
     // Multiply n with the original number to get new n
-    rot pow_original_value LOAD_INT * rot rot
+    rot pow_original_value LOAD_QWORD int * rot rot
 
     // Increment count
     1 +

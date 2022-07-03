@@ -15,12 +15,10 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [GE](#Comparisons)
 - [GT](#Comparisons)
 - [LE](#Comparisons)
-- [LOAD_BOOL](#LOAD)
-- [LOAD_CHAR](#LOAD)
-- [LOAD_INT](#LOAD)
-- [LOAD_PTR](#LOAD)
-- [LOAD_STR](#LOAD)
-- [LOAD_UINT8](#LOAD)
+- [LOAD_BYTE](#LOAD)
+- [LOAD_WORD](#LOAD)
+- [LOAD_DWORD](#LOAD)
+- [LOAD_QWORD](#LOAD)
 - [LT](#Comparisons)
 - [MINUS](#Calculations)
 - [MUL](#Calculations)
@@ -31,12 +29,10 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [PLUS](#Calculations)
 - [PRINT](#PRINT)
 - [ROT](#ROT)
-- [STORE_BOOL](#STORE)
-- [STORE_CHAR](#STORE)
-- [STORE_INT](#STORE)
-- [STORE_PTR](#STORE)
-- [STORE_STR](#STORE)
-- [STORE_UINT8](#STORE)
+- [STORE_BYTE](#STORE)
+- [STORE_WORD](#STORE)
+- [STORE_DWORD](#STORE)
+- [STORE_QWORD](#STORE)
 - [SWAP](#SWAP)
 - [SYSCALL0](#SYSCALL)
 - [SYSCALL1](#SYSCALL)
@@ -115,19 +111,21 @@ Push the environment pointer to the stack.
 
 ## LOAD
 
-LOAD-intrinsics push a value pointed by a [pointer](types.md#ptr---pointer) type value to the stack. The type of the pushed value depends of the used LOAD-intrinsic.
+Load a value from a memory location pointer by a [PTR](types.md#ptr---pointer). LOAD-intrinsics push a value pointed by a [pointer-like](types.md#ptr---pointer) type to the stack.
 
 1. Pop a [PTR](types.md#ptr---pointer) type value from the stack
 2. Push the value pointed by the popped pointer to the stack
 
-Different LOAD-intrinsics:
+### LOAD Variants
 
-- LOAD_BOOL
-- LOAD_CHAR
-- LOAD_INT
-- LOAD_PTR
-- LOAD_STR
-- LOAD_UINT8
+There are four different STORE intrinsic variants:
+
+- LOAD_BYTE (8-bit)
+- LOAD_WORD (16-bit)
+- LOAD_DWORD (32-bit)
+- LOAD_QWORD (64-bit)
+
+For example, to load a value of type [INT](types.md#int-uint8---integer) (64-bit) from a memory location to the stack you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also expricitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [builtin type](types.md), for example `int.load`.
 
 ## NTH
 
@@ -159,22 +157,21 @@ Rotate the top three items on the stack so that the third element moves to the t
 
 ## STORE
 
-STORE-intrinsics pop two values from the stack. The second item of the stack is stored to the memory address pointed by the first.
+Store a value to a memory location pointer by a [PTR](types.md#ptr---pointer). STORE-intrinsics pop two values from the stack. The second item of the stack is stored to the memory address pointed by the first.
 
-STORE-intrinsics require two items on the stack:
+- The top element should be of type [PTR](types.md#ptr---pointer)
+- The second element is stored to the address pointed by the pointer
 
-- Top element should be of type [PTR](types.md#ptr---pointer)
-- The type of the second element should match with the used STORE-intrinsic
-  - For example, to store an integer use STORE_INT intrinsic
+### STORE Variants
 
-Different STORE-intrinsics:
+There are four different STORE intrinsic variants:
 
-- STORE_BOOL
-- STORE_CHAR
-- STORE_INT
-- STORE_PTR
-- STORE_STR
-- STORE_UINT8
+- STORE_BYTE (8-bit)
+- STORE_WORD (16-bit)
+- STORE_DWORD (32-bit)
+- STORE_QWORD (64-bit)
+
+For example, to store [INT](types.md#int-uint8---integer) (64-bit) to a memory location you should use the STORE_QWORD intrinsic. Also, it is preferred to use the _type.store_ functions from the [std-library](../lib/std.torth) which also check if the value in the stack which is to be stored is of the correct [type](types.md). There is a typed store function for every [builtin type](types.md), for example `int.store`.
 
 ## SWAP
 

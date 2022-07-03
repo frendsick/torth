@@ -228,18 +228,8 @@ def type_check_program(program: Program) -> None:
                 branched_stacks[-1] = type_check_push_ptr(token, type_stack)
             elif intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
                 branched_stacks[-1] = type_check_comparison(token, type_stack)
-            elif intrinsic == "LOAD_BOOL":
-                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.BOOL)
-            elif intrinsic == "LOAD_CHAR":
-                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.CHAR)
-            elif intrinsic == "LOAD_INT":
-                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.INT)
-            elif intrinsic == "LOAD_PTR":
-                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.PTR)
-            elif intrinsic == "LOAD_STR":
-                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.STR)
-            elif intrinsic == "LOAD_UINT8":
-                branched_stacks[-1] = type_check_load(token, type_stack, TokenType.UINT8)
+            elif intrinsic.startswith("LOAD_"):
+                branched_stacks[-1] = type_check_load(token, type_stack)
             elif intrinsic == "MINUS":
                 branched_stacks[-1] = type_check_calculations(token, type_stack)
             elif intrinsic == "MUL":
@@ -256,18 +246,8 @@ def type_check_program(program: Program) -> None:
                 branched_stacks[-1] = type_check_print(token, type_stack)
             elif intrinsic == "ROT":
                 branched_stacks[-1] = type_check_rot(token, type_stack)
-            elif intrinsic == "STORE_BOOL":
-                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.BOOL)
-            elif intrinsic == "STORE_CHAR":
-                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.CHAR)
-            elif intrinsic == "STORE_INT":
-                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.INT)
-            elif intrinsic == "STORE_PTR":
-                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.PTR)
-            elif intrinsic == "STORE_STR":
-                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.STR)
-            elif intrinsic == "STORE_UINT8":
-                branched_stacks[-1] = type_check_store(token, type_stack, TokenType.UINT8)
+            elif intrinsic.startswith("STORE_"):
+                branched_stacks[-1] = type_check_store(token, type_stack)
             elif intrinsic == "SWAP":
                 branched_stacks[-1] = type_check_swap(token, type_stack)
             elif re.fullmatch(r'SYSCALL[0-6]', intrinsic):
@@ -599,11 +579,11 @@ def type_check_nth(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(TokenType.ANY, token.location)
     return type_stack
 
-def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType) -> TypeStack:
+def type_check_load(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     LOAD variants load certain type of value from where a pointer is pointing to.
     It takes one pointer from the stack and pushes back the dereferenced pointer value.
-    Different LOAD variants: LOAD_BOOL, LOAD_CHAR, LOAD_INT, LOAD_PTR, LOAD_STR, LOAD_UINT8.
+    Different LOAD variants: LOAD_BYTE, LOAD_WORD, LOAD_DWORD, LOAD_QWORD
     """
     t = type_stack.pop()
     if t is None:
@@ -611,7 +591,7 @@ def type_check_load(token: Token, type_stack: TypeStack, loaded_type: TokenType)
     if t.value not in POINTER_TYPES:
         compiler_error("VALUE_ERROR", f"{token.value.upper()} requires a pointer.\n\n" + \
             f"Popped type:\n{t.value} {t.location}", token)
-    type_stack.push(loaded_type, token.location)
+    type_stack.push(TokenType.ANY, token.location)
     return type_stack
 
 def type_check_over(token: Token, type_stack: TypeStack) -> TypeStack:
@@ -653,11 +633,11 @@ def type_check_rot(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(t3.value, t3.location)
     return type_stack
 
-def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType) -> TypeStack:
+def type_check_store(token: Token, type_stack: TypeStack) -> TypeStack:
     """
     STORE variants store a value of certain type to where a pointer is pointing to.
     It takes a pointer and a value from the stack and loads the value to the pointer address.
-    Different STORE variants: STORE_BOOL, STORE_CHAR, STORE_INT, STORE_PTR, STORE_STR, STORE_UINT8
+    Different STORE variants: STORE_BYTE, STORE_WORD, STORE_DWORD, STORE_QWORD
     """
     t1 = type_stack.pop()
     t2 = type_stack.pop()
@@ -665,10 +645,9 @@ def type_check_store(token: Token, type_stack: TypeStack, stored_type: TokenType
     if t1 is None or t2 is None:
         compiler_error("POP_FROM_EMPTY_STACK", \
             f"{required_values_str}", token)
-    if t1.value not in POINTER_TYPES \
-    or t2.value not in {TokenType.ANY, stored_type}:
+    if t1.value not in POINTER_TYPES:
         compiler_error("VALUE_ERROR", f"{required_values_str}\n\n" + \
-            f"Expected types:\n{TokenType.PTR}\n{stored_type}\n\n" + \
+            f"Expected types:\n{TokenType.PTR}\n{TokenType.ANY}\n\n" + \
             f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}", token)
     return type_stack
 

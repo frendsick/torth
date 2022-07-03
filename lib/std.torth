@@ -119,16 +119,16 @@ function eputs str : stderr fputs end
 // Ptr functions
 function ptr+       int ptr -> ptr : swap int + ptr end
 function ptr++      ptr     ->     : ptr.size ptr+  end
-function ptr.load   ptr     -> ptr : LOAD_PTR       end
-function ptr.store  ptr ptr -> ptr : STORE_PTR      end
+function ptr.load   ptr     -> ptr : LOAD_QWORD ptr end
+function ptr.store  ptr ptr ->     : STORE_QWORD    end
 
 // Bool functions
-function bool.load  ptr       -> bool : LOAD_BOOL   end
-function bool.store ptr bool  ->      : STORE_BOOL  end
+function bool.load  ptr       -> bool : LOAD_BYTE bool  end
+function bool.store ptr bool  ->      : STORE_BYTE      end
 
 // Char functions
-function char.load  ptr       -> char : LOAD_CHAR   end
-function char.store ptr char  ->      : STORE_CHAR  end
+function char.load  ptr       -> char : LOAD_BYTE char  end
+function char.store ptr char  ->      : STORE_BYTE      end
 
 // Return the lowercase character for the given character
 function char.lower char -> char :
@@ -196,10 +196,10 @@ function char.is_alphanumeric char -> bool :
 end
 
 // Int functions
-function int.load     ptr       -> int    : LOAD_INT    end
-function int.store    ptr int   ->        : STORE_INT   end
-function uint8.load   ptr       -> uint8  : LOAD_UINT8  end
-function uint8.store  ptr uint8 ->        : STORE_UINT8 end
+function int.load     ptr       -> int    : LOAD_QWORD int    end
+function int.store    ptr int   ->        : STORE_QWORD       end
+function uint8.load   ptr       -> uint8  : LOAD_BYTE uint8  end
+function uint8.store  ptr uint8 ->        : STORE_BYTE       end
 
 // Increment/decrement pointed value
 function int++ ptr : dup int.load 1 + swap int.store end
@@ -265,8 +265,8 @@ function itoa int -> str :
 end
 
 // String functions
-function str.load     ptr       -> str  : LOAD_STR    end
-function str.store    ptr str   ->      : STORE_STR   end
+function str.load     ptr       -> str  : LOAD_QWORD str  end
+function str.store    ptr str   ->      : STORE_QWORD     end
 
 // Copy string to a newly allocated memory location and return the copied string
 function str.copy str -> str :
