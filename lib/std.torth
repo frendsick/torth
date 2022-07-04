@@ -252,13 +252,13 @@ function itoa int -> str :
 
     // Store the quotient of the number / the current power of 10 to the string representation
     '0' + char
-    over 4 nth ptr+ char.store
+    over 4 nth swap ptr+ char.store
 
     // index++
     1 +
   done
   // Insert NULL-byte to the end of the string
-  over ptr+ NULL char swap char.store
+  over swap ptr+ NULL char swap char.store
 
   // Zero temp_int
   NULL temp_int int.store
