@@ -29,6 +29,7 @@ def get_token_location_info(token: Token) -> str:
 def generate_program(tokens: List[Token], functions: List[Function], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
     program: List[Op] = []
+    tokens_function_cache: dict[Token, Function] = dict()
     for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()
         if token.type == TokenType.BOOL:
@@ -84,7 +85,9 @@ def generate_program(tokens: List[Token], functions: List[Function], memories: L
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found", token)
 
-        func: Function = get_tokens_function(token, functions)
+        if token.location not in tokens_function_cache:
+            tokens_function_cache[token.location] = get_tokens_function(token, functions)
+        func: Function = tokens_function_cache[token.location]
         program.append( Op(op_id, op_type, token, func) )
     return program
 
