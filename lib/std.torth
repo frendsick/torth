@@ -444,7 +444,7 @@ function open_file int str -> int :
   if    dup ENOENT  ==  do swap "File '" eputs eputs "' does not exist.\n" eputs 1 exit
   elif  dup EACCESS ==  do swap "Cannot open file '" eputs eputs "': Permission denied.\n" eputs 1 exit
   elif  dup 0 > do
-    swap "Error occurred while opening the file '" eputs eputs "'.\nError code: " eputs dup print 1 exit
+    swap "Error occurred while opening the file '" eputs eputs "'.\nError code: " eputs dup putu 1 exit
   else swap drop // Drop the file name
   endif
 end

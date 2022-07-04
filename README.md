@@ -64,7 +64,7 @@ end
 ```pascal
 include "std"
 function OutputRow str int -> int :
-    puts dup print "\n" puts
+    puts dup putu "\n" puts
 end
 
 function AddTotal int int -> int int :
