@@ -8,6 +8,7 @@ from typing import List, NoReturn, Optional
 from compiler.defs import COLORS, Function, Intrinsic, Memory, Op, OpType, Program, Signature
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
 from compiler.defs import Token, TokenType, TypeStack
+from compiler.utils import equal_type_lists
 
 def compiler_error(error_type: str, error_message: str, token: Optional[Token] = None) -> NoReturn:
     """Output compiler error message to the console and exit with non-zero exit code"""
@@ -179,13 +180,15 @@ def type_check_program(program: Program) -> None:
                 if_block_return_stack=if_block_return_stack)
 
             # If IF block altered the stack state there MUST be an ELSE to catch all errors
-            # and the IF block's return stack must match with the curr
+            # and the IF block's return stack must match with all of the sections in the block
             if not else_present and if_block_return_stack.head and \
-                branched_stacks[-1].get_types() != if_block_return_stack.get_types():
+                not equal_type_lists(branched_stacks[-1].get_types(), if_block_return_stack.get_types()):
                 compiler_error("SYNTAX_ERROR", \
                     "The stack state should be the same than at the start of the IF-block.\n" + \
                     "Introduce an ELSE-block if you need to return different values from IF-blocks.\n" + \
-                    "The stack state should be the same with every branch of the block.", token)
+                    "The stack state should be the same with every branch of the block.\n\n" + \
+                    f"Stack state after the previous sections in the IF block:\n{if_block_return_stack.repr()}\n" + \
+                    f"The stack state before the IF block:\n{branched_stacks[-1].repr()}")
 
             # Make the IF block's return stack the new stack for the program
             if if_block_return_stack.head:

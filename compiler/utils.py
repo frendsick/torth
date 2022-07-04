@@ -5,8 +5,8 @@ import argparse
 import subprocess
 import os
 import sys
-from typing import NoReturn, Optional
-from compiler.defs import COLORS, Op, OpType, Program, Token
+from typing import List, NoReturn, Optional
+from compiler.defs import COLORS, Op, OpType, Program, Token, TokenType
 
 def usage() -> NoReturn:
     """Print usage message and exit with non-zero exit code"""
@@ -111,7 +111,7 @@ def initialize_graph(program: Program) -> str:
     """Generates a node id for each Op in Program in Graphviz format"""
     graph_contents: str = 'digraph Program {\n'
     for i, op in enumerate(program):
-        label_top_row: str = op.type
+        label_top_row: str = str(op.type)
         if op.type == OpType.INTRINSIC:
             label_top_row = f"{op.type} '{op.token.value}'"
         elif op.type in {OpType.FUNCTION_CALL, OpType.FUNCTION_RETURN}:
@@ -222,3 +222,14 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
         if program[i].type in (OpType.DONE, OpType.ENDIF):
             parent_count += 1
     compiler_error("AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE", op.token)
+
+def equal_type_lists(type_list1: List[TokenType], type_list2: List[TokenType]) -> bool:
+    """Check if two Lists of TokenTypes are equal without checking ANY types."""
+    if len(type_list1) != len(type_list2):
+        return False
+    for t1, t2 in zip(type_list1, type_list2):
+        if TokenType.ANY in {t1, t2}:
+            continue
+        if t1 != t2:
+            return False
+    return True
