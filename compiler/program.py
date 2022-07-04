@@ -172,6 +172,9 @@ def type_check_program(program: Program) -> None:
             # Use IF block's original stack as the old stack
             branched_stacks.append(if_block_original_stacks[-1])
         elif op.type == OpType.ENDIF:
+            # Save the state of the stack after the first part of the IF block
+            if not if_block_return_stack.head:
+                if_block_return_stack = copy(type_stack)
             branched_stacks = type_check_end_of_branch(token, branched_stacks, \
                 if_block_return_stack=if_block_return_stack)
 
