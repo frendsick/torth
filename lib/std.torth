@@ -232,37 +232,29 @@ function int.reverse int -> int :
 end
 
 // Get a string representation of an integer
-memory int_digits int.size end
+memory itoa.int_digits int.size end
 function itoa int -> str :
   // Store the original integer and the amount of digits
   dup temp_int int.store
-  int.get_digits int_digits int.store
+  int.get_digits dup itoa.int_digits int.store
 
-  ""  // The string representation of the string
-  0   // index
-  while dup int_digits int.load > do
+  malloc  // Allocate memory for the string representation of the string
+  0       // index
+  while dup itoa.int_digits int.load > do
     // Get the current power of 10
     // 10 ^ (int_digits - 1 - index)
-    int_digits int.load
+    itoa.int_digits int.load
     1 - over - 10 swap pow
 
-    // Store the remainder of the number / the current power of 10 to temp_int
+    // Store the remainder of the number / the current power of 10 in temporary integer
     temp_int int.load
     swap divmod swap
     temp_int int.store
 
-    // Store the quotient of the number / the current power of 10 to the string representation
-    '0' + char
-    over 4 nth swap ptr+ char.store
-
-    // index++
-    1 +
-  done
-  // Insert NULL-byte to the end of the string
-  over swap ptr+ NULL char swap char.store
-
-  // Zero temp_int
-  NULL temp_int int.store
+    // Append the current number to the string representation
+    '0' + char 3 nth str.append
+    1 + // index++
+  done drop
 end
 
 // String functions
