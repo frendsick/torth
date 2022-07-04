@@ -349,16 +349,15 @@ function str.alphanumeric str -> str :
   dup str.len malloc str
   swap
   0 while over str.len over < do
-    dup2 str.char_at dup
+    // Get the current character
+    dup2 str.char_at
 
-    // Skip non-alphanumeric characters
-    if char.is_alphanumeric not do
-      drop 1 +
-      continue
-    endif
-
-    // Append the current character to the new string
-    4 nth str.append
+    // Append only alphanumeric characters
+    // memory str index str[index]
+    if dup char.is_alphanumeric do
+      // Append the current character to the new string
+      dup 5 nth str.append
+    endif drop
     1 + // index++
   done drop2
 end
