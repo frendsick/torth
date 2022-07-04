@@ -117,7 +117,7 @@ def get_tokens_from_functions(functions: List[Function], file: str) -> List[Toke
     if not valid_main_function_signature(main_function.signature):
         compiler_error("FUNCTION_SIGNATURE_ERROR", "Could not validate Signature for MAIN function")
 
-    tokens: List[Token] = get_tokens_from_function(main_function, functions, function_cache=dict())
+    tokens: List[Token] = get_tokens_from_function(main_function, functions, function_cache={})
     if not main_function.signature[1]:
         tokens.append(Token('0', TokenType.INT, main_function.tokens[-1].location))
     return tokens
