@@ -117,12 +117,13 @@ def get_tokens_from_functions(functions: List[Function], file: str) -> List[Toke
     if not valid_main_function_signature(main_function.signature):
         compiler_error("FUNCTION_SIGNATURE_ERROR", "Could not validate Signature for MAIN function")
 
-    tokens: List[Token] = get_tokens_from_function(main_function, functions)
+    tokens: List[Token] = get_tokens_from_function(main_function, functions, function_cache=dict())
     if not main_function.signature[1]:
         tokens.append(Token('0', TokenType.INT, main_function.tokens[-1].location))
     return tokens
 
-def get_tokens_from_function(parent_function: Function, functions: List[Function]) -> List[Token]:
+def get_tokens_from_function(parent_function: Function, functions: List[Function], \
+    function_cache: dict[str, List[Token]]) -> List[Token]:
     """Parse Tokens recursively from every child Function of a single Function object."""
     tokens: List[Token] = parent_function.tokens
     i = 0
@@ -130,7 +131,10 @@ def get_tokens_from_function(parent_function: Function, functions: List[Function
         for func in functions:
             child_found: bool = tokens[i].value == func.name
             if child_found:
-                tokens = tokens[:i] + get_tokens_from_function(func, functions) + tokens[i+1:]
+                # Cache the Tokens of a certain function
+                if func.name not in function_cache:
+                    function_cache[func.name] = get_tokens_from_function(func, functions, function_cache)
+                tokens = tokens[:i] + function_cache[func.name] + tokens[i+1:]
         i += 1
     return tokens
 
