@@ -4,8 +4,8 @@
 
 include "std"
 function print_product int int int int -> int int int int :
-  "Product of pythagorean triplets that add up to " puts 4 nth print ":\n" puts
-  dup2 5 nth * * print "\n" puts
+  "Product of pythagorean triplets that add up to " puts 4 nth putu ":\n" puts
+  dup2 5 nth * * putu "\n" puts
   0 exit
 end
 
@@ -36,5 +36,5 @@ function main :
   1000 // n
   product_of_pythagorean_triplet
 
-  "Could not find pythagorean triplet for number " eputs print "\n" eputs
+  "Could not find pythagorean triplet for number " eputs putu "\n" eputs
 end

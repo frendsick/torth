@@ -117,6 +117,9 @@ function puts  str : stdout fputs end
 // Print a string to stderr
 function eputs str : stderr fputs end
 
+// Print an unsigned integer to stdout
+function putu int : print end
+
 // Ptr functions
 function ptr+       int ptr -> ptr : swap int + ptr end
 function ptr++      ptr     ->     : ptr.size ptr+  end

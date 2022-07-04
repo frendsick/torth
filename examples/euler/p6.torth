@@ -30,5 +30,5 @@ function Main :
   square_of_sum
 
   // Calculate and print the difference between Squares total and the square of Sum total
-  swap - print "\n" puts // Output: 25164150
+  swap - putu "\n" puts // Output: 25164150
 end

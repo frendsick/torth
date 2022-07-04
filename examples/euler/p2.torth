@@ -25,6 +25,6 @@ end
 
 function main :
   4000000 // Limit
-  "Sum of even fibonacci numbers under " puts dup print ": " puts
-  sum_of_even_fibonacci print "\n" puts // Answer: 4613732
+  "Sum of even fibonacci numbers under " puts dup putu ": " puts
+  sum_of_even_fibonacci putu "\n" puts // Answer: 4613732
 end

@@ -16,6 +16,6 @@ end
 
 function main :
   600851475143  // prime
-  "The largest prime factor of number " puts dup print ": " puts
-  get_largest_prime_factor print "\n" puts // Answer: 6857
+  "The largest prime factor of number " puts dup putu ": " puts
+  get_largest_prime_factor putu "\n" puts // Answer: 6857
 end

@@ -14,7 +14,7 @@ function store_series_product int str -> int str :
     if temp_int int.load 0 == do
       temp_int int.store
     else
-      temp_int int.load swap * // dup print "\n" puts
+      temp_int int.load swap *
       temp_int int.store
     endif
     1 +
@@ -43,5 +43,5 @@ function main :
   13 largest_product_in_series
   
   "The largest product in series for 13 adjacent digits: " puts
-  print "\n" puts
+  putu "\n" puts
 end

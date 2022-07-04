@@ -15,6 +15,6 @@ end
 
 function Main :
   20  // Limit
-  "The " puts dup print ". fibonacci number is: " puts
-  Fib print "\n" puts  // Answer: 6765
+  "The " puts dup putu ". fibonacci number is: " puts
+  Fib putu "\n" puts  // Answer: 6765
 end

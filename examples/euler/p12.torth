@@ -33,7 +33,7 @@ end
 function highly_divisible_triangular_number -> int :
   if 100 DIVISORS_CAP > do
     "Calculating the triangular number with over " puts
-    DIVISORS_CAP print " divisors.\n" puts
+    DIVISORS_CAP putu " divisors.\n" puts
     "This will take a while...\n" puts
   endif
 
@@ -52,5 +52,5 @@ end
 function main :
   highly_divisible_triangular_number
   "The first triangular number to have over " puts
-  DIVISORS_CAP print " divisors: " puts print "\n" puts
+  DIVISORS_CAP putu " divisors: " puts putu "\n" puts
 end

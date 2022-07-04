@@ -42,5 +42,5 @@ end
 
 function Main :
   max_prime summation_of_primes
-  "The sum of primes below " puts max_prime print ": " puts print "\n" puts
+  "The sum of primes below " puts max_prime putu ": " puts putu "\n" puts
 end

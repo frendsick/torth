@@ -36,5 +36,5 @@ end
 
 function Main :
   prime_limit get_nth_prime
-  prime_limit print ". prime is: " puts print "\n" puts
+  prime_limit putu ". prime is: " puts putu "\n" puts
 end

@@ -16,5 +16,5 @@ end
 function main :
   get_largest_palindrome_product
   "The largest palindrome product of two 3-digit numbers: " puts
-  print "\n" puts
+  putu "\n" puts
 end
