@@ -111,10 +111,14 @@ def initialize_graph(program: Program) -> str:
     """Generates a node id for each Op in Program in Graphviz format"""
     graph_contents: str = 'digraph Program {\n'
     for i, op in enumerate(program):
+        label_top_row: str = op.type
         if op.type == OpType.INTRINSIC:
-            graph_contents += f'''  node{i} [label = "{op.type} '{op.token.value}'\n{op.token.location}"];\n'''
-        else:
-            graph_contents += f'  node{i} [label = "{op.type}\n{op.token.location}"];\n'
+            label_top_row = f"{op.type} '{op.token.value}'"
+        elif op.type in {OpType.FUNCTION_CALL, OpType.FUNCTION_RETURN}:
+            function_name: str = op.token.value.replace('_CALL', '').replace('_RETURN', '')
+            label_top_row = f"{op.type} '{function_name}'"
+
+        graph_contents += f'  node{i} [label = "{label_top_row}\n{op.token.location}"];\n'
     graph_contents += f'  node{len(program)} [label = "PROGRAM EXIT"];\n'
     return graph_contents
 
