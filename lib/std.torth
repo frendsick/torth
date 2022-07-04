@@ -426,18 +426,18 @@ function streq str str -> bool :
 end
 
 // Reverse a string
-memory reversed_str MEMORY_CAPACITY end
 function str.reverse str -> str :
-  reversed_str str.empty
-  dup str.len // index
-  while 0 over > do
-    1 -
+  // Allocate memory for the reversed string
+  dup str.len dup malloc str rotr
+
+  // Append characters from the parameter string to allocated memory in the reversed order
+  while dup 0 < do
+    1 - // index--
     dup2 str.char_at // str[index]
 
-    // reversed_str[index + 1 - str.len] = str[index]
-    over 1 + 4 nth str.len swap - reversed_str swap ptr+ char.store
+    // Append the current character to the reversed string
+    4 nth str.append
   done drop2
-  reversed_str // Return reversed string
 end
 
 // Open a file with open-syscall
