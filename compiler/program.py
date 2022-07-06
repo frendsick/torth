@@ -4,7 +4,7 @@ Functions for compile-time type checking and running the Torth program
 import re
 import sys
 from copy import copy
-from typing import List, NoReturn, Optional
+from typing import Dict, List, NoReturn, Optional
 from compiler.defs import COLORS, Function, Intrinsic, Location, Memory, Op, OpType
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
@@ -29,7 +29,7 @@ def get_token_location_info(token: Token) -> str:
 def generate_program(tokens: List[Token], functions: List[Function], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
     program: List[Op] = []
-    tokens_function_cache: dict[Location, Function] = {}
+    tokens_function_cache: Dict[Location, Function] = {}
     for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()
         if token.type == TokenType.BOOL:

@@ -4,7 +4,7 @@ The module implements lexing functions that parses Tokens from code files
 import itertools
 import os
 import re
-from typing import List, Optional
+from typing import Dict, List, Optional
 from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
 from compiler.utils import compiler_error, get_file_contents
@@ -123,7 +123,7 @@ def get_tokens_from_functions(functions: List[Function], file: str) -> List[Toke
     return tokens
 
 def get_tokens_from_function(parent_function: Function, functions: List[Function], \
-    function_cache: dict[str, List[Token]]) -> List[Token]:
+    function_cache: Dict[str, List[Token]]) -> List[Token]:
     """Parse Tokens recursively from every child Function of a single Function object."""
     tokens: List[Token] = parent_function.tokens
     i = 0
