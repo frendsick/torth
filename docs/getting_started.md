@@ -11,7 +11,7 @@ For now, the language only works with Linux using x86_64 architecture. Windows-u
 
 ## Install requirements
 
-The following requirements can probably be installed via your distro's package manager.
+The following requirements can probably be installed via your distro's package manager, for example [APT](https://manpages.ubuntu.com/manpages/xenial/man8/apt.8.html) for Ubuntu and Debian.
 
 - Python3.6 or newer
 - NASM
