@@ -28,12 +28,17 @@ The following requirements can probably be installed via your distro's package m
 5. Compile the program: `./torth.py hello.torth`
 6. Run the program: `./hello.bin`
 
+## Apply syntax highlighting
+
+Coding in any language could be pretty painful without syntax highlighting for the particular editor you are using. Torth currently only supports syntax highlighting for [VIM](syntax_highlighting.md#vim) and [VSCode](syntax_highlighting.md#visual-studio-code). If you want a support for a particular editor, please create a [feature request issue](https://github.com/CyberPaddy/torth/issues/new/choose). Contributions are also appreciated so feel free to create syntax highlighting configuration to an editor to the [editor](../editor/) folder and hit me with a pull request!
+
 ## Read documentation
 
 - [Intrinsics](./docs/intrinsics.md)
 - [Keywords](./docs/keywords.md)
 - [Types](./docs/types.md)
 - [Control flow statements](./docs/control_flow.md)
+- [Syntax highlighting](./docs/syntax_highlighting.md)
 
 ## Check examples
 

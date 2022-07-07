@@ -18,6 +18,7 @@ Torth is planned to be
 - [Keywords](./docs/keywords.md)
 - [Types](./docs/types.md)
 - [Control flow statements](./docs/control_flow.md)
+- [Syntax highlighting](./docs/syntax_highlighting.md)
 
 ## Usage
 
