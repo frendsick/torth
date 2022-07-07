@@ -44,7 +44,7 @@ def compile_code(input_file: str, tokens: List[Token], constants: List[Constant]
 
     # Compile the assembly code with NASM
     object_file: str = asm_file.replace(".asm", ".o")
-    print_if_verbose(f"Compiling {asm_file} to {object_file} with LD", is_verbose)
+    print_if_verbose(f"Compiling {asm_file} to {object_file} with NASM", is_verbose)
     compile_asm(asm_file, object_file)
     return program
 
