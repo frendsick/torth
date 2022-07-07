@@ -34,11 +34,11 @@ Coding in any language could be pretty painful without syntax highlighting for t
 
 ## Read documentation
 
-- [Intrinsics](./docs/intrinsics.md)
-- [Keywords](./docs/keywords.md)
-- [Types](./docs/types.md)
-- [Control flow statements](./docs/control_flow.md)
-- [Syntax highlighting](./docs/syntax_highlighting.md)
+- [Intrinsics](intrinsics.md)
+- [Keywords](keywords.md)
+- [Types](types.md)
+- [Control flow statements](control_flow.md)
+- [Syntax highlighting](syntax_highlighting.md)
 
 ## Check examples
 
