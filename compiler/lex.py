@@ -203,9 +203,19 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
             current_part = next(function_parts)
             current_part = next(function_parts)
         elif current_part == 2:
-            param_types.append(SIGNATURE_MAP[token_value.upper()])
+            try:
+                param_types.append(SIGNATURE_MAP[token_value.upper()])
+            except KeyError:
+                compiler_error("FUNCTION_SIGNATURE_ERROR", \
+                    f"'{token_value}' is not a valid parameter type.\n" + \
+                    f"Valid types: {list(SIGNATURE_MAP.keys())}", token)
         elif current_part == 3:
-            return_types.append(SIGNATURE_MAP[token_value.upper()])
+            try:
+                return_types.append(SIGNATURE_MAP[token_value.upper()])
+            except KeyError:
+                compiler_error("FUNCTION_SIGNATURE_ERROR", \
+                    f"'{token_value}' is not a valid type for the returned value.\n" + \
+                    f"Valid types: {list(SIGNATURE_MAP.keys())}", token)
         elif current_part == 4:
             if not tokens:
                 tokens.append(Token(f'{name}_CALL', TokenType.KEYWORD, token.location))
