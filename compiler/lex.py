@@ -72,12 +72,12 @@ def get_functions_from_files(file_name: str, included_files: List[str]) -> List[
     """Parse declared functions from code file and included files. Return list of Function objects."""
     functions: List[Function] = []
     included_files.append(file_name)
-    for f in included_files:
-        included_code: str = get_file_contents(f)
+    for file in included_files:
+        included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
         # Newlines are used to determine when a comment ends and when new line starts
         newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
-        functions = get_functions(f, token_matches, newline_indexes, functions)
+        functions = get_functions(file, token_matches, newline_indexes, functions)
     return functions
 
 def valid_main_function_signature(signature: Signature) -> bool:
@@ -236,11 +236,11 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
 def get_memories_from_code(included_files: List[str], constants: List[Constant]) -> List[Memory]:
     """Parse Memory objects from code file and included files. Return list of Memory objects."""
     memories: List[Memory] = []
-    for f in included_files:
-        included_code: str = get_file_contents(f)
+    for file in included_files:
+        included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
         newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
-        memories += get_memories(f, token_matches, newline_indexes, constants)
+        memories += get_memories(file, token_matches, newline_indexes, constants)
     return memories
 
 def get_memories(file: str, token_matches: list, newline_indexes: List[int], constants: List[Constant]) -> List[Memory]:
