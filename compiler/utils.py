@@ -42,14 +42,12 @@ def get_file_contents(file_name: str) -> str:
         return f.read()
 
 def compiler_error(error_type: str, error_message: str, token: Optional[Token] = None, \
-    current_stack: Optional[TypeStack] = None, expected_stack: Optional[TypeStack] = None) -> NoReturn:
+    current_stack: Optional[TypeStack] = None) -> NoReturn:
     """Output compiler error message to the console and exit with non-zero exit code"""
     print(f"{COLORS['HEADER']}Compiler error {COLORS['FAIL']}{error_type}{COLORS['NC']}" \
         + f":\n{error_message}")
     if current_stack:
         print(f"\nCurrent stack state:\n{current_stack.repr()}")
-    if expected_stack:
-        print(f"\nExpected stack state:\n{current_stack.repr()}")
     if token:
         print(get_token_location_info(token))
     sys.exit(1)
