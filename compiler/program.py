@@ -4,12 +4,13 @@ Functions for compile-time type checking and running the Torth program
 import re
 from copy import copy
 from typing import Dict, List, Optional
-from compiler.defs import Function, Intrinsic, Location, Memory, Op, OpType
+from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
 from compiler.utils import compiler_error, equal_type_lists
 
-def generate_program(tokens: List[Token], functions: List[Function], memories: List[Memory]) -> Program:
+def generate_program(tokens: List[Token], constants: List[Constant], \
+    functions: List[Function], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
     program: List[Op] = []
     tokens_function_cache: Dict[Location, Function] = {}
@@ -63,7 +64,9 @@ def generate_program(tokens: List[Token], functions: List[Function], memories: L
             op_type = OpType.FUNCTION_RETURN
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
-        elif memory_exists(token_value, memories):
+        elif constant_exists(token.value, constants):
+            op_type = OpType.PUSH_INT
+        elif memory_exists(token.value, memories):
             op_type = OpType.PUSH_PTR
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found", token)
@@ -87,9 +90,13 @@ def intrinsic_exists(token_value: str) -> bool:
     """Return boolean value whether or not certain Intrinsic exists."""
     return bool(hasattr(Intrinsic, token_value))
 
-def memory_exists(token: str, memories: List[Memory]) -> bool:
+def constant_exists(token_value: str, constants: List[Constant]) -> bool:
+    """Return boolean value whether or not certain Constant exists."""
+    return any(const.name == token_value for const in constants)
+
+def memory_exists(token_value: str, memories: List[Memory]) -> bool:
     """Return boolean value whether or not certain Memory exists."""
-    return any(memory.name.upper() == token for memory in memories)
+    return any(memory.name == token_value for memory in memories)
 
 def type_check_program(program: Program) -> None:
     """
