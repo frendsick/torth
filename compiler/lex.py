@@ -166,7 +166,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
     #  3 : return types
     #  4 : location
     # (0 : Not lexing a function)
-    FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '_name', '->', ':', 'END']
+    FUNCTION_PART_DELIMITERS: List[str] = ['FUNCTION', '', '->', ':', 'END']
     function_parts = itertools.cycle(list(range(5)))
     next(function_parts)
 
@@ -180,7 +180,6 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
         # Go to next function part
         if token_value.upper() == FUNCTION_PART_DELIMITERS[current_part]:
             current_part = next(function_parts)
-
             # Append Function and reset variables when function is fully lexed
             if token_value.upper() == 'END':
                 signature: Signature = (param_types, return_types)
@@ -191,7 +190,6 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
                 return_types    = []
                 tokens          = []
                 is_const        = False
-
         elif current_part == 1:
             name = token_value
             if is_const:
@@ -202,12 +200,16 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
                 next(function_parts)
                 next(function_parts)
             current_part = next(function_parts)
-
         # Enable defining functions that do not return anything without the -> token:
         # FUNCTION <name> <param_types> : <function_body> END
         elif current_part == 2 and token_value == ':':
             current_part = next(function_parts)
             current_part = next(function_parts)
+        # Output error if function-related keyword is used in the wrong context
+        elif current_part > 0 and token_value.upper() in FUNCTION_PART_DELIMITERS:
+            compiler_error("SYNTAX_ERROR", \
+                f"Token '{match.group(0)}' is used in the wrong context when defining '{name}' function.\n" + \
+                f"Check the syntax of the '{name}' function definition.", token)
         elif current_part == 2:
             try:
                 param_types.append(SIGNATURE_MAP[token_value.upper()])
