@@ -2,29 +2,12 @@
 Functions for compile-time type checking and running the Torth program
 """
 import re
-import sys
 from copy import copy
-from typing import Dict, List, NoReturn, Optional
-from compiler.defs import COLORS, Function, Intrinsic, Location, Memory, Op, OpType
+from typing import Dict, List, Optional
+from compiler.defs import Function, Intrinsic, Location, Memory, Op, OpType
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
-from compiler.utils import equal_type_lists
-
-def compiler_error(error_type: str, error_message: str, token: Optional[Token] = None) -> NoReturn:
-    """Output compiler error message to the console and exit with non-zero exit code"""
-    print(f"{COLORS['HEADER']}Compiler error {COLORS['FAIL']}{error_type}{COLORS['NC']}" \
-        + f":\n{error_message}")
-    if token:
-        print(get_token_location_info(token))
-    sys.exit(1)
-
-def get_token_location_info(token: Token) -> str:
-    """Returns a string containing Token object's location in the source code"""
-    return f'''
-{COLORS['HEADER']}Operand{COLORS['NC']}: {token.value}
-{COLORS['HEADER']}File{COLORS['NC']}: {token.location[0]}
-{COLORS['HEADER']}Row{COLORS['NC']}: {token.location[1]}
-{COLORS['HEADER']}Column{COLORS['NC']}: {token.location[2]}'''
+from compiler.utils import compiler_error, equal_type_lists
 
 def generate_program(tokens: List[Token], functions: List[Function], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
