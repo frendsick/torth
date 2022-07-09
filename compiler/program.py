@@ -269,7 +269,7 @@ def type_check_function_call(op: Op, type_stack: TypeStack, \
         if not temp_stack.head:
             compiler_error("FUNCTION_SIGNATURE_ERROR", \
                 f"Function '{op.func.name}' requires more values to the stack.\n\n" + \
-                f"Expected parameter types: {param_types}\nStack: {type_stack.repr()}", op.token)
+                f"Expected parameter types: {param_types}", op.token, current_stack=type_stack)
         top_type: TokenType = temp_stack.pop().value  # type: ignore
 
         # Check for any type and pointers
@@ -280,7 +280,7 @@ def type_check_function_call(op: Op, type_stack: TypeStack, \
         if param_type not in [top_type, TokenType.ANY]:
             compiler_error("FUNCTION_SIGNATURE_ERROR", \
                 f"Function '{op.func.name}' has wrong parameter types in the stack.\n\n" + \
-                f"Expected parameter types: {param_types}\nStack: {type_stack.repr()}", op.token)
+                f"Expected parameter types: {param_types}", op.token, current_stack=type_stack)
     return temp_stack.get_types()
 
 def type_check_function_return(op: Op, function_signature: Signature, \
@@ -291,8 +291,8 @@ def type_check_function_return(op: Op, function_signature: Signature, \
     for return_type in return_types:
         if not temp_stack.head:
             compiler_error("FUNCTION_SIGNATURE_ERROR", \
-                f"Function '{op.func.name}' requires more values in the stack when function returns.\n\n" + \
-                f"Expected return types: {return_types}\nStack:\n{type_stack.repr()}", op.token)
+                f"Function '{op.func.name}' requires more values in the stack when the function returns.\n\n" + \
+                f"Expected return types: {return_types}", op.token, current_stack=type_stack)
 
         # Check for any type and pointers
         top_type: TokenType = temp_stack.pop().value  # type: ignore
@@ -301,9 +301,9 @@ def type_check_function_return(op: Op, function_signature: Signature, \
             continue
         # Check all other types
         if return_type not in [top_type, TokenType.ANY]:
-            compiler_error("FUNCTION_RETURN_TYPE_ERROR", \
+            compiler_error("FUNCTION_SIGNATURE_ERROR", \
                 f"Function '{op.func.name}' has wrong return types in the stack.\n\n" + \
-                f"Expected return types: {return_types}\nStack: {type_stack.repr()}", op.token)
+                f"Expected return types: {return_types}", op.token, current_stack=type_stack)
 
     # Check if the function consumes the correct amount of values from the stack
     stack_difference: int = len(function_signature[0]) - len(return_types)
@@ -311,7 +311,7 @@ def type_check_function_return(op: Op, function_signature: Signature, \
         expected_types: TypeStack = copy(type_stack)
         for _ in return_types:
             expected_types.pop()
-        compiler_error("FUNCTION_SIGNATURE_MISMATCH", \
+        compiler_error("FUNCTION_SIGNATURE_ERROR", \
             f"Function '{op.func.name}' does not use the values determined in function signature\n\n" + \
             f"Function Signature:\n{function_signature}\n\n" + \
             f"Stack before the function call:\n{function_call_stack.repr()}\n" + \
