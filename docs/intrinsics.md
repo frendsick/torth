@@ -129,10 +129,11 @@ For example, to load a value of type [INT](types.md#int-uint8---integer) (64-bit
 
 ## NTH
 
-Pop one [integer](definitions.md#integer-types) from the stack and push the Nth element from stack. The "Nth" is counted without the popped integer starting from 1.
+Pop one [integer](definitions.md#integer-types) from the stack as N. Then, push the Nth element from the stack. The "Nth" is counted without the popped integer starting from 1.
 
 ```
-30 20 10 3 NTH print // Output: 30 (30 is 3rd element without the popped 3).
+30 20 10
+3 NTH print // Output: 30 (30 is 3rd element without the popped 3).
 ```
 
 ## OR
