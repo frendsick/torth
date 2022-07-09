@@ -86,10 +86,12 @@ function execve str ptr ptr -> int : SYS_execve syscall3 end
 
 // Exit from the program with a <status> code
 // Params: int status
+// Return: None
 function exit int : SYS_exit syscall1 drop end
 
 // Print a string to a file descriptor
 // Params: int fd, char *buf
+// Return: None
 function fputs int str : swap dup str.len swap rot write drop end
 
 // Allocate read-write memory and return the pointer to the allocated memory
@@ -289,6 +291,7 @@ end
 
 // Append a character to the end of a string buffer
 // Params: string, character
+// Return: None
 function str.append str char : dup str.len ptr+ char.store end
 
 // Get the character at a certain index of a string
@@ -463,6 +466,7 @@ end
 
 // Create a file
 // Params: const char *pathname, mode_t mode
+// Return: None
 function touch_file str int :
   SYS_creat syscall2
 end
