@@ -7,7 +7,7 @@ import os
 from typing import List
 from compiler.compile import compile_code, link_object_file, remove_compilation_files
 from compiler.defs import Constant, Function, Memory, Program, Token
-from compiler.lex import get_constants_from_functions, get_functions_from_files
+from compiler.lex import add_enums_to_constants, get_constants_from_functions, get_functions_from_files
 from compiler.lex import get_included_files, get_memories_from_code, get_tokens_from_functions
 from compiler.utils import get_command_line_arguments, get_file_contents, handle_arguments
 from compiler.utils import print_if_verbose
@@ -19,8 +19,11 @@ def main():
     code: str                   = get_file_contents(args.code_file)
     compiler_directory: str     = os.path.dirname(os.path.abspath(__file__))
     included_files: List[str]   = get_included_files(code, compiler_directory, args.path)
-    functions: List[Function]   = get_functions_from_files(args.code_file, included_files)
+    included_files.append(args.code_file)
+
+    functions: List[Function]   = get_functions_from_files(included_files)
     constants: List[Constant]   = get_constants_from_functions(functions)
+    constants                   = add_enums_to_constants(included_files, constants)
     memories: List[Memory]      = get_memories_from_code(included_files, constants)
     code_file_basename: str     = os.path.basename(args.code_file)
 
