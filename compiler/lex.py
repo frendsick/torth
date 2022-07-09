@@ -13,6 +13,8 @@ def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Opti
     """Parse included files from a code string. Return the list of files."""
     INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', re.IGNORECASE)
     included_files: List[str] = []
+
+    code = remove_comments_from_code(code)
     for file_name in INCLUDE_REGEX.findall(code):
         # Append .torth file extension if it is not present
         # and the file does not exist as is
@@ -44,6 +46,10 @@ def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Opti
         included_code: str = get_file_contents(included_file)
         included_files += get_included_files(included_code, compiler_directory, extra_path_dirs)
     return included_files
+
+def remove_comments_from_code(code: str) -> str:
+    """Remove commens from Torth code"""
+    return re.sub(r'\/\/.*', '', code)
 
 def get_file_name_from_path(file_name: str, compiler_directory: str, extra_path_dirs: Optional[str]) -> str:
     """Include file from INCLUDE_PATHS"""
@@ -291,7 +297,7 @@ def get_token_matches(code: str) -> list:
     TOKEN_REGEX: re.Pattern[str] = re.compile(r'''\[.*\]|".*?"|'.*?'|\S+''')
 
     matches: List[re.Match[str]]            = list(re.finditer(TOKEN_REGEX, code))
-    code_without_comments: str              = re.sub(r'\s*\/\/.*', '', code)  # Take comments out of the code
+    code_without_comments: str              = remove_comments_from_code(code)
     final_code_matches: List[re.Match[str]] = list(re.finditer(TOKEN_REGEX, code_without_comments))
 
     # Take comments and macros out of matches
