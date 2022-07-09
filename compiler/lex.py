@@ -11,7 +11,7 @@ from compiler.utils import compiler_error, get_file_contents
 
 def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Optional[str]):
     """Parse included files from a code string. Return the list of files."""
-    INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', flags=re.MULTILINE | re.IGNORECASE)
+    INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', re.IGNORECASE)
     included_files: List[str] = []
     for file_name in INCLUDE_REGEX.findall(code):
         # Append .torth file extension if it is not present
