@@ -7,7 +7,7 @@ import re
 from typing import Dict, List, Optional
 from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
-from compiler.utils import compiler_error, get_file_contents
+from compiler.utils import compiler_error, function_exists, get_file_contents
 
 def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Optional[str]):
     """Parse included files from a code string. Return the list of files."""
@@ -77,7 +77,7 @@ def get_functions_from_files(file_name: str, included_files: List[str]) -> List[
         token_matches: list = get_token_matches(included_code)
         # Newlines are used to determine when a comment ends and when new line starts
         newline_indexes: List[int] = [nl.start() for nl in re.finditer('\n', included_code)]
-        functions += get_functions(f, token_matches, newline_indexes)
+        functions = get_functions(f, token_matches, newline_indexes, functions)
     return functions
 
 def valid_main_function_signature(signature: Signature) -> bool:
@@ -144,13 +144,13 @@ def get_tokens_from_function(parent_function: Function, functions: List[Function
         i += 1
     return tokens
 
-def get_functions(file: str, token_matches: list, newline_indexes: List[int]) -> List[Function]:
+def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
+    functions: List[Function]) -> List[Function]:
     """
     Parse Functions from a list containing re.Matches of tokens parsed from a code file.
     Return list of Function objects.
     """
     # Initialize variables
-    functions: List[Function]       = []
     current_part: int               = 0
     name: str                       = ''
     param_types: List[TokenType]    = []
@@ -192,6 +192,9 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int]) ->
                 is_const        = False
         elif current_part == 1:
             name = token_value
+            if function_exists(name, functions):
+                compiler_error("FUNCTION_REDEFINITION_ERROR", \
+                    f"Function '{name}' is already defined. Function redefinitions are not allowed.", token)
             if is_const:
                 # CONST is a constant integer so a function with Signature( [], [TokenType.INT] )
                 return_types.append(TokenType.INT)

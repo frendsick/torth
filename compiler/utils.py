@@ -6,7 +6,7 @@ import subprocess
 import os
 import sys
 from typing import List, NoReturn, Optional
-from compiler.defs import COLORS, Op, OpType, Program, Token, TokenType
+from compiler.defs import COLORS, Function, Op, OpType, Program, Token, TokenType
 
 def usage() -> NoReturn:
     """Print usage message and exit with non-zero exit code"""
@@ -70,6 +70,10 @@ def handle_arguments(input_file: str, executable_file: str, program: Program, ar
     if args.run:
         print_if_verbose(f"Running the executable {executable_file}", args.verbose)
         run_code(executable_file)
+
+def function_exists(function_name: str, functions: List[Function]) -> bool:
+    """Check if there is a Function with a certain name"""
+    return any(function_name == func.name for func in functions)
 
 def generate_graph_file(input_file: str, program: Program) -> None:
     """Generate SVG file displaying the control flow of the program"""
