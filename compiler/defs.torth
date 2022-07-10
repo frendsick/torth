@@ -104,3 +104,9 @@ ENUM TokenType.len 1 :
   TokenType.UINT8
   TokenType.WORD
 END
+
+ENUM Location.size 8 :
+  Location.file
+  Location.row
+  Location.column
+END
