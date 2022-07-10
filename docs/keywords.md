@@ -12,6 +12,7 @@ This is the documentation for different keywords available in the Torth language
 - [ELIF](#ELIF)
 - [ELSE](#ELSE)
 - [ENDIF](#ENDIF)
+- [ENUM](#ENUM)
 - [FUNCTION](#FUNCTION)
 - [IF](#IF)
 - [INCLUDE](#INCLUDE)
@@ -124,6 +125,34 @@ ENDIF is a keyword for [DO](#do), [ELIF](#elif), or [ELSE](#else) keywords to ju
 See also:
 
 - [IF Blocks](control_flow.md#if-block)
+
+## ENUM
+
+Enumerations in Torth enable generating named running integer values. Names defined inside ENUM block can be used as tokens in the code just like [constants](#CONST).
+
+See also:
+
+- [CONST](#CONST)
+
+### Examples
+
+```pascal
+ENUM item1 item2 item3 END
+ENUM
+  item4 // 0
+  item5 // 1
+  item6 // 2
+        // ...
+END
+
+include "std"
+function main :
+  item3 item6 + print // 2 + 2 = 4
+  item2 item5 + print // 1 + 1 = 2
+  "\n" puts
+  // Output: 42
+end
+```
 
 ## FUNCTION
 
