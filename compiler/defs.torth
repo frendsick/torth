@@ -129,3 +129,12 @@ ENUM Memory.size 8 :
   Memory.row
   Memory.column
 END
+
+// Token
+ENUM Token.size 8 :
+  Token.value
+  Token.type
+  Token.location
+  Token.row
+  Token.column
+END
