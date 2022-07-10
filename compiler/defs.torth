@@ -120,3 +120,12 @@ ENUM Constant.size 8 :
   Constant.row
   Constant.column
 END
+
+// Memory
+ENUM Memory.size 8 :
+  Memory.name
+  Memory.size
+  Memory.location
+  Memory.row
+  Memory.column
+END
