@@ -7,6 +7,7 @@ import re
 from typing import Dict, List, Optional
 from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
+from compiler.program import constant_exists
 from compiler.utils import compiler_error, function_exists, get_file_contents
 
 def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Optional[str]):
@@ -68,10 +69,28 @@ def get_file_name_from_path(file_name: str, compiler_directory: str, extra_path_
 
     return included_file_path
 
-def get_functions_from_files(file_name: str, included_files: List[str]) -> List[Function]:
+def add_enums_to_constants(included_files: List[str], constants: List[Constant]) -> List[Constant]:
+    """
+    Parse and add ENUM block contents to a list of Constants.
+    Items inside ENUM blocks are interpreted as running integers starting from 0.
+    """
+    ENUM_REGEX = re.compile(r'ENUM\s+[\s\S]*?\s+END', re.IGNORECASE | re.MULTILINE)
+    for file in included_files:
+        code: str = get_file_contents(file)
+        enum_matches = ENUM_REGEX.findall(code)
+        for match in enum_matches:
+            match_without_comments = remove_comments_from_code(match)
+            enum_names = match_without_comments.split()[1:-1]
+            for value, name in enumerate(enum_names):
+                if constant_exists(name, constants):
+                    compiler_error("CONST_REDEFINITION", \
+                        f"Constant '{name}' is defined multiple times. Constant names should be unique.")
+                constants.append(Constant(name, value, (file, -1, -1)))
+    return constants
+
+def get_functions_from_files(included_files: List[str]) -> List[Function]:
     """Parse declared functions from code file and included files. Return list of Function objects."""
     functions: List[Function] = []
-    included_files.append(file_name)
     for file in included_files:
         included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
@@ -359,7 +378,7 @@ def get_token_type(token_text: str) -> TokenType:
     """Return TokenType value corresponding to the Token.value."""
     keywords: List[str] = [
         'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
-        'ENDIF', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE'
+        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE'
     ]
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , \

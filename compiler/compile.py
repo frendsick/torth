@@ -26,7 +26,7 @@ def compile_code(input_file: str, tokens: List[Token], constants: List[Constant]
 
     # Generate Program from tokens and type check it with virtual stack
     print_if_verbose("Generating intermediate representation from the parsed tokens", is_verbose)
-    program: Program = generate_program(tokens, functions, memories)
+    program: Program = generate_program(tokens, constants, functions, memories)
 
     # Type check the program
     print_if_verbose("Type checking the program", is_verbose)

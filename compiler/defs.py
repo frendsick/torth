@@ -28,6 +28,7 @@ class Keyword(Enum):
     ELSE=auto()
     END=auto()
     ENDIF=auto()
+    ENUM=auto()
     FUNCTION=auto()
     IF=auto()
     INT=auto()
