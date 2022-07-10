@@ -20,7 +20,7 @@ syntax keyword torthKeywords BREAK CONTINUE DO DONE ELIF ELSE END ENDIF IF INCLU
 syntax keyword torthFunctionDefs CONST ENUM FUNCTION MEMORY END
 
 " Comments
-syntax region torthCommentLine start="//" end="$"   contains=torthTodos
+syntax region torthCommentLine start="\s+//" end="$"   contains=torthTodos
 
 " String literals
 syntax region torthString start=/\v"/ skip=/\v\\./ end=/\v"/ contains=torthEscapes

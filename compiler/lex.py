@@ -49,8 +49,8 @@ def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Opti
     return included_files
 
 def remove_comments_from_code(code: str) -> str:
-    """Remove commens from Torth code"""
-    return re.sub(r'\/\/.*', '', code)
+    """Remove comments from Torth code"""
+    return re.sub(r'\s+\/\/.*', '', code)
 
 def get_file_name_from_path(file_name: str, compiler_directory: str, extra_path_dirs: Optional[str]) -> str:
     """Include file from INCLUDE_PATHS"""
@@ -212,7 +212,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
         elif current_part == 1:
             name = token_value
             if function_exists(name, functions):
-                compiler_error("FUNCTION_REDEFINITION_ERROR", \
+                compiler_error("FUNCTION_REDEFINITION", \
                     f"Function '{name}' is already defined. Function redefinitions are not allowed.", token)
             if is_const:
                 # CONST is a constant integer so a function with Signature( [], [TokenType.INT] )
