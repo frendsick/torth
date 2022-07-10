@@ -74,18 +74,23 @@ def add_enums_to_constants(included_files: List[str], constants: List[Constant])
     Parse and add ENUM block contents to a list of Constants.
     Items inside ENUM blocks are interpreted as running integers starting from 0.
     """
-    ENUM_REGEX = re.compile(r'ENUM\s+[\s\S]*?\s+END', re.IGNORECASE | re.MULTILINE)
+    ENUM_REGEX = re.compile(r'ENUM\s+(\S+)\s+(\d+)\s+:\s+([\s\S]+?\s+)END', re.IGNORECASE | re.MULTILINE)
     for file in included_files:
         code: str = get_file_contents(file)
         enum_matches = ENUM_REGEX.findall(code)
         for match in enum_matches:
-            match_without_comments = remove_comments_from_code(match)
-            enum_names = match_without_comments.split()[1:-1]
-            for value, name in enumerate(enum_names):
+            enum_name: str   = match[0]
+            enum_offset: int = int(match[1])
+            enum_items: str  = match[2]
+            match_without_comments = remove_comments_from_code(enum_items)
+            enum_names = match_without_comments.split()
+            for index, name in enumerate(enum_names):
+                value: int = index * enum_offset
                 if constant_exists(name, constants):
                     compiler_error("CONST_REDEFINITION", \
                         f"Constant '{name}' is defined multiple times. Constant names should be unique.")
                 constants.append(Constant(name, value, (file, -1, -1)))
+            constants.append(Constant(enum_name, enum_offset*len(enum_names), (file, -1, -1)))
     return constants
 
 def get_functions_from_files(included_files: List[str]) -> List[Function]:
