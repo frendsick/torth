@@ -1,5 +1,5 @@
 // Keywords
-ENUM
+ENUM Keyword.len 1 :
   Keyword.BOOL
   Keyword.BREAK
   Keyword.CHAR
@@ -23,7 +23,7 @@ ENUM
 END
 
 // Intrinsics
-ENUM
+ENUM Intrinsic.len 1 :
   Intrinsic.AND
   Intrinsic.ARGC
   Intrinsic.ARGV
@@ -64,7 +64,7 @@ ENUM
 END
 
 // OpType
-ENUM
+ENUM OpType.len 1 :
   OpType.BREAK
   OpType.CAST_BOOL
   OpType.CAST_CHAR
@@ -93,7 +93,7 @@ ENUM
 END
 
 // TokenType
-ENUM
+ENUM TokenType.len 1 :
   TokenType.ANY
   TokenType.BOOL
   TokenType.CHAR
