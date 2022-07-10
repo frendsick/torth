@@ -128,29 +128,38 @@ See also:
 
 ## ENUM
 
-Enumerations in Torth enable generating named running integer values. Names defined inside ENUM block can be used as tokens in the code just like [constants](#CONST).
+Enumerations in Torth enable generating named running integer values with certain positive offset between each integer. Names defined inside ENUM block can be used as tokens in the code just like [constants](#CONST). The ENUM block's name will also be a constant with the value of `offset * items_count`.
 
 See also:
 
 - [CONST](#CONST)
 
+### Syntax
+
+```pascal
+ENUM <name> <offset> : item1 item2 END
+```
+
 ### Examples
 
 ```pascal
-ENUM item1 item2 item3 END
-ENUM
+ENUM offset_by_one 1 : item1 item2 item3 END
+ENUM offset_by_three 3 :
   item4 // 0
-  item5 // 1
-  item6 // 2
+  item5 // 3
+  item6 // 6
         // ...
 END
 
 include "std"
 function main :
-  item3 item6 + print // 2 + 2 = 4
-  item2 item5 + print // 1 + 1 = 2
-  "\n" puts
-  // Output: 42
+  item2 item5 + print     // 1 + 3 = 4
+  item3 item4 + print     // 2 + 0 = 2
+  "\n" puts               // Output: 42
+
+  item6 print             // 6
+  offset_by_three print   // 9 (offset * item_count)
+  "\n" puts               // Output: 69
 end
 ```
 
