@@ -138,3 +138,9 @@ ENUM Token.size 8 :
   Token.row
   Token.column
 END
+
+// Function Signature
+ENUM Signature.size 8 :
+  Signature.params  // Pointer to function param types
+  Signature.returns // Pointer to function return types
+END
