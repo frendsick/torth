@@ -152,3 +152,11 @@ ENUM Function.size 8 :
   Function.returns  // Signature.returns
   Function.tokens   // List[Token]
 END
+
+// Op
+ENUM Op.size 8 :
+  Op.id
+  Op.type
+  Op.token
+  Op.function
+END
