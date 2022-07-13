@@ -105,13 +105,6 @@ ENUM TokenType.len 1 :
   TokenType.WORD
 END
 
-// Location
-ENUM Location.size 8 :
-  Location.file
-  Location.row
-  Location.column
-END
-
 // Constant
 ENUM Constant.size 8 :
   Constant.name
