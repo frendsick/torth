@@ -119,13 +119,6 @@ ENUM Memory.size 8 :
   Memory.location
 END
 
-// Token(value: str, type: TokenType, location: Location)
-ENUM Token.size 8 :
-  Token.value
-  Token.type
-  Token.location
-END
-
 // Function Signature
 ENUM Signature.size 8 :
   Signature.params  // Pointer to function param types

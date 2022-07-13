@@ -1,0 +1,6 @@
+// Token(value: str, type: TokenType, location: Location)
+ENUM Token.size 8 :
+  Token.value     // str
+  Token.type      // TokenType => int
+  Token.location  // Location  => ptr
+END
