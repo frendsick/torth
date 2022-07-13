@@ -1,6 +1,19 @@
 // Location(file: str, row: int, col: int)
 ENUM Location.size 8 :
-  Location.file
-  Location.row
-  Location.column
+  Location.file   // str
+  Location.row    // int
+  Location.column // int
 END
+
+// Initialize Location from parameters
+// Params: Location.file, Location.row, Location.column
+// Return: Pointer to Location
+function Location.init str int int -> ptr :
+  // Allocate memory for Op
+  Location.size malloc
+
+  // Load the parameters to the allocated memory
+  swap over Location.file    ptr+ str.store
+  swap over Location.row     ptr+ int.store
+  swap over Location.column  ptr+ int.store
+end
