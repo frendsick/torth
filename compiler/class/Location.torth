@@ -9,7 +9,7 @@ END
 // Params: Location.file, Location.row, Location.column
 // Return: Pointer to Location
 function Location.init str int int -> ptr :
-  // Allocate memory for Op
+  // Allocate memory for Location
   Location.size malloc
 
   // Load the parameters to the allocated memory
