@@ -152,3 +152,7 @@ ENUM Function.size 8 :
   Function.returns  // Signature.returns
   Function.tokens   // List[Token]
 END
+
+// List[Op]
+memory Program MEMORY_CAPACITY end
+memory Program.len int.size end
