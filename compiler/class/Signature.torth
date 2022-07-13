@@ -1,0 +1,5 @@
+// Signature(params: List[TokenType], returns: List[TokenType])
+ENUM Signature.size 8 :
+  Signature.params  // List[TokenType]  => ptr
+  Signature.returns // List[TokenType]  => ptr
+END

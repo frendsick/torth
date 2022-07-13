@@ -112,12 +112,6 @@ ENUM Constant.size 8 :
   Constant.location
 END
 
-// Function Signature
-ENUM Signature.size 8 :
-  Signature.params  // Pointer to function param types
-  Signature.returns // Pointer to function return types
-END
-
 // List[Op]
 memory Program MEMORY_CAPACITY end
 memory Program.len int.size end
