@@ -118,14 +118,6 @@ ENUM Signature.size 8 :
   Signature.returns // Pointer to function return types
 END
 
-// Function
-ENUM Function.size 8 :
-  Function.name     // str
-  Function.params   // Signature.params
-  Function.returns  // Signature.returns
-  Function.tokens   // List[Token]
-END
-
 // List[Op]
 memory Program MEMORY_CAPACITY end
 memory Program.len int.size end

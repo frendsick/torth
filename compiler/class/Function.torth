@@ -1,0 +1,6 @@
+// Function(name: str, signature: Signature, tokens: List[Token])
+ENUM Function.size 8 :
+  Function.name       // str
+  Function.signature  // Signature    => ptr
+  Function.tokens     // List[Token]  => ptr
+END
