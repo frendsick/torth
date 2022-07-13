@@ -1,0 +1,7 @@
+// Op(id: int, type: OpType, token: Token, function: Function)
+ENUM Op.size 8 :
+  Op.id       // int
+  Op.type     // OpType   => int
+  Op.token    // Token    => ptr
+  Op.function // Function => ptr
+END
