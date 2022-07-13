@@ -4,3 +4,16 @@ ENUM Token.size 8 :
   Token.type      // TokenType => int
   Token.location  // Location  => ptr
 END
+
+// Initialize Token from parameters
+// Params: Token.value, Token.type, Token.location
+// Return: Pointer to Token
+function Token.init str int int -> ptr :
+  // Allocate memory for Token
+  Token.size malloc
+
+  // Load the parameters to the allocated memory
+  swap over Token.value    ptr+ str.store
+  swap over Token.type     ptr+ int.store
+  swap over Token.location ptr+ int.store
+end
