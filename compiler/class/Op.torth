@@ -5,3 +5,38 @@ ENUM Op.size 8 :
   Op.token    // Token    => ptr
   Op.function // Function => ptr
 END
+
+// Initialize Op from parameters
+// Params: Op.id, Op.type, Op.token, Op.function
+// Return: Pointer to Op
+function Op.init int int ptr ptr -> ptr :
+  // Allocate memory for Op
+  Op.size malloc
+
+  // Load the parameters to the allocated memory
+  swap over Op.id       ptr+ int.store
+  swap over Op.type     ptr+ int.store
+  swap over Op.token    ptr+ ptr.store
+  swap over Op.function ptr+ ptr.store
+end
+
+// Print Op contents to stdout
+// Params: Pointer to Op
+// Return: None
+function Op.print ptr :
+  "Op.id        => " puts
+  dup Op.id       ptr+
+  int.load print "\n" puts
+
+  "Op.type      => " puts
+  dup Op.type     ptr+
+  int.load print "\n" puts
+
+  "Op.token     => " puts
+  dup Op.token    ptr+
+  int.load print "\n" puts
+
+  "Op.function  => " puts
+      Op.function ptr+
+  int.load print "\n\n" puts
+end
