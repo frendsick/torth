@@ -110,8 +110,6 @@ ENUM Constant.size 8 :
   Constant.name
   Constant.value
   Constant.location
-  Constant.row
-  Constant.column
 END
 
 // Memory
@@ -119,17 +117,13 @@ ENUM Memory.size 8 :
   Memory.name
   Memory.size
   Memory.location
-  Memory.row
-  Memory.column
 END
 
-// Token
+// Token(value: str, type: TokenType, location: Location)
 ENUM Token.size 8 :
   Token.value
   Token.type
   Token.location
-  Token.row
-  Token.column
 END
 
 // Function Signature
