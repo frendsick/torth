@@ -1,0 +1,6 @@
+// Memory(name: str, size: int, location: Location)
+ENUM Memory.size 8 :
+  Memory.name     // str
+  Memory.size     // int
+  Memory.location // Location => ptr
+END

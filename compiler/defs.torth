@@ -112,13 +112,6 @@ ENUM Constant.size 8 :
   Constant.location
 END
 
-// Memory
-ENUM Memory.size 8 :
-  Memory.name
-  Memory.size
-  Memory.location
-END
-
 // Function Signature
 ENUM Signature.size 8 :
   Signature.params  // Pointer to function param types
