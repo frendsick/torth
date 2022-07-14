@@ -3,3 +3,32 @@ ENUM Signature.size 8 :
   Signature.params  // List[TokenType]  => ptr
   Signature.returns // List[TokenType]  => ptr
 END
+
+// Allocate memory for Signature and the TokenType lists in it
+function Signature.init -> ptr :
+  ptr.size malloc // Signature.returns
+  ptr.size malloc // Signature.params
+  Signature.size malloc
+
+  // returns signature
+  swap over Signature.params  ptr+ ptr.store
+  swap over Signature.returns ptr+ ptr.store
+end
+
+function Signature.print ptr :
+  // Print params
+  "Signature.params   => " puts
+  dup Signature.params ptr+ ptr.load
+  0 while dup2 ptr+ int.load NULL != do
+    dup2 ptr+ int.load print " " puts
+    ptr.size +
+  done drop2 "\n" puts
+
+  // Print returns
+  "Signature.returns  => " puts
+  dup Signature.returns ptr+ ptr.load
+  0 while dup2 ptr+ int.load NULL != do
+    dup2 ptr+ int.load print " " puts
+    ptr.size +
+  done drop2 drop "\n" puts
+end

@@ -17,3 +17,17 @@ function Location.init str int int -> ptr :
   swap over Location.row     ptr+ int.store
   swap over Location.column  ptr+ int.store
 end
+
+function Location.print ptr :
+  "Location.file      => "  puts
+  dup Location.file         ptr+
+  str.load puts "\n"        puts
+
+  "Location.row       => "  puts
+  dup Location.row          ptr+
+  int.load print "\n"       puts
+
+  "Location.column    => "  puts
+      Location.column       ptr+
+  int.load print "\n"       puts
+end

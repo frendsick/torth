@@ -15,5 +15,18 @@ function Token.init str int int -> ptr :
   // Load the parameters to the allocated memory
   swap over Token.value    ptr+ str.store
   swap over Token.type     ptr+ int.store
-  swap over Token.location ptr+ int.store
+  swap over Token.location ptr+ ptr.store
+end
+
+function Token.print ptr :
+  "Token.value        => " puts
+  dup Token.value     ptr+
+  str.load puts "\n"  puts
+
+  "Token.type         => " puts
+  dup Token.type      ptr+
+  int.load print "\n" puts
+
+  Token.location ptr+ ptr.load
+  Location.print
 end

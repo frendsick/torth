@@ -4,3 +4,28 @@ ENUM Function.size 8 :
   Function.signature  // Signature    => ptr
   Function.tokens     // List[Token]  => ptr
 END
+
+// Initialize Function from parameters
+// Params: Function.name, Function.signature, Function.tokens
+// Return: Pointer to Function
+function Function.init str ptr ptr -> ptr :
+  // Allocate memory for Function
+  Function.size malloc
+
+  // Load the parameters to the allocated memory
+  swap over Function.name       ptr+ str.store
+  swap over Function.signature  ptr+ ptr.store
+  swap over Function.tokens     ptr+ ptr.store
+end
+
+// Print Function name and Signature to stdout
+// Params: Pointer to Function
+// Return: None
+function Function.print ptr :
+  "Function.name      => "  puts
+  dup Function.name         ptr+
+  str.load puts "\n"        puts
+
+  Function.signature ptr+ ptr.load
+  Signature.print
+end
