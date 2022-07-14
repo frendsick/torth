@@ -9,11 +9,11 @@ function valid_palindrome str :
   str.alphanumeric str.lower
 
   // Print whether or not the string is palindrome
-  if str.is_palindrome do
+  if dup str.is_palindrome do
     " is palindrome\n"
   else
     " is not palindrome\n"
-  endif puts
+  endif puts drop
 end
 
 function main :
