@@ -1,0 +1,16 @@
+// utils.torth - Utility functions for Torth compiler
+
+// Generate dummy Location
+// Location(file='test.torth', row=6, col=9)
+function get_dummy_location -> ptr :
+  9 6 "test.torth" Location.init
+end
+
+// Generate dummy Signature
+// Signature([TokenType.INT, TokenType.INT], [TokenType.INT])
+function get_dummy_signature -> ptr :
+  Signature.init
+  TokenType.INT over Signature.params   ptr+ ptr.load               int.store
+  TokenType.INT over Signature.params   ptr+ ptr.load int.size ptr+ int.store
+  TokenType.INT over Signature.returns  ptr+ ptr.load               int.store
+end
