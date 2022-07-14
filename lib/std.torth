@@ -148,57 +148,37 @@ end
 
 // Test if character is a number
 function char.is_numeric char -> bool :
-  if
-    dup   '0' <=
-    over  '9' >=
-    &&
-  do True
-  else False
-  endif swap drop
+  dup   '0' <=
+  swap  '9' >=
+  &&
 end
 
 // Test if a character is a lowercase letter
 function char.is_lowercase char -> bool :
-  if
-    dup  'a' <=
-    over 'z' >=
-    &&
-  do True
-  else False
-  endif swap drop
+  dup  'a' <=
+  swap 'z' >=
+  &&
 end
 
 // Test if a character is an uppercase letter
 function char.is_uppercase char -> bool :
-  if
-    dup  'A' <=
-    over 'Z' >=
-    &&
-  do True
-  else False
-  endif swap drop
+  dup  'A' <=
+  swap 'Z' >=
+  &&
 end
 
 // Test if a character is a letter
 function char.is_letter char -> bool :
-  if
-    dup  char.is_uppercase
-    over char.is_lowercase
-    ||
-  do True
-  else False
-  endif swap drop
+  dup  char.is_uppercase
+  swap char.is_lowercase
+  ||
 end
 
 // Test if a character is either a letter or a number
 function char.is_alphanumeric char -> bool :
-  if
-    dup  char.is_letter
-    over char.is_numeric
-    ||
-  do True
-  else False
-  endif swap drop
+  dup  char.is_letter
+  swap char.is_numeric
+  ||
 end
 
 // Int functions
