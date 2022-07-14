@@ -1,13 +1,14 @@
 """
 Functions for compile-time type checking and running the Torth program
 """
+import itertools
 import re
 from copy import copy
 from typing import Dict, List, Optional
 from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
-from compiler.utils import compiler_error, equal_type_lists
+from compiler.utils import compiler_error
 
 def generate_program(tokens: List[Token], constants: List[Constant], \
     functions: List[Function], memories: List[Memory]) -> Program:
@@ -324,10 +325,10 @@ def type_check_function_return(op: Op, function_signature: Signature, \
             f"Stack before the function call:\n{function_call_stack.repr()}\n" + \
             f"Stack after the function call:\n{type_stack.repr()}")
 
-def matching_stacks(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
+def matching_type_lists(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
     """Check if two virtual stacks have matching types in them."""
     return not any(type1 != type2 and TokenType.ANY not in {type1, type2} \
-        for type1, type2 in zip(stack1, stack2))
+        for type1, type2 in itertools.zip_longest(stack1, stack2))
 
 def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
     if_block_return_stack: Optional[TypeStack] = None) -> List[TypeStack]:
@@ -346,7 +347,7 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
     # Check if stack states are different between sections inside IF block
     if if_block_return_stack:
         return_types: List[TokenType] = if_block_return_stack.get_types()
-        if not matching_stacks(return_types, after_types):
+        if not matching_type_lists(return_types, after_types):
             error: str   =  "Stack state should be the same after each section in the IF block.\n\n"
             error       += f"Stack state after previous sections:\n{if_block_return_stack.repr()}\n"
             error       += f"Stack state after the current section:\n{stack_after_branch.repr()}"
@@ -359,7 +360,7 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
     error += f"Stack state at the end of the block:\n{stack_after_branch.repr()}"
     if len(before_types) != len(after_types):
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
-    if not matching_stacks(before_types, after_types):
+    if not matching_type_lists(before_types, after_types):
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
 
     return branched_stacks
