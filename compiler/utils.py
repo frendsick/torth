@@ -6,7 +6,7 @@ import subprocess
 import os
 import sys
 from typing import List, NoReturn, Optional
-from compiler.defs import COLORS, Function, Op, OpType, Program, Token, TokenType, TypeStack
+from compiler.defs import COLORS, Function, Op, OpType, Program, Token, TypeStack
 
 def usage() -> NoReturn:
     """Print usage message and exit with non-zero exit code"""
