@@ -4,7 +4,7 @@ Functions used for generating assembly code from Torth code
 from typing import Dict, List, Optional
 from compiler.defs import Constant, Memory, OpType, Op, Program, Token
 from compiler.utils import compiler_error, get_parent_op_type_do, get_parent_while
-from compiler.utils import get_end_op_for_while
+from compiler.utils import get_end_op_for_while, get_related_endif
 
 def initialize_asm(constants: List[Constant], memories: List[Memory]) -> str:
     """Initialize assembly code file with some common definitions."""
@@ -334,22 +334,16 @@ def get_done_asm(op: Op, program: Program) -> str:
 
 def get_elif_asm(op: Op, program: Program) -> str:
     """ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to."""
-    op_asm: str = ''
-    for i in range(op.id + 1, len(program)):
-        if program[i].type == OpType.ENDIF:
-            op_asm += f'  jmp ENDIF{i}\n'
-            op_asm += f'ELIF{op.id}:\n'
-            break
+    related_endif: Op = get_related_endif(op, program)
+    op_asm: str  = f'  jmp ENDIF{related_endif.id}\n'
+    op_asm      += f'ELIF{op.id}:\n'
     return op_asm
 
 def get_else_asm(op: Op, program: Program) -> str:
     """ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to."""
-    op_asm: str = ''
-    for i in range(op.id + 1, len(program)):
-        if program[i].type == OpType.ENDIF:
-            op_asm += f'  jmp ENDIF{i}\n'
-            op_asm += f'ELSE{op.id}:\n'
-            break
+    related_endif: Op = get_related_endif(op, program)
+    op_asm: str  = f'  jmp ENDIF{related_endif.id}\n'
+    op_asm      += f'ELSE{op.id}:\n'
     return op_asm
 
 def get_endif_asm(op: Op) -> str:

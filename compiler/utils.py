@@ -192,6 +192,20 @@ def get_graph_row_else(op: Op, program: Program) -> str:
     compiler_error('GRAPH_ERROR', \
         'Unknown error occurred while generating Graphviz graph for ELSE keyword', op.token)
 
+def get_related_endif(op: Op, program: Program) -> Op:
+    """Returns the current loop's ENDIF Operand for the current Operand."""
+    if_count: int = 0
+    for i in range(op.id+1, len(program)):
+        if program[i].type == OpType.ENDIF:
+            if if_count == 0:
+                return program[i]
+            if_count -= 1
+        elif program[i].type == OpType.IF:
+            if_count += 1
+
+    compiler_error(f"AMBIGUOUS_{op.token.value.upper()}", \
+        f"{op.token.value.upper()} operand without parent WHILE.", op.token)
+
 def get_parent_while(op: Op, program: Program) -> Op:
     """Returns the parent WHILE Operand for the current Operand."""
     done_count: int = 0
