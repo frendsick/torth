@@ -1,0 +1,158 @@
+// lex.torth - Lexing functions that parses Tokens from code files
+
+// Append Op to Program
+// Params: Pointer to Op
+// Return: None
+function Program.append ptr :
+  // Store Op to the end of Program
+  Program
+  Program.len int.load
+  Op.size * ptr+ ptr.store
+
+  // Increment Program.len
+  Program.len int.load 1 +
+  Program.len int.store
+end
+
+// Iterate over every Op in Program and print the contents of them
+// Params: Pointer to Program (PTR)
+// Return: None
+function Program.print ptr :
+  0 while dup Program.len int.load > do
+    // Load current Op
+    dup2 Op.size * ptr+ ptr.load
+
+    // Print current Op
+    Op.print "\n" puts
+    1 +
+  done drop2 "\n" puts
+end
+
+// Transfer comparison and calculations related symbols to their text counterparts
+// Params: Token match from code (STR)
+// Return: Value for Token (STR)
+function get_token_value str -> str :
+  if dup "==" streq do
+    drop "EQ"
+  elif dup ">=" streq do
+    drop "GE"
+  elif dup ">" streq do
+    drop "GT"
+  elif dup "<=" streq do
+    drop "LE"
+  elif dup "<" streq do
+    drop "LT"
+  elif dup "-" streq do
+    drop "MINUS"
+  elif dup "*" streq do
+    drop "MUL"
+  elif dup "!=" streq do
+    drop "NE"
+  elif dup "+" streq do
+    drop "PLUS"
+  endif
+end
+
+const single_quote 39 end
+function get_token_type str -> int :
+  // TODO: TokenType.KEYWORD
+  // Boolean => True
+  if
+    dup str.copy str.upper
+    dup   "TRUE"  streq
+    swap  "FALSE" streq
+    ||
+  do
+    drop TokenType.BOOL
+  // Character => 'a'
+  elif
+    dup str.len 3 ==
+    over    char.load   single_quote ==
+    3 nth 2 str.char_at single_quote ==
+    && &&
+  do
+    drop TokenType.CHAR
+  // Integer => 1337
+  elif
+    dup str.is_numeric
+  do
+    drop TokenType.INT
+  // Hexadecimal => 0x1337
+  elif
+    dup    char.load    '0' ==
+    over 1 str.char_at  'x' ==
+    &&
+  do
+    drop TokenType.INT
+  // String => "This is string\n"
+  elif
+    dup char.load                     '"' ==
+    over dup str.len 1 - str.char_at  '"' ==
+    &&
+  do
+    drop TokenType.STR
+  // uint8 => u69
+  elif
+    dup char.load 'u' ==
+    over 1 str.char_at char.is_numeric
+    &&
+  do
+    drop TokenType.UINT8
+  // Everything else
+  else
+    drop TokenType.WORD
+  endif
+end
+
+function get_token_from_match str -> ptr :
+  get_token_value dup
+  get_token_type
+  get_dummy_location
+  rev Token.init
+end
+
+function get_tokens_function ptr -> ptr :
+  drop "Parsing Token's function is not implemented yet.\n" eputs
+  dummy_token_list get_dummy_signature "test" Function.init
+end
+
+function get_op_type ptr -> int :
+  if dup Token.get_type TokenType.BOOL == do
+    OpType.PUSH_BOOL
+  elif dup Token.get_type TokenType.CHAR == do
+    OpType.PUSH_CHAR
+  elif dup Token.get_type TokenType.INT == do
+    OpType.PUSH_INT
+  elif dup Token.get_type TokenType.STR == do
+    OpType.PUSH_STR
+  elif dup Token.get_type TokenType.UINT8 == do
+    OpType.PUSH_UINT8
+  else
+    "Parsing OpType from Token '" eputs
+    dup Token.get_value eputs
+    "' is not implemented yet.\n" eputs
+    1337
+  endif swap drop
+end
+
+// Dummy memories for testing purposes
+memory dummy_token_list ptr.size end
+function get_op_from_token ptr -> ptr :
+  // Op(id=id, type=op_type, token=token, function=function)
+  dup get_tokens_function // function
+  swap                    // token
+  dup get_op_type         // op_type
+  Program.len int.load    // id
+  Op.init
+end
+
+function Program.append_match str -> :
+  // Generate Token from string
+  get_token_from_match
+
+  // Generate Op from Token
+  get_op_from_token
+
+  // Append Op to Program
+  Program.append
+end
