@@ -18,6 +18,27 @@ function Token.init str int ptr -> ptr :
   swap over Token.location ptr+ ptr.store
 end
 
+// Get Token.value
+// Params: Pointer to Token (PTR)
+// Return: Token.value (STR)
+function Token.get_value ptr -> str :
+  str.load
+end
+
+// Get Token.type
+// Params: Pointer to Token (PTR)
+// Return: Token.type (TokenType => INT)
+function Token.get_type ptr -> int :
+  Token.type ptr+ int.load
+end
+
+// Get Token.location
+// Params: Pointer to Token (PTR)
+// Return: Token.location (Location => PTR)
+function Token.get_location ptr -> ptr :
+  Token.location ptr+ ptr.load
+end
+
 function Token.print ptr :
   "Token.value        => " puts
   dup Token.value     ptr+
