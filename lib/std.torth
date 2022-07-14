@@ -282,6 +282,18 @@ function str.char_at int str -> char : ptr+ char.load end
 // Test if a string is a palindrome (reads the same backward or forward)
 function str.is_palindrome str -> bool : dup str.reverse streq end
 
+// Test if string only contains numeric characters
+function str.is_numeric str -> bool :
+  0 while dup2 str.char_at NULL != do
+    if dup2 str.char_at char.is_numeric not do
+      break
+    endif
+    1 +
+  done
+  // Return True if the whole string was numeric
+  swap str.len ==
+end
+
 // Overwrite a string with NULL-bytes
 function str.empty str :
   0 while dup2 str.char_at NULL != do
