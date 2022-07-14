@@ -229,14 +229,3 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
         if program[i].type in (OpType.DONE, OpType.ENDIF):
             parent_count += 1
     compiler_error("AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE", op.token)
-
-def equal_type_lists(type_list1: List[TokenType], type_list2: List[TokenType]) -> bool:
-    """Check if two Lists of TokenTypes are equal without checking ANY types."""
-    if len(type_list1) != len(type_list2):
-        return False
-    for t1, t2 in zip(type_list1, type_list2):
-        if TokenType.ANY in {t1, t2}:
-            continue
-        if t1 != t2:
-            return False
-    return True
