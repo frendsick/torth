@@ -8,7 +8,7 @@ END
 // Initialize Token from parameters
 // Params: Token.value, Token.type, Token.location
 // Return: Pointer to Token
-function Token.init str int int -> ptr :
+function Token.init str int ptr -> ptr :
   // Allocate memory for Token
   Token.size malloc
 
