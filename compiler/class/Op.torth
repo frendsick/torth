@@ -24,19 +24,17 @@ end
 // Params: Pointer to Op
 // Return: None
 function Op.print ptr :
-  "Op.id        => " puts
+  "Op.id              => " puts
   dup Op.id       ptr+
   int.load print "\n" puts
 
-  "Op.type      => " puts
+  "Op.type            => " puts
   dup Op.type     ptr+
   int.load print "\n" puts
 
-  "Op.token     => " puts
-  dup Op.token    ptr+
-  int.load print "\n" puts
+  dup Op.token ptr+ ptr.load
+  Token.print
 
-  "Op.function  => " puts
-      Op.function ptr+
-  int.load print "\n\n" puts
+  Op.function ptr+ ptr.load
+  Function.print
 end
