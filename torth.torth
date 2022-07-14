@@ -1,6 +1,8 @@
 // torth.torth - Self hosted implementation of the Torth compiler
 include "std"
 include "compiler/defs"
+include "compiler/utils"
+include "compiler/lex"
 include "compiler/class/Function"
 include "compiler/class/Location"
 include "compiler/class/Op"
@@ -11,71 +13,14 @@ function NotImplementedError str :
   eputs 1 exit
 end
 
-// Generate dummy Location
-// Location(file='test.torth', row=6, col=9)
-function get_dummy_location -> ptr :
-  9 6 "test.torth" Location.init
-end
-
-// Generate dummy Token
-// Params: Location
-// Return: Token
-// Token(value='34', type=TokenType.INT, location=test_location)
-function get_dummy_token ptr -> ptr :
-  TokenType.INT "34" Token.init   // test_token
-end
-
-// Generate dummy Signature
-// Signature([TokenType.INT, TokenType.INT], [TokenType.INT])
-function get_dummy_signature -> ptr :
-  Signature.init
-  TokenType.INT over Signature.params   ptr+ ptr.load               int.store
-  TokenType.INT over Signature.params   ptr+ ptr.load int.size ptr+ int.store
-  TokenType.INT over Signature.returns  ptr+ ptr.load               int.store
-end
-
-// Append Op to Program
-// Params: Pointer to Op
-// Return: None
-function Program.append ptr :
-  // Store Op to the end of Program
-  Program
-  Program.len int.load
-  Op.size * ptr+ ptr.store
-
-  // Increment Program.len
-  Program.len int.load 1 +
-  Program     int.store
-end
-
-function Program.print ptr :
-  0 while dup Program.len int.load > do
-    over Op.print "\n" puts
-    Op.size +
-  done drop2 "\n" puts
-end
-
-// Dummy memories for testing purposes
-memory dummy_token_list ptr.size end
-function generate_dummy_program -> ptr :
-  get_dummy_location
-  get_dummy_token
-
-  // Save Token in dummy_token_list
-  dup dummy_token_list ptr.store
-
-  // Generate dummy Function which contains test_token
-  // Function(name='test', signature=test_signature, tokens=dummy_token_list)
-  dummy_token_list get_dummy_signature "test" Function.init // test_function
-
-  // Generate dummy Op
-  // Op(id=0, type=OpType.PUSH_INT, token=test_token, function=test_function)
-  dummy_token_list ptr.load
-  OpType.PUSH_INT 0 Op.init
-  dup Op.print Program.append
-end
-
 function main :
-  generate_dummy_program Program.print
+  "34"    Program.append_match "\n" puts
+  "35"    Program.append_match "\n" puts
+  "+"     Program.append_match "\n" puts
+  "print" Program.append_match "\n" puts
+
+  "Printing the contents of the Program:\n\n" puts
+  Program Program.print
+
   "TODO: Implement Torth compiler with itself.\n" NotImplementedError
 end
