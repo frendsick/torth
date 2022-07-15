@@ -109,7 +109,7 @@ function get_op_type ptr -> int :
     "Parsing OpType from Token '" eputs
     dup Token.get_value eputs
     "' is not implemented yet.\n" eputs
-    1337
+    OpType.INTRINSIC
   endif swap drop
 end
 
