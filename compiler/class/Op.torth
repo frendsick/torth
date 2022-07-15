@@ -22,6 +22,34 @@ function Op.init int int ptr ptr -> ptr :
   swap over Op.function ptr+ ptr.store
 end
 
+// Get Op.id
+// Params: Pointer to Op (PTR)
+// Return: Op.id (INT)
+function Op.get_id ptr -> int :
+  int.load
+end
+
+// Get Op.type
+// Params: Pointer to Op (PTR)
+// Return: Op.type (OpType => INT)
+function Op.get_type ptr -> int :
+  Op.type ptr+ int.load
+end
+
+// Get Op.token
+// Params: Pointer to Op (PTR)
+// Return: Op.token (Token => PTR)
+function Op.get_token ptr -> ptr :
+  Op.token ptr+ ptr.load
+end
+
+// Get Op.function
+// Params: Pointer to Op (PTR)
+// Return: Op.function (Function => PTR)
+function Op.get_function ptr -> ptr :
+  Op.function ptr+ ptr.load
+end
+
 // Print Op contents to stdout
 // Params: Pointer to Op
 // Return: None
