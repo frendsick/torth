@@ -255,13 +255,28 @@ def get_arithmetic_asm(operand: str) -> str:
     arithmetic_asm      +=  '  push rax\n'
     return arithmetic_asm
 
+def format_escape_sequence_characters_for_nasm(string: str) -> str:
+    """Transform escape sequence characters to a format supported by NASM."""
+    # Make temporary value for escaped backslashes
+    string = string.replace('\\\\','<backslash>')
+
+    # Handle escape sequence characters
+    string = string.replace('\\t','",9,"')          # Tab
+    string = string.replace('\\n','",10,"')         # Newline
+    string = string.replace('\\r','",13,"')         # Carriage return
+    string = string.replace('\\e','",27,"')         # Escape
+
+    # Escaped backslash to a singular backslash
+    string = string.replace('<backslash>','\\')
+    return string
+
 def add_string_variable_asm(assembly: str, string: str, op: Op, constants: List[Constant]) -> str:
     """Writes a new string variable to assembly file in the .rodata section."""
     assembly_lines: List[str] = assembly.split('\n')
     assembly = get_asm_file_start(constants)
 
     # Replace \n with nasm approved 10s for newline
-    string = string.replace('\\n','",10,"')
+    string = format_escape_sequence_characters_for_nasm(string)
     assembly += f'  s{op.id} db {string},0\n'
 
     # Rewrite lines except for the first line (section .rodata)
