@@ -35,7 +35,7 @@ def compile_code(input_file: str, tokens: List[Token], constants: List[Constant]
     # Generate assembly from Program
     print_if_verbose("Generating Assembly from the intermediate representation", is_verbose)
     assembly: str = initialize_asm(constants, memories)
-    assembly      = generate_asm(assembly, constants, program)
+    assembly      = generate_asm(assembly, program)
 
     # Write assembly to a file
     asm_file: str = input_file.replace('.torth', '.asm')

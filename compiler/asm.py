@@ -82,13 +82,13 @@ def get_memory_definitions_asm(memories: List[Memory]) -> str:
         asm += f'  {memory.name}: RESB {memory.size}\n'
     return asm
 
-def generate_asm(assembly: str, constants: List[Constant], program: Program) -> str:
+def generate_asm(assembly: str, program: Program) -> str:
     """Generate assembly file and write it to a file."""
     for op in program:
         token: Token = op.token
 
         if op.type == OpType.PUSH_STR:
-            assembly = add_string_variable_asm(assembly, token.value, op, constants)
+            assembly = add_string_variable_asm(assembly, token.value, op)
 
         assembly += get_op_comment_asm(op, op.type)
 
@@ -270,20 +270,14 @@ def format_escape_sequence_characters_for_nasm(string: str) -> str:
     string = string.replace('<backslash>','\\')
     return string
 
-def add_string_variable_asm(assembly: str, string: str, op: Op, constants: List[Constant]) -> str:
+def add_string_variable_asm(assembly: str, string: str, op: Op) -> str:
     """Writes a new string variable to assembly file in the .rodata section."""
-    assembly_lines: List[str] = assembly.split('\n')
-    assembly = get_asm_file_start(constants)
+    data_section: str = 'section .data\n'
+    string_index = assembly.find(data_section) + len(data_section)
 
     # Replace \n with nasm approved 10s for newline
-    string = format_escape_sequence_characters_for_nasm(string)
-    assembly += f'  s{op.id} db {string},0\n'
-
-    # Rewrite lines except for the first line (section .rodata)
-    len_asm_file_start: int = len(assembly.split('\n')) - 2
-    for i in range(len_asm_file_start, len(assembly_lines)):
-        assembly += f"{assembly_lines[i]}\n"
-    return assembly[:-1]
+    escaped_string: str = format_escape_sequence_characters_for_nasm(string)
+    return f'{assembly[:string_index]}  s{op.id} db {escaped_string},0\n{assembly[string_index:]}'
 
 def get_do_asm(op: Op, program: Program) -> str:
     """DO is conditional jump to operand after ELIF, ELSE, END or ENDIF."""
