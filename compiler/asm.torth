@@ -13,7 +13,7 @@ function get_op_asm ptr -> str :
   if dup Op.get_type OpType.PUSH_BOOL == do
     dup Op.get_token Token.get_value str.upper get_push_bool_asm
   elif dup Op.get_type OpType.PUSH_CHAR == do
-    get_push_char_asm
+    dup Op.get_token Token.get_value 1 str.char_at get_push_char_asm
   elif dup Op.get_type OpType.PUSH_INT == do
     get_push_int_asm
   elif dup Op.get_type OpType.INTRINSIC == do
@@ -44,9 +44,13 @@ function get_push_bool_asm str -> str :
   endif     "  push rax\n" str.cat
 end
 
-function get_push_char_asm -> str :
-  "PUSH_CHAR is not implemented yet\n" NotImplementedError
-  ""
+// Generate Assembly for OpType.PUSH_CHAR
+// Params: Op.token.value[1] ('a' => a)
+// Return: Assembly
+function get_push_char_asm char -> str :
+  int itoa
+  "  mov rax, " swap  str.cat
+  "\n  push rax\n"    str.cat
 end
 
 function get_push_int_asm -> str :
