@@ -65,8 +65,10 @@ end
 // Params: None
 // Return: Assembly
 function get_and_asm -> str :
-  "AND is not implemented yet\n" NotImplementedError
-  ""
+  "  pop rax\n"
+  "  pop rbx\n"       str.cat
+  "  and rbx, rax\n"  str.cat
+  "  push rbx\n"      str.cat
 end
 
 // Pop two integers from the stack and push the sum of the two values
