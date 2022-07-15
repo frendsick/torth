@@ -251,14 +251,7 @@ function str.copy str -> str :
   // Allocate memory which can store the string
   dup str.len malloc
   swap  // str
-  0     // index
-
-  // Loop through every character of the string
-  while dup2 str.char_at NULL != do
-    dup2 str.char_at
-    over 5 nth swap ptr+ char.store
-    1 +
-  done drop2 str
+  str.fill
 end
 
 // Get the length of a string
@@ -267,6 +260,32 @@ function str.len str -> int :
   0 while dup2 str.char_at NULL != do
     1 +
   done swap drop
+end
+
+// Fill a ptr with the contents of a string
+function str.fill str ptr -> str :
+  0 // index
+  // Loop through every character of the first string
+  while dup2 str.char_at NULL != do
+    dup2 str.char_at
+    over 5 nth swap ptr+ char.store
+    1 +
+  done drop2 str
+end
+
+// Concatenate two strings into a new memory location
+// Params: str1, str2
+// Return: concat(str1+str2)
+function str.cat str str -> str :
+  // Allocate memory to hold both strings
+  dup2 str.len swap str.len + malloc
+
+  // Fill the beginning of the allocated memory with str2
+  rot str.fill
+
+  // Concatenate str1 to str2
+  dup dup str.len ptr+  // Pointer to the end of str2
+  rot str.fill drop
 end
 
 // Append a character to the end of a string buffer
