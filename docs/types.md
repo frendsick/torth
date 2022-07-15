@@ -55,4 +55,12 @@ Pointers are pointing to a location in the memory. Memories can be defined with 
 
 Strings are defined with double quotes. Defined string adds a null-terminated string buffer to .data section of the executable. The string can be used and modified with the same techniques as [pointers](#ptr---pointer). See Examples from [MEMORY documentation](./keywords.md#MEMORY).
 
-**\n** is a special character inside strings which means new line (LF).
+### Escape sequence characters
+
+Torth supports the following escape sequence characters inside strings:
+
+- \t => Tab
+- \n => New line
+- \r => Carriage return
+- \e => Escape
+- \\ => Escaped backslash
