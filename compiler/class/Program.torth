@@ -1,0 +1,46 @@
+include "std"
+include "compiler/lex"
+include "compiler/class/Op"
+
+// Append Op to Program
+// Params: Pointer to Op
+// Return: None
+function Program.append ptr :
+  // Store Op to the end of Program
+  Program
+  Program.len int.load
+  Op.size * ptr+ ptr.store
+
+  // Increment Program.len
+  Program.len int.load 1 +
+  Program.len int.store
+end
+
+// Iterate over every Op in Program and print the contents of them
+// Params: Pointer to Program (PTR)
+// Return: None
+function Program.print ptr :
+  0 while dup Program.len int.load > do
+    // Load current Op
+    dup2 Op.size * ptr+ ptr.load
+
+    // Print current Op
+    Op.print "\n" puts
+    1 +
+  done drop2 "\n" puts
+end
+
+function Program.op_at int ptr -> ptr :
+  Op.size * ptr+ ptr.load
+end
+
+function Program.append_match str -> :
+  // Generate Token from string
+  get_token_from_match
+
+  // Generate Op from Token
+  get_op_from_token
+
+  // Append Op to Program
+  Program.append
+end

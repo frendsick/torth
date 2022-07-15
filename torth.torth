@@ -7,6 +7,7 @@ include "compiler/lex"
 include "compiler/class/Function"
 include "compiler/class/Location"
 include "compiler/class/Op"
+include "compiler/class/Program"
 include "compiler/class/Signature"
 include "compiler/class/Token"
 
