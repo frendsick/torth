@@ -11,7 +11,7 @@ end
 // Return: Assembly
 function get_op_asm ptr -> str :
   if dup Op.get_type OpType.PUSH_BOOL == do
-    get_push_bool_asm
+    dup Op.get_token Token.get_value str.upper get_push_bool_asm
   elif dup Op.get_type OpType.PUSH_CHAR == do
     get_push_char_asm
   elif dup Op.get_type OpType.PUSH_INT == do
@@ -34,9 +34,14 @@ function get_op_asm ptr -> str :
   endif swap drop
 end
 
-function get_push_bool_asm -> str :
-  "PUSH_BOOL is not implemented yet\n" NotImplementedError
-  ""
+// Generate Assembly for OpType.PUSH_BOOL
+// Params: Op.token.value
+// Return: Assembly
+function get_push_bool_asm str -> str :
+  if dup "TRUE" streq
+  do drop   "  mov rax, 1\n"
+  else drop "  mov rax, 0\n"
+  endif     "  push rax\n" str.cat
 end
 
 function get_push_char_asm -> str :
