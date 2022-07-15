@@ -1,4 +1,5 @@
 // utils.torth - Utility functions for Torth compiler
+include "std"
 
 // Generate dummy Location
 // Location(file='test.torth', row=6, col=9)

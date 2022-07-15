@@ -1,4 +1,5 @@
 // lex.torth - Lexing functions that parses Tokens from code files
+include "std"
 
 // Append Op to Program
 // Params: Pointer to Op

@@ -1,3 +1,5 @@
+include "std"
+
 // Op(id: int, type: OpType, token: Token, function: Function)
 ENUM Op.size 8 :
   Op.id       // int

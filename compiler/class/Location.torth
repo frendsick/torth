@@ -1,3 +1,5 @@
+include "std"
+
 // Location(file: str, row: int, col: int)
 ENUM Location.size 8 :
   Location.file   // str

@@ -1,3 +1,5 @@
+include "std"
+
 // Token(value: str, type: TokenType, location: Location)
 ENUM Token.size 8 :
   Token.value     // str
