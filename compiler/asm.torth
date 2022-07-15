@@ -1,0 +1,80 @@
+include "std"
+include "compiler/utils"
+include "compiler/class/Op"
+
+function initialize_asm -> str :
+  "compiler/templates/torth_template.asm" read_file
+end
+
+function get_op_asm ptr -> str :
+  if dup Op.get_type OpType.PUSH_BOOL == do
+    get_push_bool_asm
+  elif dup Op.get_type OpType.PUSH_CHAR == do
+    get_push_char_asm
+  elif dup Op.get_type OpType.PUSH_INT == do
+    get_push_int_asm
+  elif dup Op.get_type OpType.INTRINSIC == do
+    // Get Operand's Token.value
+    dup Op.get_token Token.get_value str.upper
+    if dup "AND" streq do
+      get_and_asm
+    elif dup "PLUS" streq do
+      get_plus_asm
+    elif dup "PRINT" streq do
+      get_print_asm
+    else
+      dup "" swap NotImplementedError
+    endif swap drop
+  else
+    dup NotImplementedError
+    ""
+  endif swap drop
+end
+
+function get_push_bool_asm -> str :
+  "PUSH_BOOL is not implemented yet\n" NotImplementedError
+  ""
+end
+
+function get_push_char_asm -> str :
+  "PUSH_CHAR is not implemented yet\n" NotImplementedError
+  ""
+end
+
+function get_push_int_asm -> str :
+  "  mov rax, 3\n  push rax\n"
+end
+
+function get_and_asm -> str :
+  "AND is not implemented yet\n" NotImplementedError
+  ""
+end
+
+function get_plus_asm -> str :
+  "  pop rbx\n  pop rax\n  add rax, rbx\n  push rax\n"
+end
+
+function get_print_asm -> str :
+  "  pop rdi\n  call print\n"
+end
+
+// Generate assembly code for NASM
+// Params: Pointer to Program (PTR)
+// Return: Intel x86_64 Assembly for NASM (STR)
+function generate_asm ptr -> str :
+  initialize_asm swap
+
+  // Generate assembly for each Op in Program
+  0 while dup Program.len int.load > do
+    // Get the current Op
+    dup2 Program.op_at
+
+    // Print Op
+    dup Op.print "\n" puts
+
+    // Get and print Assembly for Op
+    "Assembly for the current Op:\n" puts
+    get_op_asm puts "\n" puts
+    1 +
+  done drop2 "\n" puts
+end
