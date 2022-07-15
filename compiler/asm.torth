@@ -6,6 +6,9 @@ function initialize_asm -> str :
   "compiler/templates/torth_template.asm" read_file
 end
 
+// Get Assembly for certain Op
+// Params: Pointer to Op (PTR)
+// Return: Assembly
 function get_op_asm ptr -> str :
   if dup Op.get_type OpType.PUSH_BOOL == do
     get_push_bool_asm
@@ -46,11 +49,17 @@ function get_push_int_asm -> str :
   "  push rax\n"      str.cat
 end
 
+// AND performs bitwise-AND operation to two integers
+// Params: None
+// Return: Assembly
 function get_and_asm -> str :
   "AND is not implemented yet\n" NotImplementedError
   ""
 end
 
+// Pop two integers from the stack and push the sum of the two values
+// Params: None
+// Return: Assembly
 function get_plus_asm -> str :
   "  pop rbx\n"
   "  pop rax\n"       str.cat
@@ -58,6 +67,9 @@ function get_plus_asm -> str :
   "  push rax\n"      str.cat
 end
 
+// Pop an integer from the stack and print the value of it to the stdout
+// Params: None
+// Return: Assembly
 function get_print_asm -> str :
   "  pop rdi\n"
   "  call print\n"    str.cat
