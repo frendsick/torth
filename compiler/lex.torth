@@ -1,5 +1,10 @@
 // lex.torth - Lexing functions that parses Tokens from code files
 include "std"
+include "compiler/defs"
+include "compiler/utils"
+include "compiler/class/Function"
+include "compiler/class/Op"
+include "compiler/class/Token"
 
 // Append Op to Program
 // Params: Pointer to Op
