@@ -4,16 +4,17 @@ The module implements lexing functions that parses Tokens from code files
 import itertools
 import os
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
 from compiler.program import constant_exists
 from compiler.utils import compiler_error, function_exists, get_file_contents
 
+already_included_files: Set[str] = set()
 def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Optional[str]):
     """Parse included files from a code string. Return the list of files."""
     INCLUDE_REGEX = re.compile(r'INCLUDE\s+"(\S+)"', re.IGNORECASE)
-    included_files: List[str] = []
+    included_files: Set[str] = set()
 
     code = remove_comments_from_code(code)
     for file_name in INCLUDE_REGEX.findall(code):
@@ -27,10 +28,10 @@ def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Opti
 
         # Absolute path
         if os.path.isfile(file_name):
-            included_files.append(file_name)
+            included_files.add(file_name)
         # Relative path from compiler
         elif os.path.isfile(f'{compiler_directory}/{file_name}'):
-            included_files.append(f'{compiler_directory}/{file_name}')
+            included_files.add(f'{compiler_directory}/{file_name}')
             continue
         # Relative path from compiler including directories in PATH
         else:
@@ -40,12 +41,16 @@ def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Opti
             if not included_file_path:
                 compiler_error("INCLUDE_ERROR", \
                     f"File matching '{file_name}' does not exist in PATH.\nPATH: {INCLUDE_PATHS}")
-            included_files.append(included_file_path)
+            included_files.add(included_file_path)
 
     # Get the inclusions recursively from the included files
     for included_file in included_files:
-        included_code: str = get_file_contents(included_file)
-        included_files += get_included_files(included_code, compiler_directory, extra_path_dirs)
+        if included_file not in already_included_files:
+            included_code: str = get_file_contents(included_file)
+            already_included_files.add(included_file)
+            included_files = included_files.union(
+                get_included_files(included_code, compiler_directory, extra_path_dirs)
+            )
     return included_files
 
 def remove_comments_from_code(code: str) -> str:
@@ -69,7 +74,7 @@ def get_file_name_from_path(file_name: str, compiler_directory: str, extra_path_
 
     return included_file_path
 
-def add_enums_to_constants(included_files: List[str], constants: List[Constant]) -> List[Constant]:
+def add_enums_to_constants(included_files: Set[str], constants: List[Constant]) -> List[Constant]:
     """
     Parse and add ENUM block contents to a list of Constants.
     Items inside ENUM blocks are interpreted as running integers starting from 0.
@@ -257,7 +262,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
             tokens.append(token)
     return functions
 
-def get_memories_from_code(included_files: List[str], constants: List[Constant]) -> List[Memory]:
+def get_memories_from_code(included_files: Set[str], constants: List[Constant]) -> List[Memory]:
     """Parse Memory objects from code file and included files. Return list of Memory objects."""
     memories: List[Memory] = []
     for file in included_files:
