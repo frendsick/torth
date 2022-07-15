@@ -61,7 +61,9 @@ end
 // Generate assembly code for NASM
 // Params: Pointer to Program (PTR)
 // Return: Intel x86_64 Assembly for NASM (STR)
+memory op_asm str.size end
 function generate_asm ptr -> str :
+  "" op_asm str.store
   initialize_asm swap
 
   // Generate assembly for each Op in Program
@@ -72,9 +74,13 @@ function generate_asm ptr -> str :
     // Print Op
     dup Op.print "\n" puts
 
-    // Get and print Assembly for Op
-    "Assembly for the current Op:\n" puts
-    get_op_asm puts "\n" puts
+    // Concatenate Op's Assembly to op_asm
+    get_op_asm op_asm str.load swap str.cat
+    op_asm str.store
     1 +
   done drop2 "\n" puts
+
+  // Print generated Assembly
+  "Generated Assembly for the Program:\n" puts
+  op_asm str.load puts
 end
