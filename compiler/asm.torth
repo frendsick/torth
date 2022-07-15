@@ -15,7 +15,7 @@ function get_op_asm ptr -> str :
   elif dup Op.get_type OpType.PUSH_CHAR == do
     dup Op.get_token Token.get_value 1 str.char_at get_push_char_asm
   elif dup Op.get_type OpType.PUSH_INT == do
-    get_push_int_asm
+    dup Op.get_token Token.get_value get_push_int_asm
   elif dup Op.get_type OpType.INTRINSIC == do
     // Get Operand's Token.value
     dup Op.get_token Token.get_value str.upper
@@ -53,9 +53,12 @@ function get_push_char_asm char -> str :
   "\n  push rax\n"    str.cat
 end
 
-function get_push_int_asm -> str :
-  "  mov rax, 3\n"
-  "  push rax\n"      str.cat
+// Generate Assembly for OpType.PUSH_INT
+// Params: Op.token.value
+// Return: Assembly
+function get_push_int_asm str -> str :
+  "  mov rax, " swap  str.cat
+  "\n  push rax\n"    str.cat
 end
 
 // AND performs bitwise-AND operation to two integers
