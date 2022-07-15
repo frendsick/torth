@@ -63,4 +63,4 @@ Torth supports the following escape sequence characters inside strings:
 - \n => New line
 - \r => Carriage return
 - \e => Escape
-- \\ => Escaped backslash
+- \\\\ => Escaped backslash
