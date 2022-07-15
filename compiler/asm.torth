@@ -42,7 +42,8 @@ function get_push_char_asm -> str :
 end
 
 function get_push_int_asm -> str :
-  "  mov rax, 3\n  push rax\n"
+  "  mov rax, 3\n"
+  "  push rax\n"      str.cat
 end
 
 function get_and_asm -> str :
@@ -51,11 +52,15 @@ function get_and_asm -> str :
 end
 
 function get_plus_asm -> str :
-  "  pop rbx\n  pop rax\n  add rax, rbx\n  push rax\n"
+  "  pop rbx\n"
+  "  pop rax\n"       str.cat
+  "  add rax, rbx\n"  str.cat
+  "  push rax\n"      str.cat
 end
 
 function get_print_asm -> str :
-  "  pop rdi\n  call print\n"
+  "  pop rdi\n"
+  "  call print\n"    str.cat
 end
 
 // Generate assembly code for NASM
