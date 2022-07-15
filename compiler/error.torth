@@ -1,0 +1,22 @@
+// error.torth - Library of errors used by the self-hosted Torth compiler
+include "std"
+
+COLORS: Dict[str, str] = {
+    'FAIL'      : '\033[91m',
+    'HEADER'    : '\033[95m',
+    'NC'        : '\033[0m',
+    'WARNING'   : '\033[93m'
+}
+
+// Params: Error type (STR)
+// Return: None
+function CompilerError str :
+  "Compiler Error " puts puts ":\n" puts
+end
+
+// Params: Error message (STR)
+// Return: NoReturn
+function NotImplementedError str :
+  "NOT_IMPLEMENTED" CompilerError
+  eputs 1 exit
+end
