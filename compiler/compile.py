@@ -3,10 +3,9 @@ Functions required for compiling a Torth program
 """
 import argparse
 import subprocess
-from typing import List
-from compiler.asm import generate_asm, initialize_asm
-from compiler.defs import Constant, Function, Memory, Program, Token
-from compiler.program import generate_program, type_check_program
+from typing import Dict, List
+from compiler.asm import generate_asm
+from compiler.defs import Constant, Function, Memory
 from compiler.utils import print_if_verbose
 
 def compile_asm(asm_file: str, object_file: str) -> None:
@@ -20,22 +19,12 @@ def link_object_file(object_file: str, executable_file: str, cmd_args) -> None:
     else:
         subprocess.run(['ld', '--strip-all', '-m', 'elf_x86_64', f'-o{executable_file}', object_file], check=True)
 
-def compile_code(input_file: str, tokens: List[Token], constants: List[Constant], \
-    functions: List[Function], memories: List[Memory], is_verbose: bool) -> Program:
+def compile_code(input_file: str, constants: List[Constant], \
+    functions: Dict[str, Function], memories: List[Memory], is_verbose: bool) -> None:
     """Generate assembly and compile it to statically linked ELF 64-bit executable."""
-
-    # Generate Program from tokens and type check it with virtual stack
-    print_if_verbose("Generating intermediate representation from the parsed tokens", is_verbose)
-    program: Program = generate_program(tokens, constants, functions, memories)
-
-    # Type check the program
-    print_if_verbose("Type checking the program", is_verbose)
-    type_check_program(program)
-
     # Generate assembly from Program
     print_if_verbose("Generating Assembly from the intermediate representation", is_verbose)
-    assembly: str = initialize_asm(constants, memories)
-    assembly      = generate_asm(assembly, program)
+    assembly: str = generate_asm(functions, constants, memories, is_verbose)
 
     # Write assembly to a file
     asm_file: str = input_file.replace('.torth', '.asm')
@@ -46,7 +35,6 @@ def compile_code(input_file: str, tokens: List[Token], constants: List[Constant]
     object_file: str = asm_file.replace(".asm", ".o")
     print_if_verbose(f"Compiling {asm_file} to {object_file} with NASM", is_verbose)
     compile_asm(asm_file, object_file)
-    return program
 
 def remove_compilation_files(input_file: str, args: argparse.Namespace) -> None:
     """Clean the current directory from compilation files."""
