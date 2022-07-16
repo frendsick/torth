@@ -14,6 +14,8 @@ def initialize_asm(constants: List[Constant], memories: List[Memory]) -> str:
     return f'''{get_asm_file_start(constants)}
 section .bss
   args_ptr: resq 1
+  return_stack: resq 1337
+  return_stack_len: resq 1
 {get_memory_definitions_asm(memories)}
 section .text
 
@@ -123,12 +125,22 @@ def generate_asm(functions: Dict[str, Function], \
             assembly +=  '  mov [args_ptr], rsp   ; Pointer to argc\n'
         else:
             assembly += f'{function_name}:\n'
-            assembly +=  '  pop r15  ; Save return address\n'
+            assembly += f';; [{function_name}] Save the return address to return_stack\n'
+            assembly +=  '  pop rax\n'
+            assembly +=  '  mov rbx, return_stack\n'
+            assembly +=  '  add rbx, [return_stack_len]\n'
+            assembly +=  '    mov [rbx], rax\n'
+            assembly +=  '  add qword [return_stack_len], 8  ; Increment return_stack_len\n'
+
         assembly = generate_program_asm(sub_program, assembly)
 
         # Jump to the return address stored in r15 register
         if function_name.upper() != 'MAIN':
-            assembly +=  '  jmp r15  ; Return address\n'
+            assembly +=  ';; Jump to the return address found in return_stack\n'
+            assembly +=  '  sub qword [return_stack_len], 8  ; Decrement return_stack_len\n'
+            assembly +=  '  mov rax, return_stack\n'
+            assembly +=  '  add rax, [return_stack_len]\n'
+            assembly +=  '  jmp [rax]  ; Return\n'
         else:
             assembly += get_asm_file_end()
     return assembly
