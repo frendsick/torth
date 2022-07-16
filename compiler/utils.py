@@ -5,8 +5,9 @@ import argparse
 import subprocess
 import os
 import sys
-from typing import List, NoReturn, Optional
-from compiler.defs import COLORS, Function, Op, OpType, Program, Token, TypeStack
+from typing import Dict, List, NoReturn, Optional
+from compiler.defs import COLORS, Function, Op, OpType, Program, Signature
+from compiler.defs import Token, TokenType, TypeStack
 
 def usage() -> NoReturn:
     """Print usage message and exit with non-zero exit code"""
@@ -65,18 +66,13 @@ def get_token_location_info(token: Token) -> str:
 {COLORS['HEADER']}Row{COLORS['NC']}: {token.location[1]}
 {COLORS['HEADER']}Column{COLORS['NC']}: {token.location[2]}'''
 
-def handle_arguments(input_file: str, executable_file: str, program: Program, args) -> None:
+def handle_arguments(executable_file: str, args) -> None:
     """Handle special command line arguments"""
     if args.graph:
-        print_if_verbose("Generating Graphviz graph from the program", args.verbose)
-        generate_graph_file(input_file, program)
+        compiler_error("NOT_IMPLEMENTED", "Generating Graphviz graph is not implemented.")
     if args.run:
         print_if_verbose(f"Running the executable {executable_file}", args.verbose)
         run_code(executable_file)
-
-def function_exists(function_name: str, functions: List[Function]) -> bool:
-    """Check if there is a Function with a certain name"""
-    return any(function_name == func.name for func in functions)
 
 def generate_graph_file(input_file: str, program: Program) -> None:
     """Generate SVG file displaying the control flow of the program"""
@@ -121,8 +117,8 @@ def initialize_graph(program: Program) -> str:
         label_top_row: str = str(op.type)
         if op.type == OpType.INTRINSIC:
             label_top_row = f"{op.type} '{op.token.value}'"
-        elif op.type in {OpType.FUNCTION_CALL, OpType.FUNCTION_RETURN}:
-            function_name: str = op.token.value.replace('_CALL', '').replace('_RETURN', '')
+        elif op.type == OpType.FUNCTION_CALL:
+            function_name: str = op.token.value.replace('_CALL', '')
             label_top_row = f"{op.type} '{function_name}'"
 
         graph_contents += f'  node{i} [label = "{label_top_row}\n{op.token.location}"];\n'
@@ -243,3 +239,67 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
         if program[i].type in (OpType.DONE, OpType.ENDIF):
             parent_count += 1
     compiler_error("AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE", op.token)
+
+def get_tokens_from_functions(functions: Dict[str, Function]) -> List[Token]:
+    """
+    Check if a main function is present in code file and parse Tokens from Functions.
+    Raise a compiler error MISSING_MAIN_FUNCTION if main function is not present.
+    Return a list of Token objects.
+    """
+    try:
+        main_function: Function = [ func for func in functions.values() if func.name.upper() == 'MAIN' ][0]
+    except IndexError:
+        compiler_error("MISSING_MAIN_FUNCTION", "The program does not have a MAIN function")
+
+    # Empty MAIN function
+    if not main_function.tokens:
+        if main_function.signature[1]:
+            compiler_error("FUNCTION_SIGNATURE_ERROR", "Empty MAIN function cannot return values.")
+        return []
+
+    if not valid_main_function_signature(main_function.signature):
+        compiler_error("FUNCTION_SIGNATURE_ERROR", "Could not validate Signature for MAIN function")
+
+    tokens: List[Token] = get_tokens_from_function(main_function, functions, function_cache={})
+    if not main_function.signature[1]:
+        tokens.append(Token('0', TokenType.INT, main_function.tokens[-1].location))
+    return tokens
+
+def valid_main_function_signature(signature: Signature) -> bool:
+    """
+    Test if the MAIN Function has a valid Signature.
+    - There should not be any parameters
+    - The return type should either be empty or only one INT
+    """
+    param_types: List[TokenType]  = signature[0]
+    return_types: List[TokenType] = signature[1]
+    # MAIN function cannot take parameters
+    if param_types:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", "MAIN function cannot take parameters.")
+    # MAIN function can either return nothing or one integer as the program's return value
+    if len(return_types) > 1:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", \
+            "Too many return values for MAIN function.\n" + \
+            "The MAIN function can either return nothing or the program's return value as INT.\n" + \
+            f"Given return types: {return_types}")
+    if return_types and return_types[0] != TokenType.INT:
+        compiler_error("FUNCTION_SIGNATURE_ERROR", \
+            "The MAIN function can either return nothing or the program's return value as INT.\n" + \
+            f"Given return types: {return_types}")
+    return True
+
+def get_tokens_from_function(parent_function: Function, functions: Dict[str, Function], \
+    function_cache: Dict[str, List[Token]]) -> List[Token]:
+    """Parse Tokens recursively from every child Function of a single Function object."""
+    tokens: List[Token] = parent_function.tokens
+    i = 0
+    while i < len(tokens):
+        for func in functions.values():
+            child_found: bool = tokens[i].value == func.name
+            if child_found:
+                # Cache the Tokens of a certain function
+                if func.name not in function_cache:
+                    function_cache[func.name] = get_tokens_from_function(func, functions, function_cache)
+                tokens = tokens[:i] + function_cache[func.name] + tokens[i+1:]
+        i += 1
+    return tokens

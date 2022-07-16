@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, Set
 from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
 from compiler.program import constant_exists
-from compiler.utils import compiler_error, function_exists, get_file_contents
+from compiler.utils import compiler_error, get_file_contents
 
 already_included_files: Set[str] = set()
 def get_included_files(code: str, compiler_directory: str, extra_path_dirs: Optional[str]):
@@ -98,9 +98,9 @@ def add_enums_to_constants(included_files: Set[str], constants: List[Constant]) 
             constants.append(Constant(enum_name, enum_offset*len(enum_names), (file, -1, -1)))
     return constants
 
-def get_functions_from_files(included_files: List[str]) -> List[Function]:
+def get_functions_from_files(included_files: List[str]) -> Dict[str, Function]:
     """Parse declared functions from code file and included files. Return list of Function objects."""
-    functions: List[Function] = []
+    functions: Dict[str, Function] = {}
     for file in included_files:
         included_code: str = get_file_contents(file)
         token_matches: list = get_token_matches(included_code)
@@ -109,72 +109,8 @@ def get_functions_from_files(included_files: List[str]) -> List[Function]:
         functions = get_functions(file, token_matches, newline_indexes, functions)
     return functions
 
-def valid_main_function_signature(signature: Signature) -> bool:
-    """
-    Test if the MAIN Function has a valid Signature.
-    - There should not be any parameters
-    - The return type should either be empty or only one INT
-    """
-    param_types: List[TokenType]  = signature[0]
-    return_types: List[TokenType] = signature[1]
-    # MAIN function cannot take parameters
-    if param_types:
-        compiler_error("FUNCTION_SIGNATURE_ERROR", "MAIN function cannot take parameters.")
-    # MAIN function can either return nothing or one integer as the program's return value
-    if len(return_types) > 1:
-        compiler_error("FUNCTION_SIGNATURE_ERROR", \
-            "Too many return values for MAIN function.\n" + \
-            "The MAIN function can either return nothing or the program's return value as INT.\n" + \
-            f"Given return types: {return_types}")
-    if return_types and return_types[0] != TokenType.INT:
-        compiler_error("FUNCTION_SIGNATURE_ERROR", \
-            "The MAIN function can either return nothing or the program's return value as INT.\n" + \
-            f"Given return types: {return_types}")
-    return True
-
-def get_tokens_from_functions(functions: List[Function], file: str) -> List[Token]:
-    """
-    Check if a main function is present in code file and parse Tokens from Functions.
-    Raise a compiler error MISSING_MAIN_FUNCTION if main function is not present.
-    Return a list of Token objects.
-    """
-    try:
-        main_function: Function = [ func for func in functions if func.name.upper() == 'MAIN' ][0]
-    except IndexError:
-        compiler_error("MISSING_MAIN_FUNCTION", f"The program {file} does not have a MAIN function")
-
-    # Empty MAIN function
-    if not main_function.tokens:
-        if main_function.signature[1]:
-            compiler_error("FUNCTION_SIGNATURE_ERROR", "Empty MAIN function cannot return values.")
-        return []
-
-    if not valid_main_function_signature(main_function.signature):
-        compiler_error("FUNCTION_SIGNATURE_ERROR", "Could not validate Signature for MAIN function")
-
-    tokens: List[Token] = get_tokens_from_function(main_function, functions, function_cache={})
-    if not main_function.signature[1]:
-        tokens.append(Token('0', TokenType.INT, main_function.tokens[-1].location))
-    return tokens
-
-def get_tokens_from_function(parent_function: Function, functions: List[Function], \
-    function_cache: Dict[str, List[Token]]) -> List[Token]:
-    """Parse Tokens recursively from every child Function of a single Function object."""
-    tokens: List[Token] = parent_function.tokens
-    i = 0
-    while i < len(tokens):
-        for func in functions:
-            child_found: bool = tokens[i].value == func.name
-            if child_found:
-                # Cache the Tokens of a certain function
-                if func.name not in function_cache:
-                    function_cache[func.name] = get_tokens_from_function(func, functions, function_cache)
-                tokens = tokens[:i] + function_cache[func.name] + tokens[i+1:]
-        i += 1
-    return tokens
-
 def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
-    functions: List[Function]) -> List[Function]:
+    functions: Dict[str, Function]) -> Dict[str, Function]:
     """
     Parse Functions from a list containing re.Matches of tokens parsed from a code file.
     Return list of Function objects.
@@ -202,18 +138,18 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
     for match in token_matches:
         token_value: str = match.group(0)
         token: Token = get_token_from_match(match, file, newline_indexes)
-        if token_value.upper() == 'CONST':
-            is_const = True
-            token_value = token_value.upper().replace('CONST', 'FUNCTION')
 
         # Go to next function part
         if token_value.upper() == FUNCTION_PART_DELIMITERS[current_part]:
             current_part = next(function_parts)
             # Append Function and reset variables when function is fully lexed
             if token_value.upper() == 'END':
+                if name.upper() == 'MAIN':
+                    tokens.append(Token('0', TokenType.INT, token.location))
+                param_types.reverse()
+                return_types.reverse()
                 signature: Signature = (param_types, return_types)
-                tokens.append(Token(f'{name}_RETURN', TokenType.KEYWORD, token.location))
-                functions.append( Function(name, signature, tokens) )
+                functions[name] = Function(name, signature, tokens)
                 name            = ''
                 param_types     = []
                 return_types    = []
@@ -221,7 +157,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
                 is_const        = False
         elif current_part == 1:
             name = token_value
-            if function_exists(name, functions):
+            if name in functions:
                 compiler_error("FUNCTION_REDEFINITION", \
                     f"Function '{name}' is already defined. Function redefinitions are not allowed.", token)
             if is_const:
@@ -257,8 +193,6 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
                     f"'{token_value}' is not a valid type for the returned value.\n" + \
                     f"Valid types: {list(SIGNATURE_MAP.keys())}", token)
         elif current_part == 4:
-            if not tokens:
-                tokens.append(Token(f'{name}_CALL', TokenType.KEYWORD, token.location))
             tokens.append(token)
     return functions
 
@@ -313,7 +247,6 @@ def get_memory_size(token_value: str, constants: List[Constant]) -> int:
     for constant in constants:
         if constant.name == token_value:
             return constant.value
-
     # Test if token is an integer
     if token_value.startswith('0x'):
         try:
@@ -436,15 +369,15 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
         col = position - newline_indexes[-1] - 1
     return (filename, row, col+1)
 
-def get_constants_from_functions(functions: List[Function]) -> List[Constant]:
+def get_constants_from_files(included_files: List[str]) -> List[Constant]:
     """Parse Constants from list of Function objects. Return the list of Constant objects"""
     constants: List[Constant] = []
-    for func in functions:
-        if len(func.tokens) == 3 and func.signature == ( [], [TokenType.INT] ):
-            try:
-                constant: Constant = Constant(func.name, int(func.tokens[1].value), func.tokens[1].location)
-                constants.append(constant)
-            except ValueError:
-                compiler_error("VALUE_ERROR", \
-                    f"Could not define Constant: '{func.tokens[1].value}' is not an integer.", func.tokens[1])
+    CONST_REGEX = re.compile(r'CONST\s+(\S+)\s+(-?\d+)\s+END', re.IGNORECASE)
+    for file in included_files:
+        code: str = get_file_contents(file)
+        enum_matches = CONST_REGEX.findall(code)
+        for match in enum_matches:
+            const_name:  str = match[0]
+            const_value: int = int(match[1])
+            constants.append(Constant(const_name, const_value, (file, -1, -1)))
     return constants
