@@ -5,7 +5,7 @@ import base64
 import re
 from typing import Dict, List, Optional
 from compiler.defs import Constant, Function, Memory, OpType, Op, Program, Token
-from compiler.program import generate_program
+from compiler.program import generate_program, type_check_function
 from compiler.utils import compiler_error, get_parent_op_type_do, get_parent_while
 from compiler.utils import get_end_op_for_while, get_related_endif, print_if_verbose
 
@@ -115,7 +115,7 @@ def generate_asm(functions: Dict[str, Function], \
 
         # Type check the program
         print_if_verbose(f"Type checking function {func.name}", is_verbose)
-        # type_check_function(func, sub_program, functions)
+        type_check_function(func, sub_program, functions)
 
         # Generate Assembly from Function
         function_name: str = get_valid_label_for_nasm(func.name)
