@@ -319,8 +319,8 @@ def get_token_value(token_value: str) -> str:
 def get_token_type(token_text: str) -> TokenType:
     """Return TokenType value corresponding to the Token.value."""
     keywords: List[str] = [
-        'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
-        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE'
+        'BIND', 'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
+        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'UNBIND', 'WHILE'
     ]
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , \

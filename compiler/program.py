@@ -27,6 +27,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.PUSH_STR
         elif token.type == TokenType.UINT8:
             op_type = OpType.PUSH_UINT8
+        elif token_value == 'BIND':
+            op_type = OpType.BIND
         elif token_value == 'BOOL':
             op_type = OpType.CAST_BOOL
         elif token_value == 'BREAK':
@@ -57,6 +59,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.CAST_STR
         elif token_value == 'UINT8':
             op_type = OpType.CAST_UINT8
+        elif token_value == 'UNBIND':
+            op_type = OpType.UNBIND
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
         elif intrinsic_exists(token_value):
