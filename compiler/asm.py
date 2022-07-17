@@ -143,7 +143,7 @@ def get_function_start_asm(function_name: str) -> str:
         assembly +=  '  pop rax\n'
         assembly +=  '  mov rbx, return_stack\n'
         assembly +=  '  add rbx, [return_stack_len]\n'
-        assembly +=  '    mov [rbx], rax\n'
+        assembly +=  '  mov [rbx], rax\n'
         assembly +=  '  add qword [return_stack_len], 8  ; Increment return_stack_len\n'
     return assembly
 
