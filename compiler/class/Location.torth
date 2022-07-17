@@ -20,6 +20,27 @@ function Location.init str int int -> ptr :
   swap over Location.column  ptr+ int.store
 end
 
+// Get Location.file
+// Params: Pointer to Location (PTR)
+// Return: Location.file (STR)
+function Location.get_file ptr -> str :
+  str.load
+end
+
+// Get Location.row
+// Params: Pointer to Location (PTR)
+// Return: Location.row (INT)
+function Location.get_row ptr -> int :
+  Location.row ptr+ int.load
+end
+
+// Get Location.column
+// Params: Pointer to Location (PTR)
+// Return: Location.column (STR)
+function Location.get_column ptr -> int :
+  Location.column ptr+ int.load
+end
+
 function Location.print ptr :
   "Location.file      => "  puts
   dup Location.file         ptr+
