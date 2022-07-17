@@ -1,4 +1,5 @@
 // math.torth - Library of mathematical functions
+include "std"
 
 // Calculate power of number and exponent. Return -1 if the exponent is negative.
 // Params: exponent, number
@@ -6,10 +7,10 @@
 function pow int int -> int :
   // x ^ 0 == 1
   if dup 0 == do
-    drop drop 1
+    drop2 1
   // Negative exponents are not supported yet, return -1
   elif dup 0 > do
-    drop drop -1
+    drop2 -1
   else
     calculate_pow
   endif
@@ -19,8 +20,8 @@ end
 // Params: num1, num2
 // Return: gcd
 function gcd int int -> int :
-  while over over divmod drop 0 != do
-    dup rot rot divmod drop
+  while dup2 divmod drop 0 != do
+    dup rotr divmod drop
   done swap drop
 end
 
@@ -29,24 +30,22 @@ end
 // Return: power
 function calculate_pow int int -> int :
   // Save original number
-  over bind pow.original in
+  over take pow.original in
   1 // count
 
   // If count < exponent then we need to multiple the number at least one more time
-  WHILE over over < DO
-
+  WHILE dup2 < DO
     // Multiply n with the original number to get new n
     rot pow.original * rot rot
 
     // Increment count
     1 +
-
-  DONE drop drop  // Leave only the power to the stack
+  DONE drop2  // Leave only the power to the stack
 end
 
 // Return the square root of an integer rounded up to closest integer
 function sqrt int -> int :
-  0 while over over dup * < do
+  0 while dup2 dup * < do
     1 +
   done swap drop
 end

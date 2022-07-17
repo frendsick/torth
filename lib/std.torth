@@ -379,8 +379,10 @@ end
 // Get an integer representation of a string
 function atoi str -> int :
   // Iterate the string character by character
-  0 while dup2 str.char_at NULL != do
-    dup2 str.char_at
+  take atoi.str in
+
+  0 while atoi.str over str.char_at NULL != do
+    atoi.str over str.char_at
 
     // Raise an error if the character is not a number
     if dup char.is_numeric not do
@@ -399,7 +401,7 @@ function atoi str -> int :
     + temp_int int.store
 
     1 +
-  done drop2
+  done drop
   // Return the integer
   temp_int int.load
 
@@ -408,30 +410,32 @@ function atoi str -> int :
 end
 
 // Tests if two strings are equal
-memory is_equal bool.size end
 function streq str str -> bool :
-  True is_equal bool.store // is_equal = True
-  0 // index
-  // while index < len(str1)
-  while dup2 swap str.len > do
+  // Bind strings to memory
+  take streq.str1 streq.str2 in
+
+  // while len(str1) > index
+  0 while
+    streq.str1 over dup
+    take streq.index in
+    swap str.len >
+  do
     if // str1[index] != str2[index]
-      dup2            str.char_at
-      over 5 nth swap str.char_at
+      streq.str1 streq.index str.char_at
+      streq.str2 streq.index str.char_at
       !=
-    do
-      False is_equal bool.store // is_equal = False
-      break
-    endif
-    1 +
-  done
+    do break
+    endif 1 +
+  done drop
 
-  if dup 4 nth swap str.char_at NULL != do
-    False is_equal bool.store // is_equal = False
+  // Strings are not equal if the last checked character is not equal
+  if
+    streq.str1 streq.index str.char_at
+    streq.str2 streq.index str.char_at
+    !=
+  do False
+  else True
   endif
-  drop drop drop // Drop strings and index
-
-  // return is_equal
-  is_equal bool.load
 end
 
 // Reverse a string
