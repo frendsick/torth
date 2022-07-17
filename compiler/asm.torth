@@ -34,6 +34,30 @@ function get_op_asm ptr -> str :
   endif swap drop
 end
 
+// Get Assembly comment for Op
+// Params: Pointer to Op (PTR)
+// Return: Comment string (STR)
+function get_op_comment_asm ptr -> str :
+  // Comment format as Python3 f-string:
+  // f";; [{function_name}] {token_value} | File: {file}, Row: {row}, Col: {col}\n"
+  ";; ["
+  over Op.get_function Function.get_name  str.cat
+  "] "                                    str.cat
+  over Op.get_token Token.get_value       str.cat
+  " | File: "                             str.cat
+
+  // Forget the pointer to Op and get its Token's Location instead
+  swap Op.get_token Token.get_location dup
+
+  // Add file, row and column information
+  Location.get_file rot swap str.cat
+  ", Row: " str.cat swap dup
+  Location.get_row itoa rot swap str.cat
+  ", Column: " str.cat swap
+  Location.get_column itoa str.cat
+  "\n" str.cat
+end
+
 // Generate Assembly for OpType.PUSH_BOOL
 // Params: Op.token.value
 // Return: Assembly
@@ -101,9 +125,12 @@ function generate_asm ptr -> str :
   0 while dup Program.len int.load > do
     // Get the current Op
     dup2 Program.op_at
-
     // Print Op
     dup Op.print "\n" puts
+
+    // Generate comment for Op
+    dup get_op_comment_asm op_asm str.load swap str.cat
+    op_asm str.store
 
     // Concatenate Op's Assembly to op_asm
     get_op_asm op_asm str.load swap str.cat
