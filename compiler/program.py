@@ -61,8 +61,6 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.CAST_STR
         elif token_value == 'UINT8':
             op_type = OpType.CAST_UINT8
-        elif token_value == 'UNBIND':
-            op_type = OpType.UNBIND
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
         elif token.is_bound:
@@ -155,7 +153,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
     Raise compiler error if the type checking fails.
     """
     branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
-    NOT_TYPED_TOKENS: List[str]      = [ 'BIND', 'BREAK', 'CONTINUE', 'IN', 'UNBIND', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str]      = [ 'BIND', 'BREAK', 'CONTINUE', 'IN', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
     # to type check IF-ELIF chains with different stack layouts than what it was before the block.

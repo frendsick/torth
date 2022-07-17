@@ -199,7 +199,6 @@ def parse_function_bindings(functions: Dict[str, Function], memories: List[Memor
     """Parse Bindings from Functions and save them in Function object"""
     for func in functions.values():
         bind_stacks: List[Binding] = []
-        unbind_count: int = 0
         parsing_bind: bool = False
         for token in func.tokens:
             if token.value.upper() == 'BIND':
@@ -207,11 +206,6 @@ def parse_function_bindings(functions: Dict[str, Function], memories: List[Memor
                 parsing_bind = True
             elif token.value.upper() == 'IN':
                 parsing_bind = False
-            elif token.value.upper() == 'UNBIND':
-                unbind_count += 1
-                if unbind_count > len(bind_stacks):
-                    compiler_error("AMBIGUOUS_UNBIND",
-                    f"Function '{func.name}' has excessive UNBIND statements.", token)
             elif parsing_bind:
                 token.type = TokenType.KEYWORD
                 bind_stacks[-1][token.value] = token.type
@@ -357,7 +351,7 @@ def get_token_type(token_text: str) -> TokenType:
     """Return TokenType value corresponding to the Token.value."""
     keywords: List[str] = [
         'BIND', 'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
-        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'UNBIND', 'WHILE'
+        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE'
     ]
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , \

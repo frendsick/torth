@@ -37,7 +37,6 @@ class Keyword(Enum):
     PTR=auto()
     STR=auto()
     UINT8=auto()
-    UNBIND=auto()
     WHILE=auto()
 
 class Intrinsic(Enum):
@@ -109,7 +108,6 @@ class OpType(Enum):
     PUSH_PTR=auto()
     PUSH_STR=auto()
     PUSH_UINT8=auto()
-    UNBIND=auto()
     WHILE=auto()
 
 class TokenType(Enum):

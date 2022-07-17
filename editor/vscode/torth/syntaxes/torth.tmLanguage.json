@@ -63,7 +63,7 @@
       "patterns": [
         {
           "name": "storage.type.torth",
-          "match": "\\b(?i)(bind|const|end|enum|function|in|memory|unbind)\\b"
+          "match": "\\b(?i)(bind|const|end|enum|function|in|memory)\\b"
         },
         {
           "name": "markup.deleted.torth",

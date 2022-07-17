@@ -171,8 +171,7 @@ def get_op_asm(op: Op, program: Program) -> str:
         OpType.CAST_STR,
         OpType.CAST_UINT8,
         OpType.IF,          # If is just a keyword which starts an IF-block
-        OpType.IN,
-        OpType.UNBIND
+        OpType.IN
         }:
         return ''
     if op.type == OpType.BREAK:
