@@ -97,19 +97,16 @@ function fputs int str : swap dup str.len swap rot write drop end
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
 // Return: Pointer to the start of the allocated memory
-memory malloc.length int.size end
 function malloc int -> ptr :
   // Allocate at least one byte
   if dup 0 == do drop 1 endif
-
-  // Store the length-parameter in temporary integer
-  malloc.length int.store
+  take malloc_length in
 
   // mmap ( NULL, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0 );
   0 0
   MAP_ANONYMOUS MAP_PRIVATE |
   PROT_READ PROT_WRITE |
-  malloc.length int.load // length
+  malloc_length
   NULL SYS_mmap SYSCALL6 ptr
 end
 
