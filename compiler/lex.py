@@ -146,7 +146,6 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
             if token_value.upper() == 'END':
                 if name.upper() == 'MAIN':
                     tokens.append(Token('0', TokenType.INT, token.location))
-                param_types.reverse()
                 return_types.reverse()
                 signature: Signature = (param_types, return_types)
                 functions[name] = Function(name, signature, tokens)

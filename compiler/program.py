@@ -131,7 +131,8 @@ def memory_exists(token_value: str, memories: List[Memory]) -> bool:
 
 def get_function_type_stack(func: Function) -> TypeStack:
     """Generate TypeStack from Function parameter types"""
-    param_types: List[TokenType] = func.signature[0]
+    # Put values to the stack in the reversed order
+    param_types: List[TokenType] = func.signature[0][::-1]
     param_stack: TypeStack = TypeStack()
     for param_type in param_types:
         param_stack.push(param_type, func.tokens[0].location)
@@ -304,16 +305,33 @@ def type_check_function_call(op: Op, type_stack: TypeStack, functions: Dict[str,
     Returns the types in stack when the parameters are popped out.
     """
     function_signature: Signature = functions[op.token.value].signature
+    param_types:  List[TokenType] = function_signature[0]
+    return_types: List[TokenType] = function_signature[1]
+    temp_stack: TypeStack = copy(type_stack)
     # Pop param types
-    for _ in function_signature[0]:
-        type_stack.pop()
+    for expected_type in param_types:
+        if not type_stack.head:
+            compiler_error("FUNCTION_SIGNATURE_ERROR",
+                f"Not enough parameters for '{op.token.value}' function\n" + \
+                f"Expected types: {param_types}", op.token,
+            original_stack=temp_stack)
+        popped_type: TokenType = type_stack.pop().value
+        if not matching_types(popped_type, expected_type):
+            compiler_error("FUNCTION_SIGNATURE_ERROR",
+                f"Wrong type of parameter in stack for '{op.token.value}' function\n" + \
+                f"Expected types: {param_types}", op.token,
+            original_stack=temp_stack)
     # Push return types
-    for token_type in function_signature[1]:
+    for token_type in return_types:
         type_stack.push(token_type, op.token.location)
 
+def matching_types(type1: TokenType, type2: TokenType) -> bool:
+    """Check if two types are similar"""
+    return type1 == type2 or TokenType.ANY in {type1, type2}
+
 def matching_type_lists(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
-    """Check if two virtual stacks have matching types in them."""
-    return not any(type1 != type2 and TokenType.ANY not in {type1, type2} \
+    """Check if two TokenType lists have matching types in them."""
+    return all(matching_types(type1, type2) \
         for type1, type2 in itertools.zip_longest(stack1, stack2))
 
 def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
