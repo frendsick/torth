@@ -99,7 +99,9 @@ class OpType(Enum):
     ENDIF=auto()
     FUNCTION_CALL=auto()
     IF=auto()
+    IN=auto()
     INTRINSIC=auto()
+    POP_BIND=auto()
     PUSH_BOOL=auto()
     PUSH_CHAR=auto()
     PUSH_INT=auto()
@@ -209,6 +211,7 @@ class Token:
     value: str
     type: TokenType
     location: Location
+    is_bound: bool = False
 
 # param types, return types
 Signature = Tuple[List[TokenType], List[TokenType]]

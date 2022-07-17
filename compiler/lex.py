@@ -214,6 +214,7 @@ def parse_function_bindings(functions: Dict[str, Function]) -> List[Function]:
                     f"Function '{func.name}' has excessive UNBIND statements.", token)
             if parsing_bind:
                 current_binding[token.value] = token.type
+                token.is_bound = True
 
         # Store the found bindings in the Function object
         func.bindings = bind_stack

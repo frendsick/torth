@@ -51,6 +51,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.ENDIF
         elif token_value == 'IF':
             op_type = OpType.IF
+        elif token_value == 'IN':
+            op_type = OpType.IN
         elif token_value == 'INT':
             op_type = OpType.CAST_INT
         elif token_value == 'PTR':
@@ -63,6 +65,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.UNBIND
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
+        elif token.is_bound:
+            op_type = OpType.POP_BIND
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
         elif constant_exists(token.value, constants):
