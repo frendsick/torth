@@ -102,6 +102,7 @@ class OpType(Enum):
     IN=auto()
     INTRINSIC=auto()
     POP_BIND=auto()
+    PUSH_BIND=auto()
     PUSH_BOOL=auto()
     PUSH_CHAR=auto()
     PUSH_INT=auto()

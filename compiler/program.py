@@ -66,7 +66,10 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
         elif token.is_bound:
-            op_type = OpType.POP_BIND
+            if token.type == TokenType.KEYWORD:
+                op_type = OpType.POP_BIND
+            else:
+                op_type = OpType.PUSH_BIND
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
         elif constant_exists(token.value, constants):

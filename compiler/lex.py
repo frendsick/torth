@@ -196,28 +196,31 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
     return functions
 
 def parse_function_bindings(functions: Dict[str, Function]) -> List[Function]:
+    """Parse Bindings from Functions and save them in Function object"""
     for func in functions.values():
-        bind_stack: List[Binding] = []
-        current_binding: Binding = {}
+        bind_stacks: List[Binding] = []
         unbind_count: int = 0
         parsing_bind: bool = False
         for token in func.tokens:
             if token.value.upper() == 'BIND':
+                bind_stacks.append({})
                 parsing_bind = True
             elif token.value.upper() == 'IN':
-                bind_stack.append(current_binding)
                 parsing_bind = False
             elif token.value.upper() == 'UNBIND':
                 unbind_count += 1
-                if unbind_count > len(bind_stack):
+                if unbind_count > len(bind_stacks):
                     compiler_error("AMBIGUOUS_UNBIND",
                     f"Function '{func.name}' has excessive UNBIND statements.", token)
-            if parsing_bind:
-                current_binding[token.value] = token.type
+            elif parsing_bind:
+                token.type = TokenType.KEYWORD
+                bind_stacks[-1][token.value] = token.type
+                token.is_bound = True
+            elif any(token.value in stack for stack in bind_stacks):
                 token.is_bound = True
 
         # Store the found bindings in the Function object
-        func.bindings = bind_stack
+        func.bindings = bind_stacks
     return functions
 
 def get_memories_from_code(included_files: Set[str], constants: List[Constant]) -> List[Memory]:
