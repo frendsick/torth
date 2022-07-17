@@ -4,7 +4,7 @@ Functions for compile-time type checking and running the Torth program
 import itertools
 import re
 from copy import copy
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
@@ -76,6 +76,30 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         program.append( Op(op_id, op_type, token, func) )
     return program
 
+def get_main_function(functions: Dict[str, Function]) -> Function:
+    for func in functions.values():
+        if func.name.upper() == 'MAIN':
+            return func
+    compiler_error("MISSING_MAIN_FUNCTION", "The program does not have a MAIN function")
+
+def get_called_function_names_from_tokens(tokens: List[Token], functions: Dict[str, Function], \
+    function_names: Set[str]) -> Set[str]:
+    """Recursively get the names of functions from each Function's Tokens"""
+    for token in tokens:
+        if token.value in functions and token.value not in function_names:
+            function_names.add(token.value)
+            function_names = get_called_function_names_from_tokens(
+                functions[token.value].tokens, functions, function_names
+            )
+    return function_names
+
+def get_called_function_names(functions: Dict[str, Function]) -> Set[str]:
+    """Get the names of functions that are called in code"""
+    main_function: Function = get_main_function(functions)
+    return get_called_function_names_from_tokens(
+        main_function.tokens, functions, {main_function.name}
+    )
+
 def get_sub_programs(functions: Dict[str, Function], \
     constants: List[Constant], memories: List[Memory]) -> Dict[str, Program]:
     """
@@ -83,7 +107,12 @@ def get_sub_programs(functions: Dict[str, Function], \
     Key:    Function name
     Value:  Sub-program
     """
-    return {func.name: generate_program(func.tokens, constants, functions, memories) for func in functions.values()}
+    sub_programs: Dict[str, Program] = {}
+    called_functions: List[str] = get_called_function_names(functions)
+    for func in functions.values():
+        if func.name in called_functions:
+            sub_programs[func.name] = generate_program(func.tokens, constants, functions, memories)
+    return sub_programs
 
 def get_tokens_function(token: Token, functions: Dict[str, Function]) -> Function:
     """Determine the corresponding function for a Token"""
