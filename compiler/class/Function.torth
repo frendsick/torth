@@ -20,6 +20,27 @@ function Function.init str ptr ptr -> ptr :
   swap over Function.tokens     ptr+ ptr.store
 end
 
+// Get Function.get_name
+// Params: Pointer to Function (PTR)
+// Return: Function.name (STR)
+function Function.get_name ptr -> str :
+  str.load
+end
+
+// Get Function.get_signature
+// Params: Pointer to Function (PTR)
+// Return: Function.signature (PTR)
+function Function.get_signature ptr -> ptr :
+  Function.signature ptr+ ptr.load
+end
+
+// Get Function.get_tokens
+// Params: Pointer to Function (PTR)
+// Return: Function.tokens (PTR)
+function Function.get_tokens ptr -> ptr :
+  Function.tokens ptr+ ptr.load
+end
+
 // Print Function name and Signature to stdout
 // Params: Pointer to Function
 // Return: None
