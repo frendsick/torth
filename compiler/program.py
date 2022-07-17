@@ -290,8 +290,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
-        if func.name.upper() == 'MAIN':
-            print(branched_stacks[-1].repr())
+
     # There should be one INT in the stack when the program ends.
     # Output the remaining elements in the stack.
     if func.name.upper() == 'MAIN' and type_stack.get_types() != [TokenType.INT]:
