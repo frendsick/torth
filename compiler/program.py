@@ -68,7 +68,6 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         elif memory_exists(token.value, memories):
             op_type = OpType.PUSH_PTR
         else:
-            print(constants)
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found", token)
 
         if token.location not in tokens_function_cache:
