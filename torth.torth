@@ -4,12 +4,22 @@ include "compiler/asm"
 include "compiler/error"
 include "compiler/class/Program"
 
+function generate_program_from_file str -> ptr :
+  "" str.copy // word
+  swap read_file
+  0 while dup2 str.char_at NULL != do
+    if dup2 str.char_at ' ' == do
+      3 nth dup puts Program.append_match "\n" puts
+      rot drop "" str.copy rotr
+    else
+      dup2 str.char_at 4 nth str.append
+    endif
+    1 +
+  done drop2 Program.append_match Program
+end
+
 function main :
-  // Generate example program
-  "34"    Program.append_match "\n" puts
-  "35"    Program.append_match "\n" puts
-  "+"     Program.append_match "\n" puts
-  "print" Program.append_match "\n" puts
+  "test.torth" generate_program_from_file
 
   // Generate Assembly from the Program
   Program generate_asm drop
