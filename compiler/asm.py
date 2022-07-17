@@ -169,7 +169,9 @@ def get_op_asm(op: Op, program: Program) -> str:
         OpType.CAST_PTR,
         OpType.CAST_STR,
         OpType.CAST_UINT8,
-        OpType.IF           # If is just a keyword which starts an IF-block
+        OpType.IF,          # If is just a keyword which starts an IF-block
+        OpType.IN,
+        OpType.TAKE
         }:
         return ''
     if op.type == OpType.BREAK:
@@ -188,6 +190,14 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_endif_asm(op)
     if op.type == OpType.FUNCTION_CALL:
         return get_function_call_asm(op)
+    if op.type == OpType.PEEK:
+        return get_peek_asm()
+    if op.type == OpType.PEEK_BIND:
+        return get_peek_bind_asm(op.token.value)
+    if op.type == OpType.POP_BIND:
+        return get_pop_bind_asm(op.token.value)
+    if op.type == OpType.PUSH_BIND:
+        return get_push_bind_asm(op.token.value)
     if op.type == OpType.PUSH_BOOL:
         return get_push_bool_asm(op.token.value.upper())
     if op.type == OpType.PUSH_CHAR:
@@ -421,6 +431,25 @@ def get_endif_asm(op: Op) -> str:
 def get_function_call_asm(op: Op) -> str:
     """Generate assembly for calling a function"""
     return f"  call {get_valid_label_for_nasm(op.token.value)}\n"
+
+def get_peek_asm() -> str:
+    """Save current stack pointer to r15"""
+    return '  mov r15, rsp\n'
+
+def get_peek_bind_asm(memory_name: str) -> str:
+    """Pop a value from the stack to a bound Memory"""
+    op_asm: str  =  '  mov rax, [r15]\n'
+    op_asm      += f'  mov [{memory_name}], rax\n'
+    op_asm      +=  '  sub r15, 8\n'
+    return op_asm
+
+def get_pop_bind_asm(memory_name: str) -> str:
+    """Pop a value from the stack to a bound Memory"""
+    return f'  pop qword [{memory_name}]\n'
+
+def get_push_bind_asm(memory_name: str) -> str:
+    """Push the value from bound Memory to the stack"""
+    return f'  push qword [{memory_name}]\n'
 
 def get_push_bool_asm(boolean: str) -> str:
     """Return the assembly code for PUSH_BOOL Operand."""

@@ -27,16 +27,16 @@ end
 // Utility function for pow
 // Params: exponent, number
 // Return: power
-memory pow_original_value 8 end
 function calculate_pow int int -> int :
-  over pow_original_value STORE_QWORD
+  // Save original number
+  over bind pow.original in
   1 // count
 
   // If count < exponent then we need to multiple the number at least one more time
   WHILE over over < DO
 
     // Multiply n with the original number to get new n
-    rot pow_original_value LOAD_QWORD int * rot rot
+    rot pow.original * rot rot
 
     // Increment count
     1 +

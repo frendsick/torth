@@ -33,8 +33,10 @@ class Keyword(Enum):
     IF=auto()
     INT=auto()
     MEMORY=auto()
+    PEEK=auto()
     PTR=auto()
     STR=auto()
+    TAKE=auto()
     UINT8=auto()
     WHILE=auto()
 
@@ -96,13 +98,19 @@ class OpType(Enum):
     ENDIF=auto()
     FUNCTION_CALL=auto()
     IF=auto()
+    IN=auto()
     INTRINSIC=auto()
+    PEEK=auto()
+    PEEK_BIND=auto()
+    POP_BIND=auto()
+    PUSH_BIND=auto()
     PUSH_BOOL=auto()
     PUSH_CHAR=auto()
     PUSH_INT=auto()
     PUSH_PTR=auto()
     PUSH_STR=auto()
     PUSH_UINT8=auto()
+    TAKE=auto()
     WHILE=auto()
 
 class TokenType(Enum):
@@ -197,12 +205,15 @@ class Memory:
     size: int
     location: Location
 
+Binding = Dict[str, TokenType]
+
 @dataclass
 class Token:
     """Tokens are words from a program that translates to certain operands"""
     value: str
     type: TokenType
     location: Location
+    is_bound: bool = False
 
 # param types, return types
 Signature = Tuple[List[TokenType], List[TokenType]]
@@ -222,6 +233,7 @@ class Function:
     name: str
     signature: Signature
     tokens: List[Token]
+    binding: Binding
 
 @dataclass
 class Op:
