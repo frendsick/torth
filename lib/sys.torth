@@ -63,6 +63,7 @@ const SYS_vfork 58 end
 const SYS_execve 59 end
 const SYS_exit 60 end
 const SYS_wait4 61 end
+const SYS_creat 85 end
 
 // SYS_open flags
 const O_RDONLY 0 end

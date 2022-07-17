@@ -4,7 +4,7 @@
 // Find the sum of all the multiples of 3 or 5 below 1000.
 include "std"
 
-FUNCTION add_to_total int -> int :
+FUNCTION add_to_total int int -> int int :
   dup rot + swap
 END
 
