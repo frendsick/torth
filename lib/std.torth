@@ -303,14 +303,16 @@ function str.is_palindrome str -> bool : dup str.reverse streq end
 
 // Test if string only contains numeric characters
 function str.is_numeric str -> bool :
-  0 while dup2 str.char_at NULL != do
-    if dup2 str.char_at char.is_numeric not do
+  take is_numeric_str in
+  // Iterate over every character of the string
+  0 while is_numeric_str over str.char_at NULL != do
+    // Break if non-numeric character is found
+    if numeric_str over str.char_at char.is_numeric not do
       break
-    endif
-    1 +
-  done
+    endif 1 +
+  done drop
   // Return True if the whole string was numeric
-  swap str.len ==
+  is_numeric_str str.len ==
 end
 
 // Overwrite a string with NULL-bytes
