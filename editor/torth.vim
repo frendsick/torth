@@ -17,7 +17,7 @@ syntax keyword torthTodos TODO NOTE
 " Language keywords
 syntax keyword torthKeywords BREAK CONTINUE DO DONE ELIF ELSE END ENDIF IF INCLUDE WHILE
 
-syntax keyword torthFunctionDefs CONST ENUM FUNCTION MEMORY END
+syntax keyword torthFunctionDefs BIND CONST END ENUM FUNCTION IN MEMORY UNBIND
 
 " Comments
 syntax region torthCommentLine start="//" end="$"   contains=torthTodos
