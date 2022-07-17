@@ -16,6 +16,11 @@ function get_op_asm ptr -> str :
     dup Op.get_token Token.get_value 1 str.char_at get_push_char_asm
   elif dup Op.get_type OpType.PUSH_INT == do
     dup Op.get_token Token.get_value get_push_int_asm
+  elif dup Op.get_type OpType.PUSH_STR == do
+    "TODO: Generating assembly for OpType.PUSH_STR is not implemented yet.\n"
+    "" swap NotImplementedError
+  elif dup Op.get_type OpType.PUSH_PTR == do
+    dup Op.get_token Token.get_value get_push_ptr_asm
   elif dup Op.get_type OpType.INTRINSIC == do
     // Get Operand's Token.value
     dup Op.get_token Token.get_value str.upper
@@ -26,11 +31,14 @@ function get_op_asm ptr -> str :
     elif dup "PRINT" streq do
       get_print_asm
     else
-      dup "" swap NotImplementedError
+      "Generating assembly for intrinsic '" over str.cat
+      "' is not implemented yet\n" str.cat
+      "" swap NotImplementedError
     endif swap drop
   else
-    dup str NotImplementedError
-    ""
+    "Generating assembly for '" over Op.get_token Token.get_value str.cat
+    "' is not implemented: Unknown word\n" str.cat
+    "" swap NotImplementedError
   endif swap drop
 end
 
@@ -81,6 +89,14 @@ end
 // Params: Op.token.value
 // Return: Assembly
 function get_push_int_asm str -> str :
+  "  mov rax, " swap  str.cat
+  "\n  push rax\n"    str.cat
+end
+
+// Generate Assembly for OpType.PUSH_PTR
+// Params: Op.token.value
+// Return: Assembly
+function get_push_ptr_asm str -> str :
   "  mov rax, " swap  str.cat
   "\n  push rax\n"    str.cat
 end
