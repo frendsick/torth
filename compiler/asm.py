@@ -14,8 +14,8 @@ def initialize_asm(constants: List[Constant], memories: List[Memory]) -> str:
     return f'''{get_asm_file_start(constants)}
 section .bss
   args_ptr: resq 1
-  return_stack: resq 1337
-  return_stack_len: resq 1
+  return_stack: resb 1337*64
+  return_stack_index: resq 1
 {get_memory_definitions_asm(memories)}
 section .text
 
@@ -119,9 +119,9 @@ def get_function_end_asm(function_name: str) -> str:
     assembly: str = ""
     if function_name.upper() != 'MAIN':
         assembly += f';; [{function_name}] Jump to the return address found in return_stack\n'
-        assembly +=  '  sub qword [return_stack_len], 8  ; Decrement return_stack_len\n'
+        assembly +=  '  sub qword [return_stack_index], 8  ; Decrement return_stack_index\n'
         assembly +=  '  mov rax, return_stack\n'
-        assembly +=  '  add rax, [return_stack_len]\n'
+        assembly +=  '  add rax, [return_stack_index]\n'
         assembly +=  '  jmp [rax]  ; Return\n\n'
     else:
         assembly +=  ';; -- exit syscall\n'
@@ -141,9 +141,9 @@ def get_function_start_asm(function_name: str) -> str:
         assembly += f'{function_name}:\n'
         assembly += f';; [{function_name}] Save the return address to return_stack\n'
         assembly +=  '  mov rax, return_stack\n'
-        assembly +=  '  add rax, [return_stack_len]\n'
+        assembly +=  '  add rax, [return_stack_index]\n'
         assembly +=  '  pop qword [rax]\n'
-        assembly +=  '  add qword [return_stack_len], 8  ; Increment return_stack_len\n'
+        assembly +=  '  add qword [return_stack_index], 8  ; Increment return_stack_index\n'
     return assembly
 
 def generate_program_asm(program: Program, assembly: str) -> str:
