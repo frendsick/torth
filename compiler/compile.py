@@ -12,12 +12,9 @@ def compile_asm(asm_file: str, object_file: str) -> None:
     """Compile the generated assembly source code with NASM."""
     subprocess.run(['nasm', '-felf64', f'-o{object_file}', asm_file], check=True)
 
-def link_object_file(object_file: str, executable_file: str, cmd_args) -> None:
+def link_object_file(object_file: str, executable_file: str) -> None:
     """Link the compiled object file with LD."""
-    if cmd_args.debug:
-        subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{executable_file}', object_file], check=True)
-    else:
-        subprocess.run(['ld', '--strip-all', '-m', 'elf_x86_64', f'-o{executable_file}', object_file], check=True)
+    subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{executable_file}', object_file], check=True)
 
 def compile_code(input_file: str, constants: List[Constant], \
     functions: Dict[str, Function], memories: List[Memory], is_verbose: bool) -> None:

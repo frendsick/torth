@@ -34,7 +34,7 @@ def main():
     executable_file: str = args.out or code_file_basename.replace('.torth', '.bin')
     object_file: str = code_file_basename.replace('.torth', '.o')
     print_if_verbose(f"Linking {object_file} to executable file {executable_file} with LD", args.verbose)
-    link_object_file(object_file, executable_file, args)
+    link_object_file(object_file, executable_file)
 
     print_if_verbose("Removing files generated during compilation", args.verbose)
     remove_compilation_files(code_file_basename, args)
