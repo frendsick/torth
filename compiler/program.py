@@ -217,7 +217,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
                     "Introduce an ELSE-block if you need to return different values from IF-blocks.\n" + \
                     "The stack state should be the same with every branch of the block.\n\n" + \
                    f"Stack state after the previous sections in the IF block:\n{if_block_return_stacks[-1].repr()}\n"+ \
-                   f"The stack state before the IF block:\n{branched_stacks[-1].repr()}")
+                   f"The stack state before the IF block:\n{branched_stacks[-1].repr()}", op.token)
 
             # Make the IF block's return stack the new stack for the program
             if if_block_return_stacks[-1].head:
