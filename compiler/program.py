@@ -27,8 +27,6 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.PUSH_STR
         elif token.type == TokenType.UINT8:
             op_type = OpType.PUSH_UINT8
-        elif token_value == 'BIND':
-            op_type = OpType.BIND
         elif token_value == 'BOOL':
             op_type = OpType.CAST_BOOL
         elif token_value == 'BREAK':
@@ -61,13 +59,20 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.CAST_STR
         elif token_value == 'UINT8':
             op_type = OpType.CAST_UINT8
+        elif token_value == 'PEEK':
+            op_type = OpType.PEEK
+        elif token_value == 'TAKE':
+            op_type = OpType.TAKE
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
         elif token.is_bound:
-            if token.type == TokenType.KEYWORD:
+            if 'PEEK' in token.value.upper():
+                op_type = OpType.PEEK_BIND
+            elif 'TAKE' in token.value.upper():
                 op_type = OpType.POP_BIND
             else:
                 op_type = OpType.PUSH_BIND
+            token.value = token.value.replace('_PEEK','').replace('_TAKE','')
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
         elif constant_exists(token.value, constants):
@@ -169,7 +174,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             f"Empty function '{func.name}' with different parameter and return types.")
 
     branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
-    NOT_TYPED_TOKENS: List[str]      = [ 'BIND', 'BREAK', 'CONTINUE', 'IN', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'IN', 'PEEK', 'TAKE', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
     # to type check IF-ELIF chains with different stack layouts than what it was before the block.
@@ -257,6 +262,8 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.IF:
             if_block_original_stacks.append(copy(type_stack))
             if_block_return_stacks.append(TypeStack())
+        elif op.type == OpType.PEEK_BIND:
+            continue
         elif op.type == OpType.POP_BIND:
             branched_stacks[-1] = type_check_drop(token, type_stack)
         elif op.type == OpType.PUSH_BIND:
@@ -507,7 +514,7 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
     return type_stack
 
 def type_check_push_bind(token: Token, type_stack: TypeStack) -> TypeStack:
-    """Push a boolean to the stack"""
+    """Push a value from bound memory the stack"""
     type_stack.push(token.type, token.location)
     return type_stack
 
@@ -539,6 +546,11 @@ def type_check_push_str(token: Token, type_stack: TypeStack) -> TypeStack:
 def type_check_push_uint8(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push an unsigned 8-bit integer to the stack"""
     type_stack.push(TokenType.UINT8, token.location)
+    return type_stack
+
+def type_check_take_bind(token: Token, type_stack: TypeStack) -> TypeStack:
+    """Take N amount of values from the stack to bound Memories without touching the stack state"""
+    type_stack.push(token.type, token.location)
     return type_stack
 
 def type_check_bitwise(token: Token, type_stack: TypeStack) -> TypeStack:

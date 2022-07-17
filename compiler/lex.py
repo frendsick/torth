@@ -200,16 +200,18 @@ def parse_function_bindings(functions: Dict[str, Function], memories: List[Memor
     for func in functions.values():
         parsing_bind: bool = False
         binding: Binding = {}
+        bind_variant: str = 'PEEK'
         for token in func.tokens:
-            if token.value.upper() == 'BIND':
+            if token.value.upper() in {'PEEK', 'TAKE'}:
+                bind_variant = token.value.upper()
                 parsing_bind = True
             elif token.value.upper() == 'IN':
                 parsing_bind = False
             elif parsing_bind:
-                token.type = TokenType.KEYWORD
                 token.is_bound = True
                 binding[token.value] = token.type
                 memories.append( Memory(token.value, 8, token.location) )
+                token.value = f'{token.value}_{bind_variant}'
             elif token.value in binding:
                 token.type = TokenType.ANY
                 token.is_bound = True
@@ -348,8 +350,8 @@ def get_token_value(token_value: str) -> str:
 def get_token_type(token_text: str) -> TokenType:
     """Return TokenType value corresponding to the Token.value."""
     keywords: List[str] = [
-        'BIND', 'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
-        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE'
+        'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'PEEK',
+        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE', 'TAKE'
     ]
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , \
