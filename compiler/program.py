@@ -325,9 +325,13 @@ def type_check_function_call(op: Op, type_stack: TypeStack, functions: Dict[str,
     for token_type in return_types:
         type_stack.push(token_type, op.token.location)
 
+def matching_types(type1: TokenType, type2: TokenType) -> bool:
+    """Check if two types are similar"""
+    return type1 == type2 or TokenType.ANY in {type1, type2}
+
 def matching_type_lists(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
-    """Check if two virtual stacks have matching types in them."""
-    return not any(type1 != type2 and TokenType.ANY not in {type1, type2} \
+    """Check if two TokenType lists have matching types in them."""
+    return all(matching_types(type1, type2) \
         for type1, type2 in itertools.zip_longest(stack1, stack2))
 
 def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
