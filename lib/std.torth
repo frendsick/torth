@@ -486,7 +486,7 @@ end
 // Params: const char *filename, mode_t mode, const void *buf
 // Return: ssize_t written_bytes
 function write_file str int str -> int :
-  touch_file
+  dup touch_file
   over dup str.len // size_t count
   swap rot SYS_write syscall3
 end

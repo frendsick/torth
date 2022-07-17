@@ -20,8 +20,6 @@ def get_command_line_arguments() -> argparse.Namespace:
     parser.add_argument('-o', '--out', help='Output file', metavar='FILE')
     parser.add_argument('-p', '--path', metavar='DIRS', \
         help='Comma separated list of directories to be added to PATH in addition of the default "lib"')
-    parser.add_argument('-d', '--debug', action='store_true', \
-        help="Do not strip the resulting binary")
     parser.add_argument('-g', '--graph', action='store_true', \
         help="Generate Graphviz graph from the program's control flow")
     parser.add_argument('-r', '--run', action='store_true', \
@@ -240,6 +238,13 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
             parent_count += 1
     compiler_error("AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE", op.token)
 
+def get_main_function(functions: Dict[str, Function]) -> Function:
+    """Get the main function from a list of Functions"""
+    for func in functions.values():
+        if func.name.upper() == 'MAIN':
+            return func
+    compiler_error("MISSING_MAIN_FUNCTION", "The program does not have a MAIN function")
+
 def get_tokens_from_functions(functions: Dict[str, Function]) -> List[Token]:
     """
     Check if a main function is present in code file and parse Tokens from Functions.
@@ -247,7 +252,7 @@ def get_tokens_from_functions(functions: Dict[str, Function]) -> List[Token]:
     Return a list of Token objects.
     """
     try:
-        main_function: Function = [ func for func in functions.values() if func.name.upper() == 'MAIN' ][0]
+        main_function: Function = get_main_function(functions.values())
     except IndexError:
         compiler_error("MISSING_MAIN_FUNCTION", "The program does not have a MAIN function")
 

@@ -29,7 +29,7 @@ function main : "Hello, World!\n" puts end
 $ ./torth.py --run hello.torth
 Hello, World!
 $ ./torth.py --help
-usage: torth.py [-h] [-o FILE] [-p DIRS] [-d] [-g] [-r] [-s] [-v] code_file
+usage: torth.py [-h] [-o FILE] [-p DIRS] [-g] [-r] [-s] [-v] code_file
 
 Compile Torth code
 
@@ -40,7 +40,6 @@ optional arguments:
   -h, --help            show this help message and exit
   -o FILE, --out FILE   Output file
   -p DIRS, --path DIRS  Comma separated list of directories to be added to PATH in addition of the default "lib"
-  -d, --debug           Do not strip the resulting binary
   -g, --graph           Generate Graphviz graph from the program's control flow
   -r, --run             Run program after compilation
   -s, --save-asm        Save assembly file named after code_file with .asm extension
