@@ -275,15 +275,22 @@ end
 // Params: str1, str2
 // Return: concat(str1+str2)
 function str.cat str str -> str :
+  // Save str1 and str2
+  take str.cat_str1 str.cat_str2 in
+
   // Allocate memory to hold both strings
-  dup2 str.len swap str.len + malloc
+  str.cat_str1 str.len
+  str.cat_str2 str.len
+  + malloc
 
   // Fill the beginning of the allocated memory with str2
-  rot str.fill
+  str.cat_str2 str.fill
+  take str.cat_final in
 
-  // Concatenate str1 to str2
-  dup ptr dup str str.len ptr+  // Pointer to the end of str2
-  rot str.fill drop
+  // Append str1 to str2
+  str.cat_final dup str.len ptr+
+  str.cat_str1 str.fill drop
+  str.cat_final
 end
 
 // Append a character to the end of a string buffer
