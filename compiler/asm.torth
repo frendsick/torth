@@ -29,7 +29,7 @@ function get_op_asm ptr -> str :
       dup "" swap NotImplementedError
     endif swap drop
   else
-    dup NotImplementedError
+    dup str NotImplementedError
     ""
   endif swap drop
 end

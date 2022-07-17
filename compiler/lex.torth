@@ -45,8 +45,8 @@ function get_token_type str -> int :
   // Character => 'a'
   elif
     dup str.len 3 ==
-    over    char.load   single_quote ==
-    3 nth 2 str.char_at single_quote ==
+    over ptr char.load   single_quote ==
+    3 nth 2  str.char_at single_quote ==
     && &&
   do
     drop TokenType.CHAR
@@ -57,21 +57,21 @@ function get_token_type str -> int :
     drop TokenType.INT
   // Hexadecimal => 0x1337
   elif
-    dup    char.load    '0' ==
-    over 1 str.char_at  'x' ==
+    dup ptr char.load    '0' ==
+    over 1  str.char_at  'x' ==
     &&
   do
     drop TokenType.INT
   // String => "This is string\n"
   elif
-    dup char.load                     '"' ==
+    dup ptr char.load                 '"' ==
     over dup str.len 1 - str.char_at  '"' ==
     &&
   do
     drop TokenType.STR
   // uint8 => u69
   elif
-    dup char.load 'u' ==
+    dup ptr char.load 'u' ==
     over 1 str.char_at char.is_numeric
     &&
   do
