@@ -13,7 +13,7 @@ from compiler.utils import compiler_error, get_main_function
 def generate_program(tokens: List[Token], constants: List[Constant], \
     functions: Dict[str, Function], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
-    program: List[Op] = []
+    program: Program = []
     tokens_function_cache: Dict[Location, Function] = {}
     for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()

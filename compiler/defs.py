@@ -201,6 +201,8 @@ class Memory:
     size: int
     location: Location
 
+Binding = Dict[str, TokenType]
+
 @dataclass
 class Token:
     """Tokens are words from a program that translates to certain operands"""
@@ -226,6 +228,7 @@ class Function:
     name: str
     signature: Signature
     tokens: List[Token]
+    bindings: List[Binding]
 
 @dataclass
 class Op:

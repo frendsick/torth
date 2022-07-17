@@ -5,7 +5,7 @@ import itertools
 import os
 import re
 from typing import Dict, List, Optional, Set
-from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
+from compiler.defs import Binding, Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
 from compiler.program import constant_exists
 from compiler.utils import compiler_error, get_file_contents
@@ -148,7 +148,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
                     tokens.append(Token('0', TokenType.INT, token.location))
                 return_types.reverse()
                 signature: Signature = (param_types, return_types)
-                functions[name] = Function(name, signature, tokens)
+                functions[name] = Function(name, signature, tokens, {})
                 name            = ''
                 param_types     = []
                 return_types    = []
@@ -193,6 +193,30 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
                     f"Valid types: {list(SIGNATURE_MAP.keys())}", token)
         elif current_part == 4:
             tokens.append(token)
+    return functions
+
+def parse_function_bindings(functions: Dict[str, Function]) -> List[Function]:
+    for func in functions.values():
+        bind_stack: List[Binding] = []
+        current_binding: Binding = {}
+        unbind_count: int = 0
+        parsing_bind: bool = False
+        for token in func.tokens:
+            if token.value.upper() == 'BIND':
+                parsing_bind = True
+            elif token.value.upper() == 'IN':
+                bind_stack.append(current_binding)
+                parsing_bind = False
+            elif token.value.upper() == 'UNBIND':
+                unbind_count += 1
+                if unbind_count > len(bind_stack):
+                    compiler_error("AMBIGUOUS_UNBIND",
+                    f"Function '{func.name}' has excessive UNBIND statements.", token)
+            if parsing_bind:
+                current_binding[token.value] = token.type
+
+        # Store the found bindings in the Function object
+        func.bindings = bind_stack
     return functions
 
 def get_memories_from_code(included_files: Set[str], constants: List[Constant]) -> List[Memory]:
