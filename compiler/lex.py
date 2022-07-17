@@ -371,7 +371,7 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
 def get_constants_from_files(included_files: List[str]) -> List[Constant]:
     """Parse Constants from list of Function objects. Return the list of Constant objects"""
     constants: List[Constant] = []
-    CONST_REGEX = re.compile(r'CONST\s+(\S+)\s+(-?\d+|0x\d+)\s+END', re.IGNORECASE)
+    CONST_REGEX = re.compile(r'CONST\s+(\S+)\s+(-?\d+|0x[0-9a-fA-F]+)\s+END', re.IGNORECASE | re.MULTILINE)
     for file in included_files:
         code: str = get_file_contents(file)
         enum_matches = CONST_REGEX.findall(code)
