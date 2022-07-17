@@ -131,7 +131,8 @@ def memory_exists(token_value: str, memories: List[Memory]) -> bool:
 
 def get_function_type_stack(func: Function) -> TypeStack:
     """Generate TypeStack from Function parameter types"""
-    param_types: List[TokenType] = func.signature[0]
+    # Put values to the stack in the reversed order
+    param_types: List[TokenType] = func.signature[0][::-1]
     param_stack: TypeStack = TypeStack()
     for param_type in param_types:
         param_stack.push(param_type, func.tokens[0].location)
