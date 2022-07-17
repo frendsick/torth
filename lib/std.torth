@@ -63,7 +63,7 @@ function &&     bool bool   -> bool             : land end
 function input -> str :
   // Allocate memory for the user input
   MEMORY_CAPACITY malloc
-  MEMORY_CAPACITY over stdin read // Returns the amount of bytes read
+  MEMORY_CAPACITY over str stdin read // Returns the amount of bytes read
 
   // Remove the newline character from the end
   over swap 1 - ptr+ NULL char swap char.store
@@ -72,12 +72,12 @@ end
 // Write a string to a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t written_bytes
-function write int ptr int -> int : SYS_write syscall3 end
+function write int str int -> int : SYS_write syscall3 end
 
 // Read <count> bytes from a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t read_bytes
-function read int ptr int -> int : SYS_read syscall3 end
+function read int str int -> int : SYS_read syscall3 end
 
 // Execute the command referred to by <pathname>
 // Params: const char *pathname, char *const argv[], char *const envp[]
@@ -284,19 +284,19 @@ function str.cat str str -> str :
   rot str.fill
 
   // Concatenate str1 to str2
-  dup dup str.len ptr+  // Pointer to the end of str2
+  dup ptr dup str str.len ptr+  // Pointer to the end of str2
   rot str.fill drop
 end
 
 // Append a character to the end of a string buffer
 // Params: string, character
 // Return: None
-function str.append str char : dup str.len ptr+ char.store end
+function str.append str char : ptr dup str str.len ptr+ char.store end
 
 // Get the character at a certain index of a string
 // Params: index, string
 // Return: character_at_index
-function str.char_at int str -> char : ptr+ char.load end
+function str.char_at int str -> char : swap ptr swap ptr+ char.load end
 
 // Test if a string is a palindrome (reads the same backward or forward)
 function str.is_palindrome str -> bool : dup str.reverse streq end
@@ -477,8 +477,8 @@ end
 
 // Create a file
 // Params: const char *pathname, mode_t mode
-// Return: None
-function touch_file str int :
+// Return: int fd
+function touch_file str int -> int :
   SYS_creat syscall2
 end
 
@@ -486,7 +486,7 @@ end
 // Params: const char *filename, mode_t mode, const void *buf
 // Return: ssize_t written_bytes
 function write_file str int str -> int :
-  dup touch_file
+  touch_file
   over dup str.len // size_t count
   swap rot SYS_write syscall3
 end
