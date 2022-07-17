@@ -9,7 +9,7 @@ function generate_program_from_file str -> ptr :
   swap read_file
   0 while dup2 str.char_at NULL != do
     if dup2 str.char_at ' ' == do
-      3 nth dup puts Program.append_match "\n" puts
+      3 nth Program.append_match "\n" puts
       rot drop "" str.copy rotr
     else
       dup2 str.char_at 4 nth str.append
@@ -28,11 +28,15 @@ end
 // Compile Assembly file to object file with NASM
 // Params: file_name
 // Return: None
-memory execve_argv ptr.size end
 function compile_asm str :
   "nasm" exec_forked
 end
 
+function link_object_file str :
+  "ld" exec_forked
+end
+
+memory execve_argv ptr.size end
 function compile_with_nasm str :
   "[INFO] Compiling " puts dup puts " with NASM\n" puts
   // nasm -felf64 target_file
@@ -43,28 +47,39 @@ function compile_with_nasm str :
   envp execve_argv "/usr/bin/nasm" execve drop
 end
 
+function link_with_ld str :
+  "[INFO] Linking " puts dup puts " with LD\n" puts
+  // ld -otest.bin test.o
+  // execve("/usr/bin/ld", ["ld", "-otest.bin", "test.o"], envp)
+  "ld" execve_argv str.store
+  "-otest.bin"  1 execve_argv.insert
+                2 execve_argv.insert
+  envp execve_argv "/usr/bin/ld" execve drop
+end
+
 // Execute a command while being forked
 // Params: command, target_file
 function exec_forked str str :
   SYS_fork SYSCALL0
-
+  
   if dup 0 == do
     over
     // command == "nasm"
     if dup "nasm" streq do
       // nasm -felf64 target_file
       4 nth compile_with_nasm
+    elif dup "ld" streq do
+      4 nth link_with_ld
     endif drop
   elif dup -1 != do
     NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
   else
     "Error occured while calling SYS_fork\n" puts
-  endif drop
+  endif drop2 drop
 
   "Continuing execution in the parent process.\n" puts
 end
 
-const O_CREAT 64 end
 function main :
   "test.torth" generate_program_from_file
 
@@ -72,8 +87,9 @@ function main :
   generate_asm
 
   // Write assembly to a file
-  O_CREAT "test.asm" write_file drop
+  mode_644 "test.asm" write_file drop
 
   "test.asm" compile_asm
+  "test.o"   link_object_file
   "TODO: Implement Torth compiler with itself.\n" NotImplementedError
 end
