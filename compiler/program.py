@@ -4,14 +4,14 @@ Functions for compile-time type checking and running the Torth program
 import itertools
 import re
 from copy import copy
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
-from compiler.utils import compiler_error
+from compiler.utils import compiler_error, get_main_function
 
 def generate_program(tokens: List[Token], constants: List[Constant], \
-    functions: List[Function], memories: List[Memory]) -> Program:
+    functions: Dict[str, Function], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
     program: List[Op] = []
     tokens_function_cache: Dict[Location, Function] = {}
@@ -59,14 +59,12 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.CAST_UINT8
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
-        elif token_value.endswith('_CALL'):
-            op_type = OpType.FUNCTION_CALL
-        elif token_value.endswith('_RETURN'):
-            op_type = OpType.FUNCTION_RETURN
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
         elif constant_exists(token.value, constants):
             op_type = OpType.PUSH_INT
+        elif token.value in functions:
+            op_type = OpType.FUNCTION_CALL
         elif memory_exists(token.value, memories):
             op_type = OpType.PUSH_PTR
         else:
@@ -78,9 +76,41 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         program.append( Op(op_id, op_type, token, func) )
     return program
 
-def get_tokens_function(token: Token, functions: List[Function]) -> Function:
+def get_called_function_names_from_tokens(tokens: List[Token], functions: Dict[str, Function], \
+    function_names: Set[str]) -> Set[str]:
+    """Recursively get the names of functions from each Function's Tokens"""
+    for token in tokens:
+        if token.value in functions and token.value not in function_names:
+            function_names.add(token.value)
+            function_names = get_called_function_names_from_tokens(
+                functions[token.value].tokens, functions, function_names
+            )
+    return function_names
+
+def get_called_function_names(functions: Dict[str, Function]) -> Set[str]:
+    """Get the names of functions that are called in code"""
+    main_function: Function = get_main_function(functions)
+    return get_called_function_names_from_tokens(
+        main_function.tokens, functions, {main_function.name}
+    )
+
+def get_sub_programs(functions: Dict[str, Function], \
+    constants: List[Constant], memories: List[Memory]) -> Dict[str, Program]:
+    """
+    Generate a sub-program dictionary from Functions.
+    Key:    Function name
+    Value:  Sub-program
+    """
+    sub_programs: Dict[str, Program] = {}
+    called_functions: List[str] = get_called_function_names(functions)
+    for func in functions.values():
+        if func.name in called_functions:
+            sub_programs[func.name] = generate_program(func.tokens, constants, functions, memories)
+    return sub_programs
+
+def get_tokens_function(token: Token, functions: Dict[str, Function]) -> Function:
     """Determine the corresponding function for a Token"""
-    for func in functions:
+    for func in functions.values():
         for func_token in func.tokens:
             if token.location == func_token.location:
                 return func
@@ -99,13 +129,20 @@ def memory_exists(token_value: str, memories: List[Memory]) -> bool:
     """Return boolean value whether or not certain Memory exists."""
     return any(memory.name == token_value for memory in memories)
 
-def type_check_program(program: Program) -> None:
+def get_function_type_stack(func: Function) -> TypeStack:
+    """Generate TypeStack from Function parameter types"""
+    param_types: List[TokenType] = func.signature[0]
+    param_stack: TypeStack = TypeStack()
+    for param_type in param_types:
+        param_stack.push(param_type, func.tokens[0].location)
+    return param_stack
+
+def type_check_program(func: Function, program: Program, functions: Dict[str, Function]) -> None:
     """
     Type check all Operands of the Program.
     Raise compiler error if the type checking fails.
     """
-
-    branched_stacks: List[TypeStack] = [TypeStack()]
+    branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
     NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
@@ -121,9 +158,6 @@ def type_check_program(program: Program) -> None:
     # Track if there was an ELSE clause in the IF block.
     # Required for type checking IF blocks with each IF / ELIF keyword altering the stack state.
     else_present: bool = False
-
-    # Store the amount of items in the stack before each function call
-    original_function_stacks: List[TypeStack] = [TypeStack()]
 
     for op in program:
         token: Token = op.token
@@ -193,9 +227,7 @@ def type_check_program(program: Program) -> None:
             if_block_return_stacks.pop()
             else_present = False
         elif op.type == OpType.FUNCTION_CALL:
-            type_check_function_call(op, type_stack, original_function_stacks)
-        elif op.type == OpType.FUNCTION_RETURN:
-            type_check_function_return(op, op.func.signature, type_stack, original_function_stacks.pop())
+            type_check_function_call(op, type_stack, functions)
         elif op.type == OpType.IF:
             if_block_original_stacks.append(copy(type_stack))
             if_block_return_stacks.append(TypeStack())
@@ -260,71 +292,24 @@ def type_check_program(program: Program) -> None:
 
     # There should be one INT in the stack when the program ends.
     # Output the remaining elements in the stack.
-    if type_stack.get_types() != [TokenType.INT]:
+    if func.name.upper() == 'MAIN' and type_stack.get_types() != [TokenType.INT]:
+        print(func.tokens)
         compiler_error("FUNCTION_SIGNATURE_ERROR", \
             "Only the integer return value of the program should be in the stack when program exits.\n\n" + \
             f"Stack after the MAIN function:\n{type_stack.repr()}")
 
-def type_check_function_call(op: Op, type_stack: TypeStack, \
-    original_function_stacks: List[TypeStack]) -> List[TokenType]:
+def type_check_function_call(op: Op, type_stack: TypeStack, functions: Dict[str, Function]) -> None:
     """
     Type check the function parameter types.
     Returns the types in stack when the parameters are popped out.
     """
-    param_types: List[TokenType] = op.func.signature[0]
-    original_function_stacks.append(copy(type_stack))
-    temp_stack = copy(type_stack)
-    for param_type in param_types:
-        if not temp_stack.head:
-            compiler_error("FUNCTION_SIGNATURE_ERROR", \
-                f"Function '{op.func.name}' requires more values to the stack.\n\n" + \
-                f"Expected parameter types: {param_types}", op.token, current_stack=type_stack)
-        top_type: TokenType = temp_stack.pop().value  # type: ignore
-
-        # Check for any type and pointers
-        if param_type == TokenType.ANY or top_type == TokenType.ANY or \
-            (param_type in POINTER_TYPES and top_type in POINTER_TYPES):
-            continue
-        # Check all other types
-        if param_type not in [top_type, TokenType.ANY]:
-            compiler_error("FUNCTION_SIGNATURE_ERROR", \
-                f"Function '{op.func.name}' has wrong parameter types in the stack.\n\n" + \
-                f"Expected parameter types: {param_types}", op.token, current_stack=type_stack)
-    return temp_stack.get_types()
-
-def type_check_function_return(op: Op, function_signature: Signature, \
-    type_stack: TypeStack, function_call_stack: TypeStack) -> None:
-    """Type check the function return types"""
-    return_types: List[TokenType] = function_signature[1]
-    temp_stack = copy(type_stack)
-    for return_type in return_types:
-        if not temp_stack.head:
-            compiler_error("FUNCTION_SIGNATURE_ERROR", \
-                f"Function '{op.func.name}' requires more values in the stack when the function returns.\n\n" + \
-                f"Expected return types: {return_types}", op.token, current_stack=type_stack)
-
-        # Check for any type and pointers
-        top_type: TokenType = temp_stack.pop().value  # type: ignore
-        if return_type == TokenType.ANY or top_type == TokenType.ANY \
-            or (return_type in POINTER_TYPES and top_type in POINTER_TYPES):
-            continue
-        # Check all other types
-        if return_type not in [top_type, TokenType.ANY]:
-            compiler_error("FUNCTION_SIGNATURE_ERROR", \
-                f"Function '{op.func.name}' has wrong return types in the stack.\n\n" + \
-                f"Expected return types: {return_types}", op.token, current_stack=type_stack)
-
-    # Check if the function consumes the correct amount of values from the stack
-    stack_difference: int = len(function_signature[0]) - len(return_types)
-    if stack_difference != len(function_call_stack.get_types()) - len(type_stack.get_types()):
-        expected_types: TypeStack = copy(type_stack)
-        for _ in return_types:
-            expected_types.pop()
-        compiler_error("FUNCTION_SIGNATURE_ERROR", \
-            f"Function '{op.func.name}' does not use the values determined in function signature\n\n" + \
-            f"Function Signature:\n{function_signature}\n\n" + \
-            f"Stack before the function call:\n{function_call_stack.repr()}\n" + \
-            f"Stack after the function call:\n{type_stack.repr()}")
+    function_signature: Signature = functions[op.token.value].signature
+    # Pop param types
+    for _ in function_signature[0]:
+        type_stack.pop()
+    # Push return types
+    for token_type in function_signature[1]:
+        type_stack.push(token_type, op.token.location)
 
 def matching_type_lists(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
     """Check if two virtual stacks have matching types in them."""

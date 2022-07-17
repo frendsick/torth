@@ -1,16 +1,21 @@
 """
 Functions used for generating assembly code from Torth code
 """
+import base64
+import re
 from typing import Dict, List, Optional
-from compiler.defs import Constant, Memory, OpType, Op, Program, Token
+from compiler.defs import Constant, Function, Memory, OpType, Op, Program, Token
+from compiler.program import generate_program
 from compiler.utils import compiler_error, get_parent_op_type_do, get_parent_while
-from compiler.utils import get_end_op_for_while, get_related_endif
+from compiler.utils import get_end_op_for_while, get_related_endif, print_if_verbose
 
 def initialize_asm(constants: List[Constant], memories: List[Memory]) -> str:
     """Initialize assembly code file with some common definitions."""
     return f'''{get_asm_file_start(constants)}
 section .bss
   args_ptr: resq 1
+  return_stack: resq 1337
+  return_stack_len: resq 1
 {get_memory_definitions_asm(memories)}
 section .text
 
@@ -49,9 +54,6 @@ print:
   add     rsp, 40
   ret
 
-global _start
-_start:
-  mov [args_ptr], rsp   ; Pointer to argc
 '''
 
 def get_asm_file_start(constants: List[Constant]) -> str:
@@ -66,13 +68,6 @@ def get_asm_file_start(constants: List[Constant]) -> str:
 section .data
 '''
 
-def get_asm_file_end() -> str:
-    """Returns the contents of the beginning of the generated assembly file"""
-    return ''';; -- exit syscall
-  mov rax, sys_exit
-  pop rdi
-  syscall'''
-
 def get_memory_definitions_asm(memories: List[Memory]) -> str:
     """Generates assembly code of memory definitions. Returns the memory definitions."""
     asm: str = ''
@@ -82,23 +77,88 @@ def get_memory_definitions_asm(memories: List[Memory]) -> str:
         asm += f'  {memory.name}: RESB {memory.size}\n'
     return asm
 
-def generate_asm(assembly: str, program: Program) -> str:
-    """Generate assembly file and write it to a file."""
+def generate_sub_programs(functions: Dict[str, Function], constants: List[Constant], \
+    memories: List[Memory]) -> List[Program]:
+    """Generate Program from each Function"""
+    sub_programs: List[Program] = []
+    for func in functions.values():
+        tokens: List[Token] = func.tokens
+        sub_programs.append(
+            generate_program(tokens, constants, functions, memories)
+        )
+    return sub_programs
+
+def get_valid_label_for_nasm(function_name: str) -> str:
+    """Generate valid NASM label for Function"""
+    # Valid characters in labels are letters, numbers, _, $, #, @, ~, ., and ?
+    if not re.match(r'^[\w_$#@~.]+$', function_name):
+        b64: bytes = base64.b64encode(bytes(function_name, 'utf-8'))
+        return str(b64).replace('=','')[2:-1]
+    return function_name
+
+def generate_asm(sub_programs: Dict[str, Program], \
+    constants: List[Constant], memories: List[Memory], is_verbose: bool) -> str:
+    """Generate Assembly from Functions."""
+    print_if_verbose("Generating Assembly from Torth code", is_verbose)
+    # Generate beginning for an Assembly file
+    assembly: str = initialize_asm(constants, memories)
+
+    # Generate Assembly for each Function
+    for name, program in sub_programs.items():
+        function_name: str = get_valid_label_for_nasm(name)
+        assembly += get_function_start_asm(function_name)
+
+        # The driver code for the Function
+        assembly = generate_program_asm(program, assembly)
+
+        assembly += get_function_end_asm(function_name)
+    return assembly
+
+def get_function_end_asm(function_name: str) -> str:
+    """Return the end of the Assembly of each Function"""
+    assembly: str = ""
+    if function_name.upper() != 'MAIN':
+        assembly +=  ';; Jump to the return address found in return_stack\n'
+        assembly +=  '  sub qword [return_stack_len], 8  ; Decrement return_stack_len\n'
+        assembly +=  '  mov rax, return_stack\n'
+        assembly +=  '  add rax, [return_stack_len]\n'
+        assembly +=  '  jmp [rax]  ; Return\n'
+    else:
+        assembly +=  ';; -- exit syscall\n'
+        assembly +=  '  mov rax, sys_exit\n'
+        assembly +=  '  pop rdi\n'
+        assembly +=  '  syscall\n'
+    return assembly
+
+def get_function_start_asm(function_name: str) -> str:
+    """Return the beginning of the Assembly of each Function"""
+    assembly = ""
+    if function_name.upper() == 'MAIN':
+        assembly +=  'global _start\n'
+        assembly +=  '_start:\n'
+        assembly +=  '  mov [args_ptr], rsp   ; Pointer to argc\n'
+    else:
+        assembly += f'{function_name}:\n'
+        assembly += f';; [{function_name}] Save the return address to return_stack\n'
+        assembly +=  '  pop rax\n'
+        assembly +=  '  mov rbx, return_stack\n'
+        assembly +=  '  add rbx, [return_stack_len]\n'
+        assembly +=  '  mov [rbx], rax\n'
+        assembly +=  '  add qword [return_stack_len], 8  ; Increment return_stack_len\n'
+    return assembly
+
+def generate_program_asm(program: Program, assembly: str) -> str:
+    """Generate Assembly for a sub-program."""
     for op in program:
-        token: Token = op.token
-
-        if op.type == OpType.PUSH_STR:
-            assembly = add_string_variable_asm(assembly, token.value, op)
-
         assembly += get_op_comment_asm(op, op.type)
+        if op.type == OpType.PUSH_STR:
+            assembly = add_string_variable_asm(assembly, op.token.value, op)
 
         # Get assembly for the current Op
         op_asm: str = get_op_asm(op, program=program)
         if op_asm != "":
             assembly += op_asm
-
-    assembly += get_asm_file_end()
-    return assembly
+    return f"{assembly}"
 
 def get_op_asm(op: Op, program: Program) -> str:
     """Generate assembly code for certain Op. Return assembly for the Op."""
@@ -109,8 +169,6 @@ def get_op_asm(op: Op, program: Program) -> str:
         OpType.CAST_PTR,
         OpType.CAST_STR,
         OpType.CAST_UINT8,
-        OpType.FUNCTION_CALL,
-        OpType.FUNCTION_RETURN,
         OpType.IF           # If is just a keyword which starts an IF-block
         }:
         return ''
@@ -128,6 +186,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_else_asm(op, program)
     if op.type == OpType.ENDIF:
         return get_endif_asm(op)
+    if op.type == OpType.FUNCTION_CALL:
+        return get_function_call_asm(op)
     if op.type == OpType.PUSH_BOOL:
         return get_push_bool_asm(op.token.value.upper())
     if op.type == OpType.PUSH_CHAR:
@@ -216,14 +276,13 @@ def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     """Generate assembly comment for the Op. Return the comment string."""
     # Function calls and returns should not generate any output
     op_name: str    = op_type.name
-    if op_name in {"FUNCTION_CALL", "FUNCTION_RETURN"}:
-        return ''
-
     src_file: str   = op.token.location[0]
     row: int        = op.token.location[1]
     col: int        = op.token.location[2]
     if op_name == "INTRINSIC":
         op_name = f'{op_name} {op.token.value}'
+    elif op_name == "FUNCTION_CALL":
+        op_name = f'Call {op.token.value}'
     return get_token_info_comment_asm(op_name, src_file, row, col, function_name=op.func.name)
 
 def get_token_info_comment_asm(name: str, file: str, row: int, col: int, function_name: Optional[str] = None) -> str:
@@ -277,7 +336,7 @@ def add_string_variable_asm(assembly: str, string: str, op: Op) -> str:
 
     # Replace \n with nasm approved 10s for newline
     escaped_string: str = format_escape_sequence_characters_for_nasm(string)
-    return f'{assembly[:string_index]}  s{op.id} db {escaped_string},0\n{assembly[string_index:]}'
+    return f'{assembly[:string_index]}  {op.func.name}_s{op.id} db {escaped_string},0\n{assembly[string_index:]}'
 
 def get_do_asm(op: Op, program: Program) -> str:
     """DO is conditional jump to operand after ELIF, ELSE, END or ENDIF."""
@@ -299,7 +358,7 @@ def get_do_asm(op: Op, program: Program) -> str:
             ( ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)) \
             or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)) \
             or ( parent_op_type == OpType.WHILE and op_type == OpType.DONE ) ):
-            jump_destination: str = program[i].type.name + str(i)
+            jump_destination: str = f'{op.func.name}_{program[i].type.name}{i}'
             op_asm = generate_do_asm(jump_destination)
             break
 
@@ -318,13 +377,13 @@ def get_break_asm(op: Op, program: Program) -> str:
     """BREAK is an unconditional jump to operand after current loop's DONE."""
     parent_while: Op = get_parent_while(op, program)
     parent_end:   Op = get_end_op_for_while(parent_while, program)
-    return f'  jmp DONE{parent_end.id}\n'
+    return f'  jmp {op.func.name}_DONE{parent_end.id}\n'
 
 def get_continue_asm(op: Op, program: Program) -> str:
     """CONTINUE is an unconditional jump to current loop's WHILE."""
     parent_while: Op = get_parent_while(op, program)
-    op_asm: str  = f'  jmp WHILE{parent_while.id}\n'
-    op_asm      += f'DONE{op.id}:\n'
+    op_asm: str  = f'  jmp {op.func.name}_WHILE{parent_while.id}\n'
+    op_asm      += f'{op.func.name}_DONE{op.id}:\n'
     return op_asm
 
 def generate_do_asm(jump_destination: str) -> str:
@@ -337,27 +396,31 @@ def generate_do_asm(jump_destination: str) -> str:
 def get_done_asm(op: Op, program: Program) -> str:
     """DONE is an unconditional jump to current loop's WHILE."""
     parent_while: Op = get_parent_while(op, program)
-    op_asm: str  = f'  jmp WHILE{parent_while.id}\n'
-    op_asm      += f'DONE{op.id}:\n'
+    op_asm: str  = f'  jmp {op.func.name}_WHILE{parent_while.id}\n'
+    op_asm      += f'{op.func.name}_DONE{op.id}:\n'
     return op_asm
 
 def get_elif_asm(op: Op, program: Program) -> str:
     """ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to."""
     related_endif: Op = get_related_endif(op, program)
-    op_asm: str  = f'  jmp ENDIF{related_endif.id}\n'
-    op_asm      += f'ELIF{op.id}:\n'
+    op_asm: str  = f'  jmp {op.func.name}_ENDIF{related_endif.id}\n'
+    op_asm      += f'{op.func.name}_ELIF{op.id}:\n'
     return op_asm
 
 def get_else_asm(op: Op, program: Program) -> str:
     """ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to."""
     related_endif: Op = get_related_endif(op, program)
-    op_asm: str  = f'  jmp ENDIF{related_endif.id}\n'
-    op_asm      += f'ELSE{op.id}:\n'
+    op_asm: str  = f'  jmp {op.func.name}_ENDIF{related_endif.id}\n'
+    op_asm      += f'{op.func.name}_ELSE{op.id}:\n'
     return op_asm
 
 def get_endif_asm(op: Op) -> str:
     """ENDIF is a keyword for DO, ELIF or ELSE to jump to without additional functionality."""
-    return f'ENDIF{op.id}:\n'
+    return f'{op.func.name}_ENDIF{op.id}:\n'
+
+def get_function_call_asm(op: Op) -> str:
+    """Generate assembly for calling a function"""
+    return f"  call {get_valid_label_for_nasm(op.token.value)}\n"
 
 def get_push_bool_asm(boolean: str) -> str:
     """Return the assembly code for PUSH_BOOL Operand."""
@@ -386,7 +449,7 @@ def get_push_ptr_asm(memory_name: str) -> str:
 
 def get_push_str_asm(op: Op) -> str:
     """Pushes a pointer to the string variable to the stack."""
-    op_asm: str  = f'  mov rsi, s{op.id} ; Pointer to string\n'
+    op_asm: str  = f'  mov rsi, {op.func.name}_s{op.id} ; Pointer to string\n'
     op_asm      +=  '  push rsi\n'
     return op_asm
 
@@ -395,7 +458,7 @@ def get_while_asm(op: Op) -> str:
     WHILE is a keyword for DONE to jump to.
     Return the assembly code for WHILE Operand.
     """
-    return f'WHILE{op.id}:\n'
+    return f'{op.func.name}_WHILE{op.id}:\n'
 
 def get_and_asm() -> str:
     """AND performs bitwise-AND operation to two integers."""
