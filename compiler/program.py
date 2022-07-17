@@ -328,12 +328,12 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             "Only the integer return value of the program should be in the stack when program exits.\n\n" + \
             f"Stack after the MAIN function:\n{type_stack.repr()}", func.tokens[-1])
 
-    if not correct_return_types(func, type_stack):
+    if not correct_return_types(func, branched_stacks[-1]):
         compiler_error("FUNCTION_SIGNATURE_ERROR",
             f"Function '{func.name}' does not return the types indicated in the function signature.\n\n" + \
             f"Function parameter types: {func.signature[0]}\n" + \
             f"Function return types:    {func.signature[1]}\n",
-            func.tokens[-1], type_stack, get_function_type_stack(func))
+            func.tokens[-1], branched_stacks[-1], get_function_type_stack(func))
 
 def correct_return_types(func: Function, type_stack: TypeStack) -> bool:
     """Check if the state of TypeStack is correct after executing the Function"""
@@ -381,7 +381,7 @@ def matching_types(type1: TokenType, type2: TokenType) -> bool:
 
 def matching_type_lists(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
     """Check if two TokenType lists have matching types in them."""
-    return all(matching_types(type1, type2) \
+    return len(stack1) == len(stack2) and all(matching_types(type1, type2) \
         for type1, type2 in itertools.zip_longest(stack1, stack2))
 
 def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
@@ -508,7 +508,7 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
 
 def type_check_push_bind(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push a boolean to the stack"""
-    type_stack.push(TokenType.ANY, token.location)
+    type_stack.push(token.type, token.location)
     return type_stack
 
 def type_check_push_bool(token: Token, type_stack: TypeStack) -> TypeStack:
