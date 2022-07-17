@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, Set
 from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
-from compiler.utils import compiler_error
+from compiler.utils import compiler_error, get_main_function
 
 def generate_program(tokens: List[Token], constants: List[Constant], \
     functions: Dict[str, Function], memories: List[Memory]) -> Program:
@@ -75,12 +75,6 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         func: Function = tokens_function_cache[token.location]
         program.append( Op(op_id, op_type, token, func) )
     return program
-
-def get_main_function(functions: Dict[str, Function]) -> Function:
-    for func in functions.values():
-        if func.name.upper() == 'MAIN':
-            return func
-    compiler_error("MISSING_MAIN_FUNCTION", "The program does not have a MAIN function")
 
 def get_called_function_names_from_tokens(tokens: List[Token], functions: Dict[str, Function], \
     function_names: Set[str]) -> Set[str]:

@@ -238,6 +238,13 @@ def get_parent_op_type_do(op: Op, program: Program) -> OpType:
             parent_count += 1
     compiler_error("AMBIGUOUS_DO", "DO operand without parent IF, ELIF or WHILE", op.token)
 
+def get_main_function(functions: Dict[str, Function]) -> Function:
+    """Get the main function from a list of Functions"""
+    for func in functions.values():
+        if func.name.upper() == 'MAIN':
+            return func
+    compiler_error("MISSING_MAIN_FUNCTION", "The program does not have a MAIN function")
+
 def get_tokens_from_functions(functions: Dict[str, Function]) -> List[Token]:
     """
     Check if a main function is present in code file and parse Tokens from Functions.
@@ -245,7 +252,7 @@ def get_tokens_from_functions(functions: Dict[str, Function]) -> List[Token]:
     Return a list of Token objects.
     """
     try:
-        main_function: Function = [ func for func in functions.values() if func.name.upper() == 'MAIN' ][0]
+        main_function: Function = get_main_function(functions.values())
     except IndexError:
         compiler_error("MISSING_MAIN_FUNCTION", "The program does not have a MAIN function")
 
