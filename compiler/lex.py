@@ -5,9 +5,9 @@ import itertools
 import os
 import re
 from typing import Dict, List, Optional, Set
-from compiler.defs import Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
+from compiler.defs import Binding, Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
-from compiler.program import constant_exists
+from compiler.program import constant_exists, memory_exists
 from compiler.utils import compiler_error, get_file_contents
 
 already_included_files: Set[str] = set()
@@ -148,7 +148,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
                     tokens.append(Token('0', TokenType.INT, token.location))
                 return_types.reverse()
                 signature: Signature = (param_types, return_types)
-                functions[name] = Function(name, signature, tokens)
+                functions[name] = Function(name, signature, tokens, {})
                 name            = ''
                 param_types     = []
                 return_types    = []
@@ -194,6 +194,37 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
         elif current_part == 4:
             tokens.append(token)
     return functions
+
+def parse_function_bindings(functions: Dict[str, Function], memories: List[Memory]) -> Dict[str, Function]:
+    """Parse Bindings from Functions and save them in Function object"""
+    for func in functions.values():
+        parsing_bind: bool = False
+        binding: Binding = {}
+        bind_variant: str = 'PEEK'
+        for token in func.tokens:
+            if token.value.upper() in {'PEEK', 'TAKE'}:
+                bind_variant = token.value.upper()
+                parsing_bind = True
+            elif token.value.upper() == 'IN':
+                parsing_bind = False
+            elif parsing_bind:
+                token.is_bound = True
+                binding[token.value] = token.type
+                memories.append( Memory(token.value, 8, token.location) )
+                token.value = f'{token.value}_{bind_variant}'
+            elif token.value in binding:
+                token.type = TokenType.ANY
+                token.is_bound = True
+        # Store the found bindings in the Function object
+        func.binding = binding
+    return functions
+
+def add_binding_to_memories(token: Token, memories: List[Memory]) -> List[Memory]:
+    """Add binding to memories so it can be used as memory later"""
+    if memory_exists(token.value, memories):
+        return memories
+    memories.append(Memory(token.value, 8, token.location))
+    return memories
 
 def get_memories_from_code(included_files: Set[str], constants: List[Constant]) -> List[Memory]:
     """Parse Memory objects from code file and included files. Return list of Memory objects."""
@@ -319,8 +350,8 @@ def get_token_value(token_value: str) -> str:
 def get_token_type(token_text: str) -> TokenType:
     """Return TokenType value corresponding to the Token.value."""
     keywords: List[str] = [
-        'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END',
-        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE'
+        'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'PEEK',
+        'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'STR', 'UINT8', 'WHILE', 'TAKE'
     ]
     # Check if all keywords are taken into account
     assert len(Keyword) == len(keywords) , \
@@ -371,7 +402,7 @@ def get_token_location(filename: str, position: int, newline_indexes: List[int])
 def get_constants_from_files(included_files: List[str]) -> List[Constant]:
     """Parse Constants from list of Function objects. Return the list of Constant objects"""
     constants: List[Constant] = []
-    CONST_REGEX = re.compile(r'CONST\s+(\S+)\s+(-?\d+|0x\d+)\s+END', re.IGNORECASE)
+    CONST_REGEX = re.compile(r'CONST\s+(\S+)\s+(-?\d+|0x[0-9a-fA-F]+)\s+END', re.IGNORECASE | re.MULTILINE)
     for file in included_files:
         code: str = get_file_contents(file)
         enum_matches = CONST_REGEX.findall(code)

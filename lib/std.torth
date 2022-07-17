@@ -97,19 +97,16 @@ function fputs int str : swap dup str.len swap rot write drop end
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
 // Return: Pointer to the start of the allocated memory
-memory malloc.length int.size end
 function malloc int -> ptr :
   // Allocate at least one byte
   if dup 0 == do drop 1 endif
-
-  // Store the length-parameter in temporary integer
-  malloc.length int.store
+  take malloc_length in
 
   // mmap ( NULL, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0 );
   0 0
   MAP_ANONYMOUS MAP_PRIVATE |
   PROT_READ PROT_WRITE |
-  malloc.length int.load // length
+  malloc_length
   NULL SYS_mmap SYSCALL6 ptr
 end
 
@@ -124,6 +121,7 @@ function putu int : print end
 
 // Ptr functions
 function ptr+       int ptr -> ptr : swap int + ptr end
+function ptr-       int ptr -> ptr : swap int - ptr end
 function ptr++      ptr     -> ptr : ptr.size ptr+  end
 function ptr.load   ptr     -> ptr : LOAD_QWORD ptr end
 function ptr.store  ptr ptr ->     : STORE_QWORD    end
@@ -277,15 +275,22 @@ end
 // Params: str1, str2
 // Return: concat(str1+str2)
 function str.cat str str -> str :
+  // Save str1 and str2
+  take str.cat_str1 str.cat_str2 in
+
   // Allocate memory to hold both strings
-  dup2 str.len swap str.len + malloc
+  str.cat_str1 str.len
+  str.cat_str2 str.len
+  + malloc
 
   // Fill the beginning of the allocated memory with str2
-  rot str.fill
+  str.cat_str2 str.fill
+  take str.cat_final in
 
-  // Concatenate str1 to str2
-  dup ptr dup str str.len ptr+  // Pointer to the end of str2
-  rot str.fill drop
+  // Append str1 to str2
+  str.cat_final dup str.len ptr+
+  str.cat_str1 str.fill drop
+  str.cat_final
 end
 
 // Append a character to the end of a string buffer
@@ -303,14 +308,16 @@ function str.is_palindrome str -> bool : dup str.reverse streq end
 
 // Test if string only contains numeric characters
 function str.is_numeric str -> bool :
-  0 while dup2 str.char_at NULL != do
-    if dup2 str.char_at char.is_numeric not do
+  take is_numeric_str in
+  // Iterate over every character of the string
+  0 while is_numeric_str over str.char_at NULL != do
+    // Break if non-numeric character is found
+    if numeric_str over str.char_at char.is_numeric not do
       break
-    endif
-    1 +
-  done
+    endif 1 +
+  done drop
   // Return True if the whole string was numeric
-  swap str.len ==
+  is_numeric_str str.len ==
 end
 
 // Overwrite a string with NULL-bytes
@@ -379,8 +386,10 @@ end
 // Get an integer representation of a string
 function atoi str -> int :
   // Iterate the string character by character
-  0 while dup2 str.char_at NULL != do
-    dup2 str.char_at
+  take atoi.str in
+
+  0 while atoi.str over str.char_at NULL != do
+    atoi.str over str.char_at
 
     // Raise an error if the character is not a number
     if dup char.is_numeric not do
@@ -399,7 +408,7 @@ function atoi str -> int :
     + temp_int int.store
 
     1 +
-  done drop2
+  done drop
   // Return the integer
   temp_int int.load
 
@@ -408,30 +417,32 @@ function atoi str -> int :
 end
 
 // Tests if two strings are equal
-memory is_equal bool.size end
 function streq str str -> bool :
-  True is_equal bool.store // is_equal = True
-  0 // index
-  // while index < len(str1)
-  while dup2 swap str.len > do
+  // Bind strings to memory
+  take streq.str1 streq.str2 in
+
+  // while len(str1) > index
+  0 while
+    streq.str1 over dup
+    take streq.index in
+    swap str.len >
+  do
     if // str1[index] != str2[index]
-      dup2            str.char_at
-      over 5 nth swap str.char_at
+      streq.str1 streq.index str.char_at
+      streq.str2 streq.index str.char_at
       !=
-    do
-      False is_equal bool.store // is_equal = False
-      break
-    endif
-    1 +
-  done
+    do break
+    endif 1 +
+  done drop
 
-  if dup 4 nth swap str.char_at NULL != do
-    False is_equal bool.store // is_equal = False
+  // Strings are not equal if the last checked character is not equal
+  if
+    streq.str1 streq.index str.char_at
+    streq.str2 streq.index str.char_at
+    !=
+  do False
+  else True
   endif
-  drop drop drop // Drop strings and index
-
-  // return is_equal
-  is_equal bool.load
 end
 
 // Reverse a string

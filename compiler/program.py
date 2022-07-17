@@ -13,7 +13,7 @@ from compiler.utils import compiler_error, get_main_function
 def generate_program(tokens: List[Token], constants: List[Constant], \
     functions: Dict[str, Function], memories: List[Memory]) -> Program:
     """Generate a Program from a list of Tokens. Return the Program."""
-    program: List[Op] = []
+    program: Program = []
     tokens_function_cache: Dict[Location, Function] = {}
     for op_id, token in enumerate(tokens):
         token_value: str = token.value.upper()
@@ -49,6 +49,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.ENDIF
         elif token_value == 'IF':
             op_type = OpType.IF
+        elif token_value == 'IN':
+            op_type = OpType.IN
         elif token_value == 'INT':
             op_type = OpType.CAST_INT
         elif token_value == 'PTR':
@@ -57,8 +59,20 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.CAST_STR
         elif token_value == 'UINT8':
             op_type = OpType.CAST_UINT8
+        elif token_value == 'PEEK':
+            op_type = OpType.PEEK
+        elif token_value == 'TAKE':
+            op_type = OpType.TAKE
         elif token_value == 'WHILE':
             op_type = OpType.WHILE
+        elif token.is_bound:
+            if 'PEEK' in token.value.upper():
+                op_type = OpType.PEEK_BIND
+            elif 'TAKE' in token.value.upper():
+                op_type = OpType.POP_BIND
+            else:
+                op_type = OpType.PUSH_BIND
+            token.value = token.value.replace('_PEEK','').replace('_TAKE','')
         elif intrinsic_exists(token_value):
             op_type = OpType.INTRINSIC
         elif constant_exists(token.value, constants):
@@ -66,6 +80,7 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         elif token.value in functions:
             op_type = OpType.FUNCTION_CALL
         elif memory_exists(token.value, memories):
+            bindings_function: Optional[Function] = get_bindings_function(token.value, functions)
             op_type = OpType.PUSH_PTR
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found", token)
@@ -73,6 +88,10 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         if token.location not in tokens_function_cache:
             tokens_function_cache[token.location] = get_tokens_function(token, functions)
         func: Function = tokens_function_cache[token.location]
+        if op_type == OpType.PUSH_PTR and bindings_function and \
+            token.value not in func.binding:
+            compiler_error("MEMORY_IN_USE",
+                f"Memory '{token.value}' is already binded in '{bindings_function.name}' Function.", token)
         program.append( Op(op_id, op_type, token, func) )
     return program
 
@@ -129,6 +148,10 @@ def memory_exists(token_value: str, memories: List[Memory]) -> bool:
     """Return boolean value whether or not certain Memory exists."""
     return any(memory.name == token_value for memory in memories)
 
+def get_bindings_function(token_value: str, functions: Dict[str, Function]) -> Optional[Function]:
+    """Get the Function in which certain Binding was created"""
+    return next((func for func in functions.values() if token_value in func.binding), None)
+
 def get_function_type_stack(func: Function) -> TypeStack:
     """Generate TypeStack from Function parameter types"""
     # Put values to the stack in the reversed order
@@ -143,8 +166,14 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
     Type check all Operands of the Program.
     Raise compiler error if the type checking fails.
     """
+    if not func.tokens:
+        if matching_type_lists(func.signature[0], func.signature[1]):
+            return
+        compiler_error("FUNCTION_SIGNATURE_ERROR",
+            f"Empty function '{func.name}' with different parameter and return types.")
+
     branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
-    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'IN', 'PEEK', 'TAKE', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
     # to type check IF-ELIF chains with different stack layouts than what it was before the block.
@@ -232,6 +261,12 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.IF:
             if_block_original_stacks.append(copy(type_stack))
             if_block_return_stacks.append(TypeStack())
+        elif op.type == OpType.PEEK_BIND:
+            continue
+        elif op.type == OpType.POP_BIND:
+            branched_stacks[-1] = type_check_drop(token, type_stack)
+        elif op.type == OpType.PUSH_BIND:
+            branched_stacks[-1] = type_check_push_bind(token, type_stack)
         elif op.type == OpType.PUSH_BOOL:
             branched_stacks[-1] = type_check_push_bool(token, type_stack)
         elif op.type == OpType.PUSH_CHAR:
@@ -299,12 +334,12 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             "Only the integer return value of the program should be in the stack when program exits.\n\n" + \
             f"Stack after the MAIN function:\n{type_stack.repr()}", func.tokens[-1])
 
-    if not correct_return_types(func, type_stack):
+    if not correct_return_types(func, branched_stacks[-1]):
         compiler_error("FUNCTION_SIGNATURE_ERROR",
             f"Function '{func.name}' does not return the types indicated in the function signature.\n\n" + \
             f"Function parameter types: {func.signature[0]}\n" + \
             f"Function return types:    {func.signature[1]}\n",
-            func.tokens[-1], type_stack, get_function_type_stack(func))
+            func.tokens[-1], branched_stacks[-1], get_function_type_stack(func))
 
 def correct_return_types(func: Function, type_stack: TypeStack) -> bool:
     """Check if the state of TypeStack is correct after executing the Function"""
@@ -352,7 +387,7 @@ def matching_types(type1: TokenType, type2: TokenType) -> bool:
 
 def matching_type_lists(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
     """Check if two TokenType lists have matching types in them."""
-    return all(matching_types(type1, type2) \
+    return len(stack1) == len(stack2) and all(matching_types(type1, type2) \
         for type1, type2 in itertools.zip_longest(stack1, stack2))
 
 def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
@@ -477,6 +512,11 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
     branched_stacks.append(type_stack)
     return type_stack
 
+def type_check_push_bind(token: Token, type_stack: TypeStack) -> TypeStack:
+    """Push a value from bound memory the stack"""
+    type_stack.push(token.type, token.location)
+    return type_stack
+
 def type_check_push_bool(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push a boolean to the stack"""
     type_stack.push(TokenType.BOOL, token.location)
@@ -505,6 +545,11 @@ def type_check_push_str(token: Token, type_stack: TypeStack) -> TypeStack:
 def type_check_push_uint8(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push an unsigned 8-bit integer to the stack"""
     type_stack.push(TokenType.UINT8, token.location)
+    return type_stack
+
+def type_check_take_bind(token: Token, type_stack: TypeStack) -> TypeStack:
+    """Take N amount of values from the stack to bound Memories without touching the stack state"""
+    type_stack.push(token.type, token.location)
     return type_stack
 
 def type_check_bitwise(token: Token, type_stack: TypeStack) -> TypeStack:
