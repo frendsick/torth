@@ -212,7 +212,7 @@ SIGNATURE_MAP: Dict[str, TokenType] = {
     'CHAR':     TokenType.CHAR,
     'INT':      TokenType.INT,
     'PTR':      TokenType.PTR,
-    'STR':      TokenType.PTR,
+    'STR':      TokenType.STR,
     'UINT8':    TokenType.UINT8
 }
 
