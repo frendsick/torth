@@ -124,6 +124,7 @@ function putu int : print end
 
 // Ptr functions
 function ptr+       int ptr -> ptr : swap int + ptr end
+function ptr-       int ptr -> ptr : swap int - ptr end
 function ptr++      ptr     -> ptr : ptr.size ptr+  end
 function ptr.load   ptr     -> ptr : LOAD_QWORD ptr end
 function ptr.store  ptr ptr ->     : STORE_QWORD    end
