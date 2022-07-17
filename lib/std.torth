@@ -312,10 +312,10 @@ function str.is_numeric str -> bool :
   // Iterate over every character of the string
   0 while is_numeric_str over str.char_at NULL != do
     // Break if non-numeric character is found
-    if numeric_str over str.char_at char.is_numeric not do
+    if is_numeric_str over str.char_at char.is_numeric not do
       break
     endif 1 +
-  done drop
+  done
   // Return True if the whole string was numeric
   is_numeric_str str.len ==
 end
