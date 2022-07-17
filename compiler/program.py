@@ -102,7 +102,7 @@ def get_sub_programs(functions: Dict[str, Function], \
     Value:  Sub-program
     """
     sub_programs: Dict[str, Program] = {}
-    called_functions: List[str] = get_called_function_names(functions)
+    called_functions: Set[str] = get_called_function_names(functions)
     for func in functions.values():
         if func.name in called_functions:
             sub_programs[func.name] = generate_program(func.tokens, constants, functions, memories)
@@ -217,7 +217,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
                     "Introduce an ELSE-block if you need to return different values from IF-blocks.\n" + \
                     "The stack state should be the same with every branch of the block.\n\n" + \
                    f"Stack state after the previous sections in the IF block:\n{if_block_return_stacks[-1].repr()}\n"+ \
-                   f"The stack state before the IF block:\n{branched_stacks[-1].repr()}")
+                   f"The stack state before the IF block:\n{branched_stacks[-1].repr()}", op.token)
 
             # Make the IF block's return stack the new stack for the program
             if if_block_return_stacks[-1].head:
@@ -292,12 +292,33 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
 
     # There should be one INT in the stack when the program ends.
-    # Output the remaining elements in the stack.
-    if func.name.upper() == 'MAIN' and type_stack.get_types() != [TokenType.INT]:
-        print(func.tokens)
+    if func.name.upper() == 'MAIN':
+        if type_stack.get_types() == [TokenType.INT]:
+            return
         compiler_error("FUNCTION_SIGNATURE_ERROR", \
             "Only the integer return value of the program should be in the stack when program exits.\n\n" + \
-            f"Stack after the MAIN function:\n{type_stack.repr()}")
+            f"Stack after the MAIN function:\n{type_stack.repr()}", func.tokens[-1])
+
+    if not correct_return_types(func, type_stack):
+        compiler_error("FUNCTION_SIGNATURE_ERROR",
+            f"Function '{func.name}' does not return the types indicated in the function signature.\n\n" + \
+            f"Function parameter types: {func.signature[0]}\n" + \
+            f"Function return types:    {func.signature[1]}\n",
+            func.tokens[-1], type_stack, get_function_type_stack(func))
+
+def correct_return_types(func: Function, type_stack: TypeStack) -> bool:
+    """Check if the state of TypeStack is correct after executing the Function"""
+    temp_stack: TypeStack = get_function_type_stack(func)
+    # Pop parameters
+    for _ in func.signature[0]:
+        temp_stack.pop()
+    # Push return types
+    for token_type in func.signature[1]:
+        temp_stack.push(token_type, func.tokens[0].location)
+    return matching_type_lists(
+        temp_stack.get_types(),
+        type_stack.get_types()
+    )
 
 def type_check_function_call(op: Op, type_stack: TypeStack, functions: Dict[str, Function]) -> None:
     """
@@ -315,7 +336,7 @@ def type_check_function_call(op: Op, type_stack: TypeStack, functions: Dict[str,
                 f"Not enough parameters for '{op.token.value}' function\n" + \
                 f"Expected types: {param_types}", op.token,
             original_stack=temp_stack)
-        popped_type: TokenType = type_stack.pop().value
+        popped_type: TokenType = type_stack.pop().value  # type: ignore
         if not matching_types(popped_type, expected_type):
             compiler_error("FUNCTION_SIGNATURE_ERROR",
                 f"Wrong type of parameter in stack for '{op.token.value}' function\n" + \
