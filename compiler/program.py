@@ -162,6 +162,12 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
     Type check all Operands of the Program.
     Raise compiler error if the type checking fails.
     """
+    if not func.tokens:
+        if matching_type_lists(func.signature[0], func.signature[1]):
+            return
+        compiler_error("FUNCTION_SIGNATURE_ERROR",
+            f"Empty function '{func.name}' with different parameter and return types.")
+
     branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
     NOT_TYPED_TOKENS: List[str]      = [ 'BIND', 'BREAK', 'CONTINUE', 'IN', 'WHILE' ]
 
