@@ -5,7 +5,7 @@ import base64
 import re
 from typing import Dict, List, Optional
 from compiler.defs import Constant, Function, Memory, OpType, Op, Program, Token
-from compiler.program import generate_program, type_check_function
+from compiler.program import generate_program
 from compiler.utils import compiler_error, get_parent_op_type_do, get_parent_while
 from compiler.utils import get_end_op_for_while, get_related_endif, print_if_verbose
 
@@ -68,14 +68,6 @@ def get_asm_file_start(constants: List[Constant]) -> str:
 section .data
 '''
 
-def get_asm_file_end() -> str:
-    """Returns the contents of the beginning of the generated assembly file"""
-    return ''';; -- exit syscall
-  mov rax, sys_exit
-  pop rdi
-  syscall
-'''
-
 def get_memory_definitions_asm(memories: List[Memory]) -> str:
     """Generates assembly code of memory definitions. Returns the memory definitions."""
     asm: str = ''
@@ -104,49 +96,59 @@ def get_valid_label_for_nasm(function_name: str) -> str:
         return str(b64).replace('=','')[2:-1]
     return function_name
 
-def generate_asm(functions: Dict[str, Function], \
+def generate_asm(sub_programs: Dict[str, Program], \
     constants: List[Constant], memories: List[Memory], is_verbose: bool) -> str:
     """Generate Assembly from Functions."""
+    print_if_verbose("Generating Assembly from Torth code", is_verbose)
+    # Generate beginning for an Assembly file
     assembly: str = initialize_asm(constants, memories)
-    #tokens: List[Token] = get_tokens_from_functions(functions)
-    for func in functions.values():
-        # Generate Program from Function
-        sub_program: Program = generate_program(func.tokens, constants, functions, memories)
 
-        # Type check the program
-        print_if_verbose(f"Type checking function {func.name}", is_verbose)
-        type_check_function(func, sub_program, functions)
+    # Generate Assembly for each Function
+    for name, program in sub_programs.items():
+        function_name: str = get_valid_label_for_nasm(name)
+        assembly += get_function_start_asm(function_name)
 
-        # Generate Assembly from Function
-        function_name: str = get_valid_label_for_nasm(func.name)
-        if func.name.upper() == 'MAIN':
-            assembly +=  'global _start\n'
-            assembly +=  '_start:\n'
-            assembly +=  '  mov [args_ptr], rsp   ; Pointer to argc\n'
-        else:
-            assembly += f'{function_name}:\n'
-            assembly += f';; [{function_name}] Save the return address to return_stack\n'
-            assembly +=  '  pop rax\n'
-            assembly +=  '  mov rbx, return_stack\n'
-            assembly +=  '  add rbx, [return_stack_len]\n'
-            assembly +=  '    mov [rbx], rax\n'
-            assembly +=  '  add qword [return_stack_len], 8  ; Increment return_stack_len\n'
+        # The driver code for the Function
+        assembly = generate_program_asm(program, assembly)
 
-        assembly = generate_program_asm(sub_program, assembly)
+        assembly += get_function_end_asm(function_name)
+    return assembly
 
-        # Jump to the return address stored in r15 register
-        if function_name.upper() != 'MAIN':
-            assembly +=  ';; Jump to the return address found in return_stack\n'
-            assembly +=  '  sub qword [return_stack_len], 8  ; Decrement return_stack_len\n'
-            assembly +=  '  mov rax, return_stack\n'
-            assembly +=  '  add rax, [return_stack_len]\n'
-            assembly +=  '  jmp [rax]  ; Return\n'
-        else:
-            assembly += get_asm_file_end()
+def get_function_end_asm(function_name: str) -> str:
+    """Return the end of the Assembly of each Function"""
+    assembly: str = ""
+    if function_name.upper() != 'MAIN':
+        assembly +=  ';; Jump to the return address found in return_stack\n'
+        assembly +=  '  sub qword [return_stack_len], 8  ; Decrement return_stack_len\n'
+        assembly +=  '  mov rax, return_stack\n'
+        assembly +=  '  add rax, [return_stack_len]\n'
+        assembly +=  '  jmp [rax]  ; Return\n'
+    else:
+        assembly +=  ';; -- exit syscall\n'
+        assembly +=  '  mov rax, sys_exit\n'
+        assembly +=  '  pop rdi\n'
+        assembly +=  '  syscall\n'
+    return assembly
+
+def get_function_start_asm(function_name: str) -> str:
+    """Return the beginning of the Assembly of each Function"""
+    assembly = ""
+    if function_name.upper() == 'MAIN':
+        assembly +=  'global _start\n'
+        assembly +=  '_start:\n'
+        assembly +=  '  mov [args_ptr], rsp   ; Pointer to argc\n'
+    else:
+        assembly += f'{function_name}:\n'
+        assembly += f';; [{function_name}] Save the return address to return_stack\n'
+        assembly +=  '  pop rax\n'
+        assembly +=  '  mov rbx, return_stack\n'
+        assembly +=  '  add rbx, [return_stack_len]\n'
+        assembly +=  '    mov [rbx], rax\n'
+        assembly +=  '  add qword [return_stack_len], 8  ; Increment return_stack_len\n'
     return assembly
 
 def generate_program_asm(program: Program, assembly: str) -> str:
-    """Generate assembly file and write it to a file."""
+    """Generate Assembly for a sub-program."""
     for op in program:
         assembly += get_op_comment_asm(op, op.type)
         if op.type == OpType.PUSH_STR:

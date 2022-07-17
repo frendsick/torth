@@ -5,7 +5,7 @@ import argparse
 import subprocess
 from typing import Dict, List
 from compiler.asm import generate_asm
-from compiler.defs import Constant, Function, Memory
+from compiler.defs import Constant, Memory, Program
 from compiler.utils import print_if_verbose
 
 def compile_asm(asm_file: str, object_file: str) -> None:
@@ -17,11 +17,10 @@ def link_object_file(object_file: str, executable_file: str) -> None:
     subprocess.run(['ld', '-m', 'elf_x86_64', f'-o{executable_file}', object_file], check=True)
 
 def compile_code(input_file: str, constants: List[Constant], \
-    functions: Dict[str, Function], memories: List[Memory], is_verbose: bool) -> None:
+    sub_programs: Dict[str, Program], memories: List[Memory], is_verbose: bool) -> None:
     """Generate assembly and compile it to statically linked ELF 64-bit executable."""
     # Generate assembly from Program
-    print_if_verbose("Generating Assembly from the intermediate representation", is_verbose)
-    assembly: str = generate_asm(functions, constants, memories, is_verbose)
+    assembly: str = generate_asm(sub_programs, constants, memories, is_verbose)
 
     # Write assembly to a file
     asm_file: str = input_file.replace('.torth', '.asm')

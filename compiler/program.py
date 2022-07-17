@@ -77,6 +77,15 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         program.append( Op(op_id, op_type, token, func) )
     return program
 
+def get_sub_programs(functions: Dict[str, Function], \
+    constants: List[Constant], memories: List[Memory]) -> Dict[str, Program]:
+    """
+    Generate a sub-program dictionary from Functions.
+    Key:    Function name
+    Value:  Sub-program
+    """
+    return {func.name: generate_program(func.tokens, constants, functions, memories) for func in functions.values()}
+
 def get_tokens_function(token: Token, functions: Dict[str, Function]) -> Function:
     """Determine the corresponding function for a Token"""
     for func in functions.values():
@@ -106,7 +115,7 @@ def get_function_type_stack(func: Function) -> TypeStack:
         param_stack.push(param_type, func.tokens[0].location)
     return param_stack
 
-def type_check_function(func: Function, program: Program, functions: Dict[str, Function]) -> None:
+def type_check_program(func: Function, program: Program, functions: Dict[str, Function]) -> None:
     """
     Type check all Operands of the Program.
     Raise compiler error if the type checking fails.
