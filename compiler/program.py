@@ -289,7 +289,8 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
                 compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
-
+        if func.name.upper() == 'MAIN':
+            print(branched_stacks[-1].repr())
     # There should be one INT in the stack when the program ends.
     # Output the remaining elements in the stack.
     if func.name.upper() == 'MAIN' and type_stack.get_types() != [TokenType.INT]:
@@ -304,8 +305,14 @@ def type_check_function_call(op: Op, type_stack: TypeStack, functions: Dict[str,
     Returns the types in stack when the parameters are popped out.
     """
     function_signature: Signature = functions[op.token.value].signature
+    temp_stack: TypeStack = copy(type_stack)
     # Pop param types
     for _ in function_signature[0]:
+        if not type_stack.head:
+            compiler_error("FUNCTION_SIGNATURE_ERROR",
+                f"Not enough parameters for '{op.token.value}' function\n" + \
+                f"Expected types: {function_signature[0]}", op.token,
+            original_stack=temp_stack)
         type_stack.pop()
     # Push return types
     for token_type in function_signature[1]:
