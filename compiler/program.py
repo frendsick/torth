@@ -149,9 +149,8 @@ def memory_exists(token_value: str, memories: List[Memory]) -> bool:
     return any(memory.name == token_value for memory in memories)
 
 def get_bindings_function(token_value: str, functions: Dict[str, Function]) -> Optional[Function]:
-    for func in functions.values():
-        if token_value in func.binding:
-            return func
+    """Get the Function in which certain Binding was created"""
+    return next((func for func in functions.values() if token_value in func.binding), None)
 
 def get_function_type_stack(func: Function) -> TypeStack:
     """Generate TypeStack from Function parameter types"""

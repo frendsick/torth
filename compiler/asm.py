@@ -434,7 +434,7 @@ def get_function_call_asm(op: Op) -> str:
 
 def get_peek_asm() -> str:
     """Save current stack pointer to r15"""
-    return f'  mov r15, rsp\n'
+    return '  mov r15, rsp\n'
 
 def get_peek_bind_asm(memory_name: str) -> str:
     """Pop a value from the stack to a bound Memory"""
