@@ -305,17 +305,24 @@ def type_check_function_call(op: Op, type_stack: TypeStack, functions: Dict[str,
     Returns the types in stack when the parameters are popped out.
     """
     function_signature: Signature = functions[op.token.value].signature
+    param_types:  List[TokenType] = function_signature[0]
+    return_types: List[TokenType] = function_signature[1]
     temp_stack: TypeStack = copy(type_stack)
     # Pop param types
-    for _ in function_signature[0]:
+    for expected_type in param_types:
         if not type_stack.head:
             compiler_error("FUNCTION_SIGNATURE_ERROR",
                 f"Not enough parameters for '{op.token.value}' function\n" + \
-                f"Expected types: {function_signature[0]}", op.token,
+                f"Expected types: {param_types}", op.token,
             original_stack=temp_stack)
-        type_stack.pop()
+        popped_type: TokenType = type_stack.pop().value
+        if not matching_types(popped_type, expected_type):
+            compiler_error("FUNCTION_SIGNATURE_ERROR",
+                f"Wrong type of parameter in stack for '{op.token.value}' function\n" + \
+                f"Expected types: {param_types}", op.token,
+            original_stack=temp_stack)
     # Push return types
-    for token_type in function_signature[1]:
+    for token_type in return_types:
         type_stack.push(token_type, op.token.location)
 
 def matching_type_lists(stack1: List[TokenType], stack2: List[TokenType]) -> bool:
