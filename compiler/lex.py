@@ -7,7 +7,7 @@ import re
 from typing import Dict, List, Optional, Set
 from compiler.defs import Binding, Constant, Function, INCLUDE_PATHS, Keyword, Location, Memory
 from compiler.defs import Signature, SIGNATURE_MAP, Token, TokenType
-from compiler.program import constant_exists
+from compiler.program import constant_exists, memory_exists
 from compiler.utils import compiler_error, get_file_contents
 
 already_included_files: Set[str] = set()
@@ -148,7 +148,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
                     tokens.append(Token('0', TokenType.INT, token.location))
                 return_types.reverse()
                 signature: Signature = (param_types, return_types)
-                functions[name] = Function(name, signature, tokens, {})
+                functions[name] = Function(name, signature, tokens, [])
                 name            = ''
                 param_types     = []
                 return_types    = []
@@ -195,7 +195,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
             tokens.append(token)
     return functions
 
-def parse_function_bindings(functions: Dict[str, Function]) -> List[Function]:
+def parse_function_bindings(functions: Dict[str, Function], memories: List[Memory]) -> Dict[str, Function]:
     """Parse Bindings from Functions and save them in Function object"""
     for func in functions.values():
         bind_stacks: List[Binding] = []
@@ -216,13 +216,21 @@ def parse_function_bindings(functions: Dict[str, Function]) -> List[Function]:
                 token.type = TokenType.KEYWORD
                 bind_stacks[-1][token.value] = token.type
                 token.is_bound = True
+                memories = add_binding_to_memories(token, memories)
             elif any(token.value in stack for stack in bind_stacks):
-                token.type = TokenType.PTR
+                token.type = TokenType.ANY
                 token.is_bound = True
 
         # Store the found bindings in the Function object
         func.bindings = bind_stacks
     return functions
+
+def add_binding_to_memories(token: Token, memories: List[Memory]) -> List[Memory]:
+    """Add binding to memories so it can be used as memory later"""
+    if memory_exists(token.value, memories):
+        return memories
+    memories.append(Memory(token.value, 8, token.location))
+    return memories
 
 def get_memories_from_code(included_files: Set[str], constants: List[Constant]) -> List[Memory]:
     """Parse Memory objects from code file and included files. Return list of Memory objects."""

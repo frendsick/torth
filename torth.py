@@ -23,10 +23,10 @@ def main():
     included_files.add(args.code_file)
 
     functions: Dict[str, Function]  = get_functions_from_files(included_files)
-    functions                       = parse_function_bindings(functions)
     constants: List[Constant]       = get_constants_from_files(included_files)
     constants                       = add_enums_to_constants(included_files, constants)
     memories: List[Memory]          = get_memories_from_code(included_files, constants)
+    functions                       = parse_function_bindings(functions, memories)
     sub_programs: Dict[str, Program]= get_sub_programs(functions, constants, memories)
     code_file_basename: str         = os.path.basename(args.code_file)
 

@@ -155,7 +155,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
     Raise compiler error if the type checking fails.
     """
     branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
-    NOT_TYPED_TOKENS: List[str]      = [ 'BIND', 'BREAK', 'CONTINUE', 'IN', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str]      = [ 'BIND', 'BREAK', 'CONTINUE', 'IN', 'UNBIND', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
     # to type check IF-ELIF chains with different stack layouts than what it was before the block.
@@ -245,7 +245,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             if_block_return_stacks.append(TypeStack())
         elif op.type == OpType.POP_BIND:
             branched_stacks[-1] = type_check_drop(token, type_stack)
-        elif op.type == OpType.POP_BIND:
+        elif op.type == OpType.PUSH_BIND:
             branched_stacks[-1] = type_check_push_bind(token, type_stack)
         elif op.type == OpType.PUSH_BOOL:
             branched_stacks[-1] = type_check_push_bool(token, type_stack)
@@ -493,8 +493,8 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
     return type_stack
 
 def type_check_push_bind(token: Token, type_stack: TypeStack) -> TypeStack:
-    """Push a binded value to the stack"""
-    type_stack.push(token.type, token.location)
+    """Push a boolean to the stack"""
+    type_stack.push(TokenType.ANY, token.location)
     return type_stack
 
 def type_check_push_bool(token: Token, type_stack: TypeStack) -> TypeStack:
