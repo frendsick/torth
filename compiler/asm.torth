@@ -113,6 +113,13 @@ function get_print_asm -> str :
   "  call print\n"    str.cat
 end
 
+function get_exit_assembly -> str :
+  ";; -- exit syscall\n"
+  "  mov rax, sys_exit\n" str.cat
+  "  mov rdi, 0\n"           str.cat
+  "  syscall\n"         str.cat
+end
+
 // Generate assembly code for NASM
 // Params: Pointer to Program (PTR)
 // Return: Intel x86_64 Assembly for NASM (STR)
@@ -125,8 +132,6 @@ function generate_asm ptr -> str :
   0 while dup Program.len int.load > do
     // Get the current Op
     dup2 Program.op_at
-    // Print Op
-    dup Op.print "\n" puts
 
     // Generate comment for Op
     dup get_op_comment_asm op_asm str.load swap str.cat
@@ -136,9 +141,9 @@ function generate_asm ptr -> str :
     get_op_asm op_asm str.load swap str.cat
     op_asm str.store
     1 +
-  done drop2 "\n" puts
+  done drop2
 
-  // Print generated Assembly
-  "Generated Assembly for the Program:\n" puts
-  op_asm str.load puts
+  // Merge generated Assembly with the initialized Assembly
+  op_asm str.load   str.cat
+  get_exit_assembly str.cat
 end
