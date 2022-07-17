@@ -118,16 +118,16 @@ def get_function_end_asm(function_name: str) -> str:
     """Return the end of the Assembly of each Function"""
     assembly: str = ""
     if function_name.upper() != 'MAIN':
-        assembly +=  ';; Jump to the return address found in return_stack\n'
+        assembly += f';; [{function_name}] Jump to the return address found in return_stack\n'
         assembly +=  '  sub qword [return_stack_len], 8  ; Decrement return_stack_len\n'
         assembly +=  '  mov rax, return_stack\n'
         assembly +=  '  add rax, [return_stack_len]\n'
-        assembly +=  '  jmp [rax]  ; Return\n'
+        assembly +=  '  jmp [rax]  ; Return\n\n'
     else:
         assembly +=  ';; -- exit syscall\n'
         assembly +=  '  mov rax, sys_exit\n'
         assembly +=  '  pop rdi\n'
-        assembly +=  '  syscall\n'
+        assembly +=  '  syscall\n\n'
     return assembly
 
 def get_function_start_asm(function_name: str) -> str:
