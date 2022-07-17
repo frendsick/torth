@@ -22,7 +22,9 @@ function main :
   "test.torth" generate_program_from_file
 
   // Generate Assembly from the Program
-  generate_asm puts
+  generate_asm
 
+  // Write assembly to a file
+  O_CREAT "test.asm" write_file drop
   "TODO: Implement Torth compiler with itself.\n" NotImplementedError
 end
