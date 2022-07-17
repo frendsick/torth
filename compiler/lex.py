@@ -217,6 +217,7 @@ def parse_function_bindings(functions: Dict[str, Function]) -> List[Function]:
                 bind_stacks[-1][token.value] = token.type
                 token.is_bound = True
             elif any(token.value in stack for stack in bind_stacks):
+                token.type = TokenType.PTR
                 token.is_bound = True
 
         # Store the found bindings in the Function object
