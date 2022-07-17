@@ -230,7 +230,7 @@ class Function:
     name: str
     signature: Signature
     tokens: List[Token]
-    bindings: List[Binding]
+    binding: Binding
 
 @dataclass
 class Op:

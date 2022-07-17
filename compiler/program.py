@@ -75,6 +75,7 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         elif token.value in functions:
             op_type = OpType.FUNCTION_CALL
         elif memory_exists(token.value, memories):
+            bindings_function: Optional[Function] = get_bindings_function(token.value, functions)
             op_type = OpType.PUSH_PTR
         else:
             compiler_error("OP_NOT_FOUND", f"Operation '{token_value}' is not found", token)
@@ -82,6 +83,10 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
         if token.location not in tokens_function_cache:
             tokens_function_cache[token.location] = get_tokens_function(token, functions)
         func: Function = tokens_function_cache[token.location]
+        if op_type == OpType.PUSH_PTR and bindings_function and \
+            token.value not in func.binding:
+            compiler_error("MEMORY_IN_USE",
+                f"Memory '{token.value}' is already binded in '{bindings_function.name}' Function.", token)
         program.append( Op(op_id, op_type, token, func) )
     return program
 
@@ -137,6 +142,11 @@ def constant_exists(token_value: str, constants: List[Constant]) -> bool:
 def memory_exists(token_value: str, memories: List[Memory]) -> bool:
     """Return boolean value whether or not certain Memory exists."""
     return any(memory.name == token_value for memory in memories)
+
+def get_bindings_function(token_value: str, functions: Dict[str, Function]) -> Optional[Function]:
+    for func in functions.values():
+        if token_value in func.binding:
+            return func
 
 def get_function_type_stack(func: Function) -> TypeStack:
     """Generate TypeStack from Function parameter types"""

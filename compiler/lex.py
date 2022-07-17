@@ -148,7 +148,7 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
                     tokens.append(Token('0', TokenType.INT, token.location))
                 return_types.reverse()
                 signature: Signature = (param_types, return_types)
-                functions[name] = Function(name, signature, tokens, [])
+                functions[name] = Function(name, signature, tokens, {})
                 name            = ''
                 param_types     = []
                 return_types    = []
@@ -198,25 +198,23 @@ def get_functions(file: str, token_matches: list, newline_indexes: List[int], \
 def parse_function_bindings(functions: Dict[str, Function], memories: List[Memory]) -> Dict[str, Function]:
     """Parse Bindings from Functions and save them in Function object"""
     for func in functions.values():
-        bind_stacks: List[Binding] = []
         parsing_bind: bool = False
+        binding: Binding = {}
         for token in func.tokens:
             if token.value.upper() == 'BIND':
-                bind_stacks.append({})
                 parsing_bind = True
             elif token.value.upper() == 'IN':
                 parsing_bind = False
             elif parsing_bind:
                 token.type = TokenType.KEYWORD
-                bind_stacks[-1][token.value] = token.type
                 token.is_bound = True
-                memories = add_binding_to_memories(token, memories)
-            elif any(token.value in stack for stack in bind_stacks):
+                binding[token.value] = token.type
+                memories.append( Memory(token.value, 8, token.location) )
+            elif token.value in binding:
                 token.type = TokenType.ANY
                 token.is_bound = True
-
         # Store the found bindings in the Function object
-        func.bindings = bind_stacks
+        func.binding = binding
     return functions
 
 def add_binding_to_memories(token: Token, memories: List[Memory]) -> List[Memory]:
