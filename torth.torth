@@ -18,6 +18,25 @@ function generate_program_from_file str -> ptr :
   done drop2 Program.append_match Program
 end
 
+// Append to execve_argv
+// Params: Index, argument
+// Return: None
+function execve_argv.insert int str :
+  execve_argv swap ptr.size * ptr+ str.store
+end
+
+// Compile Assembly file to object file with NASM
+// Params: file_name
+// Return: None
+memory execve_argv ptr.size end
+function compile_asm str :
+  // execve("/usr/bin/nasm", ["sleep", "0.01"], envp)
+  "nasm" execve_argv str.store
+  "-felf64" 1 execve_argv.insert
+            2 execve_argv.insert
+  envp execve_argv "/usr/bin/nasm" execve drop
+end
+
 function main :
   "test.torth" generate_program_from_file
 
@@ -26,5 +45,7 @@ function main :
 
   // Write assembly to a file
   O_CREAT "test.asm" write_file drop
+
+  "test.asm" compile_asm
   "TODO: Implement Torth compiler with itself.\n" NotImplementedError
 end
