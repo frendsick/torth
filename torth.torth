@@ -30,13 +30,41 @@ end
 // Return: None
 memory execve_argv ptr.size end
 function compile_asm str :
-  // execve("/usr/bin/nasm", ["sleep", "0.01"], envp)
+  "nasm" exec_forked
+end
+
+function compile_with_nasm str :
+  "[INFO] Compiling " puts dup puts " with NASM\n" puts
+  // nasm -felf64 target_file
+  // execve("/usr/bin/nasm", ["nasm", "-felf64", "test.asm"], envp)
   "nasm" execve_argv str.store
   "-felf64" 1 execve_argv.insert
             2 execve_argv.insert
   envp execve_argv "/usr/bin/nasm" execve drop
 end
 
+// Execute a command while being forked
+// Params: command, target_file
+function exec_forked str str :
+  SYS_fork SYSCALL0
+
+  if dup 0 == do
+    over
+    // command == "nasm"
+    if dup "nasm" streq do
+      // nasm -felf64 target_file
+      4 nth compile_with_nasm
+    endif drop
+  elif dup -1 != do
+    NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
+  else
+    "Error occured while calling SYS_fork\n" puts
+  endif drop
+
+  "Continuing execution in the parent process.\n" puts
+end
+
+const O_CREAT 64 end
 function main :
   "test.torth" generate_program_from_file
 
