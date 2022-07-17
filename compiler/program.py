@@ -102,7 +102,7 @@ def get_sub_programs(functions: Dict[str, Function], \
     Value:  Sub-program
     """
     sub_programs: Dict[str, Program] = {}
-    called_functions: List[str] = get_called_function_names(functions)
+    called_functions: Set[str] = get_called_function_names(functions)
     for func in functions.values():
         if func.name in called_functions:
             sub_programs[func.name] = generate_program(func.tokens, constants, functions, memories)
@@ -315,7 +315,7 @@ def type_check_function_call(op: Op, type_stack: TypeStack, functions: Dict[str,
                 f"Not enough parameters for '{op.token.value}' function\n" + \
                 f"Expected types: {param_types}", op.token,
             original_stack=temp_stack)
-        popped_type: TokenType = type_stack.pop().value
+        popped_type: TokenType = type_stack.pop().value  # type: ignore
         if not matching_types(popped_type, expected_type):
             compiler_error("FUNCTION_SIGNATURE_ERROR",
                 f"Wrong type of parameter in stack for '{op.token.value}' function\n" + \

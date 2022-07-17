@@ -254,7 +254,7 @@ def get_tokens_from_functions(functions: Dict[str, Function]) -> List[Token]:
     Return a list of Token objects.
     """
     try:
-        main_function: Function = get_main_function(functions.values())
+        main_function: Function = get_main_function(functions)
     except IndexError:
         compiler_error("MISSING_MAIN_FUNCTION", "The program does not have a MAIN function")
 
