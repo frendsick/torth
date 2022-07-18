@@ -5,10 +5,10 @@ import itertools
 import re
 from copy import copy
 from typing import Dict, List, Optional, Set
-from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType
+from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType, TypeNode
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
-from compiler.utils import compiler_error, get_main_function
+from compiler.utils import compiler_error, get_main_function, get_op_from_location, ordinal
 
 def generate_program(tokens: List[Token], constants: List[Constant], \
     functions: Dict[str, Function], memories: List[Memory]) -> Program:
@@ -308,7 +308,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             elif intrinsic == "MUL":
                 branched_stacks[-1] = type_check_calculations(token, type_stack)
             elif intrinsic == "NTH":
-                branched_stacks[-1] = type_check_nth(token, type_stack)
+                branched_stacks[-1] = type_check_nth(token, type_stack, program)
             elif intrinsic == "OR":
                 branched_stacks[-1] = type_check_bitwise(token, type_stack)
             elif intrinsic == "OVER":
@@ -655,8 +655,7 @@ def type_check_dup(token: Token, type_stack: TypeStack) -> TypeStack:
     type_stack.push(t.value, t.location)
     return type_stack
 
-# TODO: Push the correct type from the stack instead of TokenType.ANY
-def type_check_nth(token: Token, type_stack: TypeStack) -> TypeStack:
+def type_check_nth(token: Token, type_stack: TypeStack, program: Program) -> TypeStack:
     """
     NTH pops one integer from the stack and pushes the Nth element from stack back to stack.
     Note that the Nth is counted without the popped integer.
@@ -666,12 +665,26 @@ def type_check_nth(token: Token, type_stack: TypeStack) -> TypeStack:
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "NTH intrinsic requires an integer.", token)
-    if t.value not in INTEGER_TYPES:
+    if t.value != TokenType.INT:
         error_message = "NTH intrinsic requires an integer.\n\n" + \
             f"Popped type:\n{t.value} {t.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
-    # The type of the value in stack is not always known if the value is from arbitrary memory location
-    type_stack.push(TokenType.ANY, token.location)
+
+    # Get the type of the Nth value in the stack
+    nth_token: Token = get_op_from_location(t.location, program).token
+    try:
+        n: int = int(nth_token.value)   # Regular integer
+    except ValueError:
+        n = int(nth_token.value, 16)    # Hexadecimal
+    for _ in range(n+1):
+        popped: TypeNode = temp_stack.pop()
+
+    if popped is None:
+        compiler_error("NOT_ENOUGH_VALUES_IN_STACK",
+            f"Cannot get {ordinal(n)} value from the stack because there is not enough values.",
+            token, current_stack=type_stack)
+
+    type_stack.push(popped.value, token.location)
     return type_stack
 
 def type_check_load(token: Token, type_stack: TypeStack) -> TypeStack:
