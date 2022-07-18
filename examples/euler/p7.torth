@@ -12,7 +12,7 @@ function mark_multiples_to_sieve int :
     // sieve[i] = True
     sieve over ptr+ True uint8 swap uint8.store
     over +
-  done drop2
+  done drop drop
 end
 
 memory prime_count int.size end

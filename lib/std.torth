@@ -48,10 +48,6 @@ function mod    int int     -> int              : divmod drop end
 function /      int int     -> int              : div end
 function %      int int     -> int              : mod end
 function ^      int int     -> int              : pow end
-function drop2  any any     ->                  : drop drop end
-function dup2   any any     -> any any any any  : over over end
-function rev    any any any -> any any any      : swap rot end // Reverse the top 3 elements
-function rotr   any any any -> any any any      : rot rot end // Reverse rot
 function not    bool        -> bool             : True != end
 function |      int int     -> int              : or end
 function lor    bool bool   -> bool             : int swap int or bool end
@@ -255,7 +251,7 @@ end
 // Get the length of a string
 // Example: "Test string" -> 11
 function str.len str -> int :
-  0 while dup2 str.char_at NULL != do
+  0 while over over str.char_at NULL != do
     1 +
   done swap drop
 end
@@ -264,11 +260,11 @@ end
 function str.fill str ptr -> str :
   0 // index
   // Loop through every character of the first string
-  while dup2 str.char_at NULL != do
-    dup2 str.char_at
+  while over over str.char_at NULL != do
+    over over str.char_at
     over 5 nth swap ptr+ char.store
     1 +
-  done drop2 str
+  done drop drop str
 end
 
 // Concatenate two strings into a new memory location
@@ -322,35 +318,34 @@ end
 
 // Overwrite a string with NULL-bytes
 function str.empty str :
-  0 while dup2 str.char_at NULL != do
-    dup2 ptr+ NULL char swap char.store
+  0 while over over str.char_at NULL != do
+    over over ptr+ NULL char swap char.store
     1 +
-  done drop2
+  done drop drop
 end
 
 // Convert string to lowercase letters
 function str.lower str -> str :
-  dup str.len
+  peek lower_string in str.len
   0 // index
-  while dup2 < do
-    3 nth // str
-
+  while over over < do
     // Get the character at the current index
-    over str.char_at
+    lower_string over str.char_at
 
     // Swap possible uppercase character with lowercase counterpart
-    char.lower
-    over 5 nth
-    swap ptr+ char.store
+    char.lower over
+    lower_string ptr
+    swap int ptr+ char.store
     1 + // index++
-  done drop2
+  done drop drop
+  lower_string
 end
 
 // Convert string to uppercase letters
 function str.upper str -> str :
   dup str.len
   0 // index
-  while dup2 < do
+  while over over < do
     3 nth // str
 
     // Get the character at the current index
@@ -361,7 +356,7 @@ function str.upper str -> str :
     over 5 nth
     swap ptr+ char.store
     1 + // index++
-  done drop2
+  done drop drop
 end
 
 // Strip all non-alphanumeric characters from a string
@@ -371,7 +366,7 @@ function str.alphanumeric str -> str :
   swap
   0 while over str.len over < do
     // Get the current character
-    dup2 str.char_at
+    over over str.char_at
 
     // Append only alphanumeric characters
     // memory str index str[index]
@@ -380,7 +375,7 @@ function str.alphanumeric str -> str :
       dup 5 nth str.append
     endif drop
     1 + // index++
-  done drop2
+  done drop drop
 end
 
 // Get an integer representation of a string
@@ -448,16 +443,16 @@ end
 // Reverse a string
 function str.reverse str -> str :
   // Allocate memory for the reversed string
-  dup str.len dup malloc str rotr
+  dup str.len dup malloc str rot rot
 
   // Append characters from the parameter string to allocated memory in the reversed order
   while dup 0 < do
     1 - // index--
-    dup2 str.char_at // str[index]
+    over over str.char_at // str[index]
 
     // Append the current character to the reversed string
     4 nth str.append
-  done drop2
+  done drop drop
 end
 
 // Open a file with open-syscall
@@ -482,7 +477,7 @@ function read_file str -> str :
   MEMORY_CAPACITY malloc dup  // buf*
   rot                         // fd
   MEMORY_CAPACITY             // count
-  rotr                        // Align stack
+  rot str rot                 // Align stack
   read drop str               // Return the allocated memory location as string
 end
 
@@ -507,4 +502,18 @@ end
 // Return: ssize_t written_bytes
 function print_file str :
   read_file puts
+end
+
+// Sleep causes the calling thread to sleep either until the
+// number of real-time seconds specified in parameters have elapsed or
+// until a signal arrives which is not ignored.
+// Params: How many seconds to sleep (STR)
+// Return: None
+// Usage: "4.2" sleep  // Sleep for 4.2 seconds
+memory sleep.execve_argv ptr.size end
+function sleep str :
+  // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
+  "sleep" sleep.execve_argv str.store
+  sleep.execve_argv ptr.size ptr+ str.store
+  envp sleep.execve_argv "/usr/bin/sleep" execve drop
 end

@@ -210,6 +210,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         return get_push_str_asm(op)
     if op.type == OpType.PUSH_UINT8:
         return get_push_int_asm(op.token.value)
+    if op.type == OpType.RETURN:
+        return get_return_asm(op.func.name)
     if op.type == OpType.WHILE:
         return get_while_asm(op)
     if op.type == OpType.INTRINSIC:
@@ -437,10 +439,10 @@ def get_peek_asm() -> str:
     return '  mov r15, rsp\n'
 
 def get_peek_bind_asm(memory_name: str) -> str:
-    """Pop a value from the stack to a bound Memory"""
+    """Copy a value from the stack to a bound Memory"""
     op_asm: str  =  '  mov rax, [r15]\n'
     op_asm      += f'  mov [{memory_name}], rax\n'
-    op_asm      +=  '  sub r15, 8\n'
+    op_asm      +=  '  add r15, 8\n'
     return op_asm
 
 def get_pop_bind_asm(memory_name: str) -> str:
@@ -481,6 +483,12 @@ def get_push_str_asm(op: Op) -> str:
     op_asm: str  = f'  mov rsi, {op.func.name}_s{op.id} ; Pointer to string\n'
     op_asm      +=  '  push rsi\n'
     return op_asm
+
+def get_return_asm(function_name: str) -> str:
+    """Return from the current Function."""
+    if function_name.upper() == "MAIN":
+        return get_push_int_asm('0') + get_function_end_asm(function_name)
+    return get_function_end_asm(function_name)
 
 def get_while_asm(op: Op) -> str:
     """

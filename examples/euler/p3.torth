@@ -4,7 +4,7 @@ include "std"
 function get_largest_prime_factor int -> int :
   3  // i
   // while(prime/2 >= i)
-  WHILE dup2 2 / <= DO
+  WHILE over over 2 / <= DO
     // If prime factor is found divide the prime with it
     IF dup rot dup rot % 0 == DO
       over / swap // prime = prime / factor

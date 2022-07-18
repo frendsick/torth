@@ -6,7 +6,7 @@ import subprocess
 import os
 import sys
 from typing import Dict, List, NoReturn, Optional
-from compiler.defs import COLORS, Function, Op, OpType, Program, Signature
+from compiler.defs import COLORS, Function, Location, Op, OpType, Program, Signature
 from compiler.defs import Token, TokenType, TypeStack
 
 def usage() -> NoReturn:
@@ -46,9 +46,9 @@ def compiler_error(error_type: str, error_message: str, token: Optional[Token] =
     print(f"{COLORS['HEADER']}Compiler error {COLORS['FAIL']}{error_type}{COLORS['NC']}" \
         + f":\n{error_message}")
     if original_stack:
-        print(f"Original stack state:\n{original_stack.repr()}")
+        print(f"\nOriginal stack state:\n{original_stack.repr()}")
     if current_stack:
-        print(f"Current stack state:\n{current_stack.repr()}")
+        print(f"\nCurrent stack state:\n{current_stack.repr()}")
     if token:
         print(get_token_location_info(token))
     sys.exit(1)
@@ -58,13 +58,41 @@ def print_if_verbose(message: str, is_verbose: bool) -> None:
     if is_verbose:
         print(f"[{COLORS['HEADER']}VERBOSE{COLORS['NC']}] {message}")
 
+def ordinal(number: int) -> str:
+    """
+    Convert an integer into its ordinal representation::
+
+        ordinal(0)   => '0th'
+        ordinal(3)   => '3rd'
+        ordinal(122) => '122nd'
+        ordinal(213) => '213th'
+    """
+    if 11 <= (number % 100) <= 13:
+        suffix = 'th'
+    else:
+        suffix = ['th', 'st', 'nd', 'rd', 'th'][min(number % 10, 4)]
+    return f"{number}{suffix}"
+
+def get_op_from_location(location: Location, program: Program) -> Op:
+    """Get Op from Location in certain program (Function)"""
+    for op in program:
+        if op.token.location == location:
+            return op
+    compiler_error("OP_NOT_FOUND",
+        f"Operand not found from the given location:\n{get_location_info(location)}")
+
 def get_token_location_info(token: Token) -> str:
     """Returns a string containing Token object's location in the source code"""
     return f'''
 {COLORS['HEADER']}Operand{COLORS['NC']}: {token.value}
-{COLORS['HEADER']}File{COLORS['NC']}: {token.location[0]}
-{COLORS['HEADER']}Row{COLORS['NC']}: {token.location[1]}
-{COLORS['HEADER']}Column{COLORS['NC']}: {token.location[2]}'''
+{get_location_info(token.location)}'''
+
+def get_location_info(location: Location) -> str:
+    """Return a formatted, colored representation of Location"""
+    return f'''{COLORS['HEADER']}File{COLORS['NC']}: {location[0]}
+{COLORS['HEADER']}Row{COLORS['NC']}: {location[1]}
+{COLORS['HEADER']}Column{COLORS['NC']}: {location[2]}
+'''
 
 def handle_arguments(executable_file: str, args) -> None:
     """Handle special command line arguments"""

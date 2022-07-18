@@ -5,12 +5,12 @@ function Fib int -> int :
   1   // The counter for WHILE loop
   WHILE 4 nth over < DO
     // Duplicate Current to use it next iteration as Previous
-    rotr dup
+    rot rot dup
     // Add the two numbers in the top of the stack together (Previous and Current)
     rot +
     // Align stack and increment counter for WHILE loop
     rot 1 +
-  DONE drop rotr drop2
+  DONE drop rot rot drop drop
 end
 
 function Main :
