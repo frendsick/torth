@@ -19,6 +19,7 @@ This is the documentation for different keywords available in the Torth language
 - [INT](#Casting)
 - [MEMORY](#MEMORY)
 - [PTR](#Casting)
+- [RETURN](#RETURN)
 - [STR](#Casting)
 - [UINT8](#Casting)
 - [WHILE](#WHILE)
@@ -292,6 +293,12 @@ function main -> :
   feet str.load puts            // Output: kinky
 end
 ```
+
+## RETURN
+
+Return from current [FUNCTION](#function).
+
+[How to use RETURN keyword?](control_flow.md#return-keyword)
 
 ## WHILE
 

@@ -1,6 +1,14 @@
 # Control flow
 
-Control flow statements alter the execution of the program based on a condition.
+Control flow statements alter the execution of the program.
+
+## RETURN Keyword
+
+With [RETURN](keywords.md#return) keyword you can return from a [function](keywords.md#function). The stack state should match with the [function](keywords.md#function)'s return types at the moment of usage.
+
+See also:
+
+- [FUNCTION](keywords.md#function)
 
 ## IF blocks
 
