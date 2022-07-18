@@ -237,8 +237,9 @@ function itoa int -> str :
 end
 
 // String functions
-function str.load     ptr       -> str  : LOAD_QWORD str  end
-function str.store    ptr str   ->      : STORE_QWORD     end
+function str+         int str   -> str  : swap int + ptr str  end
+function str.load     ptr       -> str  : LOAD_QWORD str      end
+function str.store    ptr str   ->      : STORE_QWORD         end
 
 // Copy string to a newly allocated memory location and return the copied string
 function str.copy str -> str :
