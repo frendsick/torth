@@ -55,6 +55,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.CAST_INT
         elif token_value == 'PTR':
             op_type = OpType.CAST_PTR
+        elif token_value == 'RETURN':
+            op_type = OpType.RETURN
         elif token_value == 'STR':
             op_type = OpType.CAST_STR
         elif token_value == 'UINT8':
@@ -279,6 +281,8 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             branched_stacks[-1] = type_check_push_str(token, type_stack)
         elif op.type == OpType.PUSH_UINT8:
             branched_stacks[-1] = type_check_push_uint8(token, type_stack)
+        elif op.type == OpType.RETURN:
+            branched_stacks[-1] = type_check_return(op, type_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "AND":
@@ -545,6 +549,16 @@ def type_check_push_str(token: Token, type_stack: TypeStack) -> TypeStack:
 def type_check_push_uint8(token: Token, type_stack: TypeStack) -> TypeStack:
     """Push an unsigned 8-bit integer to the stack"""
     type_stack.push(TokenType.UINT8, token.location)
+    return type_stack
+
+def type_check_return(op: Op, type_stack: TypeStack) -> TypeStack:
+    """Return from the current Function. Function's TypeStack should be empty."""
+    return_types: List[TokenType] = op.func.signature[1]
+    if not matching_type_lists(type_stack.get_types(), return_types):
+        compiler_error("FUNCTION_SIGNATURE_ERROR",
+        f"Stack state does not match with the return types of '{op.func.name}' function.\n\n" + \
+        f"Expected return types: {return_types}\n", op.token,
+        current_stack=type_stack)
     return type_stack
 
 def type_check_take_bind(token: Token, type_stack: TypeStack) -> TypeStack:

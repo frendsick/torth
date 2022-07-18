@@ -67,7 +67,7 @@
         },
         {
           "name": "markup.deleted.torth",
-          "match": "\\b(?i)(ret)\\b"
+          "match": "\\b(?i)(return)\\b"
         },
         {
           "name": "entity.name.function.torth",

@@ -35,6 +35,7 @@ class Keyword(Enum):
     MEMORY=auto()
     PEEK=auto()
     PTR=auto()
+    RETURN=auto()
     STR=auto()
     TAKE=auto()
     UINT8=auto()
@@ -110,6 +111,7 @@ class OpType(Enum):
     PUSH_PTR=auto()
     PUSH_STR=auto()
     PUSH_UINT8=auto()
+    RETURN=auto()
     TAKE=auto()
     WHILE=auto()
 
