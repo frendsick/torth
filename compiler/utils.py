@@ -46,9 +46,9 @@ def compiler_error(error_type: str, error_message: str, token: Optional[Token] =
     print(f"{COLORS['HEADER']}Compiler error {COLORS['FAIL']}{error_type}{COLORS['NC']}" \
         + f":\n{error_message}")
     if original_stack:
-        print(f"Original stack state:\n{original_stack.repr()}")
+        print(f"\nOriginal stack state:\n{original_stack.repr()}")
     if current_stack:
-        print(f"Current stack state:\n{current_stack.repr()}")
+        print(f"\nCurrent stack state:\n{current_stack.repr()}")
     if token:
         print(get_token_location_info(token))
     sys.exit(1)
