@@ -5,7 +5,7 @@
 include "std"
 function print_product int int int int -> int int int int :
   "Product of pythagorean triplets that add up to " puts 4 nth putu ":\n" puts
-  dup2 5 nth * * putu "\n" puts
+  over over 5 nth * * putu "\n" puts
   0 exit
 end
 

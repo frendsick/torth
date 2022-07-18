@@ -7,7 +7,7 @@ end
 // If Current is even add it to the Total
 function add_if_even int int int -> int int int :
   IF dup 2 % 0 == DO
-    rot over + rotr
+    rot over + rot rot
   ENDIF
 end
 
@@ -20,7 +20,7 @@ function sum_of_even_fibonacci int -> int :
     sum_current_with_previous
     add_if_even
   DONE
-  drop2
+  drop drop
 end
 
 function main :

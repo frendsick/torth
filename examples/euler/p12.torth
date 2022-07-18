@@ -16,9 +16,9 @@ function get_number_of_divisors int -> int :
   get_triangle_number
   if dup 1 < do
     1 // i
-    while dup2 swap 1 + > do
+    while over over swap 1 + > do
       // triangle i
-      if dup2 % 0 == do
+      if over over % 0 == do
         number_of_divisors int.load 1 +
         number_of_divisors int.store
       endif
@@ -39,7 +39,7 @@ function highly_divisible_triangular_number -> int :
 
   1 // Current natural number
   while True do
-    1 while dup2 < do
+    1 while over over < do
       1 +
     done drop
     if dup get_number_of_divisors DIVISORS_CAP < do

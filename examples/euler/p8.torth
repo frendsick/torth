@@ -8,9 +8,9 @@ memory largest_product  int.size end
 
 // Store the current subseries' product to a temporary integer
 function store_series_product int str -> int str :
-  dup2 dup rot swap ptr+
+  over over dup rot ptr swap ptr+ str
   0 while dup series_length int.load > do
-    dup2 str.char_at '0' -
+    over over str.char_at '0' -
     if temp_int int.load 0 == do
       temp_int int.store
     else
@@ -18,12 +18,12 @@ function store_series_product int str -> int str :
       temp_int int.store
     endif
     1 +
-  done drop2 drop
+  done drop drop drop
 end
 
 function largest_product_in_series int str -> int :
   series_length int.store
-  0 while dup2 series_length int.load + str.char_at NULL != do
+  0 while over over series_length int.load + str.char_at NULL != do
     store_series_product
 
     // Store current subseries' product if it is the largest so far
@@ -34,7 +34,7 @@ function largest_product_in_series int str -> int :
     // Zero temporary integer
     NULL temp_int int.store
     1 +
-  done drop2
+  done drop drop
   largest_product int.load
 end
 

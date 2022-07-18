@@ -14,7 +14,7 @@ function mark_multiples_to_sieve int :
     // sieve[i] = True
     sieve over ptr+ True uint8 swap uint8.store
     over +
-  done drop2
+  done drop drop
 end
 
 // Params: prime
@@ -36,7 +36,7 @@ function summation_of_primes int -> int :
     
     // All primes except for 2 and 3 are 6n±1
     if dup 6 % 1 == do 4 + else 2 + endif
-  done drop2
+  done drop drop
   prime_sum int.load
 end
 

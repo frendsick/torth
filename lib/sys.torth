@@ -34,7 +34,7 @@ const SYS_shmget 29 end
 const SYS_shmat 30 end
 const SYS_shmctl 31 end
 const SYS_dup 32 end
-const SYS_dup2 33 end
+const SYS_over over 33 end
 const SYS_pause 34 end
 const SYS_nanosleep 35 end
 const SYS_getitimer 36 end
