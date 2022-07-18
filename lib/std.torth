@@ -508,3 +508,17 @@ end
 function print_file str :
   read_file puts
 end
+
+// Sleep causes the calling thread to sleep either until the
+// number of real-time seconds specified in parameters have elapsed or
+// until a signal arrives which is not ignored.
+// Params: How many seconds to sleep (STR)
+// Return: None
+// Usage: "4.2" sleep  // Sleep for 4.2 seconds
+memory sleep.execve_argv ptr.size end
+function sleep str :
+  // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
+  "sleep" sleep.execve_argv str.store
+  sleep.execve_argv ptr.size ptr+ str.store
+  envp sleep.execve_argv "/usr/bin/sleep" execve drop
+end
