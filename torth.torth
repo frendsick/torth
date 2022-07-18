@@ -9,7 +9,7 @@ function generate_program_from_file str -> ptr :
   swap read_file
   0 while dup2 str.char_at NULL != do
     if dup2 str.char_at ' ' == do
-      3 nth Program.append_match "\n" puts
+      3 nth Program.append_match
       rot drop "" str.copy rotr
     else
       dup2 str.char_at 4 nth str.append
