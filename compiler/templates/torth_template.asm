@@ -45,3 +45,7 @@ print:
   syscall
   add     rsp, 40
   ret
+
+global _start
+_start:
+  mov [args_ptr], rsp   ; Pointer to argc
