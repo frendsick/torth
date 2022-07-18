@@ -217,8 +217,8 @@ function itoa int -> str :
   dup temp_int int.store
   int.get_digits dup itoa.int_digits int.store
 
-  malloc  // Allocate memory for the string representation of the string
-  0       // index
+  malloc str // Allocate memory for the string representation of the string
+  0          // index
   while dup itoa.int_digits int.load > do
     // Get the current power of 10
     // 10 ^ (int_digits - 1 - index)
@@ -237,8 +237,9 @@ function itoa int -> str :
 end
 
 // String functions
-function str.load     ptr       -> str  : LOAD_QWORD str  end
-function str.store    ptr str   ->      : STORE_QWORD     end
+function str+         int str   -> str  : swap int + ptr str  end
+function str.load     ptr       -> str  : LOAD_QWORD str      end
+function str.store    ptr str   ->      : STORE_QWORD         end
 
 // Copy string to a newly allocated memory location and return the copied string
 function str.copy str -> str :
@@ -284,7 +285,7 @@ function str.cat str str -> str :
   take str.cat_final in
 
   // Append str1 to str2
-  str.cat_final dup str.len ptr+
+  str.cat_final dup str.len str+ ptr
   str.cat_str1 str.fill drop
   str.cat_final
 end
@@ -354,7 +355,7 @@ function str.upper str -> str :
     // Swap possible lowercase character with uppercase counterpart
     char.upper
     over 5 nth
-    swap ptr+ char.store
+    swap str+ ptr char.store
     1 + // index++
   done drop drop
 end
