@@ -439,10 +439,10 @@ def get_peek_asm() -> str:
     return '  mov r15, rsp\n'
 
 def get_peek_bind_asm(memory_name: str) -> str:
-    """Pop a value from the stack to a bound Memory"""
+    """Copy a value from the stack to a bound Memory"""
     op_asm: str  =  '  mov rax, [r15]\n'
     op_asm      += f'  mov [{memory_name}], rax\n'
-    op_asm      +=  '  sub r15, 8\n'
+    op_asm      +=  '  add r15, 8\n'
     return op_asm
 
 def get_pop_bind_asm(memory_name: str) -> str:
