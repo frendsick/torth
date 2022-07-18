@@ -175,7 +175,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             f"Empty function '{func.name}' with different parameter and return types.")
 
     branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
-    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'IN', 'PEEK', 'TAKE', 'WHILE' ]
+    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'PEEK', 'TAKE', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
     # to type check IF-ELIF chains with different stack layouts than what it was before the block.
@@ -193,6 +193,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
     # Save the Bindings of the function to get the type of the Binding later when used
     bound_types: Dict[str, TokenType] = {}
+    peek_count: int = 0 # Used for type checking PEEK blocks with multiple values
 
     for op in program:
         token: Token = op.token
@@ -266,8 +267,11 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.IF:
             if_block_original_stacks.append(copy(type_stack))
             if_block_return_stacks.append(TypeStack())
+        elif op.type == OpType.IN:
+            peek_count = 0
         elif op.type == OpType.PEEK_BIND:
-            branched_stacks[-1] = type_check_peek_bind(token, type_stack, bound_types)
+            peek_count += 1
+            branched_stacks[-1] = type_check_peek_bind(token, type_stack, bound_types, peek_count)
         elif op.type == OpType.POP_BIND:
             branched_stacks[-1] = type_check_pop_bind(token, type_stack, bound_types)
         elif op.type == OpType.PUSH_BIND:
@@ -519,15 +523,26 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
     branched_stacks.append(type_stack)
     return type_stack
 
-def type_check_peek_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> TypeStack:
+def type_check_peek_bind(token: Token, type_stack: TypeStack,
+    bound_types: Dict[str, TokenType], peek_count: int) -> TypeStack:
+    """"""
     temp_stack: TypeStack = copy(type_stack)
-    t = temp_stack.pop()
+
+    # Get the Nth value from the stack, based on peek_count
+    for _ in range(peek_count):
+        t = temp_stack.pop()
+
     if t is None:
-        compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", token)
+        compiler_error("NOT_ENOUGH_VALUES_IN_STACK",
+            f"Could not peek {peek_count} values from the stack because there is not enough values.",
+            token, current_stack=type_stack)
+
+    # Save the type of Nth value in the stack
     bound_types[token.value] = t.value
     return type_stack
 
 def type_check_pop_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> TypeStack:
+    """Pop a value from the stack to a bound Memory"""
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", token)
@@ -535,7 +550,7 @@ def type_check_pop_bind(token: Token, type_stack: TypeStack, bound_types: Dict[s
     return type_stack
 
 def type_check_push_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> TypeStack:
-    """Push a value from bound memory the stack"""
+    """Push a value from bound Memory the stack"""
     type_stack.push(bound_types[token.value], token.location)
     return type_stack
 
@@ -577,11 +592,6 @@ def type_check_return(op: Op, type_stack: TypeStack) -> TypeStack:
         f"Stack state does not match with the return types of '{op.func.name}' function.\n\n" + \
         f"Expected return types: {return_types}\n", op.token,
         current_stack=type_stack)
-    return type_stack
-
-def type_check_take_bind(token: Token, type_stack: TypeStack) -> TypeStack:
-    """Take N amount of values from the stack to bound Memories without touching the stack state"""
-    type_stack.push(token.type, token.location)
     return type_stack
 
 def type_check_bitwise(token: Token, type_stack: TypeStack) -> TypeStack:
