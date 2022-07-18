@@ -10,20 +10,25 @@ end
 // Params: Pointer to Op (PTR)
 // Return: Assembly
 function get_op_asm ptr -> str :
-  if dup Op.get_type OpType.PUSH_BOOL == do
-    dup Op.get_token Token.get_value str.upper get_push_bool_asm
-  elif dup Op.get_type OpType.PUSH_CHAR == do
-    dup Op.get_token Token.get_value 1 str.char_at get_push_char_asm
-  elif dup Op.get_type OpType.PUSH_INT == do
-    dup Op.get_token Token.get_value get_push_int_asm
-  elif dup Op.get_type OpType.PUSH_STR == do
+  // Save Op and Token.value in Binding
+  dup Op.get_token Token.get_value
+  take token_value op in
+
+  // Get assembly for the correct OpType
+  if op Op.get_type OpType.PUSH_BOOL == do
+    token_value str.upper get_push_bool_asm
+  elif op Op.get_type OpType.PUSH_CHAR == do
+    token_value 1 str.char_at get_push_char_asm
+  elif op Op.get_type OpType.PUSH_INT == do
+    token_value get_push_int_asm
+  elif op Op.get_type OpType.PUSH_STR == do
     "TODO: Generating assembly for OpType.PUSH_STR is not implemented yet.\n"
     "" swap NotImplementedError
-  elif dup Op.get_type OpType.PUSH_PTR == do
-    dup Op.get_token Token.get_value get_push_ptr_asm
-  elif dup Op.get_type OpType.INTRINSIC == do
-    // Get Operand's Token.value
-    dup Op.get_token Token.get_value str.upper
+  elif op Op.get_type OpType.PUSH_PTR == do
+    token_value get_push_ptr_asm
+  elif op Op.get_type OpType.INTRINSIC == do
+    // Get assembly for correct Intrinsic
+    token_value str.upper
     if dup "AND" streq do
       get_and_asm
     elif dup "PLUS" streq do
@@ -34,12 +39,12 @@ function get_op_asm ptr -> str :
       "Generating assembly for intrinsic '" over str.cat
       "' is not implemented yet\n" str.cat
       "" swap NotImplementedError
-    endif swap drop
+    endif drop
   else
-    "Generating assembly for '" over Op.get_token Token.get_value str.cat
+    "Generating assembly for '" token_value str.cat
     "' is not implemented: Unknown word\n" str.cat
     "" swap NotImplementedError
-  endif swap drop
+  endif
 end
 
 // Get Assembly comment for Op
