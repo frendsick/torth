@@ -330,20 +330,19 @@ end
 
 // Convert string to lowercase letters
 function str.lower str -> str :
-  dup str.len
+  peek lower_string in str.len
   0 // index
   while dup2 < do
-    3 nth // str
-
     // Get the character at the current index
-    over str.char_at
+    lower_string over str.char_at
 
     // Swap possible uppercase character with lowercase counterpart
-    char.lower
-    over 5 nth
-    swap ptr+ char.store
+    char.lower over
+    lower_string ptr
+    swap int ptr+ char.store
     1 + // index++
   done drop2
+  lower_string
 end
 
 // Convert string to uppercase letters
