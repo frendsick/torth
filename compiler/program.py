@@ -191,6 +191,9 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
     # Required for type checking IF blocks with each IF / ELIF keyword altering the stack state.
     else_present: bool = False
 
+    # Save the Bindings of the function to get the type of the Binding later when used
+    bound_types: Dict[str, TokenType] = {}
+
     for op in program:
         token: Token = op.token
         type_stack: TypeStack = branched_stacks[-1]
@@ -264,11 +267,11 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             if_block_original_stacks.append(copy(type_stack))
             if_block_return_stacks.append(TypeStack())
         elif op.type == OpType.PEEK_BIND:
-            continue
+            branched_stacks[-1] = type_check_peek_bind(token, type_stack, bound_types)
         elif op.type == OpType.POP_BIND:
-            branched_stacks[-1] = type_check_drop(token, type_stack)
+            branched_stacks[-1] = type_check_pop_bind(token, type_stack, bound_types)
         elif op.type == OpType.PUSH_BIND:
-            branched_stacks[-1] = type_check_push_bind(token, type_stack)
+            branched_stacks[-1] = type_check_push_bind(token, type_stack, bound_types)
         elif op.type == OpType.PUSH_BOOL:
             branched_stacks[-1] = type_check_push_bool(token, type_stack)
         elif op.type == OpType.PUSH_CHAR:
@@ -516,9 +519,24 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
     branched_stacks.append(type_stack)
     return type_stack
 
-def type_check_push_bind(token: Token, type_stack: TypeStack) -> TypeStack:
+def type_check_peek_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> TypeStack:
+    temp_stack: TypeStack = copy(type_stack)
+    t = temp_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", token)
+    bound_types[token.value] = t.value
+    return type_stack
+
+def type_check_pop_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> TypeStack:
+    t = type_stack.pop()
+    if t is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", token)
+    bound_types[token.value] = t.value
+    return type_stack
+
+def type_check_push_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> TypeStack:
     """Push a value from bound memory the stack"""
-    type_stack.push(token.type, token.location)
+    type_stack.push(bound_types[token.value], token.location)
     return type_stack
 
 def type_check_push_bool(token: Token, type_stack: TypeStack) -> TypeStack:
