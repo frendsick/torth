@@ -71,7 +71,7 @@ function set_board_index int :
 end
 
 // Sets the current_board index according to rules
-function update_board_index int -> int :
+function update_board_index :
   pattern
   if   dup int.load 0x10101 == do // 111
     0 set_board_index
