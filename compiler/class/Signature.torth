@@ -21,16 +21,16 @@ function Signature.print ptr :
   // Print params
   "Signature.params   => " puts
   dup Signature.params ptr+ ptr.load
-  0 while dup2 ptr+ int.load NULL != do
-    dup2 ptr+ int.load print " " puts
+  0 while over over ptr+ int.load NULL != do
+    over over ptr+ int.load print " " puts
     ptr.size +
-  done drop2 "\n" puts
+  done drop drop "\n" puts
 
   // Print returns
   "Signature.returns  => " puts
   dup Signature.returns ptr+ ptr.load
-  0 while dup2 ptr+ int.load NULL != do
-    dup2 ptr+ int.load print " " puts
+  0 while over over ptr+ int.load NULL != do
+    over over ptr+ int.load print " " puts
     ptr.size +
-  done drop2 drop "\n" puts
+  done drop drop drop "\n" puts
 end

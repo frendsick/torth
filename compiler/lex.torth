@@ -86,7 +86,7 @@ function get_token_from_match str -> ptr :
   get_token_value dup
   get_token_type
   get_dummy_location
-  rev Token.init
+  swap rot Token.init
 end
 
 function get_tokens_function ptr -> ptr :

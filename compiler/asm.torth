@@ -152,7 +152,7 @@ function generate_asm ptr -> str :
   // Generate assembly for each Op in Program
   0 while dup Program.len int.load > do
     // Get the current Op
-    dup2 Program.op_at
+    over over Program.op_at
 
     // Generate comment for Op
     dup get_op_comment_asm op_asm str.load swap str.cat
@@ -162,7 +162,7 @@ function generate_asm ptr -> str :
     get_op_asm op_asm str.load swap str.cat
     op_asm str.store
     1 +
-  done drop2
+  done drop drop
 
   // Merge generated Assembly with the initialized Assembly
   op_asm str.load   str.cat

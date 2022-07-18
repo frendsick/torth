@@ -7,15 +7,15 @@ include "compiler/class/Program"
 function generate_program_from_file str -> ptr :
   "" str.copy // word
   swap read_file
-  0 while dup2 str.char_at NULL != do
-    if dup2 str.char_at ' ' == do
+  0 while over over str.char_at NULL != do
+    if over over str.char_at ' ' == do
       3 nth Program.append_match
-      rot drop "" str.copy rotr
+      rot drop "" str.copy rot rot
     else
-      dup2 str.char_at 4 nth str.append
+      over over str.char_at 4 nth str.append
     endif
     1 +
-  done drop2 Program.append_match Program
+  done drop drop Program.append_match Program
 end
 
 // Append to execve_argv
@@ -75,7 +75,7 @@ function exec_forked str str :
     NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
   else
     "Error occured while calling SYS_fork\n" puts
-  endif drop2 drop
+  endif drop drop drop
 
   "Continuing execution in the parent process.\n" puts
 end

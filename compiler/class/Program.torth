@@ -22,12 +22,12 @@ end
 function Program.print ptr :
   0 while dup Program.len int.load > do
     // Load current Op
-    dup2 Op.size * ptr+ ptr.load
+    over over Op.size * ptr+ ptr.load
 
     // Print current Op
     Op.print "\n" puts
     1 +
-  done drop2 "\n" puts
+  done drop drop "\n" puts
 end
 
 function Program.op_at int ptr -> ptr :
