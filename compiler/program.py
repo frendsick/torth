@@ -55,8 +55,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.CAST_INT
         elif token_value == 'PTR':
             op_type = OpType.CAST_PTR
-        elif token_value == 'RET':
-            op_type = OpType.RET
+        elif token_value == 'RETURN':
+            op_type = OpType.RETURN
         elif token_value == 'STR':
             op_type = OpType.CAST_STR
         elif token_value == 'UINT8':
