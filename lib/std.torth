@@ -447,16 +447,17 @@ end
 // Reverse a string
 function str.reverse str -> str :
   // Allocate memory for the reversed string
-  dup str.len dup malloc str rot rot
+  dup str.len dup malloc str
+  take reversed index original in
 
   // Append characters from the parameter string to allocated memory in the reversed order
-  while dup 0 < do
-    1 - // index--
-    over over str.char_at // str[index]
+  while 0 index > do
+    index 1 - index =           // index--
+    original index str.char_at  // original[index]
 
     // Append the current character to the reversed string
-    4 nth str.append
-  done drop drop
+    reversed str.append
+  done reversed
 end
 
 // Open a file with open-syscall
@@ -524,7 +525,7 @@ end
 function sleep str :
   // Allocate memory for two strings
   str.size 2 * malloc take argv in
-  
+
   // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
   "sleep" argv str.store
   argv ptr.size ptr+ str.store
