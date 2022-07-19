@@ -525,7 +525,7 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
 
 def type_check_peek_bind(token: Token, type_stack: TypeStack,
     bound_types: Dict[str, TokenType], peek_count: int) -> TypeStack:
-    """"""
+    """Copy the Nth item from the stack to a named Memory."""
     temp_stack: TypeStack = copy(type_stack)
 
     # Get the Nth value from the stack, based on peek_count
