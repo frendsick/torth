@@ -499,9 +499,13 @@ end
 // Params: const char *filename, mode_t mode, const void *buf
 // Return: ssize_t written_bytes
 function write_file str int str -> int :
+  // Create file
   touch_file
-  swap dup str.len // size_t count
-  swap rot SYS_write syscall3
+
+  // Write to the file
+  take fd buf in
+  buf str.len // size_t count
+  buf fd SYS_write syscall3
 end
 
 // Print file contents to stdout
@@ -517,10 +521,12 @@ end
 // Params: How many seconds to sleep (STR)
 // Return: None
 // Usage: "4.2" sleep  // Sleep for 4.2 seconds
-memory sleep.execve_argv ptr.size end
 function sleep str :
+  // Allocate memory for two strings
+  str.size 2 * malloc take argv in
+  
   // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
-  "sleep" sleep.execve_argv str.store
-  sleep.execve_argv ptr.size ptr+ str.store
-  envp sleep.execve_argv "/usr/bin/sleep" execve drop
+  "sleep" argv str.store
+  argv ptr.size ptr+ str.store
+  envp argv "/usr/bin/sleep" execve drop
 end
