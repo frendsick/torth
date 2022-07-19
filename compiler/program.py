@@ -191,7 +191,8 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
     # Track if there was an ELSE clause in the IF block.
     # Required for type checking IF blocks with each IF / ELIF keyword altering the stack state.
-    else_present: bool = False
+    else_present: bool   = False
+    return_present: bool = False
 
     # Save the Bindings of the function to get the type of the Binding later when used
     binding: Binding = {}
@@ -222,6 +223,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.DONE:
             type_check_end_of_branch(token, branched_stacks)
         elif op.type == OpType.ELIF:
+            return_present = False
             # Save the state of the stack after the first part of the IF block
             if not if_block_return_stacks[-1].head:
                 if_block_return_stacks[-1] = copy(type_stack)
@@ -249,7 +251,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
             # If IF block altered the stack state there MUST be an ELSE to catch all errors
             # and the IF block's return stack must match with all of the sections in the block
-            if not else_present and if_block_return_stacks[-1].head and \
+            if not else_present and not return_present and if_block_return_stacks[-1].head and \
                 not matching_type_lists(branched_stacks[-1].get_types(), if_block_return_stacks[-1].get_types()):
                 compiler_error("SYNTAX_ERROR", \
                     "The stack state should be the same than at the start of the IF-block.\n" + \
@@ -269,6 +271,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.FUNCTION_CALL:
             type_check_function_call(op, type_stack, functions)
         elif op.type == OpType.IF:
+            return_present = False
             if_block_original_stacks.append(copy(type_stack))
             if_block_return_stacks.append(TypeStack())
         elif op.type == OpType.IN:
@@ -293,7 +296,10 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.PUSH_UINT8:
             type_check_push_uint8(token, type_stack)
         elif op.type == OpType.RETURN:
-            type_check_return(op, type_stack)
+            return_present = True
+            if_block_stack: TypeStack = if_block_return_stacks[-1] if if_block_return_stacks[-1].head \
+                else if_block_original_stacks[-1]
+            branched_stacks[-1] = type_check_return(op, type_stack, if_block_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "AND":
@@ -590,7 +596,7 @@ def type_check_push_uint8(token: Token, type_stack: TypeStack) -> None:
     """Push an unsigned 8-bit integer to the stack"""
     type_stack.push(TokenType.UINT8, token.location)
 
-def type_check_return(op: Op, type_stack: TypeStack) -> None:
+def type_check_return(op: Op, type_stack: TypeStack, if_block_return_stack: Optional[TypeStack]) -> TypeStack:
     """Return from the current Function. Function's TypeStack should be empty."""
     return_types: List[TokenType] = op.func.signature[1]
     if not matching_type_lists(type_stack.get_types(), return_types):
@@ -598,6 +604,7 @@ def type_check_return(op: Op, type_stack: TypeStack) -> None:
         f"Stack state does not match with the return types of '{op.func.name}' function.\n\n" + \
         f"Expected return types: {return_types}\n", op.token,
         current_stack=type_stack)
+    return copy(if_block_return_stack)
 
 def type_check_bitwise(token: Token, type_stack: TypeStack) -> None:
     """AND performs bitwise-AND operation to two integers."""
