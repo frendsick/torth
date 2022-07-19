@@ -208,12 +208,15 @@ def parse_function_bindings(functions: Dict[str, Function], memories: List[Memor
             elif token.value.upper() == 'IN':
                 parsing_bind = False
             elif parsing_bind:
+                if memory_exists(token.value, memories):
+                    compiler_error("VALUE_ERROR",
+                        f"Cannot bind '{token.value}' over Memory with the same name", token)
                 token.is_bound = True
                 binding[token.value] = token.type
                 memories.append( Memory(token.value, 8, token.location) )
                 token.value = f'{token.value}_{bind_variant}'
             elif token.value in binding:
-                token.type = TokenType.ANY
+                token.type = binding[token.value]
                 token.is_bound = True
         # Store the found bindings in the Function object
         func.binding = binding
