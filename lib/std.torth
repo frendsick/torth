@@ -217,7 +217,7 @@ end
 
 // Convert negative integer to positive
 function int.to_positive int -> int :
-  if dup 0 > do 2 ^ sqrt int.reverse endif
+  if dup 0 > do 2 ^ sqrt endif
 end
 
 // Get a string representation of an integer
@@ -233,6 +233,9 @@ function itoa int -> str :
     int.to_positive
   endif
 
+  // Reverse for correct processing
+  int.reverse
+
   // Allocate memory to the string representation
   dup int.get_digits  // digits
   dup 2 + malloc str  // string
@@ -240,15 +243,13 @@ function itoa int -> str :
   // Add '-' character to the start of string for negative number
   if is_negative do
     '-' over str.append
-    swap 1 + swap
   endif
 
   10 // base
-  0  // index
-  take index base string digits num in
+  take base string digits num in
 
   // Process individual digits: https://www.geeksforgeeks.org/implement-itoa/
-  while index digits > do
+  0 while dup digits > do
     num base %  // rem = num/base
 
     // str[index] = (rem > 9)? (rem-10) + 'a' : rem + '0';
@@ -256,11 +257,11 @@ function itoa int -> str :
     do    10 - 'a' +
     else  '0' +
     endif char
-    string index str+ str.append
+    string str.append
 
     num base / num  = // num = num/base
-    index 1 + index = // index++
-  done string
+    1 + // index++
+  done drop string
 end
 
 // Get an integer representation of a string
