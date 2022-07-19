@@ -115,6 +115,15 @@ function eputs str : stderr fputs end
 // Print an unsigned integer to stdout
 function putu int : print end
 
+// Print a signed integer to stdout
+function puti int :
+  // Positive numbers
+  if dup 0 <= do putu return endif
+
+  // Negative numbers
+  itoa puts
+end
+
 // Ptr functions
 function ptr+       int ptr -> ptr : swap int + ptr end
 function ptr-       int ptr -> ptr : swap int - ptr end
@@ -212,29 +221,71 @@ function int.to_positive int -> int :
 end
 
 // Get a string representation of an integer
-memory itoa.int_digits int.size end
 function itoa int -> str :
-  // Store the original integer and the amount of digits
-  dup temp_int int.store
-  int.get_digits dup itoa.int_digits int.store
+  // Return "0" if parameter is 0
+  if dup 0 == do
+    drop "0" return
+  endif
 
-  malloc str // Allocate memory for the string representation of the string
-  0          // index
-  while dup itoa.int_digits int.load > do
-    // Get the current power of 10
-    // 10 ^ (int_digits - 1 - index)
-    itoa.int_digits int.load
-    1 - over - 10 swap pow
+  // Swap sign of negative number
+  dup 0 > take is_negative in
+  if is_negative do
+    int.to_positive
+  endif
 
-    // Store the remainder of the number / the current power of 10 in temporary integer
-    temp_int int.load
-    swap divmod swap
-    temp_int int.store
+  // Allocate memory to the string representation
+  dup int.get_digits  // digits
+  dup 2 + malloc str  // string
 
-    // Append the current number to the string representation
-    '0' + char 3 nth str.append
-    1 + // index++
-  done drop str
+  // Add '-' character to the start of string for negative number
+  if is_negative do
+    '-' over str.append
+    swap 1 + swap
+  endif
+
+  10 // base
+  0  // index
+  take index base string digits num in
+
+  // Process individual digits: https://www.geeksforgeeks.org/implement-itoa/
+  while index digits > do
+    num base %  // rem = num/base
+
+    // str[index] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+    if dup 9 <
+    do    10 - 'a' +
+    else  '0' +
+    endif char
+    string index str+ str.append
+
+    num base / num  = // num = num/base
+    index 1 + index = // index++
+  done string
+end
+
+// Get an integer representation of a string
+function atoi str -> int :
+  NULL 0 take index integer string in
+  // Iterate the string character by character
+  while string index str.char_at NULL != do
+
+    // Get current character
+    string index str.char_at
+
+    // Raise an error if the character is not a number
+    if dup char.is_numeric not do
+      "[ERROR] atoi function failed: '"
+      string                    str.cat
+      "' is not an integer.\n"  str.cat
+      eputs 1 exit
+    endif
+
+    // Append the current character to integer
+    '0' -
+    integer 10 * +
+    integer =
+    index 1 + index = // index++
+  done integer
 end
 
 // String functions
@@ -375,31 +426,6 @@ function str.alphanumeric str -> str :
     endif drop
     1 + // index++
   done drop drop
-end
-
-// Get an integer representation of a string
-function atoi str -> int :
-  NULL 0 take index integer string in
-  // Iterate the string character by character
-  while string index str.char_at NULL != do
-
-    // Get current character
-    string index str.char_at
-
-    // Raise an error if the character is not a number
-    if dup char.is_numeric not do
-      "[ERROR] atoi function failed: '"
-      string                    str.cat
-      "' is not an integer.\n"  str.cat
-      eputs 1 exit
-    endif
-
-    // Append the current character to integer
-    '0' -
-    integer 10 * +
-    integer =
-    index 1 + index = // index++
-  done integer
 end
 
 // Tests if two strings are equal
