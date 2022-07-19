@@ -486,7 +486,7 @@ function open_file int str -> int :
     "Cannot open file '" eputs path eputs "': Permission denied.\n" eputs 1 exit
   elif  fd 0 > do
     "Error occurred while opening the file '" eputs path eputs "'.\n" eputs
-    "Error code: " eputs fd putu 1 exit
+    "Error code: " eputs fd eputi 1 exit
   endif
   fd
 end
