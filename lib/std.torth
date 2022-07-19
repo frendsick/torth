@@ -115,14 +115,14 @@ function eputs str : stderr fputs end
 // Print an unsigned integer to stdout
 function putu int : print end
 
-// Print a signed integer to stdout
-function puti int :
-  // Positive numbers
-  if dup 0 <= do putu return endif
+// Print an unsigned integer to stderr
+function eputu int : itoa eputs end
 
-  // Negative numbers
-  itoa puts
-end
+// Print a signed integer to stdout
+function puti int : itoa puts end
+
+// Print a signed integer to stderr
+function eputi int : itoa eputs end
 
 // Ptr functions
 function ptr+       int ptr -> ptr : swap int + ptr end
