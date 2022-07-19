@@ -464,13 +464,16 @@ end
 // Return: fd
 function open_file int str -> int :
   over SYS_open syscall2
-
-  if    dup ENOENT  ==  do swap "File '" eputs eputs "' does not exist.\n" eputs 1 exit
-  elif  dup EACCESS ==  do swap "Cannot open file '" eputs eputs "': Permission denied.\n" eputs 1 exit
-  elif  dup 0 > do
-    swap "Error occurred while opening the file '" eputs eputs "'.\nError code: " eputs dup putu 1 exit
-  else swap drop // Drop the file name
+  take fd path in
+  if    fd ENOENT  ==  do
+    "File '" eputs path eputs "' does not exist.\n" eputs 1 exit
+  elif  fd EACCESS ==  do
+    "Cannot open file '" eputs path eputs "': Permission denied.\n" eputs 1 exit
+  elif  fd 0 > do
+    "Error occurred while opening the file '" eputs path eputs "'.\n" eputs
+    "Error code: " eputs fd putu 1 exit
   endif
+  fd
 end
 
 // Read a file to a newly allocated memory
