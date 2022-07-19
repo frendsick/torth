@@ -440,7 +440,7 @@ def get_peek_asm() -> str:
 
 def get_peek_bind_asm(op: Op) -> str:
     """Copy a value from the stack to a bound Memory"""
-    memory_name: str   = op.token.value
+    memory_name: str  = op.token.value
     bound_memory: str = f"{op.func.name}_{memory_name}"
     op_asm: str  =  '  mov rax, [r15]\n'
     op_asm      += f'  mov [{bound_memory}], rax\n'
@@ -449,13 +449,13 @@ def get_peek_bind_asm(op: Op) -> str:
 
 def get_pop_bind_asm(op: Op) -> str:
     """Pop a value from the stack to a bound Memory"""
-    memory_name: str   = op.token.value
+    memory_name: str  = op.token.value
     bound_memory: str = f"{op.func.name}_{memory_name}"
     return f'  pop qword [{bound_memory}]\n'
 
 def get_push_bind_asm(op: Op) -> str:
     """Push the value from bound Memory to the stack"""
-    memory_name: str   = op.token.value
+    memory_name: str  = op.token.value
     bound_memory: str = f"{op.func.name}_{memory_name}"
     return f'  push qword [{bound_memory}]\n'
 
