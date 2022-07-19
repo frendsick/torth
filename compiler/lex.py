@@ -219,13 +219,6 @@ def parse_function_bindings(functions: Dict[str, Function], memories: List[Memor
         func.binding = binding
     return functions
 
-def add_binding_to_memories(token: Token, memories: List[Memory]) -> List[Memory]:
-    """Add binding to memories so it can be used as memory later"""
-    if memory_exists(token.value, memories):
-        return memories
-    memories.append(Memory(token.value, 8, token.location))
-    return memories
-
 def get_memories_from_code(included_files: Set[str], constants: List[Constant]) -> List[Memory]:
     """Parse Memory objects from code file and included files. Return list of Memory objects."""
     memories: List[Memory] = []
