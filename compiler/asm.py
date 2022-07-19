@@ -174,6 +174,8 @@ def get_op_asm(op: Op, program: Program) -> str:
         OpType.TAKE
         }:
         return ''
+    if op.type == OpType.ASSIGN_BIND:
+        return get_assign_bind_asm(op, program)
     if op.type == OpType.BREAK:
         return get_break_asm(op, program)
     if op.type == OpType.CONTINUE:
@@ -383,6 +385,15 @@ def get_do_asm(op: Op, program: Program) -> str:
         block_type: str = 'WHILE' if parent_op_type == OpType.WHILE else 'IF'
         block_end: str  = 'DONE'  if parent_op_type == OpType.WHILE else 'ENDIF'
         compiler_error("UNCLOSED_BLOCK", f"The current {block_type} block is missing {block_end} keyword.", op.token)
+    return op_asm
+
+def get_assign_bind_asm(op: Op, program: Program) -> str:
+    """Assign a value to the named bound Memory"""
+    memory_name: str = program[op.id-1].token.value
+    bound_memory: str = f'{op.func.name}_{memory_name}'
+    op_asm: str  =  '  pop rax  ; Old value\n'
+    op_asm      +=  '  pop rbx  ; New value\n'
+    op_asm      += f'  mov [{bound_memory}], rbx\n'
     return op_asm
 
 def get_break_asm(op: Op, program: Program) -> str:
