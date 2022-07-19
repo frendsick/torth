@@ -20,8 +20,11 @@ end
 // Params: num1, num2
 // Return: gcd
 function gcd int int -> int :
-  while over over divmod drop 0 != do
-    dup rot rot divmod drop
+  while
+    peek num1 num2 in
+    num2 num1 % 0 !=
+  do
+    drop num2 num1 %
   done swap drop
 end
 
