@@ -193,11 +193,11 @@ def get_op_asm(op: Op, program: Program) -> str:
     if op.type == OpType.PEEK:
         return get_peek_asm()
     if op.type == OpType.PEEK_BIND:
-        return get_peek_bind_asm(op.token.value)
+        return get_peek_bind_asm(op)
     if op.type == OpType.POP_BIND:
-        return get_pop_bind_asm(op.token.value)
+        return get_pop_bind_asm(op)
     if op.type == OpType.PUSH_BIND:
-        return get_push_bind_asm(op.token.value)
+        return get_push_bind_asm(op)
     if op.type == OpType.PUSH_BOOL:
         return get_push_bool_asm(op.token.value.upper())
     if op.type == OpType.PUSH_CHAR:
@@ -438,20 +438,26 @@ def get_peek_asm() -> str:
     """Save current stack pointer to r15"""
     return '  mov r15, rsp\n'
 
-def get_peek_bind_asm(memory_name: str) -> str:
+def get_peek_bind_asm(op: Op) -> str:
     """Copy a value from the stack to a bound Memory"""
+    memory_name: str   = op.token.value
+    bound_memory: str = f"{op.func.name}_{memory_name}"
     op_asm: str  =  '  mov rax, [r15]\n'
-    op_asm      += f'  mov [{memory_name}], rax\n'
+    op_asm      += f'  mov [{bound_memory}], rax\n'
     op_asm      +=  '  add r15, 8\n'
     return op_asm
 
-def get_pop_bind_asm(memory_name: str) -> str:
+def get_pop_bind_asm(op: Op) -> str:
     """Pop a value from the stack to a bound Memory"""
-    return f'  pop qword [{memory_name}]\n'
+    memory_name: str   = op.token.value
+    bound_memory: str = f"{op.func.name}_{memory_name}"
+    return f'  pop qword [{bound_memory}]\n'
 
-def get_push_bind_asm(memory_name: str) -> str:
+def get_push_bind_asm(op: Op) -> str:
     """Push the value from bound Memory to the stack"""
-    return f'  push qword [{memory_name}]\n'
+    memory_name: str   = op.token.value
+    bound_memory: str = f"{op.func.name}_{memory_name}"
+    return f'  push qword [{bound_memory}]\n'
 
 def get_push_bool_asm(boolean: str) -> str:
     """Return the assembly code for PUSH_BOOL Operand."""
