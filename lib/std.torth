@@ -248,9 +248,10 @@ end
 // Get the length of a string
 // Example: "Test string" -> 11
 function str.len str -> int :
-  0 while over over str.char_at NULL != do
+  take string in
+  0 while string over str.char_at NULL != do
     1 +
-  done swap drop
+  done
 end
 
 // Fill a ptr with the contents of a string
