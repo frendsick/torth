@@ -17,6 +17,7 @@ COLORS: Dict[str, str] = {
 
 class Keyword(Enum):
     """Available keywords in the Torth language"""
+    ASSIGN=auto()
     BOOL=auto()
     BREAK=auto()
     CHAR=auto()
@@ -83,6 +84,7 @@ class Intrinsic(Enum):
 
 class OpType(Enum):
     """Available operand types in the Torth language"""
+    ASSIGN_BIND=auto()
     BREAK=auto()
     CAST_BOOL=auto()
     CAST_CHAR=auto()
@@ -159,7 +161,7 @@ class TypeStack:
         index: int      = 1  # The top element in the stack is number one
         contents: str   = ''
         while head is not None:
-            contents += f"[{index}] {head.value} {head.location}\n"
+            contents += f"[{index}] {head.value.name} {head.location}\n"
             head = head.next_node
             index += 1
         return contents

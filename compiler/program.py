@@ -27,6 +27,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.PUSH_STR
         elif token.type == TokenType.UINT8:
             op_type = OpType.PUSH_UINT8
+        elif token_value == 'ASSIGN':
+            op_type = OpType.ASSIGN_BIND
         elif token_value == 'BOOL':
             op_type = OpType.CAST_BOOL
         elif token_value == 'BREAK':
@@ -201,7 +203,9 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
-        if op.type == OpType.CAST_BOOL:
+        if op.type == OpType.ASSIGN_BIND:
+            type_check_assign_bind(op, type_stack, program, bound_types)
+        elif op.type == OpType.CAST_BOOL:
             type_check_cast_bool(token, type_stack)
         elif op.type == OpType.CAST_CHAR:
             type_check_cast_char(token, type_stack)
@@ -433,6 +437,26 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
     if not matching_type_lists(before_types, after_types):
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
+
+def type_check_assign_bind(op: Op, type_stack: TypeStack, program: Program, bound_types: Dict[str, TokenType]) -> None:
+    """ASSIGN_BIND assigns a value to existing named bound Memory"""
+    temp_stack: TypeStack = copy(type_stack)
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t1 is None or t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "ASSIGN keyword requires two values of the same type in the stack.",
+            op.token, current_stack=temp_stack)
+
+    bound_token: Token = get_op_from_location(t1.location, program).token
+    if not bound_token.is_bound:
+        compiler_error("VALUE_ERROR", "ASSIGN keyword requires a bound Memory in the top of the stack.",
+            op.token, current_stack=temp_stack)
+
+    bound_type: TokenType = bound_types[bound_token.value]
+    if t2.value != bound_type:
+        compiler_error("VALUE_ERROR",
+            f"Cannot assign {t2.value.name} to bound Memory '{bound_token.value}' of type {bound_type.name}.",
+            op.token, current_stack=temp_stack)
 
 def type_check_cast_bool(token: Token, type_stack: TypeStack) -> None:
     """
