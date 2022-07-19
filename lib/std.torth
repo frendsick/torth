@@ -380,35 +380,27 @@ end
 
 // Get an integer representation of a string
 function atoi str -> int :
+  NULL 0 take index integer string in
   // Iterate the string character by character
-  take string in
+  while string index str.char_at NULL != do
 
-  0 while atoi.str over str.char_at NULL != do
-    string over str.char_at
+    // Get current character
+    string index str.char_at
 
     // Raise an error if the character is not a number
     if dup char.is_numeric not do
-      "[ERROR] atoi function failed:" eputs
-      " '" eputs 3 nth eputs "' is not an integer.\n" eputs
-      1 exit
+      "[ERROR] atoi function failed: '"
+      string                    str.cat
+      "' is not an integer.\n"  str.cat
+      eputs 1 exit
     endif
 
-    // Get the numeric representation of an ASCII number
+    // Append the current character to integer
     '0' -
-
-    // Multiply the number from temporary memory by 10
-    temp_int int.load 10 *
-
-    // Add the current number and store the result
-    + temp_int int.store
-
-    1 +
-  done drop
-  // Return the integer
-  temp_int int.load
-
-  // Zero the memory of temporary integer
-  NULL temp_int int.store
+    integer 10 * +
+    integer =
+    index 1 + index = // index++
+  done integer
 end
 
 // Tests if two strings are equal
