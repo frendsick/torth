@@ -7,15 +7,17 @@ include "compiler/class/Program"
 function generate_program_from_file str -> ptr :
   "" str.copy // word
   swap read_file
-  0 while over over str.char_at NULL != do
-    if over over str.char_at ' ' == do
-      3 nth Program.append_match
-      rot drop "" str.copy rot rot
+  take file_contents word in
+
+  0 while file_contents over str.char_at NULL != do
+    if file_contents over str.char_at ' ' == do
+      word Program.append_match
+      word str.empty
     else
-      over over str.char_at 4 nth str.append
+      file_contents over str.char_at word str.append
     endif
     1 +
-  done drop drop Program.append_match Program
+  done drop word Program.append_match Program
 end
 
 // Append to execve_argv
@@ -61,21 +63,19 @@ end
 // Params: command, target_file
 function exec_forked str str :
   SYS_fork SYSCALL0
+  take fork_return command target_file in
   
-  if dup 0 == do
-    over
-    // command == "nasm"
-    if dup "nasm" streq do
-      // nasm -felf64 target_file
-      4 nth compile_with_nasm
-    elif dup "ld" streq do
-      4 nth link_with_ld
-    endif drop
-  elif dup -1 != do
+  if fork_return 0 == do
+    if command "nasm" streq do
+      target_file compile_with_nasm
+    elif command "ld" streq do
+      target_file link_with_ld
+    endif
+  elif fork_return -1 != do
     NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
   else
     "Error occured while calling SYS_fork\n" puts
-  endif drop drop drop
+  endif
 
   "Continuing execution in the parent process.\n" puts
 end
