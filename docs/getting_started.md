@@ -15,8 +15,7 @@ The following requirements can probably be installed via your distro's package m
 
 - Python3.6 or newer
 - NASM
-- LD (Probably installed by default)
-- Graphviz (Only required for creating Graphviz graphs with **-g** argument)
+- LD (binutils package in APT)
 - Git (For cloning the repository, not required)
 
 ## Compile your first program
