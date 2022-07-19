@@ -1,16 +1,17 @@
 include "std"
 function Fib int -> int :
-  take limit in
   0   // Previous
   1   // Current
-  1   // The counter for WHILE loop
+  take current previous limit in
+
+  1   // Counter
   WHILE dup limit > DO
-    take counter current previous in
-    current             // Previous = Current
-    previous current +  // Current = Previous + Current
-    counter 1 +         // counter++
-  DONE drop drop drop
-  current
+    current                   // Temp     = Current
+    dup previous + current =  // Current  = Previous + Current
+    previous =                // Previous = Temp
+    1 +                       // Counter++
+  DONE drop
+  previous
 end
 
 function Main :
