@@ -326,37 +326,30 @@ end
 
 // Convert string to lowercase letters
 function str.lower str -> str :
-  peek lower_string in str.len
-  0 // index
-  while over over < do
-    // Get the character at the current index
-    lower_string over str.char_at
+  dup str.len // len
+  0           // index
+  take index len string in
 
-    // Swap possible uppercase character with lowercase counterpart
-    char.lower over
-    lower_string ptr
-    swap int ptr+ char.store
-    1 + // index++
-  done drop drop
-  lower_string
+  // Rewrite string with lowercase characters
+  while index len > do
+    string index str.char_at char.lower
+    string ptr index ptr+ char.store
+    index 1 + index = // index++
+  done string
 end
 
 // Convert string to uppercase letters
 function str.upper str -> str :
-  dup str.len
-  0 // index
-  while over over < do
-    3 nth // str
+  dup str.len // len
+  0           // index
+  take index len string in
 
-    // Get the character at the current index
-    over str.char_at
-
-    // Swap possible lowercase character with uppercase counterpart
-    char.upper
-    over 5 nth
-    swap str+ ptr char.store
-    1 + // index++
-  done drop drop
+  // Rewrite string with uppercase characters
+  while index len > do
+    string index str.char_at char.upper
+    string ptr index ptr+ char.store
+    index 1 + index = // index++
+  done string
 end
 
 // Strip all non-alphanumeric characters from a string
