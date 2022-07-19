@@ -5,7 +5,7 @@ import itertools
 import re
 from copy import copy
 from typing import Dict, List, Optional, Set
-from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType, TypeNode
+from compiler.defs import Binding, Constant, Function, Intrinsic, Location, Memory, Op, OpType, TypeNode
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
 from compiler.utils import compiler_error, get_main_function, get_op_from_location, ordinal
@@ -194,7 +194,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
     else_present: bool = False
 
     # Save the Bindings of the function to get the type of the Binding later when used
-    bound_types: Dict[str, TokenType] = {}
+    binding: Binding = {}
     peek_count: int = 0 # Used for type checking PEEK blocks with multiple values
 
     for op in program:
@@ -204,7 +204,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
         if op.type == OpType.ASSIGN_BIND:
-            type_check_assign_bind(op, type_stack, program, bound_types)
+            type_check_assign_bind(op, type_stack, program, binding)
         elif op.type == OpType.CAST_BOOL:
             type_check_cast_bool(token, type_stack)
         elif op.type == OpType.CAST_CHAR:
@@ -275,11 +275,11 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             peek_count = 0
         elif op.type == OpType.PEEK_BIND:
             peek_count += 1
-            type_check_peek_bind(token, type_stack, bound_types, peek_count)
+            type_check_peek_bind(token, type_stack, binding, peek_count)
         elif op.type == OpType.POP_BIND:
-            type_check_pop_bind(token, type_stack, bound_types)
+            type_check_pop_bind(token, type_stack, binding)
         elif op.type == OpType.PUSH_BIND:
-            type_check_push_bind(token, type_stack, bound_types)
+            type_check_push_bind(token, type_stack, binding)
         elif op.type == OpType.PUSH_BOOL:
             type_check_push_bool(token, type_stack)
         elif op.type == OpType.PUSH_CHAR:
@@ -438,7 +438,7 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
     if not matching_type_lists(before_types, after_types):
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
 
-def type_check_assign_bind(op: Op, type_stack: TypeStack, program: Program, bound_types: Dict[str, TokenType]) -> None:
+def type_check_assign_bind(op: Op, type_stack: TypeStack, program: Program, binding: Binding) -> None:
     """ASSIGN_BIND assigns a value to existing named bound Memory"""
     temp_stack: TypeStack = copy(type_stack)
     t1 = type_stack.pop()
@@ -452,7 +452,7 @@ def type_check_assign_bind(op: Op, type_stack: TypeStack, program: Program, boun
         compiler_error("VALUE_ERROR", "ASSIGN keyword requires a bound Memory in the top of the stack.",
             op.token, current_stack=temp_stack)
 
-    bound_type: TokenType = bound_types[bound_token.value]
+    bound_type: TokenType = binding[bound_token.value]
     if t2.value != bound_type:
         compiler_error("VALUE_ERROR",
             f"Cannot assign {t2.value.name} to bound Memory '{bound_token.value}' of type {bound_type.name}.",
@@ -539,7 +539,7 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
     branched_stacks.append(type_stack)
 
 def type_check_peek_bind(token: Token, type_stack: TypeStack,
-    bound_types: Dict[str, TokenType], peek_count: int) -> None:
+    binding: Binding, peek_count: int) -> None:
     """Copy the Nth item from the stack to a named Memory."""
     temp_stack: TypeStack = copy(type_stack)
 
@@ -553,18 +553,18 @@ def type_check_peek_bind(token: Token, type_stack: TypeStack,
             token, current_stack=type_stack)
 
     # Save the type of Nth value in the stack
-    bound_types[token.value] = t.value
+    binding[token.value] = t.value
 
-def type_check_pop_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> None:
+def type_check_pop_bind(token: Token, type_stack: TypeStack, binding: Binding) -> None:
     """Pop a value from the stack to a bound Memory"""
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", token)
-    bound_types[token.value] = t.value
+    binding[token.value] = t.value
 
-def type_check_push_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> None:
+def type_check_push_bind(token: Token, type_stack: TypeStack, binding: Binding) -> None:
     """Push a value from bound Memory the stack"""
-    type_stack.push(bound_types[token.value], token.location)
+    type_stack.push(binding[token.value], token.location)
 
 def type_check_push_bool(token: Token, type_stack: TypeStack) -> None:
     """Push a boolean to the stack"""
