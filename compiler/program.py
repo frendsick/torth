@@ -470,7 +470,7 @@ def type_check_cast_bool(token: Token, type_stack: TypeStack) -> None:
     if t.value not in INTEGER_TYPES:
         compiler_error("VALUE_ERROR", \
             f"Only integer types can be cast to BOOL.\nInteger types: {INTEGER_TYPES}\n\n" + \
-            f"Popped type:\n{t.value} {t.location}", token, current_stack=temp_stack)
+            f"Popped type:\n{t.value.name} {t.location}", token, current_stack=temp_stack)
     type_stack.push(TokenType.BOOL, token.location)
 
 def type_check_cast_char(token: Token, type_stack: TypeStack) -> None:
@@ -502,7 +502,7 @@ def type_check_cast_ptr(token: Token, type_stack: TypeStack) -> None:
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
     if t.value in {TokenType.BOOL, TokenType.CHAR}:
-        compiler_error("VALUE_ERROR", f"{t.value} cannot be cast to PTR.", token, current_stack=temp_stack)
+        compiler_error("VALUE_ERROR", f"{t.value.name} cannot be cast to PTR.", token, current_stack=temp_stack)
     type_stack.push(TokenType.PTR, token.location)
 
 def type_check_cast_str(token: Token, type_stack: TypeStack) -> None:
@@ -533,7 +533,7 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
         compiler_error("POP_FROM_EMPTY_STACK", "DO requires two values to the stack.", token)
     if t.value not in { TokenType.BOOL, TokenType.ANY }:
         compiler_error("VALUE_ERROR", "DO requires a boolean.\n\n" + \
-            f"Popped types:\n{t.value} {t.location}", token, current_stack=temp_stack)
+            f"Popped types:\n{t.value.name} {t.location}", token, current_stack=temp_stack)
 
     type_stack = copy(type_stack)
     branched_stacks.append(type_stack)
@@ -608,7 +608,7 @@ def type_check_bitwise(token: Token, type_stack: TypeStack) -> None:
         compiler_error("POP_FROM_EMPTY_STACK", f"{token.value} intrinsic requires two integers.", token)
     if t1.value not in INTEGER_TYPES or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value} intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
     type_stack.push(TokenType.INT, token.location)
 
@@ -626,7 +626,7 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> None:
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
 
     type_stack.push(TokenType.INT, token.location)
@@ -646,7 +646,7 @@ def type_check_comparison(token: Token, type_stack: TypeStack) -> None:
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
         compiler_error("TYPE_ERROR", error_message, token, current_stack=temp_stack)
     type_stack.push(TokenType.BOOL, token.location)
 
@@ -663,7 +663,7 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> None:
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
     type_stack.push(TokenType.INT, token.location)
     type_stack.push(TokenType.INT, token.location)
@@ -694,7 +694,7 @@ def type_check_nth(token: Token, type_stack: TypeStack, program: Program) -> Non
         compiler_error("POP_FROM_EMPTY_STACK", "NTH intrinsic requires an integer.", token)
     if t.value != TokenType.INT:
         error_message = "NTH intrinsic requires an integer.\n\n" + \
-            f"Popped type:\n{t.value} {t.location}"
+            f"Popped type:\n{t.value.name} {t.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
 
     # Get the type of the Nth value in the stack
@@ -724,7 +724,7 @@ def type_check_load(token: Token, type_stack: TypeStack) -> None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
     if t.value not in POINTER_TYPES:
         compiler_error("VALUE_ERROR", f"{token.value.upper()} requires a pointer.\n\n" + \
-            f"Popped type:\n{t.value} {t.location}", token, current_stack=temp_stack)
+            f"Popped type:\n{t.value.name} {t.location}", token, current_stack=temp_stack)
     type_stack.push(TokenType.ANY, token.location)
 
 def type_check_over(token: Token, type_stack: TypeStack) -> None:
@@ -750,7 +750,7 @@ def type_check_print(token: Token, type_stack: TypeStack) -> None:
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
     if t.value not in INTEGER_TYPES:
-        compiler_error("VALUE_ERROR", f"{error_message}\n\nPopped type:\n{t.value} {t.location}",
+        compiler_error("VALUE_ERROR", f"{error_message}\n\nPopped type:\n{t.value.name} {t.location}",
         token, current_stack=temp_stack)
 
 def type_check_rot(token: Token, type_stack: TypeStack) -> None:
@@ -785,7 +785,7 @@ def type_check_store(token: Token, type_stack: TypeStack) -> None:
     if t1.value not in POINTER_TYPES:
         compiler_error("VALUE_ERROR", f"{required_values_str}\n\n" + \
             f"Expected types:\n{TokenType.PTR}\n{TokenType.ANY}\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}",
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}",
             token, current_stack=temp_stack)
 
 def type_check_swap(token: Token, type_stack: TypeStack) -> None:
@@ -818,7 +818,7 @@ def type_check_syscall(token: Token, type_stack: TypeStack, param_count: int) ->
         compiler_error("VALUE_ERROR", \
             f"The first argument of {token.value.upper()} should be the number of the syscall.\n" + \
             f"Integer types: {INTEGER_TYPES}\n\n" + \
-            f"Popped type:\n{t.value} {t.location}", token, current_stack=temp_stack)
+            f"Popped type:\n{t.value.name} {t.location}", token, current_stack=temp_stack)
     for _ in range(param_count):
         t = type_stack.pop()
     if t is None:
