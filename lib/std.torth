@@ -96,13 +96,13 @@ function fputs int str : swap dup str.len swap rot write drop end
 function malloc int -> ptr :
   // Allocate at least one byte
   if dup 0 == do drop 1 endif
-  take malloc_length in
+  take length in
 
   // mmap ( NULL, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0 );
   0 0
   MAP_ANONYMOUS MAP_PRIVATE |
   PROT_READ PROT_WRITE |
-  malloc_length
+  length
   NULL SYS_mmap SYSCALL6 ptr
 end
 
@@ -273,21 +273,21 @@ end
 // Return: concat(str1+str2)
 function str.cat str str -> str :
   // Save str1 and str2
-  take str.cat_str1 str.cat_str2 in
+  take str1 str2 in
 
   // Allocate memory to hold both strings
-  str.cat_str1 str.len
-  str.cat_str2 str.len
+  str1 str.len
+  str2 str.len
   + malloc
 
   // Fill the beginning of the allocated memory with str2
-  str.cat_str2 str.fill
-  take str.cat_final in
+  str2 str.fill
+  take final_str in
 
   // Append str1 to str2
-  str.cat_final dup str.len str+ ptr
-  str.cat_str1 str.fill drop
-  str.cat_final
+  final_str dup str.len str+ ptr
+  str1 str.fill drop
+  final_str
 end
 
 // Append a character to the end of a string buffer
@@ -305,16 +305,16 @@ function str.is_palindrome str -> bool : dup str.reverse streq end
 
 // Test if string only contains numeric characters
 function str.is_numeric str -> bool :
-  take is_numeric_str in
+  take string in
   // Iterate over every character of the string
-  0 while is_numeric_str over str.char_at NULL != do
+  0 while string over str.char_at NULL != do
     // Break if non-numeric character is found
-    if is_numeric_str over str.char_at char.is_numeric not do
+    if string over str.char_at char.is_numeric not do
       break
     endif 1 +
   done
   // Return True if the whole string was numeric
-  is_numeric_str str.len ==
+  string str.len ==
 end
 
 // Overwrite a string with NULL-bytes
@@ -382,10 +382,10 @@ end
 // Get an integer representation of a string
 function atoi str -> int :
   // Iterate the string character by character
-  take atoi.str in
+  take string in
 
   0 while atoi.str over str.char_at NULL != do
-    atoi.str over str.char_at
+    string over str.char_at
 
     // Raise an error if the character is not a number
     if dup char.is_numeric not do
@@ -415,17 +415,17 @@ end
 // Tests if two strings are equal
 function streq str str -> bool :
   // Bind strings to memory
-  take streq.str1 streq.str2 in
+  take str1 str2 in
 
   // while len(str1) > index
   0 while
-    streq.str1 over dup
-    take streq.index in
+    str1 over dup
+    take index in
     swap str.len >
   do
     if // str1[index] != str2[index]
-      streq.str1 streq.index str.char_at
-      streq.str2 streq.index str.char_at
+      str1 index str.char_at
+      str2 index str.char_at
       !=
     do break
     endif 1 +
@@ -433,8 +433,8 @@ function streq str str -> bool :
 
   // Strings are not equal if the last checked character is not equal
   if
-    streq.str1 streq.index str.char_at
-    streq.str2 streq.index str.char_at
+    str1 index str.char_at
+    str2 index str.char_at
     !=
   do False
   else True

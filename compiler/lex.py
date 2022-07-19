@@ -208,23 +208,20 @@ def parse_function_bindings(functions: Dict[str, Function], memories: List[Memor
             elif token.value.upper() == 'IN':
                 parsing_bind = False
             elif parsing_bind:
+                bound_memory: str = f"{func.name}_{token.value}"
+                if memory_exists(token.value, memories) or memory_exists(bound_memory, memories):
+                    compiler_error("VALUE_ERROR",
+                        f"Cannot bind '{token.value}' over Memory with the same name", token)
                 token.is_bound = True
                 binding[token.value] = token.type
-                memories.append( Memory(token.value, 8, token.location) )
+                memories.append( Memory(bound_memory, 8, token.location) )
                 token.value = f'{token.value}_{bind_variant}'
             elif token.value in binding:
-                token.type = TokenType.ANY
+                token.type = binding[token.value]
                 token.is_bound = True
         # Store the found bindings in the Function object
         func.binding = binding
     return functions
-
-def add_binding_to_memories(token: Token, memories: List[Memory]) -> List[Memory]:
-    """Add binding to memories so it can be used as memory later"""
-    if memory_exists(token.value, memories):
-        return memories
-    memories.append(Memory(token.value, 8, token.location))
-    return memories
 
 def get_memories_from_code(included_files: Set[str], constants: List[Constant]) -> List[Memory]:
     """Parse Memory objects from code file and included files. Return list of Memory objects."""
