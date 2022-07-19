@@ -206,6 +206,11 @@ function int.reverse int -> int :
   done swap drop
 end
 
+// Convert negative integer to positive
+function int.to_positive int -> int :
+  if dup 0 > do 2 ^ sqrt int.reverse endif
+end
+
 // Get a string representation of an integer
 memory itoa.int_digits int.size end
 function itoa int -> str :
