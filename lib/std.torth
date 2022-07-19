@@ -319,10 +319,11 @@ end
 
 // Overwrite a string with NULL-bytes
 function str.empty str :
-  0 while over over str.char_at NULL != do
-    over over ptr+ NULL char swap char.store
+  take string in
+  0 while string over str.char_at NULL != do
+    string over str+ ptr NULL char swap char.store
     1 +
-  done drop drop
+  done drop
 end
 
 // Convert string to lowercase letters
