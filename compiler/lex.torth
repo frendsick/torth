@@ -94,22 +94,20 @@ function get_tokens_function ptr -> ptr :
 end
 
 function get_op_type ptr -> int :
-  if dup Token.get_type TokenType.BOOL == do
-    OpType.PUSH_BOOL
-  elif dup Token.get_type TokenType.CHAR == do
-    OpType.PUSH_CHAR
-  elif dup Token.get_type TokenType.INT == do
-    OpType.PUSH_INT
-  elif dup Token.get_type TokenType.STR == do
-    OpType.PUSH_STR
-  elif dup Token.get_type TokenType.UINT8 == do
-    OpType.PUSH_UINT8
-  else
-    "Parsing OpType from Token '" eputs
-    dup Token.get_value eputs
-    "' is not implemented yet.\n" eputs
-    OpType.INTRINSIC
-  endif swap drop
+  Token.get_type
+  take token_type in
+  if token_type TokenType.BOOL == do
+    OpType.PUSH_BOOL return
+  elif token_type TokenType.CHAR == do
+    OpType.PUSH_CHAR return
+  elif token_type TokenType.INT == do
+    OpType.PUSH_INT return
+  elif token_type TokenType.STR == do
+    OpType.PUSH_STR return
+  elif token_type TokenType.UINT8 == do
+    OpType.PUSH_UINT8 return
+  endif
+  OpType.INTRINSIC
 end
 
 // Dummy memories for testing purposes
