@@ -10,25 +10,27 @@ include "compiler/class/Token"
 // Params: Token match from code (STR)
 // Return: Value for Token (STR)
 function get_token_value str -> str :
-  if dup "==" streq do
-    drop "EQ"
-  elif dup ">=" streq do
-    drop "GE"
-  elif dup ">" streq do
-    drop "GT"
-  elif dup "<=" streq do
-    drop "LE"
-  elif dup "<" streq do
-    drop "LT"
-  elif dup "-" streq do
-    drop "MINUS"
-  elif dup "*" streq do
-    drop "MUL"
-  elif dup "!=" streq do
-    drop "NE"
-  elif dup "+" streq do
-    drop "PLUS"
+  take token_match in
+  if   token_match "==" streq do
+    "EQ" return
+  elif token_match ">=" streq do
+    "GE" return
+  elif token_match ">"  streq do
+    "GT" return
+  elif token_match "<=" streq do
+    "LE" return
+  elif token_match "<"  streq do
+    "LT" return
+  elif token_match "-"  streq do
+    "MINUS" return
+  elif token_match "*"  streq do
+    "MUL" return
+  elif token_match "!=" streq do
+    "NE" return
+  elif token_match "+"  streq do
+    "PLUS" return
   endif
+  token_match
 end
 
 const single_quote 39 end
