@@ -10,6 +10,7 @@ include "compiler/class/Token"
 // Params: Token match from code (STR)
 // Return: Value for Token (STR)
 function get_token_value str -> str :
+  str.copy
   take token_match in
   if   token_match "==" streq do
     "EQ" return
