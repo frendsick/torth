@@ -92,7 +92,7 @@ function get_token_from_match str -> ptr :
 end
 
 function get_tokens_function ptr -> ptr :
-  drop "Parsing Token's function is not implemented yet.\n" eputs
+  drop "[TODO] Parsing Token's function is not implemented yet.\n" eputs
   dummy_token_list get_dummy_signature "test" Function.init
 end
 
