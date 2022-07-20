@@ -1,1 +1,3 @@
-34 35 + print
+function main -> :
+  34 35 + print
+end
