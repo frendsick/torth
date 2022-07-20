@@ -17,25 +17,29 @@ function get_op_asm ptr -> str :
   // Get assembly for the correct OpType
   if op Op.get_type OpType.PUSH_BOOL == do
     token_value str.upper get_push_bool_asm
+    return
   elif op Op.get_type OpType.PUSH_CHAR == do
     token_value 1 str.char_at get_push_char_asm
+    return
   elif op Op.get_type OpType.PUSH_INT == do
     token_value get_push_int_asm
+    return
   elif op Op.get_type OpType.PUSH_STR == do
     "TODO: Generating assembly for OpType.PUSH_STR is not implemented yet.\n"
     "" swap NotImplementedError
   elif op Op.get_type OpType.PUSH_PTR == do
     token_value get_push_ptr_asm
+    return
   elif op Op.get_type OpType.INTRINSIC == do
     // Get assembly for correct Intrinsic
     token_value str.upper
     take intrinsic in
     if intrinsic "AND" streq do
-      get_and_asm
+      get_and_asm return
     elif intrinsic "PLUS" streq do
-      get_plus_asm
+      get_plus_asm return
     elif intrinsic "PRINT" streq do
-      get_print_asm
+      get_print_asm return
     else
       "Generating assembly for intrinsic '" intrinsic str.cat
       "' is not implemented yet\n" str.cat
