@@ -318,6 +318,8 @@ def get_token_from_match(match: list, file: str, newline_indexes: List[int]) -> 
 
 def get_token_value(token_value: str) -> str:
     """Bind Intrinsic class value name to Token. Return the Intrinsic value."""
+    if token_value == '=':
+        return 'ASSIGN'
     if token_value == '==':
         return 'EQ'
     if token_value == '>=':
@@ -347,7 +349,7 @@ def get_token_value(token_value: str) -> str:
 def get_token_type(token_text: str) -> TokenType:
     """Return TokenType value corresponding to the Token.value."""
     keywords: List[str] = [
-        'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'PEEK',
+        'ASSIGN', 'BOOL', 'BREAK', 'CHAR', 'CONST', 'CONTINUE', 'DO', 'DONE', 'ELIF', 'ELSE', 'END', 'PEEK',
         'ENDIF', 'ENUM', 'FUNCTION', 'IF', 'INT', 'MEMORY', 'PTR', 'RETURN', 'STR', 'UINT8', 'WHILE', 'TAKE'
     ]
     # Check if all keywords are taken into account

@@ -115,6 +115,15 @@ function eputs str : stderr fputs end
 // Print an unsigned integer to stdout
 function putu int : print end
 
+// Print an unsigned integer to stderr
+function eputu int : itoa eputs end
+
+// Print a signed integer to stdout
+function puti int : itoa puts end
+
+// Print a signed integer to stderr
+function eputi int : itoa eputs end
+
 // Ptr functions
 function ptr+       int ptr -> ptr : swap int + ptr end
 function ptr-       int ptr -> ptr : swap int - ptr end
@@ -178,12 +187,8 @@ end
 // Int functions
 function int.load     ptr       -> int    : LOAD_QWORD int    end
 function int.store    ptr int   ->        : STORE_QWORD       end
-function uint8.load   ptr       -> uint8  : LOAD_BYTE uint8  end
-function uint8.store  ptr uint8 ->        : STORE_BYTE       end
-
-// Increment/decrement pointed value
-function int++ ptr : dup int.load 1 + swap int.store end
-function int-- ptr : dup int.load 1 - swap int.store end
+function uint8.load   ptr       -> uint8  : LOAD_BYTE uint8   end
+function uint8.store  ptr uint8 ->        : STORE_BYTE        end
 
 // Get the amount of digits in an integer
 // Params: number
@@ -210,30 +215,78 @@ function int.reverse int -> int :
   done swap drop
 end
 
+// Convert negative integer to positive
+function int.to_positive int -> int :
+  if dup 0 > do 2 ^ sqrt endif
+end
+
 // Get a string representation of an integer
-memory itoa.int_digits int.size end
 function itoa int -> str :
-  // Store the original integer and the amount of digits
-  dup temp_int int.store
-  int.get_digits dup itoa.int_digits int.store
+  // Return "0" if parameter is 0
+  if dup 0 == do
+    drop "0" return
+  endif
 
-  malloc str // Allocate memory for the string representation of the string
-  0          // index
-  while dup itoa.int_digits int.load > do
-    // Get the current power of 10
-    // 10 ^ (int_digits - 1 - index)
-    itoa.int_digits int.load
-    1 - over - 10 swap pow
+  // Swap sign of negative number
+  dup 0 > take is_negative in
+  if is_negative do
+    int.to_positive
+  endif
 
-    // Store the remainder of the number / the current power of 10 in temporary integer
-    temp_int int.load
-    swap divmod swap
-    temp_int int.store
+  // Reverse for correct processing
+  int.reverse
 
-    // Append the current number to the string representation
-    '0' + char 3 nth str.append
+  // Allocate memory to the string representation
+  dup int.get_digits  // digits
+  dup 2 + malloc str  // string
+
+  // Add '-' character to the start of string for negative number
+  if is_negative do
+    '-' over str.append
+  endif
+
+  10 // base
+  take base string digits num in
+
+  // Process individual digits: https://www.geeksforgeeks.org/implement-itoa/
+  0 while dup digits > do
+    num base %  // rem = num/base
+
+    // str[index] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+    if dup 9 <
+    do    10 - 'a' +
+    else  '0' +
+    endif char
+    string str.append
+
+    num base / num  = // num = num/base
     1 + // index++
-  done drop str
+  done drop string
+end
+
+// Get an integer representation of a string
+function atoi str -> int :
+  NULL 0 take index integer string in
+  // Iterate the string character by character
+  while string index str.char_at NULL != do
+
+    // Get current character
+    string index str.char_at
+
+    // Raise an error if the character is not a number
+    if dup char.is_numeric not do
+      "[ERROR] atoi function failed: '"
+      string                    str.cat
+      "' is not an integer.\n"  str.cat
+      eputs 1 exit
+    endif
+
+    // Append the current character to integer
+    '0' -
+    integer 10 * +
+    integer =
+    index 1 + index = // index++
+  done integer
 end
 
 // String functions
@@ -252,21 +305,23 @@ end
 // Get the length of a string
 // Example: "Test string" -> 11
 function str.len str -> int :
-  0 while over over str.char_at NULL != do
+  take string in
+  0 while string over str.char_at NULL != do
     1 +
-  done swap drop
+  done
 end
 
 // Fill a ptr with the contents of a string
 function str.fill str ptr -> str :
+  take string pointer in
+  0 // index
   // Loop through every character of the first string
-  0 while peek index string pointer in
-    string index str.char_at NULL !=
-  do
-    string index str.char_at
-    pointer index ptr+ char.store
+  while string over str.char_at NULL != do
+    string over str.char_at
+    over pointer swap ptr+ char.store
     1 +
-  done drop drop str
+  done drop
+  pointer str
 end
 
 // Concatenate two strings into a new memory location
@@ -329,37 +384,30 @@ end
 
 // Convert string to lowercase letters
 function str.lower str -> str :
-  peek lower_string in str.len
-  0 // index
-  while over over < do
-    // Get the character at the current index
-    lower_string over str.char_at
+  dup str.len // len
+  0           // index
+  take index len string in
 
-    // Swap possible uppercase character with lowercase counterpart
-    char.lower over
-    lower_string ptr
-    swap int ptr+ char.store
-    1 + // index++
-  done drop drop
-  lower_string
+  // Rewrite string with lowercase characters
+  while index len > do
+    string index str.char_at char.lower
+    string ptr index ptr+ char.store
+    index 1 + index = // index++
+  done string
 end
 
 // Convert string to uppercase letters
 function str.upper str -> str :
-  dup str.len
-  0 // index
-  while over over < do
-    3 nth // str
+  dup str.len // len
+  0           // index
+  take index len string in
 
-    // Get the character at the current index
-    over str.char_at
-
-    // Swap possible lowercase character with uppercase counterpart
-    char.upper
-    over 5 nth
-    swap str+ ptr char.store
-    1 + // index++
-  done drop drop
+  // Rewrite string with uppercase characters
+  while index len > do
+    string index str.char_at char.upper
+    string ptr index ptr+ char.store
+    index 1 + index = // index++
+  done string
 end
 
 // Strip all non-alphanumeric characters from a string
@@ -379,39 +427,6 @@ function str.alphanumeric str -> str :
     endif drop
     1 + // index++
   done drop drop
-end
-
-// Get an integer representation of a string
-function atoi str -> int :
-  // Iterate the string character by character
-  take string in
-
-  0 while atoi.str over str.char_at NULL != do
-    string over str.char_at
-
-    // Raise an error if the character is not a number
-    if dup char.is_numeric not do
-      "[ERROR] atoi function failed:" eputs
-      " '" eputs 3 nth eputs "' is not an integer.\n" eputs
-      1 exit
-    endif
-
-    // Get the numeric representation of an ASCII number
-    '0' -
-
-    // Multiply the number from temporary memory by 10
-    temp_int int.load 10 *
-
-    // Add the current number and store the result
-    + temp_int int.store
-
-    1 +
-  done drop
-  // Return the integer
-  temp_int int.load
-
-  // Zero the memory of temporary integer
-  NULL temp_int int.store
 end
 
 // Tests if two strings are equal
@@ -446,16 +461,17 @@ end
 // Reverse a string
 function str.reverse str -> str :
   // Allocate memory for the reversed string
-  dup str.len dup malloc str rot rot
+  dup str.len dup malloc str
+  take reversed index original in
 
   // Append characters from the parameter string to allocated memory in the reversed order
-  while dup 0 < do
-    1 - // index--
-    over over str.char_at // str[index]
+  while 0 index > do
+    index 1 - index =           // index--
+    original index str.char_at  // original[index]
 
     // Append the current character to the reversed string
-    4 nth str.append
-  done drop drop
+    reversed str.append
+  done reversed
 end
 
 // Open a file with open-syscall
@@ -463,13 +479,16 @@ end
 // Return: fd
 function open_file int str -> int :
   over SYS_open syscall2
-
-  if    dup ENOENT  ==  do swap "File '" eputs eputs "' does not exist.\n" eputs 1 exit
-  elif  dup EACCESS ==  do swap "Cannot open file '" eputs eputs "': Permission denied.\n" eputs 1 exit
-  elif  dup 0 > do
-    swap "Error occurred while opening the file '" eputs eputs "'.\nError code: " eputs dup putu 1 exit
-  else swap drop // Drop the file name
+  take fd path in
+  if    fd ENOENT  ==  do
+    "File '" eputs path eputs "' does not exist.\n" eputs 1 exit
+  elif  fd EACCESS ==  do
+    "Cannot open file '" eputs path eputs "': Permission denied.\n" eputs 1 exit
+  elif  fd 0 > do
+    "Error occurred while opening the file '" eputs path eputs "'.\n" eputs
+    "Error code: " eputs fd eputi 1 exit
   endif
+  fd
 end
 
 // Read a file to a newly allocated memory
@@ -495,9 +514,13 @@ end
 // Params: const char *filename, mode_t mode, const void *buf
 // Return: ssize_t written_bytes
 function write_file str int str -> int :
+  // Create file
   touch_file
-  swap dup str.len // size_t count
-  swap rot SYS_write syscall3
+
+  // Write to the file
+  take fd buf in
+  buf str.len // size_t count
+  buf fd SYS_write syscall3
 end
 
 // Print file contents to stdout
@@ -513,10 +536,12 @@ end
 // Params: How many seconds to sleep (STR)
 // Return: None
 // Usage: "4.2" sleep  // Sleep for 4.2 seconds
-memory sleep.execve_argv ptr.size end
 function sleep str :
+  // Allocate memory for two strings
+  str.size 2 * malloc take argv in
+
   // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
-  "sleep" sleep.execve_argv str.store
-  sleep.execve_argv ptr.size ptr+ str.store
-  envp sleep.execve_argv "/usr/bin/sleep" execve drop
+  "sleep" argv str.store
+  argv ptr.size ptr+ str.store
+  envp argv "/usr/bin/sleep" execve drop
 end

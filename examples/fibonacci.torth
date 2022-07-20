@@ -2,19 +2,20 @@ include "std"
 function Fib int -> int :
   0   // Previous
   1   // Current
-  1   // The counter for WHILE loop
-  WHILE 4 nth over < DO
-    // Duplicate Current to use it next iteration as Previous
-    rot rot dup
-    // Add the two numbers in the top of the stack together (Previous and Current)
-    rot +
-    // Align stack and increment counter for WHILE loop
-    rot 1 +
-  DONE drop rot rot drop drop
+  take current previous limit in
+
+  1   // Counter
+  WHILE dup limit > DO
+    current                   // Temp     = Current
+    dup previous + current =  // Current  = Previous + Current
+    previous =                // Previous = Temp
+    1 +                       // Counter++
+  DONE drop
+  previous
 end
 
 function Main :
   20  // Limit
   "The " puts dup putu ". fibonacci number is: " puts
-  Fib putu "\n" puts  // Answer: 6765
+  Fib putu "\n" puts  // Answer: 4181
 end

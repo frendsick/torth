@@ -20,8 +20,6 @@ def get_command_line_arguments() -> argparse.Namespace:
     parser.add_argument('-o', '--out', help='Output file', metavar='FILE')
     parser.add_argument('-p', '--path', metavar='DIRS', \
         help='Comma separated list of directories to be added to PATH in addition of the default "lib"')
-    parser.add_argument('-g', '--graph', action='store_true', \
-        help="Generate Graphviz graph from the program's control flow")
     parser.add_argument('-r', '--run', action='store_true', \
         help="Run program after compilation")
     parser.add_argument('-s', '--save-asm', action='store_true', \
@@ -96,8 +94,6 @@ def get_location_info(location: Location) -> str:
 
 def handle_arguments(executable_file: str, args) -> None:
     """Handle special command line arguments"""
-    if args.graph:
-        compiler_error("NOT_IMPLEMENTED", "Generating Graphviz graph is not implemented.")
     if args.run:
         print_if_verbose(f"Running the executable {executable_file}", args.verbose)
         run_code(executable_file)

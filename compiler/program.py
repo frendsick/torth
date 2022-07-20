@@ -5,7 +5,7 @@ import itertools
 import re
 from copy import copy
 from typing import Dict, List, Optional, Set
-from compiler.defs import Constant, Function, Intrinsic, Location, Memory, Op, OpType, TypeNode
+from compiler.defs import Binding, Constant, Function, Intrinsic, Location, Memory, Op, OpType, TypeNode
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
 from compiler.defs import INTEGER_TYPES, POINTER_TYPES
 from compiler.utils import compiler_error, get_main_function, get_op_from_location, ordinal
@@ -27,6 +27,8 @@ def generate_program(tokens: List[Token], constants: List[Constant], \
             op_type = OpType.PUSH_STR
         elif token.type == TokenType.UINT8:
             op_type = OpType.PUSH_UINT8
+        elif token_value == 'ASSIGN':
+            op_type = OpType.ASSIGN_BIND
         elif token_value == 'BOOL':
             op_type = OpType.CAST_BOOL
         elif token_value == 'BREAK':
@@ -189,10 +191,11 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
     # Track if there was an ELSE clause in the IF block.
     # Required for type checking IF blocks with each IF / ELIF keyword altering the stack state.
-    else_present: bool = False
+    else_present: bool   = False
+    return_present: bool = False
 
     # Save the Bindings of the function to get the type of the Binding later when used
-    bound_types: Dict[str, TokenType] = {}
+    binding: Binding = {}
     peek_count: int = 0 # Used for type checking PEEK blocks with multiple values
 
     for op in program:
@@ -201,7 +204,9 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
         if token.value.upper() in NOT_TYPED_TOKENS:
             continue
-        if op.type == OpType.CAST_BOOL:
+        if op.type == OpType.ASSIGN_BIND:
+            type_check_assign_bind(op, type_stack, program, binding)
+        elif op.type == OpType.CAST_BOOL:
             type_check_cast_bool(token, type_stack)
         elif op.type == OpType.CAST_CHAR:
             type_check_cast_char(token, type_stack)
@@ -218,6 +223,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.DONE:
             type_check_end_of_branch(token, branched_stacks)
         elif op.type == OpType.ELIF:
+            return_present = False
             # Save the state of the stack after the first part of the IF block
             if not if_block_return_stacks[-1].head:
                 if_block_return_stacks[-1] = copy(type_stack)
@@ -245,7 +251,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
             # If IF block altered the stack state there MUST be an ELSE to catch all errors
             # and the IF block's return stack must match with all of the sections in the block
-            if not else_present and if_block_return_stacks[-1].head and \
+            if not else_present and not return_present and if_block_return_stacks[-1].head and \
                 not matching_type_lists(branched_stacks[-1].get_types(), if_block_return_stacks[-1].get_types()):
                 compiler_error("SYNTAX_ERROR", \
                     "The stack state should be the same than at the start of the IF-block.\n" + \
@@ -265,17 +271,18 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.FUNCTION_CALL:
             type_check_function_call(op, type_stack, functions)
         elif op.type == OpType.IF:
+            return_present = False
             if_block_original_stacks.append(copy(type_stack))
             if_block_return_stacks.append(TypeStack())
         elif op.type == OpType.IN:
             peek_count = 0
         elif op.type == OpType.PEEK_BIND:
             peek_count += 1
-            type_check_peek_bind(token, type_stack, bound_types, peek_count)
+            type_check_peek_bind(token, type_stack, binding, peek_count)
         elif op.type == OpType.POP_BIND:
-            type_check_pop_bind(token, type_stack, bound_types)
+            type_check_pop_bind(token, type_stack, binding)
         elif op.type == OpType.PUSH_BIND:
-            type_check_push_bind(token, type_stack, bound_types)
+            type_check_push_bind(token, type_stack, binding)
         elif op.type == OpType.PUSH_BOOL:
             type_check_push_bool(token, type_stack)
         elif op.type == OpType.PUSH_CHAR:
@@ -289,7 +296,10 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         elif op.type == OpType.PUSH_UINT8:
             type_check_push_uint8(token, type_stack)
         elif op.type == OpType.RETURN:
-            type_check_return(op, type_stack)
+            return_present = True
+            if_block_stack: TypeStack = if_block_return_stacks[-1] if if_block_return_stacks[-1].head \
+                else if_block_original_stacks[-1]
+            branched_stacks[-1] = type_check_return(op, type_stack, if_block_stack)
         elif op.type == OpType.INTRINSIC:
             intrinsic: str = token.value.upper()
             if intrinsic == "AND":
@@ -434,6 +444,26 @@ def type_check_end_of_branch(token: Token, branched_stacks: List[TypeStack], \
     if not matching_type_lists(before_types, after_types):
         compiler_error("DIFFERENT_STACK_BETWEEN_BRANCHES", error, token)
 
+def type_check_assign_bind(op: Op, type_stack: TypeStack, program: Program, binding: Binding) -> None:
+    """ASSIGN_BIND assigns a value to existing named bound Memory"""
+    temp_stack: TypeStack = copy(type_stack)
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t1 is None or t2 is None:
+        compiler_error("POP_FROM_EMPTY_STACK", "ASSIGN keyword requires two values of the same type in the stack.",
+            op.token, current_stack=temp_stack)
+
+    bound_token: Token = get_op_from_location(t1.location, program).token
+    if not bound_token.is_bound:
+        compiler_error("VALUE_ERROR", "ASSIGN keyword requires a bound Memory in the top of the stack.",
+            op.token, current_stack=temp_stack)
+
+    bound_type: TokenType = binding[bound_token.value]
+    if t2.value != bound_type:
+        compiler_error("VALUE_ERROR",
+            f"Cannot assign {t2.value.name} to bound Memory '{bound_token.value}' of type {bound_type.name}.",
+            op.token, current_stack=temp_stack)
+
 def type_check_cast_bool(token: Token, type_stack: TypeStack) -> None:
     """
     CAST_BOOL explicitely casts the top element of the stack to BOOL type.
@@ -446,7 +476,7 @@ def type_check_cast_bool(token: Token, type_stack: TypeStack) -> None:
     if t.value not in INTEGER_TYPES:
         compiler_error("VALUE_ERROR", \
             f"Only integer types can be cast to BOOL.\nInteger types: {INTEGER_TYPES}\n\n" + \
-            f"Popped type:\n{t.value} {t.location}", token, current_stack=temp_stack)
+            f"Popped type:\n{t.value.name} {t.location}", token, current_stack=temp_stack)
     type_stack.push(TokenType.BOOL, token.location)
 
 def type_check_cast_char(token: Token, type_stack: TypeStack) -> None:
@@ -478,7 +508,7 @@ def type_check_cast_ptr(token: Token, type_stack: TypeStack) -> None:
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty.", token)
     if t.value in {TokenType.BOOL, TokenType.CHAR}:
-        compiler_error("VALUE_ERROR", f"{t.value} cannot be cast to PTR.", token, current_stack=temp_stack)
+        compiler_error("VALUE_ERROR", f"{t.value.name} cannot be cast to PTR.", token, current_stack=temp_stack)
     type_stack.push(TokenType.PTR, token.location)
 
 def type_check_cast_str(token: Token, type_stack: TypeStack) -> None:
@@ -509,13 +539,13 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
         compiler_error("POP_FROM_EMPTY_STACK", "DO requires two values to the stack.", token)
     if t.value not in { TokenType.BOOL, TokenType.ANY }:
         compiler_error("VALUE_ERROR", "DO requires a boolean.\n\n" + \
-            f"Popped types:\n{t.value} {t.location}", token, current_stack=temp_stack)
+            f"Popped types:\n{t.value.name} {t.location}", token, current_stack=temp_stack)
 
     type_stack = copy(type_stack)
     branched_stacks.append(type_stack)
 
 def type_check_peek_bind(token: Token, type_stack: TypeStack,
-    bound_types: Dict[str, TokenType], peek_count: int) -> None:
+    binding: Binding, peek_count: int) -> None:
     """Copy the Nth item from the stack to a named Memory."""
     temp_stack: TypeStack = copy(type_stack)
 
@@ -529,18 +559,18 @@ def type_check_peek_bind(token: Token, type_stack: TypeStack,
             token, current_stack=type_stack)
 
     # Save the type of Nth value in the stack
-    bound_types[token.value] = t.value
+    binding[token.value] = t.value
 
-def type_check_pop_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> None:
+def type_check_pop_bind(token: Token, type_stack: TypeStack, binding: Binding) -> None:
     """Pop a value from the stack to a bound Memory"""
     t = type_stack.pop()
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", "Cannot drop value from empty stack.", token)
-    bound_types[token.value] = t.value
+    binding[token.value] = t.value
 
-def type_check_push_bind(token: Token, type_stack: TypeStack, bound_types: Dict[str, TokenType]) -> None:
+def type_check_push_bind(token: Token, type_stack: TypeStack, binding: Binding) -> None:
     """Push a value from bound Memory the stack"""
-    type_stack.push(bound_types[token.value], token.location)
+    type_stack.push(binding[token.value], token.location)
 
 def type_check_push_bool(token: Token, type_stack: TypeStack) -> None:
     """Push a boolean to the stack"""
@@ -566,7 +596,7 @@ def type_check_push_uint8(token: Token, type_stack: TypeStack) -> None:
     """Push an unsigned 8-bit integer to the stack"""
     type_stack.push(TokenType.UINT8, token.location)
 
-def type_check_return(op: Op, type_stack: TypeStack) -> None:
+def type_check_return(op: Op, type_stack: TypeStack, if_block_return_stack: Optional[TypeStack]) -> TypeStack:
     """Return from the current Function. Function's TypeStack should be empty."""
     return_types: List[TokenType] = op.func.signature[1]
     if not matching_type_lists(type_stack.get_types(), return_types):
@@ -574,6 +604,7 @@ def type_check_return(op: Op, type_stack: TypeStack) -> None:
         f"Stack state does not match with the return types of '{op.func.name}' function.\n\n" + \
         f"Expected return types: {return_types}\n", op.token,
         current_stack=type_stack)
+    return copy(if_block_return_stack)
 
 def type_check_bitwise(token: Token, type_stack: TypeStack) -> None:
     """AND performs bitwise-AND operation to two integers."""
@@ -584,7 +615,7 @@ def type_check_bitwise(token: Token, type_stack: TypeStack) -> None:
         compiler_error("POP_FROM_EMPTY_STACK", f"{token.value} intrinsic requires two integers.", token)
     if t1.value not in INTEGER_TYPES or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value} intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
     type_stack.push(TokenType.INT, token.location)
 
@@ -602,7 +633,7 @@ def type_check_calculations(token: Token, type_stack: TypeStack) -> None:
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
 
     type_stack.push(TokenType.INT, token.location)
@@ -622,7 +653,7 @@ def type_check_comparison(token: Token, type_stack: TypeStack) -> None:
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
         compiler_error("TYPE_ERROR", error_message, token, current_stack=temp_stack)
     type_stack.push(TokenType.BOOL, token.location)
 
@@ -639,7 +670,7 @@ def type_check_divmod(token: Token, type_stack: TypeStack) -> None:
     if t1.value not in INTEGER_TYPES \
     or t2.value not in INTEGER_TYPES:
         error_message = f"{token.value.upper()} intrinsic requires two integers.\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}"
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
     type_stack.push(TokenType.INT, token.location)
     type_stack.push(TokenType.INT, token.location)
@@ -670,7 +701,7 @@ def type_check_nth(token: Token, type_stack: TypeStack, program: Program) -> Non
         compiler_error("POP_FROM_EMPTY_STACK", "NTH intrinsic requires an integer.", token)
     if t.value != TokenType.INT:
         error_message = "NTH intrinsic requires an integer.\n\n" + \
-            f"Popped type:\n{t.value} {t.location}"
+            f"Popped type:\n{t.value.name} {t.location}"
         compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
 
     # Get the type of the Nth value in the stack
@@ -700,7 +731,7 @@ def type_check_load(token: Token, type_stack: TypeStack) -> None:
         compiler_error("POP_FROM_EMPTY_STACK", "The stack is empty, PTR required.", token)
     if t.value not in POINTER_TYPES:
         compiler_error("VALUE_ERROR", f"{token.value.upper()} requires a pointer.\n\n" + \
-            f"Popped type:\n{t.value} {t.location}", token, current_stack=temp_stack)
+            f"Popped type:\n{t.value.name} {t.location}", token, current_stack=temp_stack)
     type_stack.push(TokenType.ANY, token.location)
 
 def type_check_over(token: Token, type_stack: TypeStack) -> None:
@@ -726,7 +757,7 @@ def type_check_print(token: Token, type_stack: TypeStack) -> None:
     if t is None:
         compiler_error("POP_FROM_EMPTY_STACK", error_message, token)
     if t.value not in INTEGER_TYPES:
-        compiler_error("VALUE_ERROR", f"{error_message}\n\nPopped type:\n{t.value} {t.location}",
+        compiler_error("VALUE_ERROR", f"{error_message}\n\nPopped type:\n{t.value.name} {t.location}",
         token, current_stack=temp_stack)
 
 def type_check_rot(token: Token, type_stack: TypeStack) -> None:
@@ -761,7 +792,7 @@ def type_check_store(token: Token, type_stack: TypeStack) -> None:
     if t1.value not in POINTER_TYPES:
         compiler_error("VALUE_ERROR", f"{required_values_str}\n\n" + \
             f"Expected types:\n{TokenType.PTR}\n{TokenType.ANY}\n\n" + \
-            f"Popped types:\n{t1.value} {t1.location}\n{t2.value} {t2.location}",
+            f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}",
             token, current_stack=temp_stack)
 
 def type_check_swap(token: Token, type_stack: TypeStack) -> None:
@@ -794,7 +825,7 @@ def type_check_syscall(token: Token, type_stack: TypeStack, param_count: int) ->
         compiler_error("VALUE_ERROR", \
             f"The first argument of {token.value.upper()} should be the number of the syscall.\n" + \
             f"Integer types: {INTEGER_TYPES}\n\n" + \
-            f"Popped type:\n{t.value} {t.location}", token, current_stack=temp_stack)
+            f"Popped type:\n{t.value.name} {t.location}", token, current_stack=temp_stack)
     for _ in range(param_count):
         t = type_stack.pop()
     if t is None:
