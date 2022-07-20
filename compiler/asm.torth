@@ -56,24 +56,25 @@ end
 // Params: Pointer to Op (PTR)
 // Return: Comment string (STR)
 function get_op_comment_asm ptr -> str :
+  take op in
   // Comment format as Python3 f-string:
   // f";; [{function_name}] {token_value} | File: {file}, Row: {row}, Col: {col}\n"
   ";; ["
-  over Op.get_function Function.get_name  str.cat
-  "] "                                    str.cat
-  over Op.get_token Token.get_value       str.cat
-  " | File: "                             str.cat
+  op Op.get_function Function.get_name  str.cat
+  "] "                                  str.cat
+  op Op.get_token Token.get_value       str.cat
+  " | File: "                           str.cat
 
-  // Forget the pointer to Op and get its Token's Location instead
-  swap Op.get_token Token.get_location dup
+  op Op.get_token Token.get_location
+  take token_loc in
 
   // Add file, row and column information
-  Location.get_file rot swap str.cat
-  ", Row: " str.cat swap dup
-  Location.get_row itoa rot swap str.cat
-  ", Column: " str.cat swap
-  Location.get_column itoa str.cat
-  "\n" str.cat
+  token_loc Location.get_file           str.cat
+  ", Row: "                             str.cat
+  token_loc Location.get_row itoa       str.cat
+  ", Column: "                          str.cat
+  token_loc Location.get_column itoa    str.cat
+  "\n"                                  str.cat
 end
 
 // Generate Assembly for OpType.PUSH_BOOL
