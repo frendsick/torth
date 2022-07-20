@@ -29,17 +29,18 @@ function get_op_asm ptr -> str :
   elif op Op.get_type OpType.INTRINSIC == do
     // Get assembly for correct Intrinsic
     token_value str.upper
-    if dup "AND" streq do
+    take intrinsic in
+    if intrinsic "AND" streq do
       get_and_asm
-    elif dup "PLUS" streq do
+    elif intrinsic "PLUS" streq do
       get_plus_asm
-    elif dup "PRINT" streq do
+    elif intrinsic "PRINT" streq do
       get_print_asm
     else
-      "Generating assembly for intrinsic '" over str.cat
+      "Generating assembly for intrinsic '" intrinsic str.cat
       "' is not implemented yet\n" str.cat
       "" swap NotImplementedError
-    endif drop
+    endif
   else
     "Generating assembly for '" token_value str.cat
     "' is not implemented: Unknown word\n" str.cat
@@ -144,27 +145,26 @@ end
 // Generate assembly code for NASM
 // Params: Pointer to Program (PTR)
 // Return: Intel x86_64 Assembly for NASM (STR)
-memory op_asm str.size end
 function generate_asm ptr -> str :
-  "" op_asm str.store
-  initialize_asm swap
+  Program.len int.load
+  initialize_asm
+  0
+  take index program_asm program.len program in
 
   // Generate assembly for each Op in Program
-  0 while dup Program.len int.load > do
+  while index program.len > do
     // Get the current Op
-    over over Program.op_at
+    program index Program.op_at
+    take op in
 
     // Generate comment for Op
-    dup get_op_comment_asm op_asm str.load swap str.cat
-    op_asm str.store
+    program_asm op get_op_comment_asm str.cat
 
     // Concatenate Op's Assembly to op_asm
-    get_op_asm op_asm str.load swap str.cat
-    op_asm str.store
-    1 +
-  done drop drop
+    op get_op_asm str.cat
+    program_asm =
+    index 1 + index =
+  done
 
-  // Merge generated Assembly with the initialized Assembly
-  op_asm str.load   str.cat
-  get_exit_assembly str.cat
+  program_asm get_exit_assembly str.cat
 end
