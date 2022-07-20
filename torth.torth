@@ -59,25 +59,40 @@ function link_with_ld str :
   envp execve_argv "/usr/bin/ld" execve drop
 end
 
+// Handle a command
+// Params: command, target_file
+// Return: None
+function handle_command str str :
+  take command target_file in
+  if command "nasm" streq do
+    target_file compile_with_nasm
+  elif command "ld" streq do
+    target_file link_with_ld
+  else
+    "[ERROR] Command '" eputs
+    command             eputs
+    "' is not known.\n" eputs
+    1 exit
+  endif
+end
+
 // Execute a command while being forked
 // Params: command, target_file
+// Return: None
 function exec_forked str str :
   SYS_fork SYSCALL0
-  take fork_return command target_file in
-  
+  take fork_return in
+
   if fork_return 0 == do
-    if command "nasm" streq do
-      target_file compile_with_nasm
-    elif command "ld" streq do
-      target_file link_with_ld
-    endif
+    handle_command return
   elif fork_return -1 != do
+    // Wait for the forked process
     NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
   else
-    "Error occured while calling SYS_fork\n" puts
-  endif
-
-  "Continuing execution in the parent process.\n" puts
+    "[ERROR] Error occured while calling SYS_fork.\nExit code: " eputs
+    fork_return eputi "\n" eputs
+    1 exit
+  endif drop drop
 end
 
 function main :
