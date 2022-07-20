@@ -33,53 +33,52 @@ end
 
 const single_quote 39 end
 function get_token_type str -> int :
+  take token_value in
   // TODO: TokenType.KEYWORD
   // Boolean => True
   if
-    dup str.copy str.upper
+    token_value str.copy str.upper
     dup   "TRUE"  streq
     swap  "FALSE" streq
     ||
   do
-    drop TokenType.BOOL
+    TokenType.BOOL return
   // Character => 'a'
   elif
-    dup str.len 3 ==
-    over ptr char.load   single_quote ==
-    3 nth 2  str.char_at single_quote ==
+    token_value str.len 3 ==
+    token_value ptr char.load single_quote ==
+    token_value 2 str.char_at single_quote ==
     && &&
   do
-    drop TokenType.CHAR
+    TokenType.CHAR return
   // Integer => 1337
   elif
-    dup str.is_numeric
+    token_value str.is_numeric
   do
-    drop TokenType.INT
+    TokenType.INT return
   // Hexadecimal => 0x1337
   elif
-    dup ptr char.load    '0' ==
-    over 1  str.char_at  'x' ==
+    token_value ptr char.load '0' ==
+    token_value 1 str.char_at 'x' ==
     &&
   do
-    drop TokenType.INT
+    TokenType.INT return
   // String => "This is string\n"
   elif
-    dup ptr char.load                 '"' ==
-    over dup str.len 1 - str.char_at  '"' ==
+    token_value ptr char.load                '"' ==
+    token_value dup str.len 1 - str.char_at  '"' ==
     &&
   do
-    drop TokenType.STR
+  TokenType.STR return
   // uint8 => u69
   elif
-    dup ptr char.load 'u' ==
-    over 1 str.char_at char.is_numeric
+    token_value ptr char.load 'u' ==
+    token_value 1 str.char_at char.is_numeric
     &&
   do
-    drop TokenType.UINT8
-  // Everything else
-  else
-    drop TokenType.WORD
+    TokenType.UINT8 return
   endif
+  TokenType.WORD
 end
 
 function get_token_from_match str -> ptr :
