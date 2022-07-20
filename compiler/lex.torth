@@ -116,10 +116,11 @@ end
 // Dummy memories for testing purposes
 memory dummy_token_list ptr.size end
 function get_op_from_token ptr -> ptr :
+  take token in
   // Op(id=id, type=op_type, token=token, function=function)
-  dup get_tokens_function // function
-  swap                    // token
-  dup get_op_type         // op_type
-  Program.len int.load    // id
+  token get_tokens_function // function
+  token                     // token
+  token get_op_type         // op_type
+  Program.len int.load      // id
   Op.init
 end
