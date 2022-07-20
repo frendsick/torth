@@ -13,11 +13,13 @@ END
 function Token.init str int ptr -> ptr :
   // Allocate memory for Token
   Token.size malloc
+  take token value type location in
 
   // Load the parameters to the allocated memory
-  swap over Token.value    ptr+ str.store
-  swap over Token.type     ptr+ int.store
-  swap over Token.location ptr+ ptr.store
+  value     token Token.value     ptr+ str.store
+  type      token Token.type      ptr+ int.store
+  location  token Token.location  ptr+ ptr.store
+  token
 end
 
 // Get Token.value
