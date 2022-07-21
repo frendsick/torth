@@ -1,26 +1,20 @@
 // Project Euler Problem 2: Even Fibonacci numbers
 include "std"
-function sum_current_with_previous int int -> int int :
-  dup rot +
-end
-    
-// If Current is even add it to the Total
-function add_if_even int int int -> int int int :
-  IF dup 2 % 0 == DO
-    rot over + rot rot
-  ENDIF
-end
-
 function sum_of_even_fibonacci int -> int :
-  temp_int int.store  // Limit
-  2                   // Total
-  1                   // Previous
-  2                   // Current
-  WHILE dup temp_int int.load >= DO
-    sum_current_with_previous
-    add_if_even
+  2 1 2
+  take curr prev total limit in
+  WHILE curr limit >= DO
+    curr                // temp = curr
+    curr prev + curr =  // curr = curr + prev
+    prev =              // prev = temp
+
+    // Add curr to total if it is even
+    IF curr 2 % 0 == DO
+      curr total +
+      total =
+    ENDIF
   DONE
-  drop drop
+  total
 end
 
 function main :
