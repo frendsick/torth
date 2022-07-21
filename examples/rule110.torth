@@ -2,7 +2,7 @@ include "std"
 const RULES_COUNT 8 end
 const BOARD_SIZE 40 end
 
-memory rules RULES_COUNT end          // int table[RULES_COUNT]
+memory rules int.size end             // uint8 rules[8]
 memory current_board BOARD_SIZE end   // int current_board[BOARD_SIZE]
 memory previous_board BOARD_SIZE end  // int previous_board[BOARD_SIZE]
 memory pattern 3 end                  // int pattern[3]
