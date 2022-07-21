@@ -1,34 +1,38 @@
 // Problem 6: Sum square difference
 include "std"
 
-function sum_of_squares int -> int int :
+// Params: limit
+// Return: sum
+function sum_of_squares int -> int :
   0     // Squares total
   1     // Loop index
-  rot   // Limit
-  WHILE over over >= DO // While Limit >= Loop index
-    rot rot dup 2 pow      // Square the current Loop index
-    rot +               // Add current index square to Squares total
-    swap 1 + rot        // Loop index += 1
-  DONE swap drop        // Leave Limit and Squares total to the stack
+  take index sum limit in
+  WHILE index limit >= DO // While Limit >= Loop index
+    index 2 pow           // Square the current Loop index
+    sum + sum =           // Add current index square to Squares total
+    index 1 + index =     // Loop index += 1
+  DONE
+  sum // return sum
 end
 
+// Params: limit
+// Return: square_of_sum
 function square_of_sum int -> int :
   0     // Sum total
   1     // Loop index
-  rot   // Limit
-  WHILE over over >= DO      // While Limit >= Loop index
-    rot rot dup rot +      // Add Loop index to Sum total
-    rot rot 1 + swap       // Increment Loop index by one
-  DONE drop drop            // Leave Sum total to the stack
-  
-  2 pow  // Square the Sum total
+  take index sum limit in
+  WHILE index limit >= DO   // While Limit >= Loop index
+    sum index + sum =       // Add Loop index to Sum total
+    index 1 + index =       // Increment Loop index by one
+  DONE
+  sum 2 pow  // Square and return the Sum total
 end
 
 function Main :
-  100 // Limit
-  sum_of_squares
+  100 peek limit in
   square_of_sum
+  limit sum_of_squares
 
   // Calculate and print the difference between Squares total and the square of Sum total
-  swap - putu "\n" puts // Output: 25164150
+  - putu "\n" puts // Output: 25164150
 end
