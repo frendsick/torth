@@ -1,40 +1,55 @@
 // Problem 7: 10001st prime
 include "std"
-const   prime_limit     10001   end
-const   upper_boundary  114320  end
-memory  sieve upper_boundary    end
+const   PRIME_LIMIT     10001   end
+const   UPPER_BOUNDARY  114320  end
+memory  sieve UPPER_BOUNDARY    end
 
-function mark_multiples_to_sieve int :
+// Params: prime, max_prime
+// Return: None
+function mark_multiples_to_sieve int int :
   dup dup * // prime*prime
+  take curr orig max_prime in
 
-  // for i in range(prime*prime, max_prime, prime)
-  while dup upper_boundary > do
+  // for i in range(prime*prime, MAX_PRIME, prime)
+  while curr max_prime > do
     // sieve[i] = True
-    sieve over ptr+ True uint8 swap uint8.store
-    over +
-  done drop drop
+    sieve curr ptr+ True uint8 swap uint8.store
+    curr orig + curr =  // curr += orig
+  done
 end
 
-memory prime_count int.size end
 function get_nth_prime int -> int :
-  2 prime_count int.store // Primes 2 and 3 are already taken into account
-  5 while dup upper_boundary > do
-    // If current number is prime add it to prime_sum
-    if sieve over ptr+ uint8.load NULL == do
-      prime_count int.load 1 +
+  take prime_limit in
+  if    prime_limit 1 >= do 0 return
+  elif  prime_limit 3 >= do prime_limit 1 - return
+  endif
 
-      // Break if prime_count == prime_limit
-      if dup prime_limit == do break endif
-      prime_count int.store
-      dup mark_multiples_to_sieve
+  2 5 take index prime_count in // Primes 2 and 3 are already taken into account
+  while index UPPER_BOUNDARY > do
+    // If current number is prime add it to prime_sum
+    if sieve index ptr+ uint8.load NULL == do
+      prime_count 1 + prime_count = // prime_count += 1
+
+      // Return if prime_count == prime_limit
+      if prime_count prime_limit == do index return endif
+
+      // Mark all multiples of index to sieve
+      UPPER_BOUNDARY index mark_multiples_to_sieve
     endif
 
     // All primes except for 2 and 3 are 6n±1
-    if dup 6 % 1 == do 4 + else 2 + endif
-  done drop
+    if    index 6 % 1 ==
+    do    index 4 + index =
+    else  index 2 + index =
+    endif
+  done
+  // The loop above should have returned early if Nth prime was found.
+  "Could not get prime number " eputs prime_limit eputu ".\n" eputs
+  "The UPPER_BOUNDARY constant could be too small.\n" eputs
+  1 exit NULL
 end
 
 function Main :
-  prime_limit get_nth_prime
-  prime_limit putu ". prime is: " puts putu "\n" puts
+  PRIME_LIMIT get_nth_prime
+  PRIME_LIMIT putu ". prime is: " puts putu "\n" puts
 end
