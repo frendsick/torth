@@ -1,21 +1,25 @@
 include "std"
-
 // Problem 3: Largest prime factor
+
+// Params: prime
+// Return: factor
 function get_largest_prime_factor int -> int :
-  3  // i
-  // while(prime/2 >= i)
-  WHILE over over 2 / <= DO
+  3 take index prime in
+
+  // while(prime/2 >= index)
+  WHILE index prime 2 / >= DO
     // If prime factor is found divide the prime with it
-    IF dup rot dup rot % 0 == DO
-      over / swap // prime = prime / factor
+    IF prime index % 0 == DO
+      prime index / prime = // prime = prime / index
     else
-      swap 2 +  // i+=2
+      index 2 + index =
     ENDIF
-  DONE swap drop
+  DONE
+  prime
 end
 
 function main :
-  600851475143  // prime
-  "The largest prime factor of number " puts dup putu ": " puts
+  600851475143 peek prime in
+  "The largest prime factor of number " puts prime putu ": " puts
   get_largest_prime_factor putu "\n" puts // Answer: 6857
 end
