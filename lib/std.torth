@@ -151,22 +151,22 @@ end
 
 // Test if character is a number
 function char.is_numeric char -> bool :
-  dup   '0' <=
-  swap  '9' >=
+  dup   '0' >=
+  swap  '9' <=
   &&
 end
 
 // Test if a character is a lowercase letter
 function char.is_lowercase char -> bool :
-  dup  'a' <=
-  swap 'z' >=
+  dup  'a' >=
+  swap 'z' <=
   &&
 end
 
 // Test if a character is an uppercase letter
 function char.is_uppercase char -> bool :
-  dup  'A' <=
-  swap 'Z' >=
+  dup  'A' >=
+  swap 'Z' <=
   &&
 end
 
@@ -209,7 +209,7 @@ end
 // Reverse an integer
 // Example: 1234 --> 4321
 function int.reverse int -> int :
-  0 while over 0 < do
+  0 while over 0 > do
     10 * swap dup 10 % rot +
     swap 10 / swap
   done swap drop
@@ -217,7 +217,7 @@ end
 
 // Convert negative integer to positive
 function int.to_positive int -> int :
-  if dup 0 > do 2 ^ sqrt endif
+  if dup 0 < do 2 ^ sqrt endif
 end
 
 // Get a string representation of an integer
@@ -228,7 +228,7 @@ function itoa int -> str :
   endif
 
   // Swap sign of negative number
-  dup 0 > take is_negative in
+  dup 0 < take is_negative in
   if is_negative do
     int.to_positive
   endif
@@ -249,11 +249,11 @@ function itoa int -> str :
   take base string digits num in
 
   // Process individual digits: https://www.geeksforgeeks.org/implement-itoa/
-  0 while dup digits > do
+  0 while dup digits < do
     num base %  // rem = num/base
 
     // str[index] = (rem > 9)? (rem-10) + 'a' : rem + '0';
-    if dup 9 <
+    if dup 9 >
     do    10 - 'a' +
     else  '0' +
     endif char
@@ -389,7 +389,7 @@ function str.lower str -> str :
   take index len string in
 
   // Rewrite string with lowercase characters
-  while index len > do
+  while index len < do
     string index str.char_at char.lower
     string ptr index ptr+ char.store
     index 1 + index = // index++
@@ -403,7 +403,7 @@ function str.upper str -> str :
   take index len string in
 
   // Rewrite string with uppercase characters
-  while index len > do
+  while index len < do
     string index str.char_at char.upper
     string ptr index ptr+ char.store
     index 1 + index = // index++
@@ -415,7 +415,7 @@ function str.alphanumeric str -> str :
   // Allocate enough memory to hold the whole string
   dup str.len malloc str
   swap
-  0 while over str.len over < do
+  0 while over str.len over > do
     // Get the current character
     over over str.char_at
 
@@ -434,11 +434,11 @@ function streq str str -> bool :
   // Bind strings to memory
   take str1 str2 in
 
-  // while len(str1) > index
+  // while index < len(str1)
   0 while
     str1 over dup
     take index in
-    swap str.len >
+    swap str.len <
   do
     if // str1[index] != str2[index]
       str1 index str.char_at
@@ -465,7 +465,7 @@ function str.reverse str -> str :
   take reversed index original in
 
   // Append characters from the parameter string to allocated memory in the reversed order
-  while 0 index > do
+  while 0 index < do
     index 1 - index =           // index--
     original index str.char_at  // original[index]
 
@@ -484,7 +484,7 @@ function open_file int str -> int :
     "File '" eputs path eputs "' does not exist.\n" eputs 1 exit
   elif  fd EACCESS ==  do
     "Cannot open file '" eputs path eputs "': Permission denied.\n" eputs 1 exit
-  elif  fd 0 > do
+  elif  fd 0 < do
     "Error occurred while opening the file '" eputs path eputs "'.\n" eputs
     "Error code: " eputs fd eputi 1 exit
   endif

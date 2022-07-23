@@ -5,7 +5,7 @@ function Fib int -> int :
   take current previous limit in
 
   1   // Counter
-  WHILE dup limit > DO
+  WHILE dup limit < DO
     current                   // Temp     = Current
     dup previous + current =  // Current  = Previous + Current
     previous =                // Previous = Temp

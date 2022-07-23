@@ -10,8 +10,8 @@ end
 function FizzBuzz int -> int :
     0   // sum
     1   // index
-    // WHILE limit >= index
-    WHILE dup 4 nth >= DO
+    // WHILE index <= limit
+    WHILE dup 4 nth <= DO
         IF dup 15 % 0 == DO
             "FizzBuzz  " OutputRow
         ELIF dup 3 % 0 == DO

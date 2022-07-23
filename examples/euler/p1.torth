@@ -4,21 +4,24 @@
 // Find the sum of all the multiples of 3 or 5 below 1000.
 include "std"
 
-FUNCTION add_to_total int int -> int int :
-  dup rot + swap
-END
-
 // Params: limit
+// Return: sum
 FUNCTION get_fizzbuzz_sum int -> int :
-  0 // total
-  3 // index
-  // WHILE limit > index
-  WHILE dup 4 nth > DO
-    IF dup 3 % 0 == over 5 % 0 == || DO
-      add_to_total
+  0 3
+  take index sum limit in
+  // WHILE index < limit
+  WHILE index limit < DO
+    // Add to sum if index is divisible by 3 or 5
+    IF
+      index 3 % 0 ==
+      index 5 % 0 ==
+      ||
+    DO
+      sum index + sum = // sum = sum + index
     ENDIF
-    1 +  // index++
-  DONE drop swap drop // Drop loop index and limit from stack
+    index 1 + index =   // index++
+  DONE
+  sum
 END
 
 FUNCTION main :

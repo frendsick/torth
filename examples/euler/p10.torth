@@ -2,45 +2,54 @@
 // The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
 // Find the sum of all the primes below two million.
 include "std"
-const   max_prime 2000000   end
-memory  sieve     max_prime end
-memory  prime_sum int.size  end
+const   MAX_PRIME 2000000   end
+memory  sieve     MAX_PRIME end
 
-function mark_multiples_to_sieve int :
+// Params: prime, max_prime
+// Return: None
+function mark_multiples_to_sieve int int :
   dup dup * // prime*prime
+  take curr orig max_prime in
 
-  // for i in range(prime*prime, max_prime, prime)
-  while dup max_prime > do
+  // for i in range(prime*prime, MAX_PRIME, prime)
+  while curr max_prime < do
     // sieve[i] = True
-    sieve over ptr+ True uint8 swap uint8.store
-    over +
-  done drop drop
+    sieve curr ptr+ True uint8 swap uint8.store
+    curr orig + curr =  // curr += orig
+  done
 end
 
 // Params: prime
+// Return: None
 function add_prime int :
   // sum += prime
   prime_sum int.load +
   prime_sum int.store
 end
 
+// Params: max_prime
+// Return: prime_sum
 function summation_of_primes int -> int :
-  2 add_prime
-  3 add_prime
-  5 while dup max_prime > do
+  2 3 + dup
+  take index prime_sum max_prime in
+  while index max_prime < do
     // If current number is prime add it to prime_sum
-    if sieve over ptr+ uint8.load NULL == do
-      dup add_prime
-      dup mark_multiples_to_sieve
+    if sieve index ptr+ uint8.load NULL == do
+      prime_sum index + prime_sum = // prime_sum += index
+      max_prime index mark_multiples_to_sieve
     endif
     
     // All primes except for 2 and 3 are 6n±1
-    if dup 6 % 1 == do 4 + else 2 + endif
-  done drop drop
-  prime_sum int.load
+    if index 6 % 1 == do
+      index 4 + index =
+    else
+      index 2 + index =
+    endif
+  done
+  prime_sum
 end
 
 function Main :
-  max_prime summation_of_primes
-  "The sum of primes below " puts max_prime putu ": " puts putu "\n" puts
+  MAX_PRIME summation_of_primes
+  "The sum of primes below " puts MAX_PRIME putu ": " puts putu "\n" puts
 end

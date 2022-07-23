@@ -1,40 +1,46 @@
 // Project Euler Problem 9: Special Pythagorean triplet
 // There exists exactly one Pythagorean triplet for which a + b + c = 1000.
 // Find the product abc.
-
 include "std"
-function print_product int int int int -> int int int int :
-  "Product of pythagorean triplets that add up to " puts 4 nth putu ":\n" puts
-  over over 5 nth * * putu "\n" puts
-  0 exit
-end
 
-// Prints the pythagorean triplet if it can be found for parameter n
+// Return the product of found pythagorean triplet
 function product_of_pythagorean_triplet int -> int :
+  3 2 1
+  take a b c n in
   // while a < n / 3
-  1 while over 3 / over < do
+  while
+    n 3 /
+    a >
+  do
     // while b < n / 2
-    dup while 3 nth 2 / over < do
+    while
+      n 2 /
+      b >
+    do
       // c = n - a - b
-      3 nth 3 nth 3 nth + -
+      n a - b -
+      c =
       if
         // a² + b² == c²
-        3 nth dup *   // a
-        3 nth dup * + // b
-        over dup * == // c
+        a dup *
+        b dup * +
+        c dup * ==
       do
-        // Print the product and exit
-        print_product
+        a b c * * return
+      else NULL  // Match stack of the previous block
       endif drop
-      1 +
-    done drop
-    1 +
-  done drop
+      b 1 +
+      b =
+    done 2 b =
+    a 1 +
+    a =
+  done
+  "Could not find pythagorean triplet for number " eputs n putu "\n" eputs
+  NULL -1 exit
 end
 
 function main :
   1000 // n
-  product_of_pythagorean_triplet
-
-  "Could not find pythagorean triplet for number " eputs putu "\n" eputs
+  dup product_of_pythagorean_triplet
+  "Product of pythagorean triplets that add up to " puts swap putu ":\n" puts putu "\n" puts
 end

@@ -2,46 +2,64 @@
 // Find the thirteen adjacent digits in the 1000-digit number that have the greatest product.
 // What is the value of this product?
 include "std"
-memory current_series   str.size end
-memory series_length    int.size end
-memory largest_product  int.size end
 
-// Store the current subseries' product to a temporary integer
-function store_series_product int str -> int str :
-  over over dup rot ptr swap ptr+ str
-  0 while dup series_length int.load > do
-    over over str.char_at '0' -
-    if temp_int int.load 0 == do
-      temp_int int.store
+// Get the current subseries' product
+// Params: series
+// Return: product
+function get_series_product str -> int :
+  dup str.len 0 0
+  take index product series.len series in
+  while index series.len < do
+    series index str.char_at '0' -
+    if product 0 == do
+      dup product =
     else
-      temp_int int.load swap *
-      temp_int int.store
-    endif
-    1 +
-  done drop drop drop
+      dup product * product =
+    endif drop
+    index 1 + index =
+  done
+  product
 end
 
+// Get the current subseries
+// Params: series series.len series_index
+// Return: subseries
+function get_current_series str int int -> str :
+  take series series.len index in
+  series str.copy index str+ // series_start
+  NULL char over series.len str+ ptr char.store
+  str.copy  // Return current series
+end
+
+// Get the largest product in series (string of numbers)
+// Params: series_length series
+// Return: largest_product
 function largest_product_in_series int str -> int :
-  series_length int.store
-  0 while over over series_length int.load + str.char_at NULL != do
-    store_series_product
+  0 0 take
+    largest_product
+    index
+    series_length
+    series
+  in
 
-    // Store current subseries' product if it is the largest so far
-    if largest_product int.load temp_int int.load > do
-      temp_int int.load largest_product int.store
-    endif
+  // Iterate over every series and find the one with the largest product
+  while series index series_length + str.char_at NULL != do
+    index series_length series get_current_series
+    get_series_product
 
-    // Zero temporary integer
-    NULL temp_int int.store
-    1 +
-  done drop drop
-  largest_product int.load
+    // Save current series' product if largest
+    if dup largest_product > do
+      dup largest_product = // largest_product = current_series_product
+    endif drop
+    index 1 + index =
+  done
+  largest_product
 end
 
 function main :
   "7316717653133062491922511967442657474235534919493496983520312774506326239578318016984801869478851843858615607891129494954595017379583319528532088055111254069874715852386305071569329096329522744304355766896648950445244523161731856403098711121722383113622298934233803081353362766142828064444866452387493035890729629049156044077239071381051585930796086670172427121883998797908792274921901699720888093776657273330010533678812202354218097512545405947522435258490771167055601360483958644670632441572215539753697817977846174064955149290862569321978468622482839722413756570560574902614079729686524145351004748216637048440319989000889524345065854122758866688116427171479924442928230863465674813919123162824586178664583591245665294765456828489128831426076900422421902267105562632111110937054421750694165896040807198403850962455444362981230987879927244284909188845801561660979191338754992005240636899125607176060588611646710940507754100225698315520005593572972571636269561882670428252483600823257530420752963450"
-  13 largest_product_in_series
+  13 peek digits in largest_product_in_series
   
-  "The largest product in series for 13 adjacent digits: " puts
+  "The largest product in series for " puts digits putu " adjacent digits: " puts
   putu "\n" puts
 end
