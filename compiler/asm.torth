@@ -157,7 +157,7 @@ function generate_asm ptr -> str :
   take index program_asm program.len program in
 
   // Generate assembly for each Op in Program
-  while index program.len > do
+  while index program.len < do
     // Get the current Op
     program index Program.op_at
     take op in

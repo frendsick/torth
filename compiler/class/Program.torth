@@ -20,7 +20,7 @@ end
 // Params: Pointer to Program (PTR)
 // Return: None
 function Program.print ptr :
-  0 while dup Program.len int.load > do
+  0 while dup Program.len int.load < do
     // Load current Op
     over over Op.size * ptr+ ptr.load
 
