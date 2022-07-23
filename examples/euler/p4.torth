@@ -1,12 +1,12 @@
 include "std"
 function get_largest_palindrome_product -> int :
   0 take highest in
-  100 while dup 999 >= do
-    100 while dup 999 >= do
+  100 while dup 999 <= do
+    100 while dup 999 <= do
       peek j i in
-      // Store new highest palindrome IF i*j > temp AND i*j == reverse(i*j)
+      // Store new highest palindrome IF highest < i*j AND i*j == reverse(i*j)
       if
-        highest i j * >
+        highest i j * <
         i j * dup int.reverse ==
         land
       do

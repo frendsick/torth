@@ -315,7 +315,7 @@ def get_comparison_asm(cmov_operand: str) -> str:
     comparison_asm      +=  '  pop rbx\n'
     comparison_asm      +=  '  mov rcx, 0\n'
     comparison_asm      +=  '  mov rdx, 1\n'
-    comparison_asm      +=  '  cmp rax, rbx\n'
+    comparison_asm      +=  '  cmp rbx, rax\n'
     comparison_asm      += f'  {cmov_operand} rcx, rdx\n'
     comparison_asm      +=  '  push rcx\n'
     return comparison_asm

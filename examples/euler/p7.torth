@@ -11,7 +11,7 @@ function mark_multiples_to_sieve int int :
   take curr orig max_prime in
 
   // for i in range(prime*prime, MAX_PRIME, prime)
-  while curr max_prime > do
+  while curr max_prime < do
     // sieve[i] = True
     sieve curr ptr+ True uint8 swap uint8.store
     curr orig + curr =  // curr += orig
@@ -20,12 +20,12 @@ end
 
 function get_nth_prime int -> int :
   take prime_limit in
-  if    prime_limit 1 >= do 0 return
-  elif  prime_limit 3 >= do prime_limit 1 - return
+  if    prime_limit 1 <= do 0 return
+  elif  prime_limit 3 <= do prime_limit 1 - return
   endif
 
   2 5 take index prime_count in // Primes 2 and 3 are already taken into account
-  while index UPPER_BOUNDARY > do
+  while index UPPER_BOUNDARY < do
     // If current number is prime add it to prime_sum
     if sieve index ptr+ uint8.load NULL == do
       prime_count 1 + prime_count = // prime_count += 1

@@ -9,7 +9,7 @@ include "std"
 function get_series_product str -> int :
   dup str.len 0 0
   take index product series.len series in
-  while index series.len > do
+  while index series.len < do
     series index str.char_at '0' -
     if product 0 == do
       dup product =
@@ -48,7 +48,7 @@ function largest_product_in_series int str -> int :
     get_series_product
 
     // Save current series' product if largest
-    if dup largest_product < do
+    if dup largest_product > do
       dup largest_product = // largest_product = current_series_product
     endif drop
     index 1 + index =

@@ -10,12 +10,12 @@ function product_of_pythagorean_triplet int -> int :
   // while a < n / 3
   while
     n 3 /
-    a <
+    a >
   do
     // while b < n / 2
     while
       n 2 /
-      b <
+      b >
     do
       // c = n - a - b
       n a - b -

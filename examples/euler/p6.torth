@@ -7,7 +7,7 @@ function sum_of_squares int -> int :
   0     // Squares total
   1     // Loop index
   take index sum limit in
-  WHILE index limit >= DO // While Limit >= Loop index
+  WHILE index limit <= DO // While Loop index <= Limit
     index 2 pow           // Square the current Loop index
     sum + sum =           // Add current index square to Squares total
     index 1 + index =     // Loop index += 1
@@ -21,7 +21,7 @@ function square_of_sum int -> int :
   0     // Sum total
   1     // Loop index
   take index sum limit in
-  WHILE index limit >= DO   // While Limit >= Loop index
+  WHILE index limit <= DO   // While Loop index <= Limit
     sum index + sum =       // Add Loop index to Sum total
     index 1 + index =       // Increment Loop index by one
   DONE

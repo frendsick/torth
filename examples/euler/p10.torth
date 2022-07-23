@@ -12,7 +12,7 @@ function mark_multiples_to_sieve int int :
   take curr orig max_prime in
 
   // for i in range(prime*prime, MAX_PRIME, prime)
-  while curr max_prime > do
+  while curr max_prime < do
     // sieve[i] = True
     sieve curr ptr+ True uint8 swap uint8.store
     curr orig + curr =  // curr += orig
@@ -32,7 +32,7 @@ end
 function summation_of_primes int -> int :
   2 3 + dup
   take index prime_sum max_prime in
-  while index max_prime > do
+  while index max_prime < do
     // If current number is prime add it to prime_sum
     if sieve index ptr+ uint8.load NULL == do
       prime_sum index + prime_sum = // prime_sum += index

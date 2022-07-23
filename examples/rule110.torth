@@ -28,7 +28,7 @@ end
 
 // Sync previous_board with current_board
 function sync_boards :
-  0 while dup BOARD_SIZE > do
+  0 while dup BOARD_SIZE < do
     current_board over ptr+ uint8.load
     over previous_board swap ptr+ uint8.store
     1 +
@@ -37,7 +37,7 @@ end
 
 function print_iteration :
   // j = 0; while(i < BOARD_SIZE - 2)
-  0 while dup BOARD_SIZE > do
+  0 while dup BOARD_SIZE < do
 
     // if(current_board[j] == 1)
     if current_board over ptr+ uint8.load 1 == do
@@ -60,7 +60,7 @@ end
 
 function output_board :
   "Board iteration: " puts
-  0 while dup BOARD_SIZE > do
+  0 while dup BOARD_SIZE < do
     current_board over ptr+ char.load print
     1 +
   done drop "\n" puts
@@ -102,7 +102,7 @@ end
 
 function calculate_next_iteration :
   // j = 1; while(j < BOARD_SIZE - 1)
-  1 while dup BOARD_SIZE > do
+  1 while dup BOARD_SIZE < do
     get_pattern
     dup update_board_index
     1 +  // j++
@@ -111,7 +111,7 @@ end
 
 function rule110 :
   // i = 0; while(i < BOARD_SIZE - 2)
-  0 while dup BOARD_SIZE 2 - > do
+  0 while dup BOARD_SIZE 2 - < do
     sync_boards // Copy current_board to previous_board
     print_iteration
     calculate_next_iteration

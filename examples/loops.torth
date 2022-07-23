@@ -2,9 +2,9 @@ include "std"
 function Main :
     "WHILE loop:\n" puts                // puts("WHILE loop");
     1                                   // i = 1;
-    WHILE dup 100 >= DO                 // while (100 >= i) {
+    WHILE dup 100 <= DO                 // while (i <= 100) {
         "Row " puts dup putu "\n" puts  //   printf("Row %d\n", i);
-        IF dup 42 <= DO                 //   if(42 <= i) {
+        IF dup 42 >= DO                 //   if(i >= 42) {
             break                       //     break
         ENDIF                           //   }
         1 +                             //   i++;

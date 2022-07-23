@@ -6,8 +6,8 @@ include "std"
 function get_largest_prime_factor int -> int :
   3 take index prime in
 
-  // while(prime/2 >= index)
-  WHILE index prime 2 / >= DO
+  // while(index <= prime/2)
+  WHILE index prime 2 / <= DO
     // If prime factor is found divide the prime with it
     IF prime index % 0 == DO
       prime index / prime = // prime = prime / index

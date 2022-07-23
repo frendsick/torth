@@ -9,8 +9,8 @@ include "std"
 FUNCTION get_fizzbuzz_sum int -> int :
   0 3
   take index sum limit in
-  // WHILE limit > index
-  WHILE index limit > DO
+  // WHILE index < limit
+  WHILE index limit < DO
     // Add to sum if index is divisible by 3 or 5
     IF
       index 3 % 0 ==

@@ -9,14 +9,14 @@ function pow int int -> int :
   if dup 0 == do
     drop drop 1 return
   // Negative exponents are not supported yet, return -1
-  elif dup 0 > do
+  elif dup 0 < do
     drop drop -1 return
   endif
 
   over take current exponent original in
   1 // count
-  // If exponent > count then we need to multiple the number at least one more time
-  while dup exponent > do
+  // If count > exponent then we need to multiple the number at least one more time
+  while dup exponent < do
     // Multiply current number with the original number
     current original *
     current =
@@ -38,7 +38,7 @@ end
 
 // Return the square root of an integer rounded up to closest integer
 function sqrt int -> int :
-  0 while over over dup * < do
+  0 while over over dup * > do
     1 +
   done swap drop
 end

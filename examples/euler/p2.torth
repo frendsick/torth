@@ -3,7 +3,7 @@ include "std"
 function sum_of_even_fibonacci int -> int :
   2 1 2
   take curr prev total limit in
-  WHILE curr limit >= DO
+  WHILE curr limit <= DO
     curr                // temp = curr
     curr prev + curr =  // curr = curr + prev
     prev =              // prev = temp
