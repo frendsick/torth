@@ -227,16 +227,10 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             type_check_elif(token, type_stack, branched_stacks, if_block_return_stacks[-1])
         elif op.type == OpType.ELSE:
             else_present = True
-
-            # Save the state of the stack after the first part of the IF block
-            if not if_block_return_stacks[-1].head:
-                if_block_return_stacks[-1] = copy(type_stack)
-
-            type_check_end_of_branch(token, branched_stacks, \
-                if_block_return_stack=if_block_return_stacks[-1])
-
-            # Use IF block's original stack as the old stack
-            branched_stacks.append(if_block_original_stacks[-1])
+            type_check_else(
+                token, type_stack, branched_stacks,
+                if_block_return_stacks[-1], if_block_original_stacks[-1]
+            )
         elif op.type == OpType.ENDIF:
             type_check_endif(
                 op, type_stack, branched_stacks,
@@ -295,6 +289,19 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             f"Function parameter types: {func.signature[0]}\n" + \
             f"Function return types:    {func.signature[1]}\n",
             func.tokens[-1], branched_stacks[-1], get_function_type_stack(func))
+
+def type_check_else(token: Token, type_stack: TypeStack, branched_stacks: List[TypeStack], \
+    if_block_return_stack: Optional[TypeStack], if_block_original_stack: Optional[TypeStack]) -> None:
+    """ELSE is the final section of an IF block"""
+    # Save the state of the stack after the first part of the IF block
+    if not if_block_return_stack.head:
+        if_block_return_stack = copy(type_stack)
+
+    type_check_end_of_branch(token, branched_stacks, \
+        if_block_return_stack=if_block_return_stack)
+
+    # Use IF block's original stack as the old stack
+    branched_stacks.append(if_block_original_stack)
 
 def type_check_intrinsic(token: Token, type_stack: TypeStack, program: Program) -> None:
     """Type check an Intrinsic. Raise compiler error if the type checking fails."""
