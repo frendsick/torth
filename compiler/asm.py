@@ -217,74 +217,78 @@ def get_op_asm(op: Op, program: Program) -> str:
     if op.type == OpType.WHILE:
         return get_while_asm(op)
     if op.type == OpType.INTRINSIC:
-        intrinsic: str = op.token.value.upper()
-        if intrinsic == "AND":
-            return get_and_asm()
-        if intrinsic == "ARGC":
-            return get_argc_asm()
-        if intrinsic == "ARGV":
-            return get_argv_asm()
-        if intrinsic == "DIVMOD":
-            return get_divmod_asm()
-        if intrinsic == "DROP":
-            return get_drop_asm()
-        if intrinsic == "DUP":
-            return get_dup_asm()
-        if intrinsic == "ENVP":
-            return get_envp_asm()
-        if intrinsic == "EQ":
-            return get_eq_asm()
-        if intrinsic == "GE":
-            return get_ge_asm()
-        if intrinsic == "GT":
-            return get_gt_asm()
-        if intrinsic == "LE":
-            return get_le_asm()
-        if intrinsic == "LT":
-            return get_lt_asm()
-        if intrinsic.startswith("LOAD_"):
-            return get_load_asm(intrinsic)
-        if intrinsic == "MINUS":
-            return get_minus_asm()
-        if intrinsic == "MUL":
-            return get_mul_asm()
-        if intrinsic == "NE":
-            return get_ne_asm()
-        if intrinsic == "NTH":
-            return get_nth_asm()
-        if intrinsic == "OR":
-            return get_or_asm()
-        if intrinsic == "OVER":
-            return get_over_asm()
-        if intrinsic == "PLUS":
-            return get_plus_asm()
-        if intrinsic == "PRINT":
-            return get_print_asm()
-        if intrinsic == "ROT":
-            return get_rot_asm()
-        if intrinsic.startswith("STORE_"):
-            return get_store_asm(intrinsic)
-        if intrinsic == "SWAP":
-            return get_swap_asm()
-        if intrinsic == "SYSCALL0":
-            return get_syscall_asm(param_count=0)
-        if intrinsic == "SYSCALL1":
-            return get_syscall_asm(param_count=1)
-        if intrinsic == "SYSCALL2":
-            return get_syscall_asm(param_count=2)
-        if intrinsic == "SYSCALL3":
-            return get_syscall_asm(param_count=3)
-        if intrinsic == "SYSCALL4":
-            return get_syscall_asm(param_count=4)
-        if intrinsic == "SYSCALL5":
-            return get_syscall_asm(param_count=5)
-        if intrinsic == "SYSCALL6":
-            return get_syscall_asm(param_count=6)
-
-        # Compiler error for Intrinsic not implemented
-        compiler_error("NOT_IMPLEMENTED", f"Intrinsic '{intrinsic}' has not been implemented.", op.token)
+        return get_intrinsic_asm(op.token)
     # Compiler error for Op not implemented
     compiler_error("NOT_IMPLEMENTED", f"Operand '{op.type.name}' has not been implemented.", op.token)
+
+def get_intrinsic_asm(token: Token) -> str:
+    """Generate assembly code for certain Intrinsic. Return assembly for the Intrinsic."""
+    intrinsic: str =  token.value.upper()
+    if intrinsic == "AND":
+        return get_and_asm()
+    if intrinsic == "ARGC":
+        return get_argc_asm()
+    if intrinsic == "ARGV":
+        return get_argv_asm()
+    if intrinsic == "DIVMOD":
+        return get_divmod_asm()
+    if intrinsic == "DROP":
+        return get_drop_asm()
+    if intrinsic == "DUP":
+        return get_dup_asm()
+    if intrinsic == "ENVP":
+        return get_envp_asm()
+    if intrinsic == "EQ":
+        return get_eq_asm()
+    if intrinsic == "GE":
+        return get_ge_asm()
+    if intrinsic == "GT":
+        return get_gt_asm()
+    if intrinsic == "LE":
+        return get_le_asm()
+    if intrinsic == "LT":
+        return get_lt_asm()
+    if intrinsic.startswith("LOAD_"):
+        return get_load_asm(intrinsic)
+    if intrinsic == "MINUS":
+        return get_minus_asm()
+    if intrinsic == "MUL":
+        return get_mul_asm()
+    if intrinsic == "NE":
+        return get_ne_asm()
+    if intrinsic == "NTH":
+        return get_nth_asm()
+    if intrinsic == "OR":
+        return get_or_asm()
+    if intrinsic == "OVER":
+        return get_over_asm()
+    if intrinsic == "PLUS":
+        return get_plus_asm()
+    if intrinsic == "PRINT":
+        return get_print_asm()
+    if intrinsic == "ROT":
+        return get_rot_asm()
+    if intrinsic.startswith("STORE_"):
+        return get_store_asm(intrinsic)
+    if intrinsic == "SWAP":
+        return get_swap_asm()
+    if intrinsic == "SYSCALL0":
+        return get_syscall_asm(param_count=0)
+    if intrinsic == "SYSCALL1":
+        return get_syscall_asm(param_count=1)
+    if intrinsic == "SYSCALL2":
+        return get_syscall_asm(param_count=2)
+    if intrinsic == "SYSCALL3":
+        return get_syscall_asm(param_count=3)
+    if intrinsic == "SYSCALL4":
+        return get_syscall_asm(param_count=4)
+    if intrinsic == "SYSCALL5":
+        return get_syscall_asm(param_count=5)
+    if intrinsic == "SYSCALL6":
+        return get_syscall_asm(param_count=6)
+
+    # Compiler error for Intrinsic not implemented
+    compiler_error("NOT_IMPLEMENTED", f"Intrinsic '{intrinsic}' has not been implemented.", token)
 
 def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     """Generate assembly comment for the Op. Return the comment string."""

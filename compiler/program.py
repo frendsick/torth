@@ -4,6 +4,7 @@ Functions for compile-time type checking and running the Torth program
 import itertools
 import re
 from copy import copy
+from dataclasses import dataclass
 from typing import Dict, List, Optional, Set
 from compiler.defs import Binding, Constant, Function, Intrinsic, Location, Memory, Op, OpType, TypeNode
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
@@ -165,6 +166,19 @@ def get_function_type_stack(func: Function) -> TypeStack:
         param_stack.push(param_type, func.tokens[0].location)
     return param_stack
 
+@dataclass
+class TypeCheckInfo:
+    """
+    Class for storing metadata of the current state of a Program.
+
+    else_present:   Store True only if ELSE section is present in current IF block
+    return_present: Store True only if the previous section in the IF block returned early
+    peek_count:     Store the number of items peeked from the stack inside PEEK block
+    """
+    else_present: bool   = False
+    return_present: bool = False
+    peek_count: int      = 0
+
 def type_check_program(func: Function, program: Program, functions: Dict[str, Function]) -> None:
     """
     Type check all Operands of the Program.
@@ -176,8 +190,9 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         compiler_error("FUNCTION_SIGNATURE_ERROR",
             f"Empty function '{func.name}' with different parameter and return types.")
 
+    # Save the stack state of every nested branch to ensure that
+    # every branch results in the same stack alignment
     branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
-    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'PEEK', 'TAKE', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
     # to type check IF-ELIF chains with different stack layouts than what it was before the block.
@@ -191,162 +206,134 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
     # Track if there was an ELSE clause in the IF block.
     # Required for type checking IF blocks with each IF / ELIF keyword altering the stack state.
-    else_present: bool   = False
-    return_present: bool = False
+    type_check_info: TypeCheckInfo = TypeCheckInfo()
 
     # Save the Bindings of the function to get the type of the Binding later when used
     binding: Binding = {}
-    peek_count: int = 0 # Used for type checking PEEK blocks with multiple values
 
+    # Type check every Op in Program
     for op in program:
-        token: Token = op.token
-        type_stack: TypeStack = branched_stacks[-1]
+        type_check_info = type_check_op(
+            op, program, functions, binding, type_check_info, branched_stacks,
+            if_block_return_stacks, if_block_original_stacks
+        )
 
-        if token.value.upper() in NOT_TYPED_TOKENS:
-            continue
-        if op.type == OpType.ASSIGN_BIND:
-            type_check_assign_bind(op, type_stack, program, binding)
-        elif op.type == OpType.CAST_BOOL:
-            type_check_cast_bool(token, type_stack)
-        elif op.type == OpType.CAST_CHAR:
-            type_check_cast_char(token, type_stack)
-        elif op.type == OpType.CAST_INT:
-            type_check_cast_int(token, type_stack)
-        elif op.type == OpType.CAST_PTR:
-            type_check_cast_ptr(token, type_stack)
-        elif op.type == OpType.CAST_STR:
-            type_check_cast_str(token, type_stack)
-        elif op.type == OpType.CAST_UINT8:
-            type_check_cast_uint8(token, type_stack)
-        elif op.type == OpType.DO:
-            type_check_do(token, type_stack, branched_stacks)
-        elif op.type == OpType.DONE:
-            type_check_end_of_branch(token, branched_stacks)
-        elif op.type == OpType.ELIF:
-            return_present = False
-            # Save the state of the stack after the first part of the IF block
-            if not if_block_return_stacks[-1].head:
-                if_block_return_stacks[-1] = copy(type_stack)
+    # Verify that the TypeStack state matches with the return types of the Function's Signature
+    type_check_end_of_program(func, branched_stacks[-1])
 
-            type_check_end_of_branch(token, branched_stacks,
-                if_block_return_stack=if_block_return_stacks[-1])
-        elif op.type == OpType.ELSE:
-            else_present = True
+def type_check_op(op: Op, program: Program, functions: Dict[str, Function], binding: Binding, \
+    type_check_info: TypeCheckInfo, branched_stacks: List[TypeStack], if_block_return_stacks: List[TypeStack], \
+    if_block_original_stacks: List[TypeStack]) -> TypeCheckInfo:
+    # pylint: disable=too-many-arguments
+    # sourcery skip: low-code-quality
+    """
+    Type check the current Op in the Program.
+    Raise compiler error if the type checking fails.
+    """
+    token: Token = op.token
+    type_stack: TypeStack = branched_stacks[-1]
+    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'CONTINUE', 'PEEK', 'TAKE', 'WHILE' ]
+    if token.value.upper() in NOT_TYPED_TOKENS:
+        return type_check_info
+    if op.type == OpType.ASSIGN_BIND:
+        type_check_assign_bind(op, type_stack, program, binding)
+        return type_check_info
+    if op.type == OpType.CAST_BOOL:
+        type_check_cast_bool(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_CHAR:
+        type_check_cast_char(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_INT:
+        type_check_cast_int(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_PTR:
+        type_check_cast_ptr(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_STR:
+        type_check_cast_str(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_UINT8:
+        type_check_cast_uint8(token, type_stack)
+        return type_check_info
+    if op.type == OpType.DO:
+        type_check_do(token, type_stack, branched_stacks)
+        return type_check_info
+    if op.type == OpType.DONE:
+        type_check_end_of_branch(token, branched_stacks)
+        return type_check_info
+    if op.type == OpType.ELIF:
+        type_check_info.return_present = False
+        type_check_elif(token, type_stack, branched_stacks, if_block_return_stacks[-1])
+        return type_check_info
+    if op.type == OpType.ELSE:
+        type_check_info.else_present = True
+        type_check_else(
+            token, type_stack, branched_stacks,
+            if_block_return_stacks[-1], if_block_original_stacks[-1]
+        )
+        return type_check_info
+    if op.type == OpType.ENDIF:
+        type_check_endif(
+            op, type_stack, branched_stacks,
+            if_block_return_stacks, if_block_original_stacks,
+            (type_check_info.else_present or type_check_info.return_present)
+        )
+        type_check_info.else_present = False
+        return type_check_info
+    if op.type == OpType.FUNCTION_CALL:
+        type_check_function_call(op, type_stack, functions)
+        return type_check_info
+    if op.type == OpType.IF:
+        type_check_info.return_present = False
+        if_block_original_stacks.append(copy(type_stack))
+        if_block_return_stacks.append(TypeStack())
+        return type_check_info
+    if op.type == OpType.IN:
+        type_check_info.peek_count = 0
+        return type_check_info
+    if op.type == OpType.PEEK_BIND:
+        type_check_info.peek_count += 1
+        type_check_peek_bind(token, type_stack, binding, type_check_info.peek_count)
+        return type_check_info
+    if op.type == OpType.POP_BIND:
+        type_check_pop_bind(token, type_stack, binding)
+        return type_check_info
+    if op.type == OpType.PUSH_BIND:
+        type_check_push_bind(token, type_stack, binding)
+        return type_check_info
+    if op.type == OpType.PUSH_BOOL:
+        type_check_push_bool(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_CHAR:
+        type_check_push_char(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_INT:
+        type_check_push_int(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_PTR:
+        type_check_push_ptr(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_STR:
+        type_check_push_str(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_UINT8:
+        type_check_push_uint8(token, type_stack)
+        return type_check_info
+    if op.type == OpType.RETURN:
+        type_check_info.return_present = True
+        if_block_stack: TypeStack = if_block_return_stacks[-1] if if_block_return_stacks[-1].head \
+            else if_block_original_stacks[-1]
+        branched_stacks[-1] = type_check_return(op, type_stack, if_block_stack)
+        return type_check_info
+    if op.type == OpType.INTRINSIC:
+        type_check_intrinsic(token, type_stack, program)
+        return type_check_info
+    # Raise an error if OpType did not match with any of the implemented types
+    compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
 
-            # Save the state of the stack after the first part of the IF block
-            if not if_block_return_stacks[-1].head:
-                if_block_return_stacks[-1] = copy(type_stack)
-
-            type_check_end_of_branch(token, branched_stacks, \
-                if_block_return_stack=if_block_return_stacks[-1])
-
-            # Use IF block's original stack as the old stack
-            branched_stacks.append(if_block_original_stacks[-1])
-        elif op.type == OpType.ENDIF:
-            # Save the state of the stack after the first part of the IF block
-            if not if_block_return_stacks[-1].head:
-                if_block_return_stacks[-1] = copy(type_stack)
-            type_check_end_of_branch(token, branched_stacks, \
-                if_block_return_stack=if_block_return_stacks[-1])
-
-            # If IF block altered the stack state there MUST be an ELSE to catch all errors
-            # and the IF block's return stack must match with all of the sections in the block
-            if not else_present and not return_present and if_block_return_stacks[-1].head and \
-                not matching_type_lists(branched_stacks[-1].get_types(), if_block_return_stacks[-1].get_types()):
-                compiler_error("SYNTAX_ERROR", \
-                    "The stack state should be the same than at the start of the IF-block.\n" + \
-                    "Introduce an ELSE-block if you need to return different values from IF-blocks.\n" + \
-                    "The stack state should be the same with every branch of the block.\n\n" + \
-                   f"Stack state after the previous sections in the IF block:\n{if_block_return_stacks[-1].repr()}\n"+ \
-                   f"The stack state before the IF block:\n{branched_stacks[-1].repr()}", op.token)
-
-            # Make the IF block's return stack the new stack for the program
-            if if_block_return_stacks[-1].head:
-                branched_stacks[-1] = if_block_return_stacks[-1]
-
-            # Reset IF-block variables
-            if_block_original_stacks.pop()
-            if_block_return_stacks.pop()
-            else_present = False
-        elif op.type == OpType.FUNCTION_CALL:
-            type_check_function_call(op, type_stack, functions)
-        elif op.type == OpType.IF:
-            return_present = False
-            if_block_original_stacks.append(copy(type_stack))
-            if_block_return_stacks.append(TypeStack())
-        elif op.type == OpType.IN:
-            peek_count = 0
-        elif op.type == OpType.PEEK_BIND:
-            peek_count += 1
-            type_check_peek_bind(token, type_stack, binding, peek_count)
-        elif op.type == OpType.POP_BIND:
-            type_check_pop_bind(token, type_stack, binding)
-        elif op.type == OpType.PUSH_BIND:
-            type_check_push_bind(token, type_stack, binding)
-        elif op.type == OpType.PUSH_BOOL:
-            type_check_push_bool(token, type_stack)
-        elif op.type == OpType.PUSH_CHAR:
-            type_check_push_char(token, type_stack)
-        elif op.type == OpType.PUSH_INT:
-            type_check_push_int(token, type_stack)
-        elif op.type == OpType.PUSH_PTR:
-            type_check_push_ptr(token, type_stack)
-        elif op.type == OpType.PUSH_STR:
-            type_check_push_str(token, type_stack)
-        elif op.type == OpType.PUSH_UINT8:
-            type_check_push_uint8(token, type_stack)
-        elif op.type == OpType.RETURN:
-            return_present = True
-            if_block_stack: TypeStack = if_block_return_stacks[-1] if if_block_return_stacks[-1].head \
-                else if_block_original_stacks[-1]
-            branched_stacks[-1] = type_check_return(op, type_stack, if_block_stack)
-        elif op.type == OpType.INTRINSIC:
-            intrinsic: str = token.value.upper()
-            if intrinsic == "AND":
-                type_check_bitwise(token, type_stack)
-            elif intrinsic == "ARGC":
-                type_check_push_int(token, type_stack)
-            elif intrinsic == "ARGV":
-                type_check_push_ptr(token, type_stack)
-            elif intrinsic == "DIVMOD":
-                type_check_divmod(token, type_stack)
-            elif intrinsic == "DROP":
-                type_check_drop(token, type_stack)
-            elif intrinsic == "DUP":
-                type_check_dup(token, type_stack)
-            elif intrinsic == "ENVP":
-                type_check_push_ptr(token, type_stack)
-            elif intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
-                type_check_comparison(token, type_stack)
-            elif intrinsic.startswith("LOAD_"):
-                type_check_load(token, type_stack)
-            elif intrinsic == "MINUS":
-                type_check_calculations(token, type_stack)
-            elif intrinsic == "MUL":
-                type_check_calculations(token, type_stack)
-            elif intrinsic == "NTH":
-                type_check_nth(token, type_stack, program)
-            elif intrinsic == "OR":
-                type_check_bitwise(token, type_stack)
-            elif intrinsic == "OVER":
-                type_check_over(token, type_stack)
-            elif intrinsic == "PLUS":
-                type_check_calculations(token, type_stack)
-            elif intrinsic == "PRINT":
-                type_check_print(token, type_stack)
-            elif intrinsic == "ROT":
-                type_check_rot(token, type_stack)
-            elif intrinsic.startswith("STORE_"):
-                type_check_store(token, type_stack)
-            elif intrinsic == "SWAP":
-                type_check_swap(token, type_stack)
-            elif re.fullmatch(r'SYSCALL[0-6]', intrinsic):
-                type_check_syscall(token, type_stack, int(intrinsic[-1]))
-            else:
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
-        else:
-            compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
-
+def type_check_end_of_program(func: Function, type_stack: TypeStack) -> None:
+    """Verify that the TypeStack state matches with the return types of the Function's Signature"""
     # There should be one INT in the stack when the program ends.
     if func.name.upper() == 'MAIN':
         if type_stack.get_types() == [TokenType.INT]:
@@ -355,12 +342,70 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             "Only the integer return value of the program should be in the stack when program exits.\n\n" + \
             f"Stack after the MAIN function:\n{type_stack.repr()}", func.tokens[-1])
 
-    if not correct_return_types(func, branched_stacks[-1]):
+    if not correct_return_types(func, type_stack):
         compiler_error("FUNCTION_SIGNATURE_ERROR",
             f"Function '{func.name}' does not return the types indicated in the function signature.\n\n" + \
             f"Function parameter types: {func.signature[0]}\n" + \
             f"Function return types:    {func.signature[1]}\n",
-            func.tokens[-1], branched_stacks[-1], get_function_type_stack(func))
+            func.tokens[-1], type_stack, get_function_type_stack(func))
+
+def type_check_else(token: Token, type_stack: TypeStack, branched_stacks: List[TypeStack], \
+    if_block_return_stack: Optional[TypeStack], if_block_original_stack: Optional[TypeStack]) -> None:
+    """ELSE is the final section of an IF block"""
+    # Save the state of the stack after the first part of the IF block
+    if not if_block_return_stack.head:
+        if_block_return_stack = copy(type_stack)
+
+    type_check_end_of_branch(token, branched_stacks, \
+        if_block_return_stack=if_block_return_stack)
+
+    # Use IF block's original stack as the old stack
+    branched_stacks.append(if_block_original_stack)
+
+def type_check_intrinsic(token: Token, type_stack: TypeStack, program: Program) -> None:
+    """Type check an Intrinsic. Raise compiler error if the type checking fails."""
+    intrinsic: str = token.value.upper()
+    if intrinsic == "AND":
+        return type_check_bitwise(token, type_stack)
+    if intrinsic == "ARGC":
+        return type_check_push_int(token, type_stack)
+    if intrinsic == "ARGV":
+        return type_check_push_ptr(token, type_stack)
+    if intrinsic == "DIVMOD":
+        return type_check_divmod(token, type_stack)
+    if intrinsic == "DROP":
+        return type_check_drop(token, type_stack)
+    if intrinsic == "DUP":
+        return type_check_dup(token, type_stack)
+    if intrinsic == "ENVP":
+        return type_check_push_ptr(token, type_stack)
+    if intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
+        return type_check_comparison(token, type_stack)
+    if intrinsic.startswith("LOAD_"):
+        return type_check_load(token, type_stack)
+    if intrinsic == "MINUS":
+        return type_check_calculations(token, type_stack)
+    if intrinsic == "MUL":
+        return type_check_calculations(token, type_stack)
+    if intrinsic == "NTH":
+        return type_check_nth(token, type_stack, program)
+    if intrinsic == "OR":
+        return type_check_bitwise(token, type_stack)
+    if intrinsic == "OVER":
+        return type_check_over(token, type_stack)
+    if intrinsic == "PLUS":
+        return type_check_calculations(token, type_stack)
+    if intrinsic == "PRINT":
+        return type_check_print(token, type_stack)
+    if intrinsic == "ROT":
+        return type_check_rot(token, type_stack)
+    if intrinsic.startswith("STORE_"):
+        return type_check_store(token, type_stack)
+    if intrinsic == "SWAP":
+        return type_check_swap(token, type_stack)
+    if re.fullmatch(r'SYSCALL[0-6]', intrinsic):
+        return type_check_syscall(token, type_stack, int(intrinsic[-1]))
+    compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
 
 def correct_return_types(func: Function, type_stack: TypeStack) -> bool:
     """Check if the state of TypeStack is correct after executing the Function"""
@@ -544,6 +589,54 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
     type_stack = copy(type_stack)
     branched_stacks.append(type_stack)
 
+def type_check_elif(token: Token, type_stack: TypeStack, \
+    branched_stacks: List[TypeStack], if_block_return_stack: Optional[TypeStack]) -> None:
+    """Type check ELIF Keyword."""
+    # Save the state of the stack after the first part of the IF block
+    if not if_block_return_stack.head:
+        if_block_return_stack = copy(type_stack)
+
+    # Type check ELIF as the possible end for the IF block
+    type_check_end_of_branch(token, branched_stacks,
+        if_block_return_stack=if_block_return_stack)
+
+def type_check_endif(op: Op, type_stack: TypeStack, \
+    branched_stacks: List[TypeStack], if_block_return_stacks: List[TypeStack], \
+    if_block_original_stacks: List[TypeStack], else_or_return_present: bool) -> None:
+    """
+    ENDIF ends the IF block.
+    We have to check that the stack state was not altered inside the block.
+
+    If stack state was changed, the changes should be consistent in all of the sections
+    AND there should be an ELSE keyword present to act as default branch.
+    """
+    # Save the state of the stack after the first part of the IF block
+    if not if_block_return_stacks[-1].head:
+        if_block_return_stacks[-1] = copy(type_stack)
+
+    # Type check the endif as the end of the IF block
+    type_check_end_of_branch(op.token, branched_stacks, \
+        if_block_return_stack=if_block_return_stacks[-1])
+
+    # If IF block altered the stack state there MUST be an ELSE to catch all errors
+    # and the IF block's return stack must match with all of the sections in the block
+    if not else_or_return_present and if_block_return_stacks[-1].head and \
+        not matching_type_lists(branched_stacks[-1].get_types(), if_block_return_stacks[-1].get_types()):
+        compiler_error("SYNTAX_ERROR", \
+            "The stack state should be the same than at the start of the IF-block.\n" + \
+            "Introduce an ELSE-block if you need to return different values from IF-blocks.\n" + \
+            "The stack state should be the same with every branch of the block.\n\n" + \
+            f"Stack state after the previous sections in the IF block:\n{if_block_return_stacks[-1].repr()}\n"+ \
+            f"The stack state before the IF block:\n{branched_stacks[-1].repr()}", op.token)
+
+    # Make the IF block's return stack the new stack for the program
+    if if_block_return_stacks[-1].head:
+        branched_stacks[-1] = if_block_return_stacks[-1]
+
+    # Reset IF-block variables
+    if_block_original_stacks.pop()
+    if_block_return_stacks.pop()
+
 def type_check_peek_bind(token: Token, type_stack: TypeStack,
     binding: Binding, peek_count: int) -> None:
     """Copy the Nth item from the stack to a named Memory."""
@@ -596,7 +689,7 @@ def type_check_push_uint8(token: Token, type_stack: TypeStack) -> None:
     """Push an unsigned 8-bit integer to the stack"""
     type_stack.push(TokenType.UINT8, token.location)
 
-def type_check_return(op: Op, type_stack: TypeStack, if_block_return_stack: Optional[TypeStack]) -> TypeStack:
+def type_check_return(op: Op, type_stack: TypeStack, if_block_return_stack: TypeStack) -> TypeStack:
     """Return from the current Function. Function's TypeStack should be empty."""
     return_types: List[TokenType] = op.func.signature[1]
     if not matching_type_lists(type_stack.get_types(), return_types):
