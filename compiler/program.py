@@ -4,6 +4,7 @@ Functions for compile-time type checking and running the Torth program
 import itertools
 import re
 from copy import copy
+from dataclasses import dataclass
 from typing import Dict, List, Optional, Set
 from compiler.defs import Binding, Constant, Function, Intrinsic, Location, Memory, Op, OpType, TypeNode
 from compiler.defs import Program, Signature, Token, TokenType, TypeStack
@@ -165,6 +166,19 @@ def get_function_type_stack(func: Function) -> TypeStack:
         param_stack.push(param_type, func.tokens[0].location)
     return param_stack
 
+@dataclass
+class TypeCheckInfo:
+    """
+    Class for storing metadata of the current state of a Program.
+
+    else_present:   Store True only if ELSE section is present in current IF block
+    return_present: Store True only if the previous section in the IF block returned early
+    peek_count:     Store the number of items peeked from the stack inside PEEK block
+    """
+    else_present: bool   = False
+    return_present: bool = False
+    peek_count: int      = 0
+
 def type_check_program(func: Function, program: Program, functions: Dict[str, Function]) -> None:
     """
     Type check all Operands of the Program.
@@ -176,8 +190,9 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
         compiler_error("FUNCTION_SIGNATURE_ERROR",
             f"Empty function '{func.name}' with different parameter and return types.")
 
+    # Save the stack state of every nested branch to ensure that
+    # every branch results in the same stack alignment
     branched_stacks: List[TypeStack] = [get_function_type_stack(func)]
-    NOT_TYPED_TOKENS: List[str]      = [ 'BREAK', 'CONTINUE', 'PEEK', 'TAKE', 'WHILE' ]
 
     # Save the stack after previous IF / ELIF statements in the IF block to make it possible
     # to type check IF-ELIF chains with different stack layouts than what it was before the block.
@@ -191,118 +206,131 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
 
     # Track if there was an ELSE clause in the IF block.
     # Required for type checking IF blocks with each IF / ELIF keyword altering the stack state.
-    else_present: bool   = False
-    return_present: bool = False
+    type_check_info: TypeCheckInfo = TypeCheckInfo()
 
     # Save the Bindings of the function to get the type of the Binding later when used
     binding: Binding = {}
-    peek_count: int = 0 # Used for type checking PEEK blocks with multiple values
 
+    # Type check every Op in Program
     for op in program:
-        token: Token = op.token
-        type_stack: TypeStack = branched_stacks[-1]
-
-        if token.value.upper() in NOT_TYPED_TOKENS:
-            continue
-        if op.type == OpType.ASSIGN_BIND:
-            type_check_assign_bind(op, type_stack, program, binding)
-            continue
-        if op.type == OpType.CAST_BOOL:
-            type_check_cast_bool(token, type_stack)
-            continue
-        if op.type == OpType.CAST_CHAR:
-            type_check_cast_char(token, type_stack)
-            continue
-        if op.type == OpType.CAST_INT:
-            type_check_cast_int(token, type_stack)
-            continue
-        if op.type == OpType.CAST_PTR:
-            type_check_cast_ptr(token, type_stack)
-            continue
-        if op.type == OpType.CAST_STR:
-            type_check_cast_str(token, type_stack)
-            continue
-        if op.type == OpType.CAST_UINT8:
-            type_check_cast_uint8(token, type_stack)
-            continue
-        if op.type == OpType.DO:
-            type_check_do(token, type_stack, branched_stacks)
-            continue
-        if op.type == OpType.DONE:
-            type_check_end_of_branch(token, branched_stacks)
-            continue
-        if op.type == OpType.ELIF:
-            return_present = False
-            type_check_elif(token, type_stack, branched_stacks, if_block_return_stacks[-1])
-            continue
-        if op.type == OpType.ELSE:
-            else_present = True
-            type_check_else(
-                token, type_stack, branched_stacks,
-                if_block_return_stacks[-1], if_block_original_stacks[-1]
-            )
-            continue
-        if op.type == OpType.ENDIF:
-            type_check_endif(
-                op, type_stack, branched_stacks,
-                if_block_return_stacks, if_block_original_stacks,
-                (else_present or return_present)
-            )
-            else_present = False
-            continue
-        if op.type == OpType.FUNCTION_CALL:
-            type_check_function_call(op, type_stack, functions)
-            continue
-        if op.type == OpType.IF:
-            return_present = False
-            if_block_original_stacks.append(copy(type_stack))
-            if_block_return_stacks.append(TypeStack())
-            continue
-        if op.type == OpType.IN:
-            peek_count = 0
-            continue
-        if op.type == OpType.PEEK_BIND:
-            peek_count += 1
-            type_check_peek_bind(token, type_stack, binding, peek_count)
-            continue
-        if op.type == OpType.POP_BIND:
-            type_check_pop_bind(token, type_stack, binding)
-            continue
-        if op.type == OpType.PUSH_BIND:
-            type_check_push_bind(token, type_stack, binding)
-            continue
-        if op.type == OpType.PUSH_BOOL:
-            type_check_push_bool(token, type_stack)
-            continue
-        if op.type == OpType.PUSH_CHAR:
-            type_check_push_char(token, type_stack)
-            continue
-        if op.type == OpType.PUSH_INT:
-            type_check_push_int(token, type_stack)
-            continue
-        if op.type == OpType.PUSH_PTR:
-            type_check_push_ptr(token, type_stack)
-            continue
-        if op.type == OpType.PUSH_STR:
-            type_check_push_str(token, type_stack)
-            continue
-        if op.type == OpType.PUSH_UINT8:
-            type_check_push_uint8(token, type_stack)
-            continue
-        if op.type == OpType.RETURN:
-            return_present = True
-            if_block_stack: TypeStack = if_block_return_stacks[-1] if if_block_return_stacks[-1].head \
-                else if_block_original_stacks[-1]
-            branched_stacks[-1] = type_check_return(op, type_stack, if_block_stack)
-            continue
-        if op.type == OpType.INTRINSIC:
-            type_check_intrinsic(token, type_stack, program)
-            continue
-        # Raise an error if OpType did not match with any of the implemented types
-        compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
+        type_check_info = type_check_op(
+            op, program, functions, binding, type_check_info, branched_stacks,
+            if_block_return_stacks, if_block_original_stacks
+        )
 
     # Verify that the TypeStack state matches with the return types of the Function's Signature
     type_check_end_of_program(func, branched_stacks[-1])
+
+def type_check_op(op: Op, program: Program, functions: Dict[str, Function], binding: Binding, \
+    type_check_info: TypeCheckInfo, branched_stacks: List[TypeStack], if_block_return_stacks: List[TypeStack], \
+    if_block_original_stacks: List[TypeStack]) -> TypeCheckInfo:
+    # pylint: disable=too-many-arguments
+    # sourcery skip: low-code-quality
+    """
+    Type check the current Op in the Program.
+    Raise compiler error if the type checking fails.
+    """
+    token: Token = op.token
+    type_stack: TypeStack = branched_stacks[-1]
+    NOT_TYPED_TOKENS: List[str] = [ 'BREAK', 'CONTINUE', 'PEEK', 'TAKE', 'WHILE' ]
+    if token.value.upper() in NOT_TYPED_TOKENS:
+        return type_check_info
+    if op.type == OpType.ASSIGN_BIND:
+        type_check_assign_bind(op, type_stack, program, binding)
+        return type_check_info
+    if op.type == OpType.CAST_BOOL:
+        type_check_cast_bool(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_CHAR:
+        type_check_cast_char(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_INT:
+        type_check_cast_int(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_PTR:
+        type_check_cast_ptr(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_STR:
+        type_check_cast_str(token, type_stack)
+        return type_check_info
+    if op.type == OpType.CAST_UINT8:
+        type_check_cast_uint8(token, type_stack)
+        return type_check_info
+    if op.type == OpType.DO:
+        type_check_do(token, type_stack, branched_stacks)
+        return type_check_info
+    if op.type == OpType.DONE:
+        type_check_end_of_branch(token, branched_stacks)
+        return type_check_info
+    if op.type == OpType.ELIF:
+        type_check_info.return_present = False
+        type_check_elif(token, type_stack, branched_stacks, if_block_return_stacks[-1])
+        return type_check_info
+    if op.type == OpType.ELSE:
+        type_check_info.else_present = True
+        type_check_else(
+            token, type_stack, branched_stacks,
+            if_block_return_stacks[-1], if_block_original_stacks[-1]
+        )
+        return type_check_info
+    if op.type == OpType.ENDIF:
+        type_check_endif(
+            op, type_stack, branched_stacks,
+            if_block_return_stacks, if_block_original_stacks,
+            (type_check_info.else_present or type_check_info.return_present)
+        )
+        type_check_info.else_present = False
+        return type_check_info
+    if op.type == OpType.FUNCTION_CALL:
+        type_check_function_call(op, type_stack, functions)
+        return type_check_info
+    if op.type == OpType.IF:
+        type_check_info.return_present = False
+        if_block_original_stacks.append(copy(type_stack))
+        if_block_return_stacks.append(TypeStack())
+        return type_check_info
+    if op.type == OpType.IN:
+        type_check_info.peek_count = 0
+        return type_check_info
+    if op.type == OpType.PEEK_BIND:
+        type_check_info.peek_count += 1
+        type_check_peek_bind(token, type_stack, binding, type_check_info.peek_count)
+        return type_check_info
+    if op.type == OpType.POP_BIND:
+        type_check_pop_bind(token, type_stack, binding)
+        return type_check_info
+    if op.type == OpType.PUSH_BIND:
+        type_check_push_bind(token, type_stack, binding)
+        return type_check_info
+    if op.type == OpType.PUSH_BOOL:
+        type_check_push_bool(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_CHAR:
+        type_check_push_char(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_INT:
+        type_check_push_int(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_PTR:
+        type_check_push_ptr(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_STR:
+        type_check_push_str(token, type_stack)
+        return type_check_info
+    if op.type == OpType.PUSH_UINT8:
+        type_check_push_uint8(token, type_stack)
+        return type_check_info
+    if op.type == OpType.RETURN:
+        type_check_info.return_present = True
+        if_block_stack: TypeStack = if_block_return_stacks[-1] if if_block_return_stacks[-1].head \
+            else if_block_original_stacks[-1]
+        branched_stacks[-1] = type_check_return(op, type_stack, if_block_stack)
+        return type_check_info
+    if op.type == OpType.INTRINSIC:
+        type_check_intrinsic(token, type_stack, program)
+        return type_check_info
+    # Raise an error if OpType did not match with any of the implemented types
+    compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
 
 def type_check_end_of_program(func: Function, type_stack: TypeStack) -> None:
     """Verify that the TypeStack state matches with the return types of the Function's Signature"""
