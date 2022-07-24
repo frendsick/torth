@@ -500,6 +500,32 @@ function list.append_str ptr str :
   string list int.size len * ptr+ str.store
 end
 
+// Print list of integer-like values
+// Params: list (PTR)
+// Return: None
+function list.print ptr :
+  dup int.load int.size *
+  take len list in
+  int.size while dup len <= do
+    list over ptr+
+    int.load print "\n" puts
+    int.size +
+  done drop
+end
+
+// Print a list of strings
+// Params: list (PTR)
+// Return: None
+function list.puts ptr :
+  dup int.load str.size *
+  take len list in
+  str.size while dup len <= do
+    list over ptr+
+    str.load puts "\n" puts
+    str.size +
+  done drop
+end
+
 // Open a file with open-syscall
 // Params: int oflag, const char *path
 // Return: fd
