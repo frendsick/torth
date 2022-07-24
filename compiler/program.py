@@ -243,30 +243,11 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             # Use IF block's original stack as the old stack
             branched_stacks.append(if_block_original_stacks[-1])
         elif op.type == OpType.ENDIF:
-            # Save the state of the stack after the first part of the IF block
-            if not if_block_return_stacks[-1].head:
-                if_block_return_stacks[-1] = copy(type_stack)
-            type_check_end_of_branch(token, branched_stacks, \
-                if_block_return_stack=if_block_return_stacks[-1])
-
-            # If IF block altered the stack state there MUST be an ELSE to catch all errors
-            # and the IF block's return stack must match with all of the sections in the block
-            if not else_present and not return_present and if_block_return_stacks[-1].head and \
-                not matching_type_lists(branched_stacks[-1].get_types(), if_block_return_stacks[-1].get_types()):
-                compiler_error("SYNTAX_ERROR", \
-                    "The stack state should be the same than at the start of the IF-block.\n" + \
-                    "Introduce an ELSE-block if you need to return different values from IF-blocks.\n" + \
-                    "The stack state should be the same with every branch of the block.\n\n" + \
-                   f"Stack state after the previous sections in the IF block:\n{if_block_return_stacks[-1].repr()}\n"+ \
-                   f"The stack state before the IF block:\n{branched_stacks[-1].repr()}", op.token)
-
-            # Make the IF block's return stack the new stack for the program
-            if if_block_return_stacks[-1].head:
-                branched_stacks[-1] = if_block_return_stacks[-1]
-
-            # Reset IF-block variables
-            if_block_original_stacks.pop()
-            if_block_return_stacks.pop()
+            type_check_endif(
+                op, type_stack, branched_stacks,
+                if_block_return_stacks, if_block_original_stacks,
+                (else_present or return_present)
+            )
             else_present = False
         elif op.type == OpType.FUNCTION_CALL:
             type_check_function_call(op, type_stack, functions)
@@ -546,6 +527,43 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
 
     type_stack = copy(type_stack)
     branched_stacks.append(type_stack)
+
+def type_check_endif(op: Op, type_stack: TypeStack, \
+    branched_stacks: List[TypeStack], if_block_return_stacks: List[TypeStack], \
+    if_block_original_stacks: List[TypeStack], else_or_return_present: bool) -> None:
+    """
+    ENDIF ends the IF block.
+    We have to check that the stack state was not altered inside the block.
+
+    If stack state was changed, the changes should be consistent in all of the sections
+    AND there should be an ELSE keyword present to act as default branch.
+    """
+    # Save the state of the stack after the first part of the IF block
+    if not if_block_return_stacks[-1].head:
+        if_block_return_stacks[-1] = copy(type_stack)
+
+    # Type check the endif as the end of the IF block
+    type_check_end_of_branch(op.token, branched_stacks, \
+        if_block_return_stack=if_block_return_stacks[-1])
+
+    # If IF block altered the stack state there MUST be an ELSE to catch all errors
+    # and the IF block's return stack must match with all of the sections in the block
+    if not else_or_return_present and if_block_return_stacks[-1].head and \
+        not matching_type_lists(branched_stacks[-1].get_types(), if_block_return_stacks[-1].get_types()):
+        compiler_error("SYNTAX_ERROR", \
+            "The stack state should be the same than at the start of the IF-block.\n" + \
+            "Introduce an ELSE-block if you need to return different values from IF-blocks.\n" + \
+            "The stack state should be the same with every branch of the block.\n\n" + \
+            f"Stack state after the previous sections in the IF block:\n{if_block_return_stacks[-1].repr()}\n"+ \
+            f"The stack state before the IF block:\n{branched_stacks[-1].repr()}", op.token)
+
+    # Make the IF block's return stack the new stack for the program
+    if if_block_return_stacks[-1].head:
+        branched_stacks[-1] = if_block_return_stacks[-1]
+
+    # Reset IF-block variables
+    if_block_original_stacks.pop()
+    if_block_return_stacks.pop()
 
 def type_check_peek_bind(token: Token, type_stack: TypeStack,
     binding: Binding, peek_count: int) -> None:
