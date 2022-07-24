@@ -301,49 +301,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
                 else if_block_original_stacks[-1]
             branched_stacks[-1] = type_check_return(op, type_stack, if_block_stack)
         elif op.type == OpType.INTRINSIC:
-            intrinsic: str = token.value.upper()
-            if intrinsic == "AND":
-                type_check_bitwise(token, type_stack)
-            elif intrinsic == "ARGC":
-                type_check_push_int(token, type_stack)
-            elif intrinsic == "ARGV":
-                type_check_push_ptr(token, type_stack)
-            elif intrinsic == "DIVMOD":
-                type_check_divmod(token, type_stack)
-            elif intrinsic == "DROP":
-                type_check_drop(token, type_stack)
-            elif intrinsic == "DUP":
-                type_check_dup(token, type_stack)
-            elif intrinsic == "ENVP":
-                type_check_push_ptr(token, type_stack)
-            elif intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
-                type_check_comparison(token, type_stack)
-            elif intrinsic.startswith("LOAD_"):
-                type_check_load(token, type_stack)
-            elif intrinsic == "MINUS":
-                type_check_calculations(token, type_stack)
-            elif intrinsic == "MUL":
-                type_check_calculations(token, type_stack)
-            elif intrinsic == "NTH":
-                type_check_nth(token, type_stack, program)
-            elif intrinsic == "OR":
-                type_check_bitwise(token, type_stack)
-            elif intrinsic == "OVER":
-                type_check_over(token, type_stack)
-            elif intrinsic == "PLUS":
-                type_check_calculations(token, type_stack)
-            elif intrinsic == "PRINT":
-                type_check_print(token, type_stack)
-            elif intrinsic == "ROT":
-                type_check_rot(token, type_stack)
-            elif intrinsic.startswith("STORE_"):
-                type_check_store(token, type_stack)
-            elif intrinsic == "SWAP":
-                type_check_swap(token, type_stack)
-            elif re.fullmatch(r'SYSCALL[0-6]', intrinsic):
-                type_check_syscall(token, type_stack, int(intrinsic[-1]))
-            else:
-                compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
+            type_check_intrinsic(token, type_stack, program)
         else:
             compiler_error("NOT_IMPLEMENTED", f"Type checking for {op.type.name} has not been implemented.", token)
 
@@ -361,6 +319,51 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             f"Function parameter types: {func.signature[0]}\n" + \
             f"Function return types:    {func.signature[1]}\n",
             func.tokens[-1], branched_stacks[-1], get_function_type_stack(func))
+
+def type_check_intrinsic(token: Token, type_stack: TypeStack, program: Program) -> None:
+    """Type check an Intrinsic. Raise compiler error if the type checking fails."""
+    intrinsic: str = token.value.upper()
+    if intrinsic == "AND":
+        return type_check_bitwise(token, type_stack)
+    if intrinsic == "ARGC":
+        return type_check_push_int(token, type_stack)
+    if intrinsic == "ARGV":
+        return type_check_push_ptr(token, type_stack)
+    if intrinsic == "DIVMOD":
+        return type_check_divmod(token, type_stack)
+    if intrinsic == "DROP":
+        return type_check_drop(token, type_stack)
+    if intrinsic == "DUP":
+        return type_check_dup(token, type_stack)
+    if intrinsic == "ENVP":
+        return type_check_push_ptr(token, type_stack)
+    if intrinsic in {"EQ", "GE", "GT", "LE", "LT", "NE"}:
+        return type_check_comparison(token, type_stack)
+    if intrinsic.startswith("LOAD_"):
+        return type_check_load(token, type_stack)
+    if intrinsic == "MINUS":
+        return type_check_calculations(token, type_stack)
+    if intrinsic == "MUL":
+        return type_check_calculations(token, type_stack)
+    if intrinsic == "NTH":
+        return type_check_nth(token, type_stack, program)
+    if intrinsic == "OR":
+        return type_check_bitwise(token, type_stack)
+    if intrinsic == "OVER":
+        return type_check_over(token, type_stack)
+    if intrinsic == "PLUS":
+        return type_check_calculations(token, type_stack)
+    if intrinsic == "PRINT":
+        return type_check_print(token, type_stack)
+    if intrinsic == "ROT":
+        return type_check_rot(token, type_stack)
+    if intrinsic.startswith("STORE_"):
+        return type_check_store(token, type_stack)
+    if intrinsic == "SWAP":
+        return type_check_swap(token, type_stack)
+    if re.fullmatch(r'SYSCALL[0-6]', intrinsic):
+        return type_check_syscall(token, type_stack, int(intrinsic[-1]))
+    compiler_error("NOT_IMPLEMENTED", f"Type checking for {intrinsic} has not been implemented.", token)
 
 def correct_return_types(func: Function, type_stack: TypeStack) -> bool:
     """Check if the state of TypeStack is correct after executing the Function"""
