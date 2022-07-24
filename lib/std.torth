@@ -476,7 +476,7 @@ end
 
 // List functions
 // README:
-//    Lists are contiguous memory blocks containing 8 byte values.
+//    Lists are contiguous memory blocks containing list of values.
 //    The first value represents the amount of items in the list.
 //    The first index of the list comes after the length value (ptr + 8 bytes).
 
@@ -490,8 +490,18 @@ function list.append_int ptr int :
   integer list int.size len * ptr+ int.store
 end
 
-// Append integer to a list
-// Params: list (PTR), integer (INT)
+// Append pointer to a list
+// Params: list (PTR), pointer (PTR)
+// Return: None
+function list.append_ptr ptr ptr :
+  dup int.load 1 +
+  take len list string in
+  len list int.store
+  string list ptr.size len * ptr+ ptr.store
+end
+
+// Append string to a list
+// Params: list (PTR), string (STR)
 // Return: None
 function list.append_str ptr str :
   dup int.load 1 +
