@@ -599,7 +599,7 @@ def type_check_push_uint8(token: Token, type_stack: TypeStack) -> None:
     """Push an unsigned 8-bit integer to the stack"""
     type_stack.push(TokenType.UINT8, token.location)
 
-def type_check_return(op: Op, type_stack: TypeStack, if_block_return_stack: Optional[TypeStack]) -> TypeStack:
+def type_check_return(op: Op, type_stack: TypeStack, if_block_return_stack: TypeStack) -> TypeStack:
     """Return from the current Function. Function's TypeStack should be empty."""
     return_types: List[TokenType] = op.func.signature[1]
     if not matching_type_lists(type_stack.get_types(), return_types):
