@@ -224,12 +224,7 @@ def type_check_program(func: Function, program: Program, functions: Dict[str, Fu
             type_check_end_of_branch(token, branched_stacks)
         elif op.type == OpType.ELIF:
             return_present = False
-            # Save the state of the stack after the first part of the IF block
-            if not if_block_return_stacks[-1].head:
-                if_block_return_stacks[-1] = copy(type_stack)
-
-            type_check_end_of_branch(token, branched_stacks,
-                if_block_return_stack=if_block_return_stacks[-1])
+            type_check_elif(token, type_stack, branched_stacks, if_block_return_stacks[-1])
         elif op.type == OpType.ELSE:
             else_present = True
 
@@ -527,6 +522,17 @@ def type_check_do(token: Token, type_stack: TypeStack, branched_stacks: List[Typ
 
     type_stack = copy(type_stack)
     branched_stacks.append(type_stack)
+
+def type_check_elif(token: Token, type_stack: TypeStack, \
+    branched_stacks: List[TypeStack], if_block_return_stack: Optional[TypeStack]) -> None:
+    """Type check ELIF Keyword."""
+    # Save the state of the stack after the first part of the IF block
+    if not if_block_return_stack.head:
+        if_block_return_stack = copy(type_stack)
+
+    # Type check ELIF as the possible end for the IF block
+    type_check_end_of_branch(token, branched_stacks,
+        if_block_return_stack=if_block_return_stack)
 
 def type_check_endif(op: Op, type_stack: TypeStack, \
     branched_stacks: List[TypeStack], if_block_return_stacks: List[TypeStack], \
