@@ -2,7 +2,7 @@
 The module implements lexing functions that parses Tokens from code files
 """
 import itertools
-import os
+import pathlib
 import re
 from typing import Dict, List, Optional, Set
 from compiler.program import constant_exists, memory_exists
@@ -37,8 +37,8 @@ def get_included_files(
         # and the file does not exist as is
         if (
             ".torth" not in file_name
-            and not os.path.isfile(file_name)
-            and not os.path.isfile(f"{compiler_directory}/{file_name}")
+            and not pathlib.Path(file_name).exists()
+            and not pathlib.Path(f"{compiler_directory}/{file_name}").exists()
             and not get_file_name_from_path(
                 file_name, compiler_directory, extra_path_dirs
             )
@@ -46,10 +46,10 @@ def get_included_files(
             file_name = f"{file_name}.torth"
 
         # Absolute path
-        if os.path.isfile(file_name):
+        if pathlib.Path(file_name).exists():
             included_files.add(file_name)
         # Relative path from compiler
-        elif os.path.isfile(f"{compiler_directory}/{file_name}"):
+        elif pathlib.Path(f"{compiler_directory}/{file_name}").exists():
             included_files.add(f"{compiler_directory}/{file_name}")
             continue
         # Relative path from compiler including directories in PATH
@@ -94,7 +94,7 @@ def get_file_name_from_path(
     # Get the first matching file path from PATH
     for path in paths:
         included_file_with_path: str = f"{compiler_directory}/{path}/{file_name}"
-        if os.path.isfile(included_file_with_path):
+        if pathlib.Path(included_file_with_path).exists():
             included_file_path = included_file_with_path
             break
 

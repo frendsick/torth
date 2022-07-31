@@ -3,7 +3,7 @@
 Driver code for the Torth compiler
 """
 import argparse
-import os
+import pathlib
 from typing import Dict, List, Set
 from compiler.compile import compile_code, link_object_file, remove_compilation_files
 from compiler.defs import Constant, Function, Memory, Program
@@ -29,7 +29,7 @@ def main():
     args: argparse.Namespace = get_command_line_arguments()
     print_if_verbose(f"Parsing the code from {args.code_file}", args.verbose)
     code: str = get_file_contents(args.code_file)
-    compiler_directory: str = os.path.dirname(os.path.abspath(__file__))
+    compiler_directory: str = pathlib.Path(__file__).parent
     included_files: Set[str] = get_included_files(code, compiler_directory, args.path)
     included_files.add(args.code_file)
 
@@ -39,7 +39,7 @@ def main():
     memories: List[Memory] = get_memories_from_code(included_files, constants)
     functions = parse_function_bindings(functions, memories)
     sub_programs: Dict[str, Program] = get_sub_programs(functions, constants, memories)
-    code_file_basename: str = os.path.basename(args.code_file)
+    code_file_basename: str = pathlib.Path(args.code_file).name
 
     # Type check sub-programs
     print_if_verbose("Type checking Functions", args.verbose)

@@ -3,7 +3,7 @@ Utility functions for Torth compiler
 """
 import argparse
 import subprocess
-import os
+import pathlib
 import sys
 from typing import Dict, List, NoReturn, Optional
 from compiler.defs import (
@@ -51,7 +51,7 @@ def get_command_line_arguments() -> argparse.Namespace:
     parser.add_argument("code_file", help="Input file")
 
     args: argparse.Namespace = parser.parse_args(sys.argv[1:])
-    if not os.path.isfile(args.code_file):
+    if not pathlib.Path(args.code_file).exists:
         compiler_error("ARGUMENT_ERROR", f"Argument '{args.code_file}' is not a file")
     return args
 
