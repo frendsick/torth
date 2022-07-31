@@ -497,7 +497,7 @@ def get_token_type(token_text: str) -> TokenType:
             f"Token '{token_text}' is not a valid 8-bit unsigned integer.",
         )
     try:
-        _integer = int(token_text)
+        int(token_text)
         return TokenType.INT
     except ValueError:
         return TokenType.WORD
