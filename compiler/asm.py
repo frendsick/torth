@@ -6,12 +6,19 @@ import re
 from typing import Dict, List, Optional
 from compiler.defs import Constant, Function, Memory, OpType, Op, Program, Token
 from compiler.program import generate_program
-from compiler.utils import compiler_error, get_parent_op_type_do, get_parent_while
-from compiler.utils import get_end_op_for_while, get_related_endif, print_if_verbose
+from compiler.utils import (
+    compiler_error,
+    get_parent_op_type_do,
+    get_parent_while,
+    get_end_op_for_while,
+    get_related_endif,
+    print_if_verbose,
+)
+
 
 def initialize_asm(constants: List[Constant], memories: List[Memory]) -> str:
     """Initialize assembly code file with some common definitions."""
-    return f'''{get_asm_file_start(constants)}
+    return f"""{get_asm_file_start(constants)}
 section .bss
   args_ptr: resq 1
   return_stack: resb 1337*64
@@ -54,50 +61,60 @@ print:
   add     rsp, 40
   ret
 
-'''
+"""
+
 
 def get_asm_file_start(constants: List[Constant]) -> str:
     """Return the contents of the beginning of the generated assembly file."""
-    const_defines: str = ''.join(f'%define {const.name} {const.value}\n' for const in constants)
+    const_defines: str = "".join(
+        f"%define {const.name} {const.value}\n" for const in constants
+    )
 
-    return f'''default rel
+    return f"""default rel
 
 ;; DEFINES
 %define sys_exit 60
 {const_defines}
 section .data
-'''
+"""
+
 
 def get_memory_definitions_asm(memories: List[Memory]) -> str:
     """Generates assembly code of memory definitions. Returns the memory definitions."""
-    asm: str = ''
+    asm: str = ""
     for memory in memories:
         file, row, col = memory.location
-        asm += get_token_info_comment_asm(f'MEMORY {memory.name}', file, row, col)
-        asm += f'  {memory.name}: RESB {memory.size}\n'
+        asm += get_token_info_comment_asm(f"MEMORY {memory.name}", file, row, col)
+        asm += f"  {memory.name}: RESB {memory.size}\n"
     return asm
 
-def generate_sub_programs(functions: Dict[str, Function], constants: List[Constant], \
-    memories: List[Memory]) -> List[Program]:
+
+def generate_sub_programs(
+    functions: Dict[str, Function], constants: List[Constant], memories: List[Memory]
+) -> List[Program]:
     """Generate Program from each Function"""
     sub_programs: List[Program] = []
     for func in functions.values():
         tokens: List[Token] = func.tokens
-        sub_programs.append(
-            generate_program(tokens, constants, functions, memories)
-        )
+        sub_programs.append(generate_program(tokens, constants, functions, memories))
     return sub_programs
+
 
 def get_valid_label_for_nasm(function_name: str) -> str:
     """Generate valid NASM label for Function"""
     # Valid characters in labels are letters, numbers, _, $, #, @, ~, ., and ?
-    if not re.match(r'^[\w_$#@~.]+$', function_name):
-        b64: bytes = base64.b64encode(bytes(function_name, 'utf-8'))
-        return str(b64).replace('=','')[2:-1]
+    if not re.match(r"^[\w_$#@~.]+$", function_name):
+        b64: bytes = base64.b64encode(bytes(function_name, "utf-8"))
+        return str(b64).replace("=", "")[2:-1]
     return function_name
 
-def generate_asm(sub_programs: Dict[str, Program], \
-    constants: List[Constant], memories: List[Memory], is_verbose: bool) -> str:
+
+def generate_asm(
+    sub_programs: Dict[str, Program],
+    constants: List[Constant],
+    memories: List[Memory],
+    is_verbose: bool,
+) -> str:
     """Generate Assembly from Functions."""
     print_if_verbose("Generating Assembly from Torth code", is_verbose)
     # Generate beginning for an Assembly file
@@ -114,38 +131,47 @@ def generate_asm(sub_programs: Dict[str, Program], \
         assembly += get_function_end_asm(function_name)
     return assembly
 
+
 def get_function_end_asm(function_name: str) -> str:
     """Return the end of the Assembly of each Function"""
     assembly: str = ""
-    if function_name.upper() != 'MAIN':
-        assembly += f';; [{function_name}] Return to the address found in return_stack\n'
-        assembly +=  '  sub qword [return_stack_index], 8  ; Decrement return_stack_index\n'
-        assembly +=  '  mov rax, return_stack\n'
-        assembly +=  '  add rax, [return_stack_index]\n'
-        assembly +=  '  push qword [rax]\n'
-        assembly +=  '  ret\n\n'
+    if function_name.upper() != "MAIN":
+        assembly += (
+            f";; [{function_name}] Return to the address found in return_stack\n"
+        )
+        assembly += (
+            "  sub qword [return_stack_index], 8  ; Decrement return_stack_index\n"
+        )
+        assembly += "  mov rax, return_stack\n"
+        assembly += "  add rax, [return_stack_index]\n"
+        assembly += "  push qword [rax]\n"
+        assembly += "  ret\n\n"
     else:
-        assembly +=  ';; -- exit syscall\n'
-        assembly +=  '  mov rax, sys_exit\n'
-        assembly +=  '  pop rdi\n'
-        assembly +=  '  syscall\n\n'
+        assembly += ";; -- exit syscall\n"
+        assembly += "  mov rax, sys_exit\n"
+        assembly += "  pop rdi\n"
+        assembly += "  syscall\n\n"
     return assembly
+
 
 def get_function_start_asm(function_name: str) -> str:
     """Return the beginning of the Assembly of each Function"""
     assembly = ""
-    if function_name.upper() == 'MAIN':
-        assembly +=  'global _start\n'
-        assembly +=  '_start:\n'
-        assembly +=  '  mov [args_ptr], rsp   ; Pointer to argc\n'
+    if function_name.upper() == "MAIN":
+        assembly += "global _start\n"
+        assembly += "_start:\n"
+        assembly += "  mov [args_ptr], rsp   ; Pointer to argc\n"
     else:
-        assembly += f'{function_name}:\n'
-        assembly += f';; [{function_name}] Save the return address to return_stack\n'
-        assembly +=  '  mov rax, return_stack\n'
-        assembly +=  '  add rax, [return_stack_index]\n'
-        assembly +=  '  pop qword [rax]\n'
-        assembly +=  '  add qword [return_stack_index], 8  ; Increment return_stack_index\n'
+        assembly += f"{function_name}:\n"
+        assembly += f";; [{function_name}] Save the return address to return_stack\n"
+        assembly += "  mov rax, return_stack\n"
+        assembly += "  add rax, [return_stack_index]\n"
+        assembly += "  pop qword [rax]\n"
+        assembly += (
+            "  add qword [return_stack_index], 8  ; Increment return_stack_index\n"
+        )
     return assembly
+
 
 def generate_program_asm(program: Program, assembly: str) -> str:
     """Generate Assembly for a sub-program."""
@@ -160,20 +186,21 @@ def generate_program_asm(program: Program, assembly: str) -> str:
             assembly += op_asm
     return f"{assembly}"
 
+
 def get_op_asm(op: Op, program: Program) -> str:
     """Generate assembly code for certain Op. Return assembly for the Op."""
     if op.type in {
-        OpType.CAST_BOOL,   # Casts affect only the type checking
+        OpType.CAST_BOOL,  # Casts affect only the type checking
         OpType.CAST_CHAR,
         OpType.CAST_INT,
         OpType.CAST_PTR,
         OpType.CAST_STR,
         OpType.CAST_UINT8,
-        OpType.IF,          # If is just a keyword which starts an IF-block
+        OpType.IF,  # If is just a keyword which starts an IF-block
         OpType.IN,
-        OpType.TAKE
-        }:
-        return ''
+        OpType.TAKE,
+    }:
+        return ""
     if op.type == OpType.ASSIGN_BIND:
         return get_assign_bind_asm(op, program)
     if op.type == OpType.BREAK:
@@ -219,11 +246,16 @@ def get_op_asm(op: Op, program: Program) -> str:
     if op.type == OpType.INTRINSIC:
         return get_intrinsic_asm(op.token)
     # Compiler error for Op not implemented
-    compiler_error("NOT_IMPLEMENTED", f"Operand '{op.type.name}' has not been implemented.", op.token)
+    compiler_error(
+        "NOT_IMPLEMENTED",
+        f"Operand '{op.type.name}' has not been implemented.",
+        op.token,
+    )
+
 
 def get_intrinsic_asm(token: Token) -> str:
     """Generate assembly code for certain Intrinsic. Return assembly for the Intrinsic."""
-    intrinsic: str =  token.value.upper()
+    intrinsic: str = token.value.upper()
     if intrinsic == "AND":
         return get_and_asm()
     if intrinsic == "ARGC":
@@ -288,26 +320,37 @@ def get_intrinsic_asm(token: Token) -> str:
         return get_syscall_asm(param_count=6)
 
     # Compiler error for Intrinsic not implemented
-    compiler_error("NOT_IMPLEMENTED", f"Intrinsic '{intrinsic}' has not been implemented.", token)
+    compiler_error(
+        "NOT_IMPLEMENTED", f"Intrinsic '{intrinsic}' has not been implemented.", token
+    )
+
 
 def get_op_comment_asm(op: Op, op_type: OpType) -> str:
     """Generate assembly comment for the Op. Return the comment string."""
     # Function calls and returns should not generate any output
-    op_name: str    = op_type.name
-    src_file: str   = op.token.location[0]
-    row: int        = op.token.location[1]
-    col: int        = op.token.location[2]
+    op_name: str = op_type.name
+    src_file: str = op.token.location[0]
+    row: int = op.token.location[1]
+    col: int = op.token.location[2]
     if op_name == "INTRINSIC":
-        op_name = f'{op_name} {op.token.value}'
+        op_name = f"{op_name} {op.token.value}"
     elif op_name == "FUNCTION_CALL":
-        op_name = f'Call {op.token.value}'
-    return get_token_info_comment_asm(op_name, src_file, row, col, function_name=op.func.name)
+        op_name = f"Call {op.token.value}"
+    return get_token_info_comment_asm(
+        op_name, src_file, row, col, function_name=op.func.name
+    )
 
-def get_token_info_comment_asm(name: str, file: str, row: int, col: int, function_name: Optional[str] = None) -> str:
+
+def get_token_info_comment_asm(
+    name: str, file: str, row: int, col: int, function_name: Optional[str] = None
+) -> str:
     """Return formatted informative string for the current Op"""
     if function_name:
-        return f';; [{function_name}] {name} | File: {file}, Row: {row}, Col: {col}' + '\n'
-    return f';; -- {name} | File: {file}, Row: {row}, Col: {col}' + '\n'
+        return (
+            f";; [{function_name}] {name} | File: {file}, Row: {row}, Col: {col}" + "\n"
+        )
+    return f";; -- {name} | File: {file}, Row: {row}, Col: {col}" + "\n"
+
 
 def get_comparison_asm(cmov_operand: str) -> str:
     """
@@ -315,46 +358,50 @@ def get_comparison_asm(cmov_operand: str) -> str:
     Only cmov operand changes with different comparison intrinsics.
     Return the assembly code for certain comparison intrinsic.
     """
-    comparison_asm: str  =  '  pop rax\n'
-    comparison_asm      +=  '  pop rbx\n'
-    comparison_asm      +=  '  mov rcx, 0\n'
-    comparison_asm      +=  '  mov rdx, 1\n'
-    comparison_asm      +=  '  cmp rbx, rax\n'
-    comparison_asm      += f'  {cmov_operand} rcx, rdx\n'
-    comparison_asm      +=  '  push rcx\n'
+    comparison_asm: str = "  pop rax\n"
+    comparison_asm += "  pop rbx\n"
+    comparison_asm += "  mov rcx, 0\n"
+    comparison_asm += "  mov rdx, 1\n"
+    comparison_asm += "  cmp rbx, rax\n"
+    comparison_asm += f"  {cmov_operand} rcx, rdx\n"
+    comparison_asm += "  push rcx\n"
     return comparison_asm
+
 
 def get_arithmetic_asm(operand: str) -> str:
     """Return the assembly code for different arithmetic Intrinsics, like PLUS."""
-    arithmetic_asm: str  =  '  pop rbx\n'
-    arithmetic_asm      +=  '  pop rax\n'
-    arithmetic_asm      += f'  {operand} rax, rbx\n'
-    arithmetic_asm      +=  '  push rax\n'
+    arithmetic_asm: str = "  pop rbx\n"
+    arithmetic_asm += "  pop rax\n"
+    arithmetic_asm += f"  {operand} rax, rbx\n"
+    arithmetic_asm += "  push rax\n"
     return arithmetic_asm
+
 
 def format_escape_sequence_characters_for_nasm(string: str) -> str:
     """Transform escape sequence characters to a format supported by NASM."""
     # Make temporary value for escaped backslashes
-    string = string.replace('\\\\','<backslash>')
+    string = string.replace("\\\\", "<backslash>")
 
     # Handle escape sequence characters
-    string = string.replace('\\t','",9,"')          # Tab
-    string = string.replace('\\n','",10,"')         # Newline
-    string = string.replace('\\r','",13,"')         # Carriage return
-    string = string.replace('\\e','",27,"')         # Escape
+    string = string.replace("\\t", '",9,"')  # Tab
+    string = string.replace("\\n", '",10,"')  # Newline
+    string = string.replace("\\r", '",13,"')  # Carriage return
+    string = string.replace("\\e", '",27,"')  # Escape
 
     # Escaped backslash to a singular backslash
-    string = string.replace('<backslash>','\\')
+    string = string.replace("<backslash>", "\\")
     return string
+
 
 def add_string_variable_asm(assembly: str, string: str, op: Op) -> str:
     """Writes a new string variable to assembly file in the .rodata section."""
-    data_section: str = 'section .data\n'
+    data_section: str = "section .data\n"
     string_index = assembly.find(data_section) + len(data_section)
 
     # Replace \n with nasm approved 10s for newline
     escaped_string: str = format_escape_sequence_characters_for_nasm(string)
-    return f'{assembly[:string_index]}  {op.func.name}_s{op.id} db {escaped_string},0\n{assembly[string_index:]}'
+    return f"{assembly[:string_index]}  {op.func.name}_s{op.id} db {escaped_string},0\n{assembly[string_index:]}"
+
 
 def get_do_asm(op: Op, program: Program) -> str:
     """DO is conditional jump to operand after ELIF, ELSE, END or ENDIF."""
@@ -362,214 +409,255 @@ def get_do_asm(op: Op, program: Program) -> str:
 
     # Keeping the count of duplicate parent Ops allows for nested IF or WHILE blocks
     parent_op_count: int = 0
-    op_asm: str = ''
+    op_asm: str = ""
     for i in range(op.id + 1, len(program)):
         op_type: OpType = program[i].type
 
         # Keep count on the nested IF's or WHILE's
-        if (parent_op_type in [OpType.IF, OpType.ELIF] and op_type == OpType.IF) \
-        or (parent_op_type == OpType.WHILE and op_type == OpType.WHILE):
+        if (parent_op_type in [OpType.IF, OpType.ELIF] and op_type == OpType.IF) or (
+            parent_op_type == OpType.WHILE and op_type == OpType.WHILE
+        ):
             parent_op_count += 1
             continue
 
-        if parent_op_count == 0 and \
-            ( ( parent_op_type == OpType.IF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)) \
-            or ( parent_op_type == OpType.ELIF and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)) \
-            or ( parent_op_type == OpType.WHILE and op_type == OpType.DONE ) ):
-            jump_destination: str = f'{op.func.name}_{program[i].type.name}{i}'
+        if parent_op_count == 0 and (
+            (
+                parent_op_type == OpType.IF
+                and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)
+            )
+            or (
+                parent_op_type == OpType.ELIF
+                and op_type in (OpType.ELIF, OpType.ELSE, OpType.ENDIF)
+            )
+            or (parent_op_type == OpType.WHILE and op_type == OpType.DONE)
+        ):
+            jump_destination: str = f"{op.func.name}_{program[i].type.name}{i}"
             op_asm = generate_do_asm(jump_destination)
             break
 
         # Decrement counter when passing another block's ENDIF / DONE
-        if (parent_op_type in [OpType.IF, OpType.ELIF] and op_type == OpType.ENDIF) \
-        or (parent_op_type == OpType.WHILE and op_type == OpType.DONE):
+        if (parent_op_type in [OpType.IF, OpType.ELIF] and op_type == OpType.ENDIF) or (
+            parent_op_type == OpType.WHILE and op_type == OpType.DONE
+        ):
             parent_op_count -= 1
 
     if not op_asm:
-        block_type: str = 'WHILE' if parent_op_type == OpType.WHILE else 'IF'
-        block_end: str  = 'DONE'  if parent_op_type == OpType.WHILE else 'ENDIF'
-        compiler_error("UNCLOSED_BLOCK", f"The current {block_type} block is missing {block_end} keyword.", op.token)
+        block_type: str = "WHILE" if parent_op_type == OpType.WHILE else "IF"
+        block_end: str = "DONE" if parent_op_type == OpType.WHILE else "ENDIF"
+        compiler_error(
+            "UNCLOSED_BLOCK",
+            f"The current {block_type} block is missing {block_end} keyword.",
+            op.token,
+        )
     return op_asm
+
 
 def get_assign_bind_asm(op: Op, program: Program) -> str:
     """Assign a value to the named bound Memory"""
-    memory_name: str = program[op.id-1].token.value
-    bound_memory: str = f'{op.func.name}_{memory_name}'
-    op_asm: str  =  '  pop rax  ; Old value\n'
-    op_asm      +=  '  pop rbx  ; New value\n'
-    op_asm      += f'  mov [{bound_memory}], rbx\n'
+    memory_name: str = program[op.id - 1].token.value
+    bound_memory: str = f"{op.func.name}_{memory_name}"
+    op_asm: str = "  pop rax  ; Old value\n"
+    op_asm += "  pop rbx  ; New value\n"
+    op_asm += f"  mov [{bound_memory}], rbx\n"
     return op_asm
+
 
 def get_break_asm(op: Op, program: Program) -> str:
     """BREAK is an unconditional jump to operand after current loop's DONE."""
     parent_while: Op = get_parent_while(op, program)
-    parent_end:   Op = get_end_op_for_while(parent_while, program)
-    return f'  jmp {op.func.name}_DONE{parent_end.id}\n'
+    parent_end: Op = get_end_op_for_while(parent_while, program)
+    return f"  jmp {op.func.name}_DONE{parent_end.id}\n"
+
 
 def get_continue_asm(op: Op, program: Program) -> str:
     """CONTINUE is an unconditional jump to current loop's WHILE."""
     parent_while: Op = get_parent_while(op, program)
-    op_asm: str  = f'  jmp {op.func.name}_WHILE{parent_while.id}\n'
-    op_asm      += f'{op.func.name}_DONE{op.id}:\n'
+    op_asm: str = f"  jmp {op.func.name}_WHILE{parent_while.id}\n"
+    op_asm += f"{op.func.name}_DONE{op.id}:\n"
     return op_asm
+
 
 def generate_do_asm(jump_destination: str) -> str:
     """DO pops an element from the stack and checks if it is zero."""
-    op_asm: str  =  '  pop rax\n'
-    op_asm      +=  '  test rax, rax\n'
-    op_asm      += f'  jz {jump_destination}\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  test rax, rax\n"
+    op_asm += f"  jz {jump_destination}\n"
     return op_asm
+
 
 def get_done_asm(op: Op, program: Program) -> str:
     """DONE is an unconditional jump to current loop's WHILE."""
     parent_while: Op = get_parent_while(op, program)
-    op_asm: str  = f'  jmp {op.func.name}_WHILE{parent_while.id}\n'
-    op_asm      += f'{op.func.name}_DONE{op.id}:\n'
+    op_asm: str = f"  jmp {op.func.name}_WHILE{parent_while.id}\n"
+    op_asm += f"{op.func.name}_DONE{op.id}:\n"
     return op_asm
+
 
 def get_elif_asm(op: Op, program: Program) -> str:
     """ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to."""
     related_endif: Op = get_related_endif(op, program)
-    op_asm: str  = f'  jmp {op.func.name}_ENDIF{related_endif.id}\n'
-    op_asm      += f'{op.func.name}_ELIF{op.id}:\n'
+    op_asm: str = f"  jmp {op.func.name}_ENDIF{related_endif.id}\n"
+    op_asm += f"{op.func.name}_ELIF{op.id}:\n"
     return op_asm
+
 
 def get_else_asm(op: Op, program: Program) -> str:
     """ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to."""
     related_endif: Op = get_related_endif(op, program)
-    op_asm: str  = f'  jmp {op.func.name}_ENDIF{related_endif.id}\n'
-    op_asm      += f'{op.func.name}_ELSE{op.id}:\n'
+    op_asm: str = f"  jmp {op.func.name}_ENDIF{related_endif.id}\n"
+    op_asm += f"{op.func.name}_ELSE{op.id}:\n"
     return op_asm
+
 
 def get_endif_asm(op: Op) -> str:
     """ENDIF is a keyword for DO, ELIF or ELSE to jump to without additional functionality."""
-    return f'{op.func.name}_ENDIF{op.id}:\n'
+    return f"{op.func.name}_ENDIF{op.id}:\n"
+
 
 def get_function_call_asm(op: Op) -> str:
     """Generate assembly for calling a function"""
     return f"  call {get_valid_label_for_nasm(op.token.value)}\n"
 
+
 def get_peek_asm() -> str:
     """Save current stack pointer to r15"""
-    return '  mov r15, rsp\n'
+    return "  mov r15, rsp\n"
+
 
 def get_peek_bind_asm(op: Op) -> str:
     """Copy a value from the stack to a bound Memory"""
-    memory_name: str  = op.token.value
+    memory_name: str = op.token.value
     bound_memory: str = f"{op.func.name}_{memory_name}"
-    op_asm: str  =  '  mov rax, [r15]\n'
-    op_asm      += f'  mov [{bound_memory}], rax\n'
-    op_asm      +=  '  add r15, 8\n'
+    op_asm: str = "  mov rax, [r15]\n"
+    op_asm += f"  mov [{bound_memory}], rax\n"
+    op_asm += "  add r15, 8\n"
     return op_asm
+
 
 def get_pop_bind_asm(op: Op) -> str:
     """Pop a value from the stack to a bound Memory"""
-    memory_name: str  = op.token.value
+    memory_name: str = op.token.value
     bound_memory: str = f"{op.func.name}_{memory_name}"
-    return f'  pop qword [{bound_memory}]\n'
+    return f"  pop qword [{bound_memory}]\n"
+
 
 def get_push_bind_asm(op: Op) -> str:
     """Push the value from bound Memory to the stack"""
-    memory_name: str  = op.token.value
+    memory_name: str = op.token.value
     bound_memory: str = f"{op.func.name}_{memory_name}"
-    return f'  push qword [{bound_memory}]\n'
+    return f"  push qword [{bound_memory}]\n"
+
 
 def get_push_bool_asm(boolean: str) -> str:
     """Return the assembly code for PUSH_BOOL Operand."""
-    integer: int = 1 if boolean == 'TRUE' else 0
-    op_asm: str  = f'  mov rax, {integer}\n'
-    op_asm      +=  '  push rax\n'
+    integer: int = 1 if boolean == "TRUE" else 0
+    op_asm: str = f"  mov rax, {integer}\n"
+    op_asm += "  push rax\n"
     return op_asm
+
 
 def get_push_char_asm(op: Op) -> str:
     """Return the assembly code for PUSH_CHAR Operand."""
-    op_asm: str  = f'  mov rax, {ord(op.token.value[1])}\n'
-    op_asm      +=  '  push rax\n'
+    op_asm: str = f"  mov rax, {ord(op.token.value[1])}\n"
+    op_asm += "  push rax\n"
     return op_asm
+
 
 def get_push_int_asm(integer: str) -> str:
     """Return the assembly code for PUSH_INT Operand."""
-    op_asm: str  = f'  mov rax, {integer}\n'
-    op_asm      +=  '  push rax\n'
+    op_asm: str = f"  mov rax, {integer}\n"
+    op_asm += "  push rax\n"
     return op_asm
+
 
 def get_push_ptr_asm(memory_name: str) -> str:
     """Return the assembly code for PUSH_PTR Operand."""
-    op_asm: str  = f'  mov rax, {memory_name}\n'
-    op_asm      +=  '  push rax\n'
+    op_asm: str = f"  mov rax, {memory_name}\n"
+    op_asm += "  push rax\n"
     return op_asm
+
 
 def get_push_str_asm(op: Op) -> str:
     """Pushes a pointer to the string variable to the stack."""
-    op_asm: str  = f'  mov rsi, {op.func.name}_s{op.id} ; Pointer to string\n'
-    op_asm      +=  '  push rsi\n'
+    op_asm: str = f"  mov rsi, {op.func.name}_s{op.id} ; Pointer to string\n"
+    op_asm += "  push rsi\n"
     return op_asm
+
 
 def get_return_asm(function_name: str) -> str:
     """Return from the current Function."""
     if function_name.upper() == "MAIN":
-        return get_push_int_asm('0') + get_function_end_asm(function_name)
+        return get_push_int_asm("0") + get_function_end_asm(function_name)
     return get_function_end_asm(function_name)
+
 
 def get_while_asm(op: Op) -> str:
     """
     WHILE is a keyword for DONE to jump to.
     Return the assembly code for WHILE Operand.
     """
-    return f'{op.func.name}_WHILE{op.id}:\n'
+    return f"{op.func.name}_WHILE{op.id}:\n"
+
 
 def get_and_asm() -> str:
     """AND performs bitwise-AND operation to two integers."""
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  and rbx, rax\n'
-    op_asm      += '  push rbx\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  and rbx, rax\n"
+    op_asm += "  push rbx\n"
     return op_asm
+
 
 def get_argc_asm() -> str:
     """ARGC pushes the argument count to the stack."""
-    op_asm: str  = '  mov rax, [args_ptr]\n'
-    op_asm      += '  mov rax, [rax]\n'
-    op_asm      += '  push rax\n'
+    op_asm: str = "  mov rax, [args_ptr]\n"
+    op_asm += "  mov rax, [rax]\n"
+    op_asm += "  push rax\n"
     return op_asm
+
 
 def get_argv_asm() -> str:
     """ARGV pushes the pointer to argument array to the stack."""
-    op_asm: str  = '  mov rax, [args_ptr]\n'
-    op_asm      += '  add rax, 8\n'
-    op_asm      += '  push rax\n'
+    op_asm: str = "  mov rax, [args_ptr]\n"
+    op_asm += "  add rax, 8\n"
+    op_asm += "  push rax\n"
     return op_asm
+
 
 def get_divmod_asm() -> str:
     """DIVMOD pops two integers from the stack and pushes their remainder and quotient."""
-    op_asm: str  = '  xor edx, edx ; Do not use floating point arithmetic\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  pop rax\n'
-    op_asm      += '  div rbx\n'
-    op_asm      += '  push rdx ; Remainder\n'
-    op_asm      += '  push rax ; Quotient\n'
+    op_asm: str = "  xor edx, edx ; Do not use floating point arithmetic\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  pop rax\n"
+    op_asm += "  div rbx\n"
+    op_asm += "  push rdx ; Remainder\n"
+    op_asm += "  push rax ; Quotient\n"
     return op_asm
+
 
 def get_drop_asm() -> str:
     """DROP removes one element from the stack."""
-    return '  add rsp, 8\n'
+    return "  add rsp, 8\n"
+
 
 def get_dup_asm() -> str:
     """
     DUP duplicates the top element in the stack.
     Example with the stack's top element being the rightmost: a -> a a
     """
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  push rax\n'
-    op_asm      += '  push rax\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  push rax\n"
+    op_asm += "  push rax\n"
     return op_asm
+
 
 def get_envp_asm() -> str:
     """ENVP pushes the environment pointer to the stack."""
-    op_asm: str  = '  mov rax, [args_ptr]\n'
-    op_asm      += '  add rax, 24\n'
-    op_asm      += '  push rax\n'
+    op_asm: str = "  mov rax, [args_ptr]\n"
+    op_asm += "  add rax, 24\n"
+    op_asm += "  push rax\n"
     return op_asm
+
 
 def get_eq_asm() -> str:
     """
@@ -578,12 +666,14 @@ def get_eq_asm() -> str:
     """
     return get_comparison_asm("cmove")
 
+
 def get_ge_asm() -> str:
     """
     GE takes two elements from the stack and checks if the top element >= the other.
     It pushes the second element back to the stack and a boolean value of the comparison.
     """
     return get_comparison_asm("cmovge")
+
 
 def get_gt_asm() -> str:
     """
@@ -592,12 +682,14 @@ def get_gt_asm() -> str:
     """
     return get_comparison_asm("cmovg")
 
+
 def get_le_asm() -> str:
     """
     LE takes two elements from the stack and checks if the top element <= the other.
     It pushes the second element back to the stack and a boolean value of the comparison.
     """
     return get_comparison_asm("cmovle")
+
 
 def get_lt_asm() -> str:
     """
@@ -606,6 +698,7 @@ def get_lt_asm() -> str:
     """
     return get_comparison_asm("cmovl")
 
+
 def get_load_asm(load_variant: str) -> str:
     """
     LOAD variants load certain size value from where a pointer is pointing to.
@@ -613,29 +706,32 @@ def get_load_asm(load_variant: str) -> str:
     Different LOAD variants: LOAD_BYTE, LOAD_WORD, LOAD_DWORD, LOAD_QWORD
     """
     variant_register_sizes: Dict[str, str] = {
-        'LOAD_BYTE'    : 'bl',
-        'LOAD_WORD'    : 'bx',
-        'LOAD_DWORD'   : 'ebx',
-        'LOAD_QWORD'   : 'rbx'
+        "LOAD_BYTE": "bl",
+        "LOAD_WORD": "bx",
+        "LOAD_DWORD": "ebx",
+        "LOAD_QWORD": "rbx",
     }
     register: str = variant_register_sizes[load_variant]
-    op_asm: str  =  '  pop rax\n'
-    op_asm      +=  '  xor rbx, rbx\n'
-    op_asm      += f'  mov {register}, [rax]\n'
-    op_asm      +=  '  push rbx\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  xor rbx, rbx\n"
+    op_asm += f"  mov {register}, [rax]\n"
+    op_asm += "  push rbx\n"
     return op_asm
+
 
 def get_minus_asm() -> str:
     """Pop two integers from the stack and decrement the second value from the top one."""
     return get_arithmetic_asm("sub")
 
+
 def get_mul_asm() -> str:
     """Pop two integers from the stack and push the product of the two values."""
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  mul rbx\n'
-    op_asm      += '  push rax  ; Product\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  mul rbx\n"
+    op_asm += "  push rax  ; Product\n"
     return op_asm
+
 
 def get_ne_asm() -> str:
     """
@@ -644,6 +740,7 @@ def get_ne_asm() -> str:
     """
     return get_comparison_asm("cmovne")
 
+
 # Copies Nth element from the stack to the top of the stack
 def get_nth_asm() -> str:
     """
@@ -651,59 +748,65 @@ def get_nth_asm() -> str:
     Note that the Nth is counted without the popped integer.
     Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
     """
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  sub rax, 1\n'
-    op_asm      += '  mov rbx, 8\n'
-    op_asm      += '  mul rbx\n'
-    op_asm      += '  add rsp, rax ; Stack pointer to the Nth element\n'
-    op_asm      += '  pop rbx      ; Get Nth element to rax\n'
-    op_asm      += '  add rax, 8\n'
-    op_asm      += '  sub rsp, rax ; Return stack pointer\n'
-    op_asm      += '  push rbx\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  sub rax, 1\n"
+    op_asm += "  mov rbx, 8\n"
+    op_asm += "  mul rbx\n"
+    op_asm += "  add rsp, rax ; Stack pointer to the Nth element\n"
+    op_asm += "  pop rbx      ; Get Nth element to rax\n"
+    op_asm += "  add rax, 8\n"
+    op_asm += "  sub rsp, rax ; Return stack pointer\n"
+    op_asm += "  push rbx\n"
     return op_asm
+
 
 def get_or_asm() -> str:
     """OR performs bitwise-OR operation to two integers."""
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  or rbx, rax\n'
-    op_asm      += '  push rbx\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  or rbx, rax\n"
+    op_asm += "  push rbx\n"
     return op_asm
+
 
 def get_over_asm() -> str:
     """
     OVER Intrinsic pushes a copy of the second element of the stack.
     Example with the stack's top element being the rightmost: a b -> a b a
     """
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  push rbx\n'
-    op_asm      += '  push rax\n'
-    op_asm      += '  push rbx\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  push rbx\n"
+    op_asm += "  push rax\n"
+    op_asm += "  push rbx\n"
     return op_asm
+
 
 def get_plus_asm() -> str:
     """Pop two integers from the stack and push the sum of the two values."""
     return get_arithmetic_asm("add")
 
+
 def get_print_asm() -> str:
     """Pop an integer from the stack and print the value of it to the stdout."""
-    op_asm: str  =  '  pop rdi\n'
-    op_asm      +=  '  call print\n'
+    op_asm: str = "  pop rdi\n"
+    op_asm += "  call print\n"
     return op_asm
+
 
 def get_rot_asm() -> str:
     """
     ROT Intrinsic rotates the top three elements of the stack so that the third becomes first.
     Example with the stack's top element being the rightmost: a b c -> b c a
     """
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  pop rcx\n'
-    op_asm      += '  push rbx\n'
-    op_asm      += '  push rax\n'
-    op_asm      += '  push rcx\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  pop rcx\n"
+    op_asm += "  push rbx\n"
+    op_asm += "  push rax\n"
+    op_asm += "  push rcx\n"
     return op_asm
+
 
 def get_store_asm(store_variant: str) -> str:
     """
@@ -712,27 +815,29 @@ def get_store_asm(store_variant: str) -> str:
     Different STORE variants: STORE_BYTE, STORE_WORD, STORE_DWORD, STORE_QWORD
     """
     variant_register_sizes: Dict[str, str] = {
-        'STORE_BYTE'    : 'bl',
-        'STORE_WORD'    : 'bx',
-        'STORE_DWORD'   : 'ebx',
-        'STORE_QWORD'   : 'rbx'
+        "STORE_BYTE": "bl",
+        "STORE_WORD": "bx",
+        "STORE_DWORD": "ebx",
+        "STORE_QWORD": "rbx",
     }
     register: str = variant_register_sizes[store_variant]
-    op_asm: str  =  '  pop rax\n'
-    op_asm      +=  '  pop rbx\n'
-    op_asm      += f'  mov [rax], {register}\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  pop rbx\n"
+    op_asm += f"  mov [rax], {register}\n"
     return op_asm
+
 
 def get_swap_asm() -> str:
     """
     SWAP Intrinsic swaps two top elements in the stack.
     Example with the stack's top element being the rightmost: a b -> b a
     """
-    op_asm: str  = '  pop rax\n'
-    op_asm      += '  pop rbx\n'
-    op_asm      += '  push rax\n'
-    op_asm      += '  push rbx\n'
+    op_asm: str = "  pop rax\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  push rax\n"
+    op_asm += "  push rbx\n"
     return op_asm
+
 
 def get_syscall_asm(param_count: int) -> str:
     """
@@ -744,14 +849,14 @@ def get_syscall_asm(param_count: int) -> str:
 
     https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#tables
     """
-    op_asm: str  = "  pop rax ; syscall\n"
+    op_asm: str = "  pop rax ; syscall\n"
 
     # Pop arguments to syscall argument registers
-    argument_registers: List[str] = ['rdi', 'rsi', 'rdx', 'r10', 'r8', 'r9']
+    argument_registers: List[str] = ["rdi", "rsi", "rdx", "r10", "r8", "r9"]
     for i in range(param_count):
         op_asm += f"  pop {argument_registers[i]} ; {i+1}. arg\n"
 
     # Call the syscall and push return code to RAX
-    op_asm      += "  syscall\n"
-    op_asm      += "  push rax ; return code\n"
+    op_asm += "  syscall\n"
+    op_asm += "  push rax ; return code\n"
     return op_asm
