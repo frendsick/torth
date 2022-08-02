@@ -21,7 +21,7 @@
           )))
 
 ;;;###autoload
-(define-derived-mode torth-mode fundamental-mode "torth mode"
+(define-derived-mode torth-mode c-mode "torth mode"
   "Major mode for editing Torth code"
 
   ;; code for syntax highlighting
