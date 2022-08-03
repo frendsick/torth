@@ -99,12 +99,12 @@ function main :
   "test.torth" generate_program_from_file
 
   // Generate Assembly from the Program
-  generate_asm
+  // generate_asm
 
   // Write assembly to a file
-  mode_644 "test.asm" write_file drop
+  // mode_644 "test.asm" write_file drop
 
-  "test.asm" compile_asm
-  "test.o"   link_object_file
+  // "test.asm" compile_asm
+  // "test.o"   link_object_file
   "TODO: Implement Torth compiler with itself.\n" NotImplementedError
 end
