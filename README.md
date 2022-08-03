@@ -79,14 +79,12 @@ function main :
     1   // index
     30  // limit
 
-    // Save values from the stack to variables, topmost value first
+    // Save three values from the stack to variables, topmost value first
     // => TAKE keyword also removes the values from the stack
     // => PEEK keyword would instead save the values without removing them from the stack
-    take
-        limit
-        index
-        sum
-    in
+    TAKE
+        limit index sum
+    IN
 
     // Loop while index <= limit
     WHILE index limit <= DO
