@@ -30,8 +30,11 @@ function Program.print ptr :
   done drop drop "\n" puts
 end
 
-function Program.op_at int ptr -> ptr :
-  Op.size * ptr+ ptr.load
+// Get the Op at certain index
+// Params: program (PTR), index (INT)
+// Return: op (PTR)
+function Program.op_at ptr int -> ptr :
+  swap Op.size * ptr+ ptr.load
 end
 
 function Program.append_match str -> :

@@ -159,7 +159,7 @@ function generate_asm ptr -> str :
   // Generate assembly for each Op in Program
   while index program.len < do
     // Get the current Op
-    program index Program.op_at
+    index program Program.op_at
     take op in
 
     // Generate comment for Op
