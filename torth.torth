@@ -5,19 +5,21 @@ include "compiler/error"
 include "compiler/class/Program"
 
 function generate_program_from_file str -> ptr :
-  "" str.copy // word
-  swap read_file
-  take file_contents word in
+  "" str.copy           // String buffer for word
+  swap read_file        // File contents
+  OP_CAPACITY list.init // Program => List[Op]
+  take program file_contents word in
 
   0 while file_contents over str.char_at NULL != do
     if file_contents over str.char_at ' ' == do
-      word Program.append_match
+      word program Program.append_match
       word str.empty
     else
       file_contents over str.char_at word str.append
     endif
     1 +
-  done drop word Program.append_match Program
+  done drop word program Program.append_match
+  program
 end
 
 // Append to execve_argv
@@ -97,6 +99,7 @@ end
 
 function main :
   "test.torth" generate_program_from_file
+  dup Program.print drop  // Print the Program contents
 
   // Generate Assembly from the Program
   // generate_asm

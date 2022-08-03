@@ -2,32 +2,22 @@ include "std"
 include "compiler/lex"
 include "compiler/class/Op"
 
-// Append Op to Program
-// Params: Pointer to Op
-// Return: None
-function Program.append ptr :
-  // Store Op to the end of Program
-  Program
-  Program.len int.load
-  Op.size * ptr+ ptr.store
-
-  // Increment Program.len
-  Program.len int.load 1 +
-  Program.len int.store
-end
-
 // Iterate over every Op in Program and print the contents of them
 // Params: Pointer to Program (PTR)
 // Return: None
 function Program.print ptr :
-  0 while dup Program.len int.load < do
-    // Load current Op
-    over over Op.size * ptr+ ptr.load
+  0 take index program in
+   while index program list.len < do
 
-    // Print current Op
+    // Load Op at program[index]
+    program list.first
+    index ptr.size *
+    ptr+ ptr.load
+
+    // Print the loaded Op
     Op.print "\n" puts
-    1 +
-  done drop drop "\n" puts
+    index 1 + index =
+  done
 end
 
 // Get the Op at certain index
@@ -37,13 +27,18 @@ function Program.op_at ptr int -> ptr :
   swap Op.size * ptr+ ptr.load
 end
 
-function Program.append_match str -> :
-  // Generate Token from string
-  get_token_from_match
+// Parse a word to Token and append it to Program
+// Params: program (PTR), word (STR)
+// Return: None
+function Program.append_match ptr str -> :
+  take program word in
+
+  // Generate Token from the word
+  word get_token_from_match
 
   // Generate Op from Token
-  get_op_from_token
+  program list.len swap get_op_from_token
 
   // Append Op to Program
-  Program.append
+  program list.append
 end

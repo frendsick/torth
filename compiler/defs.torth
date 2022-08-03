@@ -1,5 +1,8 @@
 include "std"
 
+// Constants
+const OP_CAPACITY 1337 end
+
 // Keywords
 ENUM Keyword.len 1 :
   Keyword.BOOL
@@ -113,7 +116,3 @@ ENUM Constant.size 8 :
   Constant.value
   Constant.location
 END
-
-// List[Op]
-memory Program MEMORY_CAPACITY end
-memory Program.len int.size end
