@@ -184,6 +184,16 @@ function char.is_alphanumeric char -> bool :
   ||
 end
 
+// Test if a character is some whitespace character
+function char.is_whitespace char -> bool :
+  take c in
+  c ' ' ==  // Space
+  c 9   ==  // Tab \t
+  c 10  ==  // Line feed \n
+  c 13  ==  // Carriage return \r
+  || || ||  // Logical OR each of the comparisons
+end
+
 // Int functions
 function int.load     ptr       -> int    : LOAD_QWORD int    end
 function int.store    ptr int   ->        : STORE_QWORD       end
