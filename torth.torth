@@ -10,12 +10,16 @@ function generate_program_from_file str -> ptr :
   OP_CAPACITY list.init // Program => List[Op]
   take program file_contents word in
 
-  0 while file_contents over str.char_at NULL != do
-    if file_contents over str.char_at ' ' == do
+  0 while
+    file_contents over str.char_at
+    peek current_char in
+    NULL !=
+  do
+    if current_char ' ' == do
       word program Program.append_match
       word str.empty
     else
-      file_contents over str.char_at word str.append
+      current_char word str.append
     endif
     1 +
   done drop word program Program.append_match
