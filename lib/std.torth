@@ -477,49 +477,72 @@ end
 // List functions
 // README:
 //    Lists are contiguous memory blocks containing list of values.
-//    The first value represents the amount of items in the list.
-//    The first index of the list comes after the length value (ptr + 8 bytes).
+//    => Value at the list pointer represents the amount of items in the list.
+//    => Value after it represents the size of stored objects
+//    The first index of the list comes after the length and size values (ptr + 16 bytes).
 
-// Append integer to a list
-// Params: list (PTR), integer (INT)
-// Return: None
-function list.append_int ptr int :
-  dup int.load 1 +
-  take len list integer in
-  len list int.store
-  integer list int.size len * ptr+ int.store
+// Initialize list with a certain size
+// Params: len (INT)
+// Return: list (PTR)
+function list.init int -> ptr :
+  take
+    len
+  in
+
+  // Allocate memory for the list and the integer
+  // representing how many items there are in the list
+  len ptr.size * int.size + malloc
 end
 
-// Append pointer to a list
-// Params: list (PTR), pointer (PTR)
+// Append value pointer to a list
+// Params: list (PTR), value_ptr (PTR)
 // Return: None
-function list.append_ptr ptr ptr :
-  dup int.load 1 +
-  take len list string in
-  len list int.store
-  string list ptr.size len * ptr+ ptr.store
+function list.append ptr ptr :
+  dup int.load                // Length of list
+
+  // Store values from the stack to variables
+  take
+    len
+    list
+    value_ptr
+  in
+
+  // Add the value_ptr to the end of the list
+  value_ptr
+  list int.size ptr+
+  ptr.size len * ptr+
+  ptr.store
+
+  // Increment the list length by one
+  len 1 + list int.store
 end
 
-// Append string to a list
-// Params: list (PTR), string (STR)
-// Return: None
-function list.append_str ptr str :
-  dup int.load 1 +
-  take len list string in
-  len list int.store
-  string list int.size len * ptr+ str.store
+// Get the length of a list
+// Params: list (PTR)
+// Return: len (INT)
+function list.len ptr -> int :
+  // The length is stored at the list pointer
+  int.load
+end
+
+// Get pointer to the first element of the list
+// Params: list (PTR)
+// Return: list[0] (PTR)
+function list.first ptr -> ptr :
+  int.size ptr+
 end
 
 // Print list of integer-like values
 // Params: list (PTR)
 // Return: None
 function list.print ptr :
-  dup int.load int.size *
+  dup int.load
   take len list in
-  int.size while dup len <= do
-    list over ptr+
-    int.load print "\n" puts
-    int.size +
+  0 while dup len < do
+    list list.first
+    over ptr.size *
+    ptr+ int.load print
+    1 +
   done drop
 end
 
@@ -527,12 +550,13 @@ end
 // Params: list (PTR)
 // Return: None
 function list.puts ptr :
-  dup int.load str.size *
+  dup int.load
   take len list in
-  str.size while dup len <= do
-    list over ptr+
-    str.load puts "\n" puts
-    str.size +
+  0 while dup len < do
+    list list.first
+    over ptr.size *
+    ptr+ str.load puts
+    1 +
   done drop
 end
 
