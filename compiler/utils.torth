@@ -3,6 +3,11 @@ include "std"
 include "compiler/defs"
 include "compiler/class/Location"
 include "compiler/class/Signature"
+include "compiler/class/Token"
+
+function get_dummy_token -> ptr :
+  get_dummy_location TokenType.INT "69" Token.init
+end
 
 // Generate dummy Location
 // Location(file='test.torth', row=6, col=9)
