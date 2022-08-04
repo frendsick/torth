@@ -1,6 +1,9 @@
 // typing.torth - Definitions for non-built in types
 include "std"
 
+// Constants
+const ITERABLE_CAPACITY 1024 end
+
 // === List ===
 // README:
 //    Lists are contiguous memory blocks containing list of values.
@@ -9,23 +12,19 @@ include "std"
 //    The first index of the list comes after the length and size values (ptr + 16 bytes).
 
 // Initialize list with a certain size
-// Params: len (INT)
+// Params: None
 // Return: list (PTR)
-function list.init int -> ptr :
-  take
-    len
-  in
-
+function list.init -> ptr :
   // Allocate memory for the list and the integer
   // representing how many items there are in the list
-  len ptr.size * int.size + malloc
+  ITERABLE_CAPACITY ptr.size * int.size + malloc
 end
 
 // Append value pointer to a list
 // Params: list (PTR), value_ptr (PTR)
-// Return: None
-function list.append ptr ptr :
-  dup int.load                // Length of list
+// Return: list (PTR)
+function list.append ptr ptr -> ptr :
+  dup int.load // Length of list
 
   // Store values from the stack to variables
   take
@@ -33,6 +32,26 @@ function list.append ptr ptr :
     list
     value_ptr
   in
+
+  // Dynamically allocate more memory to the list when at capacity
+  if
+    len 0 !=
+    len ITERABLE_CAPACITY % 0 ==
+    &&
+  do
+    // Allocate memory with size (len + ITERABLE_CAPACITY) * ptr.size + int.size
+    len ITERABLE_CAPACITY + ptr.size * int.size + dup malloc
+    take new_list memory_size in
+
+    // Copy list to newly allocated list
+    memory_size ITERABLE_CAPACITY - list new_list memcpy
+
+    // Deallocate the original list
+    memory_size ITERABLE_CAPACITY - dup print list munmap
+
+    // Use the new list instead of the old one
+    new_list list =
+  endif
 
   // Add the value_ptr to the end of the list
   value_ptr
@@ -42,6 +61,7 @@ function list.append ptr ptr :
 
   // Increment the list length by one
   len 1 + list int.store
+  list
 end
 
 // Get the length of a list
