@@ -1,0 +1,88 @@
+// typing.torth - Definitions for non-built in types
+include "std"
+
+// === List ===
+// README:
+//    Lists are contiguous memory blocks containing list of values.
+//    => Value at the list pointer represents the amount of items in the list.
+//    => Value after it represents the size of stored objects
+//    The first index of the list comes after the length and size values (ptr + 16 bytes).
+
+// Initialize list with a certain size
+// Params: len (INT)
+// Return: list (PTR)
+function list.init int -> ptr :
+  take
+    len
+  in
+
+  // Allocate memory for the list and the integer
+  // representing how many items there are in the list
+  len ptr.size * int.size + malloc
+end
+
+// Append value pointer to a list
+// Params: list (PTR), value_ptr (PTR)
+// Return: None
+function list.append ptr ptr :
+  dup int.load                // Length of list
+
+  // Store values from the stack to variables
+  take
+    len
+    list
+    value_ptr
+  in
+
+  // Add the value_ptr to the end of the list
+  value_ptr
+  list int.size ptr+
+  ptr.size len * ptr+
+  ptr.store
+
+  // Increment the list length by one
+  len 1 + list int.store
+end
+
+// Get the length of a list
+// Params: list (PTR)
+// Return: len (INT)
+function list.len ptr -> int :
+  // The length is stored at the list pointer
+  int.load
+end
+
+// Get pointer to the first element of the list
+// Params: list (PTR)
+// Return: list[0] (PTR)
+function list.first ptr -> ptr :
+  int.size ptr+
+end
+
+// Print list of integer-like values
+// Params: list (PTR)
+// Return: None
+function list.print ptr :
+  dup int.load
+  take len list in
+  0 while dup len < do
+    list list.first
+    over ptr.size *
+    ptr+ int.load print
+    1 +
+  done drop
+end
+
+// Print a list of strings
+// Params: list (PTR)
+// Return: None
+function list.puts ptr :
+  dup int.load
+  take len list in
+  0 while dup len < do
+    list list.first
+    over ptr.size *
+    ptr+ str.load puts
+    1 +
+  done drop
+end
