@@ -52,6 +52,22 @@ function list.len ptr -> int :
   int.load
 end
 
+// Empty the list
+// Params: list (PTR)
+// Return: None
+function list.empty ptr :
+  dup list.len
+  take len list in
+
+  // Overwrite every item with NULL
+  0 while dup len < do
+    NULL
+    list over ptr.size * int.size + ptr+
+    int.store
+    1 +
+  done drop
+end
+
 // Get pointer to the first element of the list
 // Params: list (PTR)
 // Return: list[0] (PTR)
@@ -92,7 +108,7 @@ function list.print ptr :
   0 while dup len < do
     list list.first
     over ptr.size *
-    ptr+ int.load print
+    ptr+ int.load print " " puts
     1 +
   done drop
 end
