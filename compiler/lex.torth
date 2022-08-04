@@ -276,6 +276,7 @@ function get_functions str -> ptr :
       // FUNCTION <name> <param_types> : <function_body> END
       if token_value ":" streq do
         current_part 2 + current_part =
+        index 1 + index =
         continue
       endif
 
