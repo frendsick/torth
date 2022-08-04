@@ -7,15 +7,16 @@ include "std"
 // 'NO COLOR' => '\e[0m'
 // 'WARNING'  => '\e[93m'
 
-// Params: Error type (STR)
+// Params: Error type (STR), message (STR)
 // Return: None
-function CompilerError str :
-  "\e[95mCompiler Error \e[91m" puts puts "\e[0m:\n" puts
+function CompilerError str str :
+  "\e[95mCompiler Error \e[91m" eputs eputs
+  "\e[0m:\n" eputs eputs
 end
 
 // Params: Error message (STR)
 // Return: NoReturn
 function NotImplementedError str :
   "NOT_IMPLEMENTED" CompilerError
-  eputs 1 exit
+  1 exit
 end
