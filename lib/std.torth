@@ -106,6 +106,26 @@ function malloc int -> ptr :
   NULL SYS_mmap SYSCALL6 ptr
 end
 
+// Deallocate memory
+// Params: pointer (PTR), len (INT)
+// Return: None
+function munmap ptr int :
+  SYS_munmap SYSCALL2 drop
+end
+
+// Copy N characters from one memory location to another
+// Params: dest (PTR), src (PTR), len (INT)
+// Return: None
+function memcpy ptr ptr int :
+  0
+  take index dest src len in
+  while index len < do
+    src  index ptr+ char.load
+    dest index ptr+ char.store
+    index 1 + index =
+  done
+end
+
 // Print a string to stdout
 function puts  str : stdout fputs end
 
