@@ -59,6 +59,30 @@ function list.first ptr -> ptr :
   int.size ptr+
 end
 
+// Get pointer to the Nth element of the list
+// Params: list (PTR), N (INT)
+// Return: list[N] (PTR)
+function list.nth ptr int -> ptr :
+  dup list.len
+  take len list N in
+
+  // Exit with error if Nth element does not exist
+  if
+    N len >
+    N 0 <
+    ||
+  do
+    "[ERROR] Cannot get " eputs
+    N   eputi ". value from the list with " eputs
+    len eputi " items\n" eputs
+    0 exit NULL ptr
+    return
+  endif
+
+  // Return pointer to the Nth element from the list
+  list N ptr.size * int.size + ptr+
+end
+
 // Print list of integer-like values
 // Params: list (PTR)
 // Return: None
