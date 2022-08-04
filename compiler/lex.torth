@@ -5,6 +5,7 @@ include "compiler/utils"
 include "compiler/class/Function"
 include "compiler/class/Op"
 include "compiler/class/Token"
+include "compiler/class/Signature"
 
 // Transfer comparison and calculations related symbols to their text counterparts
 // Params: Token match from code (STR)
@@ -84,7 +85,7 @@ function get_token_type str -> int :
   TokenType.WORD
 end
 
-function get_token_from_match str -> ptr :
+function get_token_from_word str -> ptr :
   get_token_value dup
   get_token_type
   get_dummy_location
@@ -126,4 +127,171 @@ function get_op_from_token ptr int -> ptr :
   token get_op_type         // op_type
   id                        // id
   Op.init
+end
+
+// Functions are made of four parts:
+//   1 : name
+//   2 : param types
+//   3 : return types
+//   4 : location
+//  (0 : Not lexing a function)
+//  FUNCTION_PART_DELIMITERS: List[str] = ["FUNCTION", "->", ":", "END"]
+function get_function_part_delimiters -> ptr :
+  5 list.init
+  "FUNCTION"  ptr over list.append
+  ""          ptr over list.append
+  "->"        ptr over list.append
+  ":"         ptr over list.append
+  "END"       ptr over list.append
+end
+
+// Get all words from code to a list
+// Params
+//    code: str
+// Return
+//    List[str]
+const WORD_LIMIT 1337 end
+function get_words_from_code str -> ptr :
+  WORD_LIMIT list.init  // TODO: Implement dynamic lists
+  "" str.copy           // String buffer for word
+  take
+    word
+    word_list
+    code
+  in
+
+  0 while
+    code over str.char_at
+    peek current_char in
+    NULL !=
+  do
+    if
+      current_char char.is_whitespace
+    do
+      // If the word is empty there has been multiple whitespaces in a row
+      if word str.len 0 == do
+        1 +
+        continue
+      endif
+
+      // Append current word to word_list
+      word str.copy ptr word_list list.append
+      word str.empty
+    else
+      // Append current character to word
+      current_char word str.append
+    endif
+    1 + // index++
+  done drop
+
+  // Append the last word if the file ended with a word
+  if word str.len 0 > do
+    word ptr word_list list.append
+  endif
+  word_list
+end
+
+// Parse Functions from code
+// Params
+//    code: str
+// Return
+//    List[Function]
+function get_functions str -> ptr :
+
+  // Iterate over all characters in the code and get a list of words
+  get_words_from_code
+
+  // Initialize variables
+  FUNCTION_CAPACITY list.init   // List[Function]
+  OP_CAPACITY list.init         // List[Token]
+  0                             // current_part
+  get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
+  "" str.copy                   // String buffer for function's name
+  50 list.init                  // return_types
+  50 list.init                  // param_types
+  0                             // index
+  take
+    index
+    param_types
+    return_types
+    function_name
+    FUNCTION_PART_DELIMITERS
+    current_part
+    tokens
+    functions
+    word_list
+  in
+
+  while index word_list list.len < do
+    // Get current word
+    index word_list list.nth str.load
+    dup   get_token_from_word
+    take token token_value in
+
+    if
+      token_value str.copy str.upper
+      current_part FUNCTION_PART_DELIMITERS list.nth str.load
+      streq
+    do
+      current_part 1 + 5 % current_part =
+
+      // Append Function and reset variables when function is fully lexed
+      if token_value str.copy str.upper "END" streq do
+
+        // Append 0 token as the exit code for MAIN function
+        if function_name str.copy str.upper "MAIN" streq do
+          get_dummy_location TokenType.INT "0" Token.init
+          tokens list.append
+        endif
+
+        // Function(function_name, signature, tokens)
+        tokens
+        return_types param_types Signature.init
+        function_name Function.init
+        dup Function.print
+        // Append the current function to functions list
+        functions list.append
+
+        // Reset variables
+        function_name dup str.empty   function_name =
+        param_types   dup list.empty  param_types   =
+        return_types  dup list.empty  return_types  =
+        tokens        dup list.empty  tokens        =
+      endif
+      // if dup current_part != do
+      //   "Token '" token_value str.cat
+      //   "' is used in the wrong context when defining 'main' function\n" str.cat
+      //   "FUNCTION_SIGNATURE_ERROR" CompilerError 0 exit
+      //   drop ptr return
+      // endif
+
+    elif current_part 1 == do
+      token_value function_name =
+      current_part 1 + current_part =
+      // TODO: Check for function redefinition
+      // TODO: Check for Constants
+
+    elif current_part 2 == do
+      // Enable defining functions that do not return anything without the -> token
+      // FUNCTION <name> <param_types> : <function_body> END
+      if token_value ":" streq do
+        current_part 2 + current_part =
+        continue
+      endif
+
+      // Append word to param_types if valid TokenType
+      token_value Signature.type_map ptr
+      param_types list.append
+      // "[TODO] Handling -> delimiter is not implemented\n" NotImplementedError
+    elif current_part 3 == do
+      // Append word to return_types if valid TokenType
+      token_value Signature.type_map ptr
+      return_types list.append
+    elif current_part 4 == do
+      token_value get_token_from_word tokens list.append
+    endif
+    index 1 + index =
+  done
+
+  functions
 end

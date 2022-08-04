@@ -59,12 +59,12 @@ function compile_program ptr :
 end
 
 function main :
-  "test.torth" read_file  take code     in
-  code generate_program   take program  in
+  "test.torth" read_file  take code in
+  code get_functions drop
 
   // Type check the Program
-  program type_check_program
+  // program type_check_program
 
   // Compile code into executable
-  program compile_program
+  // program compile_program
 end
