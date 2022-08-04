@@ -17,6 +17,33 @@ function Signature.init ptr ptr -> ptr :
   swap over Signature.returns ptr+ ptr.store
 end
 
+// Get TokenType from certain type in function definition
+function Signature.type_map str -> int :
+  str.copy str.upper
+  take type_upper in
+
+  if type_upper "ANY" streq do
+    TokenType.ANY return
+  elif type_upper "BOOL" streq do
+    TokenType.BOOL return
+  elif type_upper "CHAR" streq do
+    TokenType.CHAR return
+  elif type_upper "INT" streq do
+    TokenType.INT return
+  elif type_upper "PTR" streq do
+    TokenType.PTR return
+  elif type_upper "STR" streq do
+    TokenType.STR return
+  elif type_upper "UINT8" streq do
+    TokenType.UINT8 return
+  else
+    "'" type_upper                  str.cat
+    "' is not a valid TokenType\n"  str.cat
+    "FUNCTION_SIGNATURE_ERROR" CompilerError 0 exit
+    NULL
+  endif
+end
+
 function Signature.print ptr :
   // Print params
   "Signature.params   => " puts
