@@ -7,9 +7,9 @@ ENUM Signature.size 8 :
 END
 
 // Allocate memory for Signature and the TokenType lists in it
-function Signature.init -> ptr :
-  ptr.size malloc // Signature.returns
-  ptr.size malloc // Signature.params
+// Params: param_types (PTR), return_types (PTR)
+// Return: Signature
+function Signature.init ptr ptr -> ptr :
   Signature.size malloc
 
   // returns signature
