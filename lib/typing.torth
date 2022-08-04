@@ -52,20 +52,11 @@ function list.len ptr -> int :
   int.load
 end
 
-// Empty the list
+// Empty the list by setting the length value to 0
 // Params: list (PTR)
 // Return: None
 function list.empty ptr :
-  dup list.len
-  take len list in
-
-  // Overwrite every item with NULL
-  0 while dup len < do
-    NULL
-    list over ptr.size * int.size + ptr+
-    int.store
-    1 +
-  done drop
+  0 swap int.store
 end
 
 // Get pointer to the first element of the list
