@@ -59,7 +59,7 @@ function compile_program ptr :
 end
 
 function main :
-  "test.torth" read_file  take code in
+  "lib/std.torth" read_file take code in
   code get_functions drop
 
   // Type check the Program
