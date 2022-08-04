@@ -137,12 +137,12 @@ end
 //  (0 : Not lexing a function)
 //  FUNCTION_PART_DELIMITERS: List[str] = ["FUNCTION", "->", ":", "END"]
 function get_function_part_delimiters -> ptr :
-  5 list.init
-  "FUNCTION"  ptr over list.append
-  ""          ptr over list.append
-  "->"        ptr over list.append
-  ":"         ptr over list.append
-  "END"       ptr over list.append
+  list.init
+  "FUNCTION"  ptr swap list.append
+  ""          ptr swap list.append
+  "->"        ptr swap list.append
+  ":"         ptr swap list.append
+  "END"       ptr swap list.append
 end
 
 // Get all words from code to a list
@@ -150,10 +150,9 @@ end
 //    code: str
 // Return
 //    List[str]
-const WORD_LIMIT 1337 end
 function get_words_from_code str -> ptr :
-  WORD_LIMIT list.init  // TODO: Implement dynamic lists
-  "" str.copy           // String buffer for word
+  list.init
+  "" str.copy // String buffer for word
   take
     word
     word_list
@@ -176,6 +175,7 @@ function get_words_from_code str -> ptr :
 
       // Append current word to word_list
       word str.copy ptr word_list list.append
+      word_list =
       word str.empty
     else
       // Append current character to word
@@ -187,6 +187,7 @@ function get_words_from_code str -> ptr :
   // Append the last word if the file ended with a word
   if word str.len 0 > do
     word ptr word_list list.append
+    word_list =
   endif
   word_list
 end
@@ -202,13 +203,13 @@ function get_functions str -> ptr :
   get_words_from_code
 
   // Initialize variables
-  FUNCTION_CAPACITY list.init   // List[Function]
-  OP_CAPACITY list.init         // List[Token]
+  list.init                     // List[Function]
+  list.init                     // List[Token]
   0                             // current_part
   get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
   "" str.copy                   // String buffer for function's name
-  50 list.init                  // return_types
-  50 list.init                  // param_types
+  list.init                     // return_types
+  list.init                     // param_types
   0                             // index
   take
     index
@@ -242,15 +243,16 @@ function get_functions str -> ptr :
         if function_name str.copy str.upper "MAIN" streq do
           get_dummy_location TokenType.INT "0" Token.init
           tokens list.append
+          tokens =
         endif
 
         // Function(function_name, signature, tokens)
         tokens
         return_types param_types Signature.init
         function_name Function.init
-        dup Function.print
+        // dup Function.print
         // Append the current function to functions list
-        functions list.append
+        functions list.append drop
 
         // Reset variables
         function_name dup str.empty   function_name =
@@ -283,13 +285,16 @@ function get_functions str -> ptr :
       // Append word to param_types if valid TokenType
       token_value Signature.type_map ptr
       param_types list.append
+      param_types =
       // "[TODO] Handling -> delimiter is not implemented\n" NotImplementedError
     elif current_part 3 == do
       // Append word to return_types if valid TokenType
       token_value Signature.type_map ptr
       return_types list.append
+      return_types =
     elif current_part 4 == do
       token_value get_token_from_word tokens list.append
+      tokens =
     endif
     index 1 + index =
   done

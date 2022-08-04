@@ -11,8 +11,8 @@ include "compiler/class/Program"
 // Return
 //    program: Program
 function generate_program str -> ptr :
-  "" str.copy           // String buffer for word
-  OP_CAPACITY list.init // Program => List[Op]
+  "" str.copy // String buffer for word
+  list.init   // Program => List[Op]
   take program word file_contents in
 
   0 while
