@@ -250,7 +250,6 @@ function get_functions str -> ptr :
         tokens
         return_types param_types Signature.init
         function_name Function.init
-        dup Function.print  // Print the current Function
 
         // Append the current function to functions list
         functions list.append
