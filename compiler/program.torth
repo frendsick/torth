@@ -33,16 +33,16 @@ end
 // Params: Function
 // Return: Program
 function generate_program ptr -> ptr :
-  Function.tokens ptr+ ptr.load
+  dup Function.tokens ptr+ ptr.load
   list.init
   0
   take
     index
     program
     tokens
+    func
   in
 
-  "Iterating Tokens\n" puts
   while index tokens list.len < do
     // Get current Token
     tokens list.first
@@ -52,9 +52,14 @@ function generate_program ptr -> ptr :
     // Get the Token's OpType
     get_tokens_op_type
     take op_type in
-    index 1 + index =
+
+    // Append Op to Program
+    func token op_type index Op.init
+    program list.append
+    program =
+    index 1 + index = // index++
   done
-  0 exit
+  program Program.print
   program
 end
 
