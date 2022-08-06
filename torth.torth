@@ -20,9 +20,10 @@ function compile_program ptr :
 end
 
 function main :
-  "lib/std.torth" read_file peek code         in
-  get_functions             peek functions    in
-  get_sub_programs          take sub_programs in
+  "test.torth" read_file    peek code           in
+  get_functions             peek functions      in
+  get_sub_programs          peek sub_programs   in
+  generate_assembly_code    take assembly_code  in
 
   // Type check the Program
   // program type_check_program

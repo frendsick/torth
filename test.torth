@@ -1,3 +1,8 @@
+// Test program for torth.torth
 function main -> :
-  34 35 + print
+  34 35 multiply print
+end
+
+function multiply int int -> int :
+  *
 end
