@@ -177,8 +177,10 @@ function get_tokens_op_type ptr ptr -> int :
   elif functions token_value function_exists do
     OpType.FUNCTION_CALL return
   else
-    "[TODO] Unknown Token '" puts
-    token Token.get_value puts "'\n" puts
+    "Operation '"
+    token Token.get_value str.cat
+    "' is not found\n"    str.cat
+    "OP_NOT_FOUND" CompilerError
     NULL 0 exit
   endif
 end
