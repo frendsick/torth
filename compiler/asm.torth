@@ -40,6 +40,8 @@ function get_op_asm ptr -> str :
     take intrinsic in
     if intrinsic "AND" streq do
       get_and_asm return
+    elif intrinsic "MUL" streq do
+      get_mul_asm return
     elif intrinsic "PLUS" streq do
       get_plus_asm return
     elif intrinsic "PRINT" streq do
@@ -130,6 +132,16 @@ function get_and_asm -> str :
   "  pop rbx\n"       str.cat
   "  and rbx, rax\n"  str.cat
   "  push rbx\n"      str.cat
+end
+
+// Pop two integers from the stack and push the product of the two values
+// Params: None
+// Return: Assembly
+function get_mul_asm -> str :
+  "  pop rax\n"
+  "  pop rbx\n"             str.cat
+  "  mul rbx\n"             str.cat
+  "  push rax  ; Product\n" str.cat
 end
 
 // Pop two integers from the stack and push the sum of the two values
