@@ -3,6 +3,7 @@ include "std"
 include "typing"
 include "compiler/asm"
 include "compiler/error"
+include "compiler/program"
 include "compiler/class/Program"
 
 // Type check the Program
@@ -19,8 +20,9 @@ function compile_program ptr :
 end
 
 function main :
-  "lib/std.torth" read_file take code in
-  code get_functions take functions in
+  "lib/std.torth" read_file peek code         in
+  get_functions             peek functions    in
+  get_sub_programs          take sub_programs in
 
   // Type check the Program
   // program type_check_program
