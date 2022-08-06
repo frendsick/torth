@@ -23,3 +23,32 @@ function get_dummy_signature -> ptr :
   TokenType.INT over Signature.params   ptr+ ptr.load int.size ptr+ int.store
   TokenType.INT over Signature.returns  ptr+ ptr.load               int.store
 end
+
+// Check if a Function with a certain name exists
+// Params: function_name, List[Functions]
+// Return: bool
+function function_exists str ptr -> bool :
+  0
+  take
+    index
+    function_name
+    functions
+  in
+
+  // Iterate over functions and check if a Function with certain name exists
+  while index functions list.len < do
+
+    // Get the current Function
+    functions list.first
+    index ptr.size * ptr+ ptr.load
+
+    // Return True if current Function's name matches function_name parameter
+    if Function.get_name function_name streq do
+      True return
+    endif drop
+    index 1 + index = // index++
+  done
+
+  // Return False if the Function was not found
+  False
+end

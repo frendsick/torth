@@ -19,7 +19,7 @@ function get_sub_programs ptr -> ptr :
 
     // Generate Program from the current Function
     index functions list.nth ptr.load
-    generate_program
+    functions swap generate_program
 
     // Append the generated Program to sub_programs
     sub_programs list.append
@@ -30,9 +30,9 @@ function get_sub_programs ptr -> ptr :
 end
 
 // Generate Program from Function
-// Params: Function
+// Params: Function, List[Function]
 // Return: Program
-function generate_program ptr -> ptr :
+function generate_program ptr ptr -> ptr :
   dup Function.tokens ptr+ ptr.load
   list.init
   0
@@ -41,6 +41,7 @@ function generate_program ptr -> ptr :
     program
     tokens
     func
+    functions
   in
 
   while index tokens list.len < do
@@ -50,7 +51,7 @@ function generate_program ptr -> ptr :
     peek token in
 
     // Get the Token's OpType
-    get_tokens_op_type
+    functions swap get_tokens_op_type
     take op_type in
 
     // Append Op to Program
@@ -64,9 +65,9 @@ function generate_program ptr -> ptr :
 end
 
 // Get OpType for Token
-// Params: Token
+// Params: Token, List[Function]
 // Return: OpType
-function get_tokens_op_type ptr -> int :
+function get_tokens_op_type ptr ptr -> int :
 
   // Initialize variables
   dup  Token.get_type
@@ -77,6 +78,7 @@ function get_tokens_op_type ptr -> int :
     token_value
     token_type
     token
+    functions
   in
 
   if token_type TokenType.BOOL ==    do
@@ -172,6 +174,8 @@ function get_tokens_op_type ptr -> int :
     token_upper "SYSCALL6"    streq ||
   do
     OpType.INTRINSIC return
+  elif functions token_value function_exists do
+    OpType.FUNCTION_CALL return
   else
     "[TODO] Unknown Token '" puts
     token Token.get_value puts "'\n" puts
