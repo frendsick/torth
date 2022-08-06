@@ -11,26 +11,30 @@ end
 // Return: Assembly
 function get_op_asm ptr -> str :
   // Save Op and Token.value in Binding
-  dup Op.get_token Token.get_value
-  take token_value op in
+  dup  Op.get_token Token.get_value
+  over Op.get_type
+  take op_type token_value op in
 
   // Get assembly for the correct OpType
-  if op Op.get_type OpType.PUSH_BOOL == do
+  if op_type OpType.FUNCTION_CALL == do
+    token_value get_function_call_asm
+    return
+  elif op_type OpType.PUSH_BOOL == do
     token_value str.upper get_push_bool_asm
     return
-  elif op Op.get_type OpType.PUSH_CHAR == do
+  elif op_type OpType.PUSH_CHAR == do
     token_value 1 str.char_at get_push_char_asm
     return
-  elif op Op.get_type OpType.PUSH_INT == do
+  elif op_type OpType.PUSH_INT == do
     token_value get_push_int_asm
     return
-  elif op Op.get_type OpType.PUSH_STR == do
+  elif op_type OpType.PUSH_STR == do
     "TODO: Generating assembly for OpType.PUSH_STR is not implemented yet.\n"
     "" swap NotImplementedError
-  elif op Op.get_type OpType.PUSH_PTR == do
+  elif op_type OpType.PUSH_PTR == do
     token_value get_push_ptr_asm
     return
-  elif op Op.get_type OpType.INTRINSIC == do
+  elif op_type OpType.INTRINSIC == do
     // Get assembly for correct Intrinsic
     token_value str.upper
     take intrinsic in
@@ -148,28 +152,64 @@ function get_exit_assembly -> str :
 end
 
 // Generate assembly code for NASM
-// Params: Pointer to Program (PTR)
+// Params: sub_programs (List[Program])
 // Return: Intel x86_64 Assembly for NASM (STR)
-function generate_asm ptr -> str :
-  Program.len int.load
+function generate_assembly_code ptr -> str :
+  dup list.len
   initialize_asm
   0
-  take index program_asm program.len program in
+  take
+    index
+    assembly_code
+    sub_programs.len
+    sub_programs
+  in
+
+  // Iterate over each Program in sub_programs
+  while index sub_programs.len < do
+
+    // Get the current Program
+    sub_programs list.first
+    index ptr.size * ptr+ ptr.load
+
+    // Get assembly code for the current Program
+    get_programs_assembly_code
+
+    // Concatenate the Program's assembly to assembly_code
+    assembly_code swap str.cat
+    assembly_code =
+    index 1 + index = // index++
+  done
+
+  // Get assembly for exiting the program
+  assembly_code get_exit_assembly str.cat
+end
+
+function get_programs_assembly_code ptr -> str :
+  dup list.len
+  "" str.copy
+  0
+  take
+    index
+    assembly_code
+    program.len
+    program
+  in
 
   // Generate assembly for each Op in Program
   while index program.len < do
     // Get the current Op
-    index program Program.op_at
+    program list.first
+    index ptr.size * ptr+ ptr.load
     take op in
 
     // Generate comment for Op
-    program_asm op get_op_comment_asm str.cat
+    assembly_code op get_op_comment_asm str.cat
 
     // Concatenate Op's Assembly to op_asm
     op get_op_asm str.cat
-    program_asm =
+    assembly_code =
     index 1 + index =
   done
-
-  program_asm get_exit_assembly str.cat
+  assembly_code
 end

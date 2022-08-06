@@ -2,6 +2,7 @@
 include "std"
 include "typing"
 include "compiler/asm"
+include "compiler/compile"
 include "compiler/error"
 include "compiler/program"
 include "compiler/class/Program"
