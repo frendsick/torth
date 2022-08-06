@@ -198,9 +198,7 @@ function generate_assembly_code ptr -> str :
     assembly_code =
     index 1 + index = // index++
   done
-
-  // Get assembly for exiting the program
-  assembly_code get_exit_assembly str.cat
+  assembly_code
 end
 
 function get_programs_assembly_code ptr -> str :
@@ -229,5 +227,26 @@ function get_programs_assembly_code ptr -> str :
     assembly_code =
     index 1 + index =
   done
-  assembly_code
+
+  // Get the Function's name to be added to the assembly code
+  // Exception: MAIN Function should be named '_start'
+  op Op.get_function Function.get_name str.copy
+  take function_name in
+
+  // Prepend the Function's name to the beginning of assembly code
+  // if the Function is not MAIN
+  if function_name str.upper "MAIN" streq not do
+    function_name ":\n" str.cat
+    assembly_code       str.cat
+    return
+  endif
+
+  // MAIN Function changes to the assembly code:
+  // => Prepend 'global _start' and use the function name '_start'
+  // => Append the assembly code for exitting the program
+  "global _start\n"
+  "_start:\n"                                   str.cat
+  "  mov [args_ptr], rsp   ; Pointer to argc\n" str.cat
+  assembly_code                                 str.cat
+  get_exit_assembly                             str.cat
 end
