@@ -79,6 +79,22 @@ function list.empty ptr :
   0 swap int.store
 end
 
+// Copy the list to new memory location
+function list.copy ptr -> ptr :
+  // Initialize variables
+  dup list.len int.size +
+  list.init
+  take
+    new_list
+    memory_size
+    old_list
+  in
+
+  // Copy the old memory to the new location
+  memory_size old_list new_list memcpy
+  new_list
+end
+
 // Get pointer to the first element of the list
 // Params: list (PTR)
 // Return: list[0] (PTR)
