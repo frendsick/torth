@@ -81,6 +81,12 @@ function get_op_comment_asm ptr -> str :
   "\n"                                  str.cat
 end
 
+function get_function_call_asm str -> str :
+  "  call "
+  swap str.cat
+  "\n" str.cat
+end
+
 // Generate Assembly for OpType.PUSH_BOOL
 // Params: Op.token.value
 // Return: Assembly
