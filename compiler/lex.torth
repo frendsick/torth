@@ -250,15 +250,17 @@ function get_functions str -> ptr :
         tokens
         return_types param_types Signature.init
         function_name Function.init
-        // dup Function.print
+        dup Function.print  // Print the current Function
+
         // Append the current function to functions list
-        functions list.append drop
+        functions list.append
+        functions =
 
         // Reset variables
-        function_name dup str.empty   function_name =
-        param_types   dup list.empty  param_types   =
-        return_types  dup list.empty  return_types  =
-        tokens        dup list.empty  tokens        =
+        function_name str.copy  dup str.empty   function_name =
+        param_types   list.copy dup list.empty  param_types   =
+        return_types  list.copy dup list.empty  return_types  =
+        tokens        list.copy dup list.empty  tokens        =
       endif
       // if dup current_part != do
       //   "Token '" token_value str.cat
@@ -293,7 +295,8 @@ function get_functions str -> ptr :
       return_types list.append
       return_types =
     elif current_part 4 == do
-      token_value get_token_from_word tokens list.append
+      token_value get_token_from_word
+      tokens list.append
       tokens =
     endif
     index 1 + index =

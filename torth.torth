@@ -60,7 +60,7 @@ end
 
 function main :
   "lib/std.torth" read_file take code in
-  code get_functions drop
+  code get_functions take functions in
 
   // Type check the Program
   // program type_check_program
