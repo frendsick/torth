@@ -71,6 +71,7 @@ END
 
 // OpType
 ENUM OpType.len 1 :
+  OpType.ASSIGN_BIND
   OpType.BREAK
   OpType.CAST_BOOL
   OpType.CAST_CHAR
@@ -88,13 +89,17 @@ ENUM OpType.len 1 :
   OpType.FUNCTION_CALL
   OpType.FUNCTION_RETURN
   OpType.IF
+  OpType.IN
   OpType.INTRINSIC
+  OpType.PEEK
   OpType.PUSH_BOOL
   OpType.PUSH_CHAR
   OpType.PUSH_INT
   OpType.PUSH_PTR
   OpType.PUSH_STR
   OpType.PUSH_UINT8
+  OpType.RETURN
+  OpType.TAKE
   OpType.WHILE
 END
 
