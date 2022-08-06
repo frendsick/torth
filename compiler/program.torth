@@ -67,69 +67,70 @@ end
 // Params: Token
 // Return: OpType
 function get_tokens_op_type ptr -> int :
-  // Save a copy of Token's value in uppercase
-  dup  Token.get_value str.copy str.upper
-  over Token.get_type
-  -1
+
+  // Initialize variables
+  dup  Token.get_type
+  over Token.get_value
+  dup str.copy str.upper
   take
-    op_type
-    token_type
     token_upper
+    token_value
+    token_type
     token
   in
 
   if token_type TokenType.BOOL ==    do
-    OpType.PUSH_BOOL op_type =
+    OpType.PUSH_BOOL return
   elif token_type TokenType.CHAR ==  do
-    OpType.PUSH_CHAR op_type =
+    OpType.PUSH_CHAR return
   elif token_type TokenType.INT ==   do
-    OpType.PUSH_INT op_type =
+    OpType.PUSH_INT return
   elif token_type TokenType.STR ==   do
-    OpType.PUSH_STR op_type =
+    OpType.PUSH_STR return
   elif token_type TokenType.UINT8 == do
-    OpType.PUSH_UINT8 op_type =
+    OpType.PUSH_UINT8 return
   elif token_upper "ASSIGN"   streq  do
-    OpType.ASSIGN_BIND op_type =
+    OpType.ASSIGN_BIND return
   elif token_upper "BOOL"     streq  do
-    OpType.CAST_BOOL op_type =
+    OpType.CAST_BOOL return
   elif token_upper "BREAK"    streq  do
-    OpType.BREAK op_type =
+    OpType.BREAK return
   elif token_upper "CHAR"     streq  do
-    OpType.CAST_CHAR op_type =
+    OpType.CAST_CHAR return
   elif token_upper "CONTINUE" streq  do
-    OpType.CONTINUE op_type =
+    OpType.CONTINUE return
   elif token_upper "DO"       streq  do
-    OpType.DO op_type =
+    OpType.DO return
   elif token_upper "DONE"     streq  do
-    OpType.DONE op_type =
+    OpType.DONE return
   elif token_upper "ELIF"     streq  do
-    OpType.ELIF op_type =
+    OpType.ELIF return
   elif token_upper "ELSE"     streq  do
-    OpType.ELSE op_type =
+    OpType.ELSE return
   elif token_upper "END"      streq  do
-    OpType.END op_type =
+    OpType.END return
   elif token_upper "ENDIF"    streq  do
-    OpType.ENDIF op_type =
+    OpType.ENDIF return
   elif token_upper "IF"       streq  do
-    OpType.IF op_type =
+    OpType.IF return
   elif token_upper "IN"       streq  do
-    OpType.IN op_type =
+    OpType.IN return
   elif token_upper "INT"      streq  do
-    OpType.CAST_INT op_type =
+    OpType.CAST_INT return
   elif token_upper "PEEK"     streq  do
-    OpType.PEEK op_type =
+    OpType.PEEK return
   elif token_upper "PTR"      streq  do
-    OpType.CAST_PTR op_type =
+    OpType.CAST_PTR return
   elif token_upper "RETURN"   streq  do
-    OpType.RETURN op_type =
+    OpType.RETURN return
   elif token_upper "STR"      streq  do
-    OpType.CAST_STR op_type =
+    OpType.CAST_STR return
   elif token_upper "TAKE"     streq  do
-    OpType.TAKE op_type =
+    OpType.TAKE return
   elif token_upper "UINT8"    streq  do
-    OpType.CAST_UINT8 op_type =
+    OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
-    OpType.WHILE op_type =
+    OpType.WHILE return
   // Intrinsics
   elif
     token_upper "AND"         streq
@@ -170,10 +171,10 @@ function get_tokens_op_type ptr -> int :
     token_upper "SYSCALL5"    streq ||
     token_upper "SYSCALL6"    streq ||
   do
-    OpType.INTRINSIC op_type =
+    OpType.INTRINSIC return
   else
     "[TODO] Unknown Token '" puts
-    token Token.get_value puts "'\n" puts 0 exit
+    token Token.get_value puts "'\n" puts
+    NULL 0 exit
   endif
-  op_type
 end
