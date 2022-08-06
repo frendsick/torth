@@ -5,46 +5,6 @@ include "compiler/asm"
 include "compiler/error"
 include "compiler/class/Program"
 
-// Generate Program (List[Op]) from code 
-// Params
-//    code: str
-// Return
-//    program: Program
-function generate_program str -> ptr :
-  "" str.copy // String buffer for word
-  list.init   // Program => List[Op]
-  take program word file_contents in
-
-  0 while
-    file_contents over str.char_at
-    peek current_char in
-    NULL !=
-  do
-    if
-      current_char char.is_whitespace
-    do
-      // If the word is empty there has been multiple whitespaces in a row
-      if word str.len 0 == do
-        1 +
-        continue
-      endif
-
-      // Parse the word to Op and append it to the Program
-      word program Program.append_match
-      word str.empty
-    else
-      current_char word str.append
-    endif
-    1 +
-  done drop
-
-  // Append the last word if the file ended with a word
-  if word str.len 0 > do
-    word program Program.append_match
-  endif
-  program
-end
-
 // Type check the Program
 // Params
 //    program: Program
