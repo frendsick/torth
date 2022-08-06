@@ -5,138 +5,6 @@ include "typing"
 include "compiler/defs"
 include "compiler/class/Token"
 
-// Generate Program from Function
-// Params: Function
-// Return: Program
-function generate_program ptr -> ptr :
-  Function.tokens ptr+ ptr.load
-  list.init
-  0
-  take
-    index
-    program
-    tokens
-  in
-
-  "Iterating Tokens\n" puts
-  while index tokens list.len < do
-    // Get current Token
-    tokens list.first
-    index ptr.size * ptr+ ptr.load
-    take token in
-
-    // Save a copy of Token's value in uppercase
-    token Token.get_value str.copy str.upper
-    token Token.get_type
-    -1
-    take
-      op_type
-      token_type
-      token_upper
-    in
-
-    if token_type TokenType.BOOL ==    do
-      OpType.PUSH_BOOL op_type =
-    elif token_type TokenType.CHAR ==  do
-      OpType.PUSH_CHAR op_type =
-    elif token_type TokenType.INT ==   do
-      OpType.PUSH_INT op_type =
-    elif token_type TokenType.STR ==   do
-      OpType.PUSH_STR op_type =
-    elif token_type TokenType.UINT8 == do
-      OpType.PUSH_UINT8 op_type =
-    elif token_upper "ASSIGN"   streq  do
-      OpType.ASSIGN_BIND op_type =
-    elif token_upper "BOOL"     streq  do
-      OpType.CAST_BOOL op_type =
-    elif token_upper "BREAK"    streq  do
-      OpType.BREAK op_type =
-    elif token_upper "CHAR"     streq  do
-      OpType.CAST_CHAR op_type =
-    elif token_upper "CONTINUE" streq  do
-      OpType.CONTINUE op_type =
-    elif token_upper "DO"       streq  do
-      OpType.DO op_type =
-    elif token_upper "DONE"     streq  do
-      OpType.DONE op_type =
-    elif token_upper "ELIF"     streq  do
-      OpType.ELIF op_type =
-    elif token_upper "ELSE"     streq  do
-      OpType.ELSE op_type =
-    elif token_upper "END"      streq  do
-      OpType.END op_type =
-    elif token_upper "ENDIF"    streq  do
-      OpType.ENDIF op_type =
-    elif token_upper "IF"       streq  do
-      OpType.IF op_type =
-    elif token_upper "IN"       streq  do
-      OpType.IN op_type =
-    elif token_upper "INT"      streq  do
-      OpType.CAST_INT op_type =
-    elif token_upper "PEEK"     streq  do
-      OpType.PEEK op_type =
-    elif token_upper "PTR"      streq  do
-      OpType.CAST_PTR op_type =
-    elif token_upper "RETURN"   streq  do
-      OpType.RETURN op_type =
-    elif token_upper "STR"      streq  do
-      OpType.CAST_STR op_type =
-    elif token_upper "TAKE"     streq  do
-      OpType.TAKE op_type =
-    elif token_upper "UINT8"    streq  do
-      OpType.CAST_UINT8 op_type =
-    elif token_upper "WHILE"    streq  do
-      OpType.WHILE op_type =
-    elif
-      token_upper "AND"         streq
-      token_upper "ARGV"        streq ||
-      token_upper "DIVMOD"      streq ||
-      token_upper "DROP"        streq ||
-      token_upper "DUP"         streq ||
-      token_upper "ENVP"        streq ||
-      token_upper "EQ"          streq ||
-      token_upper "GE"          streq ||
-      token_upper "GT"          streq ||
-      token_upper "DUP"         streq ||
-      token_upper "LE"          streq ||
-      token_upper "LOAD_BYTE"   streq ||
-      token_upper "LOAD_WORD"   streq ||
-      token_upper "LOAD_DWORD"  streq ||
-      token_upper "LOAD_QWORD"  streq ||
-      token_upper "LT"          streq ||
-      token_upper "MINUS"       streq ||
-      token_upper "MUL"         streq ||
-      token_upper "NE"          streq ||
-      token_upper "NTH"         streq ||
-      token_upper "OR"          streq ||
-      token_upper "OVER"        streq ||
-      token_upper "PLUS"        streq ||
-      token_upper "PRINT"       streq ||
-      token_upper "ROT"         streq ||
-      token_upper "STORE_BYTE"  streq ||
-      token_upper "STORE_WORD"  streq ||
-      token_upper "STORE_DWORD" streq ||
-      token_upper "STORE_QWORD" streq ||
-      token_upper "SWAP"        streq ||
-      token_upper "SYSCALL0"    streq ||
-      token_upper "SYSCALL1"    streq ||
-      token_upper "SYSCALL2"    streq ||
-      token_upper "SYSCALL3"    streq ||
-      token_upper "SYSCALL4"    streq ||
-      token_upper "SYSCALL5"    streq ||
-      token_upper "SYSCALL6"    streq ||
-    do
-      OpType.INTRINSIC op_type =
-    else
-      "[TODO] Unknown Token '" puts
-      token Token.get_value puts "'\n" puts 0 exit
-    endif
-    index 1 + index =
-  done
-  0 exit
-  program
-end
-
 function get_sub_programs ptr -> ptr :
   list.init // sub_programs = List[Program]
   0         // index
@@ -159,4 +27,148 @@ function get_sub_programs ptr -> ptr :
     index 1 + index = // index++
   done
   sub_programs
+end
+
+// Generate Program from Function
+// Params: Function
+// Return: Program
+function generate_program ptr -> ptr :
+  Function.tokens ptr+ ptr.load
+  list.init
+  0
+  take
+    index
+    program
+    tokens
+  in
+
+  "Iterating Tokens\n" puts
+  while index tokens list.len < do
+    // Get current Token
+    tokens list.first
+    index ptr.size * ptr+ ptr.load
+    peek token in
+
+    // Get the Token's OpType
+    get_tokens_op_type
+    take op_type in
+    index 1 + index =
+  done
+  0 exit
+  program
+end
+
+// Get OpType for Token
+// Params: Token
+// Return: OpType
+function get_tokens_op_type ptr -> int :
+  // Save a copy of Token's value in uppercase
+  dup  Token.get_value str.copy str.upper
+  over Token.get_type
+  -1
+  take
+    op_type
+    token_type
+    token_upper
+    token
+  in
+
+  if token_type TokenType.BOOL ==    do
+    OpType.PUSH_BOOL op_type =
+  elif token_type TokenType.CHAR ==  do
+    OpType.PUSH_CHAR op_type =
+  elif token_type TokenType.INT ==   do
+    OpType.PUSH_INT op_type =
+  elif token_type TokenType.STR ==   do
+    OpType.PUSH_STR op_type =
+  elif token_type TokenType.UINT8 == do
+    OpType.PUSH_UINT8 op_type =
+  elif token_upper "ASSIGN"   streq  do
+    OpType.ASSIGN_BIND op_type =
+  elif token_upper "BOOL"     streq  do
+    OpType.CAST_BOOL op_type =
+  elif token_upper "BREAK"    streq  do
+    OpType.BREAK op_type =
+  elif token_upper "CHAR"     streq  do
+    OpType.CAST_CHAR op_type =
+  elif token_upper "CONTINUE" streq  do
+    OpType.CONTINUE op_type =
+  elif token_upper "DO"       streq  do
+    OpType.DO op_type =
+  elif token_upper "DONE"     streq  do
+    OpType.DONE op_type =
+  elif token_upper "ELIF"     streq  do
+    OpType.ELIF op_type =
+  elif token_upper "ELSE"     streq  do
+    OpType.ELSE op_type =
+  elif token_upper "END"      streq  do
+    OpType.END op_type =
+  elif token_upper "ENDIF"    streq  do
+    OpType.ENDIF op_type =
+  elif token_upper "IF"       streq  do
+    OpType.IF op_type =
+  elif token_upper "IN"       streq  do
+    OpType.IN op_type =
+  elif token_upper "INT"      streq  do
+    OpType.CAST_INT op_type =
+  elif token_upper "PEEK"     streq  do
+    OpType.PEEK op_type =
+  elif token_upper "PTR"      streq  do
+    OpType.CAST_PTR op_type =
+  elif token_upper "RETURN"   streq  do
+    OpType.RETURN op_type =
+  elif token_upper "STR"      streq  do
+    OpType.CAST_STR op_type =
+  elif token_upper "TAKE"     streq  do
+    OpType.TAKE op_type =
+  elif token_upper "UINT8"    streq  do
+    OpType.CAST_UINT8 op_type =
+  elif token_upper "WHILE"    streq  do
+    OpType.WHILE op_type =
+  // Intrinsics
+  elif
+    token_upper "AND"         streq
+    token_upper "ARGV"        streq ||
+    token_upper "DIVMOD"      streq ||
+    token_upper "DROP"        streq ||
+    token_upper "DUP"         streq ||
+    token_upper "ENVP"        streq ||
+    token_upper "EQ"          streq ||
+    token_upper "GE"          streq ||
+    token_upper "GT"          streq ||
+    token_upper "DUP"         streq ||
+    token_upper "LE"          streq ||
+    token_upper "LOAD_BYTE"   streq ||
+    token_upper "LOAD_WORD"   streq ||
+    token_upper "LOAD_DWORD"  streq ||
+    token_upper "LOAD_QWORD"  streq ||
+    token_upper "LT"          streq ||
+    token_upper "MINUS"       streq ||
+    token_upper "MUL"         streq ||
+    token_upper "NE"          streq ||
+    token_upper "NTH"         streq ||
+    token_upper "OR"          streq ||
+    token_upper "OVER"        streq ||
+    token_upper "PLUS"        streq ||
+    token_upper "PRINT"       streq ||
+    token_upper "ROT"         streq ||
+    token_upper "STORE_BYTE"  streq ||
+    token_upper "STORE_WORD"  streq ||
+    token_upper "STORE_DWORD" streq ||
+    token_upper "STORE_QWORD" streq ||
+    token_upper "SWAP"        streq ||
+    token_upper "SYSCALL0"    streq ||
+    token_upper "SYSCALL1"    streq ||
+    token_upper "SYSCALL2"    streq ||
+    token_upper "SYSCALL3"    streq ||
+    token_upper "SYSCALL4"    streq ||
+    token_upper "SYSCALL5"    streq ||
+    token_upper "SYSCALL6"    streq ||
+  do
+    OpType.INTRINSIC op_type =
+  else
+    "[TODO] Unknown Token '" puts
+    token Token.get_value puts "'\n" puts 0 exit
+  endif
+  op_type
 end
