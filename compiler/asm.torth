@@ -39,6 +39,9 @@ function get_op_asm ptr ptr -> str :
   elif op_type OpType.DO == do
     program op get_do_asm
     return
+  elif op_type OpType.DONE == do
+    program op get_done_asm
+    return
   elif op_type OpType.ELIF == do
     program op get_elif_asm
     return
@@ -350,13 +353,44 @@ function generate_do_asm str -> str :
   "\n"                str.cat
 end
 
+// DONE is an unconditional jump to current loop's WHILE
+// Params: Op, Program
+// Return: Assembly
+function get_done_asm ptr ptr -> str :
+  take op program in
+
+  // Get the parent WHILE Op
+  program op get_parent_while
+  take parent_while in
+
+  // Generate assembly
+  op Op.get_function Function.get_name
+  op Op.get_id itoa
+  parent_while Op.get_id itoa
+  take
+    parent_while.id
+    op.id
+    function_name
+  in
+
+  "  jmp "
+  function_name     str.cat
+  "_WHILE"          str.cat
+  parent_while.id   str.cat
+  "\n"              str.cat
+  function_name     str.cat
+  "_DONE"           str.cat
+  op.id             str.cat
+  ":\n"             str.cat
+end
+
 // ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to
 // Params: Op, Program
 // Return: Assembly
 function get_elif_asm ptr ptr -> str :
   take op program in
 
-  // Get the related ENDIF keyword
+  // Get the related ENDIF Op
   program op get_related_endif
   take related_endif in
 
@@ -387,7 +421,7 @@ end
 function get_else_asm ptr ptr -> str :
   take op program in
 
-  // Get the related ENDIF keyword
+  // Get the related ENDIF Op
   program op get_related_endif
   take related_endif in
 
@@ -1008,6 +1042,8 @@ function get_programs_assembly_code ptr -> str :
 end
 
 // Returns the current IF block's ENDIF Op
+// Params: Op, Program
+// Return: Op
 function get_related_endif ptr ptr -> ptr :
   dup Op.get_id 1 + // index = op.id + 1
   0 // if_count => Keep count of the nested IF blocks
@@ -1043,6 +1079,47 @@ function get_related_endif ptr ptr -> ptr :
   "Corresponding ENDIF keyword was not found.\n"
   op Op.get_token Token.get_value str.copy str.upper
   "AMBIGUOUS_" swap str.cat CompilerError NULL ptr
+end
+
+// Returns the current WHILE block's DONE Op
+// Params: Op, Program
+// Return: Op
+function get_parent_while ptr ptr -> ptr :
+  dup Op.get_id 1 - // index = op.id - 1
+  0 // done_count => Keep count of the nested WHILE blocks
+  take
+    done_count
+    index
+    op
+    program
+  in
+
+  while index -1 > do
+    index program list.nth ptr.load
+    dup Op.get_type
+    take current_op_type current_op in
+
+    // Return the found ENDIF if it's not inside nested IF block
+    if current_op_type OpType.WHILE == do
+      if done_count 0 == do
+        current_op return
+      endif
+      done_count 1 - done_count = // done_count--
+    endif
+
+    // Increment done_count when nested blocks are found
+    if current_op_type OpType.DONE == do
+      done_count 1 + done_count = // done_count++
+    endif
+
+    index 1 - index = // index--
+  done
+
+  // Report error when parent WHILE was not found
+  "Parent WHILE keyword was not found.\n"
+  op Op.get_token Token.get_value str.copy str.upper
+  "AMBIGUOUS_" swap str.cat
+  CompilerError NULL ptr
 end
 
 // Get memory name for assembly used by a bound memory
