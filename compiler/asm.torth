@@ -161,16 +161,6 @@ function get_function_call_asm str -> str :
   "\n" str.cat
 end
 
-// Generate Assembly for OpType.PUSH_BOOL
-// Params: Op.token.value
-// Return: Assembly
-function get_push_bool_asm str -> str :
-  if dup "TRUE" streq
-  do drop   "  mov rax, 1\n"
-  else drop "  mov rax, 0\n"
-  endif     "  push rax\n" str.cat
-end
-
 // Generate Assembly for OpType.PEEK
 // Params: None
 // Return: Assembly
@@ -209,6 +199,16 @@ function get_push_bind_asm ptr -> str :
   "  push qword ["
   swap  str.cat
   "]\n" str.cat
+end
+
+// Generate Assembly for OpType.PUSH_BOOL
+// Params: Op.token.value
+// Return: Assembly
+function get_push_bool_asm str -> str :
+  if dup "TRUE" streq
+  do    drop  "  mov rax, 1\n"
+  else  drop  "  mov rax, 0\n"
+  endif       "  push rax\n" str.cat
 end
 
 // Generate Assembly for OpType.PUSH_CHAR
