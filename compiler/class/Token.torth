@@ -2,9 +2,10 @@ include "std"
 
 // Token(value: str, type: TokenType, location: Location)
 ENUM Token.size 8 :
-  Token.value     // str
-  Token.type      // TokenType => int
-  Token.location  // Location  => ptr
+  Token.value       // str
+  Token.type        // TokenType => int
+  Token.location    // Location  => ptr
+  Token.is_variable // bool
 END
 
 // Initialize Token from parameters
@@ -16,9 +17,10 @@ function Token.init str int ptr -> ptr :
   take token value type location in
 
   // Load the parameters to the allocated memory
-  value     token Token.value     ptr+ str.store
-  type      token Token.type      ptr+ int.store
-  location  token Token.location  ptr+ ptr.store
+  value     token Token.value       ptr+ str.store
+  type      token Token.type        ptr+ int.store
+  location  token Token.location    ptr+ ptr.store
+  False     token Token.is_variable ptr+ bool.store
   token
 end
 

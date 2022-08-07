@@ -155,7 +155,7 @@ function get_intrinsic_asm str -> str :
     intrinsic get_syscall_asm return
   else
     "Generating assembly for intrinsic '" intrinsic str.cat
-    "' is not implemented yet\n" str.cat
+    "' is not implemented\n" str.cat
     "" swap NotImplementedError
   endif
 end

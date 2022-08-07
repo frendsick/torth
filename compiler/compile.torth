@@ -13,7 +13,7 @@ end
 function exec_forked str :
   take cmd in
   SYS_fork SYSCALL0
-  
+
   // Child: Compile the assembly code with NASM
   if dup 0 == do
     cmd exec_command

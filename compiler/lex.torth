@@ -261,12 +261,6 @@ function get_functions str -> ptr :
         return_types  list.copy dup list.empty  return_types  =
         tokens        list.copy dup list.empty  tokens        =
       endif
-      // if dup current_part != do
-      //   "Token '" token_value str.cat
-      //   "' is used in the wrong context when defining 'main' function\n" str.cat
-      //   "FUNCTION_SIGNATURE_ERROR" CompilerError 0 exit
-      //   drop ptr return
-      // endif
 
     elif current_part 1 == do
       token_value function_name =
@@ -301,5 +295,77 @@ function get_functions str -> ptr :
     index 1 + index =
   done
 
+  // Parse the variables for each function
+  functions parse_variables_for_functions
   functions
+end
+
+function parse_variables_for_functions ptr :
+  dup list.len
+  0
+  take index len functions in
+
+  // Parse Variables for each Function
+  while index len < do
+    index functions list.nth ptr.load
+    parse_function_variables
+    index 1 + index = // index++
+  done
+end
+
+function parse_function_variables ptr :
+  dup Function.get_tokens
+  list.init
+  False
+  "PEEK"
+  0
+  take
+    index
+    bind_variant
+    parsing_variables
+    variables
+    tokens
+    func
+  in
+
+  while index tokens list.len < do
+    index tokens list.nth ptr.load
+    dup Token.get_value
+    take
+      token_value
+      token
+    in
+
+    // Variable parsing block is started with PEEK or TAKE keyword
+    if
+      token_value str.copy str.upper
+      dup  "PEEK" streq
+      swap "TAKE" streq
+      ||
+    do
+      True parsing_variables =
+
+    // IN keyword closes the Variable parsing block
+    elif token_value str.copy str.upper "IN" streq do
+      False parsing_variables =
+
+    // Every word is considered as a Variable in the block between PEEK/TAKE and IN
+    elif parsing_variables do
+      True token Token.is_variable ptr+ bool.store
+      token_value ptr variables list.append
+      variables =
+      // TODO: memories.append(Memory(bound_memory, 8, token.location))
+
+      // token.value = f"{token.value}_{bind_variant}"
+      token_value "_" str.cat
+      bind_variant    str.cat
+      dup puts
+      token Token.value ptr+ str.store
+
+    // If Token is already a known Variable just update its boolean value
+    elif token_value variables list.contains_str do
+      True token Token.is_variable ptr+ bool.store
+    endif
+    index 1 + index =
+  done
 end

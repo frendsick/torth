@@ -5,10 +5,11 @@ ENUM Function.size 8 :
   Function.name       // str
   Function.signature  // Signature    => ptr
   Function.tokens     // List[Token]  => ptr
+  Function.variables  // Variable     => List[str]
 END
 
 // Initialize Function from parameters
-// Params: Function.name, Function.signature, Function.tokens
+// Params: Function.name, Function.signature, Function.tokens, Function.variables
 // Return: Pointer to Function
 function Function.init str ptr ptr -> ptr :
   // Allocate memory for Function
@@ -39,6 +40,10 @@ end
 // Return: Function.tokens (PTR)
 function Function.get_tokens ptr -> ptr :
   Function.tokens ptr+ ptr.load
+end
+
+function Function.get_variables ptr -> ptr :
+  Function.variables ptr+ ptr.load
 end
 
 // Print Function name and Signature to stdout
