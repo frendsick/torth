@@ -78,6 +78,8 @@ function get_op_asm ptr -> str :
       get_divmod_asm return
     elif intrinsic "DROP" streq do
       get_drop_asm return
+    elif intrinsic "DUP" streq do
+      get_dup_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "PLUS" streq do
@@ -297,6 +299,15 @@ end
 // Return: Assembly
 function get_drop_asm -> str :
   "  add rsp, 8\n"
+end
+
+// DUP duplicates the top element in the stack
+// Params: None
+// Return: Assembly
+function get_dup_asm -> str :
+  "  pop rax\n"
+  "  push rax\n" str.cat
+  "  push rax\n" str.cat
 end
 
 // Pop two integers from the stack and push the product of the two values
