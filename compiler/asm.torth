@@ -102,6 +102,8 @@ function get_op_asm ptr -> str :
       get_ne_asm return
     elif intrinsic "NTH" streq do
       get_nth_asm return
+    elif intrinsic "OR" streq do
+      get_or_asm return
     elif intrinsic "PLUS" streq do
       get_plus_asm return
     elif intrinsic "PRINT" streq do
@@ -459,6 +461,10 @@ function get_ne_asm -> str :
   "cmovne" get_comparison_asm
 end
 
+// Copies Nth element from the stack to the top of the stack.
+// Note that the Nth is counted without the popped integer.
+// Example: 30 20 10 3 NTH print  // Output: 30
+// => 30 is 3rd element without the popped 3
 function get_nth_asm -> str :
   "  pop rax\n"
   "  sub rax, 1\n"                                      str.cat
@@ -469,6 +475,16 @@ function get_nth_asm -> str :
   "  add rax, 8\n"                                      str.cat
   "  sub rsp, rax ; Return stack pointer\n"             str.cat
   "  push rbx\n"                                        str.cat
+end
+
+// OR performs bitwise-OR operation to two integers
+// Params: None
+// Return: Assembly
+function get_or_asm -> str :
+  "  pop rax\n"
+  "  pop rbx\n"     str.cat
+  "  or rbx, rax\n" str.cat
+  "  push rbx\n"    str.cat
 end
 
 // Pop two integers from the stack and push the sum of the two values
