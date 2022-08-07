@@ -92,6 +92,8 @@ function get_op_asm ptr -> str :
       get_le_asm return
     elif intrinsic "LT" streq do
       get_lt_asm return
+    elif intrinsic "LOAD_" str.startswith do
+      intrinsic get_load_asm
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "NE" streq do
@@ -388,6 +390,34 @@ end
 // Return: Assembly
 function get_lt_asm -> str :
   "cmovl" get_comparison_asm
+end
+
+// Params: load_variant
+// Return: Assembly
+function get_load_asm str -> str :
+  str.copy str.upper
+  take load_variant in
+
+  // Get the correct size register for the load_variant
+  if    load_variant "LOAD_BYTE"  streq do "bl"
+  elif  load_variant "LOAD_WORD"  streq do "bx"
+  elif  load_variant "LOAD_DWORD" streq do "ebx"
+  elif  load_variant "LOAD_QWORD" streq do "rbx"
+  else
+    "'" load_variant                  str.cat
+    "' is not a valid LOAD Intrinsic" str.cat
+    "VALUE_ERROR" CompilerError ""
+  endif
+  take register in
+
+  // Generate assembly
+  "  pop rax\n"
+  "  xor rbx, rbx\n"  str.cat
+  "  mov "            str.cat
+  register            str.cat
+  ", [rax]\n"         str.cat
+  "  push rbx\n"      str.cat
+  dup puts
 end
 
 // Pop two integers from the stack and push the product of the two values

@@ -146,10 +146,7 @@ function get_tokens_op_type ptr ptr -> int :
     token_upper "GT"          streq ||
     token_upper "DUP"         streq ||
     token_upper "LE"          streq ||
-    token_upper "LOAD_BYTE"   streq ||
-    token_upper "LOAD_WORD"   streq ||
-    token_upper "LOAD_DWORD"  streq ||
-    token_upper "LOAD_QWORD"  streq ||
+    token_upper "LOAD_" str.startswith ||
     token_upper "LT"          streq ||
     token_upper "MINUS"       streq ||
     token_upper "MUL"         streq ||
