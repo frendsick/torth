@@ -361,11 +361,24 @@ function get_elif_asm ptr ptr -> str :
   take related_endif in
 
   // Generate assembly
+  op Op.get_function Function.get_name
+  op Op.get_id itoa
+  related_endif Op.get_id itoa
+  take
+    related_endif.id
+    op.id
+    function_name
+  in
+
   "  jmp "
-  op Op.get_function Function.get_name  str.cat
-  "_ENDIF"                              str.cat
-  related_endif Op.get_id itoa          str.cat
-  ":\n"                                 str.cat
+  function_name     str.cat
+  "_ENDIF"          str.cat
+  related_endif.id  str.cat
+  "\n"              str.cat
+  function_name     str.cat
+  "_ELIF"           str.cat
+  op.id             str.cat
+  ":\n"             str.cat
 end
 
 // ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to
