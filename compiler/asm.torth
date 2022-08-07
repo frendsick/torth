@@ -104,6 +104,8 @@ function get_op_asm ptr -> str :
       get_nth_asm return
     elif intrinsic "OR" streq do
       get_or_asm return
+    elif intrinsic "OVER" streq do
+      get_over_asm return
     elif intrinsic "PLUS" streq do
       get_plus_asm return
     elif intrinsic "PRINT" streq do
@@ -485,6 +487,17 @@ function get_or_asm -> str :
   "  pop rbx\n"     str.cat
   "  or rbx, rax\n" str.cat
   "  push rbx\n"    str.cat
+end
+
+// OVER Intrinsic pushes a copy of the second element of the stack
+// Params: None
+// Return: Assembly
+function get_over_asm -> str :
+  "  pop rax\n"
+  "  pop rbx\n"  str.cat
+  "  push rbx\n" str.cat
+  "  push rax\n" str.cat
+  "  push rbx\n" str.cat
 end
 
 // Pop two integers from the stack and push the sum of the two values
