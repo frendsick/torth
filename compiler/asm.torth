@@ -39,6 +39,9 @@ function get_op_asm ptr ptr -> str :
   elif op_type OpType.DO == do
     program op get_do_asm
     return
+  elif op_type OpType.ELIF == do
+    program op get_elif_asm
+    return
   elif op_type OpType.FUNCTION_CALL == do
     token_value get_function_call_asm
     return
@@ -341,6 +344,23 @@ function generate_do_asm str -> str :
   "  jz "             str.cat
   swap                str.cat
   "\n"                str.cat
+end
+
+// ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to
+// Params: Op, Program
+// Return: Assembly
+function get_elif_asm ptr ptr -> str :
+  take op program in
+  // Get the related ENDIF keyword
+  program op get_related_endif
+  take related_endif in
+
+  "  jmp "
+  op Op.get_function Function.get_name  str.cat
+  "_ENDIF"                              str.cat
+  related_endif Op.get_id itoa          str.cat
+  "\n"                                  str.cat
+  dup puts
 end
 
 // Generate assembly for calling a function
@@ -925,6 +945,44 @@ function get_programs_assembly_code ptr -> str :
   function_name get_function_start_asm
   assembly_code str.cat
   function_name get_function_end_asm str.cat
+end
+
+// Returns the current IF block's ENDIF Op
+function get_related_endif ptr ptr -> ptr :
+  dup Op.get_id 1 + // index = op.id + 1
+  0 // if_count => Keep count of the nested IF blocks
+  take
+    if_count
+    index
+    op
+    program
+  in
+
+  while index program list.len < do
+    index program list.nth ptr.load
+    dup Op.get_type
+    take current_op_type current_op in
+
+    // Return the found ENDIF if it's not inside nested IF block
+    if current_op_type OpType.ENDIF == do
+      if if_count 0 == do
+        current_op return
+      endif
+      if_count 1 - if_count = // if_count--
+    endif
+
+    // Increment if_count when nested blocks are found
+    if current_op_type OpType.IF == do
+      if_count 1 + if_count = // if_count++
+    endif
+
+    index 1 + index = // index++
+  done
+
+  // Report error when corresponding ENDIF was not found
+  "Corresponding ENDIF keyword was not found.\n"
+  op Op.get_token Token.get_value str.copy str.upper
+  "AMBIGUOUS_" swap str.cat CompilerError NULL ptr
 end
 
 // Get memory name for assembly used by a bound memory
