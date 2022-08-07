@@ -459,6 +459,39 @@ function str.alphanumeric str -> str :
   done drop drop
 end
 
+// Check if a string starts with another string
+// Params: prefix (STR), string (STR)
+// Return: True/False
+function str.startswith str str -> bool :
+  over str.len
+  over str.len
+  0
+  take
+    index
+    prefix.len
+    string.len
+    prefix
+    string
+  in
+
+  // Return False if prefix.len > string.len
+  if prefix.len string.len > do
+    False return
+  endif
+
+  while index prefix.len < do
+    if
+      string index str.char_at
+      prefix index str.char_at
+      !=
+    do
+      False return
+    endif
+    index 1 + index = // index++
+  done
+  True
+end
+
 // Tests if two strings are equal
 function streq str str -> bool :
   // Bind strings to memory
