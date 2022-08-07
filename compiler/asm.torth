@@ -46,7 +46,7 @@ function get_op_asm ptr ptr -> str :
     program op get_else_asm
     return
   elif op_type OpType.ENDIF == do
-    program op get_else_asm
+    op get_endif_asm
     return
   elif op_type OpType.FUNCTION_CALL == do
     token_value get_function_call_asm
@@ -262,7 +262,6 @@ function get_do_asm ptr ptr -> str :
     // Get the current operand's OpType
     index program list.nth ptr.load Op.get_type
     take op_type in
-    op_type print "\n" puts
 
     // Keep count on the nested IFs or WHILEs depending on the parent Op
     if
@@ -381,11 +380,24 @@ function get_else_asm ptr ptr -> str :
   take related_endif in
 
   // Generate assembly
+  op Op.get_function Function.get_name
+  op Op.get_id itoa
+  related_endif Op.get_id itoa
+  take
+    related_endif.id
+    op.id
+    function_name
+  in
+
   "  jmp "
-  op Op.get_function Function.get_name  str.cat
-  "_ELSE"                               str.cat
-  related_endif Op.get_id itoa          str.cat
-  ":\n"                                 str.cat
+  function_name     str.cat
+  "_ENDIF"          str.cat
+  related_endif.id  str.cat
+  "\n"              str.cat
+  function_name     str.cat
+  "_ELSE"           str.cat
+  op.id             str.cat
+  ":\n"             str.cat
 end
 
 // ENDIF is just a keyword for DO, ELIF or ELSE to jump to
