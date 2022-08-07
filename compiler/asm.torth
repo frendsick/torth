@@ -96,6 +96,8 @@ function get_op_asm ptr -> str :
       get_mul_asm return
     elif intrinsic "NE" streq do
       get_ne_asm return
+    elif intrinsic "NTH" streq do
+      get_nth_asm return
     elif intrinsic "PLUS" streq do
       get_plus_asm return
     elif intrinsic "PRINT" streq do
@@ -404,6 +406,18 @@ end
 // Return: Assembly
 function get_ne_asm -> str :
   "cmovne" get_comparison_asm
+end
+
+function get_nth_asm -> str :
+  "  pop rax\n"
+  "  sub rax, 1\n"                                      str.cat
+  "  mov rbx, 8\n"                                      str.cat
+  "  mul rbx\n"                                         str.cat
+  "  add rsp, rax ; Stack pointer to the Nth element\n" str.cat
+  "  pop rbx      ; Get Nth element to rax\n"           str.cat
+  "  add rax, 8\n"                                      str.cat
+  "  sub rsp, rax ; Return stack pointer\n"             str.cat
+  "  push rbx\n"                                        str.cat
 end
 
 // Pop two integers from the stack and push the sum of the two values
