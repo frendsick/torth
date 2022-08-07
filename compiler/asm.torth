@@ -61,6 +61,9 @@ function get_op_asm ptr -> str :
   elif op_type OpType.RETURN == do
     op Op.get_function Function.get_name get_return_asm
     return
+  elif op_type OpType.WHILE == do
+    op get_while_asm
+    return
   elif op_type OpType.INTRINSIC == do
     // Get assembly for correct Intrinsic
     token_value str.upper
@@ -221,6 +224,24 @@ function get_return_asm str -> str :
     return
   endif
   get_function_end_asm
+end
+
+// Generate Assembly for OpType.WHILE
+// Params: Op
+// Return: Assembly
+function get_while_asm ptr -> str :
+  // Initialize variables
+  dup   Op.get_id itoa
+  swap  Op.get_function Function.get_name
+  take
+    function_name
+    op_id
+  in
+
+  function_name
+  "_WHILE"  str.cat
+  op_id     str.cat
+  ":\n"     str.cat
 end
 
 // AND performs bitwise-AND operation to two integers
