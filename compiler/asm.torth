@@ -72,6 +72,8 @@ function get_op_asm ptr -> str :
       get_and_asm return
     elif intrinsic "ARGC" streq do
       get_argc_asm return
+    elif intrinsic "ARGV" streq do
+      get_argv_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "PLUS" streq do
@@ -261,8 +263,17 @@ end
 // Return: Assembly
 function get_argc_asm -> str :
   "  mov rax, [args_ptr]\n"
-  "  mov rax, [rax]\n"      str.cat
-  "  push rax\n"            str.cat
+  "  mov rax, [rax]\n"  str.cat
+  "  push rax\n"        str.cat
+end
+
+// ARGV pushes the pointer to argument array to the stack
+// Params: None
+// Return: Assembly
+function get_argv_asm -> str :
+  "  mov rax, [args_ptr]\n"
+  "  add rax, 8\n"  str.cat
+  "  push rax\n"    str.cat
 end
 
 // Pop two integers from the stack and push the product of the two values
