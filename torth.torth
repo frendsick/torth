@@ -7,19 +7,6 @@ include "compiler/error"
 include "compiler/program"
 include "compiler/class/Program"
 
-// Type check the Program
-// Params
-//    program: Program
-// Return
-//    None
-function type_check_program ptr :
-  drop "[TODO] Type checking is not implemented yet\n" eputs
-end
-
-function compile_program ptr :
-  drop "[TODO] Compiler for Program is not implemented yet\n" eputs
-end
-
 function main :
   "test.torth" read_file    peek code           in
   get_functions             peek functions      in
@@ -30,9 +17,5 @@ function main :
   // Type check the Program
   // program type_check_program
 
-  // Compile assembly code file to an object file with NASM
-  "NASM" exec_forked
-
-  // Link the object file to an executable with LD
-  "LD" exec_forked
+  compile_executable
 end

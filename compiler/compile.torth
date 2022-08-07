@@ -1,6 +1,15 @@
 include "std"
 include "compiler/error"
 
+// Compile and link the assembly file with NASM and LD
+function compile_executable :
+  // Compile assembly code file to an object file with NASM
+  "NASM" exec_forked
+
+  // Link the object file to an executable with LD
+  "LD" exec_forked
+end
+
 function exec_forked str :
   take cmd in
   SYS_fork SYSCALL0
