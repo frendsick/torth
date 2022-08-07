@@ -492,6 +492,43 @@ function str.startswith str str -> bool :
   True
 end
 
+// Check if a string ends with another string
+// Params: suffix (STR), string (STR)
+// Return: True/False
+function str.endswith str str -> bool :
+  over str.len
+  over str.len
+  0
+  take
+    index
+    suffix.len
+    string.len
+    suffix
+    string
+  in
+
+  string puts "\n" puts
+  suffix puts "\n" puts
+  // Return False if suffix.len > string.len
+  if suffix.len string.len > do
+    False return
+  endif
+
+  while index suffix.len < do
+    if
+      string string.len index - 1 - str.char_at
+      suffix suffix.len index - 1 - str.char_at
+      !=
+    do
+    string index str.char_at print " " puts
+    suffix index str.char_at print "\n" puts
+      False return
+    endif
+    index 1 + index = // index++
+  done
+  True
+end
+
 // Tests if two strings are equal
 function streq str str -> bool :
   // Bind strings to memory
