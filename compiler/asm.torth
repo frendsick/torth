@@ -42,6 +42,9 @@ function get_op_asm ptr ptr -> str :
   elif op_type OpType.ELIF == do
     program op get_elif_asm
     return
+  elif op_type OpType.ELSE == do
+    program op get_else_asm
+    return
   elif op_type OpType.FUNCTION_CALL == do
     token_value get_function_call_asm
     return
@@ -351,16 +354,35 @@ end
 // Return: Assembly
 function get_elif_asm ptr ptr -> str :
   take op program in
+
   // Get the related ENDIF keyword
   program op get_related_endif
   take related_endif in
 
+  // Generate assembly
   "  jmp "
   op Op.get_function Function.get_name  str.cat
   "_ENDIF"                              str.cat
   related_endif Op.get_id itoa          str.cat
-  "\n"                                  str.cat
-  dup puts
+  ":\n"                                 str.cat
+end
+
+// ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to
+// Params: Op, Program
+// Return: Assembly
+function get_else_asm ptr ptr -> str :
+  take op program in
+
+  // Get the related ENDIF keyword
+  program op get_related_endif
+  take related_endif in
+
+  // Generate assembly
+  "  jmp "
+  op Op.get_function Function.get_name  str.cat
+  "_ELSE"                               str.cat
+  related_endif Op.get_id itoa          str.cat
+  ":\n"                                 str.cat
 end
 
 // Generate assembly for calling a function
