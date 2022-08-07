@@ -31,6 +31,9 @@ function get_op_asm ptr -> str :
   elif op_type OpType.FUNCTION_CALL == do
     token_value get_function_call_asm
     return
+  elif op_type OpType.PEEK == do
+    get_peek_asm
+    return
   elif op_type OpType.PUSH_BOOL == do
     token_value str.upper get_push_bool_asm
     return
@@ -109,6 +112,14 @@ function get_push_bool_asm str -> str :
   do drop   "  mov rax, 1\n"
   else drop "  mov rax, 0\n"
   endif     "  push rax\n" str.cat
+end
+
+// Generate Assembly for OpType.PEEK
+// Params: None
+// Return: Assembly
+function get_peek_asm -> str :
+  // Save current stack pointer to r15
+  "  mov r15, rsp\n"
 end
 
 // Generate Assembly for OpType.PUSH_CHAR
