@@ -86,8 +86,16 @@ function get_op_asm ptr -> str :
       get_eq_asm return
     elif intrinsic "GE" streq do
       get_ge_asm return
+    elif intrinsic "GT" streq do
+      get_ge_asm return
+    elif intrinsic "LE" streq do
+      get_le_asm return
+    elif intrinsic "LT" streq do
+      get_lt_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
+    elif intrinsic "NE" streq do
+      get_ne_asm return
     elif intrinsic "PLUS" streq do
       get_plus_asm return
     elif intrinsic "PRINT" streq do
@@ -348,12 +356,36 @@ function get_eq_asm -> str :
   "cmove" get_comparison_asm
 end
 
-// GE takes two items from the stack and checks if the second item >= the other
+// GE takes two items from the stack and checks if the second item >= the other.
 // Then it pushes the boolean value of the comparison.
 // Params: None
 // Return: Assembly
 function get_ge_asm -> str :
   "cmovge" get_comparison_asm
+end
+
+// GT takes two items from the stack and checks if the second item > the other.
+// Then it pushes the boolean value of the comparison.
+// Params: None
+// Return: Assembly
+function get_gt_asm -> str :
+  "cmovg" get_comparison_asm
+end
+
+// LE takes two items from the stack and checks if the second item <= the other.
+// Then it pushes the boolean value of the comparison.
+// Params: None
+// Return: Assembly
+function get_le_asm -> str :
+  "cmovle" get_comparison_asm
+end
+
+// LT takes two items from the stack and checks if the second item < the other.
+// Then it pushes the boolean value of the comparison.
+// Params: None
+// Return: Assembly
+function get_lt_asm -> str :
+  "cmovl" get_comparison_asm
 end
 
 // Pop two integers from the stack and push the product of the two values
@@ -364,6 +396,14 @@ function get_mul_asm -> str :
   "  pop rbx\n"             str.cat
   "  mul rbx\n"             str.cat
   "  push rax  ; Product\n" str.cat
+end
+
+// NE takes two items from the stack and checks if they are not equal.
+// Then it pushes the boolean value of the comparison.
+// Params: None
+// Return: Assembly
+function get_ne_asm -> str :
+  "cmovne" get_comparison_asm
 end
 
 // Pop two integers from the stack and push the sum of the two values
