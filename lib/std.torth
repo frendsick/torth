@@ -507,8 +507,6 @@ function str.endswith str str -> bool :
     string
   in
 
-  string puts "\n" puts
-  suffix puts "\n" puts
   // Return False if suffix.len > string.len
   if suffix.len string.len > do
     False return
@@ -520,8 +518,6 @@ function str.endswith str str -> bool :
       suffix suffix.len index - 1 - str.char_at
       !=
     do
-    string index str.char_at print " " puts
-    suffix index str.char_at print "\n" puts
       False return
     endif
     index 1 + index = // index++
