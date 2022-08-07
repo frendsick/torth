@@ -66,7 +66,7 @@ function get_op_asm ptr -> str :
     return
   elif op_type OpType.INTRINSIC == do
     // Get assembly for correct Intrinsic
-    token_value str.upper
+    token_value str.copy str.upper
     take intrinsic in
     if intrinsic "AND" streq do
       get_and_asm return
@@ -104,6 +104,8 @@ function get_op_asm ptr -> str :
       get_plus_asm return
     elif intrinsic "PRINT" streq do
       get_print_asm return
+    elif intrinsic "STORE_" str.startswith do
+      intrinsic get_store_asm
     else
       "Generating assembly for intrinsic '" intrinsic str.cat
       "' is not implemented yet\n" str.cat
@@ -466,6 +468,32 @@ end
 function get_print_asm -> str :
   "  pop rdi\n"
   "  call print\n"    str.cat
+end
+
+// Params: store_variant
+// Return: Assembly
+function get_store_asm str -> str :
+  str.copy str.upper
+  take store_variant in
+
+  // Get the correct size register for the store_variant
+  if    store_variant "STORE_BYTE"  streq do "bl"
+  elif  store_variant "STORE_WORD"  streq do "bx"
+  elif  store_variant "STORE_DWORD" streq do "ebx"
+  elif  store_variant "STORE_QWORD" streq do "rbx"
+  else
+    "'" store_variant                  str.cat
+    "' is not a valid STORE Intrinsic" str.cat
+    "VALUE_ERROR" CompilerError ""
+  endif
+  take register in
+
+  // Generate assembly
+  "  pop rax\n"
+  "  pop rbx\n"   str.cat
+  "  mov [rax], " str.cat
+  register        str.cat
+  "\n"            str.cat
 end
 
 function get_exit_assembly -> str :

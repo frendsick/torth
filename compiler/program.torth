@@ -132,6 +132,8 @@ function get_tokens_op_type ptr ptr -> int :
     OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
     OpType.WHILE return
+  elif functions token_value function_exists do
+    OpType.FUNCTION_CALL return
   // Intrinsics
   elif
     token_upper "AND"         streq
@@ -157,10 +159,7 @@ function get_tokens_op_type ptr ptr -> int :
     token_upper "PLUS"        streq ||
     token_upper "PRINT"       streq ||
     token_upper "ROT"         streq ||
-    token_upper "STORE_BYTE"  streq ||
-    token_upper "STORE_WORD"  streq ||
-    token_upper "STORE_DWORD" streq ||
-    token_upper "STORE_QWORD" streq ||
+    token_upper "STORE_" str.startswith ||
     token_upper "SWAP"        streq ||
     token_upper "SYSCALL0"    streq ||
     token_upper "SYSCALL1"    streq ||
@@ -171,8 +170,6 @@ function get_tokens_op_type ptr ptr -> int :
     token_upper "SYSCALL6"    streq ||
   do
     OpType.INTRINSIC return
-  elif functions token_value function_exists do
-    OpType.FUNCTION_CALL return
   else
     "Operation '"
     token Token.get_value str.cat
