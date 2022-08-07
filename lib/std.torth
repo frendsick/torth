@@ -529,6 +529,25 @@ function str.endswith str str -> bool :
   True
 end
 
+// Remove a suffix if it exists. Otherwise return the original string.
+// Params: string (STR), string (STR)
+// Return: None
+function str.removesuffix str str :
+  over str.len
+  over str.len
+  take
+    string.len
+    suffix.len
+    string
+    suffix
+  in
+  // Clear the suffix if it exists
+  if string suffix str.endswith do
+    string ptr string.len suffix.len -
+    ptr+ str str.empty
+  endif
+end
+
 // Tests if two strings are equal
 function streq str str -> bool :
   // Bind strings to memory
