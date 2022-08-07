@@ -1,11 +1,10 @@
 // torth.torth - Self hosted implementation of the Torth compiler
 include "std"
-include "typing"
 include "compiler/asm"
 include "compiler/compile"
 include "compiler/error"
+include "compiler/lex"
 include "compiler/program"
-include "compiler/class/Program"
 
 function main :
 
