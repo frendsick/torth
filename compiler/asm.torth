@@ -116,6 +116,8 @@ function get_op_asm ptr -> str :
       intrinsic get_store_asm
     elif intrinsic "SWAP" streq do
       get_swap_asm return
+    elif intrinsic "SYSCALL" str.startswith do
+      intrinsic get_syscall_asm return
     else
       "Generating assembly for intrinsic '" intrinsic str.cat
       "' is not implemented yet\n" str.cat
@@ -565,6 +567,52 @@ function get_swap_asm -> str :
   "  pop rbx\n"   str.cat
   "  push rax\n"  str.cat
   "  push rbx\n"  str.cat
+end
+
+// SYSCALL intrinsic variants call a Linux syscall.
+// Different variants are named SYSCALL0 - SYSCALL6 by the amount of arguments.
+// Params: Token.value.upper()
+// Return: Assembly
+function get_syscall_asm str -> str :
+
+  // Get the Syscall variant's number
+  7 str.char_at '0' -
+
+  // Get argument registers used for syscalls (List[str])
+  get_syscall_argument_registers
+  0
+  take
+    index
+    argument_registers
+    syscall_args_count
+  in
+
+  // Generate assembly code
+  "  pop rax ; syscall\n"
+  while index syscall_args_count < do
+    "  pop "                                    str.cat
+    index argument_registers list.nth str.load  str.cat
+    " ; "                                       str.cat
+
+    index 1 + index = // index++
+    index itoa                                  str.cat
+    ". arg\n"                                   str.cat
+  done
+
+  "  syscall\n"                                 str.cat
+  "  push rax ; return code\n"                  str.cat
+end
+
+function get_syscall_argument_registers -> ptr :
+  list.init
+
+  // Add Syscall argument registers in the correct order
+  "rdi" ptr swap list.append
+  "rsi" ptr swap list.append
+  "rdx" ptr swap list.append
+  "r10" ptr swap list.append
+  "r8"  ptr swap list.append
+  "r9"  ptr swap list.append
 end
 
 function get_exit_assembly -> str :
