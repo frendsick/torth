@@ -7,13 +7,18 @@ function initialize_asm -> str :
 end
 
 // Get Assembly for certain Op
-// Params: Pointer to Op (PTR)
+// Params: Pointer to Op (PTR), Program
 // Return: Assembly
-function get_op_asm ptr -> str :
+function get_op_asm ptr ptr -> str :
   // Save Op and Token.value in Binding
   dup  Op.get_token Token.get_value
   over Op.get_type
-  take op_type token_value op in
+  take
+    op_type
+    token_value
+    op
+    program
+  in
 
   // Get assembly for the correct OpType
   if
@@ -28,6 +33,9 @@ function get_op_asm ptr -> str :
     op_type OpType.TAKE ==        ||
   do
     "" return
+  elif op_type OpType.ASSIGN_BIND == do
+    program op get_assign_bind_asm
+    return
   elif op_type OpType.FUNCTION_CALL == do
     token_value get_function_call_asm
     return
@@ -155,6 +163,33 @@ function get_op_comment_asm ptr -> str :
   "\n"                                  str.cat
 end
 
+// Assign a value to Variable
+// Params: Op, Program
+// Return: Assembly
+function get_assign_bind_asm ptr ptr -> str :
+  dup Op.get_id
+  take op_id op program in
+
+  // memory_name = program[op.id - 1].token.value
+  op_id 1 - program list.nth ptr.load
+  Op.get_token Token.get_value
+
+  // bound_memory = f"{op.func.name}_{memory_name}"
+  op Op.get_function Function.get_name
+  "_" str.cat swap str.cat
+  take bound_memory in
+
+  // Generate assembly
+  "  pop rax  ; Old value\n"
+  "  pop rbx  ; New value\n"  str.cat
+  "  mov ["                   str.cat
+  bound_memory                str.cat
+  "], rbx\n"                  str.cat
+end
+
+// Generate assembly for calling a function
+// Params: Function's name
+// Return: Assembly
 function get_function_call_asm str -> str :
   "  call "
   swap str.cat
@@ -721,7 +756,7 @@ function get_programs_assembly_code ptr -> str :
     assembly_code op get_op_comment_asm str.cat
 
     // Concatenate Op's Assembly to op_asm
-    op get_op_asm str.cat
+    program op get_op_asm str.cat
     assembly_code =
     index 1 + index =
   done
