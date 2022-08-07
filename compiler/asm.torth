@@ -82,6 +82,8 @@ function get_op_asm ptr -> str :
       get_dup_asm return
     elif intrinsic "ENVP" streq do
       get_envp_asm return
+    elif intrinsic "EQ" streq do
+      get_eq_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "PLUS" streq do
@@ -256,6 +258,21 @@ function get_while_asm ptr -> str :
   ":\n"     str.cat
 end
 
+// Generate assembly code for different comparison Intrinsics, like EQ and GE.
+// Only the cmov operand changes with different comparison intrinsics.
+// Params: cmov_operand
+// Return: Assembly
+function get_comparison_asm str -> str :
+  "  pop rax\n"
+  "  pop rbx\n"         str.cat
+  "  mov rcx, 0\n"      str.cat
+  "  mov rdx, 1\n"      str.cat
+  "  cmp rbx, rax\n  "  str.cat
+  swap                  str.cat // cmov_operand
+  " rcx, rdx\n"         str.cat
+  "  push rcx\n"        str.cat
+end
+
 // AND performs bitwise-AND operation to two integers
 // Params: None
 // Return: Assembly
@@ -319,6 +336,14 @@ function get_envp_asm -> str :
   "  mov rax, [args_ptr]\n"
   "  add rax, 24\n" str.cat
   "  push rax\n"    str.cat
+end
+
+// EQ takes two elements from the stack and checks if they are equal
+// and pushes back the boolean value of the comparison
+// Params: None
+// Return: Assembly
+function get_eq_asm -> str :
+  "cmove" get_comparison_asm
 end
 
 // Pop two integers from the stack and push the product of the two values
