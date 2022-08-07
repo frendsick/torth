@@ -80,6 +80,8 @@ function get_op_asm ptr -> str :
       get_drop_asm return
     elif intrinsic "DUP" streq do
       get_dup_asm return
+    elif intrinsic "ENVP" streq do
+      get_envp_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "PLUS" streq do
@@ -308,6 +310,15 @@ function get_dup_asm -> str :
   "  pop rax\n"
   "  push rax\n" str.cat
   "  push rax\n" str.cat
+end
+
+// ENVP pushes the environment pointer to the stack
+// Params: None
+// Return: Assembly
+function get_envp_asm -> str :
+  "  mov rax, [args_ptr]\n"
+  "  add rax, 24\n" str.cat
+  "  push rax\n"    str.cat
 end
 
 // Pop two integers from the stack and push the product of the two values
