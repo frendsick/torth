@@ -88,67 +88,74 @@ function get_op_asm ptr ptr -> str :
     op get_while_asm
     return
   elif op_type OpType.INTRINSIC == do
-    // Get assembly for correct Intrinsic
-    token_value str.copy str.upper
-    take intrinsic in
-    if intrinsic "AND" streq do
-      get_and_asm return
-    elif intrinsic "ARGC" streq do
-      get_argc_asm return
-    elif intrinsic "ARGV" streq do
-      get_argv_asm return
-    elif intrinsic "DIVMOD" streq do
-      get_divmod_asm return
-    elif intrinsic "DROP" streq do
-      get_drop_asm return
-    elif intrinsic "DUP" streq do
-      get_dup_asm return
-    elif intrinsic "ENVP" streq do
-      get_envp_asm return
-    elif intrinsic "EQ" streq do
-      get_eq_asm return
-    elif intrinsic "GE" streq do
-      get_ge_asm return
-    elif intrinsic "GT" streq do
-      get_gt_asm return
-    elif intrinsic "LE" streq do
-      get_le_asm return
-    elif intrinsic "LT" streq do
-      get_lt_asm return
-    elif intrinsic "LOAD_" str.startswith do
-      intrinsic get_load_asm
-    elif intrinsic "MINUS" streq do
-      get_minus_asm return
-    elif intrinsic "MUL" streq do
-      get_mul_asm return
-    elif intrinsic "NE" streq do
-      get_ne_asm return
-    elif intrinsic "NTH" streq do
-      get_nth_asm return
-    elif intrinsic "OR" streq do
-      get_or_asm return
-    elif intrinsic "OVER" streq do
-      get_over_asm return
-    elif intrinsic "PLUS" streq do
-      get_plus_asm return
-    elif intrinsic "PRINT" streq do
-      get_print_asm return
-    elif intrinsic "ROT" streq do
-      get_rot_asm return
-    elif intrinsic "STORE_" str.startswith do
-      intrinsic get_store_asm
-    elif intrinsic "SWAP" streq do
-      get_swap_asm return
-    elif intrinsic "SYSCALL" str.startswith do
-      intrinsic get_syscall_asm return
-    else
-      "Generating assembly for intrinsic '" intrinsic str.cat
-      "' is not implemented yet\n" str.cat
-      "" swap NotImplementedError
-    endif
+    token_value get_intrinsic_asm
+    return
   else
     "Generating assembly for '" token_value str.cat
     "' is not implemented: Unknown word\n" str.cat
+    "" swap NotImplementedError
+  endif
+end
+
+// Get assembly code for certain Intrinsic
+// Params: Token.value
+// Return: Assembly
+function get_intrinsic_asm str -> str :
+  str.copy str.upper
+  take intrinsic in
+  if intrinsic "AND" streq do
+    get_and_asm return
+  elif intrinsic "ARGC" streq do
+    get_argc_asm return
+  elif intrinsic "ARGV" streq do
+    get_argv_asm return
+  elif intrinsic "DIVMOD" streq do
+    get_divmod_asm return
+  elif intrinsic "DROP" streq do
+    get_drop_asm return
+  elif intrinsic "DUP" streq do
+    get_dup_asm return
+  elif intrinsic "ENVP" streq do
+    get_envp_asm return
+  elif intrinsic "EQ" streq do
+    get_eq_asm return
+  elif intrinsic "GE" streq do
+    get_ge_asm return
+  elif intrinsic "GT" streq do
+    get_gt_asm return
+  elif intrinsic "LE" streq do
+    get_le_asm return
+  elif intrinsic "LT" streq do
+    get_lt_asm return
+  elif intrinsic "LOAD_" str.startswith do
+    intrinsic get_load_asm
+  elif intrinsic "MINUS" streq do
+    get_minus_asm return
+  elif intrinsic "MUL" streq do
+    get_mul_asm return
+  elif intrinsic "NE" streq do
+    get_ne_asm return
+  elif intrinsic "NTH" streq do
+    get_nth_asm return
+  elif intrinsic "OR" streq do
+    get_or_asm return
+  elif intrinsic "OVER" streq do
+    get_over_asm return
+  elif intrinsic "PLUS" streq do
+    get_plus_asm return
+  elif intrinsic "PRINT" streq do
+    get_print_asm return
+  elif intrinsic "ROT" streq do
+    get_rot_asm return
+  elif intrinsic "STORE_" str.startswith do
+    intrinsic get_store_asm
+  elif intrinsic "SWAP" streq do
+    get_swap_asm return
+  elif intrinsic "SYSCALL" str.startswith do
+    intrinsic get_syscall_asm return
+  else
+    "Generating assembly for intrinsic '" intrinsic str.cat
+    "' is not implemented yet\n" str.cat
     "" swap NotImplementedError
   endif
 end
