@@ -8,14 +8,25 @@ include "compiler/program"
 include "compiler/class/Program"
 
 function main :
-  "test.torth" read_file    peek code           in
-  get_functions             peek functions      in
-  get_sub_programs          peek sub_programs   in
-  generate_assembly_code    take assembly_code  in
-  assembly_code mode_644 "test.asm" write_file drop
 
-  // Type check the Program
+  // Read the code file
+  "test.torth" read_file peek code in
+
+  // Get Functions from code
+  get_functions peek functions in
+
+  // Get the intermediate representation (Program) of each Function
+  get_sub_programs peek sub_programs in
+
+  // TODO: Type check the Program
   // program type_check_program
 
+  // Generate assembly code from the intermediate representation
+  generate_assembly_code take assembly_code in
+
+  // Write the assembly code to a file
+  assembly_code mode_644 "test.asm" write_file drop
+
+  // Compile the assembly code file to a Linux x86_64 executable
   compile_executable
 end
