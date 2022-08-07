@@ -58,6 +58,9 @@ function get_op_asm ptr -> str :
   elif op_type OpType.PUSH_STR == do
     op get_push_str_asm
     return
+  elif op_type OpType.RETURN == do
+    op Op.get_function Function.get_name get_return_asm
+    return
   elif op_type OpType.INTRINSIC == do
     // Get assembly for correct Intrinsic
     token_value str.upper
@@ -208,6 +211,18 @@ function get_push_str_asm ptr -> str :
   "  push rsi\n"            str.cat
 end
 
+// Generate Assembly for OpType.RETURN
+// Params: Function.name
+// Return: Assembly
+function get_return_asm str -> str :
+  if dup str.copy str.upper "MAIN" streq do
+    "0"   get_push_int_asm
+    swap  get_function_end_asm str.cat
+    return
+  endif
+  get_function_end_asm
+end
+
 // AND performs bitwise-AND operation to two integers
 // Params: None
 // Return: Assembly
@@ -309,6 +324,9 @@ function get_function_start_asm str -> str :
   "  add qword [return_stack_index], 8  ; Increment return_stack_index\n" str.cat
 end
 
+// Return the end of the assembly code of each Program
+// Params: Function's name
+// Return: Assembly code
 function get_function_end_asm str -> str :
   take function_name in
 
