@@ -52,11 +52,11 @@ function get_op_asm ptr -> str :
   elif op_type OpType.PUSH_INT == do
     token_value get_push_int_asm
     return
-  elif op_type OpType.PUSH_STR == do
-    "TODO: Generating assembly for OpType.PUSH_STR is not implemented yet.\n"
-    "" swap NotImplementedError
   elif op_type OpType.PUSH_PTR == do
     token_value get_push_ptr_asm
+    return
+  elif op_type OpType.PUSH_STR == do
+    op get_push_str_asm
     return
   elif op_type OpType.INTRINSIC == do
     // Get assembly for correct Intrinsic
@@ -186,6 +186,26 @@ end
 function get_push_ptr_asm str -> str :
   "  mov rax, " swap  str.cat
   "\n  push rax\n"    str.cat
+end
+
+// Generate Assembly for OpType.PUSH_STR
+// Params: Op
+// Return: Assembly
+function get_push_str_asm ptr -> str :
+  // Initialize variables
+  dup   Op.get_id itoa
+  swap  Op.get_function Function.get_name
+  take
+    function_name
+    op_id
+  in
+
+  "  mov rsi, "
+  function_name             str.cat
+  "_s"                      str.cat
+  op_id                     str.cat
+  " ; Pointer to string\n"  str.cat
+  "  push rsi\n"            str.cat
 end
 
 // AND performs bitwise-AND operation to two integers
