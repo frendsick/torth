@@ -313,10 +313,9 @@ function get_do_asm ptr ptr -> str :
     do
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
       op Op.get_function Function.get_name
-      "_"                                               str.cat
-      index program list.nth ptr.load Op.get_type itoa  str.cat
-      "_"                                               str.cat
-      index itoa                                        str.cat
+      "_"                                                     str.cat
+      index program list.nth ptr.load Op.get_type OpType.str  str.cat
+      index itoa                                              str.cat
       generate_do_asm return
     endif
 
