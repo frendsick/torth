@@ -1,0 +1,45 @@
+include "std"
+include "compiler/error"
+
+// Compile assembly code file to object file with NASM
+function compile_with_nasm :
+  // Allocate memory for the arguments
+  str.size 4 * malloc take argv in
+
+  // TODO: Dynamically get the names for .asm and .o files
+  "nasm"      argv                   str.store
+  "-felf64"   argv ptr.size     ptr+ str.store
+  "-otest.o"  argv ptr.size 2 * ptr+ str.store
+  "test.asm"  argv ptr.size 3 * ptr+ str.store
+  envp argv "/usr/bin/nasm" execve drop
+end
+
+// Execute another function with an alias string
+// NASM => compile_with_nasm
+function exec_command str :
+  take cmd in
+  if cmd "NASM" streq do
+    compile_with_nasm
+  else
+    "Unknown command '" eputs
+    cmd                 eputs
+    "'\n"               eputs
+  endif
+end
+
+function exec_forked str :
+  take cmd in
+  SYS_fork SYSCALL0
+  
+  // Child: Compile the assembly code with NASM
+  if dup 0 == do
+    cmd exec_command
+  // Parent: Wait for child to exit
+  elif dup -1 != do
+    NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
+  // Report error if forking the process failed
+  else
+    "Error occured while forking the compiler process for NASM.\n"
+    "NASM_ERROR" CompilerError
+  endif drop
+end

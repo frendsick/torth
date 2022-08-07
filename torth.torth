@@ -25,11 +25,11 @@ function main :
   get_functions             peek functions      in
   get_sub_programs          peek sub_programs   in
   generate_assembly_code    take assembly_code  in
-  assembly_code puts
+  assembly_code mode_644 "test.asm" write_file drop
 
   // Type check the Program
   // program type_check_program
 
   // Compile code into executable
-  // program compile_program
+  "NASM" exec_forked
 end
