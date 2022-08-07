@@ -70,6 +70,8 @@ function get_op_asm ptr -> str :
     take intrinsic in
     if intrinsic "AND" streq do
       get_and_asm return
+    elif intrinsic "ARGC" streq do
+      get_argc_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "PLUS" streq do
@@ -252,6 +254,15 @@ function get_and_asm -> str :
   "  pop rbx\n"       str.cat
   "  and rbx, rax\n"  str.cat
   "  push rbx\n"      str.cat
+end
+
+// ARGC pushes the argument count to the stack
+// Params: None
+// Return: Assembly
+function get_argc_asm -> str :
+  "  mov rax, [args_ptr]\n"
+  "  mov rax, [rax]\n"      str.cat
+  "  push rax\n"            str.cat
 end
 
 // Pop two integers from the stack and push the product of the two values

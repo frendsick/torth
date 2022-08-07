@@ -135,6 +135,7 @@ function get_tokens_op_type ptr ptr -> int :
   // Intrinsics
   elif
     token_upper "AND"         streq
+    token_upper "ARGC"        streq ||
     token_upper "ARGV"        streq ||
     token_upper "DIVMOD"      streq ||
     token_upper "DROP"        streq ||
