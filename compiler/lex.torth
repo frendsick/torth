@@ -359,7 +359,6 @@ function parse_function_variables ptr :
       // token.value = f"{token.value}_{bind_variant}"
       token_value "_" str.cat
       bind_variant    str.cat
-      dup puts
       token Token.value ptr+ str.store
 
     // If Token is already a known Variable just update its boolean value

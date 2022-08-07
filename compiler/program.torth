@@ -132,6 +132,18 @@ function get_tokens_op_type ptr ptr -> int :
     OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
     OpType.WHILE return
+  elif token Token.is_variable ptr+ bool.load do
+    // Change the Token's value back to original
+    "_PEEK" token_value str.removesuffix
+    "_TAKE" token_value str.removesuffix
+
+    // Check the type of the Binding (PEEK / TAKE)
+    if "PEEK" token_upper str.endswith do
+      OpType.PEEK_BIND return
+    elif "TAKE" token_upper str.endswith do
+      OpType.POP_BIND return
+    endif
+    OpType.PUSH_BIND return
   elif functions token_value function_exists do
     OpType.FUNCTION_CALL return
   // Intrinsics
