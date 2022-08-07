@@ -74,6 +74,8 @@ function get_op_asm ptr -> str :
       get_argc_asm return
     elif intrinsic "ARGV" streq do
       get_argv_asm return
+    elif intrinsic "DIVMOD" streq do
+      get_divmod_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "PLUS" streq do
@@ -274,6 +276,18 @@ function get_argv_asm -> str :
   "  mov rax, [args_ptr]\n"
   "  add rax, 8\n"  str.cat
   "  push rax\n"    str.cat
+end
+
+// DIVMOD pops two integers from the stack and pushes their remainder and quotient
+// Params: None
+// Return: Assembly
+function get_divmod_asm -> str :
+  "  xor edx, edx ; Do not use floating point arithmetic\n"
+  "  pop rbx\n"               str.cat
+  "  pop rax\n"               str.cat
+  "  div rbx\n"               str.cat
+  "  push rdx ; Remainder\n"  str.cat
+  "  push rax ; Quotient\n"   str.cat
 end
 
 // Pop two integers from the stack and push the product of the two values
