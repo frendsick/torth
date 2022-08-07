@@ -37,6 +37,9 @@ function get_op_asm ptr -> str :
   elif op_type OpType.PEEK_BIND == do
     op get_peek_bind_asm
     return
+  elif op_type OpType.POP_BIND == do
+    op get_pop_bind_asm
+    return
   elif op_type OpType.PUSH_BOOL == do
     token_value str.upper get_push_bool_asm
     return
@@ -129,20 +132,35 @@ end
 // Params: Op
 // Return: Assembly
 function get_peek_bind_asm ptr -> str :
-  take op in
-
   // bound_memory = f"{op.func.name}_{memory_name}"
+  take op in
   op Op.get_token     Token.get_value
   op Op.get_function  Function.get_name
   "_" str.cat swap str.cat
   take bound_memory in
 
   "  mov rax, [r15]\n"
-  "  mov [" str.cat
-  bound_memory str.cat
-  "], rax\n" str.cat
-  "  add r15, 8\n" str.cat
+  "  mov ["         str.cat
+  bound_memory      str.cat
+  "], rax\n"        str.cat
+  "  add r15, 8\n"  str.cat
   dup puts
+end
+
+// Generate Assembly for OpType.POP_BIND
+// Params: Op
+// Return: Assembly
+function get_pop_bind_asm ptr -> str :
+  // bound_memory = f"{op.func.name}_{memory_name}"
+  take op in
+  op Op.get_token     Token.get_value
+  op Op.get_function  Function.get_name
+  "_" str.cat swap str.cat
+  take bound_memory in
+
+  "  pop qword ["
+  bound_memory  str.cat
+  "]\n"         str.cat
 end
 
 // Generate Assembly for OpType.PUSH_CHAR

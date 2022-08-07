@@ -93,6 +93,7 @@ ENUM OpType.len 1 :
   OpType.INTRINSIC
   OpType.PEEK
   OpType.PEEK_BIND
+  OpType.POP_BIND
   OpType.PUSH_BOOL
   OpType.PUSH_CHAR
   OpType.PUSH_INT
