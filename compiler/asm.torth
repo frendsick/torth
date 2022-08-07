@@ -36,6 +36,9 @@ function get_op_asm ptr ptr -> str :
   elif op_type OpType.ASSIGN_BIND == do
     program op get_assign_bind_asm
     return
+  elif op_type OpType.DO == do
+    program op get_do_asm
+    return
   elif op_type OpType.FUNCTION_CALL == do
     token_value get_function_call_asm
     return
@@ -185,6 +188,159 @@ function get_assign_bind_asm ptr ptr -> str :
   "  mov ["                   str.cat
   bound_memory                str.cat
   "], rbx\n"                  str.cat
+end
+
+// Get the parent IF, ELIF or WHILE for the current DO operand
+function get_parent_op_type_do ptr ptr -> int :
+  Op.get_id 1 - // index = op.id - 1
+  0
+  take
+    parent_count
+    index
+    program
+  in
+
+  // for index in range(op.id - 1, -1, -1):
+  while index 0 > do
+
+    // Get the current Op's OpType
+    index program list.nth ptr.load
+    dup Op.get_type
+    take op_type op in
+
+    if
+      op_type OpType.IF     ==
+      op_type OpType.ELIF   == ||
+      op_type OpType.WHILE  == ||
+    do
+      if parent_count 0 == do
+        op_type return
+      endif
+      parent_count 1 - parent_count = // parent_count--
+      index 1 - index = // index--
+      continue
+    endif
+
+    if
+      op_type OpType.DONE   ==
+      op_type OpType.ENDIF  ==
+      ||
+    do
+      parent_count 1 + parent_count = // parent_count++
+    endif
+    index 1 - index = // index--
+  done
+  "DO operand without parent IF, ELIF or WHILE\n"
+  "AMBIGUOUS_DO" CompilerError NULL
+end
+
+// DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
+// Params: Op, Program
+// Return: Assembly
+function get_do_asm ptr ptr -> str :
+  over over get_parent_op_type_do
+  over Op.get_id 1 + // index = op.id + 1
+  0
+  take
+    parent_op_count
+    index
+    parent_op_type
+    op
+    program
+  in
+
+  while index program list.len < do
+    // Get the current operand's OpType
+    index program list.nth ptr.load Op.get_type
+    take op_type in
+    op_type print "\n" puts
+
+    // Keep count on the nested IFs or WHILEs depending on the parent Op
+    if
+      // Nested IF block
+      parent_op_type  OpType.IF     ==
+      parent_op_type  OpType.ELIF   ==
+      ||
+      op_type         OpType.IF     ==
+      &&
+
+      // Nested WHILE block
+      parent_op_type  OpType.WHILE  ==
+      op_type         OpType.WHILE  ==
+      &&
+
+      || // Found nested IF block or WHILE block
+    do
+      parent_op_count 1 + parent_op_count =
+      index 1 + index =
+      continue
+    endif
+
+    // Generate assembly if we find the corresponding ELIF, ELSE, ENDIF or DONE
+    if
+      // Found the next possible jump location when the parent OpType is IF
+      op_type         OpType.ELIF   ==
+      op_type         OpType.ELSE   ==  ||
+      op_type         OpType.ENDIF  ==  ||
+      parent_op_type  OpType.IF     ==  &&
+
+      // Found the next possible jump location when the parent OpType is ELIF
+      op_type         OpType.ELIF   ==
+      op_type         OpType.ELSE   ==  ||
+      op_type         OpType.ENDIF  ==  ||
+      parent_op_type  OpType.ELIF   ==  &&
+      ||  // Logical OR with parent IF checks
+
+      // Found the next possible jump location when the parent OpType is WHILE
+      parent_op_type  OpType.WHILE  ==
+      op_type         OpType.DONE   ==  &&
+      ||  // Logical OR with parent IF and ELIF checks
+
+      // The current Op is not inside a nested block
+      parent_op_count 0 ==
+
+      // Try if an Op was found which matches any of the earlier checks
+      // and also is not found from within a nested block
+      &&
+    do
+      // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
+      op Op.get_function Function.get_name
+      "_"                                               str.cat
+      index program list.nth ptr.load Op.get_type itoa  str.cat
+      "_"                                               str.cat
+      index itoa                                        str.cat
+      generate_do_asm return
+    endif
+
+    // Decrement counter when passing another block's ENDIF / DONE
+    if
+      parent_op_type  OpType.IF     ==
+      parent_op_type  OpType.ELIF   == ||
+      op_type         OpType.ENDIF  == &&
+
+      parent_op_type  OpType.WHILE  ==
+      op_type         OpType.DONE   == &&
+      ||
+    do
+      parent_op_count 1 - parent_op_count =
+      index 1 + index =
+      continue
+    endif
+    index 1 + index = // index++
+  done
+  "The current block is missing the corresponding closing keyword\n"
+  "UNCLOSED_BLOCK" CompilerError ""
+end
+
+// DO pops an item from the stack and jumps to jump_destination if it is zero
+// Params: jump_destination (STR)
+// Return: Assembly
+function generate_do_asm str -> str :
+  "  pop rax\n"
+  "  test rax, rax\n" str.cat
+  "  jz "             str.cat
+  swap                str.cat
+  "\n"                str.cat
 end
 
 // Generate assembly for calling a function
@@ -478,7 +634,6 @@ function get_load_asm str -> str :
   register            str.cat
   ", [rax]\n"         str.cat
   "  push rbx\n"      str.cat
-  dup puts
 end
 
 // Pop two integers from the stack and decrement the second value from the top one

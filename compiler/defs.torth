@@ -1,9 +1,5 @@
 include "std"
 
-// Constants
-const FUNCTION_CAPACITY 420   end
-const OP_CAPACITY       1337  end
-
 // Keywords
 ENUM Keyword.len 1 :
   Keyword.BOOL
