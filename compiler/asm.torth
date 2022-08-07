@@ -110,6 +110,8 @@ function get_op_asm ptr -> str :
       get_plus_asm return
     elif intrinsic "PRINT" streq do
       get_print_asm return
+    elif intrinsic "ROT" streq do
+      get_rot_asm return
     elif intrinsic "STORE_" str.startswith do
       intrinsic get_store_asm
     else
@@ -513,6 +515,18 @@ end
 function get_print_asm -> str :
   "  pop rdi\n"
   "  call print\n"    str.cat
+end
+
+// Rotate the top three elements of the stack so that the third becomes first
+// Params: None
+// Return: Assembly
+function get_rot_asm -> str :
+  "  pop rax\n"
+  "  pop rbx\n"   str.cat
+  "  pop rcx\n"   str.cat
+  "  push rbx\n"  str.cat
+  "  push rax\n"  str.cat
+  "  push rcx\n"  str.cat
 end
 
 // Params: store_variant
