@@ -30,6 +30,9 @@ function main :
   // Type check the Program
   // program type_check_program
 
-  // Compile code into executable
+  // Compile assembly code file to an object file with NASM
   "NASM" exec_forked
+
+  // Link the object file to an executable with LD
+  "LD" exec_forked
 end
