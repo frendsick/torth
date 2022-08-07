@@ -94,6 +94,8 @@ function get_op_asm ptr -> str :
       get_lt_asm return
     elif intrinsic "LOAD_" str.startswith do
       intrinsic get_load_asm
+    elif intrinsic "MINUS" streq do
+        get_minus_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "NE" streq do
@@ -274,6 +276,18 @@ function get_while_asm ptr -> str :
   ":\n"     str.cat
 end
 
+// Return the assembly code for arithmetic Intrinsics (PLUS, MINUS, MUL)
+// Params: operand
+// Return: Assembly
+function get_arithmetic_asm str -> str :
+  take operand in
+  "  pop rbx\n"
+  "  pop rax\n  " str.cat
+  operand         str.cat
+  " rax, rbx\n"   str.cat
+  "  push rax\n"  str.cat
+end
+
 // Generate assembly code for different comparison Intrinsics, like EQ and GE.
 // Only the cmov operand changes with different comparison intrinsics.
 // Params: cmov_operand
@@ -422,6 +436,11 @@ function get_load_asm str -> str :
   dup puts
 end
 
+// Pop two integers from the stack and decrement the second value from the top one
+function get_minus_asm -> str :
+  "sub" get_arithmetic_asm
+end
+
 // Pop two integers from the stack and push the product of the two values
 // Params: None
 // Return: Assembly
@@ -456,10 +475,7 @@ end
 // Params: None
 // Return: Assembly
 function get_plus_asm -> str :
-  "  pop rbx\n"
-  "  pop rax\n"       str.cat
-  "  add rax, rbx\n"  str.cat
-  "  push rax\n"      str.cat
+  "add" get_arithmetic_asm
 end
 
 // Pop an integer from the stack and print the value of it to the stdout
