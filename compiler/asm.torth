@@ -40,6 +40,9 @@ function get_op_asm ptr -> str :
   elif op_type OpType.POP_BIND == do
     op get_pop_bind_asm
     return
+  elif op_type OpType.PUSH_BIND == do
+    op get_push_bind_asm
+    return
   elif op_type OpType.PUSH_BOOL == do
     token_value str.upper get_push_bool_asm
     return
@@ -132,35 +135,32 @@ end
 // Params: Op
 // Return: Assembly
 function get_peek_bind_asm ptr -> str :
-  // bound_memory = f"{op.func.name}_{memory_name}"
-  take op in
-  op Op.get_token     Token.get_value
-  op Op.get_function  Function.get_name
-  "_" str.cat swap str.cat
-  take bound_memory in
-
+  get_bound_memory
   "  mov rax, [r15]\n"
   "  mov ["         str.cat
-  bound_memory      str.cat
+  swap              str.cat
   "], rax\n"        str.cat
   "  add r15, 8\n"  str.cat
-  dup puts
 end
 
 // Generate Assembly for OpType.POP_BIND
 // Params: Op
 // Return: Assembly
 function get_pop_bind_asm ptr -> str :
-  // bound_memory = f"{op.func.name}_{memory_name}"
-  take op in
-  op Op.get_token     Token.get_value
-  op Op.get_function  Function.get_name
-  "_" str.cat swap str.cat
-  take bound_memory in
-
+  get_bound_memory
   "  pop qword ["
-  bound_memory  str.cat
-  "]\n"         str.cat
+  swap  str.cat
+  "]\n" str.cat
+end
+
+// Generate Assembly for OpType.POP_BIND
+// Params: Op
+// Return: Assembly
+function get_push_bind_asm ptr -> str :
+  get_bound_memory
+  "  push qword ["
+  swap  str.cat
+  "]\n" str.cat
 end
 
 // Generate Assembly for OpType.PUSH_CHAR
@@ -343,4 +343,15 @@ function get_programs_assembly_code ptr -> str :
   function_name get_function_start_asm
   assembly_code str.cat
   function_name get_function_end_asm str.cat
+end
+
+// Get memory name for assembly used by a bound memory
+// Params: Op
+// Return: bound_memory
+function get_bound_memory ptr -> str :
+  // bound_memory = f"{op.func.name}_{memory_name}"
+  take op in
+  op Op.get_token     Token.get_value
+  op Op.get_function  Function.get_name
+  "_" str.cat swap str.cat
 end
