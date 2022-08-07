@@ -84,6 +84,8 @@ function get_op_asm ptr -> str :
       get_envp_asm return
     elif intrinsic "EQ" streq do
       get_eq_asm return
+    elif intrinsic "GE" streq do
+      get_ge_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "PLUS" streq do
@@ -338,12 +340,20 @@ function get_envp_asm -> str :
   "  push rax\n"    str.cat
 end
 
-// EQ takes two elements from the stack and checks if they are equal
-// and pushes back the boolean value of the comparison
+// EQ takes two elements from the stack and checks if they are equal.
+// Then it pushes the boolean value of the comparison.
 // Params: None
 // Return: Assembly
 function get_eq_asm -> str :
   "cmove" get_comparison_asm
+end
+
+// GE takes two items from the stack and checks if the second item >= the other
+// Then it pushes the boolean value of the comparison.
+// Params: None
+// Return: Assembly
+function get_ge_asm -> str :
+  "cmovge" get_comparison_asm
 end
 
 // Pop two integers from the stack and push the product of the two values
