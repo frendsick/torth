@@ -76,6 +76,8 @@ function get_op_asm ptr -> str :
       get_argv_asm return
     elif intrinsic "DIVMOD" streq do
       get_divmod_asm return
+    elif intrinsic "DROP" streq do
+      get_drop_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "PLUS" streq do
@@ -288,6 +290,13 @@ function get_divmod_asm -> str :
   "  div rbx\n"               str.cat
   "  push rdx ; Remainder\n"  str.cat
   "  push rax ; Quotient\n"   str.cat
+end
+
+// DROP removes one item from the stack
+// Params: None
+// Return: Assembly
+function get_drop_asm -> str :
+  "  add rsp, 8\n"
 end
 
 // Pop two integers from the stack and push the product of the two values
