@@ -87,7 +87,7 @@ function get_op_asm ptr -> str :
     elif intrinsic "GE" streq do
       get_ge_asm return
     elif intrinsic "GT" streq do
-      get_ge_asm return
+      get_gt_asm return
     elif intrinsic "LE" streq do
       get_le_asm return
     elif intrinsic "LT" streq do
@@ -95,7 +95,7 @@ function get_op_asm ptr -> str :
     elif intrinsic "LOAD_" str.startswith do
       intrinsic get_load_asm
     elif intrinsic "MINUS" streq do
-        get_minus_asm return
+      get_minus_asm return
     elif intrinsic "MUL" streq do
       get_mul_asm return
     elif intrinsic "NE" streq do
@@ -114,6 +114,8 @@ function get_op_asm ptr -> str :
       get_rot_asm return
     elif intrinsic "STORE_" str.startswith do
       intrinsic get_store_asm
+    elif intrinsic "SWAP" streq do
+      get_swap_asm return
     else
       "Generating assembly for intrinsic '" intrinsic str.cat
       "' is not implemented yet\n" str.cat
@@ -553,6 +555,16 @@ function get_store_asm str -> str :
   "  mov [rax], " str.cat
   register        str.cat
   "\n"            str.cat
+end
+
+// Swap the top two items in the stack
+// Params: None
+// Return: Assembly
+function get_swap_asm -> str :
+  "  pop rax\n"
+  "  pop rbx\n"   str.cat
+  "  push rax\n"  str.cat
+  "  push rbx\n"  str.cat
 end
 
 function get_exit_assembly -> str :
