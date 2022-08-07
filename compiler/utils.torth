@@ -52,3 +52,10 @@ function function_exists str ptr -> bool :
   // Return False if the Function was not found
   False
 end
+
+// Get Nth command line argument
+// Params: index
+// Return: *argv[index]
+function get_nth_cmd_line_argument int -> str :
+  int.size * argv swap ptr+ str.load
+end

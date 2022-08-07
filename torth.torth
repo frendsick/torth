@@ -8,8 +8,11 @@ include "compiler/program"
 
 function main :
 
+  // Get the code file from command line (first argument)
+  1 get_nth_cmd_line_argument
+
   // Read the code file
-  "test.torth" read_file peek code in
+  read_file peek code in
 
   // Get Functions from code
   get_functions peek functions in
