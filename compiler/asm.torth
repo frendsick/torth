@@ -471,7 +471,7 @@ end
 function get_exit_assembly -> str :
   ";; -- exit syscall\n"
   "  mov rax, sys_exit\n" str.cat
-  "  mov rdi, 0\n"        str.cat
+  "  pop rdi\n"           str.cat
   "  syscall\n\n"         str.cat
 end
 
