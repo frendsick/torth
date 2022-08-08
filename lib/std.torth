@@ -595,13 +595,19 @@ end
 function open_file int str -> int :
   over SYS_open syscall2
   take fd path in
-  if    fd ENOENT  ==  do
-    "File '" eputs path eputs "' does not exist.\n" eputs 1 exit
-  elif  fd EACCESS ==  do
-    "Cannot open file '" eputs path eputs "': Permission denied.\n" eputs 1 exit
-  elif  fd 0 < do
+  if fd ENOENT == do
+    "File '" eputs path eputs "' does not exist.\n" eputs
+    1 exit
+  elif fd EACCESS == do
+    "Cannot open file '" eputs path eputs "': Permission denied.\n" eputs
+    1 exit
+  elif fd EFAULT == do
+    "The 'path' argument for SYS_open points to inaccessible memory location.\n" eputs
+    1 exit
+  elif fd 0 < do
     "Error occurred while opening the file '" eputs path eputs "'.\n" eputs
-    "Error code: " eputs fd eputi 1 exit
+    "Error code: " eputs fd eputi
+    1 exit
   endif
   fd
 end
