@@ -1085,7 +1085,7 @@ function get_related_endif ptr ptr -> ptr :
   // Report error when corresponding ENDIF was not found
   "Corresponding ENDIF keyword was not found.\n"
   op Op.get_token Token.get_value str.copy str.upper
-  "AMBIGUOUS_" swap str.cat CompilerError NULL ptr
+  "AMBIGUOUS_" swap str.cat CompilerError NULLPTR
 end
 
 // Returns the current WHILE block's DONE Op
@@ -1126,7 +1126,7 @@ function get_parent_while ptr ptr -> ptr :
   "Parent WHILE keyword was not found.\n"
   op Op.get_token Token.get_value str.copy str.upper
   "AMBIGUOUS_" swap str.cat
-  CompilerError NULL ptr
+  CompilerError NULLPTR
 end
 
 // Get memory name for assembly used by a bound memory

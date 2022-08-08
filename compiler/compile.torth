@@ -54,7 +54,7 @@ function compile_with_nasm :
   "test.asm"  ptr swap list.append
   list.first
 
-  NULL ptr swap "/usr/bin/nasm" execve drop
+  NULLPTR swap "/usr/bin/nasm" execve drop
 end
 
 "ld", "-m", "elf_x86_64", f"-o{executable_file}", object_file
@@ -70,5 +70,5 @@ function link_with_ld :
   "test.o"        ptr swap list.append
   list.first
 
-  NULL ptr swap "/usr/bin/ld" execve drop
+  NULLPTR swap "/usr/bin/ld" execve drop
 end
