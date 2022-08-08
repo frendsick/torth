@@ -12,25 +12,31 @@ function main :
   1 get_nth_cmd_line_argument
 
   // Read the code file
-  read_file peek code in
+  read_file
+  take code in
 
   // Iterate over all characters in the code and get a list of words
-  get_words_from_code peek words in
+  code get_words_from_code
+  take words in
 
   // Parse Memories from words
-  get_memories take memories in
+  words get_memories
+  take memories in
 
   // Parse Functions from words
-  words get_functions peek functions in
+  words get_functions
+  take functions in
 
   // Get the intermediate representation (Program) of each Function
-  get_sub_programs peek sub_programs in
+  memories functions get_sub_programs
+  take sub_programs in
 
   // TODO: Type check the Program
   // program type_check_program
 
   // Generate assembly code from the intermediate representation
-  generate_assembly_code take assembly_code in
+  memories sub_programs generate_assembly_code
+  take assembly_code in
 
   // Write the assembly code to a file
   assembly_code mode_644 "test.asm" write_file drop
