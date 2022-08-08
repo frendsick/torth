@@ -3,7 +3,8 @@ include "compiler/utils"
 include "compiler/class/Op"
 
 function initialize_asm -> str :
-  "compiler/templates/torth_template.asm" read_file
+  "compiler/templates/start.asm" read_file
+  "compiler/templates/print.asm" read_file str.cat
 end
 
 // Get Assembly for certain Op

@@ -1,16 +1,4 @@
-default rel
-
-;; DEFINES
-%define sys_exit 60
-section .data
-
-section .bss
-  args_ptr: resq 1
-  return_stack: resb 1337*64
-  return_stack_index: resq 1
-
 section .text
-
 ;; Joinked from Porth's print function, thank you Tsoding!
 print:
   mov     r9, -3689348814741910323
@@ -45,4 +33,3 @@ print:
   syscall
   add     rsp, 40
   ret
-
