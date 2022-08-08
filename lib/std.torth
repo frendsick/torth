@@ -43,17 +43,18 @@ const mode_640 0x1a0 end
 const mode_600 0x180 end
 
 // Extra intrinsics
-function div    int int     -> int              : divmod swap drop end
-function mod    int int     -> int              : divmod drop end
-function /      int int     -> int              : div end
-function %      int int     -> int              : mod end
-function ^      int int     -> int              : pow end
-function not    bool        -> bool             : True != end
-function |      int int     -> int              : or end
-function lor    bool bool   -> bool             : int swap int or bool end
-function land   bool bool   -> bool             : int swap int and bool end
-function ||     bool bool   -> bool             : lor end
-function &&     bool bool   -> bool             : land end
+function NULLPTR            -> ptr  : NULL ptr              end
+function div      int int   -> int  : divmod swap drop      end
+function mod      int int   -> int  : divmod drop           end
+function /        int int   -> int  : div                   end
+function %        int int   -> int  : mod                   end
+function ^        int int   -> int  : pow                   end
+function not      bool      -> bool : True !=               end
+function |        int int   -> int  : or                    end
+function lor      bool bool -> bool : int swap int or bool  end
+function land     bool bool -> bool : int swap int and bool end
+function ||       bool bool -> bool : lor                   end
+function &&       bool bool -> bool : land                  end
 
 // Get user input from stdin
 function input -> str :
