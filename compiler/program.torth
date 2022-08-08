@@ -5,13 +5,17 @@ include "typing"
 include "compiler/defs"
 include "compiler/class/Token"
 
-function get_sub_programs ptr -> ptr :
+// Generate Program for each Function
+// Params: List[Function], List[Memory]
+// Return: List[Program]
+function get_sub_programs ptr ptr -> ptr :
   list.init // sub_programs = List[Program]
   0         // index
   take
     index
     sub_programs
     functions
+    memories
   in
 
   // Iterate over every Function is functions
@@ -19,7 +23,7 @@ function get_sub_programs ptr -> ptr :
 
     // Generate Program from the current Function
     index functions list.nth ptr.load
-    functions swap generate_program
+    memories functions rot generate_program
 
     // Append the generated Program to sub_programs
     sub_programs list.append
@@ -30,9 +34,9 @@ function get_sub_programs ptr -> ptr :
 end
 
 // Generate Program from Function
-// Params: Function, List[Function]
+// Params: Function, List[Function], List[Memory]
 // Return: Program
-function generate_program ptr ptr -> ptr :
+function generate_program ptr ptr ptr -> ptr :
   dup Function.tokens ptr+ ptr.load
   list.init
   0
@@ -42,16 +46,17 @@ function generate_program ptr ptr -> ptr :
     tokens
     func
     functions
+    memories
   in
 
   while index tokens list.len < do
     // Get current Token
     tokens list.first
     index ptr.size * ptr+ ptr.load
-    peek token in
+    take token in
 
     // Get the Token's OpType
-    functions swap get_tokens_op_type
+    memories functions token get_tokens_op_type
     take op_type in
 
     // Append Op to Program
@@ -64,9 +69,9 @@ function generate_program ptr ptr -> ptr :
 end
 
 // Get OpType for Token
-// Params: Token, List[Function]
+// Params: Token, List[Function], List[Memory]
 // Return: OpType
-function get_tokens_op_type ptr ptr -> int :
+function get_tokens_op_type ptr ptr ptr -> int :
 
   // Initialize variables
   dup  Token.get_type
@@ -78,6 +83,7 @@ function get_tokens_op_type ptr ptr -> int :
     token_type
     token
     functions
+    memories
   in
 
   if token_type TokenType.BOOL ==    do
@@ -146,6 +152,8 @@ function get_tokens_op_type ptr ptr -> int :
     OpType.PUSH_BIND return
   elif functions token_value function_exists do
     OpType.FUNCTION_CALL return
+  elif memories token_value memory_exists do
+    OpType.PUSH_PTR return
   // Intrinsics
   elif
     token_upper "AND"         streq

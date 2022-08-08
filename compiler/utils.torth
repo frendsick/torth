@@ -53,6 +53,35 @@ function function_exists str ptr -> bool :
   False
 end
 
+// Check if a Memory with a certain name exists
+// Params: memory_name, List[Memory]
+// Return: bool
+function memory_exists str ptr -> bool :
+  0
+  take
+    index
+    memory_name
+    memories
+  in
+
+  // Iterate over memories and check if a Memory with certain name exists
+  while index memories list.len < do
+
+    // Get the current Memory
+    memories list.first
+    index ptr.size * ptr+ ptr.load
+
+    // Return True if current Memory's name matches function_name parameter
+    if Memory.get_name memory_name streq do
+      True return
+    endif drop
+    index 1 + index = // index++
+  done
+
+  // Return False if the Function was not found
+  False
+end
+
 // Get Nth command line argument
 // Params: index
 // Return: *argv[index]

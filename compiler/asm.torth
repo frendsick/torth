@@ -935,17 +935,18 @@ function get_exit_assembly -> str :
 end
 
 // Generate assembly code for NASM
-// Params: sub_programs (List[Program])
+// Params: sub_programs (List[Program]), List[Memory]
 // Return: Intel x86_64 Assembly for NASM (STR)
-function generate_assembly_code ptr -> str :
-  dup list.len
-  initialize_asm
+function generate_assembly_code ptr ptr -> str :
+  over initialize_asm
+  over list.len
   0
   take
     index
-    assembly_code
     sub_programs.len
+    assembly_code
     sub_programs
+    memories
   in
 
   // Iterate over each Program in sub_programs
