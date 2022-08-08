@@ -14,8 +14,14 @@ function main :
   // Read the code file
   read_file peek code in
 
-  // Get Functions from code
-  get_functions peek functions in
+  // Iterate over all characters in the code and get a list of words
+  get_words_from_code peek words in
+
+  // Parse Memories from words
+  get_memories take memories in
+
+  // Parse Functions from words
+  words get_functions peek functions in
 
   // Get the intermediate representation (Program) of each Function
   get_sub_programs peek sub_programs in
