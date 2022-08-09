@@ -1,5 +1,6 @@
 // lex.torth - Lexing functions that parses Tokens from code files
 include "std"
+include "typing"
 include "compiler/defs"
 include "compiler/utils"
 include "compiler/class/Function"
@@ -7,6 +8,187 @@ include "compiler/class/Memory"
 include "compiler/class/Op"
 include "compiler/class/Token"
 include "compiler/class/Signature"
+
+// Parse included files from a code string. Return the list of files.
+// Params: code_file (STR), compiler_directory (STR)
+// Return: List[str]
+memory already_included_files ptr.size end
+function get_included_files str str -> ptr :
+  ptr list.init list.append
+  0
+  take
+    old_includes_count
+    included_files
+    compiler_directory
+  in
+
+  // Keep parsing includes from new included files of each iteration
+  while True do
+
+    // old_includes_count = len(included_files) - old_includes_count
+    included_files list.len old_includes_count -
+    old_includes_count =
+
+    // Start this iteration from the end of the last iteration's included_files list
+    included_files list.len old_includes_count -
+    take index in
+
+    // Iterate over all of the new included files for this loop iteration
+    while index included_files list.len < do
+
+      // Save the current file name
+      index included_files list.nth str.load
+      take file_name in
+
+      // Get includes from the current file
+      included_files file_name get_included_files_from_file
+
+      // Return if this iteration did not get any new included files
+      if dup list.len included_files list.len == do
+        drop included_files return
+      endif
+
+      // Save the new included files from this iteration
+      included_files =
+      index 1 + index = // index++
+    done
+  done
+  "Unreachable: get_included_files\n"
+  "UNREACHABLE" CompilerError NULLPTR
+end
+
+// Parse included files from a single file. Return the list of files.
+// Params: file_name (STR), included_files (List[str])
+// Return: included_files (List[str])
+function get_included_files_from_file str ptr -> ptr :
+  swap list.copy
+  take included_files code_file in
+
+  // Get the file contents without comments
+  code_file read_file
+  remove_comments_from_code
+  take code in
+
+  // Get the included files from the code to included_files list
+  code get_words_from_code
+  False
+  0
+  take
+    index
+    parsing_include
+    words
+  in
+
+  while index words list.len < do
+    // Get Nth word from words list
+    index words list.nth str.load
+    take word in
+
+    // Parse the file name for the include
+    if parsing_include do
+      word get_string_inside_quotes
+      take file_name in
+
+      if file_name int NULL == do
+        "INCLUDE keyword used without given file name\n"
+        "INCLUDE_ERROR" CompilerError
+      endif
+
+      // Do not save file name if it already is int the parsing_include list
+      if file_name included_files list.contains_str do
+        False parsing_include =
+        index 1 + index =
+        continue
+      endif
+
+      // Save the file name to included_files
+      file_name ptr included_files list.append
+      included_files =
+      False parsing_include =
+    endif
+
+    if word str.copy str.upper "INCLUDE" streq do
+      True parsing_include =
+    endif
+    index 1 + index = // index++
+  done
+
+  included_files
+end
+
+// Get multiline string inside double quotes ""
+// Return NULL if there is no string inside quotes
+// Params: String which begins with a double quote
+// Return: The multiline string between double quotes
+function get_string_inside_quotes str -> str :
+  str.copy
+  take original in
+
+  // Return NULL if the first character is not a double quote
+  if original ptr char.load '"' != do
+    NULLPTR str return
+  endif
+
+  1 while dup original str.len < do
+    1 + // index++
+
+    // Return when the other quote is found
+    if original over str.char_at '"' == do
+      original ptr over ptr+ NULL char swap char.store
+      drop
+      original 1 str+ return
+    endif
+  done drop
+  NULLPTR str
+end
+
+// Remove comments from code
+// Params: code (STR)
+// Return: code (STR)
+function remove_comments_from_code str -> str :
+  dup 0 str.char_at char.is_whitespace
+  False
+  0
+  take
+    index
+    removing_comment
+    is_whitespace
+    code
+  in
+
+  // Iterate over every character of the code
+  while index code str.len < do
+
+    // Test if the current and the following character is a slash
+    if
+      code index     str.char_at '/' ==
+      code index 1 + str.char_at '/' ==
+      &&
+    do
+      True removing_comment =
+    endif
+
+    // If the current character is a newline stop removing comment
+    if code index str.char_at 10 == do
+      False removing_comment =
+    endif
+
+    if removing_comment do
+      // Remove the current character
+      NULL char code ptr index ptr+ char.store
+
+      // Concatenate the beginning and the end of string
+      code
+      code index 1 + str+ str.cat
+      code =
+
+      // Just continue without updating the index
+      continue
+    endif
+    index 1 + index = // index++
+  done
+  code
+end
 
 // Transfer comparison and calculations related symbols to their text counterparts
 // Params: Token match from code (STR)

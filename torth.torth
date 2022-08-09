@@ -10,10 +10,20 @@ function main :
 
   // Get the code file from command line (first argument)
   1 get_nth_cmd_line_argument
+  take code_file in
 
   // Read the code file
-  read_file
+  code_file read_file
   take code in
+
+  // Get the current directory
+  "PWD" getenv
+  take compiler_directory in
+
+  // Get a list of included files for the program
+  // TODO: Optimize the code for parsing included files
+  compiler_directory code_file get_included_files
+  take included_files in
 
   // Iterate over all characters in the code and get a list of words
   code get_words_from_code
