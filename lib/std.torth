@@ -667,3 +667,33 @@ function sleep str :
   argv ptr.size ptr+ str.store
   envp argv "/usr/bin/sleep" execve drop
 end
+
+// Get the value of certain environment variable
+// Return NULL if variable is not found
+// Params: evar_key (str)
+// Return: evar_value
+function getenv str -> str :
+  0
+  take index evar_key in
+
+  // Check environment variables one by one
+  while envp ptr.load int NULL != do
+    envp index ptr.size * ptr+ str.load
+    take evar_value in
+
+    // Return the environment variable when found
+    if evar_value evar_key str.startswith do
+      0 while evar_value over str.char_at '=' != do
+        1 +
+      done
+
+      // Get the string from the character after '='
+      evar_value ptr swap 1 + ptr+ str
+      return
+    endif
+    index 1 + index = // index++
+  done
+
+  // Return NULLPTR if evar_key was not found
+  NULLPTR str
+end
