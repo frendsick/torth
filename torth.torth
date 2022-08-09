@@ -12,10 +12,6 @@ function main :
   1 get_nth_cmd_line_argument
   take code_file in
 
-  // Read the code file
-  code_file read_file
-  take code in
-
   // Get the current directory
   "PWD" getenv
   take compiler_directory in
@@ -25,17 +21,11 @@ function main :
   compiler_directory code_file get_included_files
   take included_files in
 
-  // Iterate over all characters in the code and get a list of words
-  code get_words_from_code
-  take words in
-
-  // Parse Memories from words
-  words get_memories
-  take memories in
-
-  // Parse Functions from words
-  words get_functions
+  included_files get_functions_from_files
   take functions in
+
+  included_files get_memories_from_files
+  take memories in
 
   // Get the intermediate representation (Program) of each Function
   memories functions get_sub_programs

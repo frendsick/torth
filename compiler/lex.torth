@@ -190,6 +190,82 @@ function remove_comments_from_code str -> str :
   code
 end
 
+// Parse all Functions from a list of files
+// Params: included_files (List[str])
+// Return: List[Function]
+function get_functions_from_files ptr -> ptr :
+  list.init
+  0
+  take
+    index
+    functions
+    included_files
+  in
+
+  while index included_files list.len < do
+    index included_files list.nth str.load
+    functions swap get_functions_from_file
+    functions =
+    index 1 + index =
+  done
+
+  functions
+end
+
+// Parse all Memories from a list of files
+// Params: included_files (List[str])
+// Return: List[Function]
+function get_memories_from_files ptr -> ptr :
+  list.init
+  0
+  take
+    index
+    memories
+    included_files
+  in
+
+  while index included_files list.len < do
+    index included_files list.nth str.load
+    memories swap get_memories_from_file
+    memories =
+    index 1 + index =
+  done
+
+  memories
+end
+
+// Parse all Functions for a single file
+// Params: file_name (STR), List[Function]
+// Return: List[Function]
+function get_functions_from_file str ptr -> ptr :
+  // Read the code file and remove comments
+  read_file remove_comments_from_code
+  take code functions in
+
+  // Iterate over all characters in the code and get a list of words
+  code get_words_from_code
+  take words in
+
+  // Parse Functions from words
+  functions words get_functions
+end
+
+// Parse all Memories for a single file
+// Params: file_name (STR), List[Memory]
+// Return: List[Memory]
+function get_memories_from_file str ptr -> ptr :
+  // Read the code file
+  read_file remove_comments_from_code
+  take code memories in
+
+  // Iterate over all characters in the code and get a list of words
+  code get_words_from_code
+  take words in
+
+  // Parse Memories from words
+  memories words get_memories
+end
+
 // Transfer comparison and calculations related symbols to their text counterparts
 // Params: Token match from code (STR)
 // Return: Value for Token (STR)
@@ -377,12 +453,11 @@ end
 
 // Parse Memories from code
 // Params
-//    words: List[str]
+//    words: List[str], memories: List[Memory]
 // Return
 //    memories: List[Memory]
-function get_memories ptr -> ptr :
+function get_memories ptr ptr -> ptr :
   get_dummy_location  // TODO: Get Location of the Memory definition
-  list.init           // memories
   "" str.copy         // memory_name
   NULL                // memory_size
   False               // defining_memory
@@ -392,9 +467,9 @@ function get_memories ptr -> ptr :
     defining_memory
     memory_size
     memory_name
-    memories
     location
     word_list
+    memories
   in
 
   while index word_list list.len < do
@@ -461,13 +536,12 @@ end
 
 // Parse Functions from code
 // Params
-//    words: List[str]
+//    words: List[str], functions: List[Function]
 // Return
 //    functions: List[Function]
-function get_functions ptr -> ptr :
+function get_functions ptr ptr -> ptr :
 
   // Initialize variables
-  list.init                     // List[Function]
   list.init                     // List[Token]
   0                             // current_part
   get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
@@ -483,8 +557,8 @@ function get_functions ptr -> ptr :
     FUNCTION_PART_DELIMITERS
     current_part
     tokens
-    functions
     word_list
+    functions
   in
 
   while index word_list list.len < do
