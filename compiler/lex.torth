@@ -191,20 +191,21 @@ function remove_comments_from_code str -> str :
 end
 
 // Parse all Functions from a list of files
-// Params: included_files (List[str])
+// Params: included_files (List[str]), list[Memory]
 // Return: List[Function]
-function get_functions_from_files ptr -> ptr :
+function get_functions_from_files ptr ptr -> ptr :
   list.init
   0
   take
     index
     functions
     included_files
+    memories
   in
 
   while index included_files list.len < do
     index included_files list.nth str.load
-    functions swap get_functions_from_file
+    memories functions rot get_functions_from_file
     functions =
     index 1 + index =
   done
@@ -235,19 +236,23 @@ function get_memories_from_files ptr -> ptr :
 end
 
 // Parse all Functions for a single file
-// Params: file_name (STR), List[Function]
+// Params: file_name (STR), List[Function], List[Memory]
 // Return: List[Function]
-function get_functions_from_file str ptr -> ptr :
+function get_functions_from_file str ptr ptr -> ptr :
   // Read the code file and remove comments
   read_file remove_comments_from_code
-  take code functions in
+  take
+    code
+    functions
+    memories
+  in
 
   // Iterate over all characters in the code and get a list of words
   code get_words_from_code
   take words in
 
   // Parse Functions from words
-  functions words get_functions
+  memories functions words get_functions
 end
 
 // Parse all Memories for a single file
@@ -536,10 +541,10 @@ end
 
 // Parse Functions from code
 // Params
-//    words: List[str], functions: List[Function]
+//    words: List[str], functions: List[Function], memories: List[Function]
 // Return
 //    functions: List[Function]
-function get_functions ptr ptr -> ptr :
+function get_functions ptr ptr ptr -> ptr :
 
   // Initialize variables
   list.init                     // List[Token]
@@ -559,6 +564,7 @@ function get_functions ptr ptr -> ptr :
     tokens
     word_list
     functions
+    memories
   in
 
   while index word_list list.len < do
@@ -634,24 +640,34 @@ function get_functions ptr ptr -> ptr :
   done
 
   // Parse the variables for each function
-  functions parse_variables_for_functions
+  memories functions parse_variables_for_functions
   functions
 end
 
-function parse_variables_for_functions ptr :
+// Parse Variables for Functions
+// Params: List[Function], List[Memory]
+function parse_variables_for_functions ptr ptr :
   dup list.len
   0
-  take index len functions in
+  take
+    index
+    len
+    functions
+    memories
+  in
 
   // Parse Variables for each Function
   while index len < do
     index functions list.nth ptr.load
-    parse_function_variables
+    memories swap parse_function_variables
     index 1 + index = // index++
   done
 end
 
-function parse_function_variables ptr :
+// Parse Variables in Function
+// Params: Function, List[Memory]
+// Return: None
+function parse_function_variables ptr ptr :
   dup Function.get_tokens
   list.init
   False
@@ -664,6 +680,7 @@ function parse_function_variables ptr :
     variables
     tokens
     func
+    memories
   in
 
   while index tokens list.len < do
@@ -692,7 +709,15 @@ function parse_function_variables ptr :
       True token Token.is_variable ptr+ bool.store
       token_value ptr variables list.append
       variables =
-      // TODO: memories.append(Memory(bound_memory, 8, token.location))
+
+      // Add the Variable to the list of memories
+      get_dummy_location
+      ptr.size
+      func Function.get_name "_"  str.cat
+      token_value                 str.cat
+      Memory.init
+      memories list.append
+      memories =
 
       // token.value = f"{token.value}_{bind_variant}"
       token_value "_" str.cat

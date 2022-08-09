@@ -34,13 +34,15 @@ function get_memory_definitions_asm ptr -> str :
       memory_name
     in
 
+
     // Append current Memory to assembly_code
-    "  " memory_name  str.cat
+    assembly_code
+    "  "              str.cat
+    memory_name       str.cat
     ": RESB "         str.cat
     memory_size itoa  str.cat
     "\n"              str.cat
     assembly_code =
-
     index 1 + index = // index++
   done
   assembly_code "\n"  str.cat

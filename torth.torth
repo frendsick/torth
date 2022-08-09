@@ -21,11 +21,11 @@ function main :
   compiler_directory code_file get_included_files
   take included_files in
 
-  included_files get_functions_from_files
-  take functions in
-
   included_files get_memories_from_files
   take memories in
+
+  memories included_files get_functions_from_files
+  take functions in
 
   // Get the intermediate representation (Program) of each Function
   memories functions get_sub_programs
