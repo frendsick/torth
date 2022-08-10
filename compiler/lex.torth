@@ -279,12 +279,11 @@ function get_functions_from_file str ptr ptr -> ptr :
     memories
   in
 
-  // Read the code file and remove comments
+  // Read the code file
   file_name read_file
-  file_name swap remove_comments_from_code
   take code in
 
-  // Iterate over all characters in the code and get a list of token_matches
+  // Get all Token Matches
   file_name code get_token_matches
   take token_matches in
 
@@ -300,17 +299,12 @@ function get_memories_from_file str ptr -> ptr :
 
   // Read the code file
   file_name read_file
-  take code in
 
-  // Iterate over all characters in the code and get a list of token_matches
-  file_name code get_token_matches
-  take token_matches in
-
-  file_name code remove_comments_from_code
-  take code_without_comments in
+  // Get all Token Matches
+  file_name swap get_token_matches
 
   // Parse Memories from token_matches
-  memories token_matches get_memories
+  memories swap get_memories
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -391,11 +385,19 @@ function get_token_type str -> int :
   TokenType.WORD
 end
 
-function get_token_from_word str -> ptr :
-  get_token_value dup
-  get_token_type
-  get_dummy_location
-  swap rot Token.init
+// Generate Token from Match object
+// Params: Match
+// Return: Token
+function get_token_from_match ptr -> ptr :
+  dup   Match.get_value
+  swap  Match.get_location
+  take location match_value in
+
+  // Create Token object
+  location
+  match_value get_token_value
+  dup get_token_type
+  swap Token.init
 end
 
 // Dummy memories for testing purposes
@@ -505,7 +507,7 @@ end
 //    code: str
 //    file_name: str
 // Return
-//    List[str]
+//    List[Match]
 function get_token_matches str str -> ptr :
   take code file_name in
 
@@ -761,9 +763,10 @@ function get_functions ptr ptr ptr -> ptr :
 
   while index token_matches list.len < do
     // Get current word
-    index token_matches list.nth str.load
-    dup   get_token_from_word
-    take token token_value in
+    index token_matches list.nth ptr.load
+    get_token_from_match
+    dup Token.get_value
+    take token_value token in
 
     if
       token_value str.copy str.upper
@@ -824,8 +827,7 @@ function get_functions ptr ptr ptr -> ptr :
       return_types list.append
       return_types =
     elif current_part 4 == do
-      token_value get_token_from_word
-      tokens list.append
+      token tokens list.append
       tokens =
     endif
     index 1 + index =
