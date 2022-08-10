@@ -82,7 +82,7 @@ end
 // Copy the list to new memory location
 function list.copy ptr -> ptr :
   // Initialize variables
-  dup list.len int.size +
+  dup list.len ptr.size * int.size +
   list.init
   take
     new_list
