@@ -69,7 +69,13 @@ end
 // Return: included_files (List[str])
 function get_included_files_from_file str ptr -> ptr :
   swap list.copy
+
+  // Add compiler's directory and the 'lib' directory to INCLUDE_PATHS
+  list.init
+  ""      ptr swap list.append
+  "lib/"  ptr swap list.append
   take
+    INCLUDE_PATHS
     included_files
     code_file
   in
@@ -111,15 +117,34 @@ function get_included_files_from_file str ptr -> ptr :
         continue
       endif
 
-      // Append .torth file extension if it is not present
-      // and the file does not exist as is
-      if
-        file_name ".torth" str.endswith not
-        file_name file_exists not
-        &&
-      do
-        file_name ".torth" str.cat
-        file_name =
+      // Check every directory in PATH and add .torth extension if needed
+      if file_name file_exists not do
+
+        // Iterate over INCLUDE PATHS
+        // and check if file_name or file_with_extension exists
+        0 take include_index in
+        while include_index INCLUDE_PATHS list.len < do
+          include_index INCLUDE_PATHS list.nth str.load
+          take path_dir in
+
+          // Append file_name to path_dir and check if it exists
+          path_dir file_name str.cat
+          take file_with_path in
+          if file_with_path file_exists do
+            file_with_path file_name =
+            break
+          else
+            // Check if the file with .torth extension exists
+            file_with_path ".torth" str.cat
+            file_with_path =
+            file_with_path puts "\n" puts
+            if file_with_path file_exists do
+              file_with_path file_name =
+              break
+            endif
+          endif
+          include_index 1 + include_index =
+        done
       endif
 
       // Save the file name to included_files
