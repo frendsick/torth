@@ -161,6 +161,9 @@ function list.pop ptr int :
   len 1 - list int.store
 end
 
+// Test if list contains a string
+// Params: List[str], str
+// Return: bool
 function list.contains_str ptr str -> bool :
   dup int.load
   0
