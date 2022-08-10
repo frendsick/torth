@@ -16,15 +16,19 @@ include "compiler/class/Signature"
 memory already_included_files ptr.size end
 function get_included_files str str -> ptr :
   ptr list.init list.append
+  100
+  0
   0
   take
     old_includes_count
+    recursive_include_count
+    RECURSIVE_INCLUDE_LIMIT
     included_files
     compiler_directory
   in
 
   // Keep parsing includes from new included files of each iteration
-  while True do
+  while recursive_include_count RECURSIVE_INCLUDE_LIMIT < do
 
     // old_includes_count = len(included_files) - old_includes_count
     included_files list.len old_includes_count -
@@ -53,6 +57,8 @@ function get_included_files str str -> ptr :
       included_files =
       index 1 + index = // index++
     done
+    recursive_include_count 1 +
+    recursive_include_count =
   done
   "Unreachable: get_included_files\n"
   "UNREACHABLE" CompilerError NULLPTR
