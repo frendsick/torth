@@ -534,6 +534,8 @@ function get_token_matches str str -> ptr :
 
     // Compare match_value with corresponding Match.value from matches_without_comments
     index matches_without_comments list.nth ptr.load
+    Match.get_value
+
     if match_value streq not do
       index matches list.pop
       index 1 - index = // index--
