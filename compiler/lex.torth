@@ -4,6 +4,7 @@ include "typing"
 include "compiler/defs"
 include "compiler/utils"
 include "compiler/class/Function"
+include "compiler/class/Match"
 include "compiler/class/Memory"
 include "compiler/class/Op"
 include "compiler/class/Token"
@@ -62,11 +63,14 @@ end
 // Return: included_files (List[str])
 function get_included_files_from_file str ptr -> ptr :
   swap list.copy
-  take included_files code_file in
+  take
+    included_files
+    code_file
+  in
 
   // Get the file contents without comments
   code_file read_file
-  remove_comments_from_code
+  code_file swap remove_comments_from_code
   take code in
 
   // Get the included files from the code to included_files list
@@ -112,7 +116,6 @@ function get_included_files_from_file str ptr -> ptr :
     endif
     index 1 + index = // index++
   done
-
   included_files
 end
 
@@ -142,52 +145,82 @@ function get_string_inside_quotes str -> str :
   NULLPTR str
 end
 
-// Remove comments from code
-// Params: code (STR)
-// Return: code (STR)
-function remove_comments_from_code str -> str :
-  dup 0 str.char_at char.is_whitespace
-  False
+// Get the indexes of the newlines in a string
+// Params: string
+// Return: List[int]
+function get_newline_indexes str -> ptr :
+  dup str.len
+  list.init
   0
   take
     index
-    removing_comment
-    is_whitespace
+    newline_indexes
+    len
+    string
+  in
+
+  // Iterate over all characters of the string
+  while index len < do
+
+    // Save index if the current character is a newline
+    if string index str.char_at 10 == do
+      index ptr newline_indexes list.append
+      newline_indexes =
+    endif
+    index 1 + index =
+  done
+  newline_indexes
+end
+
+// Remove comments from code
+// Params: code (STR), file_name (STR)
+// Return: code (STR)
+function remove_comments_from_code str str -> str :
+  over swap get_word_matches_from_code
+  over get_newline_indexes
+  "" str.copy
+  NULL
+  0
+  take
+    index
+    comment_line // Removing comment if this is not NULL
+    code_buffer
+    newline_indexes
+    token_matches
     code
   in
 
-  // Iterate over every character of the code
-  while index code str.len < do
+  // Iterate over every word of the code
+  while index token_matches list.len < do
 
-    // Test if the current and the following character is a slash
-    if
-      code index     str.char_at '/' ==
-      code index 1 + str.char_at '/' ==
-      &&
-    do
-      True removing_comment =
+    // Load necessary information about the current Token Match
+    index token_matches list.nth ptr.load Match.get_value
+    index token_matches list.nth ptr.load Match.get_location Location.get_row
+    take row token_value in
+
+    // Start removing comments if the current token_value startswith //
+    if token_value "//" str.startswith do
+      row comment_line =
     endif
 
-    // If the current character is a newline stop removing comment
-    if code index str.char_at 10 == do
-      False removing_comment =
+    // Stop removing comment if the current token_value is in a new line
+    if row comment_line != do
+      NULL comment_line =
     endif
 
-    if removing_comment do
-      // Remove the current character
-      NULL char code ptr index ptr+ char.store
-
-      // Concatenate the beginning and the end of string
-      code
-      code index 1 + str+ str.cat
-      code =
-
-      // Just continue without updating the index
+    // Continue to next character if removing comments from the line
+    if comment_line NULL > do
+      index 1 + index =
       continue
     endif
+
+    // Append the current token_value to code_buffer
+    code_buffer " " str.cat
+    token_value     str.cat
+    code_buffer =
     index 1 + index = // index++
   done
-  code
+  code_buffer
 end
 
 // Parse all Functions from a list of files
@@ -203,6 +236,7 @@ function get_functions_from_files ptr ptr -> ptr :
     memories
   in
 
+  // Iterate over included_files list
   while index included_files list.len < do
     index included_files list.nth str.load
     memories functions rot get_functions_from_file
@@ -239,36 +273,44 @@ end
 // Params: file_name (STR), List[Function], List[Memory]
 // Return: List[Function]
 function get_functions_from_file str ptr ptr -> ptr :
-  // Read the code file and remove comments
-  read_file remove_comments_from_code
   take
-    code
+    file_name
     functions
     memories
   in
 
-  // Iterate over all characters in the code and get a list of words
-  code get_words_from_code
-  take words in
+  // Read the code file and remove comments
+  file_name read_file
+  file_name swap remove_comments_from_code
+  take code in
 
-  // Parse Functions from words
-  memories functions words get_functions
+  // Iterate over all characters in the code and get a list of token_matches
+  file_name code get_token_matches
+  take token_matches in
+
+  // Parse Functions from token_matches
+  memories functions token_matches get_functions
 end
 
 // Parse all Memories for a single file
 // Params: file_name (STR), List[Memory]
 // Return: List[Memory]
 function get_memories_from_file str ptr -> ptr :
+  take file_name memories in
+
   // Read the code file
-  read_file remove_comments_from_code
-  take code memories in
+  file_name read_file
+  take code in
 
-  // Iterate over all characters in the code and get a list of words
-  code get_words_from_code
-  take words in
+  // Iterate over all characters in the code and get a list of token_matches
+  file_name code get_token_matches
+  take token_matches in
 
-  // Parse Memories from words
-  memories words get_memories
+  file_name code remove_comments_from_code
+  take code_without_comments in
+
+  // Parse Memories from token_matches
+  memories token_matches get_memories
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -433,7 +475,7 @@ function get_words_from_code str -> ptr :
     do
       // If the word is empty there has been multiple whitespaces in a row
       if word str.len 0 == do
-        1 +
+        1 + // index++
         continue
       endif
 
@@ -456,9 +498,157 @@ function get_words_from_code str -> ptr :
   word_list
 end
 
+end
+
+// Get all token matches from code to a list
+// Params
+//    code: str
+//    file_name: str
+// Return
+//    List[str]
+function get_token_matches str str -> ptr :
+  take code file_name in
+
+  // Get Matches from the whole code
+  file_name code get_word_matches_from_code
+  take matches in
+
+  // Get Matches from the code without comments
+  file_name code remove_comments_from_code
+  file_name swap get_word_matches_from_code
+  0
+  take index matches_without_comments in
+
+  // Return only matches which exist in matches_without_comments
+  while index matches list.len < do
+    index matches list.nth ptr.load
+    Match.get_value
+    take match_value in
+
+    // If i >= size of matches_without_comments list then the rest is comments
+    if index matches_without_comments list.len >= do
+      index matches list.pop
+      index 1 + index =
+      continue
+    endif
+
+    // Compare match_value with corresponding Match.value from matches_without_comments
+    index matches_without_comments list.nth ptr.load
+    if match_value streq not do
+      index matches list.pop
+      index 1 - index = // index--
+    endif
+    index 1 + index = // index++
+  done
+  matches
+end
+
+// Get all word matches from code to a list
+// Params
+//    code: str
+//    file_name: str
+// Return
+//    List[str]
+function get_word_matches_from_code str str -> ptr :
+  dup get_newline_indexes
+  list.init
+  "" str.copy // String buffer for word
+  0
+  take
+    index
+    word
+    token_matches
+    newline_indexes
+    code
+    file_name
+  in
+
+  while
+    code index str.char_at
+    peek current_char in
+    NULL !=
+  do
+    if
+      current_char char.is_whitespace
+    do
+      // If the word is empty there has been multiple whitespaces in a row
+      if word str.len 0 == do
+        index 1 + index = // index++
+        continue
+      endif
+
+      // Match(file_name, location)
+      index word str.len -
+      take word_index in
+
+      newline_indexes word_index file_name get_token_location
+      word str.copy Match.init
+
+      // Append current Token Match to token_matches
+      token_matches list.append
+      token_matches =
+      word str.empty
+    else
+      // Append current character to word
+      current_char word str.append
+    endif
+    index 1 + index = // index++
+  done
+
+  // Append the last word if the file ended with a word
+  if word str.len 0 > do
+    index word str.len -
+    newline_indexes swap file_name get_token_location
+    word str.copy Match.init
+
+    token_matches list.append
+    token_matches =
+  endif
+  token_matches
+end
+
+// Calculate position for Token based on it's position from the start of the file
+// and the indexes of the newline characters found from the file.
+// Params: file_name (STR), position (INT), newline_indexes (List[Int])
+// Return: Location
+function get_token_location str int ptr -> ptr :
+  over
+  1
+  0
+  take
+    index
+    row
+    col
+    file_name
+    position
+    newline_indexes
+  in
+
+  // Get Location for found Token Match
+  while index newline_indexes list.len < do
+
+    if index 0 > do
+      index 1 - newline_indexes list.nth int.load
+      take nl_index in
+
+      row 1 + row = // row++
+      position nl_index - 1 - col = // col = position - nl_index - 1
+    endif
+
+    // Return when the current Token Location is found
+    if index newline_indexes list.nth int.load position > do
+      col 1 + row file_name str.copy Location.init
+      return
+    endif
+    index 1 + index =
+  done
+
+  col 1 + row file_name str.copy Location.init
+end
+
 // Parse Memories from code
 // Params
-//    words: List[str], memories: List[Memory]
+//    token_matches: List[Match], memories: List[Memory]
 // Return
 //    memories: List[Memory]
 function get_memories ptr ptr -> ptr :
@@ -473,12 +663,12 @@ function get_memories ptr ptr -> ptr :
     memory_size
     memory_name
     location
-    word_list
+    token_matches
     memories
   in
 
-  while index word_list list.len < do
-    index word_list list.nth str.load
+  while index token_matches list.len < do
+    index token_matches list.nth str.load
     take token_value in
 
     // Parse Memory only when inside Memory block
@@ -541,7 +731,7 @@ end
 
 // Parse Functions from code
 // Params
-//    words: List[str], functions: List[Function], memories: List[Function]
+//    token_matches: List[Match], functions: List[Function], memories: List[Function]
 // Return
 //    functions: List[Function]
 function get_functions ptr ptr ptr -> ptr :
@@ -562,14 +752,14 @@ function get_functions ptr ptr ptr -> ptr :
     FUNCTION_PART_DELIMITERS
     current_part
     tokens
-    word_list
+    token_matches
     functions
     memories
   in
 
-  while index word_list list.len < do
+  while index token_matches list.len < do
     // Get current word
-    index word_list list.nth str.load
+    index token_matches list.nth str.load
     dup   get_token_from_word
     take token token_value in
 
