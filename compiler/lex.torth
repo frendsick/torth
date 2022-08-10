@@ -111,6 +111,12 @@ function get_included_files_from_file str ptr -> ptr :
         continue
       endif
 
+      // # Append .torth file extension if it is not present
+      if file_name ".torth" str.endswith not do
+        file_name ".torth" str.cat
+        file_name =
+      endif
+
       // Save the file name to included_files
       file_name ptr included_files list.append
       included_files =
