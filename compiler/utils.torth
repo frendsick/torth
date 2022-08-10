@@ -5,25 +5,6 @@ include "compiler/class/Location"
 include "compiler/class/Signature"
 include "compiler/class/Token"
 
-function get_dummy_token -> ptr :
-  get_dummy_location TokenType.INT "69" Token.init
-end
-
-// Generate dummy Location
-// Location(file='test.torth', row=6, col=9)
-function get_dummy_location -> ptr :
-  9 6 "test.torth" Location.init
-end
-
-// Generate dummy Signature
-// Signature([TokenType.INT, TokenType.INT], [TokenType.INT])
-function get_dummy_signature -> ptr :
-  Signature.init
-  TokenType.INT over Signature.params   ptr+ ptr.load               int.store
-  TokenType.INT over Signature.params   ptr+ ptr.load int.size ptr+ int.store
-  TokenType.INT over Signature.returns  ptr+ ptr.load               int.store
-end
-
 // Check if a Function with a certain name exists
 // Params: function_name, List[Functions]
 // Return: bool
