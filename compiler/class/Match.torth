@@ -1,0 +1,68 @@
+include "std"
+include "compiler/class/Location"
+
+// Match(value: str, location: Location)
+ENUM Match.size 8 :
+  Match.value     // str
+  Match.location  // Location => PTR
+END
+
+// Initialize Match from parameters
+// Params: Match.value, Match.location
+// Return: Pointer to Match
+function Match.init str ptr -> ptr :
+  // Allocate memory for Match
+  Match.size malloc
+  take match value location in
+
+  // Load the parameters to the allocated memory
+  value     match Match.value     ptr+ str.store
+  location  match Match.location  ptr+ ptr.store
+  match
+end
+
+// Get Match.value
+// Params: Pointer to Match (PTR)
+// Return: Match.value (STR)
+function Match.get_value ptr -> str :
+  str.load
+end
+
+// Get Match.location
+// Params: Pointer to Match (PTR)
+// Return: Match.location (Location => PTR)
+function Match.get_location ptr -> ptr :
+  Match.location ptr+ ptr.load
+end
+
+// Print the Match contents
+function Match.print ptr :
+  "Match.value        => "  puts
+  dup Match.value           ptr+
+  str.load puts "\n"        puts
+
+  Match.location ptr+ ptr.load Location.print
+end
+
+function list.contains_match ptr str -> bool :
+  dup int.load
+  0
+  take
+    index
+    len
+    list
+  in
+
+  while index len < do
+    index list list.nth ptr.load
+    Match.get_value
+    take match_value in
+
+    // Return True if the current string matches with the parameter
+    if string match_value streq do
+      True return
+    endif
+    index 1 + index =
+  done
+  False
+end
