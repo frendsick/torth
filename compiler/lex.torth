@@ -98,7 +98,7 @@ function get_included_files_from_file str ptr -> ptr :
         "INCLUDE_ERROR" CompilerError
       endif
 
-      // Do not save file name if it already is int the parsing_include list
+      // Do not save file name if it already is in the parsing_include list
       if file_name included_files list.contains_str do
         False parsing_include =
         index 1 + index =
@@ -887,6 +887,7 @@ function parse_function_variables ptr ptr :
       ||
     do
       True parsing_variables =
+      token_value str.copy str.upper bind_variant =
 
     // IN keyword closes the Variable parsing block
     elif token_value str.copy str.upper "IN" streq do
