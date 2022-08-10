@@ -126,6 +126,64 @@ function list.nth ptr int -> ptr :
   list N ptr.size * int.size + ptr+
 end
 
+// Remove an item from the certain index of the array
+// Params: List, index
+// Return: None
+function list.pop ptr int :
+  dup list.len
+  take
+    len
+    list
+    index
+  in
+
+  // Report error and exit if the index cannot be popped
+  if
+    index len >=
+    index 0 <
+    ||
+  do
+    "Cannot pop index " eputs
+    index eputi
+    " from array of length " eputs
+    len eputi "\n" eputs
+    1 exit
+  endif
+
+  while index len 1 - < do
+    // list[index] = list[index+1]
+    index 1 + list list.nth ptr.load
+    index list list.nth ptr.store
+    index 1 + index =
+  done
+
+  // Decrement the list.len
+  len 1 - list int.store
+end
+
+function list.contains_str ptr str -> bool :
+  dup int.load
+  0
+  take
+    index
+    len
+    list
+    string
+  in
+
+  while index len < do
+    index list list.nth str.load
+    take list_string in
+
+    // Return True if the current string matches with the parameter
+    if string list_string streq do
+      True return
+    endif
+    index 1 + index =
+  done
+  False
+end
+
 // Print list of integer-like values
 // Params: list (PTR)
 // Return: None
