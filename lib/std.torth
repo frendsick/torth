@@ -652,6 +652,17 @@ function print_file str :
   read_file puts
 end
 
+function file_exists str -> bool :
+  O_RDONLY swap SYS_open syscall2
+  take fd in
+
+  if fd 0 > do
+    fd SYS_close syscall1 drop
+    True return
+  endif
+  False
+end
+
 // Sleep causes the calling thread to sleep either until the
 // number of real-time seconds specified in parameters have elapsed or
 // until a signal arrives which is not ignored.
