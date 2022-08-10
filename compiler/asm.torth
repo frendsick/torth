@@ -206,15 +206,32 @@ end
 // Params: Pointer to Op (PTR)
 // Return: Comment string (STR)
 function get_op_comment_asm ptr -> str :
-  take op in
+  dup   Op.get_type OpType.str
+  over  Op.get_token Token.get_value
+  take
+    token_value
+    op_type_str
+    op
+  in
   // Comment format as Python3 f-string:
-  // f";; [{function_name}] {token_value} | File: {file}, Row: {row}, Col: {col}\n"
+  // f";; [{function_name}] {op_type_str} | File: {file}, Row: {row}, Col: {col}\n"
   ";; ["
   op Op.get_function Function.get_name  str.cat
   "] "                                  str.cat
-  op Op.get_token Token.get_value       str.cat
-  " | File: "                           str.cat
 
+  if op_type_str "FUNCTION_CALL" streq do
+    "Call "                             str.cat
+    token_value                         str.cat
+  elif op_type_str "INTRINSIC" streq do
+    op_type_str                         str.cat
+    " "                                 str.cat
+    token_value                         str.cat
+  else
+    op_type_str                         str.cat
+  endif
+
+  // Add Op.token Location information
+  " | File: "                           str.cat
   op Op.get_token Token.get_location
   take token_loc in
 
