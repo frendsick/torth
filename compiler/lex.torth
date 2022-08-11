@@ -267,22 +267,26 @@ function remove_comments_from_code str str -> str :
 end
 
 // Parse all Functions from a list of files
-// Params: included_files (List[str]), list[Memory]
+// Params: included_files (List[str]), List[Constant], List[Memory]
 // Return: List[Function]
-function get_functions_from_files ptr ptr -> ptr :
+function get_functions_from_files ptr ptr ptr -> ptr :
   list.init
   0
   take
     index
     functions
     included_files
+    constants
     memories
   in
 
   // Iterate over included_files list
   while index included_files list.len < do
     index included_files list.nth str.load
-    memories functions rot get_functions_from_file
+    take file_name in
+
+    // Get Functions from the currently parsed file
+    memories constants functions file_name get_functions_from_file
     functions =
     index 1 + index =
   done
@@ -372,12 +376,13 @@ function get_memories_from_file str ptr ptr -> ptr :
 end
 
 // Parse all Functions for a single file
-// Params: file_name (STR), List[Function], List[Memory]
+// Params: file_name (STR), List[Function], List[Constant], List[Memory]
 // Return: List[Function]
-function get_functions_from_file str ptr ptr -> ptr :
+function get_functions_from_file str ptr ptr ptr -> ptr :
   take
     file_name
     functions
+    constants
     memories
   in
 
@@ -390,7 +395,7 @@ function get_functions_from_file str ptr ptr -> ptr :
   take token_matches in
 
   // Parse Functions from token_matches
-  memories functions token_matches get_functions
+  memories constants functions token_matches get_functions
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -918,10 +923,13 @@ end
 
 // Parse Functions from code
 // Params
-//    token_matches: List[Match], functions: List[Function], memories: List[Function]
+//    token_matches:  List[Match]
+//    functions:      List[Function]
+//    constants:      List[Constant]
+//    memories:       List[Memory]
 // Return
 //    functions: List[Function]
-function get_functions ptr ptr ptr -> ptr :
+function get_functions ptr ptr ptr ptr -> ptr :
 
   // Initialize variables
   list.init                     // List[Token]
@@ -941,6 +949,7 @@ function get_functions ptr ptr ptr -> ptr :
     tokens
     token_matches
     functions
+    constants
     memories
   in
 
@@ -1006,11 +1015,33 @@ function get_functions ptr ptr ptr -> ptr :
       param_types =
       // "[TODO] Handling -> delimiter is not implemented\n" NotImplementedError
     elif current_part 3 == do
+
       // Append word to return_types if valid TokenType
       token_value Signature.type_map ptr
       return_types list.append
       return_types =
     elif current_part 4 == do
+
+      // Use Constant's value if a Constant exists named as the Token's value
+      if constants token_value str.copy constant_exists do
+
+        // Find the constant from list of Constants
+        0 take constant_index in
+        while constant_index constants list.len < do
+          constant_index constants list.nth ptr.load
+          take constant in
+
+          if constant Constant.get_name token_value streq do
+            constant Constant.get_value str.copy
+            token Token.set_value
+            TokenType.INT token Token.set_type
+            break
+          endif
+          constant_index 1 + constant_index =
+        done
+      endif
+
+      // Append the current Token to the list of tokens
       token tokens list.append
       tokens =
     endif

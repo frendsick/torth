@@ -17,19 +17,22 @@ function main :
   take compiler_directory in
 
   // Get a list of included files for the program
-  // TODO: Optimize the code for parsing included files
   compiler_directory code_file get_included_files
   take included_files in
 
+  "[INFO] Parsing Constants\n" puts
   included_files get_constants_from_files
   take constants in
 
+  "[INFO] Parsing Memories\n" puts
   constants included_files get_memories_from_files
   take memories in
 
-  memories included_files get_functions_from_files
+  "[INFO] Parsing Functions\n" puts
+  memories constants included_files get_functions_from_files
   take functions in
 
+  "[INFO] Parsing Sub-Programs\n" puts
   // Get the intermediate representation (Program) of each Function
   memories functions get_sub_programs
   take sub_programs in

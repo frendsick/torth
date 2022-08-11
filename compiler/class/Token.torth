@@ -45,6 +45,20 @@ function Token.get_location ptr -> ptr :
   Token.location ptr+ ptr.load
 end
 
+// Set the existing Token's value
+// Params: Token, new_value (STR)
+// Return: None
+function Token.set_value ptr str :
+  str.store
+end
+
+// Set the existing Token's TokenType
+// Params: Token, TokenType
+// Return: None
+function Token.set_type ptr int :
+  Token.type ptr+ int.store
+end
+
 function Token.print ptr :
   "Token.value        => " puts
   dup Token.value     ptr+

@@ -20,12 +20,13 @@ function constant_exists str ptr -> bool :
   while index constants list.len < do
 
     // Get the current Constant
-    index constants list.nth ptr.load
+    index constants list.nth ptr.load Constant.get_name
+    take current_name in
 
     // Return True if current Constant's name matches constant_name parameter
-    if Constant.get_name constant_name streq do
+    if current_name constant_name streq do
       True return
-    endif drop
+    endif
     index 1 + index = // index++
   done
 
