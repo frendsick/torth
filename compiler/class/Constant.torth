@@ -1,0 +1,33 @@
+// Constant(value: str, location: Location)
+ENUM Constant.size 8 :
+  Constant.value    // str
+  Constant.location // Location => ptr
+END
+
+// Initialize Constant from parameters
+// Params: Constant.value, Constant.location
+// Return: Pointer to Constant
+function Constant.init str ptr -> ptr :
+  // Allocate memory for Constant
+  Constant.size malloc
+  take constant value location in
+
+  // Load the parameters to the allocated memory
+  value     constant Constant.value    ptr+ str.store
+  location  constant Constant.location ptr+ ptr.store
+  mem
+end
+
+// Get Constant.value
+// Params: Pointer to Constant (PTR)
+// Return: Constant.value (STR)
+function Constant.get_value ptr -> str :
+  str.load
+end
+
+// Get Constant.location
+// Params: Pointer to Constant (PTR)
+// Return: Constant.location (Location => PTR)
+function Constant.get_location ptr -> ptr :
+  Constant.location ptr+ ptr.load
+end
