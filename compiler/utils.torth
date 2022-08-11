@@ -5,6 +5,34 @@ include "compiler/class/Location"
 include "compiler/class/Signature"
 include "compiler/class/Token"
 
+// Check if a Constant with a certain name exists
+// Params: constant_name, List[Constant]
+// Return: bool
+function constant_exists str ptr -> bool :
+  0
+  take
+    index
+    constant_name
+    constants
+  in
+
+  // Iterate over constants and check if a Constant with certain name exists
+  while index constants list.len < do
+
+    // Get the current Constant
+    index constants list.nth ptr.load
+
+    // Return True if current Constant's name matches constant_name parameter
+    if Constant.get_name dup puts "\n" puts constant_name streq do
+      True return
+    endif drop
+    index 1 + index = // index++
+  done
+
+  // Return False if the Constant was not found
+  False
+end
+
 // Check if a Function with a certain name exists
 // Params: function_name, List[Functions]
 // Return: bool
@@ -52,14 +80,14 @@ function memory_exists str ptr -> bool :
     memories list.first
     index ptr.size * ptr+ ptr.load
 
-    // Return True if current Memory's name matches function_name parameter
+    // Return True if current Memory's name matches memory_name parameter
     if Memory.get_name memory_name streq do
       True return
     endif drop
     index 1 + index = // index++
   done
 
-  // Return False if the Function was not found
+  // Return False if the Memory was not found
   False
 end
 
@@ -68,4 +96,31 @@ end
 // Return: *argv[index]
 function get_nth_cmd_line_argument int -> str :
   int.size * argv swap ptr+ str.load
+end
+
+// Get Constant with certain name from List[Constants]
+// Params: name (STR), List[Constant]
+// Return: Constant
+function get_constant str ptr -> ptr :
+  0
+  take
+    index
+    name
+    constants
+  in
+
+  // Iterate over each Constant
+  while index constants list.len < do
+
+    // Get current Constant
+    index constants list.nth ptr.load
+    take constant in
+
+    // Return current Constant if its name matches the name parameter
+    if constant Constant.get_name name streq do
+      constant return
+    endif
+    index 1 + index = // index++
+  done
+  NULLPTR // Constant was not found
 end

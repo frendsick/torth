@@ -312,7 +312,7 @@ function get_constants_from_files ptr -> ptr :
   constants
 end
 
-// Parse all Memories for a single file
+// Parse all Constants for a single file
 // Params: file_name (STR), List[Constant]
 // Return: List[Constant]
 function get_constants_from_file str ptr -> ptr :
@@ -324,7 +324,7 @@ function get_constants_from_file str ptr -> ptr :
   // Get all Token Matches
   file_name swap get_token_matches
 
-  // Parse Memories from token_matches
+  // Parse Constants from token_matches
   constants swap get_constants
 end
 
@@ -343,7 +343,7 @@ function get_memories_from_files ptr ptr -> ptr :
 
   while index included_files list.len < do
     index included_files list.nth str.load
-    memories swap get_memories_from_file
+    constants memories rot get_memories_from_file
     memories =
     index 1 + index =
   done
@@ -352,10 +352,14 @@ function get_memories_from_files ptr ptr -> ptr :
 end
 
 // Parse all Memories for a single file
-// Params: file_name (STR), List[Memory]
+// Params: file_name (STR), List[Memory], List[Constant]
 // Return: List[Memory]
-function get_memories_from_file str ptr -> ptr :
-  take file_name memories in
+function get_memories_from_file str ptr ptr -> ptr :
+  take
+    file_name
+    memories
+    constants
+  in
 
   // Read the code file
   file_name read_file
@@ -364,7 +368,7 @@ function get_memories_from_file str ptr -> ptr :
   file_name swap get_token_matches
 
   // Parse Memories from token_matches
-  memories swap get_memories
+  constants memories rot get_memories
 end
 
 // Parse all Functions for a single file
@@ -727,9 +731,9 @@ end
 
 // Parse Constants from code
 // Params
-//    token_matches: List[Match], memories: List[Constant]
+//    token_matches: List[Match], constants: List[Constant]
 // Return
-//    memories: List[Constant]
+//    constants: List[Constant]
 function get_constants ptr ptr -> ptr :
   ""  str.copy        // constant_name
   dup str.copy        // constant_value
@@ -741,7 +745,7 @@ function get_constants ptr ptr -> ptr :
     constant_value
     constant_name
     token_matches
-    memories
+    constants
   in
 
   while index token_matches list.len < do
@@ -755,14 +759,13 @@ function get_constants ptr ptr -> ptr :
 
       // Parse Constant name
       if constant_name str.len 0 == do
-        memories token_value get_constant_name
+        constants token_value get_constants_name
         constant_name =
-
         index 1 + index = // index++
         continue
       endif
 
-      // Append the current Memory to memories
+      // Append the current Constant to constants
       if constant_value str.len 0 == do
 
         // Parse Constant value
@@ -770,7 +773,7 @@ function get_constants ptr ptr -> ptr :
 
         // Generate Constant object
         location constant_value constant_name Constant.init
-        memories list.append memories =
+        constants list.append constants =
 
         // Reset variables
         ""    constant_name   =
@@ -781,20 +784,22 @@ function get_constants ptr ptr -> ptr :
       endif
     endif
 
-    if token_value str.copy str.upper "MEMORY" streq do
+    if token_value str.copy str.upper "CONST" streq do
       True defining_constant =
     endif
     index 1 + index = // index++
   done
-  memories
+  constants
 end
 
 // Parse Memories from code
 // Params
-//    token_matches: List[Match], memories: List[Memory]
+//    token_matches: List[Match]
+//    memories: List[Memory]
+//    constants: List[Constant]
 // Return
 //    memories: List[Memory]
-function get_memories ptr ptr -> ptr :
+function get_memories ptr ptr ptr -> ptr :
   "" str.copy         // memory_name
   NULL                // memory_size
   False               // defining_memory
@@ -806,6 +811,7 @@ function get_memories ptr ptr -> ptr :
     memory_name
     token_matches
     memories
+    constants
   in
 
   while index token_matches list.len < do
@@ -829,9 +835,21 @@ function get_memories ptr ptr -> ptr :
       // Append the current Memory to memories
       if memory_size 0 == do
 
-        // Parse Memory size
-        token_value atoi
-        memory_size =
+        // Use the token_value as memory_size if it is numeric
+        if token_value str.is_numeric do
+          token_value atoi memory_size =
+        else
+          // Test if Constant exists
+          if constants token_value constant_exists do
+            constants token_value get_constant
+            Constant.get_value atoi
+            memory_size =
+          else
+            "The memory size should be an integer. Got: "
+            token_value str.cat
+            "VALUE_ERROR" CompilerError
+          endif
+        endif
 
         // Generate Memory object
         location memory_size memory_name Memory.init
@@ -860,7 +878,7 @@ end
 //    memories: List[Constant]
 // Return
 //    memory_name: str
-function get_constant_name str ptr -> str :
+function get_constants_name str ptr -> str :
   take token_value constants in
 
   // Overwriting another Memory is not allowed
