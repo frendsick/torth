@@ -23,7 +23,7 @@ function constant_exists str ptr -> bool :
     index constants list.nth ptr.load
 
     // Return True if current Constant's name matches constant_name parameter
-    if Constant.get_name dup puts "\n" puts constant_name streq do
+    if Constant.get_name constant_name streq do
       True return
     endif drop
     index 1 + index = // index++

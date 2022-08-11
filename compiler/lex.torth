@@ -61,6 +61,8 @@ function get_included_files str str -> ptr :
     recursive_include_count 1 +
     recursive_include_count =
   done
+
+  // The function should have returned early
   "Unreachable: get_included_files\n"
   "UNREACHABLE" CompilerError NULLPTR
 end
@@ -103,8 +105,7 @@ function get_included_files_from_file str ptr -> ptr :
 
     // Parse the file name for the include
     if parsing_include do
-      word get_string_inside_quotes
-      take file_name in
+      word take file_name in
 
       if file_name int NULL == do
         "INCLUDE keyword used without given file name\n"
@@ -138,7 +139,6 @@ function get_included_files_from_file str ptr -> ptr :
             // Check if the file with .torth extension exists
             file_with_path ".torth" str.cat
             file_with_path =
-            file_with_path puts "\n" puts
             if file_with_path file_exists do
               file_with_path file_name =
               break
@@ -219,7 +219,7 @@ end
 // Params: code (STR), file_name (STR)
 // Return: code (STR)
 function remove_comments_from_code str str -> str :
-  over swap get_word_matches_from_code
+  over swap get_token_matches_from_code
   over get_newline_indexes
   "" str.copy
   NULL
@@ -591,12 +591,12 @@ function get_token_matches str str -> ptr :
   take code file_name in
 
   // Get Matches from the whole code
-  file_name code get_word_matches_from_code
+  file_name code get_token_matches_from_code
   take matches in
 
   // Get Matches from the code without comments
   file_name code remove_comments_from_code
-  file_name swap get_word_matches_from_code
+  file_name swap get_token_matches_from_code
   0
   take index matches_without_comments in
 
@@ -632,13 +632,15 @@ end
 //    file_name: str
 // Return
 //    List[str]
-function get_word_matches_from_code str str -> ptr :
+function get_token_matches_from_code str str -> ptr :
   dup get_newline_indexes
   list.init
   "" str.copy // String buffer for word
+  False
   0
   take
     index
+    parsing_string
     word
     token_matches
     newline_indexes
@@ -653,6 +655,8 @@ function get_word_matches_from_code str str -> ptr :
   do
     if
       current_char char.is_whitespace
+      parsing_string not
+      &&
     do
       // If the word is empty there has been multiple whitespaces in a row
       if word str.len 0 == do
@@ -671,6 +675,10 @@ function get_word_matches_from_code str str -> ptr :
       token_matches list.append
       token_matches =
       word str.empty
+    elif current_char '"' == do
+      // Toggle parsing_string
+      parsing_string not
+      parsing_string =
     else
       // Append current character to word
       current_char word str.append
