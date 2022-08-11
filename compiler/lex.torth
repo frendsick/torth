@@ -3,6 +3,7 @@ include "std"
 include "typing"
 include "compiler/defs"
 include "compiler/utils"
+include "compiler/class/Constant"
 include "compiler/class/Function"
 include "compiler/class/Match"
 include "compiler/class/Memory"
@@ -289,16 +290,55 @@ function get_functions_from_files ptr ptr -> ptr :
   functions
 end
 
-// Parse all Memories from a list of files
+// Parse all Constants from a list of files
 // Params: included_files (List[str])
-// Return: List[Function]
-function get_memories_from_files ptr -> ptr :
+// Return: List[Constant]
+function get_constants_from_files ptr -> ptr :
+  list.init
+  0
+  take
+    index
+    constants
+    included_files
+  in
+
+  while index included_files list.len < do
+    index included_files list.nth str.load
+    constants swap get_constants_from_file
+    constants =
+    index 1 + index =
+  done
+
+  constants
+end
+
+// Parse all Memories for a single file
+// Params: file_name (STR), List[Constant]
+// Return: List[Constant]
+function get_constants_from_file str ptr -> ptr :
+  take file_name constants in
+
+  // Read the code file
+  file_name read_file
+
+  // Get all Token Matches
+  file_name swap get_token_matches
+
+  // Parse Memories from token_matches
+  constants swap get_constants
+end
+
+// Parse all Memories from a list of files
+// Params: included_files (List[str]), constants (List[Constant])
+// Return: List[Memory]
+function get_memories_from_files ptr ptr -> ptr :
   list.init
   0
   take
     index
     memories
     included_files
+    constants
   in
 
   while index included_files list.len < do
@@ -309,6 +349,22 @@ function get_memories_from_files ptr -> ptr :
   done
 
   memories
+end
+
+// Parse all Memories for a single file
+// Params: file_name (STR), List[Memory]
+// Return: List[Memory]
+function get_memories_from_file str ptr -> ptr :
+  take file_name memories in
+
+  // Read the code file
+  file_name read_file
+
+  // Get all Token Matches
+  file_name swap get_token_matches
+
+  // Parse Memories from token_matches
+  memories swap get_memories
 end
 
 // Parse all Functions for a single file
@@ -331,22 +387,6 @@ function get_functions_from_file str ptr ptr -> ptr :
 
   // Parse Functions from token_matches
   memories functions token_matches get_functions
-end
-
-// Parse all Memories for a single file
-// Params: file_name (STR), List[Memory]
-// Return: List[Memory]
-function get_memories_from_file str ptr -> ptr :
-  take file_name memories in
-
-  // Read the code file
-  file_name read_file
-
-  // Get all Token Matches
-  file_name swap get_token_matches
-
-  // Parse Memories from token_matches
-  memories swap get_memories
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -685,6 +725,70 @@ function get_token_location str int ptr -> ptr :
   col 1 + row file_name str.copy Location.init
 end
 
+// Parse Constants from code
+// Params
+//    token_matches: List[Match], memories: List[Constant]
+// Return
+//    memories: List[Constant]
+function get_constants ptr ptr -> ptr :
+  ""  str.copy        // constant_name
+  dup str.copy        // constant_value
+  False               // defining_constant
+  0                   // index
+  take
+    index
+    defining_constant
+    constant_value
+    constant_name
+    token_matches
+    memories
+  in
+
+  while index token_matches list.len < do
+    index token_matches list.nth ptr.load
+    dup   Match.get_value
+    swap  Match.get_location
+    take location token_value in
+
+    // Parse Constant only when inside Constant block
+    if defining_constant do
+
+      // Parse Constant name
+      if constant_name str.len 0 == do
+        memories token_value get_constant_name
+        constant_name =
+
+        index 1 + index = // index++
+        continue
+      endif
+
+      // Append the current Memory to memories
+      if constant_value str.len 0 == do
+
+        // Parse Constant value
+        token_value constant_value =
+
+        // Generate Constant object
+        location constant_value constant_name Constant.init
+        memories list.append memories =
+
+        // Reset variables
+        ""    constant_name   =
+        ""    constant_value  =
+        False defining_constant =
+        index 1 + index = // index++
+        continue
+      endif
+    endif
+
+    if token_value str.copy str.upper "MEMORY" streq do
+      True defining_constant =
+    endif
+    index 1 + index = // index++
+  done
+  memories
+end
+
 // Parse Memories from code
 // Params
 //    token_matches: List[Match], memories: List[Memory]
@@ -748,6 +852,24 @@ function get_memories ptr ptr -> ptr :
     index 1 + index = // index++
   done
   memories
+end
+
+// Check for redefinition of a Constant object
+// Params
+//    token_value: str
+//    memories: List[Constant]
+// Return
+//    memory_name: str
+function get_constant_name str ptr -> str :
+  take token_value constants in
+
+  // Overwriting another Memory is not allowed
+  if token_value constants list.contains_str do
+    "Constant '" token_value str.cat
+    "' already exists. Memory name should be unique.\n" str.cat
+    "MEMORY_REDEFINITION" CompilerError
+  endif
+  token_value
 end
 
 // Check for redefinition of a Memory object
