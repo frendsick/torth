@@ -17,7 +17,7 @@ function Constant.init str str ptr -> ptr :
   name      constant Constant.name     ptr+ str.store
   value     constant Constant.value    ptr+ str.store
   location  constant Constant.location ptr+ ptr.store
-  mem
+  constant
 end
 
 // Get Constant.name
