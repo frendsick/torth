@@ -114,10 +114,3 @@ ENUM TokenType.len 1 :
   TokenType.UINT8
   TokenType.WORD
 END
-
-// Constant
-ENUM Constant.size 8 :
-  Constant.name
-  Constant.value
-  Constant.location
-END
