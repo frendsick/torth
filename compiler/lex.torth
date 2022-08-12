@@ -112,40 +112,15 @@ function get_included_files_from_file str ptr -> ptr :
         "INCLUDE_ERROR" CompilerError
       endif
 
+      // Get the file name that exists using directories in PATH
+      INCLUDE_PATHS file_name get_file_name_from_path
+      file_name =
+
       // Do not save file name if it already is in the parsing_include list
       if file_name included_files list.contains_str do
         False parsing_include =
         index 1 + index =
         continue
-      endif
-
-      // Check every directory in PATH and add .torth extension if needed
-      if file_name file_exists not do
-
-        // Iterate over INCLUDE PATHS
-        // and check if file_name or file_with_extension exists
-        0 take include_index in
-        while include_index INCLUDE_PATHS list.len < do
-          include_index INCLUDE_PATHS list.nth str.load
-          take path_dir in
-
-          // Append file_name to path_dir and check if it exists
-          path_dir file_name str.cat
-          take file_with_path in
-          if file_with_path file_exists do
-            file_with_path file_name =
-            break
-          else
-            // Check if the file with .torth extension exists
-            file_with_path ".torth" str.cat
-            file_with_path =
-            if file_with_path file_exists do
-              file_with_path file_name =
-              break
-            endif
-          endif
-          include_index 1 + include_index =
-        done
       endif
 
       // Save the file name to included_files
@@ -160,6 +135,43 @@ function get_included_files_from_file str ptr -> ptr :
     index 1 + index = // index++
   done
   included_files
+end
+
+// Check every directory in PATH and add .torth extension if needed
+// Params: file_name: str, INCLUDE_PATHS: List[str]
+// Return: file_with_path: str
+function get_file_name_from_path str ptr -> str :
+  take file_name INCLUDE_PATHS in
+  if file_name file_exists do
+    file_name return
+  endif
+
+  // Iterate over INCLUDE PATHS
+  // and check if file_name or file_with_extension exists
+  0 take include_index in
+  while include_index INCLUDE_PATHS list.len < do
+    include_index INCLUDE_PATHS list.nth str.load
+    take path_dir in
+
+    // Append file_name to path_dir and check if it exists
+    path_dir file_name str.cat
+    take file_with_path in
+    if file_with_path file_exists do
+      file_with_path return
+    else
+      // Check if the file with .torth extension exists
+      file_with_path ".torth" str.cat
+      file_with_path =
+      if file_with_path file_exists do
+        file_with_path return
+      endif
+    endif
+    include_index 1 + include_index =
+  done
+
+  "File " file_name       str.cat
+  " cannot be imported\n" str.cat
+  "INCLUDE_ERROR" CompilerError ""
 end
 
 // Get multiline string inside double quotes ""
@@ -404,7 +416,9 @@ end
 function get_token_value str -> str :
   str.copy
   take token_match in
-  if   token_match "==" streq do
+  if   token_match "="  streq do
+    "ASSIGN" return
+  elif token_match "==" streq do
     "EQ" return
   elif token_match ">=" streq do
     "GE" return
