@@ -141,6 +141,14 @@ end
 // Params: file_name: str, INCLUDE_PATHS: List[str]
 // Return: file_with_path: str
 function get_file_name_from_path str ptr -> str :
+
+  // Get the file name without quotes
+  dup get_string_inside_quotes
+  if dup int NULL == do
+    "File name for INCLUDE statement must be in quotes\n"
+    "INCLUDE_ERROR" CompilerError
+  endif swap drop
+
   take file_name INCLUDE_PATHS in
   if file_name file_exists do
     file_name return
@@ -698,6 +706,7 @@ function get_token_matches_from_code str str -> ptr :
       // Toggle parsing_string
       parsing_string not
       parsing_string =
+      current_char word str.append
     else
       // Append current character to word
       current_char word str.append
@@ -1027,7 +1036,7 @@ function get_functions ptr ptr ptr ptr -> ptr :
       token_value Signature.type_map ptr
       param_types list.append
       param_types =
-      // "[TODO] Handling -> delimiter is not implemented\n" NotImplementedError
+
     elif current_part 3 == do
 
       // Append word to return_types if valid TokenType
