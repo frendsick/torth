@@ -4,26 +4,31 @@ include "std"
 include "typing"
 include "compiler/defs"
 include "compiler/class/Token"
+include "compiler/class/Program"
 
 // Generate Program for each Function
-// Params: List[Function], List[Memory]
+// Params: List[Function], List[Constant], List[Memory]
 // Return: List[Program]
-function get_sub_programs ptr ptr -> ptr :
+function get_sub_programs ptr ptr ptr -> ptr :
   list.init // sub_programs = List[Program]
   0         // index
   take
     index
     sub_programs
     functions
+    constants
     memories
   in
 
   // Iterate over every Function is functions
   while index functions list.len < do
 
-    // Generate Program from the current Function
+    // Get the current Function from the list
     index functions list.nth ptr.load
-    memories functions rot generate_program
+    take func in
+
+    // Generate Program from the current Function
+    memories functions constants func generate_program
 
     // Append the generated Program to sub_programs
     sub_programs list.append
@@ -34,9 +39,9 @@ function get_sub_programs ptr ptr -> ptr :
 end
 
 // Generate Program from Function
-// Params: Function, List[Function], List[Memory]
+// Params: Function, List[Function], List[Constant], List[Memory]
 // Return: Program
-function generate_program ptr ptr ptr -> ptr :
+function generate_program ptr ptr ptr ptr -> ptr :
   dup Function.tokens ptr+ ptr.load
   list.init
   0
@@ -46,6 +51,7 @@ function generate_program ptr ptr ptr -> ptr :
     tokens
     func
     functions
+    constants
     memories
   in
 
@@ -56,7 +62,7 @@ function generate_program ptr ptr ptr -> ptr :
     take token in
 
     // Get the Token's OpType
-    memories functions token get_tokens_op_type
+    memories functions constants token get_tokens_op_type
     take op_type in
 
     // Append Op to Program
@@ -69,9 +75,9 @@ function generate_program ptr ptr ptr -> ptr :
 end
 
 // Get OpType for Token
-// Params: Token, List[Function], List[Memory]
+// Params: Token, List[Function], List[Constant], List[Memory]
 // Return: OpType
-function get_tokens_op_type ptr ptr ptr -> int :
+function get_tokens_op_type ptr ptr ptr ptr -> int :
 
   // Initialize variables
   dup  Token.get_type
@@ -83,6 +89,7 @@ function get_tokens_op_type ptr ptr ptr -> int :
     token_type
     token
     functions
+    constants
     memories
   in
 
@@ -151,6 +158,8 @@ function get_tokens_op_type ptr ptr ptr -> int :
       OpType.POP_BIND return
     endif
     OpType.PUSH_BIND return
+  elif constants token_value constant_exists do
+    OpType.PUSH_INT return
   elif functions token_value function_exists do
     OpType.FUNCTION_CALL return
   elif memories token_value memory_exists do
