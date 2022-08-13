@@ -675,6 +675,13 @@ function get_token_matches_from_code str str -> ptr :
     peek current_char in
     NULL !=
   do
+    // If the word only has one single quote the word is a character definition
+    if word "'" streq do
+      current_char word str.append
+      index 1 + index =
+      continue
+    endif
+
     if
       current_char char.is_whitespace
       parsing_string not
@@ -683,13 +690,6 @@ function get_token_matches_from_code str str -> ptr :
       // If the word is empty there has been multiple whitespaces in a row
       if word str.len 0 == do
         index 1 + index = // index++
-        continue
-      endif
-
-      // If the word only has one single quote the word is a character definition
-      if word "'" streq do
-        current_char word str.append
-        index 1 + index =
         continue
       endif
 
