@@ -691,6 +691,13 @@ function get_token_matches_from_code str str -> ptr :
         continue
       endif
 
+      // If the word only has one single quote the word is a character definition
+      if word "'" streq do
+        current_char word str.append
+        index 1 + index =
+        continue
+      endif
+
       // Match(file_name, location)
       index word str.len -
       take word_index in
