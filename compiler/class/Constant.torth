@@ -40,3 +40,14 @@ end
 function Constant.get_location ptr -> ptr :
   Constant.location ptr+ ptr.load
 end
+
+function Constant.print ptr :
+  take constant in
+  "Constant.name      => " puts
+  constant Constant.get_name puts "\n" puts
+
+  "Constant.value     => " puts
+  constant Constant.get_value puts "\n" puts
+
+  constant Constant.get_location Location.print
+end
