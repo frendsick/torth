@@ -67,23 +67,24 @@ function get_included_files_from_file str ptr -> ptr :
   take code_without_comments code in
 
   // Get the included files from the code to included_files list
-  code_without_comments get_words_from_code
+  code_file code_without_comments get_token_matches_from_code
   False
   0
   take
     index
     parsing_include
-    words
+    token_matches
   in
 
-  while index words list.len < do
+  while index token_matches list.len < do
     // Get Nth word from words list
-    index words list.nth str.load
-    take word in
+    index token_matches list.nth ptr.load
+    Match.get_value
+    take token_value in
 
     // Parse the file name for the include
     if parsing_include do
-      word take file_name in
+      token_value take file_name in
 
       if file_name int NULL == do
         "INCLUDE keyword used without given file name\n"
@@ -107,7 +108,7 @@ function get_included_files_from_file str ptr -> ptr :
       False parsing_include =
     endif
 
-    if word str.copy str.upper "INCLUDE" streq do
+    if token_value str.copy str.upper "INCLUDE" streq do
       True parsing_include =
     endif
     index 1 + index = // index++
