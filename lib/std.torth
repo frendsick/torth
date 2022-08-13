@@ -393,6 +393,12 @@ function str.is_palindrome str -> bool : dup str.reverse streq end
 // Test if string only contains numeric characters
 function str.is_numeric str -> bool :
   take string in
+
+  // Check for negative numbers
+  if string ptr char.load '-' == do
+    string 1 str+ string =
+  endif
+
   // Iterate over every character of the string
   0 while string over str.char_at NULL != do
     // Break if non-numeric character is found
