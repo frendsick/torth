@@ -411,6 +411,11 @@ function str.cat str str -> str :
   final_str
 end
 
+// Free the parameter string's memory
+function str.delete str :
+  dup str.len 1 + swap ptr munmap
+end
+
 // Append a character to the end of a string buffer
 // Params: string, character
 // Return: None
