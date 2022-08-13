@@ -78,6 +78,9 @@ function get_op_asm ptr ptr -> str :
   elif op_type OpType.ASSIGN_BIND == do
     program op get_assign_bind_asm
     return
+  elif op_type OpType.BREAK == do
+    program op get_break_asm
+    return
   elif op_type OpType.DO == do
     program op get_do_asm
     return
@@ -266,6 +269,22 @@ function get_assign_bind_asm ptr ptr -> str :
   "  mov ["                   str.cat
   bound_memory                str.cat
   "], rbx\n"                  str.cat
+end
+
+// BREAK is an unconditional jump to operand after current loop's DONE
+// Params: Op, Program
+// Return: Assembly
+function get_break_asm ptr ptr -> str :
+  dup Op.get_function Function.get_name
+  take function_name op program in
+
+  program op get_parent_while
+  program swap get_done_op_for_while
+  Op.get_id
+  take parent_end.id in
+
+  function_name "_DONE" str.cat
+  parent_end.id itoa    str.cat
 end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
@@ -1189,6 +1208,53 @@ function get_parent_while ptr ptr -> ptr :
   op Op.get_token Token.get_value str.copy str.upper
   "AMBIGUOUS_" swap str.cat
   CompilerError NULLPTR
+end
+
+// Returns the END Operand for the current WHILE block
+// Params: Op, Program
+// Return: Op
+function get_done_op_for_while ptr ptr -> ptr :
+  dup Op.get_id
+  0
+  take
+    while_count
+    index
+    op
+    program
+  in
+    op Op.get_token Token.get_value puts "\n" puts
+  program list.len print "\n" puts
+  index print "\n" puts
+  // Iterate over each Op of the Program starting from the parameter Op
+  while index program list.len < do
+
+    // Get the current Operands OpType
+    index program list.nth ptr.load
+    dup Op.get_type
+    take current_op_type current_op in
+
+    current_op Op.get_token Token.get_value puts "\n" puts
+    // Return the found DONE if it's not inside nested WHILE block
+    if current_op_type OpType.DONE == do
+      while_count 1 - while_count = // while_count--
+      if while_count 0 == do
+        current_op return
+      endif
+    endif
+
+    // Increment while_count when nested WHILE blocks are found
+    if current_op_type OpType.WHILE == do
+      while_count 1 + while_count = // while_count++
+    endif
+
+    index 1 + index = // index++
+  done
+
+  // Report error when END Keyword was not found for the WHILE block
+  op Op.get_token
+  "END keyword was not found for the current WHILE loop.\n"
+  op Op.get_token Token.get_value str.copy str.upper
+  "AMBIGUOUS_" swap str.cat CompilerErrorWithToken NULLPTR
 end
 
 // Get memory name for assembly used by a bound memory
