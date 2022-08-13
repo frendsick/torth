@@ -1159,10 +1159,12 @@ function parse_function_variables ptr ptr :
       memories list.append
       memories =
 
-      // token.value = f"{token.value}_{bind_variant}"
-      token_value "_" str.cat
-      bind_variant    str.cat
-      token Token.value ptr+ str.store
+      if token_value str.copy str.upper bind_variant str.endswith not do
+        // token.value = f"{token.value}_{bind_variant}"
+        token_value "_" str.cat
+        bind_variant    str.cat
+        token Token.set_value
+      endif
 
     // If Token is already a known Variable just update its boolean value
     elif token_value variables list.contains_str do
