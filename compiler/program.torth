@@ -189,6 +189,8 @@ function get_tokens_op_type ptr ptr ptr ptr -> int :
     token_upper "PLUS"        streq ||
     token_upper "PRINT"       streq ||
     token_upper "ROT"         streq ||
+    token_upper "SHL"         streq ||
+    token_upper "SHR"         streq ||
     token_upper "STORE_" str.startswith ||
     token_upper "SWAP"        streq ||
     token_upper "SYSCALL0"    streq ||

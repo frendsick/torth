@@ -192,6 +192,10 @@ function get_intrinsic_asm str -> str :
     get_print_asm return
   elif intrinsic "ROT" streq do
     get_rot_asm return
+  elif intrinsic "SHL" streq do
+    get_shl_asm return
+  elif intrinsic "SHR" streq do
+    get_shr_asm return
   elif intrinsic "STORE_" str.startswith do
     intrinsic get_store_asm
   elif intrinsic "SWAP" streq do
@@ -922,6 +926,28 @@ function get_rot_asm -> str :
   "  push rbx\n"  str.cat
   "  push rax\n"  str.cat
   "  push rcx\n"  str.cat
+end
+
+// SHL Intrinsic shifts the bits of the second argument to the left
+// as many times as indicated by the first.
+// Params: None
+// Return: Assembly
+function get_shl_asm -> str :
+  "  pop rcx\n"
+  "  pop rbx\n"     str.cat
+  "  shl rbx, cl\n" str.cat
+  "  push rbx\n"    str.cat
+end
+
+// SHR Intrinsic shifts the bits of the second argument to the right
+// as many times as indicated by the first.
+// Params: None
+// Return: Assembly
+function get_shr_asm -> str :
+  "  pop rcx\n"
+  "  pop rbx\n"     str.cat
+  "  shr rbx, cl\n" str.cat
+  "  push rbx\n"    str.cat
 end
 
 // Params: store_variant
