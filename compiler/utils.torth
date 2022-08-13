@@ -49,13 +49,13 @@ function function_exists str ptr -> bool :
   while index functions list.len < do
 
     // Get the current Function
-    functions list.first
-    index ptr.size * ptr+ ptr.load
+    index functions list.nth ptr.load Function.get_name
+    take current_name in
 
     // Return True if current Function's name matches function_name parameter
-    if Function.get_name function_name streq do
+    if current_name function_name streq do
       True return
-    endif drop
+    endif
     index 1 + index = // index++
   done
 
@@ -78,13 +78,13 @@ function memory_exists str ptr -> bool :
   while index memories list.len < do
 
     // Get the current Memory
-    memories list.first
-    index ptr.size * ptr+ ptr.load
+    index memories list.nth ptr.load Memory.get_name
+    take current_name in
 
     // Return True if current Memory's name matches memory_name parameter
-    if Memory.get_name memory_name streq do
+    if current_name memory_name streq do
       True return
-    endif drop
+    endif
     index 1 + index = // index++
   done
 
