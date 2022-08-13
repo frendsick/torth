@@ -1144,17 +1144,24 @@ function parse_function_variables ptr ptr :
     // Every word is considered as a Variable in the block between PEEK/TAKE and IN
     elif parsing_variables do
       True token Token.is_variable ptr+ bool.store
+      "_PEEK" token_value str.removesuffix
+      "_TAKE" token_value str.removesuffix
+
       token_value ptr variables list.append
       variables =
 
       // Add the Variable to the list of memories
-      token Token.get_location
-      ptr.size
       func Function.get_name "_"  str.cat
       token_value                 str.cat
-      Memory.init
-      memories list.append
-      memories =
+      take memory_name in
+      if memories memory_name memory_exists not do
+        token Token.get_location
+        ptr.size
+        memory_name
+        Memory.init
+        memories list.append
+        memories =
+      endif
 
       if token_value str.copy str.upper bind_variant str.endswith not do
         // token.value = f"{token.value}_{bind_variant}"
