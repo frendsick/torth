@@ -356,6 +356,38 @@ function str.fill str ptr -> str :
   pointer str
 end
 
+// Insert a string inside another strings at certain index
+// Params: index, str2, str1
+// Return: str1[:index] + str2 + str1[index:]
+function str.insert_at int str str -> str :
+  take index str2 str1 in
+
+  if index str1 str.len >= do
+    "[ERROR] str.index_at function failed: '"
+    str1                      str.cat
+    "' does not have index "  str.cat
+    index itoa                str.cat
+    "\n"                      str.cat
+    eputs 1 exit
+  endif
+
+  // Allocate memory to hold both strings
+  str1 str.len
+  str2 str.len
+  1 + // NULL byte
+  + malloc
+  take final_str in
+
+  // Split the str2 from the index
+  str1 index str+ str.copy
+  take str1_end in
+  str1 index str+ NULL char swap ptr char.store
+
+  final_str str1 str.fill
+  str2 str.cat
+  str1_end str.cat
+end
+
 // Concatenate two strings into a new memory location
 // Params: str1, str2
 // Return: concat(str1+str2)
