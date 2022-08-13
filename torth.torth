@@ -16,6 +16,7 @@ function main :
   "PWD" getenv
   take compiler_directory in
 
+  "[INFO] Getting included files\n" puts
   // Get a list of included files for the program
   compiler_directory code_file get_included_files
   take included_files in
@@ -34,16 +35,18 @@ function main :
 
   "[INFO] Parsing Sub-Programs\n" puts
   // Get the intermediate representation (Program) of each Function
-  memories functions get_sub_programs
+  memories constants functions get_sub_programs
   take sub_programs in
 
   // TODO: Type check the Program
   // program type_check_program
 
+  "[INFO] Generating Assembly code\n" puts
   // Generate assembly code from the intermediate representation
   memories sub_programs generate_assembly_code
   take assembly_code in
 
+  "[INFO] Compiling Assembly code\n" puts
   // Write the assembly code to a file
   assembly_code mode_644 "test.asm" write_file drop
 
