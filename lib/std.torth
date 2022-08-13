@@ -366,6 +366,7 @@ function str.cat str str -> str :
   // Allocate memory to hold both strings
   str1 str.len
   str2 str.len
+  1 + // NULL byte
   + malloc
 
   // Fill the beginning of the allocated memory with str2
