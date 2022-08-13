@@ -287,8 +287,10 @@ function get_break_asm ptr ptr -> str :
   Op.get_id
   take parent_end.id in
 
-  function_name "_DONE" str.cat
-  parent_end.id itoa    str.cat
+  "  jmp "
+  function_name       str.cat
+  "_DONE"             str.cat
+  parent_end.id itoa  str.cat
 end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
