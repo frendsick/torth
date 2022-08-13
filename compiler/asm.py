@@ -300,6 +300,10 @@ def get_intrinsic_asm(token: Token) -> str:
         return get_print_asm()
     if intrinsic == "ROT":
         return get_rot_asm()
+    if intrinsic == "SHL":
+        return get_shl_asm()
+    if intrinsic == "SHR":
+        return get_shr_asm()
     if intrinsic.startswith("STORE_"):
         return get_store_asm(intrinsic)
     if intrinsic == "SWAP":
@@ -805,6 +809,30 @@ def get_rot_asm() -> str:
     op_asm += "  push rbx\n"
     op_asm += "  push rax\n"
     op_asm += "  push rcx\n"
+    return op_asm
+
+
+def get_shl_asm() -> str:
+    """
+    SHL Intrinsic shifts the bits of the second argument to the left
+    as many times as indicated by the first.
+    """
+    op_asm: str = "  pop rcx\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  shl rbx, cl\n"
+    op_asm += "  push rbx\n"
+    return op_asm
+
+
+def get_shr_asm() -> str:
+    """
+    SHR Intrinsic shifts the bits of the second argument to the right
+    as many times as indicated by the first argument.
+    """
+    op_asm: str = "  pop rcx\n"
+    op_asm += "  pop rbx\n"
+    op_asm += "  shr rbx, cl\n"
+    op_asm += "  push rbx\n"
     return op_asm
 
 

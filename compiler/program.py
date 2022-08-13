@@ -506,6 +506,8 @@ def type_check_intrinsic(token: Token, type_stack: TypeStack, program: Program) 
         return type_check_print(token, type_stack)
     if intrinsic == "ROT":
         return type_check_rot(token, type_stack)
+    if intrinsic in {"SHL", "SHR"}:
+        return type_check_bitshift(token, type_stack)
     if intrinsic.startswith("STORE_"):
         return type_check_store(token, type_stack)
     if intrinsic == "SWAP":
@@ -1163,6 +1165,31 @@ def type_check_rot(token: Token, type_stack: TypeStack) -> None:
     type_stack.push(t2.value, t2.location)
     type_stack.push(t1.value, t1.location)
     type_stack.push(t3.value, t3.location)
+
+
+def type_check_bitshift(token: Token, type_stack: TypeStack) -> None:
+    """
+    SHL performs bitshift operations to the left SHR to the right.
+    The second argument is the value to be bitshifted
+    and the first is the amount of times the shift should be performed.
+    """
+    temp_stack: TypeStack = copy(type_stack)
+    t1 = type_stack.pop()
+    t2 = type_stack.pop()
+    if t1 is None or t2 is None:
+        compiler_error(
+            "POP_FROM_EMPTY_STACK",
+            f"{token.value.upper()} intrinsic requires two values in the stack.",
+            token,
+            current_stack=temp_stack,
+        )
+    if t1.value not in INTEGER_TYPES or t2.value not in INTEGER_TYPES:
+        error_message = (
+            f"{token.value.upper()} intrinsic requires two integers.\n\n"
+            + f"Popped types:\n{t1.value.name} {t1.location}\n{t2.value.name} {t2.location}"
+        )
+        compiler_error("VALUE_ERROR", error_message, token, current_stack=temp_stack)
+    type_stack.push(TokenType.INT, token.location)
 
 
 def type_check_store(token: Token, type_stack: TypeStack) -> None:
