@@ -1297,9 +1297,14 @@ end
 // Params: function_name
 // Return: label
 function get_valid_label_for_nasm str -> str :
-  base64.encode
-  take b64_function_name in
+  dup base64.encode
+  take b64_function_name function_name in
   b64_function_name dup str.len 2 - str+
   NULL char swap ptr char.store
-  b64_function_name
+
+  // Append the sum of the last characters of the function
+  // to prevent redefinitions of functions with similar names
+  function_name dup str.len 1 - str.char_at
+  function_name dup str.len 2 - str.char_at +
+  b64_function_name swap itoa str.cat
 end
