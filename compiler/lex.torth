@@ -239,8 +239,7 @@ end
 // Params: code (STR), file_name (STR)
 // Return: code (STR)
 function remove_comments_from_code str str -> str :
-  over swap get_token_matches_from_code
-  over get_newline_indexes
+  get_token_matches_from_code
   "" str.copy
   NULL
   0
@@ -248,9 +247,7 @@ function remove_comments_from_code str str -> str :
     index
     comment_line // Removing comment if this is not NULL
     code_buffer
-    newline_indexes
     token_matches
-    code
   in
 
   // Iterate over every word of the code
