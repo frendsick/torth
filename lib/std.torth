@@ -400,14 +400,15 @@ function str.is_numeric str -> bool :
   endif
 
   // Iterate over every character of the string
-  0 while string over str.char_at NULL != do
+  while string ptr char.load NULL != do
     // Break if non-numeric character is found
-    if string over str.char_at char.is_numeric not do
+    if string ptr char.load char.is_numeric not do
       break
-    endif 1 +
+    endif
+    string 1 str+ string = // Point to the next character
   done
   // Return True if the whole string was numeric
-  string str.len ==
+  string str.len 0 ==
 end
 
 // Overwrite a string with NULL-bytes
