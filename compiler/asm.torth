@@ -1047,9 +1047,11 @@ end
 function generate_assembly_code ptr ptr -> str :
   over initialize_asm
   over list.len
+  "section .data\n" str.copy
   0
   take
     index
+    data_section_asm
     sub_programs.len
     assembly_code
     sub_programs
@@ -1062,14 +1064,68 @@ function generate_assembly_code ptr ptr -> str :
     // Get the current Program
     sub_programs list.first
     index ptr.size * ptr+ ptr.load
+    take program in
 
     // Get assembly code for the current Program
-    get_programs_assembly_code
+    program get_programs_assembly_code
 
     // Concatenate the Program's assembly to assembly_code
     assembly_code swap str.cat
     assembly_code =
+
+    // Add strings from the program to the .data section
+    program get_string_variables_for_data_section
+    data_section_asm swap str.cat
+    data_section_asm =
+
     index 1 + index = // index++
+  done
+  assembly_code data_section_asm str.cat
+end
+
+// Get Assembly code to be added to .data section from Program's string variables
+function get_string_variables_for_data_section ptr -> str :
+  "" str.copy
+  0
+  take
+    index
+    assembly_code
+    program
+  in
+  while index program list.len < do
+    // Get current Op
+    index program list.nth ptr.load
+    take op in
+
+    // Add only strings to the assembly
+    if op Op.get_type OpType.PUSH_STR != do
+      index 1 + index =
+      continue
+    endif
+
+    op    Op.get_id itoa
+    op    Op.get_function Function.get_name
+    op    Op.get_token
+    dup   Token.get_value
+    swap  Token.get_location
+    take
+      token_location
+      string
+      function_name
+      op_id
+    in
+
+    "  "
+    function_name str.cat
+    "_s"          str.cat
+    op_id         str.cat
+    " db "        str.cat
+    string        str.cat
+    ",0\n"        str.cat
+
+    assembly_code swap str.cat
+    assembly_code =
+    index 1 + index =
   done
   assembly_code
 end
