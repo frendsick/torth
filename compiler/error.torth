@@ -8,15 +8,26 @@ include "std"
 // 'WARNING'  => '\e[93m'
 
 // Params: Error type (STR), message (STR)
-// Return: None
-function CompilerError str str :
+function print_error str str :
   "\e[95mCompiler Error \e[91m" eputs eputs
   "\e[0m:\n" eputs eputs
+end
+
+// Params: Error type (STR), message (STR)
+// Return: NoReturn
+function CompilerError str str :
+  print_error
+  1 exit
+end
+
+function CompilerErrorWithToken str str ptr :
+  print_error
+  Token.print
+  1 exit
 end
 
 // Params: Error message (STR)
 // Return: NoReturn
 function NotImplementedError str :
   "NOT_IMPLEMENTED" CompilerError
-  1 exit
 end
