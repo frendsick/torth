@@ -17,54 +17,32 @@ include "compiler/class/Signature"
 memory already_included_files ptr.size end
 function get_included_files str str -> ptr :
   ptr list.init list.append
-  100
+  300
   0
-  0
+  0   // index
   take
-    old_includes_count
+    index
     recursive_include_count
     RECURSIVE_INCLUDE_LIMIT
     included_files
     compiler_directory
   in
 
-  // Keep parsing includes from new included files of each iteration
-  while recursive_include_count RECURSIVE_INCLUDE_LIMIT < do
+  // Iterate over all of the new included files for this loop iteration
+  while index included_files list.len < do
 
-    // old_includes_count = len(included_files) - old_includes_count
-    included_files list.len old_includes_count -
-    old_includes_count =
+    // Save the current file name
+    index included_files list.nth str.load
+    take file_name in
 
-    // Start this iteration from the end of the last iteration's included_files list
-    included_files list.len old_includes_count -
-    take index in
+    // Get includes from the current file
+    included_files file_name get_included_files_from_file
 
-    // Iterate over all of the new included files for this loop iteration
-    while index included_files list.len < do
-
-      // Save the current file name
-      index included_files list.nth str.load
-      take file_name in
-
-      // Get includes from the current file
-      included_files file_name get_included_files_from_file
-
-      // Return if this iteration did not get any new included files
-      if dup list.len included_files list.len == do
-        drop included_files return
-      endif
-
-      // Save the new included files from this iteration
-      included_files =
-      index 1 + index = // index++
-    done
-    recursive_include_count 1 +
-    recursive_include_count =
+    // Save the new included files from this iteration
+    included_files =
+    index 1 + index = // index++
   done
-
-  // The function should have returned early
-  "Unreachable: get_included_files\n"
-  "UNREACHABLE" CompilerError NULLPTR
+  included_files
 end
 
 // Parse included files from a single file. Return the list of files.
@@ -84,7 +62,8 @@ function get_included_files_from_file str ptr -> ptr :
   in
 
   // Get the file contents without comments
-  code_file read_file
+  INCLUDE_PATHS code_file get_file_name_from_path
+  read_file
   code_file swap remove_comments_from_code
   take code in
 
@@ -141,15 +120,21 @@ end
 // Params: file_name: str, INCLUDE_PATHS: List[str]
 // Return: file_with_path: str
 function get_file_name_from_path str ptr -> str :
+  take file_name INCLUDE_PATHS in
 
   // Get the file name without quotes
-  dup get_string_inside_quotes
-  if dup int NULL == do
-    "File name for INCLUDE statement must be in quotes\n"
-    "INCLUDE_ERROR" CompilerError
-  endif swap drop
+  if file_name ptr char.load '"' == do
+    file_name get_string_inside_quotes
+    file_name =
+  endif
 
-  take file_name INCLUDE_PATHS in
+  if file_name int NULL == do
+    "Cannot include file "
+    file_name str.cat
+    "\n"      str.cat
+    "INCLUDE_ERROR" CompilerError
+  endif
+
   if file_name file_exists do
     file_name return
   endif
@@ -601,8 +586,6 @@ function get_words_from_code str -> ptr :
     word_list =
   endif
   word_list
-end
-
 end
 
 // Get all token matches from code to a list
