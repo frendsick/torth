@@ -555,7 +555,7 @@ end
 // Return: Assembly
 function get_function_call_asm str -> str :
   "  call "
-  swap str.cat
+  swap get_valid_label_for_nasm str.cat
   "\n" str.cat
 end
 
@@ -1088,7 +1088,7 @@ function get_function_start_asm str -> str :
     return
   endif
 
-  function_name
+  function_name get_valid_label_for_nasm
   ":\n;; ["                                                               str.cat
   function_name                                                           str.cat
   "] Save the return address to return_stack\n"                           str.cat
@@ -1250,9 +1250,7 @@ function get_done_op_for_while ptr ptr -> ptr :
     op
     program
   in
-    op Op.get_token Token.get_value puts "\n" puts
-  program list.len print "\n" puts
-  index print "\n" puts
+
   // Iterate over each Op of the Program starting from the parameter Op
   while index program list.len < do
 
@@ -1261,7 +1259,6 @@ function get_done_op_for_while ptr ptr -> ptr :
     dup Op.get_type
     take current_op_type current_op in
 
-    current_op Op.get_token Token.get_value puts "\n" puts
     // Return the found DONE if it's not inside nested WHILE block
     if current_op_type OpType.DONE == do
       while_count 1 - while_count = // while_count--
@@ -1294,4 +1291,15 @@ function get_bound_memory ptr -> str :
   op Op.get_token     Token.get_value
   op Op.get_function  Function.get_name
   "_" str.cat swap str.cat
+end
+
+// Generate valid NASM label for Function
+// Params: function_name
+// Return: label
+function get_valid_label_for_nasm str -> str :
+  base64.encode
+  take b64_function_name in
+  b64_function_name dup str.len 2 - str+
+  NULL char swap ptr char.store
+  b64_function_name
 end
