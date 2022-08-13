@@ -62,13 +62,12 @@ function get_included_files_from_file str ptr -> ptr :
   in
 
   // Get the file contents without comments
-  INCLUDE_PATHS code_file get_file_name_from_path
-  read_file
-  code_file swap remove_comments_from_code
-  take code in
+  INCLUDE_PATHS code_file get_file_name_from_path read_file
+  code_file over remove_comments_from_code
+  take code_without_comments code in
 
   // Get the included files from the code to included_files list
-  code get_words_from_code
+  code_without_comments get_words_from_code
   False
   0
   take
@@ -113,6 +112,11 @@ function get_included_files_from_file str ptr -> ptr :
     endif
     index 1 + index = // index++
   done
+
+  // Clean memory that is not needed any more
+  code str.delete
+  code_without_comments str.delete
+
   included_files
 end
 
@@ -326,12 +330,16 @@ function get_constants_from_file str ptr -> ptr :
 
   // Read the code file
   file_name read_file
+  take code in
 
   // Get all Token Matches
-  file_name swap get_token_matches
+  file_name code get_token_matches
 
   // Parse Constants from token_matches
   constants swap get_constants
+
+  // Clean memory that is not needed any more
+  code str.delete
 end
 
 // Parse all Memories from a list of files
@@ -369,12 +377,16 @@ function get_memories_from_file str ptr ptr -> ptr :
 
   // Read the code file
   file_name read_file
+  take code in
 
   // Get all Token Matches
-  file_name swap get_token_matches
+  file_name code get_token_matches
 
   // Parse Memories from token_matches
   constants memories rot get_memories
+
+  // Clean memory that is not needed any more
+  code str.delete
 end
 
 // Parse all Functions for a single file
@@ -398,6 +410,9 @@ function get_functions_from_file str ptr ptr ptr -> ptr :
 
   // Parse Functions from token_matches
   memories constants functions token_matches get_functions
+
+  // Clean memory that is not needed any more
+  code str.delete
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
