@@ -270,16 +270,17 @@ end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
 function get_parent_op_type_do ptr ptr -> int :
-  Op.get_id 1 - // index = op.id - 1
+  dup Op.get_id 1 - // index = op.id - 1
   0
   take
     parent_count
     index
+    do_op
     program
   in
 
   // for index in range(op.id - 1, -1, -1):
-  while index 0 > do
+  while index -1 > do
 
     // Get the current Op's OpType
     index program list.nth ptr.load
@@ -308,8 +309,9 @@ function get_parent_op_type_do ptr ptr -> int :
     endif
     index 1 - index = // index--
   done
+  do_op Op.get_token
   "DO operand without parent IF, ELIF or WHILE\n"
-  "AMBIGUOUS_DO" CompilerError NULL
+  "AMBIGUOUS_DO" CompilerErrorWithToken NULL
 end
 
 // DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
