@@ -20,6 +20,17 @@ function list.init -> ptr :
   ITERABLE_CAPACITY ptr.size * int.size + malloc
 end
 
+// Free the allocated memory for a certain list
+function list.delete ptr :
+  take list in
+  list list.size
+  list munmap
+end
+
+function list.size ptr -> int :
+  list.len ITERABLE_CAPACITY / ITERABLE_CAPACITY * ptr.size * int.size +
+end
+
 // Append value pointer to a list
 // Params: list (PTR), value_ptr (PTR)
 // Return: list (PTR)
@@ -47,7 +58,7 @@ function list.append ptr ptr -> ptr :
     memory_size ITERABLE_CAPACITY - list new_list memcpy
 
     // Deallocate the original list
-    memory_size ITERABLE_CAPACITY - list munmap
+    list list.delete
 
     // Use the new list instead of the old one
     new_list list =
