@@ -5,6 +5,7 @@
 include "errno"
 include "math"
 include "sys"
+include "typing"
 
 // Common constants
 const NULL 0 end
@@ -595,6 +596,70 @@ function str.reverse str -> str :
     // Append the current character to the reversed string
     reversed str.append
   done reversed
+end
+
+// https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64
+function base64.encode str -> str :
+  dup str.len
+  dup 3 %
+  over 2 * malloc str
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" str.copy
+  0
+  0
+  take
+    padding_size
+    base64_index
+    base64_characters
+    base64_string
+    char_index
+    string.len
+    string
+  in
+
+  // Add a right zero pad to make this string a multiple of 3 characters
+  if char_index 0 > do
+    char_index while dup 3 < do
+      padding_size 1 + padding_size =
+      1 +
+    done drop
+  endif
+
+  // Increment over the length of the string, three characters at a time
+  0 char_index = // Zero char_index
+  while char_index string.len < do
+
+    // These three 8-bit (ASCII) characters become one 24-bit number
+    string char_index     str.char_at 16 shl
+    string char_index 1 + str.char_at 8 shl +
+    string char_index 2 + str.char_at +
+    take 24bit_number in
+
+    // This 24-bit number gets separated into four 6-bit numbers
+    list.init
+    24bit_number 18 shr 63 and ptr swap list.append
+    24bit_number 12 shr 63 and ptr swap list.append
+    24bit_number 6  shr 63 and ptr swap list.append
+    24bit_number        63 and ptr swap list.append
+    take 6bit_list in
+
+    // Those four 6-bit numbers are used as indices into the base64 character list
+    0 while dup 4 < do
+      base64_characters over 6bit_list list.nth int.load str.char_at
+      base64_string ptr base64_index ptr+ char.store
+      base64_index 1 + base64_index = // base64_index++
+      1 +
+    done drop
+
+    char_index 3 + char_index = // char_index += 3
+  done
+
+  // Append the padding characters and return the result
+  NULL char base64_string dup str.len padding_size - str+ ptr char.store
+  if    padding_size 1 ==
+  do    base64_string "="   str.cat return
+  elif  padding_size 2 ==
+  do    base64_string "=="  str.cat return
+  endif base64_string
 end
 
 // Open a file with open-syscall
