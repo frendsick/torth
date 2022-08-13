@@ -2,7 +2,7 @@
 include "std"
 
 // Constants
-const ITERABLE_CAPACITY 32768 end
+const ITERABLE_CAPACITY 128 end
 
 // === List ===
 // README:
