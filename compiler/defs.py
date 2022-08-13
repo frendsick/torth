@@ -73,6 +73,8 @@ class Intrinsic(Enum):
     PLUS = auto()
     PRINT = auto()
     ROT = auto()
+    SHL = auto()
+    SHR = auto()
     STORE_BYTE = auto()
     STORE_WORD = auto()
     STORE_DWORD = auto()
