@@ -40,3 +40,15 @@ end
 function Memory.get_location ptr -> ptr :
   Memory.location ptr+ ptr.load
 end
+
+// Print Memory object contents to stdout
+// Params: Pointer to Memory
+// Return: None
+function Memory.print ptr :
+  take mem in
+  "Memory.name        => "  puts
+  mem Memory.get_name puts "\n" puts
+  "Memory.size        => "  puts
+  mem Memory.get_size print "\n" puts
+  mem Memory.get_location Location.print
+end
