@@ -81,6 +81,9 @@ function get_op_asm ptr ptr -> str :
   elif op_type OpType.BREAK == do
     program op get_break_asm
     return
+  elif op_type OpType.CONTINUE == do
+    program op get_continue_asm
+    return
   elif op_type OpType.DO == do
     program op get_do_asm
     return
@@ -285,12 +288,29 @@ function get_break_asm ptr ptr -> str :
   program op get_parent_while
   program swap get_done_op_for_while
   Op.get_id
-  take parent_end.id in
+  take parent_done.id in
 
   "  jmp "
   function_name       str.cat
   "_DONE"             str.cat
-  parent_end.id itoa  str.cat
+  parent_done.id itoa str.cat
+end
+
+// CONTINUE is an unconditional jump to current loop's WHILE
+// Params: Op, Program
+// Return: Assembly
+function get_continue_asm ptr ptr -> str :
+  dup Op.get_function Function.get_name
+  take function_name op program in
+
+  program op get_parent_while
+  Op.get_id
+  take parent_while.id in
+
+  "  jmp "
+  function_name         str.cat
+  "_WHILE"              str.cat
+  parent_while.id itoa  str.cat
 end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
