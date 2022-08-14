@@ -59,6 +59,10 @@ function Token.set_type ptr int :
   Token.type ptr+ int.store
 end
 
+function Token.delete ptr :
+  Token.size swap munmap
+end
+
 function Token.print ptr :
   "Token.value        => " puts
   dup Token.value     ptr+
