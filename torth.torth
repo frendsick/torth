@@ -16,25 +16,29 @@ function main :
   "PWD" getenv
   take compiler_directory in
 
-  "[INFO] Getting included files\n" puts
   // Get a list of included files for the program
+  "[INFO] Getting included files\n" puts
   compiler_directory code_file get_included_files
   take included_files in
 
+  "[INFO] Parsing Tokens\n" puts
+  included_files get_token_matches_from_files
+  take token_matches in
+
   "[INFO] Parsing Constants\n" puts
-  included_files get_constants_from_files
+  token_matches get_constants
   take constants in
 
   "[INFO] Parsing Memories\n" puts
-  constants included_files get_memories_from_files
+  constants token_matches get_memories
   take memories in
 
   "[INFO] Parsing Functions\n" puts
-  memories constants included_files get_functions_from_files
+  memories constants token_matches get_functions
   take functions in
 
-  "[INFO] Parsing Sub-Programs\n" puts
   // Get the intermediate representation (Program) of each Function
+  "[INFO] Parsing Sub-Programs\n" puts
   memories constants functions get_sub_programs
   take sub_programs in
 

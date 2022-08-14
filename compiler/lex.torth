@@ -67,7 +67,7 @@ function get_included_files_from_file str ptr -> ptr :
   take code_without_comments code in
 
   // Get the included files from the code to included_files list
-  code_file code_without_comments get_token_matches_from_code
+  list.init code_file code_without_comments get_token_matches_from_code
   False
   0
   take
@@ -172,6 +172,34 @@ function get_file_name_from_path str ptr -> str :
   "INCLUDE_ERROR" CompilerError ""
 end
 
+function get_token_matches_from_files ptr -> ptr :
+  list.init
+  0
+  take
+    index
+    token_matches
+    included_files
+  in
+
+  // Merge all included files to one code string
+  while index included_files list.len < do
+
+    // Read the current file
+    index included_files list.nth str.load
+    dup read_file
+    take code file_name in
+
+    file_name code remove_comments_from_code
+    take code_without_comments in
+
+    // Parse Token Matches from the file
+    token_matches file_name code_without_comments get_token_matches_from_code
+    token_matches =
+    index 1 + index = // index++
+  done
+  token_matches
+end
+
 // Get multiline string inside double quotes ""
 // Return NULL if there is no string inside quotes
 // Params: String which begins with a double quote
@@ -229,7 +257,7 @@ end
 // Params: code (STR), file_name (STR)
 // Return: code (STR)
 function remove_comments_from_code str str -> str :
-  get_token_matches_from_code
+  list.init rot rot get_token_matches_from_code
   "" str.copy
   NULL
   0
@@ -271,149 +299,6 @@ function remove_comments_from_code str str -> str :
     index 1 + index = // index++
   done
   code_buffer
-end
-
-// Parse all Functions from a list of files
-// Params: included_files (List[str]), List[Constant], List[Memory]
-// Return: List[Function]
-function get_functions_from_files ptr ptr ptr -> ptr :
-  list.init
-  0
-  take
-    index
-    functions
-    included_files
-    constants
-    memories
-  in
-
-  // Iterate over included_files list
-  while index included_files list.len < do
-    index included_files list.nth str.load
-    take file_name in
-
-    // Get Functions from the currently parsed file
-    memories constants functions file_name get_functions_from_file
-    functions =
-    index 1 + index =
-  done
-
-  functions
-end
-
-// Parse all Constants from a list of files
-// Params: included_files (List[str])
-// Return: List[Constant]
-function get_constants_from_files ptr -> ptr :
-  list.init
-  0
-  take
-    index
-    constants
-    included_files
-  in
-
-  while index included_files list.len < do
-    index included_files list.nth str.load
-    constants swap get_constants_from_file
-    constants =
-    index 1 + index =
-  done
-
-  constants
-end
-
-// Parse all Constants for a single file
-// Params: file_name (STR), List[Constant]
-// Return: List[Constant]
-function get_constants_from_file str ptr -> ptr :
-  take file_name constants in
-
-  // Read the code file
-  file_name read_file
-  take code in
-
-  // Get all Token Matches
-  file_name code get_token_matches
-
-  // Parse Constants from token_matches
-  constants swap get_constants
-
-  // Clean memory that is not needed any more
-  code str.delete
-end
-
-// Parse all Memories from a list of files
-// Params: included_files (List[str]), constants (List[Constant])
-// Return: List[Memory]
-function get_memories_from_files ptr ptr -> ptr :
-  list.init
-  0
-  take
-    index
-    memories
-    included_files
-    constants
-  in
-
-  while index included_files list.len < do
-    index included_files list.nth str.load
-    constants memories rot get_memories_from_file
-    memories =
-    index 1 + index =
-  done
-
-  memories
-end
-
-// Parse all Memories for a single file
-// Params: file_name (STR), List[Memory], List[Constant]
-// Return: List[Memory]
-function get_memories_from_file str ptr ptr -> ptr :
-  take
-    file_name
-    memories
-    constants
-  in
-
-  // Read the code file
-  file_name read_file
-  take code in
-
-  // Get all Token Matches
-  file_name code get_token_matches
-
-  // Parse Memories from token_matches
-  constants memories rot get_memories
-
-  // Clean memory that is not needed any more
-  code str.delete
-end
-
-// Parse all Functions for a single file
-// Params: file_name (STR), List[Function], List[Constant], List[Memory]
-// Return: List[Function]
-function get_functions_from_file str ptr ptr ptr -> ptr :
-  take
-    file_name
-    functions
-    constants
-    memories
-  in
-
-  // Read the code file
-  file_name read_file
-  take code in
-
-  // Get all Token Matches
-  file_name code get_token_matches
-  take token_matches in
-
-  // Parse Functions from token_matches
-  memories constants functions token_matches get_functions
-
-  // Clean memory that is not needed any more
-  code str.delete
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -653,11 +538,11 @@ end
 // Params
 //    code: str
 //    file_name: str
+//    token_matches: str
 // Return
 //    List[str]
-function get_token_matches_from_code str str -> ptr :
+function get_token_matches_from_code str str ptr -> ptr :
   dup get_newline_indexes
-  list.init
   "" str.copy // String buffer for word
   False
   0
@@ -665,10 +550,10 @@ function get_token_matches_from_code str str -> ptr :
     index
     parsing_string
     word
-    token_matches
     newline_indexes
     code
     file_name
+    token_matches
   in
 
   while
@@ -776,7 +661,8 @@ end
 //    token_matches: List[Match], constants: List[Constant]
 // Return
 //    constants: List[Constant]
-function get_constants ptr ptr -> ptr :
+function get_constants ptr -> ptr :
+  list.init
   ""  str.copy        // constant_name
   dup str.copy        // constant_value
   False               // defining_constant
@@ -786,8 +672,8 @@ function get_constants ptr ptr -> ptr :
     defining_constant
     constant_value
     constant_name
-    token_matches
     constants
+    token_matches
   in
 
   while index token_matches list.len < do
@@ -837,11 +723,11 @@ end
 // Parse Memories from code
 // Params
 //    token_matches: List[Match]
-//    memories: List[Memory]
 //    constants: List[Constant]
 // Return
 //    memories: List[Memory]
-function get_memories ptr ptr ptr -> ptr :
+function get_memories ptr ptr -> ptr :
+  list.init           // memories
   "" str.copy         // memory_name
   NULL                // memory_size
   False               // defining_memory
@@ -851,8 +737,8 @@ function get_memories ptr ptr ptr -> ptr :
     defining_memory
     memory_size
     memory_name
-    token_matches
     memories
+    token_matches
     constants
   in
 
@@ -894,7 +780,7 @@ function get_memories ptr ptr ptr -> ptr :
         endif
 
         // Generate Memory object
-        location memory_size memory_name Memory.init
+        location memory_size memory_name str.copy Memory.init
         memories list.append memories =
 
         // Reset variables
@@ -953,14 +839,14 @@ end
 // Parse Functions from code
 // Params
 //    token_matches:  List[Match]
-//    functions:      List[Function]
 //    constants:      List[Constant]
 //    memories:       List[Memory]
 // Return
 //    functions: List[Function]
-function get_functions ptr ptr ptr ptr -> ptr :
+function get_functions ptr ptr ptr -> ptr :
 
   // Initialize variables
+  list.init                     // List[Function]
   list.init                     // List[Token]
   0                             // current_part
   get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
@@ -976,8 +862,8 @@ function get_functions ptr ptr ptr ptr -> ptr :
     FUNCTION_PART_DELIMITERS
     current_part
     tokens
-    token_matches
     functions
+    token_matches
     constants
     memories
   in
