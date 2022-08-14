@@ -704,7 +704,10 @@ function get_token_matches_from_code str str -> ptr :
       // Append current Token Match to token_matches
       token_matches list.append
       token_matches =
-      word str.empty
+
+      // Reset word
+      word str.delete
+      "" str.copy word =
     elif current_char '"' == do
       // Toggle parsing_string
       parsing_string not
@@ -721,7 +724,7 @@ function get_token_matches_from_code str str -> ptr :
   if word str.len 0 > do
     index word str.len -
     newline_indexes swap file_name get_token_location
-    word str.copy Match.init
+    word Match.init
 
     token_matches list.append
     token_matches =
@@ -1014,10 +1017,12 @@ function get_functions ptr ptr ptr ptr -> ptr :
         functions =
 
         // Reset variables
-        function_name str.copy  dup str.empty   function_name =
-        param_types   list.copy dup list.empty  param_types   =
-        return_types  list.copy dup list.empty  return_types  =
-        tokens        list.copy dup list.empty  tokens        =
+        "" str.copy function_name =
+        list.init   param_types   =
+        list.init   return_types  =
+        list.init   tokens        =
+        index 1 + index =
+        continue
       endif
 
     elif current_part 1 == do
@@ -1032,6 +1037,7 @@ function get_functions ptr ptr ptr ptr -> ptr :
       if token_value ":" streq do
         current_part 2 + current_part =
         index 1 + index =
+        token_value str.delete
         continue
       endif
 
@@ -1070,6 +1076,11 @@ function get_functions ptr ptr ptr ptr -> ptr :
       // Append the current Token to the list of tokens
       token tokens list.append
       tokens =
+
+    // Not parsing a function
+    else
+      token Token.delete
+      token_value str.delete
     endif
     index 1 + index =
   done
