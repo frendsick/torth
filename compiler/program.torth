@@ -4,7 +4,6 @@ include "std"
 include "typing"
 include "compiler/defs"
 include "compiler/class/Token"
-include "compiler/class/Program"
 
 // Generate Program for each Function
 // Params: List[Function], List[Constant], List[Memory]

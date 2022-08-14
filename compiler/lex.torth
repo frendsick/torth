@@ -413,19 +413,6 @@ function get_op_type ptr -> int :
   OpType.INTRINSIC
 end
 
-// Generate Op from Token
-// Params: token (PTR), id (INT)
-// Return: op (PTR)
-function get_op_from_token ptr int -> ptr :
-  take token id in
-  // Op(id=id, type=op_type, token=token, function=function)
-  token get_tokens_function // function
-  token                     // token
-  token get_op_type         // op_type
-  id                        // id
-  Op.init
-end
-
 // Functions are made of four parts:
 //   1 : name
 //   2 : param types

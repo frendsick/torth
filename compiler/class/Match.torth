@@ -43,26 +43,3 @@ function Match.print ptr :
 
   Match.location ptr+ ptr.load Location.print
 end
-
-function list.contains_match ptr str -> bool :
-  dup int.load
-  0
-  take
-    index
-    len
-    list
-  in
-
-  while index len < do
-    index list list.nth ptr.load
-    Match.get_value
-    take match_value in
-
-    // Return True if the current string matches with the parameter
-    if string match_value streq do
-      True return
-    endif
-    index 1 + index =
-  done
-  False
-end
