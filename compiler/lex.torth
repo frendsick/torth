@@ -1039,10 +1039,14 @@ function parse_function_variables ptr ptr :
 
     // Every word is considered as a Variable in the block between PEEK/TAKE and IN
     elif parsing_variables do
-      True token Token.is_variable ptr+ bool.store
-      "_PEEK" token_value str.removesuffix
-      "_TAKE" token_value str.removesuffix
-
+      if bind_variant "PEEK" streq do
+        VarType.PEEK token Token.set_vartype
+      elif bind_variant "TAKE" streq do
+        VarType.TAKE token Token.set_vartype
+      else
+        "Unknown VarType '" bind_variant str.cat "'\n" str.cat
+        "VALUE_ERROR" CompilerError
+      endif
       token_value ptr variables list.append
       variables =
 
@@ -1052,23 +1056,16 @@ function parse_function_variables ptr ptr :
       take memory_name in
       if memories memory_name memory_exists not do
         token Token.get_location
-        ptr.size
+        ptr.size // Memory.size
         memory_name
         Memory.init
         memories list.append
         memories =
       endif
 
-      if token_value str.copy str.upper bind_variant str.endswith not do
-        // token.value = f"{token.value}_{bind_variant}"
-        token_value "_" str.cat
-        bind_variant    str.cat
-        token Token.set_value
-      endif
-
     // If Token is already a known Variable just update its boolean value
     elif token_value variables list.contains_str do
-      True token Token.is_variable ptr+ bool.store
+      VarType.PUSH token Token.set_vartype
     endif
     index 1 + index =
   done

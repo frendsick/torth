@@ -114,3 +114,11 @@ ENUM TokenType.len 1 :
   TokenType.UINT8
   TokenType.WORD
 END
+
+// VarType
+ENUM VarType.len 1 :
+  VarType.NONE
+  VarType.PEEK
+  VarType.PUSH
+  VarType.TAKE
+END

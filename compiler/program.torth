@@ -145,19 +145,21 @@ function get_tokens_op_type ptr ptr ptr ptr -> int :
     OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
     OpType.WHILE return
-  elif token Token.is_variable ptr+ bool.load do
+  elif token Token.get_vartype VarType.NONE != do
+    token Token.get_vartype
+    take token_vartype in
 
-    // Change the Token's value back to original
-    "_PEEK" token_value str.removesuffix
-    "_TAKE" token_value str.removesuffix
-
-    // Check the type of the Binding (PEEK / TAKE)
-    if token_upper "PEEK" str.endswith do
+    // Check the VarType of the Token
+    if token_vartype VarType.PEEK == do
       OpType.PEEK_BIND return
-    elif token_upper "TAKE" str.endswith do
+    elif token_vartype VarType.PUSH == do
+      OpType.PUSH_BIND return
+    elif token_vartype VarType.TAKE == do
       OpType.POP_BIND return
     endif
-    OpType.PUSH_BIND return
+
+    "Unknown VarType '" token_vartype itoa str.cat "'\n"
+    "VALUE_ERROR" CompilerError
   elif constants token_value constant_exists do
     OpType.PUSH_INT return
   elif functions token_value function_exists do

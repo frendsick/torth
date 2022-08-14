@@ -4,8 +4,8 @@ include "std"
 ENUM Token.size 8 :
   Token.value       // str
   Token.type        // TokenType => int
+  Token.vartype     // VarType   => int
   Token.location    // Location  => ptr
-  Token.is_variable // bool
 END
 
 // Initialize Token from parameters
@@ -17,10 +17,10 @@ function Token.init str int ptr -> ptr :
   take token value type location in
 
   // Load the parameters to the allocated memory
-  value     token Token.value       ptr+ str.store
-  type      token Token.type        ptr+ int.store
-  location  token Token.location    ptr+ ptr.store
-  False     token Token.is_variable ptr+ bool.store
+  value         token Token.value     ptr+ str.store
+  type          token Token.type      ptr+ int.store
+  VarType.NONE  token Token.vartype   ptr+ int.store
+  location      token Token.location  ptr+ ptr.store
   token
 end
 
@@ -40,6 +40,13 @@ end
 
 // Get Token.location
 // Params: Pointer to Token (PTR)
+// Return: Token.vartype (VarType => INT)
+function Token.get_vartype ptr -> int :
+  Token.vartype ptr+ int.load
+end
+
+// Get Token.location
+// Params: Pointer to Token (PTR)
 // Return: Token.location (Location => PTR)
 function Token.get_location ptr -> ptr :
   Token.location ptr+ ptr.load
@@ -50,6 +57,13 @@ end
 // Return: None
 function Token.set_value ptr str :
   str.store
+end
+
+// Get Token.location
+// Params: Pointer to Token (PTR)
+// Return: Token.vartype (VarType => INT)
+function Token.set_vartype ptr int :
+  Token.vartype ptr+ int.store
 end
 
 // Set the existing Token's TokenType
@@ -64,14 +78,16 @@ function Token.delete ptr :
 end
 
 function Token.print ptr :
+  take token in
+
   "Token.value        => " puts
-  dup Token.value     ptr+
-  str.load puts "\n"  puts
+  token Token.get_value puts "\n" puts
 
   "Token.type         => " puts
-  dup Token.type      ptr+
-  int.load print "\n" puts
+  token Token.get_type putu "\n" puts
 
-  Token.location ptr+ ptr.load
-  Location.print
+  "Token.vartype      => " puts
+  token Token.get_vartype putu "\n" puts
+
+  token Token.get_location Location.print
 end
