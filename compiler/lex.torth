@@ -717,7 +717,128 @@ function get_constants ptr -> ptr :
     endif
     index 1 + index = // index++
   done
+  constants token_matches add_enums_to_constants
+end
+
+// Parse and add ENUM block contents to a list of Constants.
+// Items inside ENUM blocks are interpreted as running integers starting from 0.
+// Params
+//    token_matches: List[Match]
+//    constants: List[Constant]
+// Return
+//    constants: List[Constant]
+function add_enums_to_constants ptr ptr -> ptr :
+  get_enum_part_delimiters
+  "" str.copy
+  NULLPTR
+  0
+  0
+  0
+  0
+  take
+    index
+    current_part
+    enum_size
+    enum_offset
+    enum_location
+    enum_name
+    ENUM_PART_DELIMITERS
+    token_matches
+    constants
+  in
+
+  while index token_matches list.len < do
+
+    // Get the current Token Matches value
+    index token_matches list.nth ptr.load
+    dup  Match.get_value
+    swap Match.get_location
+
+    take location token_value in
+
+    if
+      token_value str.copy str.upper
+      current_part ENUM_PART_DELIMITERS list.nth str.load
+      streq
+    do
+      current_part 1 +
+      ENUM_PART_DELIMITERS list.len %
+      current_part =
+
+      if token_value str.copy str.upper "END" streq do
+
+        // Constant(enum_name, enum_size*enum_offset, enum_location)
+        enum_location
+        enum_size enum_offset * itoa
+        enum_name
+        Constant.init
+
+        // Append the current Enum to the list of Constants
+        constants list.append
+        constants =
+        index 1 + index =
+        continue
+      endif
+
+    elif current_part 1 == do
+      token_value enum_name =
+      location enum_location =
+      current_part 1 + current_part =
+
+    elif current_part 2 == do
+      if token_value str.is_numeric not do
+        "'" token_value str.cat
+        "' is not a valid offset parameter for ENUM block\n" str.cat
+        "VALUE_ERROR" CompilerError
+      endif
+      token_value atoi enum_offset =
+      current_part 1 + current_part =
+
+    elif current_part 3 == do
+      "Token '" token_value str.cat
+      "' is used in the wrong context when defining '" str.cat
+      enum_name str.cat
+      "' Enum.\nCheck the syntax of the Enum definition.\n" str.cat
+      "VALUE_ERROR" CompilerError
+
+    elif current_part 4 == do
+      if constants token_value constant_exists do
+        "Constant '" token_value str.cat
+        "' is defined multiple times.\n" str.cat
+        "Constant names should be unique.\n" str.cat
+        "CONST_REDEFINITION" CompilerError
+      endif
+
+      // Constant(token_value, enum_size*enum_offset, location)
+      location
+      enum_size enum_offset * itoa
+      token_value
+      Constant.init
+
+      // Append the current Enum item to constants
+      constants list.append
+      constants =
+      enum_size 1 + enum_size =
+    endif
+    index 1 + index = // index++
+  done
   constants
+end
+
+// Enums are made of four parts:
+//   1 : name
+//   2 : size
+//   3 : offset
+//   4 : items
+//  (0 : Not lexing Enum)
+//  ENUM_PART_DELIMITERS: List[str] = ["ENUM", "", "", ":", "END"]
+function get_enum_part_delimiters -> ptr :
+  list.init
+  "ENUM"  ptr swap list.append
+  ""      ptr swap list.append
+  ""      ptr swap list.append
+  ":"     ptr swap list.append
+  "END"   ptr swap list.append
 end
 
 // Parse Memories from code
@@ -880,7 +1001,9 @@ function get_functions ptr ptr ptr -> ptr :
       current_part FUNCTION_PART_DELIMITERS list.nth str.load
       streq
     do
-      current_part 1 + 5 % current_part =
+      current_part 1 +
+      FUNCTION_PART_DELIMITERS list.len %
+      current_part =
 
       // Append Function and reset variables when function is fully lexed
       if token_value str.copy str.upper "END" streq do
