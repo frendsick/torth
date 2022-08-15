@@ -473,11 +473,11 @@ function str.replace str str str -> str :
 end
 
 // Concatenate two strings into a new memory location
-// Params: str1, str2
+// Params: str2, str1
 // Return: concat(str1+str2)
 function str.cat str str -> str :
-  // Save str1 and str2
-  take str1 str2 in
+  // Save str2 and str1
+  take str2 str1 in
 
   // Allocate memory to hold both strings
   str1 str.len
@@ -485,13 +485,13 @@ function str.cat str str -> str :
   1 + // NULL byte
   + malloc
 
-  // Fill the beginning of the allocated memory with str2
-  str2 str.fill
+  // Fill the beginning of the allocated memory with str1
+  str1 str.fill
   take final_str in
 
-  // Append str1 to str2
+  // Append str2 to final_string
   final_str dup str.len str+ ptr
-  str1 str.fill drop
+  str2 str.fill drop
   final_str
 end
 
