@@ -9,7 +9,7 @@ Torth is planned to be
 - [x] Native (Linux x86_64)
 - [x] Stack-based (just like Porth)
 - [x] [Turing complete](examples/rule110.torth)
-- [ ] Self-hosted
+- [x] Self-hosted
 
 ## Documentation
 
