@@ -12,20 +12,15 @@ include "compiler/class/Token"
 include "compiler/class/Signature"
 
 // Parse included files from a code string. Return the list of files.
-// Params: code_file (STR), compiler_directory (STR)
+// Params: code_file (STR)
 // Return: List[str]
 memory already_included_files ptr.size end
-function get_included_files str str -> ptr :
+function get_included_files str -> ptr :
   ptr list.init list.append
-  300
   0
-  0   // index
   take
     index
-    recursive_include_count
-    RECURSIVE_INCLUDE_LIMIT
     included_files
-    compiler_directory
   in
 
   // Iterate over all of the new included files for this loop iteration

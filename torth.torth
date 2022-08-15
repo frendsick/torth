@@ -12,13 +12,9 @@ function main :
   1 get_nth_cmd_line_argument
   take code_file in
 
-  // Get the current directory
-  "PWD" getenv
-  take compiler_directory in
-
   // Get a list of included files for the program
   "[INFO] Getting included files\n" puts
-  compiler_directory code_file get_included_files
+  code_file get_included_files
   take included_files in
 
   "[INFO] Parsing Tokens\n" puts
