@@ -1151,41 +1151,32 @@ function get_string_variables_for_data_section ptr -> str :
 end
 
 function format_escape_sequences_for_nasm str -> str :
+  9  char char.to_string
+  10 char char.to_string
+  13 char char.to_string
+  27 char char.to_string
   34 char char.to_string
-  92 char char.to_string
   take
-    backslash
-    double_quote
-    string
-  in
-
-  // Save escape sequences to variables
-  backslash "t" str.cat
-  backslash "n" str.cat
-  backslash "r" str.cat
-  backslash "e" str.cat
-
-  take
+    DoubleQuote
     Escape
     CR
     LF
     Tab
+    string
   in
 
   // Replace escape sequences with valid assembly for NASM
-  double_quote ",9," str.cat double_quote str.cat
-  Tab string str.replace string =
+  DoubleQuote ",9," str.cat DoubleQuote str.cat
+  Tab string str.replace_all string =
 
-  double_quote ",10," str.cat double_quote str.cat
-  LF string str.replace string =
+  DoubleQuote ",10," str.cat DoubleQuote str.cat
+  LF string str.replace_all string =
 
-  double_quote ",13," str.cat double_quote str.cat
-  CR string str.replace string =
+  DoubleQuote ",13," str.cat DoubleQuote str.cat
+  CR string str.replace_all string =
 
-  double_quote ",27," str.cat double_quote str.cat
-  Escape string str.replace string =
-
-  string
+  DoubleQuote ",27," str.cat DoubleQuote str.cat
+  Escape string str.replace_all
 end
 
 // Return the beginning of the assembly code of each Program
