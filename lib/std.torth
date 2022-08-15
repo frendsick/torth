@@ -352,14 +352,19 @@ end
 
 // Fill a ptr with the contents of a string
 function str.fill str ptr -> str :
-  take string pointer in
   0 // index
+  take index string pointer in
+
   // Loop through every character of the first string
-  while string over str.char_at NULL != do
-    string over str.char_at
-    over pointer swap ptr+ char.store
-    1 +
-  done drop
+  while
+    string index str.char_at
+    peek character in
+    NULL !=
+  do
+    character
+    pointer index ptr+ char.store
+    index 1 + index =
+  done
   pointer str
 end
 
