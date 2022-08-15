@@ -1,9 +1,0 @@
-// Test program for torth.torth
-include "std"
-function main -> :
-  34 35 multiply print
-end
-
-function multiply int int -> int :
-  *
-end
