@@ -155,6 +155,11 @@ function get_file_name_from_path str ptr -> str :
   "INCLUDE_ERROR" CompilerError ""
 end
 
+// Get Token Matches from the code inside included files
+// Params:
+//    included_files: List[str]
+// Return:
+//    token_matches: List[Match]
 function get_token_matches_from_files ptr -> ptr :
   list.init
   0
@@ -204,33 +209,6 @@ function get_string_inside_quotes str -> str :
     endif
   done drop
   NULLPTR str
-end
-
-// Get the indexes of the newlines in a string
-// Params: string
-// Return: List[int]
-function get_newline_indexes str -> ptr :
-  dup str.len
-  list.init
-  0
-  take
-    index
-    newline_indexes
-    len
-    string
-  in
-
-  // Iterate over all characters of the string
-  while index len < do
-
-    // Save index if the current character is a newline
-    if string index str.char_at 10 == do
-      index ptr newline_indexes list.append
-      newline_indexes =
-    endif
-    index 1 + index =
-  done
-  newline_indexes
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
