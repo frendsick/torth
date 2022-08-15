@@ -216,6 +216,13 @@ function char.is_whitespace char -> bool :
   || || ||  // Logical OR each of the comparisons
 end
 
+function char.to_string char -> str :
+  "" str.copy
+  take string character in
+  character string str.append
+  string
+end
+
 // Int functions
 function int.load     ptr       -> int    : LOAD_QWORD int    end
 function int.store    ptr int   ->        : STORE_QWORD       end
