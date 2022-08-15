@@ -388,6 +388,78 @@ function str.insert_at int str str -> str :
   str1_end str.cat
 end
 
+// Get the index of the first character of a substring from a string
+// Return -1 if substring is not found
+// Params: string, substring
+// Return: index
+function str.find str str -> int :
+  over str.len
+  over str.len
+  0
+  take
+    index
+    string.len
+    substring.len
+    string
+    substring
+  in
+
+  // Return -1 if substring is longer than the string
+  // or the substring is 0 length
+  if
+    substring.len string.len >
+    substring.len 0 <=
+    ||
+  do
+    -1 return
+  endif
+
+  while index string.len substring.len - <= do
+
+    // Index was found if the current string starts with the substring
+    if string substring str.startswith do
+      index return
+    endif
+
+    // Increment string pointer and index
+    string 1 str+ string =
+    index 1 + index =
+  done
+
+  // String was not found
+  -1
+end
+
+// Replace first occurrence of substring with another string.
+// Return the original string if substring is not found
+// Params: string, substring, replacement
+// Return: string
+function str.replace str str str -> str :
+  take
+    string
+    substring
+    replacement
+  in
+
+  // Get the index of the first substring match
+  substring string str.find
+  take index in
+
+  // Return the original string if no match was found
+  if index 0 < do
+    string return
+  endif
+
+  // Split the string from the index
+  string index str+ ptr NULL char swap char.store
+  string index substring str.len + str+
+  take string_end in
+
+  string
+  replacement str.cat
+  string_end  str.cat
+end
+
 // Concatenate two strings into a new memory location
 // Params: str1, str2
 // Return: concat(str1+str2)
