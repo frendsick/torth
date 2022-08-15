@@ -43,25 +43,19 @@ end
 // Params: file_name (STR), included_files (List[str])
 // Return: included_files (List[str])
 function get_included_files_from_file str ptr -> ptr :
-  swap list.copy
-
   // Add compiler's directory and the 'lib' directory to INCLUDE_PATHS
   list.init
   ""      ptr swap list.append
   "lib/"  ptr swap list.append
   take
     INCLUDE_PATHS
-    included_files
     code_file
+    included_files
   in
 
   // Get the file contents without comments
   INCLUDE_PATHS code_file get_file_name_from_path read_file
-  dup remove_comments_from_code
-  take code_without_comments code in
-
-  // Get the included files from the code to included_files list
-  list.init code_file code_without_comments get_token_matches_from_code
+  list.init code_file rot get_token_matches_from_code
   False
   0
   take
@@ -107,11 +101,6 @@ function get_included_files_from_file str ptr -> ptr :
     endif
     index 1 + index = // index++
   done
-
-  // Clean memory that is not needed any more
-  code str.delete
-  code_without_comments str.delete
-
   included_files
 end
 
@@ -175,16 +164,16 @@ function get_token_matches_from_files ptr -> ptr :
     included_files
   in
 
-  // Merge all included files to one code string
+  // Iterate over each included file
   while index included_files list.len < do
 
     // Read the current file and remove its comments
     index included_files list.nth str.load
-    dup read_file remove_comments_from_code
-    take code_without_comments file_name in
+    dup read_file
+    take code file_name in
 
-    // Parse Token Matches from the file
-    token_matches file_name code_without_comments get_token_matches_from_code
+    // Parse Token Matches from the current file's code
+    token_matches file_name code get_token_matches_from_code
     token_matches =
     index 1 + index = // index++
   done
@@ -375,43 +364,73 @@ end
 // Get all words from code to a list
 // Params
 //    code: str
+//    file_name: str
+//    token_matches: List[Token]
 // Return
-//    List[str]
-function remove_comments_from_code str -> str :
-  "" str.copy // String buffer for code
+//    token_matches: List[Match]
+function get_token_matches_from_code str str ptr -> ptr :
+  list.init   // newline_indexes
   "" str.copy // String buffer for word
-  False
-  False
-  0
+  False       // parsing_string
+  False       // parsing_comment
+  10          // Line feed character
+  0           // index
   take
     index
+    LF
     parsing_comment
     parsing_string
     word
-    final_code
-    original_code
+    newline_indexes
+    code
+    file_name
+    token_matches
   in
 
+  // Iterate over every character in code
   while
-    original_code index str.char_at
+    code index str.char_at
     peek current_char in
     NULL !=
   do
+    // Keep track of the indexes of newline characters (LF)
+    if current_char LF == do
+      index ptr newline_indexes list.append
+      newline_indexes =
+    endif
+
+    // Only a newline ends a comment
+    if parsing_comment do
+      if current_char LF == do
+        False parsing_comment =
+      endif
+      index 1 + index =
+      continue
+    endif
+
+    // Only a double quote ends a string
+    if parsing_string do
+      if current_char '"' == do
+        False parsing_string =
+      endif
+      current_char word str.append
+      index 1 + index =
+      continue
+    endif
+
+    // Double quote starts a string
     if
-      current_char 10 ==
-      parsing_comment
+      current_char '"' ==
+      word "'" streq not  // Double quote is not in character definition => '"'
       &&
     do
-      False parsing_comment =
+      True parsing_string =
+      current_char word str.append
       index 1 + index =
       continue
     endif
 
-    if parsing_comment do
-      index 1 + index =
-      continue
-    endif
-
+    // Whitespaces separate Tokens
     if
       current_char char.is_whitespace
     do
@@ -422,152 +441,26 @@ function remove_comments_from_code str -> str :
       endif
 
       // Check for comments
-      if
-        parsing_string not
-        word "//" str.startswith
-        &&
-      do
+      if word "//" str.startswith do
         True parsing_comment =
         "" str.copy word =
         index 1 + index =
         continue
       endif
 
-      if current_char '"' == do
-        parsing_string not
-        parsing_string =
-      endif
-
-      // Append current word final_code with space
-      final_code " "  str.cat
-      word            str.cat
-      final_code =
-      "" str.copy word =
-    else
-      // Append current character to word
-      current_char word str.append
-    endif
-    index 1 + index = // index++
-  done
-
-  // Append the last word if the file ended with a word
-  if word str.len 0 > do
-    final_code " "  str.cat
-    word            str.cat
-    final_code =
-  endif
-  final_code
-end
-
-// Get all token matches from code to a list
-// Params
-//    code: str
-//    file_name: str
-// Return
-//    List[Match]
-function get_token_matches str str -> ptr :
-  take code file_name in
-
-  // Get Matches from the whole code
-  file_name code get_token_matches_from_code
-  take matches in
-
-  // Get Matches from the code without comments
-  code remove_comments_from_code
-  list.init file_name rot get_token_matches_from_code
-  0
-  take index matches_without_comments in
-
-  // Return only matches which exist in matches_without_comments
-  while index matches list.len < do
-    index matches list.nth ptr.load
-    Match.get_value
-    take match_value in
-
-    // If i >= size of matches_without_comments list then the rest is comments
-    if index matches_without_comments list.len >= do
-      index matches list.pop
-      index 1 + index =
-      continue
-    endif
-
-    // Compare match_value with corresponding Match.value from matches_without_comments
-    index matches_without_comments list.nth ptr.load
-    Match.get_value
-
-    if match_value streq not do
-      index matches list.pop
-      index 1 - index = // index--
-    endif
-    index 1 + index = // index++
-  done
-  matches
-end
-
-// Get all word matches from code to a list
-// Params
-//    code: str
-//    file_name: str
-//    token_matches: str
-// Return
-//    List[str]
-function get_token_matches_from_code str str ptr -> ptr :
-  dup get_newline_indexes
-  "" str.copy // String buffer for word
-  False
-  0
-  take
-    index
-    parsing_string
-    word
-    newline_indexes
-    code
-    file_name
-    token_matches
-  in
-
-  while
-    code index str.char_at
-    peek current_char in
-    NULL !=
-  do
-    // If the word only has one single quote the word is a character definition
-    if word "'" streq do
-      current_char word str.append
-      index 1 + index =
-      continue
-    endif
-
-    if
-      current_char char.is_whitespace
-      parsing_string not
-      &&
-    do
-      // If the word is empty there has been multiple whitespaces in a row
-      if word str.len 0 == do
-        index 1 + index = // index++
+      // Check if the whitespace is inside character definition => ' '
+      if word "'" streq do
+        current_char word str.append
+        index 1 + index =
         continue
       endif
 
-      // Match(file_name, location)
-      index word str.len -
-      take word_index in
-
-      newline_indexes word_index file_name get_token_location
-      word str.copy Match.init
-
-      // Append current Token Match to token_matches
+      // Match(word, location)
+      newline_indexes index word str.len - file_name get_token_location
+      word Match.init
       token_matches list.append
       token_matches =
-
-      // Reset word
-      word str.delete
       "" str.copy word =
-    elif current_char '"' == do
-      // Toggle parsing_string
-      parsing_string not
-      parsing_string =
-      current_char word str.append
     else
       // Append current character to word
       current_char word str.append
@@ -577,10 +470,8 @@ function get_token_matches_from_code str str ptr -> ptr :
 
   // Append the last word if the file ended with a word
   if word str.len 0 > do
-    index word str.len -
-    newline_indexes swap file_name get_token_location
+    newline_indexes index word str.len - file_name get_token_location
     word Match.init
-
     token_matches list.append
     token_matches =
   endif
