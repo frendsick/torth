@@ -677,31 +677,36 @@ end
 
 // Tests if two strings are equal
 function streq str str -> bool :
-  // Bind strings to memory
-  take str1 str2 in
+  over str.len
+  over str.len
+  0
+  take
+    index
+    str1.len
+    str2.len
+    str1
+    str2
+  in
 
-  // while index < len(str1)
-  0 while
-    str1 over dup
-    take index in
-    swap str.len <
+  // Different length strings are not equal
+  if str1.len str2.len != do
+    False return
+  endif
+
+  // Iterate over every character of the strings
+  while
+    index str1.len <
   do
-    if // str1[index] != str2[index]
+    if
       str1 index str.char_at
       str2 index str.char_at
       !=
-    do break
-    endif 1 +
-  done drop
-
-  // Strings are not equal if the last checked character is not equal
-  if
-    str1 index str.char_at
-    str2 index str.char_at
-    !=
-  do False
-  else True
-  endif
+    do
+      False return
+    endif
+    index 1 + index =
+  done
+  True
 end
 
 // Reverse a string
