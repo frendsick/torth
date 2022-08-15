@@ -57,7 +57,7 @@ function get_included_files_from_file str ptr -> ptr :
 
   // Get the file contents without comments
   INCLUDE_PATHS code_file get_file_name_from_path read_file
-  code_file over remove_comments_from_code
+  dup remove_comments_from_code
   take code_without_comments code in
 
   // Get the included files from the code to included_files list
@@ -178,13 +178,10 @@ function get_token_matches_from_files ptr -> ptr :
   // Merge all included files to one code string
   while index included_files list.len < do
 
-    // Read the current file
+    // Read the current file and remove its comments
     index included_files list.nth str.load
-    dup read_file
-    take code file_name in
-
-    file_name code remove_comments_from_code
-    take code_without_comments in
+    dup read_file remove_comments_from_code
+    take code_without_comments file_name in
 
     // Parse Token Matches from the file
     token_matches file_name code_without_comments get_token_matches_from_code
@@ -245,54 +242,6 @@ function get_newline_indexes str -> ptr :
     index 1 + index =
   done
   newline_indexes
-end
-
-// Remove comments from code
-// Params: code (STR), file_name (STR)
-// Return: code (STR)
-function remove_comments_from_code str str -> str :
-  list.init rot rot get_token_matches_from_code
-  "" str.copy
-  NULL
-  0
-  take
-    index
-    comment_line // Removing comment if this is not NULL
-    code_buffer
-    token_matches
-  in
-
-  // Iterate over every word of the code
-  while index token_matches list.len < do
-
-    // Load necessary information about the current Token Match
-    index token_matches list.nth ptr.load Match.get_value
-    index token_matches list.nth ptr.load Match.get_location Location.get_row
-    take row token_value in
-
-    // Start removing comments if the current token_value startswith //
-    if token_value "//" str.startswith do
-      row comment_line =
-    endif
-
-    // Stop removing comment if the current token_value is in a new line
-    if row comment_line != do
-      NULL comment_line =
-    endif
-
-    // Continue to next character if removing comments from the line
-    if comment_line NULL > do
-      index 1 + index =
-      continue
-    endif
-
-    // Append the current token_value to code_buffer
-    code_buffer " " str.cat
-    token_value     str.cat
-    code_buffer =
-    index 1 + index = // index++
-  done
-  code_buffer
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -428,46 +377,86 @@ end
 //    code: str
 // Return
 //    List[str]
-function get_words_from_code str -> ptr :
-  list.init
+function remove_comments_from_code str -> str :
+  "" str.copy // String buffer for code
   "" str.copy // String buffer for word
+  False
+  False
+  0
   take
+    index
+    parsing_comment
+    parsing_string
     word
-    word_list
-    code
+    final_code
+    original_code
   in
 
-  0 while
-    code over str.char_at
+  while
+    original_code index str.char_at
     peek current_char in
     NULL !=
   do
+    if
+      current_char 10 ==
+      parsing_comment
+      &&
+    do
+      False parsing_comment =
+      index 1 + index =
+      continue
+    endif
+
+    if parsing_comment do
+      index 1 + index =
+      continue
+    endif
+
     if
       current_char char.is_whitespace
     do
       // If the word is empty there has been multiple whitespaces in a row
       if word str.len 0 == do
-        1 + // index++
+        index 1 + index = // index++
         continue
       endif
 
-      // Append current word to word_list
-      word str.copy ptr word_list list.append
-      word_list =
-      word str.empty
+      // Check for comments
+      if
+        parsing_string not
+        word "//" str.startswith
+        &&
+      do
+        True parsing_comment =
+        "" str.copy word =
+        index 1 + index =
+        continue
+      endif
+
+      if current_char '"' == do
+        parsing_string not
+        parsing_string =
+      endif
+
+      // Append current word final_code with space
+      final_code " "  str.cat
+      word            str.cat
+      final_code =
+      "" str.copy word =
     else
       // Append current character to word
       current_char word str.append
     endif
-    1 + // index++
-  done drop
+    index 1 + index = // index++
+  done
 
   // Append the last word if the file ended with a word
   if word str.len 0 > do
-    word ptr word_list list.append
-    word_list =
+    final_code " "  str.cat
+    word            str.cat
+    final_code =
   endif
-  word_list
+  final_code
 end
 
 // Get all token matches from code to a list
@@ -484,8 +473,8 @@ function get_token_matches str str -> ptr :
   take matches in
 
   // Get Matches from the code without comments
-  file_name code remove_comments_from_code
-  file_name swap get_token_matches_from_code
+  code remove_comments_from_code
+  list.init file_name rot get_token_matches_from_code
   0
   take index matches_without_comments in
 
