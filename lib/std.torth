@@ -395,6 +395,30 @@ function str.insert_at int str str -> str :
   str1_end str.cat
 end
 
+// Replace escape sequences with the corresponding characters
+// Example: "Escape newline\n" => "Escape newline<LF>"
+function str.escape str -> str :
+  9  char char.to_string
+  10 char char.to_string
+  13 char char.to_string
+  27 char char.to_string
+  92 char char.to_string
+  take
+    backslash
+    Escape
+    CR
+    LF
+    Tab
+    string
+  in
+
+  // Save escape sequences to variables
+  Tab     backslash "t" str.cat string  str.replace_all
+  LF      backslash "n" str.cat rot     str.replace_all
+  CR      backslash "r" str.cat rot     str.replace_all
+  Escape  backslash "e" str.cat rot     str.replace_all
+end
+
 // Get the index of the first character of a substring from a string
 // Return -1 if substring is not found
 // Params: string, substring
