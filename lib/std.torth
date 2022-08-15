@@ -265,9 +265,6 @@ function itoa int -> str :
     int.to_positive
   endif
 
-  // Reverse for correct processing
-  int.reverse
-
   // Allocate memory to the string representation
   dup int.get_digits  // digits
   dup 2 + malloc str  // string
@@ -294,6 +291,9 @@ function itoa int -> str :
     num base / num  = // num = num/base
     1 + // index++
   done drop string
+
+  // Reverse for correct processing
+  str.reverse
 end
 
 // Get an integer representation of a string
