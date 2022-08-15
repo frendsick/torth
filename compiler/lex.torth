@@ -14,7 +14,6 @@ include "compiler/class/Signature"
 // Parse included files from a code string. Return the list of files.
 // Params: code_file (STR)
 // Return: List[str]
-memory already_included_files ptr.size end
 function get_included_files str -> ptr :
   ptr list.init list.append
   0
