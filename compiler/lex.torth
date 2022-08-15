@@ -328,7 +328,7 @@ function get_token_value str -> str :
   elif token_match "+"  streq do
     "PLUS" return
   endif
-  token_match
+  token_match str.escape
 end
 
 const single_quote 39 end
