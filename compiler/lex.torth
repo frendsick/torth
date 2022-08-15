@@ -764,6 +764,9 @@ function add_enums_to_constants ptr ptr -> ptr :
         constants list.append
         constants =
         index 1 + index =
+
+        // Reset variables
+        0 enum_size =
         continue
       endif
 
