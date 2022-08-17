@@ -73,6 +73,7 @@ const O_RDWR 2 end
 // SYS_open modes
 const O_CREAT     0x40    end
 const O_NOCTTY    0x100   end
+const O_APPEND    0x400   end
 const O_NONBLOCK  0x800   end
 
 // SYS_mmap prot
