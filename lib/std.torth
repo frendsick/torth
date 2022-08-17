@@ -816,12 +816,36 @@ end
 // Params: const char *pathname
 // Return: ssize_t read_bytes
 function read_file str -> str :
+
+  // Open file as fd
   O_RDONLY open_file
-  MEMORY_CAPACITY malloc dup  // buf*
-  rot                         // fd
-  MEMORY_CAPACITY             // count
-  rot str rot                 // Align stack
-  read drop str               // Return the allocated memory location as string
+
+  // Allocate string buffer
+  MEMORY_CAPACITY malloc str
+  take buffer fd in
+
+  // Read the file to the string buffer and return it
+  MEMORY_CAPACITY buffer fd read 1 + // Include NULL byte
+  take read_bytes in
+
+  // Find the size of excess memory to the closest memory page after buf
+  // => Memory page size is 4KB
+  4096 take PAGE_SIZE in
+
+  // Get the byte offset from the end of buffer to the next memory page
+  PAGE_SIZE read_bytes PAGE_SIZE % -
+  take offset in
+
+  MEMORY_CAPACITY read_bytes - offset -
+  take excessive_bytes in
+
+  excessive_bytes buffer ptr read_bytes offset + ptr+ munmap
+
+  // Close the file descriptor
+  fd SYS_close syscall1 drop
+
+  // Return buffer
+  buffer
 end
 
 // Create a file
