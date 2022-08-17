@@ -945,6 +945,7 @@ function print_file str :
   read_file puts
 end
 
+// Test if a file exists
 function file_exists str -> bool :
   O_RDONLY swap SYS_open syscall2
   take fd in
