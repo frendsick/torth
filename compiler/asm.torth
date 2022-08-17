@@ -3,13 +3,14 @@ include "compiler/utils"
 include "compiler/class/Op"
 
 // Generate the beginning of the assembly file
-// Params: List[Memory]
+// Params: file_name, List[Memory]
 // Return: Assembly
-function initialize_asm ptr -> str :
-  take memories in
+function initialize_asm_file str ptr :
+  take file_name memories in
   "compiler/templates/start.asm" read_file
   memories get_memory_definitions_asm       str.cat
   "compiler/templates/print.asm" read_file  str.cat
+  mode_644 file_name write_file drop
 end
 
 // Generate assembly code from Memory definitions
@@ -1061,11 +1062,10 @@ function get_exit_assembly -> str :
   "  syscall\n\n"         str.cat
 end
 
-// Generate assembly code for NASM
-// Params: sub_programs (List[Program]), List[Memory]
-// Return: Intel x86_64 Assembly for NASM (STR)
-function generate_assembly_code ptr ptr -> str :
-  over initialize_asm
+// Generate NASM x86_64 assembly file
+// Params: file_name, sub_programs (List[Program]), List[Memory]
+// Return: None
+function generate_assembly_file str ptr ptr :
   over list.len
   "section .data\n" str.copy
   0
@@ -1073,10 +1073,13 @@ function generate_assembly_code ptr ptr -> str :
     index
     data_section_asm
     sub_programs.len
-    assembly_code
+    file_name
     sub_programs
     memories
   in
+
+  // Write the beginning of the assembly to file
+  memories file_name initialize_asm_file
 
   // Iterate over each Program in sub_programs
   while index sub_programs.len < do
@@ -1087,11 +1090,7 @@ function generate_assembly_code ptr ptr -> str :
     take program in
 
     // Get assembly code for the current Program
-    program get_programs_assembly_code
-
-    // Concatenate the Program's assembly to assembly_code
-    assembly_code swap str.cat
-    assembly_code =
+    program file_name append_programs_assembly_code
 
     // Add strings from the program to the .data section
     program get_string_variables_for_data_section
@@ -1100,7 +1099,9 @@ function generate_assembly_code ptr ptr -> str :
 
     index 1 + index = // index++
   done
-  assembly_code data_section_asm str.cat
+
+  // Append .data section to the assembly file
+  data_section_asm file_name append_file
 end
 
 // Get Assembly code to be added to .data section from Program's string variables
@@ -1224,42 +1225,44 @@ function get_function_end_asm str -> str :
   "  ret\n\n"                                                             str.cat
 end
 
-function get_programs_assembly_code ptr -> str :
-  dup list.len
-  "" str.copy
+function append_programs_assembly_code str ptr :
+  over list.len
   0
   take
     index
-    assembly_code
     program.len
+    file_name
     program
   in
 
+  // Get the Function's name to be added to the assembly code
+  // Exception: MAIN Function should be named '_start'
+  program list.first ptr.load Op.get_function Function.get_name
+  take function_name in
+
+  // Write Function's start assembly to file
+  function_name get_function_start_asm file_name append_file
+
   // Generate assembly for each Op in Program
   while index program.len < do
+
     // Get the current Op
     program list.first
     index ptr.size * ptr+ ptr.load
     take op in
 
     // Generate comment for Op
-    assembly_code op get_op_comment_asm str.cat
+    op get_op_comment_asm file_name append_file
 
     // Concatenate Op's Assembly to op_asm
-    program op get_op_asm str.cat
-    assembly_code =
+    program op get_op_asm file_name append_file
+
+    // Append the current Op's assembly to file
     index 1 + index =
   done
 
-  // Get the Function's name to be added to the assembly code
-  // Exception: MAIN Function should be named '_start'
-  op Op.get_function Function.get_name
-  take function_name in
-
   // Prepend the Function's beginning code and prepend the ending code
-  function_name get_function_start_asm
-  assembly_code str.cat
-  function_name get_function_end_asm str.cat
+  function_name get_function_end_asm file_name append_file
 end
 
 // Returns the current IF block's ENDIF Op

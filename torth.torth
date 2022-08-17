@@ -41,15 +41,11 @@ function main :
   // TODO: Type check the Program
   // program type_check_program
 
-  "[INFO] Generating Assembly code\n" puts
   // Generate assembly code from the intermediate representation
-  memories sub_programs generate_assembly_code
-  take assembly_code in
-
-  "[INFO] Compiling Assembly code\n" puts
-  // Write the assembly code to a file
-  assembly_code mode_644 "test.asm" write_file drop
+  "[INFO] Generating Assembly code\n" puts
+  memories sub_programs "test.asm" generate_assembly_file
 
   // Compile the assembly code file to a Linux x86_64 executable
+  "[INFO] Compiling Assembly code\n" puts
   compile_executable
 end
