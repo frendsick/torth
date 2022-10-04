@@ -9,12 +9,6 @@ function check_arguments :
   endif
 end
 
-// Params: index
-// Return: *argv[index]
-function get_argument int -> str :
-  int.size * argv swap ptr+ str.load
-end
-
 // Print the contents of the files given as command line arguments
 function cat_files :
   1 // index

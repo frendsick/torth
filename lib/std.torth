@@ -904,6 +904,13 @@ function file_exists str -> bool :
   False
 end
 
+// Get Nth command line argument
+// Params: index
+// Return: *argv[index]
+function get_argument int -> str :
+  int.size * argv swap ptr+ str.load
+end
+
 // Sleep causes the calling thread to sleep either until the
 // number of real-time seconds specified in parameters have elapsed or
 // until a signal arrives which is not ignored.

@@ -8,12 +8,6 @@ function print_syntax :
   "Syntax: ./webserver.bin <tcp_port>\n" puts
 end
 
-// Params: index
-// Return: *argv[index]
-function get_argument int -> str :
-  int.size * argv swap ptr+ str.load
-end
-
 // Print the help and exit if no arguments were given
 function check_arguments :
   // Program requires only the TCP port as argument
