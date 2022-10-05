@@ -276,11 +276,6 @@ function itoa int -> str :
   dup int.get_digits  // digits
   dup 2 + malloc str  // string
 
-  // Add '-' character to the start of string for negative number
-  if is_negative do
-    '-' over str.append
-  endif
-
   10 // base
   take base string digits num in
 
@@ -298,6 +293,12 @@ function itoa int -> str :
     num base / num  = // num = num/base
     1 + // index++
   done drop string
+
+  // Add '-' character to the end of string for negative number
+  // This will be reversed later
+  if is_negative do
+    '-' over str.append
+  endif
 
   // Reverse for correct processing
   str.reverse
