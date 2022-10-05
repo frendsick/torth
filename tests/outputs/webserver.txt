@@ -1,0 +1,4 @@
+ERROR: Wrong amount of arguments.
+Please give only the TCP port number as argument.
+
+Syntax: ./webserver.bin <tcp_port>
