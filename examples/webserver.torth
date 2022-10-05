@@ -44,12 +44,11 @@ function get_http_headers -> str :
 end
 
 // Params
-//    conn_fd: int
 //    path: str
 // Return
 //    html: str
-function get_html int str -> str :
-  take conn_fd path in
+function get_html str -> str :
+  take path in
 
   // Send the path by default
   "<h1>Torth webserver</h1>\n"
@@ -115,7 +114,7 @@ function main :
     path conn_fd handle_special_paths
 
     // Send HTML to the client
-    path conn_fd get_html
+    path get_html
     conn_fd fputs
 
     // Close the connection
