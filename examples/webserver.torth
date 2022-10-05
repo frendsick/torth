@@ -33,28 +33,19 @@ function check_arguments :
 end
 
 // Params
-//    None
+//    path: str
 // Return
 //    http_headers: str
-function get_http_headers -> str :
-  "HTTP/1.1 200 OK\r\n"
+function get_http_headers str -> str :
+  if file_exists do
+    "HTTP/1.1 200 OK\r\n"
+  else
+    "HTTP/1.1 404 Not Found\r\n"
+  endif swap drop
+
   "Server: HTTorth\r\n"         str.cat
   "Content-Type: text/html\r\n" str.cat
   "Connection: Closed\r\n\r\n"  str.cat
-end
-
-// Params
-//    path: str
-// Return
-//    html: str
-function get_html str -> str :
-  take path in
-
-  // Send the path by default
-  "<h1>Torth webserver</h1>\n"
-  "<p>Path: " str.cat
-  path        str.cat
-  "</p>"      str.cat
 end
 
 // Params
@@ -62,14 +53,24 @@ end
 //    path: str
 // Return
 //    None
-function handle_special_paths int str :
+function serve_path int str :
   take conn_fd path in
 
   // Path /quit shuts down the web server
-  if path "/quit" streq do
+  if path "quit" streq do
     "<h1>Shutting down the server</h1>\n" conn_fd fputs
     0 exit
+  // 404 Not Found
+  elif path file_exists not do
+    "<h1>Path '" path str.cat
+    "' not found"     str.cat
+    conn_fd fputs
+    return
   endif
+
+  // 200 OK
+  path read_file
+  conn_fd fputs
 end
 
 function main :
@@ -103,19 +104,15 @@ function main :
     client_buf str
     take request in
 
-    // Read path from request
-    request request.path
+    // Read path from request and prepend it with dot (current directory)
+    "." request request.path str.cat
     take path in
 
     // Send HTTP headers to the client
-    get_http_headers conn_fd fputs
+    path get_http_headers conn_fd fputs
 
-    // Handle special paths like /quit
-    path conn_fd handle_special_paths
-
-    // Send HTML to the client
-    path get_html
-    conn_fd fputs
+    // Send file contents of the path to the client
+    path conn_fd serve_path
 
     // Close the connection
     conn_fd SYS_close SYSCALL1 drop
