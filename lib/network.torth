@@ -1,0 +1,110 @@
+// Constants
+const INADDR_ANY 0 end
+const INADDR_LOCAL 0x7f000001 end
+const AF_INET 2 end
+const SOCK_STREAM 1 end
+const IPPROTO_IP 0 end
+
+// struct sockaddr_in
+const sockaddr_in.size 16 end
+enum sockaddr_in 2 :
+  sockaddr_in.sin_family
+  sockaddr_in.sin_port
+  sockaddr_in.sin_addr
+end
+
+// Params
+//    host_bytes: int
+// Return
+//    network_bytes: int
+function htons int -> int :
+  take x in
+  x       255 and 8 shl
+  x 8 shr 255 and
+  or
+end
+
+// Params
+//    None
+// Return
+//    sock_fd: int
+function create_tcp_socket -> int :
+  IPPROTO_IP SOCK_STREAM AF_INET SYS_socket SYSCALL3
+  take sock_fd in
+
+  if sock_fd 0 < do
+    "ERROR: Could not create TCP socket\n" eputs
+    1 exit
+  endif
+  sock_fd
+end
+
+// Params
+//    port: int
+//    sock_fd: int
+// Return
+//    None
+function bind_port int int :
+  sockaddr_in.size malloc
+  take sockaddr_in port sock_fd in
+
+  // Initialize 
+  AF_INET       sockaddr_in sockaddr_in.sin_family  ptr+ int.store
+  INADDR_LOCAL  sockaddr_in sockaddr_in.sin_addr    ptr+ int.store
+  port htons    sockaddr_in sockaddr_in.sin_port    ptr+ int.store
+
+  // Bind port
+  sockaddr_in.size sockaddr_in sock_fd SYS_bind SYSCALL3
+  if 0 < do
+    "ERROR: Could not bind port " eputs
+    port eputi "\n" eputs
+    1 exit
+  endif
+end
+
+// Params
+//    sock_fd: int
+// Return
+//    None
+function listen_socket int :
+  take sock_fd in
+  1 sock_fd SYS_listen SYSCALL2
+
+  if 0 < do
+    "ERROR: Could not start listening on socket in file descriptor " eputs
+    sock_fd eputi "\n" eputs
+    1 exit
+  endif
+end
+
+// Params
+//    sock_fd: int
+// Return
+//    conn_fd: int
+function accept_connection int -> int :
+  take sock_fd in
+  // Accept connection
+  int.size malloc 4 over int.store // clilen
+  sockaddr_in.size malloc // cliaddr
+  sock_fd SYS_accept SYSCALL3
+end
+
+// Params
+//    request: str
+// Return
+//    path: str
+function request.path str -> str :
+  take request in
+
+  // Example: GET /path HTTP/1.1
+  request str.copy
+  "/" swap str.find
+  request swap str+
+  take path in
+
+  // Insert NULL byte to the end of path
+  " HTTP/1.1" path str.find
+  path swap str+
+  ptr NULL char swap char.store
+  path
+end

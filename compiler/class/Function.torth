@@ -60,7 +60,7 @@ function Function.print ptr :
   "Function.tokens    => "  puts
   Function.tokens ptr+
   ptr.load      // tokens
-  dup list.len  // tokens.len
+  dup List.len  // tokens.len
   0             // index
   take
     index
@@ -70,7 +70,7 @@ function Function.print ptr :
 
   while index tokens.len < do
     // Get the tokens value
-    tokens list.first
+    tokens List.first
     index ptr.size * ptr+
     ptr.load str.load
 

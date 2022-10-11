@@ -24,10 +24,10 @@ function get_memory_definitions_asm ptr -> str :
   in
 
   // Iterate over each Memory and generate assembly code for it
-  while index memories list.len < do
+  while index memories List.len < do
 
     // Get the Memory's name and size
-    index memories list.nth ptr.load
+    index memories List.nth ptr.load
     dup   Memory.get_name
     swap  Memory.get_size
     take
@@ -263,7 +263,7 @@ function get_assign_bind_asm ptr ptr -> str :
   take op_id op program in
 
   // memory_name = program[op.id - 1].token.value
-  op_id 1 - program list.nth ptr.load
+  op_id 1 - program List.nth ptr.load
   Op.get_token Token.get_value
 
   // bound_memory = f"{op.func.name}_{memory_name}"
@@ -329,7 +329,7 @@ function get_parent_op_type_do ptr ptr -> int :
   while index -1 > do
 
     // Get the current Op's OpType
-    index program list.nth ptr.load
+    index program List.nth ptr.load
     dup Op.get_type
     take op_type op in
 
@@ -375,9 +375,9 @@ function get_do_asm ptr ptr -> str :
     program
   in
 
-  while index program list.len < do
+  while index program List.len < do
     // Get the current operand's OpType
-    index program list.nth ptr.load Op.get_type
+    index program List.nth ptr.load Op.get_type
     take op_type in
 
     // Keep count on the nested IFs or WHILEs depending on the parent Op
@@ -431,7 +431,7 @@ function get_do_asm ptr ptr -> str :
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
       op Op.get_function Function.get_name
       "_"                                                     str.cat
-      index program list.nth ptr.load Op.get_type OpType.str  str.cat
+      index program List.nth ptr.load Op.get_type OpType.str  str.cat
       index itoa                                              str.cat
       generate_do_asm return
     endif
@@ -1031,7 +1031,7 @@ function get_syscall_asm str -> str :
   "  pop rax ; syscall\n"
   while index syscall_args_count < do
     "  pop "                                    str.cat
-    index argument_registers list.nth str.load  str.cat
+    index argument_registers List.nth str.load  str.cat
     " ; "                                       str.cat
 
     index 1 + index = // index++
@@ -1044,15 +1044,17 @@ function get_syscall_asm str -> str :
 end
 
 function get_syscall_argument_registers -> ptr :
-  list.init
+  List.init
+  take registers in
 
   // Add Syscall argument registers in the correct order
-  "rdi" ptr swap list.append
-  "rsi" ptr swap list.append
-  "rdx" ptr swap list.append
-  "r10" ptr swap list.append
-  "r8"  ptr swap list.append
-  "r9"  ptr swap list.append
+  "rdi" ptr registers List.append
+  "rsi" ptr registers List.append
+  "rdx" ptr registers List.append
+  "r10" ptr registers List.append
+  "r8"  ptr registers List.append
+  "r9"  ptr registers List.append
+  registers
 end
 
 function get_exit_assembly -> str :
@@ -1066,7 +1068,7 @@ end
 // Params: file_name, sub_programs (List[Program]), List[Memory]
 // Return: None
 function generate_assembly_file str ptr ptr :
-  over list.len
+  over List.len
   "section .data\n" str.copy
   0
   take
@@ -1085,7 +1087,7 @@ function generate_assembly_file str ptr ptr :
   while index sub_programs.len < do
 
     // Get the current Program
-    sub_programs list.first
+    sub_programs List.first
     index ptr.size * ptr+ ptr.load
     take program in
 
@@ -1113,9 +1115,9 @@ function get_string_variables_for_data_section ptr -> str :
     assembly_code
     program
   in
-  while index program list.len < do
+  while index program List.len < do
     // Get current Op
-    index program list.nth ptr.load
+    index program List.nth ptr.load
     take op in
 
     // Add only strings to the assembly
@@ -1226,7 +1228,7 @@ function get_function_end_asm str -> str :
 end
 
 function append_programs_assembly_code str ptr :
-  over list.len
+  over List.len
   0
   take
     index
@@ -1237,7 +1239,7 @@ function append_programs_assembly_code str ptr :
 
   // Get the Function's name to be added to the assembly code
   // Exception: MAIN Function should be named '_start'
-  program list.first ptr.load Op.get_function Function.get_name
+  program List.first ptr.load Op.get_function Function.get_name
   take function_name in
 
   // Write Function's start assembly to file
@@ -1247,7 +1249,7 @@ function append_programs_assembly_code str ptr :
   while index program.len < do
 
     // Get the current Op
-    program list.first
+    program List.first
     index ptr.size * ptr+ ptr.load
     take op in
 
@@ -1278,8 +1280,8 @@ function get_related_endif ptr ptr -> ptr :
     program
   in
 
-  while index program list.len < do
-    index program list.nth ptr.load
+  while index program List.len < do
+    index program List.nth ptr.load
     dup Op.get_type
     take current_op_type current_op in
 
@@ -1319,7 +1321,7 @@ function get_parent_while ptr ptr -> ptr :
   in
 
   while index -1 > do
-    index program list.nth ptr.load
+    index program List.nth ptr.load
     dup Op.get_type
     take current_op_type current_op in
 
@@ -1360,10 +1362,10 @@ function get_done_op_for_while ptr ptr -> ptr :
   in
 
   // Iterate over each Op of the Program starting from the parameter Op
-  while index program list.len < do
+  while index program List.len < do
 
     // Get the current Operands OpType
-    index program list.nth ptr.load
+    index program List.nth ptr.load
     dup Op.get_type
     take current_op_type current_op in
 

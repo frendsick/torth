@@ -9,7 +9,7 @@ include "compiler/class/Token"
 // Params: List[Function], List[Constant], List[Memory]
 // Return: List[Program]
 function get_sub_programs ptr ptr ptr -> ptr :
-  list.init // sub_programs = List[Program]
+  List.init // sub_programs = List[Program]
   0         // index
   take
     index
@@ -20,18 +20,17 @@ function get_sub_programs ptr ptr ptr -> ptr :
   in
 
   // Iterate over every Function is functions
-  while index functions list.len < do
+  while index functions List.len < do
 
     // Get the current Function from the list
-    index functions list.nth ptr.load
+    index functions List.nth ptr.load
     take func in
 
     // Generate Program from the current Function
     memories functions constants func generate_program
 
     // Append the generated Program to sub_programs
-    sub_programs list.append
-    sub_programs =
+    sub_programs List.append
     index 1 + index = // index++
   done
   sub_programs
@@ -42,7 +41,7 @@ end
 // Return: Program
 function generate_program ptr ptr ptr ptr -> ptr :
   dup Function.tokens ptr+ ptr.load
-  list.init
+  List.init
   0
   take
     index
@@ -54,9 +53,9 @@ function generate_program ptr ptr ptr ptr -> ptr :
     memories
   in
 
-  while index tokens list.len < do
+  while index tokens List.len < do
     // Get current Token
-    tokens list.first
+    tokens List.first
     index ptr.size * ptr+ ptr.load
     take token in
 
@@ -66,8 +65,7 @@ function generate_program ptr ptr ptr ptr -> ptr :
 
     // Append Op to Program
     func token op_type index Op.init
-    program list.append
-    program =
+    program List.append
     index 1 + index = // index++
   done
   program

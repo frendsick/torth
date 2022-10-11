@@ -1,0 +1,120 @@
+include "std"
+include "network"
+
+const CLIENT_BUF_CAP 1024 end
+memory client_buf CLIENT_BUF_CAP end
+
+function print_syntax :
+  "Syntax: ./webserver.bin <tcp_port>\n" puts
+end
+
+// Print the help and exit if no arguments were given
+function check_arguments :
+  // Program requires only the TCP port as argument
+  if argc 2 != do
+    "ERROR: Wrong amount of arguments.\n" puts
+    "Please give only the TCP port number as argument.\n\n" puts
+    print_syntax
+    1 exit
+  endif
+
+  // Check if the TCP port argument is an integer
+  1 get_argument
+  take port in
+
+  if port str.is_numeric not do
+    "ERROR: '"                eputs
+    port                      eputs
+    "' is not an integer.\n"  eputs
+    "The first argument should be an integer representation of a TCP port.\n\n" eputs
+    print_syntax
+    1 exit
+  endif
+end
+
+// Params
+//    path: str
+// Return
+//    http_headers: str
+function get_http_headers str -> str :
+  if file_exists do
+    "HTTP/1.1 200 OK\r\n"
+  else
+    "HTTP/1.1 404 Not Found\r\n"
+  endif swap drop
+
+  "Server: HTTorth\r\n"         str.cat
+  "Content-Type: text/html\r\n" str.cat
+  "Connection: Closed\r\n\r\n"  str.cat
+end
+
+// Params
+//    conn_fd: int
+//    path: str
+// Return
+//    None
+function serve_path int str :
+  take conn_fd path in
+
+  // Path /quit shuts down the web server
+  if path "quit" streq do
+    "<h1>Shutting down the server</h1>\n" conn_fd fputs
+    0 exit
+  // 404 Not Found
+  elif path file_exists not do
+    "<h1>Path '" path str.cat
+    "' not found"     str.cat
+    conn_fd fputs
+    return
+  endif
+
+  // 200 OK
+  path read_file
+  conn_fd fputs
+end
+
+function main :
+  // Get the port number from command line arguments
+  check_arguments
+  1 get_argument atoi
+  take port in
+
+  // Create socket
+  create_tcp_socket
+  take sock_fd in
+  "Successfully created a socket to file descriptor " puts
+  sock_fd putu "\n" puts
+
+  // Bind port
+  sock_fd port bind_port
+  "Successfully bound port " puts port puti "\n" puts
+
+  // Listen for connections on port
+  sock_fd listen_socket
+  "Successfully started listening on port " puts
+  port puti "\n" puts
+  
+  while True do
+    // Wait for connection and accept the connection
+    sock_fd accept_connection
+    take conn_fd in
+
+    // Read from client
+    CLIENT_BUF_CAP client_buf str conn_fd read drop
+    client_buf str
+    take request in
+
+    // Read path from request and prepend it with dot (current directory)
+    "." request request.path str.cat
+    take path in
+
+    // Send HTTP headers to the client
+    path get_http_headers conn_fd fputs
+
+    // Send file contents of the path to the client
+    path conn_fd serve_path
+
+    // Close the connection
+    conn_fd SYS_close SYSCALL1 drop
+  done
+end

@@ -17,10 +17,10 @@ function constant_exists str ptr -> bool :
   in
 
   // Iterate over constants and check if a Constant with certain name exists
-  while index constants list.len < do
+  while index constants List.len < do
 
     // Get the current Constant
-    index constants list.nth ptr.load Constant.get_name
+    index constants List.nth ptr.load Constant.get_name
     take current_name in
 
     // Return True if current Constant's name matches constant_name parameter
@@ -46,10 +46,10 @@ function function_exists str ptr -> bool :
   in
 
   // Iterate over functions and check if a Function with certain name exists
-  while index functions list.len < do
+  while index functions List.len < do
 
     // Get the current Function
-    index functions list.nth ptr.load Function.get_name
+    index functions List.nth ptr.load Function.get_name
     take current_name in
 
     // Return True if current Function's name matches function_name parameter
@@ -75,10 +75,10 @@ function memory_exists str ptr -> bool :
   in
 
   // Iterate over memories and check if a Memory with certain name exists
-  while index memories list.len < do
+  while index memories List.len < do
 
     // Get the current Memory
-    index memories list.nth ptr.load Memory.get_name
+    index memories List.nth ptr.load Memory.get_name
     take current_name in
 
     // Return True if current Memory's name matches memory_name parameter
@@ -111,10 +111,10 @@ function get_constant str ptr -> ptr :
   in
 
   // Iterate over each Constant
-  while index constants list.len < do
+  while index constants List.len < do
 
     // Get current Constant
-    index constants list.nth ptr.load
+    index constants List.nth ptr.load
     take constant in
 
     // Return current Constant if its name matches the name parameter
