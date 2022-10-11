@@ -762,16 +762,16 @@ function base64.encode str -> str :
     take 24bit_number in
 
     // This 24-bit number gets separated into four 6-bit numbers
-    list.init
-    24bit_number 18 shr 63 and ptr swap list.append
-    24bit_number 12 shr 63 and ptr swap list.append
-    24bit_number 6  shr 63 and ptr swap list.append
-    24bit_number        63 and ptr swap list.append
+    List.init
     take 6bit_list in
+    24bit_number 18 shr 63 and ptr 6bit_list List.append
+    24bit_number 12 shr 63 and ptr 6bit_list List.append
+    24bit_number 6  shr 63 and ptr 6bit_list List.append
+    24bit_number        63 and ptr 6bit_list List.append
 
     // Those four 6-bit numbers are used as indices into the base64 character list
     0 while dup 4 < do
-      base64_characters over 6bit_list list.nth int.load str.char_at
+      base64_characters over 6bit_list List.nth int.load str.char_at
       base64_string ptr base64_index ptr+ char.store
       base64_index 1 + base64_index = // base64_index++
       1 +
