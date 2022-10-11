@@ -2,123 +2,88 @@
 include "std"
 
 // Constants
-const ITERABLE_CAPACITY 1024 end
+const ITERABLE_CAPACITY 128 end
 
-// === List ===
+// === Array ===
 // README:
-//    Lists are contiguous memory blocks containing list of values.
+//    Array is a contiguous memory containing list of 64-bit values.
 //    => Value at the list pointer represents the amount of items in the list.
-//    => Value after it represents the size of stored objects
-//    The first index of the list comes after the length and size values (ptr + 16 bytes).
+//    => The first index of the list comes after the length (ptr + 8 bytes).
 
-// Initialize list with a certain size
-// Params: None
-// Return: list (PTR)
-function list.init -> ptr :
-  // Allocate memory for the list and the integer
-  // representing how many items there are in the list
-  ITERABLE_CAPACITY ptr.size * int.size + malloc
+// Initialize an array of certain size
+// Include space for one extra integer (list length)
+// Params: size (INT)
+// Return: array (PTR)
+function Array.init int -> ptr :
+  // Allocate memory for the array
+  ptr.size * int.size + malloc
+
+  // Set the size to 0
+  0 over int.store
 end
 
-// Free the allocated memory for a certain list
-function list.delete ptr :
-  take list in
-  list list.size
-  list munmap
+// Free the allocated memory for a certain array
+// Params: array (PTR)
+// Return: None
+function Array.delete ptr :
+  take array in
+  array Array.size
+  array munmap
 end
 
-function list.size ptr -> int :
-  list.len ITERABLE_CAPACITY / ITERABLE_CAPACITY * ptr.size * int.size +
-end
-
-// Append value pointer to a list
-// Params: list (PTR), value_ptr (PTR)
-// Return: list (PTR)
-function list.append ptr ptr -> ptr :
-  dup int.load // Length of list
-
-  // Store values from the stack to variables
-  take
-    len
-    list
-    value_ptr
-  in
-
-  // Dynamically allocate more memory to the list when at capacity
-  if
-    len 0 !=
-    len ITERABLE_CAPACITY % 0 ==
-    &&
-  do
-    // Allocate memory with size (len + ITERABLE_CAPACITY) * ptr.size + int.size
-    len ITERABLE_CAPACITY + ptr.size * int.size + dup malloc
-    take new_list memory_size in
-
-    // Copy list to newly allocated list
-    memory_size ITERABLE_CAPACITY - list new_list memcpy
-
-    // Deallocate the original list
-    list list.delete
-
-    // Use the new list instead of the old one
-    new_list list =
-  endif
-
-  // Add the value_ptr to the end of the list
-  value_ptr
-  list int.size ptr+
-  ptr.size len * ptr+
-  ptr.store
-
-  // Increment the list length by one
-  len 1 + list int.store
-  list
-end
-
-// Get the length of a list
-// Params: list (PTR)
+// Get the length of an array (number of elements)
+// Params: array (PTR)
 // Return: len (INT)
-function list.len ptr -> int :
-  // The length is stored at the list pointer
+function Array.len ptr -> int :
+  // The length is stored at the array pointer
   int.load
 end
 
-// Empty the list by setting the length value to 0
-// Params: list (PTR)
+// Get array's allocated memory size in bytes
+// Params: array (PTR)
+// Return: size (INT)
+function Array.size ptr -> int :
+  Array.len int.size * int.size +
+end
+
+// Empty the array by setting the length value to 0
+// Params: array (PTR)
 // Return: None
-function list.empty ptr :
+function Array.empty ptr :
   0 swap int.store
 end
 
-// Copy the list to new memory location
-function list.copy ptr -> ptr :
+// Copy the array to new memory location
+// Params: array (PTR)
+// Return: new_array (PTR)
+function Array.copy ptr -> ptr :
   // Initialize variables
-  dup list.len ptr.size * int.size +
-  list.init
+  dup Array.len ptr.size * int.size +
+  Array.init
   take
-    new_list
+    new_array
     memory_size
-    old_list
+    old_array
   in
 
   // Copy the old memory to the new location
-  memory_size old_list new_list memcpy
-  new_list
+  memory_size old_array new_array memcpy
+  new_array
 end
 
-// Get pointer to the first element of the list
-// Params: list (PTR)
-// Return: list[0] (PTR)
-function list.first ptr -> ptr :
+// Get pointer to the first element of the array
+// Params: array (PTR)
+// Return: array[0] (PTR)
+function Array.first ptr -> ptr :
   int.size ptr+
 end
 
-// Get pointer to the Nth element of the list
-// Params: list (PTR), N (INT)
-// Return: list[N] (PTR)
-function list.nth ptr int -> ptr :
-  dup list.len
-  take len list N in
+// Get pointer to the Nth element of the array
+// Params: array (PTR), N (INT)
+// Return: array[N] (PTR)
+function Array.nth ptr int -> ptr :
+  dup Array.len
+  take len array N in
 
   // Exit with error if Nth element does not exist
   if
@@ -127,24 +92,45 @@ function list.nth ptr int -> ptr :
     ||
   do
     "[ERROR] Cannot get " eputs
-    N   eputi ". value from the list with " eputs
+    N   eputi ". value from the array with " eputs
     len eputi " items\n" eputs
     0 exit NULL ptr
     return
   endif
 
-  // Return pointer to the Nth element from the list
-  list N ptr.size * int.size + ptr+
+  // Return pointer to the Nth element from the array
+  array N ptr.size * int.size + ptr+
+end
+
+// Append value pointer to an array
+// Params: array (PTR), value_ptr (PTR)
+// Return: list (PTR)
+function Array.append ptr ptr :
+  dup Array.len
+  take
+    len
+    array
+    value_ptr
+  in
+
+  // Add the value_ptr to the end of the array
+  array int.size ptr+
+  ptr.size len * ptr+
+  value_ptr swap
+  ptr.store
+
+  // Increment the array's length by one
+  len 1 + array int.store
 end
 
 // Remove an item from the certain index of the array
-// Params: List, index
+// Params: array, index
 // Return: None
-function list.pop ptr int :
-  dup list.len
+function Array.pop ptr int :
+  dup Array.len
   take
     len
-    list
+    array
     index
   in
 
@@ -162,66 +148,232 @@ function list.pop ptr int :
   endif
 
   while index len 1 - < do
-    // list[index] = list[index+1]
-    index 1 + list list.nth ptr.load
-    index list list.nth ptr.store
+    // array[index] = array[index+1]
+    index 1 + array Array.nth ptr.load
+    index array Array.nth ptr.store
     index 1 + index =
   done
 
-  // Decrement the list.len
-  len 1 - list int.store
+  // Decrement the Array.len
+  len 1 - array int.store
 end
 
-// Test if list contains a string
-// Params: List[str], str
-// Return: bool
-function list.contains_str ptr str -> bool :
-  dup int.load
-  0
-  take
-    index
-    len
-    list
-    string
-  in
-
-  while index len < do
-    index list list.nth str.load
-    take list_string in
-
-    // Return True if the current string matches with the parameter
-    if string list_string streq do
-      True return
-    endif
-    index 1 + index =
-  done
-  False
-end
-
-// Print list of integer-like values
-// Params: list (PTR)
+// Print array of integer-like values
+// Params: array (PTR)
 // Return: None
-function list.print ptr :
+function Array.print ptr :
   dup int.load
-  take len list in
+  take len array in
   0 while dup len < do
-    list list.first
+    array Array.first
     over ptr.size *
     ptr+ int.load print " " puts
     1 +
   done drop
 end
 
-// Print a list of strings
-// Params: list (PTR)
+// Print array of strings
+// Params: array (PTR)
 // Return: None
-function list.puts ptr :
+function Array.puts ptr :
   dup int.load
-  take len list in
+  take len array in
   0 while dup len < do
-    list list.first
+    array Array.first
     over ptr.size *
     ptr+ str.load puts
     1 +
   done drop
+end
+
+// === List ===
+// README:
+//    Lists are like arrays, but with dynamic resizing.
+//    They use Arrays as the backend of the implementation.
+//
+//    List will reallocate a new array double the size
+//    of the original when an overflow would happen.
+//
+//    The List object only contains a pointer to array
+//    and the capacity of the allocated array.
+//
+//    Initial capacity for a new List equals ITERABLE_CAPACITY.
+
+// List(array: ptr, capacity: int, length: int)
+ENUM List.size 8 :
+  List.array    // ptr to array
+  List.capacity // int
+END
+
+// Initialize list with a size of ITERABLE_CAPACITY
+// Params: None
+// Return: list (PTR)
+function List.init -> ptr :
+  // Allocate memory for the initial array
+  ITERABLE_CAPACITY Array.init
+  take array in
+
+  // Allocate memory for List object
+  List.size malloc
+  take list in
+
+  // List(array=array, capacity=ITERABLE_CAPACITY)
+  array             list List.array     ptr+ ptr.store
+  ITERABLE_CAPACITY list List.capacity  ptr+ int.store
+  list
+end
+
+// List getters
+function List.get_array ptr -> ptr :
+  ptr.load
+end
+
+function List.get_capacity ptr -> int :
+  List.capacity ptr+ int.load
+end
+
+// List setters
+function List.set_array ptr ptr :
+  ptr.store
+end
+
+function List.set_capacity ptr int :
+  List.capacity ptr+ int.store
+end
+
+// Free the allocated memory for a certain list
+function List.delete ptr :
+  dup List.get_array
+  take array list in
+
+  // Deallocate the array pointed by List.array
+  array Array.delete
+
+  // Deallocate the List object
+  List.size list munmap
+end
+
+// Append value pointer to a list
+// Params: list (PTR), value_ptr (PTR)
+// Return: list (PTR)
+function List.append ptr ptr :
+  take list value_ptr in
+
+  list List.get_capacity  // Capacity of the list
+  list List.get_array     // Pointer to array
+  dup Array.len           // Length of the array
+
+  // Store values from the stack to variables
+  take
+    len
+    array
+    capacity
+  in
+
+  // Allocate bigger array if the current capacity is full
+  if capacity len == do
+    // Allocate an array double of the size of the original
+    len 2 * capacity =
+    capacity Array.init
+    take new_array in
+
+    // Update list capacity
+    capacity list List.set_capacity
+
+    // Copy the old array to new_array
+    //dest (PTR), src (PTR), len (INT)
+    array Array.size array new_array memcpy
+
+    // Update new array length
+    len new_array int.store
+
+    // Deallocate the old array
+    array Array.delete
+
+    // Set the new_array to array
+    new_array array =
+
+    array list List.set_array
+  endif
+
+  // Add the value_ptr to the end of the list
+  value_ptr array Array.append
+end
+
+// Get the length of a list
+// Params: list (PTR)
+// Return: len (INT)
+function List.len ptr -> int :
+  List.get_array Array.len
+end
+
+// Empty the list by setting the length value of pointed array to 0
+// Params: list (PTR)
+// Return: None
+function List.empty ptr :
+  List.get_array Array.empty
+end
+
+// Copy the list to new memory location
+function List.copy ptr -> ptr :
+  // Initialize variables
+  dup List.len ptr.size * int.size +
+  List.init
+  take
+    new_list
+    memory_size
+    old_list
+  in
+
+  // Copy the old memory to the new location
+  memory_size old_list new_list memcpy
+  new_list
+end
+
+// Get pointer to the first element of the list
+// Params: list (PTR)
+// Return: list[0] (PTR)
+function List.first ptr -> ptr :
+  0 swap List.nth
+end
+
+// Get pointer to the Nth element of the list
+// Params: list (PTR), N (INT)
+// Return: list[N] (PTR)
+function List.nth ptr int -> ptr :
+  List.get_array Array.nth
+end
+
+// Remove an item from the certain index of the list
+// Params: List, index
+// Return: None
+function List.pop ptr int :
+  List.get_array Array.pop
+end
+
+// Test if list contains a string
+// Params: List[str], str
+// Return: bool
+function List.contains_str ptr str -> bool :
+  List.get_array
+  dup Array.len
+  0
+  take
+    index
+    len
+    array
+    string
+  in
+
+  while index len < do
+    index array Array.nth str.load
+    take array_string in
+
+    // Return True if the current string matches with the parameter
+    if string array_string streq do
+      True return
+    endif
+    index 1 + index =
+  done
+  False
 end
