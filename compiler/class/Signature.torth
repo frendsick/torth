@@ -48,10 +48,10 @@ function Signature.print ptr :
   // Print params
   "Signature.params   => " puts
   dup Signature.params ptr+ ptr.load
-  list.print "\n" puts
+  List.get_array Array.print "\n" puts
 
   // Print returns
   "Signature.returns  => " puts
   Signature.returns ptr+ ptr.load
-  list.print "\n" puts
+  List.get_array Array.print "\n" puts
 end

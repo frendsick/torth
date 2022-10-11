@@ -45,30 +45,30 @@ end
 // Compile assembly code file to object file with NASM
 function compile_with_nasm :
   // Allocate memory for the arguments
-  list.init // argv
+  List.init
+  take argv in
 
   // TODO: Dynamically get the names for .asm and .o files
-  "nasm"      ptr swap list.append
-  "-felf64"   ptr swap list.append
-  "-otest.o"  ptr swap list.append
-  "test.asm"  ptr swap list.append
-  list.first
+  "nasm"      ptr argv List.append
+  "-felf64"   ptr argv List.append
+  "-otest.o"  ptr argv List.append
+  "test.asm"  ptr argv List.append
 
-  NULLPTR swap "/usr/bin/nasm" execve drop
+  NULLPTR argv List.first "/usr/bin/nasm" execve drop
 end
 
 "ld", "-m", "elf_x86_64", f"-o{executable_file}", object_file
 // Compile assembly code file to object file with NASM
 function link_with_ld :
   // Allocate memory for the arguments
-  list.init // argv
+  List.init
+  take argv in
 
   // TODO: Dynamically get the names for .o and .bin files
-  "ld"            ptr swap list.append
-  "-melf_x86_64"  ptr swap list.append
-  "-otest.bin"    ptr swap list.append
-  "test.o"        ptr swap list.append
-  list.first
+  "ld"            ptr argv List.append
+  "-melf_x86_64"  ptr argv List.append
+  "-otest.bin"    ptr argv List.append
+  "test.o"        ptr argv List.append
 
-  NULLPTR swap "/usr/bin/ld" execve drop
+  NULLPTR argv List.first "/usr/bin/ld" execve drop
 end
