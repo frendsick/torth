@@ -1,4 +1,8 @@
+// argparser.torth - Parser for command-line options, arguments and sub-commands
+// This library is inspired by Python's argparse.
+// https://docs.python.org/3/library/argparse.html
 include "std"
+
 // Parse command line arguments from ARGV to Argparser.cmd_args
 // Params
 //    parser: Argparser
