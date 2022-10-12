@@ -1,0 +1,264 @@
+include "std"
+// Parse command line arguments from ARGV to Argparser.cmd_args
+// Params
+//    parser: Argparser
+// Return None
+function Argparser.parse_args ptr :
+  take parser in
+  parser Argparser.get_parser_args
+  parser Argparser.get_cmd_args
+  0
+  take
+    index
+    cmd_args
+    parser_args
+  in
+
+  // Parse all command line arguments to Argparser.cmd_args
+  while index ARGC < do
+    index get_argument ptr
+
+    // Break if all arguments are checked
+    if dup int NULL == do
+      break
+    endif
+
+    // Append current command line argument to Argparser.cmd_args
+    cmd_args List.append
+    index 1 + index =
+  done
+
+  // Only print help page if -h or --help argument is present
+  if
+    "-h"      cmd_args List.contains_str
+    "--help"  cmd_args List.contains_str
+    ||
+  do
+    parser Argparser.print_help
+    0 exit
+  endif
+end
+
+// Print help page from the Argparser object
+// Params
+//    parser: Argparser
+// Return None
+function Argparser.print_help ptr :
+  take parser in
+  parser Argparser.get_parser_args
+  parser Argparser.get_cmd_args
+  take cmd_args parser_args in
+
+  parser_args cmd_args Argparser.print_help_usage
+end
+
+// Print usage row in the help of the program (-h|--help)
+// Params
+//    cmd_args: List[ParserArgument]
+//    parser_args: List[ParserArgument]
+// Return None
+function Argparser.print_help_usage ptr ptr :
+  take cmd_args parser_args in
+
+  // Usage: ./executable.bin --required-arg METAVAR [--not-required METAVAR] positional_argument
+  "Usage: " puts
+  cmd_args List.first ptr.load str puts " " puts
+  parser_args cmd_args Argparser.print_options_inline
+  parser_args cmd_args Argparser.print_positional_inline
+  "\n" puts
+end
+
+// Print the option arguments in one line separated by spaces
+// Params
+//    cmd_args: List[ParserArgument]
+//    parser_args: List[ParserArgument]
+// Return None
+function Argparser.print_options_inline ptr ptr :
+  take cmd_args parser_args in
+  parser_args List.len
+  0 take index args_amount in
+  while index args_amount < do
+    index parser_args List.nth ptr.load
+    take argument in
+
+    // Do not print positional arguments
+    if argument ParserArgument.is_positional do
+      index 1 + index =
+      continue
+    endif
+
+    // Put not required arguments inside square brackets []
+    if argument ParserArgument.is_required not do "[" puts endif
+    argument ParserArgument.get_name     puts " " puts
+    argument ParserArgument.get_metavar  puts
+    if argument ParserArgument.is_required not do "]" puts endif
+    " " puts
+    index 1 + index =
+  done
+end
+
+// Print the positional arguments in one line separated by spaces
+// Params
+//    cmd_args: List[ParserArgument]
+//    parser_args: List[ParserArgument]
+// Return None
+function Argparser.print_positional_inline ptr ptr :
+  take cmd_args parser_args in
+  parser_args List.len
+  0 take index args_amount in
+  while index args_amount < do
+    index parser_args List.nth ptr.load
+    take argument in
+
+    // Do not print option arguments
+    if argument ParserArgument.is_positional not do
+      index 1 + index =
+      continue
+    endif
+
+    // Print the positional argument
+    argument ParserArgument.get_name puts " " puts
+    index 1 + index =
+  done
+end
+
+// Class Argparser
+enum Argparser.size 8 :
+  Argparser.description // str
+  Argparser.parser_args // List[ParserArgument]
+  Argparser.cmd_args    // List[ParserArgument]
+end
+
+// Initialize Argparser object
+// Params
+//    description: str
+// Return
+//    parser: Argparser
+function Argparser.init str -> ptr :
+  // Allocate memory for Argparser object
+  Argparser.size malloc
+  peek parser in
+
+  Argparser.set_description
+  List.init parser Argparser.set_parser_args
+  List.init parser Argparser.set_cmd_args
+  parser
+end
+
+// Argparser getters
+function Argparser.get_description ptr -> str :
+  str.load
+end
+
+function Argparser.get_parser_args ptr -> ptr :
+  Argparser.parser_args ptr+ ptr.load
+end
+
+function Argparser.get_cmd_args ptr -> ptr :
+  Argparser.cmd_args ptr+ ptr.load
+end
+
+// Argparser setters
+function Argparser.set_description ptr str :
+  swap str.copy swap str.store
+end
+
+function Argparser.set_parser_args ptr ptr :
+  Argparser.parser_args ptr+ ptr.store
+end
+
+function Argparser.set_cmd_args ptr ptr :
+  Argparser.cmd_args ptr+ ptr.store
+end
+
+// Add argument to Argparser
+// Params
+//    Argparser: ptr
+//    name: str
+//    help: str
+//    metavar: str
+//    required: bool
+// Return None
+function Argparser.add_argument ptr str str str bool :
+  Argparser.get_parser_args
+  take parser_args in
+  ParserArgument.init parser_args List.append
+end
+
+// Class ParserArgument
+enum ParserArgument.size 8 :
+  ParserArgument.name       // str
+  ParserArgument.help       // str
+  ParserArgument.metavar    // str
+  ParserArgument.required   // bool
+  ParserArgument.positional // bool
+end
+
+// Initialize ParserArgument object
+// Params
+//    name: str
+//    help: str
+//    metavar: str
+//    required: bool
+// Return
+//    parser: Argparser
+function ParserArgument.init str str str bool -> ptr :
+  // Allocate memory for ParserArgument
+  ParserArgument.size malloc
+  take argument in
+
+  if dup "-" str.startswith do
+    False argument ParserArgument.set_positional
+  else
+    True  argument ParserArgument.set_positional
+  endif
+  argument ParserArgument.set_name
+  argument ParserArgument.set_help
+  argument ParserArgument.set_metavar
+  argument ParserArgument.set_required
+  argument
+end
+
+// ParserArgument getters
+function ParserArgument.get_name ptr -> str :
+  str.load
+end
+
+function ParserArgument.get_help ptr -> str :
+  ParserArgument.help ptr+ str.load
+end
+
+function ParserArgument.get_metavar ptr -> str :
+  ParserArgument.metavar ptr+ str.load
+end
+
+function ParserArgument.is_required ptr -> bool :
+  ParserArgument.required ptr+ bool.load
+end
+
+function ParserArgument.is_positional ptr -> bool :
+  ParserArgument.positional ptr+ bool.load
+end
+
+// ParserArgument setters
+function ParserArgument.set_name ptr str :
+  swap str.copy swap str.store
+end
+
+function ParserArgument.set_help ptr str :
+  swap str.copy swap
+  ParserArgument.help ptr+ str.store
+end
+
+function ParserArgument.set_metavar ptr str :
+  swap str.copy swap
+  ParserArgument.metavar ptr+ str.store
+end
+
+function ParserArgument.set_required ptr bool :
+  ParserArgument.required ptr+ bool.store
+end
+
+function ParserArgument.set_positional ptr bool :
+  ParserArgument.positional ptr+ bool.store
+end
