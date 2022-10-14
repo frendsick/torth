@@ -70,6 +70,7 @@ function Argparser.print_help ptr :
   take cmd_args parser_args in
 
   parser_args cmd_args Argparser.print_help_usage
+  parser Argparser.print_description
 end
 
 // Print usage row in the help of the program (-h|--help)
@@ -85,7 +86,16 @@ function Argparser.print_help_usage ptr ptr :
   cmd_args List.first ptr.load str puts " " puts
   parser_args cmd_args Argparser.print_options_inline
   parser_args cmd_args Argparser.print_positional_inline
-  "\n" puts
+  "\n\n" puts
+end
+
+// Print program description in the help of the program (-h|--help)
+// Params
+//    parser: Argparser
+// Return None
+function Argparser.print_description ptr :
+  Argparser.get_description puts
+  "\n\n" puts
 end
 
 // Print the option arguments in one line separated by spaces
