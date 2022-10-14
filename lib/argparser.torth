@@ -72,6 +72,7 @@ function Argparser.print_help ptr :
   parser_args cmd_args Argparser.print_help_usage
   parser Argparser.print_description
   parser_args Argparser.print_positional_arguments
+  parser_args Argparser.print_option_arguments
 end
 
 // Print usage row in the help of the program (-h|--help)
@@ -144,6 +145,57 @@ function Argparser.print_positional_arguments ptr :
     index 1 + index =
   done
   "\n" puts
+end
+
+// Print positional arguments in the help of the program (-h|--help)
+// Params
+//    parser_args: List[ParserArgument]
+// Return None
+const ARG_HELP_INDENT 22 end
+function Argparser.print_option_arguments ptr :
+  take parser_args in
+  "Options:\n" puts
+  parser_args List.len
+  0 take index args_amount in
+  while index args_amount < do
+    index parser_args List.nth ptr.load
+    take argument in
+
+    // Do not print option arguments
+    if argument ParserArgument.is_positional do
+      index 1 + index =
+      continue
+    endif
+
+    // Print the positional argument
+    "  " puts
+    argument ParserArgument.get_name
+    argument ParserArgument.get_metavar
+    take metavar argument_name in
+    argument_name str.len 1 + metavar str.len +
+    ARG_HELP_INDENT swap -
+    take spaces in
+    argument_name puts
+    " " puts
+    metavar puts
+
+    // Print argument's help to another line if it's name is long
+    if spaces 0 <= do
+      "\n" puts
+      ARG_HELP_INDENT 2 + spaces =
+    endif
+
+    // Indent the argument's help with spaces
+    while spaces 0 > do
+      " " puts
+      spaces 1 - spaces =
+    done
+
+    // Print the argument's help
+    argument ParserArgument.get_help puts
+    "\n" puts
+    index 1 + index =
+  done
 end
 
 // Print the option arguments in one line separated by spaces
