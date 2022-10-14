@@ -3,6 +3,22 @@
 // https://docs.python.org/3/library/argparse.html
 include "std"
 
+// Class Argparser
+enum Argparser.size 8 :
+  Argparser.description // str
+  Argparser.parser_args // List[ParserArgument]
+  Argparser.cmd_args    // List[ParserArgument]
+end
+
+// Class ParserArgument
+enum ParserArgument.size 8 :
+  ParserArgument.name       // str
+  ParserArgument.help       // str
+  ParserArgument.metavar    // str
+  ParserArgument.required   // bool
+  ParserArgument.positional // bool
+end
+
 // Parse command line arguments from ARGV to Argparser.cmd_args
 // Params
 //    parser: Argparser
@@ -126,13 +142,6 @@ function Argparser.print_positional_inline ptr ptr :
   done
 end
 
-// Class Argparser
-enum Argparser.size 8 :
-  Argparser.description // str
-  Argparser.parser_args // List[ParserArgument]
-  Argparser.cmd_args    // List[ParserArgument]
-end
-
 // Initialize Argparser object
 // Params
 //    description: str
@@ -187,15 +196,6 @@ function Argparser.add_argument ptr str str str bool :
   Argparser.get_parser_args
   take parser_args in
   ParserArgument.init parser_args List.append
-end
-
-// Class ParserArgument
-enum ParserArgument.size 8 :
-  ParserArgument.name       // str
-  ParserArgument.help       // str
-  ParserArgument.metavar    // str
-  ParserArgument.required   // bool
-  ParserArgument.positional // bool
 end
 
 // Initialize ParserArgument object
