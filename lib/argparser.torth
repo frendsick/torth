@@ -75,10 +75,10 @@ function Argparser.get_argument ptr str -> str :
 
   // Option arguments start with -
   if argument_name "-" str.startswith do
-    argument_name cmd_args Parser.get_option_argument
+    argument_name cmd_args Argparser.get_option_argument
     return
   endif
-  argument_name parser Parser.get_positional_argument
+  argument_name parser Argparser.get_positional_argument
 end
 
 // Get the value of positional argument with certain name
@@ -87,7 +87,7 @@ end
 //    argument_name: str
 // Return
 //    argument_value: str
-function Parser.get_positional_argument ptr str -> str :
+function Argparser.get_positional_argument ptr str -> str :
   take parser argument_name in
 
   // Get the position of the certain argument
@@ -107,7 +107,6 @@ function Parser.get_positional_argument ptr str -> str :
   while index cmd_args.len < do
     index cmd_args List.nth str.load
     take cmd_arg in
-    cmd_arg puts "\n" puts
 
     // Go over option arguments
     if cmd_arg "-" str.startswith do
@@ -135,7 +134,7 @@ end
 //    argument_name: str
 // Return
 //    argument_value: str
-function Parser.get_option_argument ptr str -> str :
+function Argparser.get_option_argument ptr str -> str :
   dup List.len
   False
   1
@@ -167,14 +166,7 @@ function Parser.get_option_argument ptr str -> str :
   done
 
   // The value for the option argument was not found
-  if found do
-    "[ERROR] Please give value for argument '" eputs
-  else
-    "[ERROR] Could not find command line argument '" eputs
-  endif
-  argument_name eputs
-  "'\n" eputs
-  1 exit
+  // TODO: Raise error if the option is required
   NULLPTR str
 end
 
@@ -445,11 +437,9 @@ function Argparser.get_argument_position_by_name ptr str -> int :
     parser_args
     name
   in
-  parser_args.len putu
   while index parser_args.len < do
     index parser_args List.nth ptr.load ParserArgument.get_name
     take current_name in
-    current_name puts "\n" puts
     if current_name name streq do
       position return
     endif
