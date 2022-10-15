@@ -17,6 +17,7 @@ enum ParserArgument.size 8 :
   ParserArgument.metavar    // str
   ParserArgument.required   // bool
   ParserArgument.positional // bool
+  ParserArgument.flag       // bool
 end
 
 // Parse command line arguments from ARGV to Argparser.cmd_args
@@ -104,8 +105,12 @@ function Argparser.get_positional_argument ptr str -> str :
     take cmd_arg in
 
     // Go over option arguments
-    if cmd_arg "-" str.startswith do
+    if cmd_arg "--" str.startswith do
       index 2 + index =
+      continue
+    endif
+    if cmd_arg "-" str.startswith do
+      index 1 + index =
       continue
     endif
 
@@ -133,6 +138,7 @@ end
 // Get the value of option argument with certain name
 // Return NULLPTR if non-required option is not found
 // Raise error if required option is not found
+// Return 1 or 0 based on if a flag argument is present
 // Params
 //    parser: Argparser
 //    argument_name: str
@@ -166,6 +172,11 @@ function Argparser.get_option_argument ptr str -> str :
     // the following will be it's value.
     // Example: --file file.txt
     if argument_value argument_name streq do
+      argument_name parser Argparser.get_argument_by_name
+      if ParserArgument.is_flag do
+        // TODO: Find a better way to return truthy value when flag is present
+        1 ptr str return
+      endif drop
       True found =
     endif
     index 1 + index =
@@ -489,8 +500,12 @@ function Argparser.get_argument_position_by_name ptr str -> int :
     if current_name name streq do
       position return
     endif
-    if current_name "-" str.startswith do
+    if current_name "--" str.startswith do
       index 2 + index =
+      continue
+    endif
+    if current_name "-" str.startswith do
+      index 1 + index =
       continue
     endif
     position 1 + position =
@@ -515,10 +530,15 @@ function ParserArgument.init str str str bool -> ptr :
   ParserArgument.size malloc
   take argument in
 
-  if dup "-" str.startswith do
+  if dup "--" str.startswith do
     False argument ParserArgument.set_positional
+    False argument ParserArgument.set_flag
+  elif dup "-" str.startswith do
+    False argument ParserArgument.set_positional
+    True  argument ParserArgument.set_flag
   else
     True  argument ParserArgument.set_positional
+    False argument ParserArgument.set_flag
   endif
   argument ParserArgument.set_name
   argument ParserArgument.set_help
@@ -548,6 +568,10 @@ function ParserArgument.is_positional ptr -> bool :
   ParserArgument.positional ptr+ bool.load
 end
 
+function ParserArgument.is_flag ptr -> bool :
+  ParserArgument.flag ptr+ bool.load
+end
+
 // ParserArgument setters
 function ParserArgument.set_name ptr str :
   swap str.copy swap str.store
@@ -569,4 +593,8 @@ end
 
 function ParserArgument.set_positional ptr bool :
   ParserArgument.positional ptr+ bool.store
+end
+
+function ParserArgument.set_flag ptr bool :
+  ParserArgument.flag ptr+ bool.store
 end
