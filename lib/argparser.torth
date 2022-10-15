@@ -282,6 +282,17 @@ function Argparser.print_positional_arguments ptr :
   "\n" puts
 end
 
+// Test if certain command line flag is present
+// Params
+//    parser: Argparser
+//    flag: str
+// Return
+//    present: bool
+function Argparser.flag_present ptr str -> bool :
+  Argparser.get_argument  // Returns 1 or 0
+  ptr int bool            // Cast from str to bool
+end
+
 // Print positional arguments in the help of the program (-h|--help)
 // Params
 //    parser_args: List[ParserArgument]
