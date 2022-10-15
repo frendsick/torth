@@ -53,4 +53,10 @@ function main :
   // Compile the assembly code file to a Linux x86_64 executable
   "[INFO] Compiling Assembly code\n" puts
   out_file compile_executable
+
+  // Run the program if -r command line flag is present
+  if "-r" args Argparser.flag_present do
+    "[INFO] Running the program\n" puts
+    out_file run_program
+  endif
 end

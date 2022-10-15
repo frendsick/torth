@@ -1,5 +1,6 @@
 include "std"
 include "compiler/error"
+include "compiler/utils"
 
 // Compile and link the assembly file with NASM and LD
 // Params: out_file (STR)
@@ -12,38 +13,6 @@ function compile_executable str :
   out_file "LD" exec_forked
 end
 
-function exec_forked str str :
-  take cmd out_file in
-  SYS_fork SYSCALL0
-
-  // Child: Compile the assembly code with NASM
-  if dup 0 == do
-    out_file cmd exec_command
-  // Parent: Wait for child to exit
-  elif dup -1 != do
-    NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
-  // Report error if forking the process failed
-  else
-    "Error occured while forking the compiler process for NASM.\n"
-    "NASM_ERROR" CompilerError
-  endif drop
-end
-
-// Execute another function with an alias string
-// NASM => compile_with_nasm
-function exec_command str str :
-  take cmd out_file in
-  if cmd "NASM" streq do
-    out_file compile_with_nasm
-  elif cmd "LD" streq do
-    out_file link_with_ld
-  else
-    "Unknown command '" eputs
-    cmd                 eputs
-    "'\n"               eputs
-  endif
-end
-
 // Compile assembly code file to object file with NASM
 function compile_with_nasm str :
   dup  ".o"   str.cat
@@ -54,7 +23,6 @@ function compile_with_nasm str :
   List.init
   take argv in
 
-  // TODO: Dynamically get the names for .asm and .o files
   "nasm"      ptr argv List.append
   "-felf64"   ptr argv List.append
   "-o"        ptr argv List.append
@@ -64,7 +32,6 @@ function compile_with_nasm str :
   NULLPTR argv List.first "/usr/bin/nasm" execve drop
 end
 
-"ld", "-m", "elf_x86_64", f"-o{executable_file}", object_file
 // Compile assembly code file to object file with NASM
 function link_with_ld str :
   dup ".o" str.cat
@@ -74,7 +41,6 @@ function link_with_ld str :
   List.init
   take argv in
 
-  // TODO: Dynamically get the names for .o and .bin files
   "ld"            ptr argv List.append
   "-melf_x86_64"  ptr argv List.append
   "-o"            ptr argv List.append
