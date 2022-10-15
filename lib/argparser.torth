@@ -66,16 +66,11 @@ end
 // Return
 //    argument_value: str
 function Argparser.get_argument ptr str -> str :
-  dup Argparser.get_cmd_args
-  take
-    cmd_args
-    parser
-    argument_name
-  in
+  take parser argument_name in
 
   // Option arguments start with -
   if argument_name "-" str.startswith do
-    argument_name cmd_args Argparser.get_option_argument
+    argument_name parser Argparser.get_option_argument
     return
   endif
   argument_name parser Argparser.get_positional_argument
@@ -122,19 +117,29 @@ function Argparser.get_positional_argument ptr str -> str :
     current_position 1 + current_position =
     index 1 + index =
   done
-  "[ERROR] Could not find positional argument '" eputs
+
+  // The value for the positional argument was not found
+  // Raise error if the positional argument is required
+  argument_name parser Argparser.get_argument_by_name
+  if ParserArgument.is_required not do
+    NULLPTR str return
+  endif drop
+  "[ERROR] Could not find required positional argument '" eputs
   argument_name eputs
   "'\n" eputs
   1 exit ""
 end
 
 // Get the value of option argument with certain name
+// Return NULLPTR if non-required option is not found
+// Raise error if required option is not found
 // Params
-//    arguments: List[str]
+//    parser: Argparser
 //    argument_name: str
 // Return
 //    argument_value: str
 function Argparser.get_option_argument ptr str -> str :
+  dup Argparser.get_cmd_args
   dup List.len
   False
   1
@@ -143,6 +148,7 @@ function Argparser.get_option_argument ptr str -> str :
     found
     arguments.len
     arguments
+    parser
     argument_name
   in
 
@@ -166,8 +172,15 @@ function Argparser.get_option_argument ptr str -> str :
   done
 
   // The value for the option argument was not found
-  // TODO: Raise error if the option is required
-  NULLPTR str
+  // Raise error if the option is required
+  argument_name parser Argparser.get_argument_by_name
+  if ParserArgument.is_required not do
+    NULLPTR str return
+  endif drop
+  "[ERROR] Could not find required option argument '" eputs
+  argument_name eputs
+  "'\n" eputs
+  1 exit ""
 end
 
 // Print help page from the Argparser object
@@ -417,6 +430,39 @@ function Argparser.add_argument ptr str str str bool :
   Argparser.get_parser_args
   take parser_args in
   ParserArgument.init parser_args List.append
+end
+
+// Get the ParserArgument object of argument with certain name
+// Params
+//    parser: Argparser
+//    name: str
+// Return
+//    argument: ParserArgument
+function Argparser.get_argument_by_name ptr str -> ptr :
+  dup Argparser.get_parser_args
+  dup List.len
+  0
+  take
+    index
+    parser_args.len
+    parser_args
+    parser
+    name
+  in
+
+  while index parser_args.len < do
+    index parser_args List.nth ptr.load
+    take arg in
+
+    if name arg ParserArgument.get_name streq do
+      arg return
+    endif
+    index 1 + index =
+  done
+  "[ERROR] Unknown argument '" eputs
+  name eputs
+  "'\n" eputs
+  1 exit NULLPTR
 end
 
 // Get the zero-based position of the positional argument
