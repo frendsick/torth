@@ -73,14 +73,60 @@ function Argparser.get_argument ptr str -> str :
     argument_name
   in
 
+  // Option arguments start with -
   if argument_name "-" str.startswith do
     argument_name cmd_args Parser.get_option_argument
     return
   endif
+  argument_name parser Parser.get_positional_argument
+end
 
-  "[TODO] Getting positional arguments from Argparser is not implementing yet\n" eputs
-  1 exit
-  "parser"
+// Get the value of positional argument with certain name
+// Params
+//    parser: Argparser
+//    argument_name: str
+// Return
+//    argument_value: str
+function Parser.get_positional_argument ptr str -> str :
+  take parser argument_name in
+
+  // Get the position of the certain argument
+  argument_name parser Argparser.get_argument_position_by_name
+  parser Argparser.get_cmd_args
+  dup List.len
+  0
+  1
+  take
+    index
+    current_position
+    cmd_args.len
+    cmd_args
+    argument_position
+  in
+
+  while index cmd_args.len < do
+    index cmd_args List.nth str.load
+    take cmd_arg in
+    cmd_arg puts "\n" puts
+
+    // Go over option arguments
+    if cmd_arg "-" str.startswith do
+      index 2 + index =
+      continue
+    endif
+
+    // Return the command line argument if it is the correct position
+    if current_position argument_position == do
+      index cmd_args List.nth str.load
+      return
+    endif
+    current_position 1 + current_position =
+    index 1 + index =
+  done
+  "[ERROR] Could not find positional argument '" eputs
+  argument_name eputs
+  "'\n" eputs
+  1 exit ""
 end
 
 // Get the value of option argument with certain name
@@ -92,7 +138,7 @@ end
 function Parser.get_option_argument ptr str -> str :
   dup List.len
   False
-  0
+  1
   take
     index
     found
@@ -124,7 +170,7 @@ function Parser.get_option_argument ptr str -> str :
   if found do
     "[ERROR] Please give value for argument '" eputs
   else
-    "[ERROR] Could not find command line argumend '" eputs
+    "[ERROR] Could not find command line argument '" eputs
   endif
   argument_name eputs
   "'\n" eputs
@@ -381,14 +427,53 @@ function Argparser.add_argument ptr str str str bool :
   ParserArgument.init parser_args List.append
 end
 
-// Initialize ParserArgument object
+// Get the zero-based position of the positional argument
+// Params
+//    Argparser: ptr
+//    name: str
+// Return
+//    index: int
+function Argparser.get_argument_position_by_name ptr str -> int :
+  Argparser.get_parser_args
+  dup List.len
+  0
+  0
+  take
+    index
+    position
+    parser_args.len
+    parser_args
+    name
+  in
+  parser_args.len putu
+  while index parser_args.len < do
+    index parser_args List.nth ptr.load ParserArgument.get_name
+    take current_name in
+    current_name puts "\n" puts
+    if current_name name streq do
+      position return
+    endif
+    if current_name "-" str.startswith do
+      index 2 + index =
+      continue
+    endif
+    position 1 + position =
+    index 1 + index =
+  done
+  "[ERROR] Unknown argument '" eputs
+  name eputs
+  "'\n" eputs
+  1 exit NULL
+end
+
+k// Initialize ParserArgument object
 // Params
 //    name: str
 //    help: str
 //    metavar: str
 //    required: bool
 // Return
-//    parser: Argparser
+//    argument: ParserArgument
 function ParserArgument.init str str str bool -> ptr :
   // Allocate memory for ParserArgument
   ParserArgument.size malloc
