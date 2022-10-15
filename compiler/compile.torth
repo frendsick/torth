@@ -2,21 +2,23 @@ include "std"
 include "compiler/error"
 
 // Compile and link the assembly file with NASM and LD
-function compile_executable :
+// Params: out_file (STR)
+function compile_executable str :
+  take out_file in
   // Compile assembly code file to an object file with NASM
-  "NASM" exec_forked
+  out_file "NASM" exec_forked
 
   // Link the object file to an executable with LD
-  "LD" exec_forked
+  out_file "LD" exec_forked
 end
 
-function exec_forked str :
-  take cmd in
+function exec_forked str str :
+  take cmd out_file in
   SYS_fork SYSCALL0
 
   // Child: Compile the assembly code with NASM
   if dup 0 == do
-    cmd exec_command
+    out_file cmd exec_command
   // Parent: Wait for child to exit
   elif dup -1 != do
     NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
@@ -29,12 +31,12 @@ end
 
 // Execute another function with an alias string
 // NASM => compile_with_nasm
-function exec_command str :
-  take cmd in
+function exec_command str str :
+  take cmd out_file in
   if cmd "NASM" streq do
-    compile_with_nasm
+    out_file compile_with_nasm
   elif cmd "LD" streq do
-    link_with_ld
+    out_file link_with_ld
   else
     "Unknown command '" eputs
     cmd                 eputs
@@ -43,7 +45,11 @@ function exec_command str :
 end
 
 // Compile assembly code file to object file with NASM
-function compile_with_nasm :
+function compile_with_nasm str :
+  dup  ".o"   str.cat
+  swap ".asm" str.cat
+  take asm_file out_file in
+
   // Allocate memory for the arguments
   List.init
   take argv in
@@ -51,15 +57,19 @@ function compile_with_nasm :
   // TODO: Dynamically get the names for .asm and .o files
   "nasm"      ptr argv List.append
   "-felf64"   ptr argv List.append
-  "-otest.o"  ptr argv List.append
-  "test.asm"  ptr argv List.append
+  "-o"        ptr argv List.append
+  out_file    ptr argv List.append
+  asm_file    ptr argv List.append
 
   NULLPTR argv List.first "/usr/bin/nasm" execve drop
 end
 
 "ld", "-m", "elf_x86_64", f"-o{executable_file}", object_file
 // Compile assembly code file to object file with NASM
-function link_with_ld :
+function link_with_ld str :
+  dup ".o" str.cat
+  take object_file out_file in
+
   // Allocate memory for the arguments
   List.init
   take argv in
@@ -67,8 +77,9 @@ function link_with_ld :
   // TODO: Dynamically get the names for .o and .bin files
   "ld"            ptr argv List.append
   "-melf_x86_64"  ptr argv List.append
-  "-otest.bin"    ptr argv List.append
-  "test.o"        ptr argv List.append
+  "-o"            ptr argv List.append
+  out_file        ptr argv List.append
+  object_file     ptr argv List.append
 
   NULLPTR argv List.first "/usr/bin/ld" execve drop
 end

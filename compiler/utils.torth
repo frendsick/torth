@@ -1,9 +1,36 @@
 // utils.torth - Utility functions for Torth compiler
 include "std"
+include "argparser"
 include "compiler/defs"
 include "compiler/class/Location"
 include "compiler/class/Signature"
 include "compiler/class/Token"
+
+// Parse command line arguments with Argparser
+// Params: None
+// Return: Argparser
+function parse_command_line_arguments -> ptr :
+  "Torth compiler" Argparser.init
+  take parser in
+  False "FILE" "Output file" "--out"                parser Argparser.add_argument
+  False "FILE" "Run program after compilation" "-r" parser Argparser.add_argument
+  True  "FILE" "Input file" "code_file"             parser Argparser.add_argument
+  parser Argparser.parse_args
+  parser
+end
+
+// Get the output file name from command line arguments
+// Params: Argparser
+// Return: file_name
+function get_output_file_name ptr -> str :
+  "--out" swap Argparser.get_argument
+  take file_name in
+
+  if file_name ptr int NULL == do
+    "a.bin" return
+  endif
+  file_name
+end
 
 // Check if a Constant with a certain name exists
 // Params: constant_name, List[Constant]
