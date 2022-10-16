@@ -377,3 +377,85 @@ function List.contains_str ptr str -> bool :
   done
   False
 end
+
+// === LinkedList ===
+// README:
+//    LinkedList is a list of Nodes linked by pointers.
+//    LinkedList.init returns a pointer to the head Node.
+function LinkedList.init -> ptr :
+  ptr.size malloc
+  NULLPTR over ptr.store
+end
+
+enum Node.size 8 :
+  Node.data // PTR
+  Node.next // PTR
+end
+
+function Node.get_data ptr -> ptr :
+  ptr.load
+end
+
+function Node.get_next ptr -> ptr :
+  Node.next ptr+ ptr.load
+end
+
+function Node.set_data ptr ptr :
+  ptr.store
+end
+
+function Node.set_next ptr ptr :
+  Node.next ptr+ ptr.store
+end
+
+// Push Node to LinkedList
+// Params
+//    head_ptr: Node
+//    new_data: ptr
+// Return None
+function LinkedList.push ptr ptr :
+  // Allocate new Node
+  Node.size malloc
+  take
+    new_node
+    head_ptr
+    new_data
+  in
+
+  // Store data to new Node
+  new_data new_node Node.set_data
+
+  // Make new Node's next as head
+  head_ptr ptr.load new_node Node.set_next
+
+  // Return the new head pointer
+  new_node head_ptr ptr.store
+end
+
+// Push Node to LinkedList
+// Params
+//    head_ptr: Node
+// Return
+//    popped_data: ptr
+function LinkedList.pop ptr -> ptr :
+  dup ptr.load
+  take head head_ptr in
+
+  // Underflow condition
+  if head int NULL == do
+    head return
+  endif
+
+  // Get the old head data
+  head Node.get_data
+  take popped_data in
+
+  // Unlink the old head
+  head Node.get_next head_ptr ptr.store
+
+  // Deallocate the old head
+  Node.size head munmap
+
+  // Return the popped data
+  popped_data
+end
