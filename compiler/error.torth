@@ -10,7 +10,7 @@ include "std"
 // Params: Error type (STR), message (STR)
 function print_error str str :
   "\e[95mCompiler Error \e[91m" eputs eputs
-  "\e[0m:\n" eputs eputs
+  "\e[0m:\n" eputs eputs "\n" eputs
 end
 
 // Params: Error type (STR), message (STR)
