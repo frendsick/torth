@@ -73,6 +73,25 @@ function execute_program str :
   NULLPTR argv executable execve drop
 end
 
+function get_token_info ptr -> str :
+  take token in
+  "\e[95mToken\e[0m: "
+  token Token.get_value str.cat
+  "\n" str.cat
+  token Token.get_location get_location_info str.cat
+end
+
+function get_location_info ptr -> str :
+  take location in
+  "\e[95mFile\e[0m: "
+  location Location.get_file        str.cat
+  "\n\e[95mRow\e[0m: "              str.cat
+  location Location.get_row itoa    str.cat
+  "\n\e[95mColumn\e[0m: "           str.cat
+  location Location.get_column itoa str.cat
+  "\n"                              str.cat
+end
+
 // Get the output file name from command line arguments
 // Params: Argparser
 // Return: file_name
@@ -122,6 +141,28 @@ function function_exists str ptr -> bool :
   // Function does not exist if get_function_by_name returns NULLPTR
   get_function_by_name int
   NULL !=
+end
+
+// Get printable representation for TokenType
+function token_type_repr int -> str :
+  take token_type in
+  if token_type TokenType.BOOL == do
+    "BOOL" return
+  elif token_type TokenType.CHAR == do
+    "CHAR" return
+  elif token_type TokenType.INT == do
+    "INT" return
+  elif token_type TokenType.PTR == do
+    "PTR" return
+  elif token_type TokenType.STR == do
+    "STR" return
+  elif token_type TokenType.UINT8 == do
+    "UINT8" return
+  endif
+  "Unknown TokenType: " eputs
+  token_type eputi
+  "\n" eputs
+  1 exit ""
 end
 
 // Get a Function with certain name from a list of Functions

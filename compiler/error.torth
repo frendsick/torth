@@ -1,5 +1,6 @@
 // error.torth - Library of errors used by the self-hosted Torth compiler
 include "std"
+include "compiler/utils"
 
 // Escaped color codes
 // 'FAIL'     => '\e[91m'
@@ -22,7 +23,8 @@ end
 
 function CompilerErrorWithToken str str ptr :
   print_error
-  Token.print
+  "\n" eputs
+  get_token_info eputs
   1 exit
 end
 
