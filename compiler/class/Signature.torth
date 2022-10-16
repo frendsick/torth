@@ -17,6 +17,20 @@ function Signature.init ptr ptr -> ptr :
   swap over Signature.returns ptr+ ptr.store
 end
 
+// Get Signature.params
+// Params: Pointer to Signature (PTR)
+// Return: Signature.params (PTR)
+function Signature.get_params ptr -> ptr :
+  ptr.load
+end
+
+// Get Signature.returns
+// Params: Pointer to Signature (PTR)
+// Return: Signature.returns (PTR)
+function Signature.get_returns ptr -> ptr :
+  Signature.returns ptr+ ptr.load
+end
+
 // Get TokenType from certain type in function definition
 function Signature.type_map str -> int :
   str.copy str.upper
