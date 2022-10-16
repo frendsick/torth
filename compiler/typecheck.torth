@@ -93,6 +93,8 @@ function type_check_op ptr ptr ptr ptr :
     type_stack token type_check_cast_bool
   elif op_type OpType.PUSH_INT == do
     type_stack type_check_push_int
+  elif op_type OpType.PUSH_STR == do
+    type_stack type_check_push_str
   elif
     token_value str.upper
     get_not_typed_tokens
@@ -138,6 +140,14 @@ end
 // Return None
 function type_check_push_int ptr :
   TokenType.INT ptr swap LinkedList.push
+end
+
+// Push a string to the stack
+// Params
+//    type_stack: LinkedList
+// Return None
+function type_check_push_str ptr :
+  TokenType.STR ptr swap LinkedList.push
 end
 
 // Type check an intrinsic
