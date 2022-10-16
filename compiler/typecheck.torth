@@ -3,9 +3,9 @@ include "compiler/class/Op"
 include "compiler/class/Token"
 
 // Type check every sub-program in the application
-// Params:
+// Params
 //    sub_programs: List[Program]
-// Return: None
+// Return None
 function type_check_application ptr :
   dup List.len
   0
@@ -22,9 +22,9 @@ function type_check_application ptr :
 end
 
 // Type check a sub-program ("function")
-// Params:
+// Params
 //    program: Program
-// Return: None
+// Return None
 function type_check_sub_program ptr :
   dup List.len
   0
@@ -41,9 +41,9 @@ end
 
 // Type check the current Op in the Program
 // Raise compiler error if the type checking fails
-// Params:
+// Params
 //    op: Op
-// Return: None
+// Return None
 function type_check_op ptr :
   take op in
   op  Op.get_token
@@ -56,7 +56,9 @@ function type_check_op ptr :
   in
 
   // Switch like if block with every type of Op
-  if
+  if op_type OpType.INTRINSIC == do
+    token type_check_intrinsic
+  elif
     token_value str.upper
     get_not_typed_tokens
     List.contains_str
@@ -72,11 +74,25 @@ function type_check_op ptr :
   endif
 end
 
+// Type check an intrinsic
+// Params
+//    token: Token
+// Return None
+function type_check_intrinsic ptr :
+  dup Token.get_value str.upper
+  take intrinsic token in
+
+  "Type checking for '"
+  intrinsic str.cat
+  "' has not been implemented." str.cat
+  NotImplementedError
+end
+
 // Get a list of tokens that do not require type checking
 // TODO: This list should be a constant somehow
-// Params:
+// Params
 //    op: Op
-// Return: None
+// Return None
 function get_not_typed_tokens -> ptr :
   // ["BREAK", "CONTINUE", "PEEK", "TAKE", "WHILE"]
   List.init take not_typed_tokens in
