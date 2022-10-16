@@ -440,6 +440,7 @@ function LinkedList.push ptr ptr :
 end
 
 // Push Node to LinkedList
+// Return -1 if head is NULL
 // Params
 //    head_ptr: Node
 // Return
@@ -450,7 +451,7 @@ function LinkedList.pop ptr -> ptr :
 
   // Underflow condition
   if head int NULL == do
-    head return
+    -1 ptr return
   endif
 
   // Get the old head data
