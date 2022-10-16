@@ -7,6 +7,7 @@ include "compiler/error"
 include "compiler/lex"
 include "compiler/program"
 include "compiler/typecheck"
+include "compiler/utils"
 
 function main :
   // Get the code file from command line
@@ -43,7 +44,8 @@ function main :
   take sub_programs in
 
   // TODO: Type check the application
-  sub_programs type_check_application
+  "[INFO] Type checking the application\n" puts
+  functions sub_programs type_check_application
 
   // Generate assembly code from the intermediate representation
   "[INFO] Generating Assembly code\n" puts

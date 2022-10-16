@@ -119,6 +119,15 @@ end
 // Params: function_name, List[Functions]
 // Return: bool
 function function_exists str ptr -> bool :
+  // Function does not exist if get_function_by_name returns NULLPTR
+  get_function_by_name int
+  NULL !=
+end
+
+// Get a Function with certain name from a list of Functions
+// Params: function_name, List[Functions]
+// Return: Function
+function get_function_by_name str ptr -> ptr :
   0
   take
     index
@@ -130,18 +139,18 @@ function function_exists str ptr -> bool :
   while index functions List.len < do
 
     // Get the current Function
-    index functions List.nth ptr.load Function.get_name
-    take current_name in
+    index functions List.nth ptr.load
+    take func in
 
     // Return True if current Function's name matches function_name parameter
-    if current_name function_name streq do
-      True return
+    if func Function.get_name function_name streq do
+      func return
     endif
     index 1 + index = // index++
   done
 
-  // Return False if the Function was not found
-  False
+  // Return NULLPTR if the Function was not found
+  NULLPTR
 end
 
 // Check if a Memory with a certain name exists

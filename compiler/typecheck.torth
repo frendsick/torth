@@ -5,18 +5,25 @@ include "compiler/class/Token"
 // Type check every sub-program in the application
 // Params
 //    sub_programs: List[Program]
+//    functions: List[Function]
 // Return None
-function type_check_application ptr :
+function type_check_application ptr ptr :
   dup List.len
   0
   take
     index
     sub_programs.len
     sub_programs
+    functions
   in
   while index sub_programs.len < do
     index sub_programs List.nth ptr.load
-    type_check_sub_program
+    take sub_program in
+
+    sub_program List.first ptr.load Op.get_function
+    take func in
+
+    functions func sub_program type_check_sub_program
     index 1 + index =
   done
 end
@@ -24,18 +31,31 @@ end
 // Type check a sub-program ("function")
 // Params
 //    program: Program
+//    func: Function
+//    functions: List[Function]
 // Return None
-function type_check_sub_program ptr :
+function type_check_sub_program ptr ptr ptr :
   dup List.len
   0
   take
     index
     program.len
     program
+    func
+    functions
   in
+  // Generate initial type stack for sub program
+  // based on the function params
+  List.init dup
+  func get_function_type_stack
+  swap List.append
+  take branched_stacks in
+
+  // Type check every Op in Program
   while index program.len < do
     index program List.nth ptr.load
-    type_check_op
+    take op in
+    functions program branched_stacks op type_check_op
   done
 end
 
@@ -43,9 +63,17 @@ end
 // Raise compiler error if the type checking fails
 // Params
 //    op: Op
+//    branched_stacks: List[TypeStack]
+//    program: Program
+//    functions: List[Function]
 // Return None
-function type_check_op ptr :
-  take op in
+function type_check_op ptr ptr ptr ptr :
+  take
+    op
+    branched_stacks
+    program
+    functions
+  in
   op  Op.get_token
   dup Token.get_value
   op  Op.get_type
@@ -102,4 +130,30 @@ function get_not_typed_tokens -> ptr :
   "TAKE"      ptr not_typed_tokens List.append
   "WHILE"     ptr not_typed_tokens List.append
   not_typed_tokens
+end
+
+// Generate TypeStack for a function
+// Params
+//    func: Function
+// Return
+//    type_stack: LinkedList
+function get_function_type_stack ptr -> ptr :
+  take func in
+  func Function.get_signature Signature.get_params
+  dup List.len 1 -
+  LinkedList.init
+  take
+    type_stack
+    index
+    params
+  in
+
+  // Insert all parameter types to type_stack in the reverse order
+  while index 0 >= do
+    // Push the current parameters TokenType to type_stack
+    index params List.nth ptr.load
+    type_stack LinkedList.push
+    index 1 - index =
+  done
+  type_stack
 end
