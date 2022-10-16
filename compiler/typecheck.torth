@@ -91,10 +91,18 @@ function type_check_op ptr ptr ptr ptr :
     token type_check_intrinsic
   elif op_type OpType.CAST_BOOL == do
     type_stack token type_check_cast_bool
+  elif op_type OpType.PUSH_BOOL == do
+    type_stack type_check_push_bool
+  elif op_type OpType.PUSH_CHAR == do
+    type_stack type_check_push_char
   elif op_type OpType.PUSH_INT == do
     type_stack type_check_push_int
+  elif op_type OpType.PUSH_PTR == do
+    type_stack type_check_push_ptr
   elif op_type OpType.PUSH_STR == do
     type_stack type_check_push_str
+  elif op_type OpType.PUSH_UINT8 == do
+    type_stack type_check_push_uint8
   elif
     token_value str.upper
     get_not_typed_tokens
@@ -129,9 +137,28 @@ function type_check_cast_bool ptr ptr :
     type TokenType.INT  !=
     &&
   do
-    token "Only integers can be cast to BOOL" "VALUE_ERROR" CompilerErrorWithToken
+    token
+    "Only integers can be cast to BOOL\nPopped type: "
+    type token_type_repr str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
   endif
   TokenType.BOOL ptr type_stack LinkedList.push
+end
+
+// Push a boolean to the stack
+// Params
+//    type_stack: LinkedList
+// Return None
+function type_check_push_bool ptr :
+  TokenType.BOOL ptr swap LinkedList.push
+end
+
+// Push a character to the stack
+// Params
+//    type_stack: LinkedList
+// Return None
+function type_check_push_char ptr :
+  TokenType.CHAR ptr swap LinkedList.push
 end
 
 // Push an integer to the stack
@@ -142,12 +169,28 @@ function type_check_push_int ptr :
   TokenType.INT ptr swap LinkedList.push
 end
 
+// Push a pointer to the stack
+// Params
+//    type_stack: LinkedList
+// Return None
+function type_check_push_ptr ptr :
+  TokenType.PTR ptr swap LinkedList.push
+end
+
 // Push a string to the stack
 // Params
 //    type_stack: LinkedList
 // Return None
 function type_check_push_str ptr :
   TokenType.STR ptr swap LinkedList.push
+end
+
+// Push an unsigned 8-bit integer to the stack
+// Params
+//    type_stack: LinkedList
+// Return None
+function type_check_push_uint8 ptr :
+  TokenType.UINT8 ptr swap LinkedList.push
 end
 
 // Type check an intrinsic
