@@ -1,0 +1,89 @@
+include "std"
+include "compiler/class/Op"
+include "compiler/class/Token"
+
+// Type check every sub-program in the application
+// Params:
+//    sub_programs: List[Program]
+// Return: None
+function type_check_application ptr :
+  dup List.len
+  0
+  take
+    index
+    sub_programs.len
+    sub_programs
+  in
+  while index sub_programs.len < do
+    index sub_programs List.nth ptr.load
+    type_check_sub_program
+    index 1 + index =
+  done
+end
+
+// Type check a sub-program ("function")
+// Params:
+//    program: Program
+// Return: None
+function type_check_sub_program ptr :
+  dup List.len
+  0
+  take
+    index
+    program.len
+    program
+  in
+  while index program.len < do
+    index program List.nth ptr.load
+    type_check_op
+  done
+end
+
+// Type check the current Op in the Program
+// Raise compiler error if the type checking fails
+// Params:
+//    op: Op
+// Return: None
+function type_check_op ptr :
+  take op in
+  op  Op.get_token
+  dup Token.get_value
+  op  Op.get_type
+  take
+    op_type
+    token_value
+    token
+  in
+
+  // Switch like if block with every type of Op
+  if
+    token_value str.upper
+    get_not_typed_tokens
+    List.contains_str
+  do
+    token_value puts "\n" puts
+    0 exit
+    return
+  else
+    "Parsing token '"
+    token_value str.cat
+    "' is not implemented yet" str.cat
+    NotImplementedError
+  endif
+end
+
+// Get a list of tokens that do not require type checking
+// TODO: This list should be a constant somehow
+// Params:
+//    op: Op
+// Return: None
+function get_not_typed_tokens -> ptr :
+  // ["BREAK", "CONTINUE", "PEEK", "TAKE", "WHILE"]
+  List.init take not_typed_tokens in
+  "BREAK"     ptr not_typed_tokens List.append
+  "CONTINUE"  ptr not_typed_tokens List.append
+  "PEEK"      ptr not_typed_tokens List.append
+  "TAKE"      ptr not_typed_tokens List.append
+  "WHILE"     ptr not_typed_tokens List.append
+  not_typed_tokens
+end

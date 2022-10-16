@@ -6,6 +6,7 @@ include "compiler/compile"
 include "compiler/error"
 include "compiler/lex"
 include "compiler/program"
+include "compiler/typecheck"
 
 function main :
   // Get the code file from command line
@@ -41,8 +42,8 @@ function main :
   memories constants functions get_sub_programs
   take sub_programs in
 
-  // TODO: Type check the Program
-  // program type_check_program
+  // TODO: Type check the application
+  sub_programs type_check_application
 
   // Generate assembly code from the intermediate representation
   "[INFO] Generating Assembly code\n" puts
