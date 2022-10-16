@@ -337,6 +337,13 @@ function List.first ptr -> ptr :
   0 swap List.nth
 end
 
+// Get pointer to the last element of the list
+// Params: list (PTR)
+// Return: list[0] (PTR)
+function List.last ptr -> ptr :
+  dup List.len 1 - swap List.nth
+end
+
 // Get pointer to the Nth element of the list
 // Params: list (PTR), N (INT)
 // Return: list[N] (PTR)
