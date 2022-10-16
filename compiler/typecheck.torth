@@ -89,6 +89,8 @@ function type_check_op ptr ptr ptr ptr :
   // Switch like if block with every type of Op
   if op_type OpType.INTRINSIC == do
     token type_check_intrinsic
+  elif op_type OpType.CAST_BOOL == do
+    type_stack token type_check_cast_bool
   elif op_type OpType.PUSH_INT == do
     type_stack type_check_push_int
   elif
@@ -105,6 +107,29 @@ function type_check_op ptr ptr ptr ptr :
     "' is not implemented yet" str.cat
     NotImplementedError
   endif
+end
+
+// CAST_BOOL explicitely casts the top element of the stack to BOOL type.
+// The top element must be an integer to be cast to BOOL.
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_cast_bool ptr ptr :
+  take token type_stack in
+  type_stack LinkedList.pop int
+  take type in
+
+  if type -1 == do
+    token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  elif
+    type TokenType.BOOL !=
+    type TokenType.INT  !=
+    &&
+  do
+    token "Only integers can be cast to BOOL" "VALUE_ERROR" CompilerErrorWithToken
+  endif
+  TokenType.BOOL ptr type_stack LinkedList.push
 end
 
 // Push an integer to the stack
