@@ -166,11 +166,7 @@ function type_check_cast_bool ptr ptr :
 
   if type -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif
-    type TokenType.BOOL !=
-    type TokenType.INT  !=
-    &&
-  do
+  elif type INTEGER_TYPES Array.contains_int not do
     token
     "Only integers can be cast to BOOL\nPopped type: "
     type token_type_repr str.cat
