@@ -190,6 +190,8 @@ function type_check_intrinsic ptr ptr :
     type_stack type_check_push_ptr return
   elif intrinsic "LOAD_" str.startswith do
     type_stack token type_check_load return
+  elif intrinsic "OVER" streq do
+    type_stack token type_check_over return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -534,6 +536,33 @@ function type_check_load ptr ptr :
 
   // Push loaded value which could be of any type
   TokenType.ANY ptr type_stack LinkedList.push
+end
+
+// OVER Intrinsic pushes a copy of the second element of the stack.
+// Example with the stack's top element being the rightmost: a b -> a b a
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_over ptr ptr :
+  take token type_stack in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 -1 == do
+    token
+    "OVER intrinsic requires two values in the stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
+
+  // Push the values back to the stack in the correct order
+  t2 ptr type_stack LinkedList.push
+  t1 ptr type_stack LinkedList.push
+  t2 ptr type_stack LinkedList.push
 end
 
 // Type check bitwise operation for two integers
