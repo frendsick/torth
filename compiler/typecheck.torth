@@ -2,6 +2,36 @@ include "std"
 include "compiler/class/Op"
 include "compiler/class/Token"
 
+// Create Array of integer types
+// TODO: Enable creating constant arrays
+// Params None
+// Return
+//    INTEGER_TYPES: Array
+function INTEGER_TYPES -> ptr :
+  5 Array.init
+  take array in
+  TokenType.ANY   ptr array Array.append
+  TokenType.BOOL  ptr array Array.append
+  TokenType.CHAR  ptr array Array.append
+  TokenType.INT   ptr array Array.append
+  TokenType.UINT8 ptr array Array.append
+  array
+end
+
+// Create Array of pointer types
+// TODO: Enable creating constant arrays
+// Params None
+// Return
+//    POINTER_TYPES: Array
+function POINTER_TYPES -> ptr :
+  3 Array.init
+  take array in
+  TokenType.ANY   ptr array Array.append
+  TokenType.PTR   ptr array Array.append
+  TokenType.STR   ptr array Array.append
+  array
+end
+
 // Type check every sub-program in the application
 // Params
 //    sub_programs: List[Program]
