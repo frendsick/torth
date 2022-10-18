@@ -196,6 +196,8 @@ function type_check_intrinsic ptr ptr :
     type_stack token type_check_print return
   elif intrinsic "ROT" streq do
     type_stack token type_check_rot return
+  elif intrinsic "STORE_" str.startswith do
+    type_stack token type_check_store return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -627,6 +629,43 @@ function type_check_rot ptr ptr :
   t2 ptr type_stack LinkedList.push
   t1 ptr type_stack LinkedList.push
   t3 ptr type_stack LinkedList.push
+end
+
+// STORE variants store a value of certain type to where a pointer is pointing to.
+// It takes a pointer and a value from the stack and loads the value to the pointer address.
+// Different STORE variants: STORE_BYTE, STORE_WORD, STORE_DWORD, STORE_QWORD
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_store ptr ptr :
+  dup Token.get_value str.copy str.upper
+  " intrinsic requires two values on the stack, PTR and value" str.cat
+  take
+    required_values_str
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 -1 == do
+    token
+    required_values_str
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  elif t1 POINTER_TYPES Array.contains_int not do
+    token
+    required_values_str "\n\n"      str.cat
+    "Expected types:\nPTR\nANY\n\n" str.cat
+    "Popped types:\n"               str.cat
+    t1 token_type_repr str.cat "\n" str.cat
+    t2 token_type_repr              str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
 end
 
 // Type check bitwise operation for two integers
