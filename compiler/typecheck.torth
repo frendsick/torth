@@ -425,7 +425,7 @@ end
 //    type_stack: LinkedList
 // Return None
 function type_check_divmod ptr ptr :
-  dup Token.get_value
+  dup Token.get_value str.copy str.upper
   take
     token_value
     token
@@ -571,7 +571,7 @@ end
 //    type_stack: LinkedList
 // Return None
 function type_check_bitwise ptr ptr :
-  dup Token.get_value
+  dup Token.get_value str.copy str.upper
   take
     token_value
     token
@@ -612,7 +612,7 @@ end
 //    type_stack: LinkedList
 // Return None
 function type_check_calculations ptr ptr :
-  dup Token.get_value
+  dup Token.get_value str.copy str.upper
   take
     token_value
     token
@@ -655,7 +655,7 @@ end
 //    type_stack: LinkedList
 // Return None
 function type_check_comparison ptr ptr :
-  dup Token.get_value
+  dup Token.get_value str.copy str.upper
   take
     token_value
     token
