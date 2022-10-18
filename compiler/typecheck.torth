@@ -176,7 +176,9 @@ function type_check_intrinsic ptr ptr :
   in
 
   // Switch like if block with every type of Intrinsic
-  if
+  if intrinsic "ARGC" streq do
+    type_stack type_check_push_int return
+  elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
   do
