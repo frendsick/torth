@@ -182,6 +182,8 @@ function type_check_intrinsic ptr ptr :
     type_stack type_check_push_ptr return
   elif intrinsic "DIVMOD" streq do
     type_stack token type_check_divmod return
+  elif intrinsic "DROP" streq do
+    type_stack token type_check_drop return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -449,6 +451,26 @@ function type_check_divmod ptr ptr :
   // Push the remainder and the quotient to the stack
   TokenType.INT ptr type_stack LinkedList.push
   TokenType.INT ptr type_stack LinkedList.push
+end
+
+// DROP removes one item from the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_drop ptr ptr :
+  take token type_stack in
+
+  // Pop one item from the stack
+  type_stack LinkedList.pop int
+  take type in
+
+  // Stack is empty
+  if type -1 == do
+    token
+    "Cannot drop value from empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
 end
 
 // Type check bitwise operation for two integers
