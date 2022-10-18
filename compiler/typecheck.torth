@@ -125,6 +125,8 @@ function type_check_op ptr ptr ptr ptr :
     type_stack token type_check_cast_char
   elif op_type OpType.CAST_INT == do
     type_stack token type_check_cast_int
+  elif op_type OpType.CAST_PTR == do
+    type_stack token type_check_cast_ptr
   elif op_type OpType.PUSH_BOOL == do
     type_stack type_check_push_bool
   elif op_type OpType.PUSH_CHAR == do
@@ -215,6 +217,30 @@ function type_check_cast_int ptr ptr :
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
   TokenType.INT ptr type_stack LinkedList.push
+end
+
+// CAST_PTR explicitely casts the top element of the stack to PTR type.
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_cast_ptr ptr ptr :
+  take token type_stack in
+  type_stack LinkedList.pop int
+  take type in
+
+  if type -1 == do
+    token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  elif
+    type TokenType.BOOL ==
+    type TokenType.CHAR ==
+    ||
+  do
+    token
+    type token_type_repr " cannot be cast to PTR" str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
+  TokenType.PTR ptr type_stack LinkedList.push
 end
 
 // Push a boolean to the stack
