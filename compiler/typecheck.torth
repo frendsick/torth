@@ -162,6 +162,33 @@ function type_check_op ptr ptr ptr ptr :
   NotImplementedError
 end
 
+// Type check an intrinsic
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_intrinsic ptr ptr :
+  dup Token.get_value str.upper
+  take
+    intrinsic
+    token
+    type_stack
+  in
+
+  // Switch like if block with every type of Intrinsic
+  if intrinsic "AND" streq do
+    type_stack token type_check_bitwise return
+  elif intrinsic "OR" streq do
+    type_stack token type_check_bitwise return
+  endif
+
+  // Type checking certain Intrinsic is not implemented
+  "Type checking for '"
+  intrinsic str.cat
+  "' has not been implemented." str.cat
+  NotImplementedError
+end
+
 // CAST_BOOL explicitely casts the top element of the stack to BOOL type.
 // The top element must be an integer to be cast to BOOL.
 // Params
@@ -359,18 +386,37 @@ function type_check_push_uint8 ptr :
   TokenType.UINT8 ptr swap LinkedList.push
 end
 
-// Type check an intrinsic
+// Type check bitwise operation for two integers
 // Params
 //    token: Token
+//    type_stack: LinkedList
 // Return None
-function type_check_intrinsic ptr :
-  dup Token.get_value str.upper
-  take intrinsic token in
-
-  "Type checking for '"
-  intrinsic str.cat
-  "' has not been implemented." str.cat
-  NotImplementedError
+function type_check_bitwise ptr ptr :
+  dup Token.get_value
+  take
+    token_value
+    token
+    type_stack
+  in
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  take t2 t1 in
+  if t2 -1 == do
+    token
+    token_value " intrinsic requires two integers" str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  elif
+    t1 INTEGER_TYPES Array.contains_int not
+    t2 INTEGER_TYPES Array.contains_int not
+    ||
+  do
+    token
+    token_value " intrinsic requires two integers\n\n" str.cat
+    "Popped types:\n" str.cat
+    t1 token_type_repr str.cat "\n" str.cat
+    t2 token_type_repr str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
 end
 
 // Get a list of tokens that do not require type checking
