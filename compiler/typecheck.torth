@@ -131,6 +131,8 @@ function type_check_op ptr ptr ptr ptr :
     type_stack token type_check_cast_str
   elif op_type OpType.CAST_UINT8 == do
     type_stack token type_check_cast_uint8
+  elif op_type OpType.DO == do
+    type_stack token type_check_do
   elif op_type OpType.PUSH_BOOL == do
     type_stack type_check_push_bool
   elif op_type OpType.PUSH_CHAR == do
@@ -286,6 +288,26 @@ function type_check_cast_uint8 ptr ptr :
     "VALUE_ERROR" CompilerErrorWithToken
   endif
   TokenType.UINT8 ptr type_stack LinkedList.push
+end
+
+// DO Keyword pops one boolean from the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_do ptr ptr :
+  take token type_stack in
+  type_stack LinkedList.pop int
+  take type in
+
+  if type -1 == do
+    token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  elif type TokenType.BOOL != do
+    token
+    "DO requires a boolean\nPopped type: "
+    type token_type_repr str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
 end
 
 // Push a boolean to the stack
