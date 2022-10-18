@@ -184,6 +184,8 @@ function type_check_intrinsic ptr ptr :
     type_stack token type_check_divmod return
   elif intrinsic "DROP" streq do
     type_stack token type_check_drop return
+  elif intrinsic "DUP" streq do
+    type_stack token type_check_dup return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -471,6 +473,30 @@ function type_check_drop ptr ptr :
     "Cannot drop value from empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
+end
+
+// DUP duplicates the top item from the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_dup ptr ptr :
+  take token type_stack in
+
+  // Pop one item from the stack
+  type_stack LinkedList.pop int
+  take type in
+
+  // Stack is empty
+  if type -1 == do
+    token
+    "Cannot duplicate value from empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
+
+  // Push the popped value twice
+  type ptr type_stack LinkedList.push
+  type ptr type_stack LinkedList.push
 end
 
 // Type check bitwise operation for two integers
