@@ -176,15 +176,16 @@ function type_check_intrinsic ptr ptr :
   in
 
   // Switch like if block with every type of Intrinsic
-  if intrinsic "AND" streq do
+  if
+    intrinsic "AND" streq
+    intrinsic "OR"  streq ||
+  do
     type_stack token type_check_bitwise return
-  elif intrinsic "MINUS" streq do
-    type_stack token type_check_calculations return
-  elif intrinsic "MUL" streq do
-    type_stack token type_check_calculations return
-  elif intrinsic "OR" streq do
-    type_stack token type_check_bitwise return
-  elif intrinsic "PLUS" streq do
+  elif
+    intrinsic "MINUS" streq
+    intrinsic "MUL"   streq ||
+    intrinsic "PLUS"  streq ||
+  do
     type_stack token type_check_calculations return
   endif
 
