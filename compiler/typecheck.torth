@@ -123,6 +123,8 @@ function type_check_op ptr ptr ptr ptr :
     type_stack token type_check_cast_bool
   elif op_type OpType.CAST_CHAR == do
     type_stack token type_check_cast_char
+  elif op_type OpType.CAST_INT == do
+    type_stack token type_check_cast_int
   elif op_type OpType.PUSH_BOOL == do
     type_stack type_check_push_bool
   elif op_type OpType.PUSH_CHAR == do
@@ -200,7 +202,23 @@ function type_check_cast_char ptr ptr :
     type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
-  TokenType.BOOL ptr type_stack LinkedList.push
+  TokenType.CHAR ptr type_stack LinkedList.push
+end
+
+// CAST_INT explicitely casts the top element of the stack to INT type.
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_cast_int ptr ptr :
+  take token type_stack in
+  type_stack LinkedList.pop int
+  take type in
+
+  if type -1 == do
+    token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
+  TokenType.INT ptr type_stack LinkedList.push
 end
 
 // Push a boolean to the stack
