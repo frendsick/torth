@@ -198,6 +198,8 @@ function type_check_intrinsic ptr ptr :
     type_stack token type_check_rot return
   elif intrinsic "STORE_" str.startswith do
     type_stack token type_check_store return
+  elif intrinsic "SWAP" streq do
+    type_stack token type_check_swap return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -666,6 +668,32 @@ function type_check_store ptr ptr :
     t2 token_type_repr              str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
+end
+
+// SWAP Intrinsic swaps two top elements in the stack.
+// Example with the stack's top element being the rightmost: a b -> b a
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_swap ptr ptr :
+  take token type_stack in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 -1 == do
+    token
+    "SWAP intrinsic requires two values in the stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
+
+  // Push the values back to the stack in the correct order
+  t1 ptr type_stack LinkedList.push
+  t2 ptr type_stack LinkedList.push
 end
 
 // Type check bitwise operation for two integers
