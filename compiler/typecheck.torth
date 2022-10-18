@@ -129,6 +129,8 @@ function type_check_op ptr ptr ptr ptr :
     type_stack token type_check_cast_ptr
   elif op_type OpType.CAST_STR == do
     type_stack token type_check_cast_str
+  elif op_type OpType.CAST_UINT8 == do
+    type_stack token type_check_cast_uint8
   elif op_type OpType.PUSH_BOOL == do
     type_stack type_check_push_bool
   elif op_type OpType.PUSH_CHAR == do
@@ -172,7 +174,7 @@ function type_check_cast_bool ptr ptr :
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   elif type INTEGER_TYPES Array.contains_int not do
     token
-    "Only integers can be cast to BOOL\nPopped type: "
+    "Only integer-like values can be cast to BOOL\nPopped type: "
     type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
@@ -198,7 +200,7 @@ function type_check_cast_char ptr ptr :
     "VALUE_ERROR" CompilerErrorWithToken
   elif type INTEGER_TYPES Array.contains_int not do
     token
-    "Only integers can be cast to CHAR\nPopped type: "
+    "Only integer-like values can be cast to CHAR\nPopped type: "
     type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
@@ -263,6 +265,27 @@ function type_check_cast_str ptr ptr :
     "VALUE_ERROR" CompilerErrorWithToken
   endif
   TokenType.STR ptr type_stack LinkedList.push
+end
+
+// CAST_UINT8 explicitely casts the top element of the stack to UINT8 type.
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_cast_uint8 ptr ptr :
+  take token type_stack in
+  type_stack LinkedList.pop int
+  take type in
+
+  if type -1 == do
+    token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  elif type INTEGER_TYPES Array.contains_int not do
+    token
+    "Only integer-like values can be cast to UINT8\nPopped type: "
+    type token_type_repr str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
+  TokenType.UINT8 ptr type_stack LinkedList.push
 end
 
 // Push a boolean to the stack
