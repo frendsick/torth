@@ -202,6 +202,11 @@ function type_check_intrinsic ptr ptr :
   do
     type_stack token type_check_bitwise return
   elif
+    intrinsic "SHL" streq
+    intrinsic "SHR" streq ||
+  do
+    type_stack token type_check_bitshift return
+  elif
     intrinsic "MINUS" streq
     intrinsic "MUL"   streq ||
     intrinsic "PLUS"  streq ||
@@ -646,6 +651,49 @@ function type_check_bitwise ptr ptr :
   if t2 -1 == do
     token
     token_value " intrinsic requires two integers" str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  // Wrong token type
+  elif
+    t1 INTEGER_TYPES Array.contains_int not
+    t2 INTEGER_TYPES Array.contains_int not
+    ||
+  do
+    token
+    token_value " intrinsic requires two integers\n\n" str.cat
+    "Popped types:\n" str.cat
+    t1 token_type_repr str.cat "\n" str.cat
+    t2 token_type_repr str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
+
+  // Push the result to the stack
+  TokenType.INT ptr type_stack LinkedList.push
+end
+
+// SHL performs bitshift operations to the left SHR to the right.
+// The second argument is the value to be bitshifted
+// and the first is the amount of times the shift should be performed.
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_bitshift ptr ptr :
+  dup Token.get_value str.copy str.upper
+  take
+    token_value
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 -1 == do
+    token
+    token_value " intrinsic requires two values in the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
