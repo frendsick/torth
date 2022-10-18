@@ -118,33 +118,33 @@ function type_check_op ptr ptr ptr ptr :
 
   // Switch like if block with every type of Op
   if op_type OpType.INTRINSIC == do
-    token type_check_intrinsic
+    type_stack token type_check_intrinsic return
   elif op_type OpType.CAST_BOOL == do
-    type_stack token type_check_cast_bool
+    type_stack token type_check_cast_bool return
   elif op_type OpType.CAST_CHAR == do
-    type_stack token type_check_cast_char
+    type_stack token type_check_cast_char return
   elif op_type OpType.CAST_INT == do
-    type_stack token type_check_cast_int
+    type_stack token type_check_cast_int return
   elif op_type OpType.CAST_PTR == do
-    type_stack token type_check_cast_ptr
+    type_stack token type_check_cast_ptr return
   elif op_type OpType.CAST_STR == do
-    type_stack token type_check_cast_str
+    type_stack token type_check_cast_str return
   elif op_type OpType.CAST_UINT8 == do
-    type_stack token type_check_cast_uint8
+    type_stack token type_check_cast_uint8 return
   elif op_type OpType.DO == do
-    type_stack token type_check_do
+    type_stack token type_check_do return
   elif op_type OpType.PUSH_BOOL == do
-    type_stack type_check_push_bool
+    type_stack type_check_push_bool return
   elif op_type OpType.PUSH_CHAR == do
-    type_stack type_check_push_char
+    type_stack type_check_push_char return
   elif op_type OpType.PUSH_INT == do
-    type_stack type_check_push_int
+    type_stack type_check_push_int return
   elif op_type OpType.PUSH_PTR == do
-    type_stack type_check_push_ptr
+    type_stack type_check_push_ptr return
   elif op_type OpType.PUSH_STR == do
-    type_stack type_check_push_str
+    type_stack type_check_push_str return
   elif op_type OpType.PUSH_UINT8 == do
-    type_stack type_check_push_uint8
+    type_stack type_check_push_uint8 return
   elif
     token_value str.upper
     get_not_typed_tokens
@@ -153,12 +153,13 @@ function type_check_op ptr ptr ptr ptr :
     token_value puts "\n" puts
     0 exit
     return
-  else
-    "Parsing token '"
-    token_value str.cat
-    "' is not implemented yet" str.cat
-    NotImplementedError
   endif
+
+  // Type checking certain OpType is not implemented
+  "Parsing token '"
+  token_value str.cat
+  "' is not implemented yet" str.cat
+  NotImplementedError
 end
 
 // CAST_BOOL explicitely casts the top element of the stack to BOOL type.
