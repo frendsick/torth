@@ -405,13 +405,18 @@ function type_check_bitwise ptr ptr :
     token
     type_stack
   in
+
+  // Pop two items from the stack
   type_stack LinkedList.pop int
   type_stack LinkedList.pop int
   take t2 t1 in
+
+  // Not enough values in the stack
   if t2 -1 == do
     token
     token_value " intrinsic requires two integers" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  // Wrong token type
   elif
     t1 INTEGER_TYPES Array.contains_int not
     t2 INTEGER_TYPES Array.contains_int not
@@ -424,6 +429,8 @@ function type_check_bitwise ptr ptr :
     t2 token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
+
+  // Push the result to the stack
   TokenType.INT ptr type_stack LinkedList.push
 end
 
@@ -439,13 +446,18 @@ function type_check_calculations ptr ptr :
     token
     type_stack
   in
+
+  // Pop two items from the stack
   type_stack LinkedList.pop int
   type_stack LinkedList.pop int
   take t2 t1 in
+
+  // Not enough values in the stack
   if t2 -1 == do
     token
     token_value " requires two values on the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  // Wrong token type
   elif
     t1 INTEGER_TYPES Array.contains_int not
     t2 INTEGER_TYPES Array.contains_int not
@@ -458,6 +470,8 @@ function type_check_calculations ptr ptr :
     t2 token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
+
+  // Push the result to the stack
   TokenType.INT ptr type_stack LinkedList.push
 end
 
