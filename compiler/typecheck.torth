@@ -192,6 +192,8 @@ function type_check_intrinsic ptr ptr :
     type_stack token type_check_load return
   elif intrinsic "OVER" streq do
     type_stack token type_check_over return
+  elif intrinsic "PRINT" streq do
+    type_stack token type_check_print return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -563,6 +565,33 @@ function type_check_over ptr ptr :
   t2 ptr type_stack LinkedList.push
   t1 ptr type_stack LinkedList.push
   t2 ptr type_stack LinkedList.push
+end
+
+// Pop an integer from the stack and print its value to stdout
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_print ptr ptr :
+  take token type_stack in
+
+  // Pop one item from the stack
+  type_stack LinkedList.pop int
+  take type in
+
+  // Not enough values in the stack
+  if type -1 == do
+    token
+    "Cannot print from an empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  // Wrong token type
+  elif type INTEGER_TYPES Array.contains_int not do
+    token
+    "PRINT intrinsic requires an integer\n\n"
+    "Popped type: "       str.cat
+    type token_type_repr  str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
 end
 
 // Type check bitwise operation for two integers
