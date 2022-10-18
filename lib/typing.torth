@@ -158,6 +158,58 @@ function Array.pop ptr int :
   len 1 - array int.store
 end
 
+// Test if array contains an integer
+// Params: Array[int], int
+// Return: bool
+function Array.contains_int ptr int -> bool :
+  dup Array.len
+  0
+  take
+    index
+    len
+    array
+    integer
+  in
+
+  while index len < do
+    index array Array.nth int.load
+    take array_int in
+
+    // Return True if the current integer matches with the parameter
+    if integer array_int == do
+      True return
+    endif
+    index 1 + index =
+  done
+  False
+end
+
+// Test if array contains a string
+// Params: Array[str], str
+// Return: bool
+function Array.contains_str ptr str -> bool :
+  dup Array.len
+  0
+  take
+    index
+    len
+    array
+    string
+  in
+
+  while index len < do
+    index array Array.nth str.load
+    take array_string in
+
+    // Return True if the current string matches with the parameter
+    if string array_string streq do
+      True return
+    endif
+    index 1 + index =
+  done
+  False
+end
+
 // Print array of integer-like values
 // Params: array (PTR)
 // Return: None
@@ -358,31 +410,18 @@ function List.pop ptr int :
   List.get_array Array.pop
 end
 
+// Test if list contains an integer
+// Params: List[int], int
+// Return: bool
+function List.contains_int ptr int -> bool :
+  List.get_array Array.contains_int
+end
+
 // Test if list contains a string
 // Params: List[str], str
 // Return: bool
 function List.contains_str ptr str -> bool :
-  List.get_array
-  dup Array.len
-  0
-  take
-    index
-    len
-    array
-    string
-  in
-
-  while index len < do
-    index array Array.nth str.load
-    take array_string in
-
-    // Return True if the current string matches with the parameter
-    if string array_string streq do
-      True return
-    endif
-    index 1 + index =
-  done
-  False
+  List.get_array Array.contains_str
 end
 
 // === LinkedList ===
