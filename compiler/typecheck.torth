@@ -186,6 +186,8 @@ function type_check_intrinsic ptr ptr :
     type_stack token type_check_drop return
   elif intrinsic "DUP" streq do
     type_stack token type_check_dup return
+  elif intrinsic "ENVP" streq do
+    type_stack type_check_push_ptr return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
