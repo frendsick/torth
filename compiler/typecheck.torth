@@ -194,6 +194,8 @@ function type_check_intrinsic ptr ptr :
     type_stack token type_check_over return
   elif intrinsic "PRINT" streq do
     type_stack token type_check_print return
+  elif intrinsic "ROT" streq do
+    type_stack token type_check_rot return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -592,6 +594,34 @@ function type_check_print ptr ptr :
     type token_type_repr  str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
+end
+
+// ROT Intrinsic rotates the top three elements of the stack so that the third becomes first
+// Example with the stack's top element being the rightmost: a b c -> b c a
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_rot ptr ptr :
+  take token type_stack in
+
+  // Pop three items from the stack
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  take t3 t2 t1 in
+
+  // Not enough values in the stack
+  if t3 -1 == do
+    token
+    "ROT intrinsic requires three values in the stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
+
+  // Push the values back to the stack in the correct order
+  t2 ptr type_stack LinkedList.push
+  t1 ptr type_stack LinkedList.push
+  t3 ptr type_stack LinkedList.push
 end
 
 // Type check bitwise operation for two integers
