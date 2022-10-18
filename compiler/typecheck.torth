@@ -180,6 +180,8 @@ function type_check_intrinsic ptr ptr :
     type_stack type_check_push_int return
   elif intrinsic "ARGV" streq do
     type_stack type_check_push_ptr return
+  elif intrinsic "DIVMOD" streq do
+    type_stack token type_check_divmod return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -404,6 +406,49 @@ end
 // Return None
 function type_check_push_uint8 ptr :
   TokenType.UINT8 ptr swap LinkedList.push
+end
+
+// DIVMOD pops two items from the stack and divides second from the top one.
+// Then push the remainder and the quotient of the two values.
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_divmod ptr ptr :
+  dup Token.get_value
+  take
+    token_value
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 -1 == do
+    token
+    token_value " intrinsic requires two integers" str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  // Wrong token type
+  elif
+    t1 INTEGER_TYPES Array.contains_int not
+    t2 INTEGER_TYPES Array.contains_int not
+    ||
+  do
+    token
+    token_value " intrinsic requires two integers\n\n" str.cat
+    "Popped types:\n" str.cat
+    t1 token_type_repr str.cat "\n" str.cat
+    t2 token_type_repr str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
+
+  // Push the remainder and the quotient to the stack
+  TokenType.INT ptr type_stack LinkedList.push
+  TokenType.INT ptr type_stack LinkedList.push
 end
 
 // Type check bitwise operation for two integers
