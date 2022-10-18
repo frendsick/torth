@@ -188,6 +188,8 @@ function type_check_intrinsic ptr ptr :
     type_stack token type_check_dup return
   elif intrinsic "ENVP" streq do
     type_stack type_check_push_ptr return
+  elif intrinsic "LOAD_" str.startswith do
+    type_stack token type_check_load return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -499,6 +501,39 @@ function type_check_dup ptr ptr :
   // Push the popped value twice
   type ptr type_stack LinkedList.push
   type ptr type_stack LinkedList.push
+end
+
+// LOAD variants load certain type of value from where a pointer is pointing to.
+// It takes one pointer from the stack and pushes back the dereferenced pointer value.
+// Different LOAD variants: LOAD_BYTE, LOAD_WORD, LOAD_DWORD, LOAD_QWORD
+// Params
+//    token: Token
+//    type_stack: LinkedList
+// Return None
+function type_check_load ptr ptr :
+  take token type_stack in
+
+  // Pop one item from the stack
+  type_stack LinkedList.pop int
+  take type in
+
+  // Stack is empty
+  if type -1 == do
+    token
+    "The stack is empty - PTR required"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  // Wrong token type
+  elif type POINTER_TYPES Array.contains_int not do
+    token
+    dup Token.get_value str.copy str.upper
+    " requires a pointer\n\n" str.cat
+    "Popped type: "           str.cat
+    type token_type_repr      str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
+
+  // Push loaded value which could be of any type
+  TokenType.ANY ptr type_stack LinkedList.push
 end
 
 // Type check bitwise operation for two integers
