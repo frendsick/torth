@@ -146,7 +146,7 @@ function type_check_op ptr ptr ptr ptr :
   elif op_type OpType.PUSH_UINT8 == do
     type_stack type_check_push_uint8 return
   elif
-    token_value str.upper
+    token_value str.copy str.upper
     get_not_typed_tokens
     List.contains_str
   do
@@ -168,7 +168,7 @@ end
 //    type_stack: LinkedList
 // Return None
 function type_check_intrinsic ptr ptr :
-  dup Token.get_value str.upper
+  dup Token.get_value str.copy str.upper
   take
     intrinsic
     token
