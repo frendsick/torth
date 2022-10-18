@@ -178,7 +178,7 @@ function type_check_cast_bool ptr ptr :
 end
 
 // CAST_CHAR explicitely casts the top element of the stack to CHAR type.
-// The top element must be INT, PTR or STR to be cast to CHAR.
+// The top element must be in INTEGER_TYPES to be cast to CHAR.
 // Params
 //    token: Token
 //    type_stack: LinkedList
