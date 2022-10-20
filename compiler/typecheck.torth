@@ -74,12 +74,14 @@ function type_check_sub_program ptr ptr ptr :
     func
     functions
   in
+
   // Generate initial type stack for sub program
   // based on the function params
   List.init dup
   func get_function_type_stack
   swap List.append
-  take branched_stacks in
+  List.init // List[Variable]
+  take variables branched_stacks in
 
   // Type check every Op in Program
   while index program.len < do

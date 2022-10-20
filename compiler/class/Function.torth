@@ -1,11 +1,11 @@
 include "std"
 
-// Function(name: str, signature: Signature, tokens: List[Token])
+// Function(name: str, signature: Signature, tokens: List[Token], variables: List[Variable])
 ENUM Function.size 8 :
   Function.name       // str
-  Function.signature  // Signature    => ptr
-  Function.tokens     // List[Token]  => ptr
-  Function.variables  // Variable     => List[str]
+  Function.signature  // Signature
+  Function.tokens     // List[Token]
+  Function.variables  // List[Variable]
 END
 
 // Initialize Function from parameters
@@ -14,11 +14,14 @@ END
 function Function.init str ptr ptr -> ptr :
   // Allocate memory for Function
   Function.size malloc
+  take func name signature tokens in
 
   // Load the parameters to the allocated memory
-  swap over Function.name       ptr+ str.store
-  swap over Function.signature  ptr+ ptr.store
-  swap over Function.tokens     ptr+ ptr.store
+  name      func Function.name       ptr+ str.store
+  signature func Function.signature  ptr+ ptr.store
+  tokens    func Function.tokens     ptr+ ptr.store
+  List.init func Function.variables  ptr+ ptr.store
+  func
 end
 
 // Get Function.get_name
