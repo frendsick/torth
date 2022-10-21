@@ -295,7 +295,7 @@ function type_check_cast_bool ptr ptr :
 
   if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type int INTEGER_TYPES Array.contains_int not do
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to BOOL\nPopped type: "
     type TypeNode.get_type token_type_repr str.cat
@@ -320,11 +320,11 @@ function type_check_cast_char ptr ptr :
 
   if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type int TokenType.BOOL == do
+  elif type TypeNode.get_type TokenType.BOOL == do
     token
     "A boolean value cannot be cast to CHAR"
     "VALUE_ERROR" CompilerErrorWithToken
-  elif type int INTEGER_TYPES Array.contains_int not do
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to CHAR\nPopped type: "
     type TypeNode.get_type token_type_repr str.cat
@@ -368,8 +368,8 @@ function type_check_cast_ptr ptr ptr :
   if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   elif
-    type int TokenType.BOOL ==
-    type int TokenType.CHAR ==
+    type TypeNode.get_type TokenType.BOOL ==
+    type TypeNode.get_type TokenType.CHAR ==
     ||
   do
     token
@@ -395,7 +395,7 @@ function type_check_cast_str ptr ptr :
 
   if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type int POINTER_TYPES Array.contains_int not do
+  elif type TypeNode.get_type POINTER_TYPES Array.contains_int not do
     token
     type TypeNode.get_type token_type_repr
     " cannot be cast to STR" str.cat
@@ -419,7 +419,7 @@ function type_check_cast_uint8 ptr ptr :
 
   if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type int INTEGER_TYPES Array.contains_int not do
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to UINT8\nPopped type: "
     type TypeNode.get_type
@@ -444,7 +444,7 @@ function type_check_do ptr ptr :
 
   if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type int TokenType.BOOL != do
+  elif type TypeNode.get_type TokenType.BOOL != do
     token
     "DO requires a boolean\nPopped type: "
     type TypeNode.get_type
@@ -584,8 +584,8 @@ function type_check_divmod ptr ptr :
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 int INTEGER_TYPES Array.contains_int not
-    t2 int INTEGER_TYPES Array.contains_int not
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
     ||
   do
     token
@@ -667,7 +667,7 @@ function type_check_load ptr ptr :
     "The stack is empty - PTR required"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
-  elif type int POINTER_TYPES Array.contains_int not do
+  elif type TypeNode.get_type POINTER_TYPES Array.contains_int not do
     token
     dup Token.get_value str.copy str.upper
     " requires a pointer\n\n"                   str.cat
@@ -726,7 +726,7 @@ function type_check_print ptr ptr :
     "Cannot print from an empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
-  elif type int INTEGER_TYPES Array.contains_int not do
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
     token
     "PRINT intrinsic requires an integer\n\n"
     "Popped type: "                             str.cat
@@ -789,7 +789,7 @@ function type_check_store ptr ptr :
     token
     required_values_str
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif t1 int POINTER_TYPES Array.contains_int not do
+  elif t1 TypeNode.get_type POINTER_TYPES Array.contains_int not do
     token
     required_values_str "\n\n"                str.cat
     "Expected types:\nPTR\nANY\n\n"           str.cat
@@ -852,8 +852,8 @@ function type_check_bitwise ptr ptr :
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 int INTEGER_TYPES Array.contains_int not
-    t2 int INTEGER_TYPES Array.contains_int not
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
     ||
   do
     token
@@ -896,8 +896,8 @@ function type_check_bitshift ptr ptr :
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 int INTEGER_TYPES Array.contains_int not
-    t2 int INTEGER_TYPES Array.contains_int not
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
     ||
   do
     token
@@ -982,8 +982,8 @@ function type_check_comparison ptr ptr :
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 int INTEGER_TYPES Array.contains_int not
-    t2 int INTEGER_TYPES Array.contains_int not
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
     ||
   do
     token
