@@ -105,6 +105,36 @@ function get_output_file_name ptr -> str :
   file_name
 end
 
+// Get Op from Location found in a Program
+// Params: Location, Program
+// Return: Op
+function get_op_from_location ptr ptr -> ptr :
+  int // Cast Location pointer to int
+  over List.len
+  0
+  take
+    index
+    program.len
+    location
+    program
+  in
+
+  while index program.len < do
+    index program List.nth ptr.load
+    take op in
+
+    op Op.get_token Token.get_location int
+    if location == do
+      op return
+    endif drop
+    index 1 + index =
+  done
+
+  "OP_NOT_FOUND"
+  "Operand could not be found from the given location"
+  CompilerError NULLPTR
+end
+
 // Check if a Constant with a certain name exists
 // Params: constant_name, List[Constant]
 // Return: bool

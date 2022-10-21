@@ -124,6 +124,8 @@ function type_check_op ptr ptr ptr ptr ptr :
   // Switch like if block with every type of Op
   if op_type OpType.INTRINSIC == do
     type_stack token type_check_intrinsic return
+  elif op_type OpType.ASSIGN_BIND == do
+    variables program type_stack token type_check_assign_bind return
   elif op_type OpType.CAST_BOOL == do
     type_stack token type_check_cast_bool return
   elif op_type OpType.CAST_CHAR == do
@@ -239,6 +241,45 @@ function type_check_intrinsic ptr ptr :
   intrinsic str.cat
   "' has not been implemented." str.cat
   NotImplementedError
+end
+
+// ASSIGN_BIND assigns a value to existing Variable
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    program: Program
+//    variables: List[Variable]
+// Return None
+function type_check_assign_bind ptr ptr ptr ptr :
+  take
+    token
+    type_stack
+    program
+    variables
+  in
+
+  type_stack LinkedList.pop int
+  type_stack LinkedList.pop int
+  take t2 t1 in
+
+  if t2 -1 == do
+    token
+    "ASSIGN operation requires two values on the stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
+
+  program t1 ptr TypeNode.get_location get_op_from_location Op.get_token
+  take variable_token in
+
+  if variable_token Token.get_vartype VarType.NONE == do
+    variable_token
+    "ASSIGN operation requires a variable name in the top of the stack"
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
+
+  token Token.get_location
+  t1 ptr TypeNode.get_type TypeNode.init
+  type_stack LinkedList.push
 end
 
 // CAST_BOOL explicitely casts the top element of the stack to BOOL type.
