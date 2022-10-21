@@ -298,7 +298,7 @@ function type_check_cast_bool ptr ptr :
   elif type INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to BOOL\nPopped type: "
-    type token_type_repr str.cat
+    type ptr TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -327,7 +327,7 @@ function type_check_cast_char ptr ptr :
   elif type INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to CHAR\nPopped type: "
-    type token_type_repr str.cat
+    type ptr TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -373,7 +373,8 @@ function type_check_cast_ptr ptr ptr :
     ||
   do
     token
-    type token_type_repr " cannot be cast to PTR" str.cat
+    type ptr TypeNode.get_type token_type_repr
+    " cannot be cast to PTR" str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -396,7 +397,8 @@ function type_check_cast_str ptr ptr :
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   elif type POINTER_TYPES Array.contains_int not do
     token
-    type token_type_repr " cannot be cast to STR" str.cat
+    type ptr TypeNode.get_type token_type_repr
+    " cannot be cast to STR" str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -420,7 +422,8 @@ function type_check_cast_uint8 ptr ptr :
   elif type INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to UINT8\nPopped type: "
-    type token_type_repr str.cat
+    type ptr TypeNode.get_type
+    token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -444,7 +447,8 @@ function type_check_do ptr ptr :
   elif type TokenType.BOOL != do
     token
     "DO requires a boolean\nPopped type: "
-    type token_type_repr str.cat
+    type ptr TypeNode.get_type
+    token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 end
@@ -587,8 +591,8 @@ function type_check_divmod ptr ptr :
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 token_type_repr str.cat "\n" str.cat
-    t2 token_type_repr str.cat
+    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 ptr TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -666,9 +670,9 @@ function type_check_load ptr ptr :
   elif type POINTER_TYPES Array.contains_int not do
     token
     dup Token.get_value str.copy str.upper
-    " requires a pointer\n\n" str.cat
-    "Popped type: "           str.cat
-    type token_type_repr      str.cat
+    " requires a pointer\n\n"                   str.cat
+    "Popped type: "                             str.cat
+    type ptr TypeNode.get_type token_type_repr  str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -725,8 +729,8 @@ function type_check_print ptr ptr :
   elif type INTEGER_TYPES Array.contains_int not do
     token
     "PRINT intrinsic requires an integer\n\n"
-    "Popped type: "       str.cat
-    type token_type_repr  str.cat
+    "Popped type: "                             str.cat
+    type ptr TypeNode.get_type token_type_repr  str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 end
@@ -787,11 +791,12 @@ function type_check_store ptr ptr :
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   elif t1 POINTER_TYPES Array.contains_int not do
     token
-    required_values_str "\n\n"      str.cat
-    "Expected types:\nPTR\nANY\n\n" str.cat
-    "Popped types:\n"               str.cat
-    t1 token_type_repr str.cat "\n" str.cat
-    t2 token_type_repr              str.cat
+    required_values_str "\n\n"                str.cat
+    "Expected types:\nPTR\nANY\n\n"           str.cat
+    "Popped types:\n"                         str.cat
+    t1 ptr TypeNode.get_type token_type_repr  str.cat
+    "\n"                                      str.cat
+    t2 ptr TypeNode.get_type token_type_repr  str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 end
@@ -854,8 +859,8 @@ function type_check_bitwise ptr ptr :
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 token_type_repr str.cat "\n" str.cat
-    t2 token_type_repr str.cat
+    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 ptr TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -898,8 +903,8 @@ function type_check_bitshift ptr ptr :
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 token_type_repr str.cat "\n" str.cat
-    t2 token_type_repr str.cat
+    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 ptr TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -940,8 +945,8 @@ function type_check_calculations ptr ptr :
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 token_type_repr str.cat "\n" str.cat
-    t2 token_type_repr str.cat
+    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 ptr TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -984,8 +989,8 @@ function type_check_comparison ptr ptr :
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 token_type_repr str.cat "\n" str.cat
-    t2 token_type_repr str.cat
+    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 ptr TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
