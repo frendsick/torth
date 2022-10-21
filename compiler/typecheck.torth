@@ -258,17 +258,17 @@ function type_check_assign_bind ptr ptr ptr ptr :
     variables
   in
 
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     "ASSIGN operation requires two values on the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
 
-  program t1 ptr TypeNode.get_location get_op_from_location Op.get_token
+  program t1 TypeNode.get_location get_op_from_location Op.get_token
   take variable_token in
 
   if variable_token Token.get_vartype VarType.NONE == do
@@ -278,7 +278,7 @@ function type_check_assign_bind ptr ptr ptr ptr :
   endif
 
   token Token.get_location
-  t1 ptr TypeNode.get_type TypeNode.init
+  t1 TypeNode.get_type TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -290,15 +290,15 @@ end
 // Return None
 function type_check_cast_bool ptr ptr :
   take token type_stack in
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
-  if type -1 == do
+  if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type INTEGER_TYPES Array.contains_int not do
+  elif type int INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to BOOL\nPopped type: "
-    type ptr TypeNode.get_type token_type_repr str.cat
+    type TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -315,19 +315,19 @@ end
 // Return None
 function type_check_cast_char ptr ptr :
   take token type_stack in
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
-  if type -1 == do
+  if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type TokenType.BOOL == do
+  elif type int TokenType.BOOL == do
     token
     "A boolean value cannot be cast to CHAR"
     "VALUE_ERROR" CompilerErrorWithToken
-  elif type INTEGER_TYPES Array.contains_int not do
+  elif type int INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to CHAR\nPopped type: "
-    type ptr TypeNode.get_type token_type_repr str.cat
+    type TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -343,10 +343,10 @@ end
 // Return None
 function type_check_cast_int ptr ptr :
   take token type_stack in
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
-  if type -1 == do
+  if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
 
@@ -362,18 +362,18 @@ end
 // Return None
 function type_check_cast_ptr ptr ptr :
   take token type_stack in
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
-  if type -1 == do
+  if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   elif
-    type TokenType.BOOL ==
-    type TokenType.CHAR ==
+    type int TokenType.BOOL ==
+    type int TokenType.CHAR ==
     ||
   do
     token
-    type ptr TypeNode.get_type token_type_repr
+    type TypeNode.get_type token_type_repr
     " cannot be cast to PTR" str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
@@ -390,14 +390,14 @@ end
 // Return None
 function type_check_cast_str ptr ptr :
   take token type_stack in
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
-  if type -1 == do
+  if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type POINTER_TYPES Array.contains_int not do
+  elif type int POINTER_TYPES Array.contains_int not do
     token
-    type ptr TypeNode.get_type token_type_repr
+    type TypeNode.get_type token_type_repr
     " cannot be cast to STR" str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
@@ -414,15 +414,15 @@ end
 // Return None
 function type_check_cast_uint8 ptr ptr :
   take token type_stack in
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
-  if type -1 == do
+  if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type INTEGER_TYPES Array.contains_int not do
+  elif type int INTEGER_TYPES Array.contains_int not do
     token
     "Only integer-like values can be cast to UINT8\nPopped type: "
-    type ptr TypeNode.get_type
+    type TypeNode.get_type
     token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
@@ -439,15 +439,15 @@ end
 // Return None
 function type_check_do ptr ptr :
   take token type_stack in
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
-  if type -1 == do
+  if type int -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif type TokenType.BOOL != do
+  elif type int TokenType.BOOL != do
     token
     "DO requires a boolean\nPopped type: "
-    type ptr TypeNode.get_type
+    type TypeNode.get_type
     token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
@@ -466,17 +466,17 @@ function type_check_pop_bind ptr ptr ptr :
     variables
   in
 
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
   // Stack is empty
-  if type -1 == do
+  if type int -1 == do
     token
     "Cannot drop value from empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
 
-  type token Token.get_value Variable.init
+  type TypeNode.get_type token Token.get_value Variable.init
   variables List.append
 end
 
@@ -573,26 +573,26 @@ function type_check_divmod ptr ptr :
   in
 
   // Pop two items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
   // Not enough values in the stack
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     token_value " intrinsic requires two integers" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 INTEGER_TYPES Array.contains_int not
-    t2 INTEGER_TYPES Array.contains_int not
+    t1 int INTEGER_TYPES Array.contains_int not
+    t2 int INTEGER_TYPES Array.contains_int not
     ||
   do
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
-    t2 ptr TypeNode.get_type token_type_repr str.cat
+    t1 TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -612,11 +612,11 @@ function type_check_drop ptr ptr :
   take token type_stack in
 
   // Pop one item from the stack
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
   // Stack is empty
-  if type -1 == do
+  if type int -1 == do
     token
     "Cannot drop value from empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
@@ -632,19 +632,19 @@ function type_check_dup ptr ptr :
   take token type_stack in
 
   // Pop one item from the stack
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
   // Stack is empty
-  if type -1 == do
+  if type int -1 == do
     token
     "Cannot duplicate value from empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
 
   // Push the popped value twice
-  type ptr type_stack LinkedList.push
-  type ptr type_stack LinkedList.push
+  type type_stack LinkedList.push
+  type type_stack LinkedList.push
 end
 
 // LOAD variants load certain type of value from where a pointer is pointing to.
@@ -658,21 +658,21 @@ function type_check_load ptr ptr :
   take token type_stack in
 
   // Pop one item from the stack
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
   // Stack is empty
-  if type -1 == do
+  if type int -1 == do
     token
     "The stack is empty - PTR required"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
-  elif type POINTER_TYPES Array.contains_int not do
+  elif type int POINTER_TYPES Array.contains_int not do
     token
     dup Token.get_value str.copy str.upper
     " requires a pointer\n\n"                   str.cat
     "Popped type: "                             str.cat
-    type ptr TypeNode.get_type token_type_repr  str.cat
+    type TypeNode.get_type token_type_repr  str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -691,21 +691,21 @@ function type_check_over ptr ptr :
   take token type_stack in
 
   // Pop two items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
   // Not enough values in the stack
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     "OVER intrinsic requires two values in the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
 
   // Push the values back to the stack in the correct order
-  t2 ptr type_stack LinkedList.push
-  t1 ptr type_stack LinkedList.push
-  t2 ptr type_stack LinkedList.push
+  t2 type_stack LinkedList.push
+  t1 type_stack LinkedList.push
+  t2 type_stack LinkedList.push
 end
 
 // Pop an integer from the stack and print its value to stdout
@@ -717,20 +717,20 @@ function type_check_print ptr ptr :
   take token type_stack in
 
   // Pop one item from the stack
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
   take type in
 
   // Not enough values in the stack
-  if type -1 == do
+  if type int -1 == do
     token
     "Cannot print from an empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
-  elif type INTEGER_TYPES Array.contains_int not do
+  elif type int INTEGER_TYPES Array.contains_int not do
     token
     "PRINT intrinsic requires an integer\n\n"
     "Popped type: "                             str.cat
-    type ptr TypeNode.get_type token_type_repr  str.cat
+    type TypeNode.get_type token_type_repr  str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 end
@@ -745,22 +745,22 @@ function type_check_rot ptr ptr :
   take token type_stack in
 
   // Pop three items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t3 t2 t1 in
 
   // Not enough values in the stack
-  if t3 -1 == do
+  if t3 int -1 == do
     token
     "ROT intrinsic requires three values in the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
 
   // Push the values back to the stack in the correct order
-  t2 ptr type_stack LinkedList.push
-  t1 ptr type_stack LinkedList.push
-  t3 ptr type_stack LinkedList.push
+  t2 type_stack LinkedList.push
+  t1 type_stack LinkedList.push
+  t3 type_stack LinkedList.push
 end
 
 // STORE variants store a value of certain type to where a pointer is pointing to.
@@ -780,23 +780,23 @@ function type_check_store ptr ptr :
   in
 
   // Pop two items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
   // Not enough values in the stack
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     required_values_str
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
-  elif t1 POINTER_TYPES Array.contains_int not do
+  elif t1 int POINTER_TYPES Array.contains_int not do
     token
     required_values_str "\n\n"                str.cat
     "Expected types:\nPTR\nANY\n\n"           str.cat
     "Popped types:\n"                         str.cat
-    t1 ptr TypeNode.get_type token_type_repr  str.cat
+    t1 TypeNode.get_type token_type_repr  str.cat
     "\n"                                      str.cat
-    t2 ptr TypeNode.get_type token_type_repr  str.cat
+    t2 TypeNode.get_type token_type_repr  str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 end
@@ -811,20 +811,20 @@ function type_check_swap ptr ptr :
   take token type_stack in
 
   // Pop two items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
   // Not enough values in the stack
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     "SWAP intrinsic requires two values in the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
 
   // Push the values back to the stack in the correct order
-  t1 ptr type_stack LinkedList.push
-  t2 ptr type_stack LinkedList.push
+  t1 type_stack LinkedList.push
+  t2 type_stack LinkedList.push
 end
 
 // Type check bitwise operation for two integers
@@ -841,26 +841,26 @@ function type_check_bitwise ptr ptr :
   in
 
   // Pop two items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
   // Not enough values in the stack
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     token_value " intrinsic requires two integers" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 INTEGER_TYPES Array.contains_int not
-    t2 INTEGER_TYPES Array.contains_int not
+    t1 int INTEGER_TYPES Array.contains_int not
+    t2 int INTEGER_TYPES Array.contains_int not
     ||
   do
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
-    t2 ptr TypeNode.get_type token_type_repr str.cat
+    t1 TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -885,26 +885,26 @@ function type_check_bitshift ptr ptr :
   in
 
   // Pop two items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
   // Not enough values in the stack
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     token_value " intrinsic requires two values in the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 INTEGER_TYPES Array.contains_int not
-    t2 INTEGER_TYPES Array.contains_int not
+    t1 int INTEGER_TYPES Array.contains_int not
+    t2 int INTEGER_TYPES Array.contains_int not
     ||
   do
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
-    t2 ptr TypeNode.get_type token_type_repr str.cat
+    t1 TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -927,26 +927,26 @@ function type_check_calculations ptr ptr :
   in
 
   // Pop two items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
   // Not enough values in the stack
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     token_value " requires two values on the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 INTEGER_TYPES Array.contains_int not
-    t2 INTEGER_TYPES Array.contains_int not
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
     ||
   do
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
-    t2 ptr TypeNode.get_type token_type_repr str.cat
+    t1 TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
@@ -971,26 +971,26 @@ function type_check_comparison ptr ptr :
   in
 
   // Pop two items from the stack
-  type_stack LinkedList.pop int
-  type_stack LinkedList.pop int
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
   take t2 t1 in
 
   // Not enough values in the stack
-  if t2 -1 == do
+  if t2 int -1 == do
     token
     token_value " requires two values on the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   // Wrong token type
   elif
-    t1 INTEGER_TYPES Array.contains_int not
-    t2 INTEGER_TYPES Array.contains_int not
+    t1 int INTEGER_TYPES Array.contains_int not
+    t2 int INTEGER_TYPES Array.contains_int not
     ||
   do
     token
     token_value " intrinsic requires two integers\n\n" str.cat
     "Popped types:\n" str.cat
-    t1 ptr TypeNode.get_type token_type_repr str.cat "\n" str.cat
-    t2 ptr TypeNode.get_type token_type_repr str.cat
+    t1 TypeNode.get_type token_type_repr str.cat "\n" str.cat
+    t2 TypeNode.get_type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
