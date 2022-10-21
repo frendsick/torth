@@ -176,7 +176,9 @@ end
 // Get printable representation for TokenType
 function token_type_repr int -> str :
   take token_type in
-  if token_type TokenType.BOOL == do
+  if token_type TokenType.ANY == do
+    "ANY" return
+  elif token_type TokenType.BOOL == do
     "BOOL" return
   elif token_type TokenType.CHAR == do
     "CHAR" return
