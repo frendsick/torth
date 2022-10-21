@@ -46,10 +46,11 @@ function Variable.set_type ptr int :
   Token.vartype ptr+ int.store
 end
 
-// Test if array contains a Variable with certain name
+// Get Variable with certain name from Array
+// Return NULLPTR if not found
 // Params: Array[Variable], str
-// Return: bool
-function Array.contains_variable ptr str -> bool :
+// Return: Variable
+function Array.get_variable ptr str -> ptr :
   dup Array.len
   0
   take
@@ -60,14 +61,36 @@ function Array.contains_variable ptr str -> bool :
   in
 
   while index len < do
-    index array Array.nth ptr.load Variable.get_name
-    take array_name in
+    index array Array.nth ptr.load
+    take variable in
 
     // Return True if the current string matches with the parameter
-    if name array_name streq do
-      True return
+    if variable Variable.get_name name streq do
+      variable return
     endif
     index 1 + index =
   done
-  False
+  NULLPTR
+end
+
+// Test if Array contains Variable with certain name
+// Params: Array[Variable], str
+// Return: bool
+function Array.contains_variable ptr str -> bool :
+  Array.get_variable int NULL !=
+end
+
+// Get Variable with certain name from List
+// Return NULLPTR if not found
+// Params: List[Variable], str
+// Return: Variable
+function List.get_variable ptr str -> ptr :
+  List.get_array Array.get_variable
+end
+
+// Test if List contains Variable with certain name
+// Params: List[Variable], str
+// Return: bool
+function List.contains_variable ptr str -> bool :
+  List.get_array Array.contains_variable
 end
