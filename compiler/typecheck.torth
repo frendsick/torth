@@ -1,6 +1,7 @@
 include "std"
 include "compiler/class/Op"
 include "compiler/class/Token"
+include "compiler/class/TypeNode"
 
 // Create Array of integer types
 // TODO: Enable creating constant arrays
@@ -87,7 +88,7 @@ function type_check_sub_program ptr ptr ptr :
   while index program.len < do
     index program List.nth ptr.load
     take op in
-    functions program branched_stacks op type_check_op
+    variables functions program branched_stacks op type_check_op
     index 1 + index =
   done
 end
@@ -96,16 +97,18 @@ end
 // Raise compiler error if the type checking fails
 // Params
 //    op: Op
-//    branched_stacks: List[TypeStack]
+//    branched_stacks: List[TypeStack[TypeNode]]
 //    program: Program
 //    functions: List[Function]
+//    variables: List[Variable]
 // Return None
-function type_check_op ptr ptr ptr ptr :
+function type_check_op ptr ptr ptr ptr ptr :
   take
     op
     branched_stacks
     program
     functions
+    variables
   in
   op  Op.get_token
   dup Token.get_value
@@ -135,39 +138,41 @@ function type_check_op ptr ptr ptr ptr :
     type_stack token type_check_cast_uint8 return
   elif op_type OpType.DO == do
     type_stack token type_check_do return
+  elif op_type OpType.POP_BIND == do
+    variables type_stack token type_check_pop_bind return
+  elif op_type OpType.PUSH_BIND == do
+    variables type_stack token type_check_push_bind return
   elif op_type OpType.PUSH_BOOL == do
-    type_stack type_check_push_bool return
+    type_stack token type_check_push_bool return
   elif op_type OpType.PUSH_CHAR == do
-    type_stack type_check_push_char return
+    type_stack token type_check_push_char return
   elif op_type OpType.PUSH_INT == do
-    type_stack type_check_push_int return
+    type_stack token type_check_push_int return
   elif op_type OpType.PUSH_PTR == do
-    type_stack type_check_push_ptr return
+    type_stack token type_check_push_ptr return
   elif op_type OpType.PUSH_STR == do
-    type_stack type_check_push_str return
+    type_stack token type_check_push_str return
   elif op_type OpType.PUSH_UINT8 == do
-    type_stack type_check_push_uint8 return
+    type_stack token type_check_push_uint8 return
   elif
     token_value str.copy str.upper
     get_not_typed_tokens
     List.contains_str
   do
-    token_value puts "\n" puts
-    0 exit
     return
   endif
 
   // Type checking certain OpType is not implemented
   "Parsing token '"
   token_value str.cat
-  "' is not implemented yet" str.cat
-  NotImplementedError
+  "' is not implemented yet\n" str.cat
+  eputs // NotImplementedError
 end
 
 // Type check an intrinsic
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_intrinsic ptr ptr :
   dup Token.get_value str.copy str.upper
@@ -179,9 +184,9 @@ function type_check_intrinsic ptr ptr :
 
   // Switch like if block with every type of Intrinsic
   if intrinsic "ARGC" streq do
-    type_stack type_check_push_int return
+    type_stack token type_check_push_int return
   elif intrinsic "ARGV" streq do
-    type_stack type_check_push_ptr return
+    type_stack token type_check_push_ptr return
   elif intrinsic "DIVMOD" streq do
     type_stack token type_check_divmod return
   elif intrinsic "DROP" streq do
@@ -189,7 +194,7 @@ function type_check_intrinsic ptr ptr :
   elif intrinsic "DUP" streq do
     type_stack token type_check_dup return
   elif intrinsic "ENVP" streq do
-    type_stack type_check_push_ptr return
+    type_stack token type_check_push_ptr return
   elif intrinsic "LOAD_" str.startswith do
     type_stack token type_check_load return
   elif intrinsic "OVER" streq do
@@ -240,7 +245,7 @@ end
 // The top element must be an integer to be cast to BOOL.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_cast_bool ptr ptr :
   take token type_stack in
@@ -255,14 +260,17 @@ function type_check_cast_bool ptr ptr :
     type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
-  TokenType.BOOL ptr type_stack LinkedList.push
+
+  // Push a boolean back to the stack
+  token Token.get_location TokenType.BOOL TypeNode.init
+  type_stack LinkedList.push
 end
 
 // CAST_CHAR explicitely casts the top element of the stack to CHAR type.
 // The top element must be in INTEGER_TYPES to be cast to CHAR.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_cast_char ptr ptr :
   take token type_stack in
@@ -281,13 +289,16 @@ function type_check_cast_char ptr ptr :
     type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
-  TokenType.CHAR ptr type_stack LinkedList.push
+
+  // Push a character back to the stack
+  token Token.get_location TokenType.CHAR TypeNode.init
+  type_stack LinkedList.push
 end
 
 // CAST_INT explicitely casts the top element of the stack to INT type.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_cast_int ptr ptr :
   take token type_stack in
@@ -297,13 +308,16 @@ function type_check_cast_int ptr ptr :
   if type -1 == do
     token "The stack is empty" "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
   endif
-  TokenType.INT ptr type_stack LinkedList.push
+
+  // Push an integer back to the stack
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
 end
 
 // CAST_PTR explicitely casts the top element of the stack to PTR type.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_cast_ptr ptr ptr :
   take token type_stack in
@@ -321,13 +335,16 @@ function type_check_cast_ptr ptr ptr :
     type token_type_repr " cannot be cast to PTR" str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
-  TokenType.PTR ptr type_stack LinkedList.push
+
+  // Push a pointer back to the stack
+  token Token.get_location TokenType.PTR TypeNode.init
+  type_stack LinkedList.push
 end
 
 // CAST_STR explicitely casts the top element of the stack to STR type.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_cast_str ptr ptr :
   take token type_stack in
@@ -341,13 +358,16 @@ function type_check_cast_str ptr ptr :
     type token_type_repr " cannot be cast to STR" str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
-  TokenType.STR ptr type_stack LinkedList.push
+
+  // Push a string back to the stack
+  token Token.get_location TokenType.STR TypeNode.init
+  type_stack LinkedList.push
 end
 
 // CAST_UINT8 explicitely casts the top element of the stack to UINT8 type.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_cast_uint8 ptr ptr :
   take token type_stack in
@@ -362,13 +382,16 @@ function type_check_cast_uint8 ptr ptr :
     type token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
-  TokenType.UINT8 ptr type_stack LinkedList.push
+
+  // Push 8-bit unsigned integer back to the stack
+  token Token.get_location TokenType.UINT8 TypeNode.init
+  type_stack LinkedList.push
 end
 
 // DO Keyword pops one boolean from the stack
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_do ptr ptr :
   take token type_stack in
@@ -385,59 +408,116 @@ function type_check_do ptr ptr :
   endif
 end
 
+// Pop a value from the stack to a Variable
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    variables: List[Variable]
+// Return None
+function type_check_pop_bind ptr ptr ptr :
+  take
+    token
+    type_stack
+    variables
+  in
+
+  type_stack LinkedList.pop int
+  take type in
+
+  // Stack is empty
+  if type -1 == do
+    token
+    "Cannot drop value from empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
+
+  type token Token.get_value Variable.init
+  variables List.append
+end
+
+// Push a value from Variable to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    variables: List[Variable]
+// Return None
+function type_check_push_bind ptr ptr ptr :
+  take
+    token
+    type_stack
+    variables
+  in
+
+  token Token.get_location
+  token Token.get_value variables List.get_variable Variable.get_type
+  TypeNode.init type_stack LinkedList.push
+end
+
 // Push a boolean to the stack
 // Params
-//    type_stack: LinkedList
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_bool ptr :
-  TokenType.BOOL ptr swap LinkedList.push
+function type_check_push_bool ptr ptr :
+  Token.get_location TokenType.BOOL TypeNode.init
+  swap LinkedList.push
 end
 
 // Push a character to the stack
 // Params
-//    type_stack: LinkedList
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_char ptr :
-  TokenType.CHAR ptr swap LinkedList.push
+function type_check_push_char ptr ptr :
+  Token.get_location TokenType.CHAR TypeNode.init
+  swap LinkedList.push
 end
 
 // Push an integer to the stack
 // Params
-//    type_stack: LinkedList
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_int ptr :
-  TokenType.INT ptr swap LinkedList.push
+function type_check_push_int ptr ptr :
+  Token.get_location TokenType.INT TypeNode.init
+  swap LinkedList.push
 end
 
 // Push a pointer to the stack
 // Params
-//    type_stack: LinkedList
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_ptr ptr :
-  TokenType.PTR ptr swap LinkedList.push
+function type_check_push_ptr ptr ptr :
+  Token.get_location TokenType.PTR TypeNode.init
+  swap LinkedList.push
 end
 
 // Push a string to the stack
 // Params
-//    type_stack: LinkedList
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_str ptr :
-  TokenType.STR ptr swap LinkedList.push
+function type_check_push_str ptr ptr :
+  Token.get_location TokenType.STR TypeNode.init
+  swap LinkedList.push
 end
 
 // Push an unsigned 8-bit integer to the stack
 // Params
-//    type_stack: LinkedList
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_uint8 ptr :
-  TokenType.UINT8 ptr swap LinkedList.push
+function type_check_push_uint8 ptr ptr :
+  Token.get_location TokenType.UINT8 TypeNode.init
+  swap LinkedList.push
 end
 
 // DIVMOD pops two items from the stack and divides second from the top one.
 // Then push the remainder and the quotient of the two values.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_divmod ptr ptr :
   dup Token.get_value str.copy str.upper
@@ -472,14 +552,16 @@ function type_check_divmod ptr ptr :
   endif
 
   // Push the remainder and the quotient to the stack
-  TokenType.INT ptr type_stack LinkedList.push
-  TokenType.INT ptr type_stack LinkedList.push
+  token Token.get_location
+  take location in
+  location TokenType.INT TypeNode.init type_stack LinkedList.push
+  location TokenType.INT TypeNode.init type_stack LinkedList.push
 end
 
 // DROP removes one item from the stack
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_drop ptr ptr :
   take token type_stack in
@@ -499,7 +581,7 @@ end
 // DUP duplicates the top item from the stack
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_dup ptr ptr :
   take token type_stack in
@@ -525,7 +607,7 @@ end
 // Different LOAD variants: LOAD_BYTE, LOAD_WORD, LOAD_DWORD, LOAD_QWORD
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_load ptr ptr :
   take token type_stack in
@@ -550,14 +632,15 @@ function type_check_load ptr ptr :
   endif
 
   // Push loaded value which could be of any type
-  TokenType.ANY ptr type_stack LinkedList.push
+  token Token.get_location TokenType.ANY TypeNode.init
+  type_stack LinkedList.push
 end
 
 // OVER Intrinsic pushes a copy of the second element of the stack.
 // Example with the stack's top element being the rightmost: a b -> a b a
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_over ptr ptr :
   take token type_stack in
@@ -583,7 +666,7 @@ end
 // Pop an integer from the stack and print its value to stdout
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_print ptr ptr :
   take token type_stack in
@@ -611,7 +694,7 @@ end
 // Example with the stack's top element being the rightmost: a b c -> b c a
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_rot ptr ptr :
   take token type_stack in
@@ -640,7 +723,7 @@ end
 // Different STORE variants: STORE_BYTE, STORE_WORD, STORE_DWORD, STORE_QWORD
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_store ptr ptr :
   dup Token.get_value str.copy str.upper
@@ -676,7 +759,7 @@ end
 // Example with the stack's top element being the rightmost: a b -> b a
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_swap ptr ptr :
   take token type_stack in
@@ -701,7 +784,7 @@ end
 // Type check bitwise operation for two integers
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_bitwise ptr ptr :
   dup Token.get_value str.copy str.upper
@@ -736,7 +819,8 @@ function type_check_bitwise ptr ptr :
   endif
 
   // Push the result to the stack
-  TokenType.INT ptr type_stack LinkedList.push
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
 end
 
 // SHL performs bitshift operations to the left SHR to the right.
@@ -744,7 +828,7 @@ end
 // and the first is the amount of times the shift should be performed.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_bitshift ptr ptr :
   dup Token.get_value str.copy str.upper
@@ -779,13 +863,14 @@ function type_check_bitshift ptr ptr :
   endif
 
   // Push the result to the stack
-  TokenType.INT ptr type_stack LinkedList.push
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
 end
 
 // Type check calculation intrinsics MINUS, MUL, and PLUS
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_calculations ptr ptr :
   dup Token.get_value str.copy str.upper
@@ -820,7 +905,8 @@ function type_check_calculations ptr ptr :
   endif
 
   // Push the result to the stack
-  TokenType.INT ptr type_stack LinkedList.push
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
 end
 
 // Type check comparison intrinsics like EQ or GE.
@@ -828,7 +914,7 @@ end
 // and pushes a boolean result of the comparison.
 // Params
 //    token: Token
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_comparison ptr ptr :
   dup Token.get_value str.copy str.upper
@@ -863,7 +949,8 @@ function type_check_comparison ptr ptr :
   endif
 
   // Push the result to the stack
-  TokenType.BOOL ptr type_stack LinkedList.push
+  token Token.get_location TokenType.BOOL TypeNode.init
+  type_stack LinkedList.push
 end
 
 // Get a list of tokens that do not require type checking
@@ -886,7 +973,7 @@ end
 // Params
 //    func: Function
 // Return
-//    type_stack: LinkedList
+//    type_stack: LinkedList[TypeNode]
 function get_function_type_stack ptr -> ptr :
   take func in
   func Function.get_signature Signature.get_params
@@ -898,10 +985,16 @@ function get_function_type_stack ptr -> ptr :
     params
   in
 
+  // Get the first Token's location for TypeNodes
+  func Function.get_tokens List.first ptr.load Token.get_location
+  take location in
+
   // Insert all parameter types to type_stack in the reverse order
   while index 0 >= do
-    // Push the current parameters TokenType to type_stack
-    index params List.nth ptr.load
+    // Add TypeNode from current parameter to type_stack
+    location
+    index params List.nth ptr.load int
+    TypeNode.init
     type_stack LinkedList.push
     index 1 - index =
   done
