@@ -209,6 +209,8 @@ function type_check_intrinsic ptr ptr :
     type_stack token type_check_store return
   elif intrinsic "SWAP" streq do
     type_stack token type_check_swap return
+  elif intrinsic "SYSCALL" str.startswith do
+    type_stack token type_check_syscall return
   elif
     intrinsic "AND" streq
     intrinsic "OR"  streq ||
@@ -825,6 +827,80 @@ function type_check_swap ptr ptr :
   // Push the values back to the stack in the correct order
   t1 type_stack LinkedList.push
   t2 type_stack LinkedList.push
+end
+
+// SYSCALL intrinsic variants call a Linux syscall.
+// Syscalls require different amount of arguments from 0 to 6.
+// Different variants are named SYSCALL0 - SYSCALL6 by the amount of arguments.
+// The different syscall constants required for RAX register can be found from lib/sys.torth.
+// Naming convention (case sensitive): SYS_<syscall> - Example: SYS_write
+// https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#tables
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_syscall ptr ptr :
+  dup Token.get_value str.copy str.upper
+
+  // The parameter count for the SYSCALL intrinsic is the last character of the Token.value
+  // SYSCALL0 --> No parameters
+  // SYSCALL6 --> Six parameters
+  dup dup str.len 1 - str.char_at '0' -
+  take
+    parameter_count
+    token_value
+    token
+    type_stack
+  in
+
+  // Pop the syscall number
+  type_stack LinkedList.pop
+  take type in
+
+  // SYSCALLx intrinsics require x+1 parameters
+  if type int -1 == do
+    token
+    token_value " intrinsic requires "  str.cat
+    parameter_count 1 + itoa            str.cat
+    " value"                            str.cat
+    if parameter_count 0 > do "s"       str.cat endif
+    " in the stack"                     str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+  // The first parameter should be the number of the syscall
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
+    token
+    "The first argument of " token_value        str.cat
+    " should be the number of the syscall\n\n"  str.cat
+    "Expected type: INT\n"                      str.cat
+    "Popped type: "                             str.cat
+    type TypeNode.get_type token_type_repr      str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
+
+  // Pop the syscall parameters
+  1 take parameter_index in
+  while parameter_index parameter_count <= do
+    type_stack LinkedList.pop
+    type =
+
+    // There is not enough values in the stack
+    if type int -1 == do
+      token
+      token_value " intrinsic requires "  str.cat
+      parameter_count 1 + itoa            str.cat
+      " value"                            str.cat
+      if parameter_count 0 > do "s"       str.cat endif
+      " in the stack but got "            str.cat
+      parameter_index itoa                str.cat
+      "POP_FROM_EMPTY_STACK" CompilerErrorWithToken
+    endif
+    parameter_index 1 +
+    parameter_index =
+  done
+
+  // Push syscall return code to the stack
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
 end
 
 // Type check bitwise operation for two integers
