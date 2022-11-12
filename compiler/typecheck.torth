@@ -139,7 +139,9 @@ function type_check_op ptr ptr ptr ptr ptr :
   elif op_type OpType.CAST_UINT8 == do
     type_stack token type_check_cast_uint8 return
   elif op_type OpType.DO == do
-    type_stack token type_check_do return
+    branched_stacks type_stack token type_check_do return
+  elif op_type OpType.DONE == do
+    branched_stacks token type_check_end_of_branch return
   elif op_type OpType.POP_BIND == do
     variables type_stack token type_check_pop_bind return
   elif op_type OpType.PUSH_BIND == do
@@ -243,6 +245,118 @@ function type_check_intrinsic ptr ptr :
   intrinsic str.cat
   "' has not been implemented." str.cat
   NotImplementedError
+end
+
+// Check if two TypeStacks have similar types inside
+// Params
+//    type_stack1: LinkedList[TypeNode]
+//    type_stack2: LinkedList[TypeNode]
+// Return bool
+function equal_stacks ptr ptr -> bool :
+  ptr.load swap
+  ptr.load
+  take type_node1 type_node2 in
+// stack_before_branch stack_after_branch equal_stacks
+  while
+    type_node1 int NULL !=
+    type_node2 int NULL !=
+    &&
+  do
+    // Return early if the current types do not match
+    if
+      type_node1 Node.get_data TypeNode.get_type
+      type_node2 Node.get_data TypeNode.get_type
+      !=
+    do
+      False return
+    endif
+
+    type_node1 Node.get_next type_node1 =
+    type_node2 Node.get_next type_node2 =
+  done
+
+  // Stacks are equal if both TypeStacks are empty after the loop
+  type_node1 int NULL ==
+  type_node2 int NULL == &&
+end
+
+// Perform a deep copy of the TypeStack
+// Params
+//    type_stack: LinkedList[TypeNode]
+// Return
+//    type_stack_copy: LinkedList[TypeNode]
+function TypeStack.copy ptr -> ptr :
+  Node.get_data
+  LinkedList.init
+  0
+  take
+    stack_depth
+    type_stack_copy
+    node
+  in
+
+  // Traverse the TypeStack to the first Node
+  while node Node.get_next int NULL != do
+    node Node.get_next node =
+    stack_depth 1 + stack_depth =
+  done
+
+  // Fill the copy TypeStack with the contents of the original
+  while stack_depth 0 >= do
+    // Generate new TypeNode from the original stack
+    node Node.get_data
+    take type_node in
+    type_node TypeNode.get_location
+    type_node TypeNode.get_type
+    TypeNode.init
+    type_stack_copy LinkedList.push
+
+    // Get the next item in the stack
+    node Node.get_prev node =
+    stack_depth 1 - stack_depth =
+  done
+  type_stack_copy
+end
+
+// Check if the stack state is the same after the branch block whether or not the branch condition is matched
+// Branch blocks (IF, WHILE) begin with DO and end with DONE, ELIF, ELSE or ENDIF
+// Params
+//    token: Token
+//    branched_stacks: List[LinkedList[TypeNode]]
+// Return None
+function type_check_end_of_branch ptr ptr :
+  take
+    token
+    branched_stacks
+  in
+
+  // If branched_stacks is empty we are not inside a branch block
+  if branched_stacks List.len 1 <= do
+    token Token.get_value str.copy str.upper
+    take token_value in
+
+    token
+    token_value " token found outside "                     str.cat
+    if token_value "DONE" streq do "WHILE" else "IF" endif  str.cat
+    " block"                                                str.cat
+    "SYNTAX_ERROR" CompilerErrorWithToken
+  endif
+
+  // Get the stack state after the branch
+  branched_stacks List.last ptr.load
+  branched_stacks dup List.len 1 - swap List.pop
+  branched_stacks List.last ptr.load
+  take stack_before_branch stack_after_branch in
+
+  // Test if the stack state is the same before and after the branch
+  if stack_before_branch stack_after_branch equal_stacks not do
+    token
+    "Stack state should be the same after the block whether or not the condition was matched"
+    // TODO: Print the stack state before and after the branch block
+    // "\n\nStack state at the start of the block:\n"  str.cat
+    // "Stack state at the end of the block:\n"        str.cat
+    "DIFFERENT_STACK_BETWEEN_BRANCHES" CompilerErrorWithToken
+  endif
 end
 
 // ASSIGN_BIND assigns a value to existing Variable
@@ -438,9 +552,15 @@ end
 // Params
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
+//    branched_stacks: List[LinkedList[TypeNode]]
 // Return None
-function type_check_do ptr ptr :
-  take token type_stack in
+function type_check_do ptr ptr ptr :
+  take
+    token
+    type_stack
+    branched_stacks
+  in
+
   type_stack LinkedList.pop
   take type in
 
@@ -453,6 +573,7 @@ function type_check_do ptr ptr :
     token_type_repr str.cat
     "VALUE_ERROR" CompilerErrorWithToken
   endif
+  type_stack TypeStack.copy branched_stacks List.append
 end
 
 // Pop a value from the stack to a Variable
