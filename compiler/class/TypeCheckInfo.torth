@@ -42,3 +42,24 @@ end
 function TypeCheckInfo.get_peek_count ptr -> int :
   TypeCheckInfo.peek_count ptr+ int.load
 end
+
+// Set TypeCheckInfo.else_present
+// Params: TypeCheckInfo, BOOL
+// Return: None
+function TypeCheckInfo.set_else_present ptr bool :
+  bool.store
+end
+
+// Set TypeCheckInfo.return_present
+// Params: TypeCheckInfo, BOOL
+// Return: None
+function TypeCheckInfo.set_return_present ptr bool :
+  TypeCheckInfo.return_present ptr+ bool.store
+end
+
+// Set TypeCheckInfo.peek_count
+// Params: TypeCheckInfo, INT
+// Return: None
+function TypeCheckInfo.set_peek_count ptr int :
+  TypeCheckInfo.peek_count ptr+ int.store
+end
