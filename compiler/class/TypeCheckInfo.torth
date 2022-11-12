@@ -1,0 +1,44 @@
+include "std"
+
+// TypeCheckInfo - Class for storing metadata of the current state of a Program
+ENUM TypeCheckInfo.size 8 :
+  TypeCheckInfo.else_present    // bool - Store True only if ELSE section is present in current IF block
+  TypeCheckInfo.return_present  // bool - Store True only if the previous section in the IF block returned early
+  TypeCheckInfo.peek_count      // int  - Store the number of items peeked from the stack inside PEEK block
+END
+
+// Allocate memory for Signature and the TokenType lists in it
+// Params: param_types (PTR), return_types (PTR)
+// Return: Signature
+function TypeCheckInfo.init -> ptr :
+  TypeCheckInfo.size malloc
+  take type_check_info in
+
+  // Initialize TypeCheckInfo object with default values
+  // TypeCheckInfo(else_present=False, return_present=False, peek_count=0)
+  False type_check_info TypeCheckInfo.else_present    ptr+ bool.store
+  False type_check_info TypeCheckInfo.return_present  ptr+ bool.store
+  0     type_check_info TypeCheckInfo.peek_count      ptr+ int.store
+  type_check_info
+end
+
+// ELSE section is present in the current IF block
+// Params: Pointer to TypeCheckInfo (PTR)
+// Return: TypeCheckInfo.else_present (BOOL)
+function TypeCheckInfo.is_else_present ptr -> bool :
+  bool.load
+end
+
+// The previous section in the current IF block returned early
+// Params: Pointer to TypeCheckInfo (PTR)
+// Return: TypeCheckInfo.return_present (BOOL)
+function TypeCheckInfo.is_return_present ptr -> bool :
+  TypeCheckInfo.return_present ptr+ bool.load
+end
+
+// The number of items peeked from the stack inside current PEEK block
+// Params: Pointer to TypeCheckInfo (PTR)
+// Return: TypeCheckInfo.peek_count (INT)
+function TypeCheckInfo.get_peek_count ptr -> int :
+  TypeCheckInfo.peek_count ptr+ int.load
+end
