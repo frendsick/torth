@@ -59,9 +59,9 @@ function Token.set_value ptr str :
   str.store
 end
 
-// Get Token.location
-// Params: Pointer to Token (PTR)
-// Return: Token.vartype (VarType => INT)
+// Set Token.vartype
+// Params: Token, VarType
+// Return: None
 function Token.set_vartype ptr int :
   Token.vartype ptr+ int.store
 end
