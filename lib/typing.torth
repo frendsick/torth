@@ -426,7 +426,8 @@ end
 
 // === LinkedList ===
 // README:
-//    LinkedList is a list of Nodes linked by pointers.
+//    LinkedList is a doubly linked list of Nodes linked by pointers.
+//    TODO: Rename LinkedList to indicate it is a doubly linked lists
 //    LinkedList.init returns a pointer to the head Node.
 function LinkedList.init -> ptr :
   ptr.size malloc
@@ -436,6 +437,7 @@ end
 enum Node.size 8 :
   Node.data // PTR
   Node.next // PTR
+  Node.prev // PTR
 end
 
 function Node.get_data ptr -> ptr :
@@ -446,6 +448,10 @@ function Node.get_next ptr -> ptr :
   Node.next ptr+ ptr.load
 end
 
+function Node.get_prev ptr -> ptr :
+  Node.prev ptr+ ptr.load
+end
+
 function Node.set_data ptr ptr :
   ptr.store
 end
@@ -454,16 +460,23 @@ function Node.set_next ptr ptr :
   Node.next ptr+ ptr.store
 end
 
+function Node.set_prev ptr ptr :
+  Node.prev ptr+ ptr.store
+end
+
 // Push Node to LinkedList
 // Params
 //    head_ptr: Node
 //    new_data: ptr
 // Return None
 function LinkedList.push ptr ptr :
+  dup ptr.load
+
   // Allocate new Node
   Node.size malloc
   take
     new_node
+    head_node
     head_ptr
     new_data
   in
@@ -471,14 +484,20 @@ function LinkedList.push ptr ptr :
   // Store data to new Node
   new_data new_node Node.set_data
 
-  // Make new Node's next as head
-  head_ptr ptr.load new_node Node.set_next
+  // Make the old head new Node's next and previous as NULL
+  head_node new_node Node.set_next
+  NULLPTR new_node Node.set_prev
 
-  // Return the new head pointer
+  // Set the old head's prev to point to new Node
+  if head_node int NULL != do
+    new_node head_node Node.set_prev
+  endif
+
+  // Insert the new Node to head_ptr
   new_node head_ptr ptr.store
 end
 
-// Push Node to LinkedList
+// Pop Node from LinkedList
 // Return -1 if head is NULL
 // Params
 //    head_ptr: Node
