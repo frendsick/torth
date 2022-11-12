@@ -166,7 +166,18 @@ function type_check_op ptr ptr ptr ptr ptr ptr ptr ptr -> ptr :
     branched_stacks type_stack token type_check_do
     type_check_info return
   elif op_type OpType.DONE == do
+    if_block_return_stacks List.last ptr.load
     branched_stacks token type_check_end_of_branch
+    type_check_info return
+  elif op_type OpType.ENDIF == do
+    // Check if ELSE or RETURN is present
+    type_check_info TypeCheckInfo.is_else_present
+    type_check_info TypeCheckInfo.is_return_present ||
+    // Call type_check_endif
+    if_block_return_stacks if_block_original_stacks
+    branched_stacks type_stack token type_check_endif
+    // Set type_check_info.else_present to False
+    False type_check_info TypeCheckInfo.set_else_present
     type_check_info return
   elif op_type OpType.IF == do
     False type_check_info TypeCheckInfo.set_return_present
@@ -295,8 +306,8 @@ end
 function equal_stacks ptr ptr -> bool :
   ptr.load swap
   ptr.load
-  take type_node1 type_node2 in
-// stack_before_branch stack_after_branch equal_stacks
+  take type_node2 type_node1 in
+
   while
     type_node1 int NULL !=
     type_node2 int NULL !=
@@ -363,15 +374,22 @@ end
 // Params
 //    token: Token
 //    branched_stacks: List[LinkedList[TypeNode]]
+//    if_block_return_stack: Optional[TypeStack]
 // Return None
-function type_check_end_of_branch ptr ptr :
+function type_check_end_of_branch ptr ptr ptr :
   take
     token
     branched_stacks
+    if_block_return_stack
   in
 
+  // Get the stack state after the branch
+  branched_stacks List.last ptr.load
+  take stack_after_branch in
+  branched_stacks dup List.len 1 - swap List.pop
+
   // If branched_stacks is empty we are not inside a branch block
-  if branched_stacks List.len 1 <= do
+  if branched_stacks List.len 0 <= do
     token Token.get_value str.copy str.upper
     take token_value in
 
@@ -382,11 +400,22 @@ function type_check_end_of_branch ptr ptr :
     "SYNTAX_ERROR" CompilerErrorWithToken
   endif
 
-  // Get the stack state after the branch
+  // Check if stack states are different between sections inside IF block
+  if if_block_return_stack int NULL != do
+    // Return early if the stacks are equal with the previous sections of IF block
+    if stack_after_branch if_block_return_stack equal_stacks do
+      return
+    endif
+
+    // Raise an error when the stack deviates from the previous sections
+    token
+    "Stack state should be the same after each section in the IF block"
+    "DIFFERENT_STACK_BETWEEN_SECTIONS" CompilerErrorWithToken
+  endif
+
+  // Get the stack state before the branch
   branched_stacks List.last ptr.load
-  branched_stacks dup List.len 1 - swap List.pop
-  branched_stacks List.last ptr.load
-  take stack_before_branch stack_after_branch in
+  take stack_before_branch in
 
   // Test if the stack state is the same before and after the branch
   if stack_before_branch stack_after_branch equal_stacks not do
@@ -614,6 +643,69 @@ function type_check_do ptr ptr ptr :
     "VALUE_ERROR" CompilerErrorWithToken
   endif
   type_stack TypeStack.copy branched_stacks List.append
+end
+
+// ENDIF ends the IF block
+// We have to check that the stack state was not altered inside the block.
+// If stack state was changed, the changes should be consistent in all of the sections
+// and there should be an ELSE section present to act as default branch.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    branched_stacks: List[LinkedList[TypeNode]]
+//    if_block_original_stacks: List[TypeStack[TypeNode]]
+//    if_block_return_stacks: List[TypeStack[TypeNode]]
+//    else_or_return_present: bool
+// Return None
+function type_check_endif ptr ptr ptr ptr ptr bool :
+  take
+    token
+    type_stack
+    branched_stacks
+    if_block_original_stacks
+    if_block_return_stacks
+    else_or_return_present
+  in
+
+  // Get return stack for the current IF block
+  if_block_return_stacks List.last ptr.load
+  take if_block_return_stack in
+
+  // Save the state of the stack after the first part of the IF block
+  if if_block_return_stack Node.get_data int NULL == do
+    type_stack TypeStack.copy ptr.load if_block_return_stack ptr.store
+  endif
+
+  // Type check the ENDIF as the end of the IF block
+  if_block_return_stack branched_stacks token type_check_end_of_branch
+
+  // If the IF block altered stack state there MUST be an ELSE to catch all errors
+  // and the IF block's return stack must match with all of the sections in the block
+  branched_stacks List.last ptr.load
+  if_block_return_stack
+  equal_stacks not
+  take stack_is_altered in
+  if
+    else_or_return_present not
+    stack_is_altered
+    &&
+  do
+    token
+    "The stack state should be the same than at the start of the IF-block.\n"
+    "Introduce an ELSE-block if you need to return different values from IF-blocks.\n"  str.cat
+    "The stack state should be the same with every branch of the block."                str.cat
+    // TODO: Output stack states before the IF block and after current section
+    "SYNTAX_ERROR" CompilerErrorWithToken
+  endif
+
+  // Make the IF block's return stack the new stack for the program
+  if if_block_return_stack Node.get_data int NULL != do
+    if_block_return_stack branched_stacks List.last ptr.store
+  endif
+
+  // Reset IF-block variables
+  if_block_original_stacks dup List.len 1 - swap List.pop
+  if_block_return_stacks   dup List.len 1 - swap List.pop
 end
 
 // Pop a value from the stack to a Variable
