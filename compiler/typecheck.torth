@@ -69,9 +69,13 @@ end
 function type_check_sub_program ptr ptr ptr :
   dup List.len
   TypeCheckInfo.init
+  List.init LinkedList.init over List.append
+  List.init LinkedList.init over List.append
   0
   take
     index
+    if_block_original_stacks
+    if_block_return_stacks
     type_check_info
     program.len
     program
@@ -91,7 +95,8 @@ function type_check_sub_program ptr ptr ptr :
   while index program.len < do
     index program List.nth ptr.load
     take op in
-    type_check_info variables functions program branched_stacks op type_check_op
+    if_block_return_stacks if_block_original_stacks type_check_info
+    variables functions program branched_stacks op type_check_op
     type_check_info =
     index 1 + index =
   done
@@ -105,8 +110,11 @@ end
 //    program: Program
 //    functions: List[Function]
 //    variables: List[Variable]
+//    type_check_info: TypeCheckInfo
+//    if_block_original_stacks: List[TypeStack[TypeNode]]
+//    if_block_return_stacks: List[TypeStack[TypeNode]]
 // Return TypeCheckInfo
-function type_check_op ptr ptr ptr ptr ptr ptr -> ptr :
+function type_check_op ptr ptr ptr ptr ptr ptr ptr ptr -> ptr :
   take
     op
     branched_stacks
@@ -114,7 +122,10 @@ function type_check_op ptr ptr ptr ptr ptr ptr -> ptr :
     functions
     variables
     type_check_info
+    if_block_original_stacks
+    if_block_return_stacks
   in
+
   op  Op.get_token
   dup Token.get_value
   op  Op.get_type
@@ -156,6 +167,11 @@ function type_check_op ptr ptr ptr ptr ptr ptr -> ptr :
     type_check_info return
   elif op_type OpType.DONE == do
     branched_stacks token type_check_end_of_branch
+    type_check_info return
+  elif op_type OpType.IF == do
+    False type_check_info TypeCheckInfo.set_return_present
+    type_stack TypeStack.copy if_block_original_stacks List.append
+    LinkedList.init if_block_return_stacks List.append
     type_check_info return
   elif op_type OpType.POP_BIND == do
     variables type_stack token type_check_pop_bind
