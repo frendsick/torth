@@ -1,6 +1,7 @@
 include "std"
 include "compiler/class/Op"
 include "compiler/class/Token"
+include "compiler/class/TypeCheckInfo"
 include "compiler/class/TypeNode"
 
 // Create Array of integer types
@@ -67,9 +68,11 @@ end
 // Return None
 function type_check_sub_program ptr ptr ptr :
   dup List.len
+  TypeCheckInfo.init
   0
   take
     index
+    type_check_info
     program.len
     program
     func
@@ -88,7 +91,8 @@ function type_check_sub_program ptr ptr ptr :
   while index program.len < do
     index program List.nth ptr.load
     take op in
-    variables functions program branched_stacks op type_check_op
+    type_check_info variables functions program branched_stacks op type_check_op
+    type_check_info =
     index 1 + index =
   done
 end
@@ -101,14 +105,15 @@ end
 //    program: Program
 //    functions: List[Function]
 //    variables: List[Variable]
-// Return None
-function type_check_op ptr ptr ptr ptr ptr :
+// Return TypeCheckInfo
+function type_check_op ptr ptr ptr ptr ptr ptr -> ptr :
   take
     op
     branched_stacks
     program
     functions
     variables
+    type_check_info
   in
   op  Op.get_token
   dup Token.get_value
@@ -123,47 +128,65 @@ function type_check_op ptr ptr ptr ptr ptr :
 
   // Switch like if block with every type of Op
   if op_type OpType.INTRINSIC == do
-    type_stack token type_check_intrinsic return
+    type_stack token type_check_intrinsic
+    type_check_info return
   elif op_type OpType.ASSIGN_BIND == do
-    variables program type_stack token type_check_assign_bind return
+    variables program type_stack token type_check_assign_bind
+    type_check_info return
   elif op_type OpType.CAST_BOOL == do
-    type_stack token type_check_cast_bool return
+    type_stack token type_check_cast_bool
+    type_check_info return
   elif op_type OpType.CAST_CHAR == do
-    type_stack token type_check_cast_char return
+    type_stack token type_check_cast_char
+    type_check_info return
   elif op_type OpType.CAST_INT == do
-    type_stack token type_check_cast_int return
+    type_stack token type_check_cast_int
+    type_check_info return
   elif op_type OpType.CAST_PTR == do
-    type_stack token type_check_cast_ptr return
+    type_stack token type_check_cast_ptr
+    type_check_info return
   elif op_type OpType.CAST_STR == do
-    type_stack token type_check_cast_str return
+    type_stack token type_check_cast_str
+    type_check_info return
   elif op_type OpType.CAST_UINT8 == do
-    type_stack token type_check_cast_uint8 return
+    type_stack token type_check_cast_uint8
+    type_check_info return
   elif op_type OpType.DO == do
-    branched_stacks type_stack token type_check_do return
+    branched_stacks type_stack token type_check_do
+    type_check_info return
   elif op_type OpType.DONE == do
-    branched_stacks token type_check_end_of_branch return
+    branched_stacks token type_check_end_of_branch
+    type_check_info return
   elif op_type OpType.POP_BIND == do
-    variables type_stack token type_check_pop_bind return
+    variables type_stack token type_check_pop_bind
+    type_check_info return
   elif op_type OpType.PUSH_BIND == do
-    variables type_stack token type_check_push_bind return
+    variables type_stack token type_check_push_bind
+    type_check_info return
   elif op_type OpType.PUSH_BOOL == do
-    type_stack token type_check_push_bool return
+    type_stack token type_check_push_bool
+    type_check_info return
   elif op_type OpType.PUSH_CHAR == do
-    type_stack token type_check_push_char return
+    type_stack token type_check_push_char
+    type_check_info return
   elif op_type OpType.PUSH_INT == do
-    type_stack token type_check_push_int return
+    type_stack token type_check_push_int
+    type_check_info return
   elif op_type OpType.PUSH_PTR == do
-    type_stack token type_check_push_ptr return
+    type_stack token type_check_push_ptr
+    type_check_info return
   elif op_type OpType.PUSH_STR == do
-    type_stack token type_check_push_str return
+    type_stack token type_check_push_str
+    type_check_info return
   elif op_type OpType.PUSH_UINT8 == do
-    type_stack token type_check_push_uint8 return
+    type_stack token type_check_push_uint8
+    type_check_info return
   elif
     token_value str.copy str.upper
     get_not_typed_tokens
     List.contains_str
   do
-    return
+    type_check_info return
   endif
 
   // Type checking certain OpType is not implemented
@@ -171,6 +194,7 @@ function type_check_op ptr ptr ptr ptr ptr :
   token_value str.cat
   "' is not implemented yet\n" str.cat
   eputs // NotImplementedError
+  NULLPTR
 end
 
 // Type check an intrinsic
