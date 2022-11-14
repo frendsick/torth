@@ -41,9 +41,9 @@ end
 
 // Get Token.location
 // Params: Pointer to Token (PTR)
-// Return: Token.vartype (VarType => INT)
+// Return: Variable.type (TokenType => INT)
 function Variable.set_type ptr int :
-  Token.vartype ptr+ int.store
+  Variable.type ptr+ int.store
 end
 
 // Get Variable with certain name from Array
