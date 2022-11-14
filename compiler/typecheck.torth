@@ -472,17 +472,30 @@ function type_check_assign_bind ptr ptr ptr ptr :
   endif
 
   program t1 TypeNode.get_location get_op_from_location Op.get_token
-  take variable_token in
+  take assign_token in
 
-  if variable_token Token.get_vartype VarType.NONE == do
-    variable_token
+  if assign_token Token.get_vartype VarType.NONE == do
+    assign_token
     "ASSIGN operation requires a variable name in the top of the stack"
     "VALUE_ERROR" CompilerErrorWithToken
   endif
 
-  token Token.get_location
-  t1 TypeNode.get_type TypeNode.init
-  type_stack LinkedList.push
+  // Get initial variable assignment Token
+  assign_token Token.get_value variables List.get_variable Variable.get_type
+  t2 TypeNode.get_type
+  take popped_type variable_type in
+
+  // Check if Variable has the same type as the popped value
+  if popped_type variable_type != do
+    token
+    "Cannot assign "
+    popped_type token_type_repr     str.cat
+    " to variable '"                str.cat
+    assign_token Token.get_value  str.cat
+    "' of type "                    str.cat
+    variable_type token_type_repr   str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
 end
 
 // CAST_BOOL explicitely casts the top element of the stack to BOOL type.
