@@ -59,7 +59,7 @@ end
 function Array.copy ptr -> ptr :
   // Initialize variables
   dup Array.len ptr.size * int.size +
-  Array.init
+  dup Array.init
   take
     new_array
     memory_size
