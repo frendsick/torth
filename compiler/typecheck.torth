@@ -1074,13 +1074,13 @@ function type_check_return ptr ptr ptr -> ptr :
     func
     op
     type_stack
-    variables
+    if_block_return_stack
   in
 
   // Test if current TypeStack matches with Signature.returns
   type_stack TypeStack.get_types
-  take token_types in
-  if return_types token_types List.equals not do
+  take stack_types in
+  if return_types stack_types List.equals not do
     op Op.get_token
     "Stack state does not match with the return types of '"
     func Function.get_name  str.cat
@@ -1088,7 +1088,7 @@ function type_check_return ptr ptr ptr -> ptr :
     // TODO: Print expected return types
     "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithToken
   endif
-  return_types
+  if_block_return_stack
 end
 
 // DIVMOD pops two items from the stack and divides second from the top one.
