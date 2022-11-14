@@ -233,8 +233,8 @@ function Array.equals ptr ptr -> bool :
   // Iterate over every item in arrays and check if they are equal
   while index array1.len < do
     if
-      index array1 Array.nth int.load dup print " " puts
-      index array2 Array.nth int.load dup print "\n" puts
+      index array1 Array.nth int.load
+      index array2 Array.nth int.load
       !=
     do
       False return
