@@ -210,6 +210,40 @@ function Array.contains_str ptr str -> bool :
   False
 end
 
+// Test if two Arrays have equal integer-like items in them
+// Params: Array[int], Array[int]
+// Return: bool
+function Array.equals ptr ptr -> bool :
+  dup   Array.len
+  over  Array.len
+  0
+  take
+    index
+    array2.len
+    array1.len
+    array1
+    array2
+  in
+
+  // Arrays of different length cannot be equal
+  if array1.len array2.len != do
+    False return
+  endif
+
+  // Iterate over every item in arrays and check if they are equal
+  while index array1.len < do
+    if
+      index array1 Array.nth int.load dup print " " puts
+      index array2 Array.nth int.load dup print "\n" puts
+      !=
+    do
+      False return
+    endif
+    index 1 + index =
+  done
+  True
+end
+
 // Print array of integer-like values
 // Params: array (PTR)
 // Return: None
@@ -408,6 +442,15 @@ end
 // Return: None
 function List.pop ptr int :
   List.get_array Array.pop
+end
+
+// Test if two Arrays have equal integer-like items in them
+// Params: List[int], List[int]
+// Return: bool
+function List.equals ptr ptr -> bool :
+  List.get_array
+  swap List.get_array
+  Array.equals
 end
 
 // Test if list contains an integer
