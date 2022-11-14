@@ -234,6 +234,19 @@ function type_check_op ptr ptr ptr ptr ptr ptr ptr ptr -> ptr :
   elif op_type OpType.PUSH_UINT8 == do
     type_stack token type_check_push_uint8
     type_check_info return
+  elif op_type OpType.RETURN == do
+    True type_check_info TypeCheckInfo.set_return_present
+    // IF block's stack is determined by the previous sections in the block
+    if_block_return_stacks List.last ptr.load
+    take if_block_return_stack in
+    if if_block_return_stack Node.get_data int NULL == do
+      if_block_original_stacks List.last ptr.load TypeStack.copy
+      if_block_return_stack =
+    endif
+    // Set stack state to the return value of type_check_return
+    if_block_return_stack type_stack op type_check_return
+    branched_stacks List.last ptr.store
+    type_check_info return
   elif
     token_value str.copy str.upper
     get_not_typed_tokens
@@ -393,6 +406,36 @@ function TypeStack.copy ptr -> ptr :
     stack_depth 1 - stack_depth =
   done
   type_stack_copy
+end
+
+// Get a List of TokenTypes from TypeStack
+// Params
+//    type_stack: LinkedList[TypeNode]
+// Return
+//    token_types: List[TokenType]
+function TypeStack.get_types ptr -> ptr :
+  Node.get_data
+  List.init
+  0
+  take
+    stack_depth
+    token_types
+    node
+  in
+
+  // Traverse the TypeStack to the first Node
+  while node Node.get_next int NULL != do
+    node Node.get_next node =
+    stack_depth 1 + stack_depth =
+  done
+
+  // Fill List with the TokenTypes inside TypeStack
+  while stack_depth 0 >= do
+    node Node.get_data
+    TypeNode.get_type ptr token_types List.append
+    stack_depth 1 - stack_depth =
+  done
+  token_types
 end
 
 // Check if the stack state is the same after the branch block whether or not the branch condition is matched
