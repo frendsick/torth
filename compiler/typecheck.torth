@@ -821,7 +821,6 @@ function type_check_function_call ptr ptr ptr :
 
   // Pop param types
   while index param_types.len < do
-    function_name puts ": " puts index print "\n" puts
     if type_stack Node.get_data int NULL == do
       token
       "Not enough parameters for '"
@@ -850,9 +849,8 @@ function type_check_function_call ptr ptr ptr :
   // Push return types to the stack
   0 index =
   while index return_types.len < do
-    // Pop a type from return_types List
-    return_types List.first int.load
-    0 return_types List.pop
+    // Get a type from return_types List
+    index return_types List.nth int.load
     take return_type in
 
     // Push the current return type to the stack
@@ -996,7 +994,7 @@ function type_check_return ptr ptr ptr -> ptr :
     // TODO: Print expected return types
     "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithToken
   endif
-  return_types TypeStack.copy
+  return_types
 end
 
 // DIVMOD pops two items from the stack and divides second from the top one.
