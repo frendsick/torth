@@ -167,8 +167,7 @@ function type_check_op ptr ptr ptr ptr ptr ptr ptr ptr -> ptr :
     branched_stacks type_stack token type_check_do
     type_check_info return
   elif op_type OpType.DONE == do
-    if_block_return_stacks List.last ptr.load
-    branched_stacks token type_check_end_of_branch
+    NULLPTR branched_stacks token type_check_end_of_branch
     type_check_info return
   elif op_type OpType.ELIF == do
     // Set type_check_info.else_present to False
