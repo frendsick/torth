@@ -1,4 +1,5 @@
 include "std"
+include "compiler/utils"
 include "compiler/class/Op"
 include "compiler/class/Token"
 include "compiler/class/TypeCheckInfo"
@@ -193,6 +194,9 @@ function type_check_op ptr ptr ptr ptr ptr ptr ptr ptr -> ptr :
     branched_stacks type_stack token type_check_endif
     // Set type_check_info.else_present to False
     False type_check_info TypeCheckInfo.set_else_present
+    type_check_info return
+  elif op_type OpType.FUNCTION_CALL == do
+    functions type_stack token type_check_function_call
     type_check_info return
   elif op_type OpType.IF == do
     False type_check_info TypeCheckInfo.set_return_present
@@ -770,6 +774,80 @@ function type_check_endif ptr ptr ptr ptr ptr bool :
   // Reset IF-block variables
   if_block_original_stacks dup List.len 1 - swap List.pop
   if_block_return_stacks   dup List.len 1 - swap List.pop
+end
+
+// Pop a value from the stack to a Variable
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    functions: List[Function]
+// Return None
+function type_check_function_call ptr ptr ptr :
+  dup Token.get_value
+  take
+    function_name
+    token
+    type_stack
+    functions
+  in
+
+  // Get the Function's Signature
+  functions function_name get_function_by_name
+  Function.get_signature
+  dup   Signature.get_returns
+  swap  Signature.get_params
+  take param_types return_types in
+
+  return_types List.len
+  param_types List.len
+  0
+  take
+    index
+    param_types.len
+    return_types.len
+  in
+
+  // Pop param types
+  while index param_types.len < do
+    function_name puts ": " puts index print "\n" puts
+    if type_stack Node.get_data int NULL == do
+      token
+      "Not enough parameters for '"
+      function_name str.cat
+      "' function"  str.cat
+      // TODO: Print expected types
+      "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithToken
+    endif
+
+    // Pop a type from the stack and check if it matches with Function's Signature
+    index param_types List.nth int.load
+    type_stack LinkedList.pop TypeNode.get_type
+    take expected_type popped_type in
+
+    if expected_type popped_type matching_token_types not do
+      token
+      "Wrong type of parameter in stack for '"
+      function_name str.cat
+      "' function"  str.cat
+      // TODO: Print expected types
+      "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithToken
+    endif
+    index 1 + index =
+  done
+
+  // Push return types to the stack
+  0 index =
+  while index return_types.len < do
+    // Pop a type from return_types List
+    return_types List.first int.load
+    0 return_types List.pop
+    take return_type in
+
+    // Push the current return type to the stack
+    token Token.get_location return_type TypeNode.init
+    type_stack LinkedList.push
+    index 1 + index =
+  done
 end
 
 // Pop a value from the stack to a Variable

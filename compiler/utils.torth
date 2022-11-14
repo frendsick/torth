@@ -197,6 +197,19 @@ function token_type_repr int -> str :
   1 exit ""
 end
 
+// Two TokenTypes are matching if they are equal
+// or if either of them is TokenType.ANY
+// Params
+//    type1: TokenType
+//    type2: TokenType
+// Return bool
+function matching_token_types int int -> bool :
+  take type1 type2 in
+  type1 type2 ==
+  type1 TokenType.ANY == ||
+  type2 TokenType.ANY == ||
+end
+
 // Get a Function with certain name from a list of Functions
 // Params: function_name, List[Functions]
 // Return: Function
