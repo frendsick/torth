@@ -202,6 +202,14 @@ function type_check_op ptr ptr ptr ptr ptr ptr ptr ptr -> ptr :
     type_stack TypeStack.copy if_block_original_stacks List.append
     LinkedList.init if_block_return_stacks List.append
     type_check_info return
+  elif op_type OpType.IN == do
+    0 type_check_info TypeCheckInfo.set_peek_count
+    type_check_info return
+  elif op_type OpType.PEEK_BIND == do
+    type_check_info TypeCheckInfo.get_peek_count 1 +
+    dup type_check_info TypeCheckInfo.set_peek_count
+    variables type_stack token type_check_peek_bind
+    type_check_info return
   elif op_type OpType.POP_BIND == do
     variables type_stack token type_check_pop_bind
     type_check_info return
@@ -858,6 +866,43 @@ function type_check_function_call ptr ptr ptr :
     type_stack LinkedList.push
     index 1 + index =
   done
+end
+
+// Copy the Nth item from the stack to a Variable
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    variables: List[Variable]
+//    count: int
+// Return None
+function type_check_peek_bind ptr ptr ptr int :
+  swap TypeStack.copy
+  take
+    temp_stack
+    token
+    variables
+    count
+  in
+
+  // Get the Nth value's TokenType from the stack, based on count
+  0 take index in
+  while index count < do
+    temp_stack LinkedList.pop
+    take type in
+    index 1 + index =
+  done
+
+  if type int -1 == do
+    token
+    "Could not peek "
+    count itoa str.cat
+    " values from the stack because there were not enough values" str.cat
+    "PEEK_FROM_EMPTY_STACK" CompilerErrorWithToken
+  endif
+
+  // Save the popped type to the Variable
+  type TypeNode.get_type token Token.get_value Variable.init
+  variables List.append
 end
 
 // Pop a value from the stack to a Variable
