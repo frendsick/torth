@@ -525,3 +525,21 @@ function LinkedList.pop ptr -> ptr :
   // Return the popped data
   popped_data
 end
+
+include "compiler/class/TypeNode"
+// Get the length of a LinkedList
+// Params
+//    head_ptr: Node
+// Return
+//    length: int
+function LinkedList.len ptr -> int :
+  ptr.load 0
+  take count current in
+
+  while current int NULL != do
+    count 1 + count =
+    current Node.get_next
+    current =
+  done
+  count
+end
