@@ -1,10 +1,12 @@
 // utils.torth - Utility functions for Torth compiler
 include "std"
 include "argparser"
+include "typing"
 include "compiler/defs"
 include "compiler/class/Location"
 include "compiler/class/Signature"
 include "compiler/class/Token"
+include "compiler/class/TypeNode"
 
 // Parse command line arguments with Argparser
 // Params: None
@@ -73,6 +75,25 @@ function execute_program str :
   NULLPTR argv executable execve drop
 end
 
+function get_token_info ptr -> str :
+  take token in
+  "\e[95mToken\e[0m: "
+  token Token.get_value str.cat
+  "\n" str.cat
+  token Token.get_location get_location_info str.cat
+end
+
+function get_location_info ptr -> str :
+  take location in
+  "\e[95mFile\e[0m: "
+  location Location.get_file        str.cat
+  "\n\e[95mRow\e[0m: "              str.cat
+  location Location.get_row itoa    str.cat
+  "\n\e[95mColumn\e[0m: "           str.cat
+  location Location.get_column itoa str.cat
+  "\n"                              str.cat
+end
+
 // Get the output file name from command line arguments
 // Params: Argparser
 // Return: file_name
@@ -84,6 +105,38 @@ function get_output_file_name ptr -> str :
     "a.bin" return
   endif
   file_name
+end
+
+// Get Op from Location found in a Program
+// Params: Location, Program
+// Return: Op
+function get_op_from_location ptr ptr -> ptr :
+  int // Cast Location pointer to int
+  over List.len
+  0
+  take
+    index
+    program.len
+    location
+    program
+  in
+
+  while index program.len < do
+    index program List.nth ptr.load
+    take op in
+
+    // Test if the current Op has the same Location pointer
+    op Op.get_token Token.get_location int
+    take current_location in
+    if location current_location == do
+      op return
+    endif
+    index 1 + index =
+  done
+
+  "OP_NOT_FOUND"
+  "Operand could not be found from the given location"
+  CompilerError NULLPTR
 end
 
 // Check if a Constant with a certain name exists
@@ -119,6 +172,52 @@ end
 // Params: function_name, List[Functions]
 // Return: bool
 function function_exists str ptr -> bool :
+  // Function does not exist if get_function_by_name returns NULLPTR
+  get_function_by_name int
+  NULL !=
+end
+
+// Get printable representation of TokenType
+function TokenType.repr int -> str :
+  take token_type in
+  if token_type TokenType.ANY == do
+    "ANY" return
+  elif token_type TokenType.BOOL == do
+    "BOOL" return
+  elif token_type TokenType.CHAR == do
+    "CHAR" return
+  elif token_type TokenType.INT == do
+    "INT" return
+  elif token_type TokenType.PTR == do
+    "PTR" return
+  elif token_type TokenType.STR == do
+    "STR" return
+  elif token_type TokenType.UINT8 == do
+    "UINT8" return
+  endif
+  "Unknown TokenType: " eputs
+  token_type eputi
+  "\n" eputs
+  1 exit ""
+end
+
+// Two TokenTypes are matching if they are equal
+// or if either of them is TokenType.ANY
+// Params
+//    type1: TokenType
+//    type2: TokenType
+// Return bool
+function matching_token_types int int -> bool :
+  take type1 type2 in
+  type1 type2 ==
+  type1 TokenType.ANY == ||
+  type2 TokenType.ANY == ||
+end
+
+// Get a Function with certain name from a list of Functions
+// Params: function_name, List[Functions]
+// Return: Function
+function get_function_by_name str ptr -> ptr :
   0
   take
     index
@@ -130,18 +229,18 @@ function function_exists str ptr -> bool :
   while index functions List.len < do
 
     // Get the current Function
-    index functions List.nth ptr.load Function.get_name
-    take current_name in
+    index functions List.nth ptr.load
+    take func in
 
     // Return True if current Function's name matches function_name parameter
-    if current_name function_name streq do
-      True return
+    if func Function.get_name function_name streq do
+      func return
     endif
     index 1 + index = // index++
   done
 
-  // Return False if the Function was not found
-  False
+  // Return NULLPTR if the Function was not found
+  NULLPTR
 end
 
 // Check if a Memory with a certain name exists
@@ -205,4 +304,118 @@ function get_constant str ptr -> ptr :
     index 1 + index = // index++
   done
   NULLPTR // Constant was not found
+end
+
+// Perform a deep copy of the TypeStack
+// Params
+//    type_stack: LinkedList[TypeNode]
+// Return
+//    type_stack_copy: LinkedList[TypeNode]
+function TypeStack.copy ptr -> ptr :
+  dup Node.get_data
+  LinkedList.init
+  0
+  take
+    stack_depth
+    type_stack_copy
+    node
+    type_stack
+  in
+
+  // Empty TypeStack
+  if type_stack LinkedList.len 0 == do
+    type_stack_copy return
+  endif
+
+  // Traverse the TypeStack to the first Node
+  while node Node.get_next int NULL != do
+    node Node.get_next node =
+    stack_depth 1 + stack_depth =
+  done
+
+  // Fill the copy TypeStack with the contents of the original
+  while stack_depth 0 >= do
+    // Generate new TypeNode from the original stack
+    node Node.get_data
+    take type_node in
+    type_node TypeNode.get_location
+    type_node TypeNode.get_type
+    TypeNode.init
+    type_stack_copy LinkedList.push
+
+    // Get the next item in the stack
+    node Node.get_prev node =
+    stack_depth 1 - stack_depth =
+  done
+  type_stack_copy
+end
+
+// Get a List of TokenTypes from TypeStack
+// Params
+//    type_stack: LinkedList[TypeNode]
+// Return
+//    token_types: List[TokenType]
+function TypeStack.get_types ptr -> ptr :
+  dup Node.get_data
+  List.init
+  0
+  take
+    stack_depth
+    token_types
+    node
+    type_stack
+  in
+
+  // Handle the empty case
+  if type_stack LinkedList.len 0 == do
+    token_types return
+  endif
+
+  // Traverse the TypeStack to the first Node
+  while node Node.get_next int NULL != do
+    node Node.get_next node =
+    stack_depth 1 + stack_depth =
+  done
+
+  // Fill List with the TokenTypes inside TypeStack
+  while stack_depth 0 >= do
+    node Node.get_data
+    TypeNode.get_type ptr token_types List.append
+    stack_depth 1 - stack_depth =
+  done
+  token_types
+end
+
+// Get a string representation of a TypeStack
+// Params
+//    type_stack: LinkedList[TypeNode]
+// Return
+//    stack_repr: str
+function TypeStack.repr ptr -> str :
+  TypeStack.copy
+  "" str.copy
+  take stack_repr type_stack in
+
+  // Check for empty LinkedList
+  if type_stack LinkedList.is_empty do
+    "[EMPTY]\n" str.copy return
+  endif
+
+  type_stack LinkedList.pop
+  1
+  take index node in
+  while node int -1 != do
+    "[" index
+    itoa                                  str.cat
+    "] "                                  str.cat
+    node TypeNode.get_type TokenType.repr str.cat
+    "\n"                                  str.cat
+    stack_repr swap                       str.cat
+    stack_repr =
+
+    // Pop the next item from TypeStack
+    type_stack LinkedList.pop node =
+    index 1 + index =
+  done
+  stack_repr
 end

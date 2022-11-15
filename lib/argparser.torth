@@ -365,8 +365,13 @@ function Argparser.print_options_inline ptr ptr :
 
     // Put not required arguments inside square brackets []
     if argument ParserArgument.is_required not do "[" puts endif
-    argument ParserArgument.get_name     puts " " puts
-    argument ParserArgument.get_metavar  puts
+    argument ParserArgument.get_name puts
+
+    // Only print metavar for non-flag arguments
+    if argument ParserArgument.is_flag not do
+      " " puts argument ParserArgument.get_metavar puts
+    endif
+
     if argument ParserArgument.is_required not do "]" puts endif
     " " puts
     index 1 + index =

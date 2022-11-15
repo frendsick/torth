@@ -1,0 +1,96 @@
+// Variable(name: str, type: TokenType)
+ENUM Variable.size 8 :
+  Variable.name // str
+  Variable.type // TokenType => int
+END
+
+// Initialize Variable from parameters
+// Params: Variable.name, Variable.type
+// Return: Pointer to Variable
+function Variable.init str int -> ptr :
+  // Allocate memory for Variable
+  Variable.size malloc
+  take variable name type in
+
+  // Load the parameters to the allocated memory
+  name variable Variable.set_name
+  type variable Variable.set_type
+  variable
+end
+
+// Get Variable.name
+// Params: Pointer to Variable (PTR)
+// Return: Variable.name (STR)
+function Variable.get_name ptr -> str :
+  str.load
+end
+
+// Get Variable.type
+// Params: Pointer to Variable (PTR)
+// Return: Variable.type (TokenType => INT)
+function Variable.get_type ptr -> int :
+  Variable.type ptr+ int.load
+end
+
+// Set the existing Variable's name
+// Params: Variable, new_name (STR)
+// Return: None
+function Variable.set_name ptr str :
+  str.store
+end
+
+// Get Token.location
+// Params: Pointer to Token (PTR)
+// Return: Variable.type (TokenType => INT)
+function Variable.set_type ptr int :
+  Variable.type ptr+ int.store
+end
+
+// Get Variable with certain name from Array
+// Return NULLPTR if not found
+// Params: Array[Variable], str
+// Return: Variable
+function Array.get_variable ptr str -> ptr :
+  dup Array.len
+  0
+  take
+    index
+    len
+    array
+    name
+  in
+
+  while index len < do
+    index array Array.nth ptr.load
+    take variable in
+
+    // Return True if the current string matches with the parameter
+    if variable Variable.get_name name streq do
+      variable return
+    endif
+    index 1 + index =
+  done
+  NULLPTR
+end
+
+// Test if Array contains Variable with certain name
+// Params: Array[Variable], str
+// Return: bool
+function Array.contains_variable ptr str -> bool :
+  Array.get_variable int NULL !=
+end
+
+// Get Variable with certain name from List
+// Return NULLPTR if not found
+// Params: List[Variable], str
+// Return: Variable
+function List.get_variable ptr str -> ptr :
+  List.get_array Array.get_variable
+end
+
+// Test if List contains Variable with certain name
+// Params: List[Variable], str
+// Return: bool
+function List.contains_variable ptr str -> bool :
+  List.get_array Array.contains_variable
+end

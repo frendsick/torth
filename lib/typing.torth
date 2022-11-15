@@ -1,5 +1,6 @@
 // typing.torth - Definitions for non-built in types
 include "std"
+include "compiler/class/TypeNode"
 
 // Constants
 const ITERABLE_CAPACITY 128 end
@@ -59,7 +60,7 @@ end
 function Array.copy ptr -> ptr :
   // Initialize variables
   dup Array.len ptr.size * int.size +
-  Array.init
+  dup Array.init
   take
     new_array
     memory_size
@@ -156,6 +157,92 @@ function Array.pop ptr int :
 
   // Decrement the Array.len
   len 1 - array int.store
+end
+
+// Test if array contains an integer
+// Params: Array[int], int
+// Return: bool
+function Array.contains_int ptr int -> bool :
+  dup Array.len
+  0
+  take
+    index
+    len
+    array
+    integer
+  in
+
+  while index len < do
+    index array Array.nth int.load
+    take array_int in
+
+    // Return True if the current integer matches with the parameter
+    if integer array_int == do
+      True return
+    endif
+    index 1 + index =
+  done
+  False
+end
+
+// Test if array contains a string
+// Params: Array[str], str
+// Return: bool
+function Array.contains_str ptr str -> bool :
+  dup Array.len
+  0
+  take
+    index
+    len
+    array
+    string
+  in
+
+  while index len < do
+    index array Array.nth str.load
+    take array_string in
+
+    // Return True if the current string matches with the parameter
+    if string array_string streq do
+      True return
+    endif
+    index 1 + index =
+  done
+  False
+end
+
+// Test if two Arrays have equal integer-like items in them
+// Params: Array[int], Array[int]
+// Return: bool
+function Array.equals ptr ptr -> bool :
+  dup   Array.len
+  over  Array.len
+  0
+  take
+    index
+    array2.len
+    array1.len
+    array1
+    array2
+  in
+
+  // Arrays of different length cannot be equal
+  if array1.len array2.len != do
+    False return
+  endif
+
+  // Iterate over every item in arrays and check if they are equal
+  while index array1.len < do
+    if
+      index array1 Array.nth int.load
+      index array2 Array.nth int.load
+      !=
+    do
+      False return
+    endif
+    index 1 + index =
+  done
+  True
 end
 
 // Print array of integer-like values
@@ -337,6 +424,13 @@ function List.first ptr -> ptr :
   0 swap List.nth
 end
 
+// Get pointer to the last element of the list
+// Params: list (PTR)
+// Return: list[0] (PTR)
+function List.last ptr -> ptr :
+  dup List.len 1 - swap List.nth
+end
+
 // Get pointer to the Nth element of the list
 // Params: list (PTR), N (INT)
 // Return: list[N] (PTR)
@@ -351,29 +445,152 @@ function List.pop ptr int :
   List.get_array Array.pop
 end
 
+// Test if two Arrays have equal integer-like items in them
+// Params: List[int], List[int]
+// Return: bool
+function List.equals ptr ptr -> bool :
+  List.get_array
+  swap List.get_array
+  Array.equals
+end
+
+// Test if list contains an integer
+// Params: List[int], int
+// Return: bool
+function List.contains_int ptr int -> bool :
+  List.get_array Array.contains_int
+end
+
 // Test if list contains a string
 // Params: List[str], str
 // Return: bool
 function List.contains_str ptr str -> bool :
-  List.get_array
-  dup Array.len
-  0
+  List.get_array Array.contains_str
+end
+
+// === LinkedList ===
+// README:
+//    LinkedList is a doubly linked list of Nodes linked by pointers.
+//    TODO: Rename LinkedList to indicate it is a doubly linked lists
+//    LinkedList.init returns a pointer to the head Node.
+function LinkedList.init -> ptr :
+  ptr.size malloc
+  NULLPTR over ptr.store
+end
+
+enum Node.size 8 :
+  Node.data // PTR
+  Node.next // PTR
+  Node.prev // PTR
+end
+
+function Node.get_data ptr -> ptr :
+  ptr.load
+end
+
+function Node.get_next ptr -> ptr :
+  Node.next ptr+ ptr.load
+end
+
+function Node.get_prev ptr -> ptr :
+  Node.prev ptr+ ptr.load
+end
+
+function Node.set_data ptr ptr :
+  ptr.store
+end
+
+function Node.set_next ptr ptr :
+  Node.next ptr+ ptr.store
+end
+
+function Node.set_prev ptr ptr :
+  Node.prev ptr+ ptr.store
+end
+
+// Push Node to LinkedList
+// Params
+//    head_ptr: Node
+//    new_data: ptr
+// Return None
+function LinkedList.push ptr ptr :
+  dup ptr.load
+
+  // Allocate new Node
+  Node.size malloc
   take
-    index
-    len
-    array
-    string
+    new_node
+    head_node
+    head_ptr
+    new_data
   in
 
-  while index len < do
-    index array Array.nth str.load
-    take array_string in
+  // Store data to new Node
+  new_data new_node Node.set_data
 
-    // Return True if the current string matches with the parameter
-    if string array_string streq do
-      True return
-    endif
-    index 1 + index =
+  // Make the old head new Node's next and previous as NULL
+  head_node new_node Node.set_next
+  NULLPTR new_node Node.set_prev
+
+  // Set the old head's prev to point to new Node
+  if head_node int NULL != do
+    new_node head_node Node.set_prev
+  endif
+
+  // Insert the new Node to head_ptr
+  new_node head_ptr ptr.store
+end
+
+// Pop Node from LinkedList
+// Return -1 if head is NULL
+// Params
+//    head_ptr: Node
+// Return
+//    popped_data: ptr
+function LinkedList.pop ptr -> ptr :
+  dup ptr.load
+  take head head_ptr in
+
+  // Underflow condition
+  if head int NULL == do
+    -1 ptr return
+  endif
+
+  // Get the old head data
+  head Node.get_data
+  take popped_data in
+
+  // Unlink the old head
+  head Node.get_next head_ptr ptr.store
+
+  // Deallocate the old head
+  Node.size head munmap
+
+  // Return the popped data
+  popped_data
+end
+
+// Get the length of a LinkedList
+// Params
+//    head_ptr: Node
+// Return
+//    length: int
+function LinkedList.len ptr -> int :
+  ptr.load 0
+  take count current in
+
+  while current int NULL != do
+    count 1 + count =
+    current Node.get_next
+    current =
   done
-  False
+  count
+end
+
+// Check if LinkedList is empty
+// Params
+//    head_ptr: Node
+// Return bool
+function LinkedList.is_empty ptr -> bool :
+  int.load 0 ==
 end

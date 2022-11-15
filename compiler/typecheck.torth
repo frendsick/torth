@@ -1,0 +1,1848 @@
+include "std"
+include "compiler/utils"
+include "compiler/class/Op"
+include "compiler/class/Token"
+include "compiler/class/TypeCheckInfo"
+include "compiler/class/TypeNode"
+
+// Create Array of integer types
+// TODO: Enable creating constant arrays
+// Params None
+// Return
+//    INTEGER_TYPES: Array
+function INTEGER_TYPES -> ptr :
+  5 Array.init
+  take array in
+  TokenType.ANY   ptr array Array.append
+  TokenType.BOOL  ptr array Array.append
+  TokenType.CHAR  ptr array Array.append
+  TokenType.INT   ptr array Array.append
+  TokenType.UINT8 ptr array Array.append
+  array
+end
+
+// Create Array of pointer types
+// TODO: Enable creating constant arrays
+// Params None
+// Return
+//    POINTER_TYPES: Array
+function POINTER_TYPES -> ptr :
+  3 Array.init
+  take array in
+  TokenType.ANY   ptr array Array.append
+  TokenType.PTR   ptr array Array.append
+  TokenType.STR   ptr array Array.append
+  array
+end
+
+// Type check every sub-program in the application
+// Params
+//    sub_programs: List[Program]
+//    functions: List[Function]
+// Return None
+function type_check_application ptr ptr :
+  dup List.len
+  0
+  take
+    index
+    sub_programs.len
+    sub_programs
+    functions
+  in
+  while index sub_programs.len < do
+    index sub_programs List.nth ptr.load
+    take sub_program in
+
+    sub_program List.first ptr.load Op.get_function
+    take func in
+
+    functions func sub_program type_check_sub_program
+    index 1 + index =
+  done
+end
+
+// Type check a sub-program ("function")
+// Params
+//    program: Program
+//    func: Function
+//    functions: List[Function]
+// Return None
+function type_check_sub_program ptr ptr ptr :
+  dup List.len
+  TypeCheckInfo.init
+  List.init LinkedList.init over List.append
+  List.init LinkedList.init over List.append
+  0
+  take
+    index
+    if_block_original_stacks
+    if_block_return_stacks
+    type_check_info
+    program.len
+    program
+    func
+    functions
+  in
+
+  // Generate initial type stack for sub program
+  // based on the function params
+  List.init dup
+  func get_function_type_stack
+  swap List.append
+  List.init // List[Variable]
+  take variables branched_stacks in
+
+  // Type check every Op in Program
+  while index program.len < do
+    index program List.nth ptr.load
+    take op in
+    if_block_return_stacks if_block_original_stacks type_check_info
+    variables functions program branched_stacks op type_check_op
+    type_check_info =
+    index 1 + index =
+  done
+
+  // Verify that the TypeStack state matches with the Function's Signature
+  branched_stacks List.last ptr.load
+  func type_check_end_of_program
+end
+
+// Type check the current Op in the Program
+// Raise compiler error if the type checking fails
+// Params
+//    op: Op
+//    branched_stacks: List[TypeStack[TypeNode]]
+//    program: Program
+//    functions: List[Function]
+//    variables: List[Variable]
+//    type_check_info: TypeCheckInfo
+//    if_block_original_stacks: List[TypeStack[TypeNode]]
+//    if_block_return_stacks: List[TypeStack[TypeNode]]
+// Return TypeCheckInfo
+function type_check_op ptr ptr ptr ptr ptr ptr ptr ptr -> ptr :
+  take
+    op
+    branched_stacks
+    program
+    functions
+    variables
+    type_check_info
+    if_block_original_stacks
+    if_block_return_stacks
+  in
+
+  op  Op.get_token
+  dup Token.get_value
+  op  Op.get_type
+  branched_stacks List.last ptr.load
+  take
+    type_stack
+    op_type
+    token_value
+    token
+  in
+
+  // Switch like if block with every type of Op
+  if op_type OpType.INTRINSIC == do
+    program type_stack token type_check_intrinsic
+    type_check_info return
+  elif op_type OpType.ASSIGN_BIND == do
+    variables program type_stack token type_check_assign_bind
+    type_check_info return
+  elif op_type OpType.CAST_BOOL == do
+    type_stack token type_check_cast_bool
+    type_check_info return
+  elif op_type OpType.CAST_CHAR == do
+    type_stack token type_check_cast_char
+    type_check_info return
+  elif op_type OpType.CAST_INT == do
+    type_stack token type_check_cast_int
+    type_check_info return
+  elif op_type OpType.CAST_PTR == do
+    type_stack token type_check_cast_ptr
+    type_check_info return
+  elif op_type OpType.CAST_STR == do
+    type_stack token type_check_cast_str
+    type_check_info return
+  elif op_type OpType.CAST_UINT8 == do
+    type_stack token type_check_cast_uint8
+    type_check_info return
+  elif op_type OpType.DO == do
+    branched_stacks type_stack token type_check_do
+    type_check_info return
+  elif op_type OpType.DONE == do
+    NULLPTR branched_stacks type_stack token type_check_end_of_branch
+    type_check_info return
+  elif op_type OpType.ELIF == do
+    // Set type_check_info.else_present to False
+    False type_check_info TypeCheckInfo.set_else_present
+    // Call type_check_elif
+    if_block_return_stacks List.last ptr.load
+    branched_stacks type_stack token type_check_elif
+    type_check_info return
+  elif op_type OpType.ELSE == do
+    // Set type_check_info.else_present to True
+    True type_check_info TypeCheckInfo.set_else_present
+    // Call type_check_else
+    if_block_original_stacks List.last ptr.load
+    if_block_return_stacks List.last ptr.load
+    branched_stacks type_stack token type_check_else
+    type_check_info return
+  elif op_type OpType.ENDIF == do
+    // Check if ELSE or RETURN is present
+    type_check_info TypeCheckInfo.is_else_present
+    type_check_info TypeCheckInfo.is_return_present ||
+    // Call type_check_endif
+    if_block_return_stacks if_block_original_stacks
+    branched_stacks type_stack token type_check_endif
+    // Set type_check_info.else_present to False
+    False type_check_info TypeCheckInfo.set_else_present
+    type_check_info return
+  elif op_type OpType.FUNCTION_CALL == do
+    functions type_stack token type_check_function_call
+    type_check_info return
+  elif op_type OpType.IF == do
+    False type_check_info TypeCheckInfo.set_return_present
+    type_stack TypeStack.copy if_block_original_stacks List.append
+    LinkedList.init if_block_return_stacks List.append
+    type_check_info return
+  elif op_type OpType.IN == do
+    0 type_check_info TypeCheckInfo.set_peek_count
+    type_check_info return
+  elif op_type OpType.PEEK_BIND == do
+    type_check_info TypeCheckInfo.get_peek_count 1 +
+    dup type_check_info TypeCheckInfo.set_peek_count
+    variables type_stack token type_check_peek_bind
+    type_check_info return
+  elif op_type OpType.POP_BIND == do
+    variables type_stack token type_check_pop_bind
+    type_check_info return
+  elif op_type OpType.PUSH_BIND == do
+    variables type_stack token type_check_push_bind
+    type_check_info return
+  elif op_type OpType.PUSH_BOOL == do
+    type_stack token type_check_push_bool
+    type_check_info return
+  elif op_type OpType.PUSH_CHAR == do
+    type_stack token type_check_push_char
+    type_check_info return
+  elif op_type OpType.PUSH_INT == do
+    type_stack token type_check_push_int
+    type_check_info return
+  elif op_type OpType.PUSH_PTR == do
+    type_stack token type_check_push_ptr
+    type_check_info return
+  elif op_type OpType.PUSH_STR == do
+    type_stack token type_check_push_str
+    type_check_info return
+  elif op_type OpType.PUSH_UINT8 == do
+    type_stack token type_check_push_uint8
+    type_check_info return
+  elif op_type OpType.RETURN == do
+    True type_check_info TypeCheckInfo.set_return_present
+    // IF block's stack is determined by the previous sections in the block
+    if_block_return_stacks List.last ptr.load
+    take if_block_return_stack in
+    if if_block_return_stack Node.get_data int NULL == do
+      if_block_original_stacks List.last ptr.load TypeStack.copy
+      if_block_return_stack =
+    endif
+    // Set stack state to the return value of type_check_return
+    if_block_return_stack type_stack op type_check_return
+    branched_stacks List.last ptr.store
+    type_check_info return
+  elif
+    token_value str.copy str.upper
+    get_not_typed_tokens
+    List.contains_str
+  do
+    type_check_info return
+  endif
+
+  // Type checking certain OpType is not implemented
+  type_stack token
+  "Parsing token '"
+  token_value                   str.cat
+  "' is not implemented yet\n"  str.cat
+  "NOT_IMPLEMENTED" CompilerErrorWithStack
+  NULLPTR
+end
+
+// Type check an intrinsic
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    program: Program
+// Return None
+function type_check_intrinsic ptr ptr ptr :
+  dup Token.get_value str.copy str.upper
+  take
+    intrinsic
+    token
+    type_stack
+    program
+  in
+
+  // Switch like if block with every type of Intrinsic
+  if intrinsic "ARGC" streq do
+    type_stack token type_check_push_int return
+  elif intrinsic "ARGV" streq do
+    type_stack token type_check_push_ptr return
+  elif intrinsic "DIVMOD" streq do
+    type_stack token type_check_divmod return
+  elif intrinsic "DROP" streq do
+    type_stack token type_check_drop return
+  elif intrinsic "DUP" streq do
+    type_stack token type_check_dup return
+  elif intrinsic "ENVP" streq do
+    type_stack token type_check_push_ptr return
+  elif intrinsic "LOAD_" str.startswith do
+    type_stack token type_check_load return
+  elif intrinsic "NTH" streq do
+    program type_stack token type_check_nth return
+  elif intrinsic "OVER" streq do
+    type_stack token type_check_over return
+  elif intrinsic "PRINT" streq do
+    type_stack token type_check_print return
+  elif intrinsic "ROT" streq do
+    type_stack token type_check_rot return
+  elif intrinsic "STORE_" str.startswith do
+    type_stack token type_check_store return
+  elif intrinsic "SWAP" streq do
+    type_stack token type_check_swap return
+  elif intrinsic "SYSCALL" str.startswith do
+    type_stack token type_check_syscall return
+  elif
+    intrinsic "AND" streq
+    intrinsic "OR"  streq ||
+  do
+    type_stack token type_check_bitwise return
+  elif
+    intrinsic "SHL" streq
+    intrinsic "SHR" streq ||
+  do
+    type_stack token type_check_bitshift return
+  elif
+    intrinsic "MINUS" streq
+    intrinsic "MUL"   streq ||
+    intrinsic "PLUS"  streq ||
+  do
+    type_stack token type_check_calculations return
+  elif
+    intrinsic "EQ"  streq
+    intrinsic "GE"  streq ||
+    intrinsic "GT"  streq ||
+    intrinsic "LE"  streq ||
+    intrinsic "LT"  streq ||
+    intrinsic "NE"  streq ||
+  do
+    type_stack token type_check_comparison return
+  endif
+
+  // Type checking certain Intrinsic is not implemented
+  type_stack token
+  "Type checking for '"
+  intrinsic str.cat
+  "' has not been implemented." str.cat
+  "NOT_IMPLEMENTED" CompilerErrorWithStack
+end
+
+// Verify that the TypeStack state matches with the return types of the Function's Signature
+// Params
+//    func: Function
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_end_of_program ptr ptr :
+  dup   Function.get_name
+  over  Function.get_tokens List.last ptr.load
+  take
+    last_token
+    function_name
+    func
+    type_stack
+  in
+
+  // There should be one INT in the stack when the program ends
+  if function_name str.copy str.upper "MAIN" streq do
+    List.init take return_types in
+    TokenType.INT ptr return_types List.append
+
+    // Return early if there is only one integer in the stack
+    if type_stack TypeStack.get_types return_types List.equals do
+      return
+    endif
+
+    type_stack last_token
+    "Only the integer return value of the program should be in the stack when program exits"
+    "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
+  endif
+
+  if type_stack func correct_return_types not do
+    type_stack last_token
+    "Function '"
+    function_name                                                         str.cat
+    "' does not return the types indicated in the function signature\n\n" str.cat
+    "Function Signature:\n"                                               str.cat
+    func Function.get_signature Signature.repr                            str.cat
+    "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
+  endif
+end
+
+// Check if the state of TypeStack is correct after executing the Function
+// Params
+//    func: Function
+//    type_stack: LinkedList[TypeNode]
+// Return bool
+function correct_return_types ptr ptr -> bool :
+  dup   get_function_type_stack
+  over  Function.get_signature
+  dup   Signature.get_returns
+  swap  Signature.get_params
+  0
+  take
+    index
+    params
+    returns
+    temp_stack
+    func
+    type_stack
+  in
+
+  // Pop parameters from temp_stack
+  while index params List.len < do
+    temp_stack LinkedList.pop drop
+    index 1 + index =
+  done
+
+  // Push return types to temp_stack
+  0 index =
+  while index returns List.len < do
+    func Function.get_tokens List.first ptr.load Token.get_location
+    index returns List.nth int.load TypeNode.init
+    temp_stack LinkedList.push
+    index 1 + index =
+  done
+  type_stack temp_stack equal_stacks
+end
+
+// Check if two TypeStacks have similar types inside
+// Params
+//    type_stack1: LinkedList[TypeNode]
+//    type_stack2: LinkedList[TypeNode]
+// Return bool
+function equal_stacks ptr ptr -> bool :
+  ptr.load swap
+  ptr.load
+  take type_node2 type_node1 in
+
+  while
+    type_node1 int NULL !=
+    type_node2 int NULL !=
+    &&
+  do
+    // Return early if the current types do not match
+    if
+      type_node1 Node.get_data TypeNode.get_type
+      type_node2 Node.get_data TypeNode.get_type
+      !=
+    do
+      False return
+    endif
+
+    type_node1 Node.get_next type_node1 =
+    type_node2 Node.get_next type_node2 =
+  done
+
+  // Stacks are equal if both TypeStacks are empty after the loop
+  type_node1 int NULL ==
+  type_node2 int NULL == &&
+end
+
+// Check if the stack state is the same after the branch block whether or not the branch condition is matched
+// Branch blocks (IF, WHILE) begin with DO and end with DONE, ELIF, ELSE or ENDIF
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    branched_stacks: List[LinkedList[TypeNode]]
+//    if_block_return_stack: Optional[TypeStack]
+// Return None
+function type_check_end_of_branch ptr ptr ptr ptr :
+  take
+    token
+    type_stack
+    branched_stacks
+    if_block_return_stack
+  in
+
+  // Get the stack state after the branch
+  branched_stacks List.last ptr.load
+  take stack_after_branch in
+  branched_stacks dup List.len 1 - swap List.pop
+
+  // If branched_stacks is empty we are not inside a branch block
+  if branched_stacks List.len 0 <= do
+    token Token.get_value str.copy str.upper
+    take token_value in
+
+    type_stack token
+    token_value " token found outside "                     str.cat
+    if token_value "DONE" streq do "WHILE" else "IF" endif  str.cat
+    " block"                                                str.cat
+    "SYNTAX_ERROR" CompilerErrorWithStack
+  endif
+
+  // Check if stack states are different between sections inside IF block
+  if if_block_return_stack int NULL != do
+    // Return early if the stacks are equal with the previous sections of IF block
+    if stack_after_branch if_block_return_stack equal_stacks do
+      return
+    endif
+
+    // Raise an error when the stack deviates from the previous sections
+    token
+    "Stack state should be the same after each section in the IF block\n\n"
+    "Stack state after previous sections:\n"      str.cat
+    if_block_return_stack TypeStack.repr          str.cat
+    "\nStack state after the current section:\n"  str.cat
+    stack_after_branch TypeStack.repr             str.cat
+    "DIFFERENT_STACK_BETWEEN_SECTIONS" CompilerErrorWithToken
+  endif
+
+  // Get the stack state before the branch
+  branched_stacks List.last ptr.load
+  take stack_before_branch in
+
+  // Test if the stack state is the same before and after the branch
+  if stack_before_branch stack_after_branch equal_stacks not do
+    token
+    "Stack state should be the same after the block whether or not the condition was matched\n\n"
+    "Stack state at the start of the block:\n"      str.cat
+    stack_before_branch TypeStack.repr              str.cat
+    "\nStack state at the end of the block:\n"      str.cat
+    stack_after_branch TypeStack.repr               str.cat
+    "DIFFERENT_STACK_BETWEEN_BRANCHES" CompilerErrorWithToken
+  endif
+end
+
+// ASSIGN_BIND assigns a value to existing Variable
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    program: Program
+//    variables: List[Variable]
+// Return None
+function type_check_assign_bind ptr ptr ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+    program
+    variables
+  in
+
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  if t2 int -1 == do
+    temp_stack token
+    "ASSIGN operation requires two values on the stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  program t1 TypeNode.get_location get_op_from_location Op.get_token
+  take assign_token in
+
+  if assign_token Token.get_vartype VarType.NONE == do
+    temp_stack token
+    "ASSIGN operation requires a variable name in the top of the stack"
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Get initial variable assignment Token
+  assign_token Token.get_value variables List.get_variable Variable.get_type
+  t2 TypeNode.get_type
+  take popped_type variable_type in
+
+  // Check if Variable has the same type as the popped value
+  if popped_type variable_type != do
+    temp_stack token
+    "Cannot assign "
+    popped_type TokenType.repr     str.cat
+    " to variable '"                str.cat
+    assign_token Token.get_value  str.cat
+    "' of type "                    str.cat
+    variable_type TokenType.repr   str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+end
+
+// CAST_BOOL explicitely casts the top element of the stack to BOOL type.
+// The top element must be an integer to be cast to BOOL.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_cast_bool ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  type_stack LinkedList.pop
+  take type in
+
+  if type int -1 == do
+    temp_stack token
+    "The stack is empty"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
+    temp_stack token
+    "Only integer-like values can be cast to BOOL\nPopped type: "
+    type TypeNode.get_type TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push a boolean back to the stack
+  token Token.get_location TokenType.BOOL TypeNode.init
+  type_stack LinkedList.push
+end
+
+// CAST_CHAR explicitely casts the top element of the stack to CHAR type.
+// The top element must be in INTEGER_TYPES to be cast to CHAR.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_cast_char ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  type_stack LinkedList.pop
+  take type in
+
+  if type int -1 == do
+    temp_stack token
+    "The stack is empty"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  elif type TypeNode.get_type TokenType.BOOL == do
+    temp_stack token
+    "A boolean value cannot be cast to CHAR"
+    "VALUE_ERROR" CompilerErrorWithStack
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
+    temp_stack token
+    "Only integer-like values can be cast to CHAR\nPopped type: "
+    type TypeNode.get_type TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push a character back to the stack
+  token Token.get_location TokenType.CHAR TypeNode.init
+  type_stack LinkedList.push
+end
+
+// CAST_INT explicitely casts the top element of the stack to INT type.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_cast_int ptr ptr :
+  take token type_stack in
+  type_stack LinkedList.pop
+  take type in
+
+  if type int -1 == do
+    type_stack token
+    "The stack is empty"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  // Push an integer back to the stack
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
+end
+
+// CAST_PTR explicitely casts the top element of the stack to PTR type.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_cast_ptr ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  type_stack LinkedList.pop
+  take type in
+
+  if type int -1 == do
+    temp_stack token
+    "The stack is empty"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  elif
+    type TypeNode.get_type TokenType.BOOL ==
+    type TypeNode.get_type TokenType.CHAR ==
+    ||
+  do
+    temp_stack token
+    type TypeNode.get_type TokenType.repr
+    " cannot be cast to PTR" str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push a pointer back to the stack
+  token Token.get_location TokenType.PTR TypeNode.init
+  type_stack LinkedList.push
+end
+
+// CAST_STR explicitely casts the top element of the stack to STR type.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_cast_str ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  type_stack LinkedList.pop
+  take type in
+
+  if type int -1 == do
+    temp_stack token
+    "The stack is empty"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  elif type TypeNode.get_type POINTER_TYPES Array.contains_int not do
+    temp_stack token
+    type TypeNode.get_type TokenType.repr
+    " cannot be cast to STR" str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push a string back to the stack
+  token Token.get_location TokenType.STR TypeNode.init
+  type_stack LinkedList.push
+end
+
+// CAST_UINT8 explicitely casts the top element of the stack to UINT8 type.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_cast_uint8 ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  type_stack LinkedList.pop
+  take type in
+
+  if type int -1 == do
+    temp_stack token
+    "The stack is empty"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
+    temp_stack token
+    "Only integer-like values can be cast to UINT8\nPopped type: "
+    type TypeNode.get_type
+    TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push 8-bit unsigned integer back to the stack
+  token Token.get_location TokenType.UINT8 TypeNode.init
+  type_stack LinkedList.push
+end
+
+// DO Keyword pops one boolean from the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    branched_stacks: List[LinkedList[TypeNode]]
+// Return None
+function type_check_do ptr ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+    branched_stacks
+  in
+
+  type_stack LinkedList.pop
+  take type in
+
+  if type int -1 == do
+    temp_stack token
+    "The stack is empty"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  elif type TypeNode.get_type TokenType.BOOL != do
+    temp_stack token
+    "DO requires a boolean\nPopped type: "
+    type TypeNode.get_type
+    TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+  type_stack TypeStack.copy branched_stacks List.append
+end
+
+// Type check ELIF section of an IF block
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    branched_stacks: List[LinkedList[TypeNode]]
+//    if_block_return_stack: LinkedList[TypeNode]
+// Return None
+function type_check_elif ptr ptr ptr ptr :
+  take
+    token
+    type_stack
+    branched_stacks
+    if_block_return_stack
+  in
+
+  // Save the state of the stack after the first part of the IF block
+  if if_block_return_stack Node.get_data int NULL == do
+    type_stack TypeStack.copy ptr.load if_block_return_stack ptr.store
+  endif
+  if_block_return_stack branched_stacks type_stack token type_check_end_of_branch
+end
+
+// Type check ELSE section which ends an IF block
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    branched_stacks: List[LinkedList[TypeNode]]
+//    if_block_return_stack: LinkedList[TypeNode]
+//    if_block_original_stack: LinkedList[TypeNode]
+// Return None
+function type_check_else ptr ptr ptr ptr ptr :
+  take
+    token
+    type_stack
+    branched_stacks
+    if_block_return_stack
+    if_block_original_stack
+  in
+
+  // Save the state of the stack after the first part of the IF block
+  if if_block_return_stack Node.get_data int NULL == do
+    type_stack TypeStack.copy ptr.load if_block_return_stack ptr.store
+  endif
+  if_block_return_stack branched_stacks type_stack token type_check_end_of_branch
+
+  // Use IF block's original stack as the old stack
+  if_block_original_stack TypeStack.copy branched_stacks List.append
+end
+
+// ENDIF ends the IF block
+// We have to check that the stack state was not altered inside the block.
+// If stack state was changed, the changes should be consistent in all of the sections
+// and there should be an ELSE section present to act as default branch.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    branched_stacks: List[LinkedList[TypeNode]]
+//    if_block_original_stacks: List[TypeStack[TypeNode]]
+//    if_block_return_stacks: List[TypeStack[TypeNode]]
+//    else_or_return_present: bool
+// Return None
+function type_check_endif ptr ptr ptr ptr ptr bool :
+  take
+    token
+    type_stack
+    branched_stacks
+    if_block_original_stacks
+    if_block_return_stacks
+    else_or_return_present
+  in
+
+  // Get return stack for the current IF block
+  if_block_return_stacks List.last ptr.load
+  take if_block_return_stack in
+
+  // Save the state of the stack after the first part of the IF block
+  if if_block_return_stack Node.get_data int NULL == do
+    type_stack TypeStack.copy ptr.load if_block_return_stack ptr.store
+  endif
+
+  // Type check the ENDIF as the end of the IF block
+  if_block_return_stack branched_stacks type_stack token type_check_end_of_branch
+
+  // If the IF block altered stack state there MUST be an ELSE to catch all errors
+  // and the IF block's return stack must match with all of the sections in the block
+  branched_stacks List.last ptr.load dup
+  if_block_return_stack
+  equal_stacks not
+  take stack_is_altered stack_before_branch in
+  if
+    else_or_return_present not
+    stack_is_altered
+    &&
+  do
+    type_stack token
+    "The stack state should be the same than at the start of the IF-block.\n"
+    "Introduce an ELSE-block if you need to return different values from IF-blocks.\n"  str.cat
+    "The stack state should be the same with every branch of the block.\n\n"            str.cat
+    "Stack state after the previous sections in the IF block:\n"                        str.cat
+    if_block_return_stack TypeStack.repr                                                str.cat
+    "\nStack state before the IF block:\n"                                              str.cat
+    stack_before_branch TypeStack.repr                                                  str.cat
+    "SYNTAX_ERROR" CompilerErrorWithStack
+  endif
+
+  // Make the IF block's return stack the new stack for the program
+  if if_block_return_stack Node.get_data int NULL != do
+    if_block_return_stack branched_stacks List.last ptr.store
+  endif
+
+  // Reset IF-block variables
+  if_block_original_stacks dup List.len 1 - swap List.pop
+  if_block_return_stacks   dup List.len 1 - swap List.pop
+end
+
+// Pop a value from the stack to a Variable
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    functions: List[Function]
+// Return None
+function type_check_function_call ptr ptr ptr :
+  over TypeStack.copy
+  over Token.get_value
+  take
+    function_name
+    temp_stack
+    token
+    type_stack
+    functions
+  in
+
+  // Get the Function's Signature
+  functions function_name get_function_by_name
+  Function.get_signature
+  dup   Signature.get_returns
+  over  Signature.get_params
+  take
+    param_types
+    return_types
+    signature
+  in
+
+  return_types List.len
+  param_types List.len
+  0
+  take
+    index
+    param_types.len
+    return_types.len
+  in
+
+  // Pop param types
+  while index param_types.len < do
+    if type_stack Node.get_data int NULL == do
+      temp_stack token
+      "Not enough parameters for '"
+      function_name             str.cat
+      "' function\n\n"          str.cat
+      "Function Signature:\n"   str.cat
+      signature Signature.repr  str.cat
+      "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
+    endif
+
+    // Pop a type from the stack and check if it matches with Function's Signature
+    index param_types List.nth int.load
+    type_stack LinkedList.pop TypeNode.get_type
+    take expected_type popped_type in
+
+    if expected_type popped_type matching_token_types not do
+      temp_stack token
+      "Wrong type of parameter in stack for '"
+      function_name             str.cat
+      "' function\n\n"          str.cat
+      "Function Signature:\n"   str.cat
+      signature Signature.repr  str.cat
+      "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
+    endif
+    index 1 + index =
+  done
+
+  // Push return types to the stack
+  0 index =
+  while index return_types.len < do
+    // Get a type from return_types List
+    index return_types List.nth int.load
+    take return_type in
+
+    // Push the current return type to the stack
+    token Token.get_location return_type TypeNode.init
+    type_stack LinkedList.push
+    index 1 + index =
+  done
+end
+
+// Copy the Nth item from the stack to a Variable
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    variables: List[Variable]
+//    count: int
+// Return None
+function type_check_peek_bind ptr ptr ptr int :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+    variables
+    count
+  in
+
+  // Get the Nth value's TokenType from the stack, based on count
+  0 take index in
+  while index count < do
+    temp_stack LinkedList.pop
+    take type in
+    index 1 + index =
+  done
+
+  if type int -1 == do
+    type_stack token
+    "Could not peek "
+    count itoa str.cat
+    " values from the stack because there were not enough values" str.cat
+    "PEEK_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  // Save the popped type to the Variable
+  type TypeNode.get_type token Token.get_value Variable.init
+  variables List.append
+end
+
+// Pop a value from the stack to a Variable
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    variables: List[Variable]
+// Return None
+function type_check_pop_bind ptr ptr ptr :
+  take
+    token
+    type_stack
+    variables
+  in
+
+  type_stack LinkedList.pop
+  take type in
+
+  // Stack is empty
+  if type int -1 == do
+    type_stack token
+    "Cannot drop value from empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  type TypeNode.get_type token Token.get_value Variable.init
+  variables List.append
+end
+
+// Push a value from Variable to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    variables: List[Variable]
+// Return None
+function type_check_push_bind ptr ptr ptr :
+  take
+    token
+    type_stack
+    variables
+  in
+
+  token Token.get_location
+  token Token.get_value variables List.get_variable Variable.get_type
+  TypeNode.init type_stack LinkedList.push
+end
+
+// Push a boolean to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_bool ptr ptr :
+  Token.get_location TokenType.BOOL TypeNode.init
+  swap LinkedList.push
+end
+
+// Push a character to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_char ptr ptr :
+  Token.get_location TokenType.CHAR TypeNode.init
+  swap LinkedList.push
+end
+
+// Push an integer to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_int ptr ptr :
+  Token.get_location TokenType.INT TypeNode.init
+  swap LinkedList.push
+end
+
+// Push a pointer to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_ptr ptr ptr :
+  Token.get_location TokenType.PTR TypeNode.init
+  swap LinkedList.push
+end
+
+// Push a string to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_str ptr ptr :
+  Token.get_location TokenType.STR TypeNode.init
+  swap LinkedList.push
+end
+
+// Push an unsigned 8-bit integer to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_uint8 ptr ptr :
+  Token.get_location TokenType.UINT8 TypeNode.init
+  swap LinkedList.push
+end
+
+// Return from the current Function.
+// Function's TypeStack should match its Signature.
+// Params
+//    op: Op
+//    type_stack: LinkedList[TypeNode]
+//    if_block_return_stack: LinkedList[TypeNode]
+// Return TypeStack
+function type_check_return ptr ptr ptr -> ptr :
+  dup Op.get_function
+  dup Function.get_signature
+  dup Signature.get_returns
+  take
+    return_types
+    signature
+    func
+    op
+    type_stack
+    if_block_return_stack
+  in
+
+  // Test if current TypeStack matches with Signature.returns
+  type_stack TypeStack.get_types
+  take stack_types in
+  if return_types stack_types List.equals not do
+    type_stack op Op.get_token
+    "Stack state does not match with the return types of '"
+    func Function.get_name    str.cat
+    "' function\n\n"          str.cat
+    "Function Signature:\n"   str.cat
+    signature Signature.repr  str.cat
+    "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
+  endif
+  if_block_return_stack
+end
+
+// DIVMOD pops two items from the stack and divides second from the top one.
+// Then push the remainder and the quotient of the two values.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_divmod ptr ptr :
+  over TypeStack.copy
+  over Token.get_value str.copy str.upper
+  take
+    token_value
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 int -1 == do
+    temp_stack token
+    token_value " intrinsic requires two integers" str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  // Wrong token type
+  elif
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    ||
+  do
+    temp_stack token
+    token_value " intrinsic requires two integers\n\n" str.cat
+    "Popped types:\n" str.cat
+    t1 TypeNode.get_type TokenType.repr str.cat "\n" str.cat
+    t2 TypeNode.get_type TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push the remainder and the quotient to the stack
+  token Token.get_location
+  take location in
+  location TokenType.INT TypeNode.init type_stack LinkedList.push
+  location TokenType.INT TypeNode.init type_stack LinkedList.push
+end
+
+// DROP removes one item from the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_drop ptr ptr :
+  take token type_stack in
+
+  // Pop one item from the stack
+  type_stack LinkedList.pop
+  take type in
+
+  // Stack is empty
+  if type int -1 == do
+    type_stack token
+    "Cannot drop value from empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+end
+
+// DUP duplicates the top item from the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_dup ptr ptr :
+  take token type_stack in
+
+  // Pop one item from the stack
+  type_stack LinkedList.pop
+  take type in
+
+  // Stack is empty
+  if type int -1 == do
+    type_stack token
+    "Cannot duplicate value from empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  // Push the popped value twice
+  type type_stack LinkedList.push
+  type type_stack LinkedList.push
+end
+
+// LOAD variants load certain type of value from where a pointer is pointing to.
+// It takes one pointer from the stack and pushes back the dereferenced pointer value.
+// Different LOAD variants: LOAD_BYTE, LOAD_WORD, LOAD_DWORD, LOAD_QWORD
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_load ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop one item from the stack
+  type_stack LinkedList.pop
+  take type in
+
+  // Stack is empty
+  if type int -1 == do
+    temp_stack token
+    "The stack is empty - PTR required"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  // Wrong token type
+  elif type TypeNode.get_type POINTER_TYPES Array.contains_int not do
+    temp_stack token
+    dup Token.get_value str.copy str.upper
+    " requires a pointer\n\n"                   str.cat
+    "Popped type: "                             str.cat
+    type TypeNode.get_type TokenType.repr  str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push loaded value which could be of any type
+  token Token.get_location TokenType.ANY TypeNode.init
+  type_stack LinkedList.push
+end
+
+// NTH pops one integer from the stack and pushes the Nth element from stack back to stack.
+// Note that the Nth is counted without the popped integer.
+// Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+//    program: Program
+// Return None
+function type_check_nth ptr ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+    program
+  in
+
+  // Pop the value representing N from the stack
+  type_stack LinkedList.pop
+  take type in
+
+  // Not enough values in the stack
+  if type int -1 == do
+    temp_stack token
+    "NTH intrinsic requires an integer"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  elif type TypeNode.get_type TokenType.INT != do
+    temp_stack token
+    "NTH intrinsic requires an integer\n\n"
+    "Popped type: "                       str.cat
+    type TypeNode.get_type TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Get the Token representing N
+  program type TypeNode.get_location get_op_from_location
+  Op.get_token dup Token.get_value
+  take n_token_value n_token in
+
+  // Only support integers for N
+  if n_token_value str.is_numeric not do
+    temp_stack token
+    "NTH intrinsic requires an integer as N"
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Find the Nth item from temp_stack
+  n_token_value atoi
+  0
+  take index N in
+  while index N 1 + < do
+    temp_stack LinkedList.pop
+    take popped in
+    index 1 + index =
+  done
+
+  // Not enough items in the stack
+  if popped int -1 == do
+    type_stack token
+    "Cannot get "
+    N itoa str.cat
+    ". value from the stack because there are not enough values in the stack" str.cat
+    "NOT_ENOUGH_VALUES_IN_STACK" CompilerErrorWithStack
+  endif
+
+  // Push the Nth item to the real TypeStack
+  token Token.get_location popped TypeNode.get_type TypeNode.init
+  type_stack LinkedList.push
+end
+
+// OVER Intrinsic pushes a copy of the second element of the stack.
+// Example with the stack's top element being the rightmost: a b -> a b a
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_over ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 int -1 == do
+    temp_stack token
+    "OVER intrinsic requires two values in the stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  // Push the values back to the stack in the correct order
+  t2 type_stack LinkedList.push
+  t1 type_stack LinkedList.push
+  t2 type_stack LinkedList.push
+end
+
+// Pop an integer from the stack and print its value to stdout
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_print ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop one item from the stack
+  type_stack LinkedList.pop
+  take type in
+
+  // Not enough values in the stack
+  if type int -1 == do
+    temp_stack token
+    "Cannot print from an empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  // Wrong token type
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
+    temp_stack token
+    "PRINT intrinsic requires an integer\n\n"
+    "Popped type: "                             str.cat
+    type TypeNode.get_type TokenType.repr  str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+end
+
+// ROT Intrinsic rotates the top three elements of the stack so that the third becomes first
+// Example with the stack's top element being the rightmost: a b c -> b c a
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_rot ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop three items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t3 t2 t1 in
+
+  // Not enough values in the stack
+  if t3 int -1 == do
+    temp_stack token
+    "ROT intrinsic requires three values in the stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  // Push the values back to the stack in the correct order
+  t2 type_stack LinkedList.push
+  t1 type_stack LinkedList.push
+  t3 type_stack LinkedList.push
+end
+
+// STORE variants store a value of certain type to where a pointer is pointing to.
+// It takes a pointer and a value from the stack and loads the value to the pointer address.
+// Different STORE variants: STORE_BYTE, STORE_WORD, STORE_DWORD, STORE_QWORD
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_store ptr ptr :
+  over TypeStack.copy
+  over Token.get_value str.copy str.upper
+  " intrinsic requires two values on the stack, PTR and value" str.cat
+  take
+    required_values_str
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 int -1 == do
+    temp_stack token
+    required_values_str
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  elif t1 TypeNode.get_type POINTER_TYPES Array.contains_int not do
+    temp_stack token
+    required_values_str "\n\n"                str.cat
+    "Expected types:\nPTR\nANY\n\n"           str.cat
+    "Popped types:\n"                         str.cat
+    t1 TypeNode.get_type TokenType.repr  str.cat
+    "\n"                                      str.cat
+    t2 TypeNode.get_type TokenType.repr  str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+end
+
+// SWAP Intrinsic swaps two top elements in the stack.
+// Example with the stack's top element being the rightmost: a b -> b a
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_swap ptr ptr :
+  over TypeStack.copy
+  take
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 int -1 == do
+    temp_stack token
+    "SWAP intrinsic requires two values in the stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  // Push the values back to the stack in the correct order
+  t1 type_stack LinkedList.push
+  t2 type_stack LinkedList.push
+end
+
+// SYSCALL intrinsic variants call a Linux syscall.
+// Syscalls require different amount of arguments from 0 to 6.
+// Different variants are named SYSCALL0 - SYSCALL6 by the amount of arguments.
+// The different syscall constants required for RAX register can be found from lib/sys.torth.
+// Naming convention (case sensitive): SYS_<syscall> - Example: SYS_write
+// https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#tables
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_syscall ptr ptr :
+  over TypeStack.copy
+  over Token.get_value str.copy str.upper
+
+  // The parameter count for the SYSCALL intrinsic is the last character of the Token.value
+  // SYSCALL0 --> No parameters
+  // SYSCALL6 --> Six parameters
+  dup dup str.len 1 - str.char_at '0' -
+  take
+    parameter_count
+    token_value
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop the syscall number
+  type_stack LinkedList.pop
+  take type in
+
+  // SYSCALLx intrinsics require x+1 parameters
+  if type int -1 == do
+    temp_stack token
+    token_value " intrinsic requires "  str.cat
+    parameter_count 1 + itoa            str.cat
+    " value"                            str.cat
+    if parameter_count 0 > do "s"       str.cat endif
+    " in the stack"                     str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  // The first parameter should be the number of the syscall
+  elif type TypeNode.get_type INTEGER_TYPES Array.contains_int not do
+    temp_stack token
+    "The first argument of " token_value        str.cat
+    " should be the number of the syscall\n\n"  str.cat
+    "Expected type: INT\n"                      str.cat
+    "Popped type: "                             str.cat
+    type TypeNode.get_type TokenType.repr       str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Pop the syscall parameters
+  1 take parameter_index in
+  while parameter_index parameter_count <= do
+    type_stack LinkedList.pop
+    type =
+
+    // There is not enough values in the stack
+    if type int -1 == do
+      temp_stack token
+      token_value " intrinsic requires "  str.cat
+      parameter_count 1 + itoa            str.cat
+      " value"                            str.cat
+      if parameter_count 0 > do "s"       str.cat endif
+      " in the stack but got "            str.cat
+      parameter_index itoa                str.cat
+      "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+    endif
+    parameter_index 1 +
+    parameter_index =
+  done
+
+  // Push syscall return code to the stack
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
+end
+
+// Type check bitwise operation for two integers
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_bitwise ptr ptr :
+  over TypeStack.copy
+  over Token.get_value str.copy str.upper
+  take
+    token_value
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 int -1 == do
+    temp_stack token
+    token_value " intrinsic requires two integers" str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  // Wrong token type
+  elif
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    ||
+  do
+    temp_stack token
+    token_value " intrinsic requires two integers\n\n" str.cat
+    "Popped types:\n" str.cat
+    t1 TypeNode.get_type TokenType.repr str.cat "\n" str.cat
+    t2 TypeNode.get_type TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push the result to the stack
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
+end
+
+// SHL performs bitshift operations to the left SHR to the right.
+// The second argument is the value to be bitshifted
+// and the first is the amount of times the shift should be performed.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_bitshift ptr ptr :
+  over TypeStack.copy
+  over Token.get_value str.copy str.upper
+  take
+    token_value
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 int -1 == do
+    temp_stack token
+    token_value " intrinsic requires two values in the stack" str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  // Wrong token type
+  elif
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    ||
+  do
+    temp_stack token
+    token_value " intrinsic requires two integers\n\n" str.cat
+    "Popped types:\n" str.cat
+    t1 TypeNode.get_type TokenType.repr str.cat "\n" str.cat
+    t2 TypeNode.get_type TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push the result to the stack
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
+end
+
+// Type check calculation intrinsics MINUS, MUL, and PLUS
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_calculations ptr ptr :
+  over TypeStack.copy
+  over Token.get_value str.copy str.upper
+  take
+    token_value
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 int -1 == do
+    temp_stack token
+    token_value " requires two values on the stack" str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  // Wrong token type
+  elif
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    ||
+  do
+    temp_stack token
+    token_value " intrinsic requires two integers\n\n" str.cat
+    "Popped types:\n" str.cat
+    t1 TypeNode.get_type TokenType.repr str.cat "\n" str.cat
+    t2 TypeNode.get_type TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push the result to the stack
+  token Token.get_location TokenType.INT TypeNode.init
+  type_stack LinkedList.push
+end
+
+// Type check comparison intrinsics like EQ or GE.
+// Comparison intrinsics take two elements from the stack
+// and pushes a boolean result of the comparison.
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_comparison ptr ptr :
+  over TypeStack.copy
+  over Token.get_value str.copy str.upper
+  take
+    token_value
+    temp_stack
+    token
+    type_stack
+  in
+
+  // Pop two items from the stack
+  type_stack LinkedList.pop
+  type_stack LinkedList.pop
+  take t2 t1 in
+
+  // Not enough values in the stack
+  if t2 int -1 == do
+    temp_stack token
+    token_value " requires two values on the stack" str.cat
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  // Wrong token type
+  elif
+    t1 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    t2 TypeNode.get_type INTEGER_TYPES Array.contains_int not
+    ||
+  do
+    temp_stack token
+    token_value " intrinsic requires two integers\n\n" str.cat
+    "Popped types:\n" str.cat
+    t1 TypeNode.get_type TokenType.repr str.cat "\n" str.cat
+    t2 TypeNode.get_type TokenType.repr str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  // Push the result to the stack
+  token Token.get_location TokenType.BOOL TypeNode.init
+  type_stack LinkedList.push
+end
+
+// Get a list of tokens that do not require type checking
+// TODO: This list should be a constant somehow
+// Params
+//    op: Op
+// Return None
+function get_not_typed_tokens -> ptr :
+  // ["BREAK", "CONTINUE", "PEEK", "TAKE", "WHILE"]
+  List.init take not_typed_tokens in
+  "BREAK"     ptr not_typed_tokens List.append
+  "CONTINUE"  ptr not_typed_tokens List.append
+  "PEEK"      ptr not_typed_tokens List.append
+  "TAKE"      ptr not_typed_tokens List.append
+  "WHILE"     ptr not_typed_tokens List.append
+  not_typed_tokens
+end
+
+// Generate TypeStack for a function
+// Params
+//    func: Function
+// Return
+//    type_stack: LinkedList[TypeNode]
+function get_function_type_stack ptr -> ptr :
+  take func in
+  func Function.get_signature Signature.get_params
+  dup List.len 1 -
+  LinkedList.init
+  take
+    type_stack
+    index
+    params
+  in
+
+  // Get the first Token's location for TypeNodes
+  func Function.get_tokens List.first ptr.load Token.get_location
+  take location in
+
+  // Insert all parameter types to type_stack in the reverse order
+  while index 0 >= do
+    // Add TypeNode from current parameter to type_stack
+    location
+    index params List.nth ptr.load int
+    TypeNode.init
+    type_stack LinkedList.push
+    index 1 - index =
+  done
+  type_stack
+end

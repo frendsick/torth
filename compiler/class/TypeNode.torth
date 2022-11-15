@@ -1,0 +1,49 @@
+include "std"
+
+// TypeNode(type: TokenType, location: Location)
+ENUM TypeNode.size 8 :
+  TypeNode.type     // TokenType
+  TypeNode.location // Location
+END
+
+// Initialize TypeNode from parameters
+// Params: TypeNode.type, TypeNode.location
+// Return: Pointer to TypeNode
+function TypeNode.init int ptr -> ptr :
+  // Allocate memory for TypeNode
+  TypeNode.size malloc
+  take node type location in
+
+  // Load the parameters to the allocated memory
+  type      node TypeNode.set_type
+  location  node TypeNode.set_location
+  node
+end
+
+// Get TypeNode.type
+// Params: Pointer to TypeNode (PTR)
+// Return: TypeNode.type (TokenType => INT)
+function TypeNode.get_type ptr -> int :
+  int.load
+end
+
+// Get TypeNode.location
+// Params: Pointer to TypeNode (PTR)
+// Return: TypeNode.location (Location => PTR)
+function TypeNode.get_location ptr -> ptr :
+  TypeNode.location ptr+ ptr.load
+end
+
+// Set TypeNode.type
+// Params: Pointer to TypeNode (PTR)
+// Return: TypeNode.type (TokenType => INT)
+function TypeNode.set_type ptr int :
+  int.store
+end
+
+// Set TypeNode.location
+// Params: Pointer to TypeNode (PTR)
+// Return: TypeNode.location (Location => PTR)
+function TypeNode.set_location ptr ptr :
+  TypeNode.location ptr+ ptr.store
+end

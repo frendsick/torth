@@ -10,6 +10,7 @@ include "compiler/class/Memory"
 include "compiler/class/Op"
 include "compiler/class/Token"
 include "compiler/class/Signature"
+include "compiler/class/Variable"
 
 // Parse included files from a code string. Return the list of files.
 // Params: code_file (STR)
@@ -957,8 +958,8 @@ end
 // Params: Function, List[Memory]
 // Return: None
 function parse_function_variables ptr ptr :
-  dup Function.get_tokens
-  List.init
+  dup   Function.get_tokens
+  over  Function.get_variables
   False
   "PEEK"
   0
@@ -1004,7 +1005,10 @@ function parse_function_variables ptr ptr :
         "Unknown VarType '" bind_variant str.cat "'\n" str.cat
         "VALUE_ERROR" CompilerError
       endif
-      token_value ptr variables List.append
+
+      // Append the variable to the list of function's variables
+      token Token.get_type token_value Variable.init
+      variables List.append
 
       // Add the Variable to the list of memories
       func Function.get_name "_"  str.cat
@@ -1019,7 +1023,7 @@ function parse_function_variables ptr ptr :
       endif
 
     // If Token is already a known Variable just update its boolean value
-    elif token_value variables List.contains_str do
+    elif token_value variables List.contains_variable do
       VarType.PUSH token Token.set_vartype
     endif
     index 1 + index =
