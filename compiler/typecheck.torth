@@ -101,6 +101,10 @@ function type_check_sub_program ptr ptr ptr :
     type_check_info =
     index 1 + index =
   done
+
+  // Verify that the TypeStack state matches with the Function's Signature
+  branched_stacks List.last ptr.load
+  func type_check_end_of_program
 end
 
 // Type check the current Op in the Program
@@ -339,6 +343,86 @@ function type_check_intrinsic ptr ptr ptr :
   intrinsic str.cat
   "' has not been implemented." str.cat
   NotImplementedError
+end
+
+// Verify that the TypeStack state matches with the return types of the Function's Signature
+// Params
+//    func: Function
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_end_of_program ptr ptr :
+  dup   Function.get_name
+  over  Function.get_tokens List.last ptr.load
+  take
+    last_token
+    function_name
+    func
+    type_stack
+  in
+
+  // There should be one INT in the stack when the program ends
+  if function_name str.copy str.upper "MAIN" streq do
+    List.init take return_types in
+    TokenType.INT ptr return_types List.append
+
+    // Return early if there is only one integer in the stack
+    if type_stack TypeStack.get_types return_types List.equals do
+      return
+    endif
+
+    last_token
+    "Only the integer return value of the program should be in the stack when program exits"
+    // TODO: Print the current TypeStack
+    "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithToken
+  endif
+
+  if type_stack func correct_return_types not do
+    type_stack TypeStack.get_types List.get_array Array.print
+    // last_token
+    // "Function '"
+    // function_name str.cat
+    // "' does not return the types indicated in the function signature" str.cat
+    // // TODO: Print Function's Signature
+    // // TODO: Print the current TypeStack
+    // "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithToken
+  endif
+end
+
+// Check if the state of TypeStack is correct after executing the Function
+// Params
+//    func: Function
+//    type_stack: LinkedList[TypeNode]
+// Return bool
+function correct_return_types ptr ptr -> bool :
+  dup   get_function_type_stack
+  over  Function.get_signature
+  dup   Signature.get_returns
+  swap  Signature.get_params
+  0
+  take
+    index
+    params
+    returns
+    temp_stack
+    func
+    type_stack
+  in
+
+  // Pop parameters from temp_stack
+  while index params List.len < do
+    temp_stack LinkedList.pop drop
+    index 1 + index =
+  done
+
+  // Push return types to temp_stack
+  0 index =
+  while index returns List.len < do
+    func Function.get_tokens List.first ptr.load Token.get_location
+    index returns List.nth int.load TypeNode.init
+    temp_stack LinkedList.push
+    index 1 + index =
+  done
+  type_stack temp_stack equal_stacks
 end
 
 // Check if two TypeStacks have similar types inside
