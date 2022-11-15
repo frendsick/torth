@@ -303,3 +303,83 @@ function get_constant str ptr -> ptr :
   done
   NULLPTR // Constant was not found
 end
+
+// Perform a deep copy of the TypeStack
+// Params
+//    type_stack: LinkedList[TypeNode]
+// Return
+//    type_stack_copy: LinkedList[TypeNode]
+function TypeStack.copy ptr -> ptr :
+  dup Node.get_data
+  LinkedList.init
+  0
+  take
+    stack_depth
+    type_stack_copy
+    node
+    type_stack
+  in
+
+  // Empty TypeStack
+  if type_stack LinkedList.len 0 == do
+    type_stack_copy return
+  endif
+
+  // Traverse the TypeStack to the first Node
+  while node Node.get_next int NULL != do
+    node Node.get_next node =
+    stack_depth 1 + stack_depth =
+  done
+
+  // Fill the copy TypeStack with the contents of the original
+  while stack_depth 0 >= do
+    // Generate new TypeNode from the original stack
+    node Node.get_data
+    take type_node in
+    type_node TypeNode.get_location
+    type_node TypeNode.get_type
+    TypeNode.init
+    type_stack_copy LinkedList.push
+
+    // Get the next item in the stack
+    node Node.get_prev node =
+    stack_depth 1 - stack_depth =
+  done
+  type_stack_copy
+end
+
+// Get a List of TokenTypes from TypeStack
+// Params
+//    type_stack: LinkedList[TypeNode]
+// Return
+//    token_types: List[TokenType]
+function TypeStack.get_types ptr -> ptr :
+  dup Node.get_data
+  List.init
+  0
+  take
+    stack_depth
+    token_types
+    node
+    type_stack
+  in
+
+  // Handle the empty case
+  if type_stack LinkedList.len 0 == do
+    token_types return
+  endif
+
+  // Traverse the TypeStack to the first Node
+  while node Node.get_next int NULL != do
+    node Node.get_next node =
+    stack_depth 1 + stack_depth =
+  done
+
+  // Fill List with the TokenTypes inside TypeStack
+  while stack_depth 0 >= do
+    node Node.get_data
+    TypeNode.get_type ptr token_types List.append
+    stack_depth 1 - stack_depth =
+  done
+  token_types
+end
