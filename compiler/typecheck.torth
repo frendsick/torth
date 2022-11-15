@@ -424,14 +424,20 @@ end
 // Return
 //    token_types: List[TokenType]
 function TypeStack.get_types ptr -> ptr :
-  Node.get_data
+  dup Node.get_data
   List.init
   0
   take
     stack_depth
     token_types
     node
+    type_stack
   in
+
+  // Handle the empty case
+  if type_stack LinkedList.len 0 == do
+    token_types return
+  endif
 
   // Traverse the TypeStack to the first Node
   while node Node.get_next int NULL != do

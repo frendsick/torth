@@ -123,10 +123,12 @@ function get_op_from_location ptr ptr -> ptr :
     index program List.nth ptr.load
     take op in
 
+    // Test if the current Op has the same Location pointer
     op Op.get_token Token.get_location int
-    if location == do
+    take current_location in
+    if location current_location == do
       op return
-    endif drop
+    endif
     index 1 + index =
   done
 
