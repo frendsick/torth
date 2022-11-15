@@ -22,29 +22,29 @@ function main :
   code_file get_included_files
   take included_files in
 
-  "[INFO] Parsing Tokens\n" puts
+  "[INFO] Parsing tokens\n" puts
   included_files get_token_matches_from_files
   take token_matches in
 
-  "[INFO] Parsing Constants\n" puts
+  "[INFO] Parsing constants\n" puts
   token_matches get_constants
   take constants in
 
-  "[INFO] Parsing Memories\n" puts
+  "[INFO] Parsing memories\n" puts
   constants token_matches get_memories
   take memories in
 
-  "[INFO] Parsing Functions\n" puts
+  "[INFO] Parsing functions\n" puts
   memories constants token_matches get_functions
   take functions in
 
   // Get the intermediate representation (Program) of each Function
-  "[INFO] Parsing Sub-Programs\n" puts
+  "[INFO] Parsing sub-programs\n" puts
   memories constants functions get_sub_programs
   take sub_programs in
 
-  // TODO: Type check the application
-  "[INFO] Type checking the application\n" puts
+  // Type check the Program
+  "[INFO] Type checking the program\n" puts
   functions sub_programs type_check_application
 
   // Generate assembly code from the intermediate representation
