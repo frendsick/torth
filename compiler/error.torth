@@ -21,9 +21,28 @@ function CompilerError str str :
   1 exit
 end
 
+// Params:
+//    error_type: str
+//    message: str
+//    token: Token
+// Return: NoReturn
 function CompilerErrorWithToken str str ptr :
   print_error
   "\n" eputs
+  get_token_info eputs
+  1 exit
+end
+
+// Params:
+//    error_type: str
+//    message: str
+//    token: Token
+//    type_stack: TypeStack
+// Return: NoReturn
+function CompilerErrorWithStack str str ptr ptr :
+  print_error
+  "\nCurrent stack state:\n" eputs
+  swap TypeStack.repr eputs
   get_token_info eputs
   1 exit
 end
