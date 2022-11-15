@@ -384,7 +384,6 @@ function type_check_end_of_program ptr ptr :
     "' does not return the types indicated in the function signature\n\n" str.cat
     "Function Signature:\n"                                               str.cat
     func Function.get_signature Signature.repr                            str.cat
-    // TODO: Print Function's Signature
     "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
   endif
 end
@@ -500,9 +499,13 @@ function type_check_end_of_branch ptr ptr ptr ptr :
     endif
 
     // Raise an error when the stack deviates from the previous sections
-    type_stack token
-    "Stack state should be the same after each section in the IF block"
-    "DIFFERENT_STACK_BETWEEN_SECTIONS" CompilerErrorWithStack
+    token
+    "Stack state should be the same after each section in the IF block\n\n"
+    "Stack state after previous sections:\n"      str.cat
+    if_block_return_stack TypeStack.repr          str.cat
+    "\nStack state after the current section:\n"  str.cat
+    stack_after_branch TypeStack.repr             str.cat
+    "DIFFERENT_STACK_BETWEEN_SECTIONS" CompilerErrorWithToken
   endif
 
   // Get the stack state before the branch
@@ -511,12 +514,13 @@ function type_check_end_of_branch ptr ptr ptr ptr :
 
   // Test if the stack state is the same before and after the branch
   if stack_before_branch stack_after_branch equal_stacks not do
-    type_stack token
-    "Stack state should be the same after the block whether or not the condition was matched"
-    // TODO: Print the stack state before and after the branch block
-    // "\n\nStack state at the start of the block:\n"  str.cat
-    // "Stack state at the end of the block:\n"        str.cat
-    "DIFFERENT_STACK_BETWEEN_BRANCHES" CompilerErrorWithStack
+    token
+    "Stack state should be the same after the block whether or not the condition was matched\n\n"
+    "Stack state at the start of the block:\n"      str.cat
+    stack_before_branch TypeStack.repr              str.cat
+    "\nStack state at the end of the block:\n"      str.cat
+    stack_after_branch TypeStack.repr               str.cat
+    "DIFFERENT_STACK_BETWEEN_BRANCHES" CompilerErrorWithToken
   endif
 end
 
