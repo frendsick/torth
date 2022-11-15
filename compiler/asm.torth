@@ -130,6 +130,9 @@ function get_op_asm ptr ptr -> str :
   elif op_type OpType.PUSH_STR == do
     op get_push_str_asm
     return
+  elif op_type OpType.PUSH_UINT8 == do
+    token_value 1 str+ get_push_int_asm
+    return
   elif op_type OpType.RETURN == do
     op Op.get_function Function.get_name get_return_asm
     return
