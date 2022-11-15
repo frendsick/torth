@@ -887,10 +887,10 @@ function type_check_endif ptr ptr ptr ptr ptr bool :
 
   // If the IF block altered stack state there MUST be an ELSE to catch all errors
   // and the IF block's return stack must match with all of the sections in the block
-  branched_stacks List.last ptr.load
+  branched_stacks List.last ptr.load dup
   if_block_return_stack
   equal_stacks not
-  take stack_is_altered in
+  take stack_is_altered stack_before_branch in
   if
     else_or_return_present not
     stack_is_altered
@@ -899,8 +899,11 @@ function type_check_endif ptr ptr ptr ptr ptr bool :
     type_stack token
     "The stack state should be the same than at the start of the IF-block.\n"
     "Introduce an ELSE-block if you need to return different values from IF-blocks.\n"  str.cat
-    "The stack state should be the same with every branch of the block."                str.cat
-    // TODO: Output stack states before the IF block and after current section
+    "The stack state should be the same with every branch of the block.\n\n"            str.cat
+    "Stack state after the previous sections in the IF block:\n"                        str.cat
+    if_block_return_stack TypeStack.repr                                                str.cat
+    "\nStack state before the IF block:\n"                                              str.cat
+    stack_before_branch TypeStack.repr                                                  str.cat
     "SYNTAX_ERROR" CompilerErrorWithStack
   endif
 
@@ -956,9 +959,10 @@ function type_check_function_call ptr ptr ptr :
     if type_stack Node.get_data int NULL == do
       temp_stack token
       "Not enough parameters for '"
-      function_name str.cat
-      "' function"  str.cat
-      // TODO: Print expected types
+      function_name             str.cat
+      "' function\n\n"          str.cat
+      "Function Signature:\n"   str.cat
+      signature Signature.repr  str.cat
       "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
     endif
 
@@ -1145,9 +1149,11 @@ end
 // Return TypeStack
 function type_check_return ptr ptr ptr -> ptr :
   dup Op.get_function
-  dup Function.get_signature Signature.get_returns
+  dup Function.get_signature
+  dup Signature.get_returns
   take
     return_types
+    signature
     func
     op
     type_stack
@@ -1160,9 +1166,10 @@ function type_check_return ptr ptr ptr -> ptr :
   if return_types stack_types List.equals not do
     type_stack op Op.get_token
     "Stack state does not match with the return types of '"
-    func Function.get_name  str.cat
-    "' function"            str.cat
-    // TODO: Print expected return types
+    func Function.get_name    str.cat
+    "' function\n\n"          str.cat
+    "Function Signature:\n"   str.cat
+    signature Signature.repr  str.cat
     "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
   endif
   if_block_return_stack
