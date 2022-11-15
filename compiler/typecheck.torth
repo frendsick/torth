@@ -377,14 +377,13 @@ function type_check_end_of_program ptr ptr :
   endif
 
   if type_stack func correct_return_types not do
-    type_stack TypeStack.get_types List.get_array Array.print
-    // last_token
-    // "Function '"
-    // function_name str.cat
-    // "' does not return the types indicated in the function signature" str.cat
-    // // TODO: Print Function's Signature
-    // // TODO: Print the current TypeStack
-    // "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithToken
+    last_token
+    "Function '"
+    function_name str.cat
+    "' does not return the types indicated in the function signature" str.cat
+    // TODO: Print Function's Signature
+    // TODO: Print the current TypeStack
+    "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithToken
   endif
 end
 
