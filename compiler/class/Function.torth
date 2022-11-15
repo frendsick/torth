@@ -57,8 +57,9 @@ function Function.print ptr :
   dup Function.name         ptr+
   str.load puts "\n"        puts
 
-  dup Function.signature ptr+ ptr.load
-  Signature.print
+  "Function.signature => "  puts
+  dup Function.get_signature
+  Signature.repr            puts
 
   "Function.tokens    => "  puts
   Function.tokens ptr+

@@ -1,4 +1,5 @@
 include "std"
+include "compiler/utils"
 
 // Signature(params: List[TokenType], returns: List[TokenType])
 ENUM Signature.size 8 :
@@ -58,14 +59,42 @@ function Signature.type_map str -> int :
   endif
 end
 
-function Signature.print ptr :
-  // Print params
-  "Signature.params   => " puts
-  dup Signature.params ptr+ ptr.load
-  List.get_array Array.print "\n" puts
+function Signature.repr ptr -> str :
+  dup   Signature.get_returns
+  swap  Signature.get_params
+  ""    str.copy
+  dup   str.copy
+  0
+  take
+    index
+    params_repr
+    returns_repr
+    params
+    returns
+  in
 
-  // Print returns
-  "Signature.returns  => " puts
-  Signature.returns ptr+ ptr.load
-  List.get_array Array.print "\n" puts
+  // Set empty Signature parts as None
+  if params List.len 0 == do
+    "None " params_repr =
+  endif
+  if returns List.len 0 == do
+    "None" returns_repr =
+  endif
+
+  // Generate repr from Signature.params
+  while index params List.len < do
+    index params List.nth int.load TokenType.repr " " str.cat
+    params_repr swap str.cat params_repr =
+    index 1 + index =
+  done
+
+  // Generate repr from Signature.returns
+  0 index =
+  while index returns List.len < do
+    index returns List.nth int.load TokenType.repr " " str.cat
+    returns_repr swap str.cat returns_repr =
+    index 1 + index =
+  done
+  params_repr "-> " str.cat
+  returns_repr      str.cat
 end

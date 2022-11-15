@@ -42,7 +42,7 @@ end
 function CompilerErrorWithStack str str ptr ptr :
   print_error
   "\nCurrent stack state:\n" eputs
-  swap TypeStack.repr eputs
+  swap TypeStack.repr eputs "\n" eputs
   get_token_info eputs
   1 exit
 end

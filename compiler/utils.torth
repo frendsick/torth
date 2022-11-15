@@ -393,16 +393,17 @@ end
 //    stack_repr: str
 function TypeStack.repr ptr -> str :
   TypeStack.copy
-  dup LinkedList.pop
   "" str.copy
-  1
-  take
-    index
-    stack_repr
-    node
-    type_stack
-  in
+  take stack_repr type_stack in
 
+  // Check for empty LinkedList
+  if type_stack LinkedList.is_empty do
+    "[EMPTY]\n" str.copy return
+  endif
+
+  type_stack LinkedList.pop
+  1
+  take index node in
   while node int -1 != do
     "[" index
     itoa                                  str.cat
@@ -416,5 +417,5 @@ function TypeStack.repr ptr -> str :
     type_stack LinkedList.pop node =
     index 1 + index =
   done
-  stack_repr "\n" str.cat
+  stack_repr
 end

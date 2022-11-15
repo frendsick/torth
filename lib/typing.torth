@@ -1,5 +1,6 @@
 // typing.torth - Definitions for non-built in types
 include "std"
+include "compiler/class/TypeNode"
 
 // Constants
 const ITERABLE_CAPACITY 128 end
@@ -569,7 +570,6 @@ function LinkedList.pop ptr -> ptr :
   popped_data
 end
 
-include "compiler/class/TypeNode"
 // Get the length of a LinkedList
 // Params
 //    head_ptr: Node
@@ -585,4 +585,12 @@ function LinkedList.len ptr -> int :
     current =
   done
   count
+end
+
+// Check if LinkedList is empty
+// Params
+//    head_ptr: Node
+// Return bool
+function LinkedList.is_empty ptr -> bool :
+  int.load 0 ==
 end
