@@ -155,8 +155,7 @@ function get_tokens_op_type ptr ptr ptr ptr -> int :
       OpType.POP_BIND return
     endif
 
-    "Unknown VarType '" token_vartype itoa  str.cat
-    "'\n"                                   str.cat
+    "Unknown VarType '" token_vartype itoa str.cat
     "VALUE_ERROR" CompilerError
   elif constants token_value constant_exists do
     OpType.PUSH_INT return
@@ -207,7 +206,7 @@ function get_tokens_op_type ptr ptr ptr ptr -> int :
   // Report error when Op was not found
   "Operation '"
   token Token.get_value str.cat
-  "' is not found\n"    str.cat
+  "' is not found"      str.cat
   "OP_NOT_FOUND" CompilerError
   NULL 0 exit
 end

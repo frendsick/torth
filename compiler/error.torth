@@ -11,13 +11,13 @@ include "compiler/utils"
 // Params: Error type (STR), message (STR)
 function print_error str str :
   "\e[95mCompiler Error \e[91m" eputs eputs
-  "\e[0m:\n" eputs eputs
+  "\e[0m:\n" eputs eputs "\n" eputs
 end
 
 // Params: Error type (STR), message (STR)
 // Return: NoReturn
 function CompilerError str str :
-  print_error "\n" eputs
+  print_error
   1 exit
 end
 
@@ -28,7 +28,7 @@ end
 // Return: NoReturn
 function CompilerErrorWithToken str str ptr :
   print_error
-  "\n\n" eputs
+  "\n" eputs
   get_token_info eputs
   1 exit
 end
