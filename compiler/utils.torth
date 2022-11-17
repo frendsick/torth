@@ -56,6 +56,8 @@ function exec_command str str :
     file link_with_ld
   elif cmd "EXEC" streq do
     file execute_program
+  elif cmd "RM" streq do
+    file remove_file
   else
     "Unknown command '" eputs
     cmd                 eputs
@@ -81,6 +83,20 @@ function get_token_info ptr -> str :
   token Token.get_value str.cat
   "\n" str.cat
   token Token.get_location get_location_info str.cat
+end
+
+// Remove a file
+// Params
+//    file_name: str
+// Return None
+function remove_file str :
+  // Allocate memory for the arguments
+  List.init
+  take argv file_name in
+
+  "rm"        ptr argv List.append
+  file_name   ptr argv List.append
+  NULLPTR argv List.first "/usr/bin/rm" execve drop
 end
 
 function get_location_info ptr -> str :

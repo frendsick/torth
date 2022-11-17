@@ -57,6 +57,10 @@ function main :
   "[INFO] Compiling Assembly code\n" puts
   out_file compile_executable
 
+  // Remove files generated during compilation
+  "[INFO] Removing files generated during compilation\n" puts
+  out_file remove_compilation_files
+
   // Run the program if -r command line flag is present
   if "-r" args Argparser.flag_present do
     "[INFO] Running the program\n" puts

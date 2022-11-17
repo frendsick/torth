@@ -49,3 +49,17 @@ function link_with_ld str :
 
   NULLPTR argv List.first "/usr/bin/ld" execve drop
 end
+
+// Remove files generated during compilation
+// Params
+//    output_file: str
+// Return None
+function remove_compilation_files str :
+  take output_file in
+
+  // Remove Assembly file
+  output_file ".asm" str.cat "RM" exec_forked
+
+  // Remove object file
+  output_file ".o"   str.cat "RM" exec_forked
+end
