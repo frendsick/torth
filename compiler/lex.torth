@@ -855,6 +855,15 @@ function get_functions ptr ptr ptr -> ptr :
           tokens List.append
         endif
 
+        // Do not allow empty functions
+        if tokens List.len 0 == do
+          "Function '"
+          function_name                                 str.cat
+          "' does not have any tokens\n"                str.cat
+          "Creation of empty functions is not allowed"  str.cat
+          "EMPTY_FUNCTION" CompilerError
+        endif
+
         // Function(function_name, signature, tokens)
         tokens
         return_types param_types Signature.init
