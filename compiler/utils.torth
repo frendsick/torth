@@ -3,6 +3,7 @@ include "std"
 include "argparser"
 include "typing"
 include "compiler/defs"
+include "compiler/error"
 include "compiler/class/Location"
 include "compiler/class/Signature"
 include "compiler/class/Token"
@@ -19,6 +20,24 @@ function parse_command_line_arguments -> ptr :
   True  "FILE" "Input file" "code_file"             parser Argparser.add_argument
   parser Argparser.parse_args
   parser
+end
+
+// Get the code_file argument and check if it has .torth extension
+// Params
+//    args: Argparser
+// Return
+//    code_file: str
+function get_code_file_name ptr -> str :
+  "code_file" swap Argparser.get_argument
+  take code_file in
+
+  if code_file ".torth" str.endswith not do
+    "File '" code_file                    str.cat
+    "' has unsupported file extension\n"  str.cat
+    "Only .torth files are supported"     str.cat
+    "UNSUPPORTED_FILE_EXTENSION" CompilerError
+  endif
+  code_file
 end
 
 // Run a program
