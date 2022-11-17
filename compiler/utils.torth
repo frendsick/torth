@@ -111,14 +111,18 @@ function get_location_info ptr -> str :
 end
 
 // Get the output file name from command line arguments
-// Params: Argparser
-// Return: file_name
-function get_output_file_name ptr -> str :
-  "--out" swap Argparser.get_argument
+// Params
+//    input_file: str
+//    args: Argparser
+// Return
+//    file_name: str
+function get_output_file_name str ptr -> str :
+  take input_file args in
+  "--out" args Argparser.get_argument
   take file_name in
 
   if file_name ptr int NULL == do
-    "a.bin" return
+    input_file ".torth" over str.removesuffix return
   endif
   file_name
 end

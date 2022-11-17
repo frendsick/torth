@@ -22,24 +22,25 @@ function main :
   code_file get_included_files
   take included_files in
 
-  "[INFO] Parsing tokens\n" puts
+  // Parse diffent code components
+  "[INFO] Parsing code from " puts
+  code_file puts "\n" puts
   included_files get_token_matches_from_files
   take token_matches in
 
-  "[INFO] Parsing constants\n" puts
+  // Parse Constants
   token_matches get_constants
   take constants in
 
-  "[INFO] Parsing memories\n" puts
+  // Parse Memories
   constants token_matches get_memories
   take memories in
 
-  "[INFO] Parsing functions\n" puts
+  // Parse Functions
   memories constants token_matches get_functions
   take functions in
 
   // Get the intermediate representation (Program) of each Function
-  "[INFO] Parsing sub-programs\n" puts
   memories constants functions get_sub_programs
   take sub_programs in
 
@@ -49,7 +50,7 @@ function main :
 
   // Generate assembly code from the intermediate representation
   "[INFO] Generating Assembly code\n" puts
-  args get_output_file_name
+  args code_file get_output_file_name
   take out_file in
   memories sub_programs out_file ".asm" str.cat generate_assembly_file
 
