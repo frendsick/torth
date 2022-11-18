@@ -34,8 +34,8 @@ end
 
 // Get TokenType from certain type in function definition
 function Signature.type_map str -> int :
-  str.copy str.upper
-  take type_upper in
+  dup str.copy str.upper
+  take type_upper type in
 
   if type_upper "ANY" streq do
     TokenType.ANY return
@@ -52,8 +52,8 @@ function Signature.type_map str -> int :
   elif type_upper "UINT8" streq do
     TokenType.UINT8 return
   else
-    "'" type_upper                  str.cat
-    "' is not a valid TokenType\n"  str.cat
+    "'" type                      str.cat
+    "' is not valid TokenType\n"  str.cat
     "FUNCTION_SIGNATURE_ERROR" CompilerError 0 exit
     NULL
   endif
