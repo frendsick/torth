@@ -815,9 +815,11 @@ function get_functions ptr ptr ptr -> ptr :
   List.init                     // return_types
   List.init                     // param_types
   List.init                     // param_names
+  List.init                     // variables
   0                             // index
   take
     index
+    variables
     param_names
     param_types
     return_types
@@ -866,7 +868,8 @@ function get_functions ptr ptr ptr -> ptr :
           "EMPTY_FUNCTION" CompilerError
         endif
 
-        // Function(function_name, signature, tokens)
+        // Function(function_name, signature, tokens, variables)
+        variables
         tokens
         return_types param_types param_names Signature.init
         function_name Function.init
@@ -879,6 +882,7 @@ function get_functions ptr ptr ptr -> ptr :
         List.init   param_names   =
         List.init   param_types   =
         List.init   return_types  =
+        List.init   variables     =
         List.init   tokens        =
         index 1 + index =
         continue
@@ -887,8 +891,6 @@ function get_functions ptr ptr ptr -> ptr :
     elif current_part 1 == do
       token_value function_name =
       current_part 1 + current_part =
-      // TODO: Check for function redefinition
-      // TODO: Check for Constants
 
     elif current_part 2 == do
       // Enable defining functions that do not return anything without the -> token
@@ -907,21 +909,34 @@ function get_functions ptr ptr ptr -> ptr :
 
       // Only allow named parameters
       if param_colon -1 == do
-        "Invalid function parameter '" token_value                                    str.cat
+        "Function '" function_name                                                    str.cat
+        "' has invalid parameter '"                                                   str.cat
+        token_value                                                                   str.cat
         "'\nFunction parameter must have a colon delimiting its name and TokenType\n" str.cat
-        "Example => parameter_name:int"                                                 str.cat
+        "Example => parameter_name:int"                                               str.cat
         "SYNTAX_ERROR" CompilerError
       endif
 
       // Parse parameter's name
       token_value str.copy
       dup param_colon str+ str.empty
-      ptr param_names List.append
+      take param_name in
+      param_name ptr param_names List.append
 
       // Parse parameter's TokenType
       token_value param_colon 1 + str+
-      Signature.type_map ptr
-      param_types List.append
+      Signature.type_map
+      take param_type in
+      param_type ptr param_types List.append
+
+      // Append parameter to Function's Tokens
+      param_name str.copy token Token.set_value
+      TokenType.WORD      token Token.set_type
+      VarType.TAKE        token Token.set_vartype
+      token tokens List.append
+
+      // Add parameter to the list of Variables
+      memories variables function_name token add_variable_to_list
 
     elif current_part 3 == do
       // Append word to return_types if valid TokenType
@@ -1035,26 +1050,53 @@ function parse_function_variables ptr ptr :
         "VALUE_ERROR" CompilerError
       endif
 
-      // Append the variable to the list of function's variables
-      token Token.get_type token_value Variable.init
-      variables List.append
+      // Add Variable to Function's list of Variables
+      memories variables func Function.get_name token add_variable_to_list
 
-      // Add the Variable to the list of memories
-      func Function.get_name "_"  str.cat
-      token_value                 str.cat
-      take memory_name in
-      if memories memory_name memory_exists not do
-        token Token.get_location
-        ptr.size // Memory.size
-        memory_name
-        Memory.init
-        memories List.append
-      endif
+    // Token is a function parameter
+    elif token Token.get_vartype 0 != do
+      index 1 + index =
+      continue
 
-    // If Token is already a known Variable just update its boolean value
+    // Token is an already defined Variable
     elif token_value variables List.contains_variable do
       VarType.PUSH token Token.set_vartype
     endif
     index 1 + index =
   done
+end
+
+// Add variable to Function's variable list
+// Params
+//    token: Token
+//    function_name: str
+//    variables: List[Variable]
+//    memories: List[Memory]
+function add_variable_to_list ptr str ptr ptr :
+  take
+    token
+    function_name
+    variables
+    memories
+  in
+
+  token Token.get_type
+  token Token.get_value
+  take token_value token_type in
+
+  // Append the variable to the list of function's variables
+  token_type token_value Variable.init
+  variables List.append
+
+  // Add the Variable to the list of memories
+  function_name "_"   str.cat
+  token_value         str.cat
+  take memory_name in
+  if memories memory_name memory_exists not do
+    token Token.get_location
+    ptr.size // Memory.size
+    memory_name
+    Memory.init
+    memories List.append
+  endif
 end
