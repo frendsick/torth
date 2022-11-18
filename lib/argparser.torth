@@ -421,6 +421,7 @@ function Argparser.init str -> ptr :
   Argparser.set_description
   List.init parser Argparser.set_parser_args
   List.init parser Argparser.set_cmd_args
+  False "" "Show this help message and exit" "-h" parser Argparser.add_argument
   parser
 end
 
