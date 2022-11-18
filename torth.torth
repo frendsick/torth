@@ -19,13 +19,12 @@ function main :
   take code_file in
 
   // Get a list of included files for the program
-  "[INFO] Getting included files\n" puts
+  args "Getting included files" verbose_output
   code_file get_included_files
   take included_files in
 
   // Parse diffent code components
-  "[INFO] Parsing code from " puts
-  code_file puts "\n" puts
+  args "Parsing code from " code_file str.cat verbose_output
   included_files get_token_matches_from_files
   take token_matches in
 
@@ -46,29 +45,29 @@ function main :
   take sub_programs in
 
   // Type check the Program
-  "[INFO] Type checking the program\n" puts
+  args "Type checking the program" verbose_output
   functions sub_programs type_check_application
 
   // Generate assembly code from the intermediate representation
-  "[INFO] Generating Assembly code\n" puts
+  args "Generating Assembly code" verbose_output
   args code_file get_output_file_name
   take out_file in
   memories sub_programs out_file ".asm" str.cat generate_assembly_file
 
   // Compile the assembly code file to a Linux x86_64 executable
-  "[INFO] Compiling Assembly code\n" puts
+  args "Compiling Assembly code" verbose_output
   out_file compile_executable
 
   // Remove files generated during compilation
   // if -s command line flag is not present
   if "-s" args Argparser.flag_present not do
-    "[INFO] Removing files generated during compilation\n" puts
+    args "Removing files generated during compilation" verbose_output
     out_file remove_compilation_files
   endif
 
   // Run the program if -r command line flag is present
   if "-r" args Argparser.flag_present do
-    "[INFO] Running the program\n" puts
+    args "Running the program" verbose_output
     out_file run_program
   endif
 end

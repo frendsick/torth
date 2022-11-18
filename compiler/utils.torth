@@ -16,9 +16,10 @@ function parse_command_line_arguments -> ptr :
   "Torth compiler" Argparser.init
   take parser in
   True  "" "Input file" "code_file"                       parser Argparser.add_argument
+  False "FILE" "Output file" "--out"                      parser Argparser.add_argument
   False "" "Run program after compilation" "-r"           parser Argparser.add_argument
   False "" "Save files generated during compilation" "-s" parser Argparser.add_argument
-  False "FILE" "Output file" "--out"                      parser Argparser.add_argument
+  False "" "Output compilation steps" "-v"                parser Argparser.add_argument
   parser Argparser.parse_args
   parser
 end
@@ -39,6 +40,19 @@ function get_code_file_name args:ptr -> str :
     "UNSUPPORTED_FILE_EXTENSION" CompilerError
   endif
   code_file
+end
+
+// Print a message to stdout if -v command line flag is present
+// Params
+//    message: str
+//    args: Argparser
+// Return None
+function verbose_output message:str args:ptr :
+  if "-v" args Argparser.flag_present do
+    "[\e[95mVERBOSE\e[0m] "  puts
+    message                   puts
+    "\n"                      puts
+  endif
 end
 
 // Run a program
