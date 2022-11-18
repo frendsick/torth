@@ -38,7 +38,7 @@ See also: [Casting](keywords.md#casting)
 
 ## PATH
 
-PATH defines relative directories compared to the compiler file [torth.py](../torth.py) from which additional files can be included to the code with [INCLUDE](keywords.md#include) keyword. The files at the same directory as the compiler will always take precedence over any files from PATH.
+PATH defines relative directories compared to the compiler file [torth.torth](../torth.torth) from which additional files can be included to the code with [INCLUDE](keywords.md#include) keyword. The files at the same directory as the compiler will always take precedence over any files from PATH.
 
 Default directories in PATH:
 
@@ -48,4 +48,4 @@ PATH = [
 ]
 ```
 
-When including a file, the first matching file in PATH will be included. Additional directories can added to PATH with the `--path` command line argument to [torth.py](../torth.py). It is a comma separated list of directories that are added to PATH. Directories defined in the command line argument take precedence over the default PATH directories.
+Currently it is not possible to add folders to PATH with command line arguments with the self-hosted compiler. There still is a *--path* command line argument in the original [Python compiler implementation](https://github.com/CyberPaddy/torth/tree/python-compiler).
