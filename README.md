@@ -50,7 +50,7 @@ Options:
 
 More examples are found from the [examples](./examples/)-folder.
 
-### Hello World
+### [Hello World](./examples/hello_world.torth)
 
 ```pascal
 include "std"
@@ -59,7 +59,7 @@ function Main :
 end
 ```
 
-### FizzBuzz
+### [FizzBuzz](./examples/fizzbuzz.torth)
 
 ```pascal
 // === FIZZBUZZ ===
@@ -73,21 +73,16 @@ end
 // %    => Modulo-operator
 include "std"
 
-// Program execution starts from MAIN function (case-insensitive)
-function main :
+// Returns the sum of numbers not divisible by 3 or 5
+function FizzBuzz limit:int -> int :
     // Push the initial values to stack
     0   // sum
     1   // index
-    30  // limit
 
-    // Save values from the stack to variables, topmost value first
+    // Save two topmost values from the stack to variables
     // => TAKE keyword also removes the values from the stack
     // => PEEK keyword would instead save the values without removing them from the stack
-    take
-        limit
-        index
-        sum
-    in
+    take index sum in
 
     // Loop while index <= limit
     WHILE index limit <= DO
@@ -115,7 +110,17 @@ function main :
         // Increment loop's index
         index 1 + index =
     DONE
+    sum // Return sum
+end
 
+// Program execution starts from MAIN function (case-insensitive)
+function main :
+    // Call FizzBuzz with one integer parameter
+    // FizzBuzz(limit=30)
+    30 FizzBuzz
+
+    // Save the return value to variable called sum and print it with text
+    take sum in
     "Sum of all numbers not divisible by 3 or 5: " puts
     sum putu "\n" puts
 end
