@@ -34,7 +34,7 @@ $ ./torth -r hello.torth
 [INFO] Running the program
 Hello, World!
 $ ./torth --help
-Usage: ./torth [--out FILE] [-r] [-s] [-v] code_file
+Usage: ./torth [-h] [--out FILE] [-r] [-s] [-v] code_file
 
 Torth compiler
 
@@ -42,6 +42,7 @@ Positional arguments:
   code_file             Input file
 
 Options:
+  -h                    Show this help message and exit
   --out FILE            Output file
   -r                    Run program after compilation
   -s                    Save files generated during compilation
