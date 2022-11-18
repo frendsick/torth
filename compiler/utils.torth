@@ -15,9 +15,9 @@ include "compiler/class/TypeNode"
 function parse_command_line_arguments -> ptr :
   "Torth compiler" Argparser.init
   take parser in
+  True  ""     "Input file" "code_file"             parser Argparser.add_argument
+  False ""     "Run program after compilation" "-r" parser Argparser.add_argument
   False "FILE" "Output file" "--out"                parser Argparser.add_argument
-  False "FILE" "Run program after compilation" "-r" parser Argparser.add_argument
-  True  "FILE" "Input file" "code_file"             parser Argparser.add_argument
   parser Argparser.parse_args
   parser
 end
