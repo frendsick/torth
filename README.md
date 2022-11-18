@@ -2,8 +2,6 @@
 
 Stack based programming language inspired by [Porth](https://gitlab.com/tsoding/porth) that uses [Reverse Polish notation](./docs/definitions.md#reverse-polish-notation).
 
-Torth is planned to be
-
 - [x] Compiled
 - [x] Statically typed
 - [x] Native (Linux x86_64)
@@ -26,23 +24,26 @@ Torth is planned to be
 $ cat hello.torth
 include "std"
 function main : "Hello, World!\n" puts end
-$ ./torth.py --run hello.torth
+$ ./torth -r hello.torth
+[INFO] Getting included files
+[INFO] Parsing code from hello.torth
+[INFO] Type checking the program
+[INFO] Generating Assembly code
+[INFO] Compiling Assembly code
+[INFO] Removing files generated during compilation
+[INFO] Running the program
 Hello, World!
-$ ./torth.py --help
-usage: torth.py [-h] [-o FILE] [-p DIRS] [-r] [-s] [-v] code_file
+$ ./torth --help
+Usage: ./torth [-r] [--out FILE] code_file
 
-Compile Torth code
+Torth compiler
 
-positional arguments:
+Positional arguments:
   code_file             Input file
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -o FILE, --out FILE   Output file
-  -p DIRS, --path DIRS  Comma separated list of directories to be added to PATH in addition of the default "lib"
-  -r, --run             Run program after compilation
-  -s, --save-asm        Save assembly file named after code_file with .asm extension
-  -v, --verbose         Output compilation steps
+Options:
+  -r                    Run program after compilation
+  --out FILE            Output file
 ```
 
 ## Examples
