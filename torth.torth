@@ -60,8 +60,11 @@ function main :
   out_file compile_executable
 
   // Remove files generated during compilation
-  "[INFO] Removing files generated during compilation\n" puts
-  out_file remove_compilation_files
+  // if -s command line flag is not present
+  if "-s" args Argparser.flag_present not do
+    "[INFO] Removing files generated during compilation\n" puts
+    out_file remove_compilation_files
+  endif
 
   // Run the program if -r command line flag is present
   if "-r" args Argparser.flag_present do
