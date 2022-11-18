@@ -4,24 +4,25 @@ include "std"
 // Calculate power of number and exponent. Return -1 if the exponent is negative.
 // Params: exponent, number
 // Return: power
-function pow int int -> int :
+function pow exponent:int number:int -> int :
   // x ^ 0 == 1
-  if dup 0 == do
-    drop drop 1 return
+  if exponent 0 == do
+    1 return
   // Negative exponents are not supported yet, return -1
-  elif dup 0 < do
-    drop drop -1 return
+  elif exponent 0 < do
+    -1 return
   endif
 
-  over take current exponent original in
-  1 // count
+  number 1
+  take count current in
   // If count > exponent then we need to multiple the number at least one more time
-  while dup exponent < do
+  while count exponent < do
     // Multiply current number with the original number
-    current original *
+    current number *
     current =
-    1 + // count++
-  done drop current
+    count 1 + count =
+  done
+  current
 end
 
 // Slightly modified GCD function from https://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
