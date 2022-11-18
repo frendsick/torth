@@ -814,9 +814,11 @@ function get_functions ptr ptr ptr -> ptr :
   "" str.copy                   // String buffer for function's name
   List.init                     // return_types
   List.init                     // param_types
+  List.init                     // param_names
   0                             // index
   take
     index
+    param_names
     param_types
     return_types
     function_name
@@ -866,7 +868,7 @@ function get_functions ptr ptr ptr -> ptr :
 
         // Function(function_name, signature, tokens)
         tokens
-        return_types param_types Signature.init
+        return_types param_types param_names Signature.init
         function_name Function.init
 
         // Append the current function to functions list
@@ -874,6 +876,7 @@ function get_functions ptr ptr ptr -> ptr :
 
         // Reset variables
         "" str.copy function_name =
+        List.init   param_names   =
         List.init   param_types   =
         List.init   return_types  =
         List.init   tokens        =
@@ -897,17 +900,34 @@ function get_functions ptr ptr ptr -> ptr :
         continue
       endif
 
-      // Append word to param_types if valid TokenType
-      token_value Signature.type_map ptr
+      // Split token by colon to name and TokenType
+      // Example => parameter_name:int
+      ":" token_value str.find
+      take param_colon in
+
+      // Only allow named parameters
+      if param_colon -1 == do
+        "Invalid function parameter '" token_value                                    str.cat
+        "'\nFunction parameter must have a colon delimiting its name and TokenType\n" str.cat
+        "Example => parameter_name:int"                                                 str.cat
+        "SYNTAX_ERROR" CompilerError
+      endif
+
+      // Parse parameter's name
+      token_value str.copy
+      dup param_colon str+ str.empty
+      ptr param_names List.append
+
+      // Parse parameter's TokenType
+      token_value param_colon 1 + str+
+      Signature.type_map ptr
       param_types List.append
 
     elif current_part 3 == do
-
       // Append word to return_types if valid TokenType
       token_value Signature.type_map ptr
       return_types List.append
     elif current_part 4 == do
-
       // Use Constant's value if a Constant exists named as the Token's value
       if constants token_value str.copy constant_exists do
 
