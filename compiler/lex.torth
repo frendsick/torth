@@ -814,13 +814,11 @@ function get_functions ptr ptr ptr -> ptr :
   "" str.copy                   // String buffer for function's name
   List.init                     // return_types
   List.init                     // param_types
-  List.init                     // param_names
   List.init                     // variables
   0                             // index
   take
     index
     variables
-    param_names
     param_types
     return_types
     function_name
@@ -871,7 +869,7 @@ function get_functions ptr ptr ptr -> ptr :
         // Function(function_name, signature, tokens, variables)
         variables
         tokens
-        return_types param_types param_names Signature.init
+        return_types param_types Signature.init
         function_name Function.init
 
         // Append the current function to functions list
@@ -879,7 +877,6 @@ function get_functions ptr ptr ptr -> ptr :
 
         // Reset variables
         "" str.copy function_name =
-        List.init   param_names   =
         List.init   param_types   =
         List.init   return_types  =
         List.init   variables     =
@@ -907,36 +904,37 @@ function get_functions ptr ptr ptr -> ptr :
       ":" token_value str.find
       take param_colon in
 
-      // Only allow named parameters
-      if param_colon -1 == do
-        "Function '" function_name                                                    str.cat
-        "' has invalid parameter '"                                                   str.cat
-        token_value                                                                   str.cat
-        "'\nFunction parameter must have a colon delimiting its name and TokenType\n" str.cat
-        "Example => parameter_name:int"                                               str.cat
-        "SYNTAX_ERROR" CompilerError
-      endif
-
-      // Parse parameter's name
-      token_value str.copy
-      dup param_colon str+ str.empty
-      take param_name in
-      param_name ptr param_names List.append
-
       // Parse parameter's TokenType
       token_value param_colon 1 + str+
       Signature.type_map
       take param_type in
       param_type ptr param_types List.append
 
-      // Append parameter to Function's Tokens
-      param_name str.copy token Token.set_value
-      TokenType.WORD      token Token.set_type
-      VarType.TAKE        token Token.set_vartype
-      token tokens List.append
+      // Handle named parameters
+      if param_colon -1 != do
+        // Empty param_name
+        if param_colon 0 == do
+          "Function '" function_name                  str.cat
+          "' has parameter '"                         str.cat
+          token_value                                 str.cat
+          "' which has a colon but the name is empty" str.cat
+          "SYNTAX_ERROR" CompilerError
+        endif
 
-      // Add parameter to the list of Variables
-      memories variables function_name token add_variable_to_list
+        // Parse parameter's name
+        token_value str.copy
+        dup param_colon str+ str.empty
+        take param_name in
+
+        // Append parameter to Function's Tokens
+        param_name str.copy token Token.set_value
+        TokenType.WORD      token Token.set_type
+        VarType.TAKE        token Token.set_vartype
+        token tokens List.append
+
+        // Add parameter to the list of Variables
+        memories variables function_name token add_variable_to_list
+      endif
 
     elif current_part 3 == do
       // Append word to return_types if valid TokenType

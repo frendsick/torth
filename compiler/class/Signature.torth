@@ -3,7 +3,6 @@ include "compiler/utils"
 
 // Signature(params: List[TokenType], returns: List[TokenType])
 ENUM Signature.size 8 :
-  Signature.param_names // List[str]
   Signature.params      // List[TokenType]  => ptr
   Signature.returns     // List[TokenType]  => ptr
 END
@@ -14,35 +13,24 @@ END
 //    param_types: List[TokenType]
 //    return_types: List[TokenType]
 // Return: Signature
-function Signature.init ptr ptr ptr -> ptr :
+function Signature.init ptr ptr -> ptr :
   Signature.size malloc
-  0
   take
-    index
     signature
-    param_names
     param_types
     return_types
   in
 
-  param_names   signature Signature.param_names   ptr+ ptr.store
   param_types   signature Signature.params        ptr+ ptr.store
   return_types  signature Signature.returns       ptr+ ptr.store
   signature
-end
-
-// Get Signature.param_names
-// Params: Pointer to Signature (PTR)
-// Return: Signature.param_names (PTR)
-function Signature.get_param_names ptr -> ptr :
-  ptr.load
 end
 
 // Get Signature.params
 // Params: Pointer to Signature (PTR)
 // Return: Signature.params (PTR)
 function Signature.get_params ptr -> ptr :
-  Signature.params ptr+ ptr.load
+  ptr.load
 end
 
 // Get Signature.returns
