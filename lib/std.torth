@@ -87,10 +87,11 @@ function fputs int str : swap dup str.len swap rot write drop end
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
 // Return: Pointer to the start of the allocated memory
-function malloc int -> ptr :
+function malloc length:int -> ptr :
   // Allocate at least one byte
-  if dup 0 == do drop 1 endif
-  take length in
+  if length 0 <= do
+    1 length =
+  endif
 
   // mmap ( NULL, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0 );
   0 0
@@ -110,9 +111,8 @@ end
 // Copy N characters from one memory location to another
 // Params: dest (PTR), src (PTR), len (INT)
 // Return: None
-function memcpy ptr ptr int :
-  0
-  take index dest src len in
+function memcpy dest:ptr src:ptr len:int :
+  0 take index in
   while index len < do
     src  index ptr+ char.load
     dest index ptr+ char.store
@@ -199,8 +199,7 @@ function char.is_alphanumeric char -> bool :
 end
 
 // Test if a character is some whitespace character
-function char.is_whitespace char -> bool :
-  take c in
+function char.is_whitespace c:char -> bool :
   c ' ' ==  // Space
   c 9   ==  // Tab \t
   c 10  ==  // Line feed \n
@@ -208,9 +207,9 @@ function char.is_whitespace char -> bool :
   || || ||  // Logical OR each of the comparisons
 end
 
-function char.to_string char -> str :
+function char.to_string character:char -> str :
   "" str.copy
-  take string character in
+  take string in
   character string str.append
   string
 end
@@ -252,24 +251,28 @@ function int.to_positive int -> int :
 end
 
 // Get a string representation of an integer
-function itoa int -> str :
+function itoa num:int -> str :
   // Return "0" if parameter is 0
-  if dup 0 == do
-    drop "0" return
+  if num 0 == do
+    "0" return
   endif
 
   // Swap sign of negative number
-  dup 0 < take is_negative in
+  num 0 < take is_negative in
   if is_negative do
-    int.to_positive
+    num int.to_positive
+    num =
   endif
 
   // Allocate memory to the string representation
-  dup int.get_digits  // digits
-  dup 2 + malloc str  // string
-
-  10 // base
-  take base string digits num in
+  num int.get_digits  // digits
+  dup 2 + malloc str      // string
+  10                      // base
+  take
+    base
+    string
+    digits
+  in
 
   // Process individual digits: https://www.geeksforgeeks.org/implement-itoa/
   0 while dup digits < do
@@ -282,8 +285,8 @@ function itoa int -> str :
     endif char
     string str.append
 
-    num base / num  = // num = num/base
-    1 + // index++
+    num base / num =  // num = num/base
+    1 +               // index++
   done drop string
 
   // Add '-' character to the end of string for negative number
@@ -297,8 +300,11 @@ function itoa int -> str :
 end
 
 // Get an integer representation of a string
-function atoi str -> int :
-  NULL 0 take index integer string in
+function atoi string:str -> int :
+  NULL
+  0
+  take index integer in
+
   // Iterate the string character by character
   while string index str.char_at NULL != do
 
@@ -336,19 +342,16 @@ end
 
 // Get the length of a string
 // Example: "Test string" -> 11
-function str.len str -> int :
-  take string in
+function str.len string:str -> int :
   0 while string over str.char_at NULL != do
     1 +
   done
 end
 
 // Fill a ptr with the contents of a string
-function str.fill str ptr -> str :
-  0 // index
-  take index string pointer in
-
+function str.fill string:str pointer:ptr -> str :
   // Loop through every character of the first string
+  0 take index in
   while
     string index str.char_at
     peek character in
@@ -364,9 +367,11 @@ end
 // Insert a string inside another strings at certain index
 // Params: index, str2, str1
 // Return: str1[:index] + str2 + str1[index:]
-function str.insert_at int str str -> str :
-  take index str2 str1 in
-
+function str.insert_at
+  index:int
+  str2:str
+  str1:str
+-> str :
   if index str1 str.len >= do
     "[ERROR] str.index_at function failed: '"
     str1                      str.cat
@@ -395,7 +400,7 @@ end
 
 // Replace escape sequences with the corresponding characters
 // Example: "Escape newline\n" => "Escape newline<LF>"
-function str.escape str -> str :
+function str.escape string:str -> str :
   9  char char.to_string
   10 char char.to_string
   13 char char.to_string
@@ -407,7 +412,6 @@ function str.escape str -> str :
     CR
     LF
     Tab
-    string
   in
 
   // Save escape sequences to variables
@@ -421,16 +425,14 @@ end
 // Return -1 if substring is not found
 // Params: string, substring
 // Return: index
-function str.find str str -> int :
-  over str.len
-  over str.len
+function str.find string:str substring:str -> int :
+  substring str.len
+  string str.len
   0
   take
     index
     string.len
     substring.len
-    string
-    substring
   in
 
   // Return -1 if substring is longer than the string
@@ -463,13 +465,11 @@ end
 // Return the original string if substring is not found
 // Params: string, substring, replacement
 // Return: string
-function str.replace str str str -> str :
-  take
-    string
-    substring
-    replacement
-  in
-
+function str.replace
+  string:str
+  substring:str
+  replacement:str
+-> str :
   // Get the index of the first substring match
   substring string str.find
   take index in
@@ -493,15 +493,13 @@ end
 // Return the original string if substring is not found.
 // Params: string, substring, replacement
 // Return: string
-function str.replace_all str str str -> str :
-  take
-    string
-    substring
-    replacement
-  in
-
+function str.replace_all
+  string:str
+  substring:str
+  replacement:str
+-> str :
+  // Loop as long as string as occurrences of substring
   while True do
-
     // Save the current string as old_string
     string take old_string in
 
@@ -521,10 +519,7 @@ end
 // Concatenate two strings into a new memory location
 // Params: str2, str1
 // Return: concat(str1+str2)
-function str.cat str str -> str :
-  // Save str2 and str1
-  take str2 str1 in
-
+function str.cat str2:str str1:str -> str :
   // Allocate memory to hold both strings
   str1 str.len
   str2 str.len
@@ -542,8 +537,8 @@ function str.cat str str -> str :
 end
 
 // Free the parameter string's memory
-function str.delete str :
-  dup str.len 1 + swap ptr munmap
+function str.delete string:str :
+  string str.len 1 + string ptr munmap
 end
 
 // Append a character to the end of a string buffer
@@ -560,9 +555,7 @@ function str.char_at int str -> char : swap ptr swap ptr+ char.load end
 function str.is_palindrome str -> bool : dup str.reverse streq end
 
 // Test if string only contains numeric characters
-function str.is_numeric str -> bool :
-  take string in
-
+function str.is_numeric string:str -> bool :
   // Check for negative numbers
   if string ptr char.load '-' == do
     string 1 str+ string =
@@ -581,8 +574,7 @@ function str.is_numeric str -> bool :
 end
 
 // Overwrite a string with NULL-bytes
-function str.empty str :
-  take string in
+function str.empty string:str :
   0 while string over str.char_at NULL != do
     string over str+ ptr NULL char swap char.store
     1 +
@@ -590,10 +582,10 @@ function str.empty str :
 end
 
 // Convert string to lowercase letters
-function str.lower str -> str :
-  dup str.len // len
-  0           // index
-  take index len string in
+function str.lower string:str -> str :
+  string str.len  // len
+  0               // index
+  take index len in
 
   // Rewrite string with lowercase characters
   while index len < do
@@ -604,10 +596,10 @@ function str.lower str -> str :
 end
 
 // Convert string to uppercase letters
-function str.upper str -> str :
-  dup str.len // len
-  0           // index
-  take index len string in
+function str.upper string:str -> str :
+  string str.len  // len
+  0               // index
+  take index len in
 
   // Rewrite string with uppercase characters
   while index len < do
@@ -639,16 +631,14 @@ end
 // Check if a string starts with another string
 // Params: prefix (STR), string (STR)
 // Return: True/False
-function str.startswith str str -> bool :
-  over str.len
-  over str.len
+function str.startswith prefix:str string:str -> bool :
+  string str.len
+  prefix str.len
   0
   take
     index
     prefix.len
     string.len
-    prefix
-    string
   in
 
   // Return False if prefix.len > string.len
@@ -672,16 +662,14 @@ end
 // Check if a string ends with another string
 // Params: suffix (STR), string (STR)
 // Return: True/False
-function str.endswith str str -> bool :
-  over str.len
-  over str.len
+function str.endswith suffix:str string:str -> bool :
+  string str.len
+  suffix str.len
   0
   take
     index
     suffix.len
     string.len
-    suffix
-    string
   in
 
   // Return False if suffix.len > string.len
@@ -703,17 +691,13 @@ function str.endswith str str -> bool :
 end
 
 // Remove a suffix if it exists. Otherwise return the original string.
-// Params: string (STR), string (STR)
+// Params: string (STR), suffix (STR)
 // Return: None
-function str.removesuffix str str :
-  over str.len
-  over str.len
-  take
-    string.len
-    suffix.len
-    string
-    suffix
-  in
+function str.removesuffix string:str suffix:str :
+  suffix str.len
+  string str.len
+  take string.len suffix.len in
+
   // Clear the suffix if it exists
   if string suffix str.endswith do
     string ptr string.len suffix.len -
@@ -722,16 +706,14 @@ function str.removesuffix str str :
 end
 
 // Tests if two strings are equal
-function streq str str -> bool :
-  over str.len
-  over str.len
+function streq str1:str str2:str -> bool :
+  str1 str.len
+  str2 str.len
   0
   take
     index
-    str1.len
     str2.len
-    str1
-    str2
+    str1.len
   in
 
   // Different length strings are not equal
@@ -756,10 +738,10 @@ function streq str str -> bool :
 end
 
 // Reverse a string
-function str.reverse str -> str :
+function str.reverse original:str -> str :
   // Allocate memory for the reversed string
-  dup str.len dup malloc str
-  take reversed index original in
+  original str.len dup malloc str
+  take reversed index in
 
   // Append characters from the parameter string to allocated memory in the reversed order
   while 0 index < do
@@ -772,8 +754,8 @@ function str.reverse str -> str :
 end
 
 // https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64
-function base64.encode str -> str :
-  dup str.len
+function base64.encode string:str -> str :
+  string str.len
   dup 3 %
   over 2 * malloc str
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" str.copy
@@ -786,7 +768,6 @@ function base64.encode str -> str :
     base64_string
     char_index
     string.len
-    string
   in
 
   // Add a right zero pad to make this string a multiple of 3 characters
@@ -838,9 +819,9 @@ end
 // Open a file with open-syscall
 // Params: int oflag, const char *path
 // Return: fd
-function open_file int str -> int :
-  over SYS_open syscall2
-  take fd path in
+function open_file oflag:int path:str -> int :
+  oflag path SYS_open syscall2
+  take fd in
   if fd ENOENT == do
     "File '" eputs path eputs "' does not exist.\n" eputs
     1 exit
@@ -859,12 +840,12 @@ function open_file int str -> int :
 end
 
 // Read a file to a newly allocated memory
-// Params: const char *pathname
-// Return: ssize_t read_bytes
-function read_file str -> str :
+// Params: const char *path
+// Return: str buffer
+function read_file path:str -> str :
 
   // Open file as fd
-  O_RDONLY open_file
+  path O_RDONLY open_file
 
   // Allocate string buffer
   MEMORY_CAPACITY malloc str
@@ -977,11 +958,9 @@ end
 // Return NULL if variable is not found
 // Params: evar_key (str)
 // Return: evar_value
-function getenv str -> str :
-  0
-  take index evar_key in
-
+function getenv evar_key:str -> str :
   // Check environment variables one by one
+  0 take index in
   while envp ptr.load int NULL != do
     envp index ptr.size * ptr+ str.load
     take evar_value in
