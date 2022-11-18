@@ -9,9 +9,12 @@ include "compiler/utils"
 // 'WARNING'  => '\e[93m'
 
 // Params: Error type (STR), message (STR)
-function print_error str str :
-  "\e[95mCompiler Error \e[91m" eputs eputs
-  "\e[0m:\n" eputs eputs "\n" eputs
+function print_error error_type:str message:str :
+  "\e[95mCompiler Error \e[91m" eputs
+  error_type                    eputs
+  "\e[0m:\n"                    eputs
+  message                       eputs
+  "\n"                          eputs
 end
 
 // Params: Error type (STR), message (STR)
@@ -27,9 +30,8 @@ end
 //    token: Token
 // Return: NoReturn
 function CompilerErrorWithToken str str ptr :
-  print_error
-  "\n" eputs
-  get_token_info eputs
+  print_error "\n"  eputs
+  get_token_info    eputs
   1 exit
 end
 
@@ -39,11 +41,17 @@ end
 //    token: Token
 //    type_stack: TypeStack
 // Return: NoReturn
-function CompilerErrorWithStack str str ptr ptr :
-  print_error
-  "\nCurrent stack state:\n" eputs
-  swap TypeStack.repr eputs "\n" eputs
-  get_token_info eputs
+function CompilerErrorWithStack
+  error_type:str
+  message:str
+  token:ptr
+  type_stack:ptr
+:
+  message error_type print_error
+  "\nCurrent stack state:\n"  eputs
+  type_stack TypeStack.repr   eputs
+  "\n"                        eputs
+  token get_token_info        eputs
   1 exit
 end
 
