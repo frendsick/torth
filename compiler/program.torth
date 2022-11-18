@@ -8,16 +8,15 @@ include "compiler/class/Token"
 // Generate Program for each Function
 // Params: List[Function], List[Constant], List[Memory]
 // Return: List[Program]
-function get_sub_programs ptr ptr ptr -> ptr :
+function get_sub_programs
+  functions:ptr
+  constants:ptr
+  memories:ptr
+-> ptr :
+
   List.init // sub_programs = List[Program]
   0         // index
-  take
-    index
-    sub_programs
-    functions
-    constants
-    memories
-  in
+  take index sub_programs in
 
   // Iterate over every Function is functions
   while index functions List.len < do
@@ -39,18 +38,20 @@ end
 // Generate Program from Function
 // Params: Function, List[Function], List[Constant], List[Memory]
 // Return: Program
-function generate_program ptr ptr ptr ptr -> ptr :
-  dup Function.tokens ptr+ ptr.load
+function generate_program
+  func:ptr
+  functions:ptr
+  constants:ptr
+  memories:ptr
+-> ptr :
+
+  func Function.tokens ptr+ ptr.load
   List.init
   0
   take
     index
     program
     tokens
-    func
-    functions
-    constants
-    memories
   in
 
   while index tokens List.len < do
@@ -74,20 +75,21 @@ end
 // Get OpType for Token
 // Params: Token, List[Function], List[Constant], List[Memory]
 // Return: OpType
-function get_tokens_op_type ptr ptr ptr ptr -> int :
+function get_tokens_op_type
+  token:ptr
+  functions:ptr
+  constants:ptr
+  memories:ptr
+-> int :
 
   // Initialize variables
-  dup  Token.get_type
-  over Token.get_value
+  token Token.get_type
+  token Token.get_value
   dup str.copy str.upper
   take
     token_upper
     token_value
     token_type
-    token
-    functions
-    constants
-    memories
   in
 
   if token_type TokenType.BOOL ==    do

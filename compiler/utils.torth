@@ -27,8 +27,8 @@ end
 //    args: Argparser
 // Return
 //    code_file: str
-function get_code_file_name ptr -> str :
-  "code_file" swap Argparser.get_argument
+function get_code_file_name args:ptr -> str :
+  "code_file" args Argparser.get_argument
   take code_file in
 
   if code_file ".torth" str.endswith not do
@@ -48,8 +48,7 @@ function run_program str :
 end
 
 // Execute a certain kind of command
-function exec_forked str str :
-  take cmd file in
+function exec_forked cmd:str file:str :
   SYS_fork SYSCALL0
 
   // Child: Compile the assembly code with NASM
@@ -67,8 +66,7 @@ end
 
 // Execute another function with an alias string
 // NASM => compile_with_nasm
-function exec_command str str :
-  take cmd file in
+function exec_command cmd:str file:str :
   if cmd "NASM" streq do
     file compile_with_nasm
   elif cmd "LD" streq do
@@ -87,8 +85,8 @@ end
 // Run executable
 // Params: file
 // Return: None
-function execute_program str :
-  "./" swap str.cat
+function execute_program file:str :
+  "./" file str.cat
   str.size malloc
   take argv executable in
 
@@ -96,30 +94,27 @@ function execute_program str :
   NULLPTR argv executable execve drop
 end
 
-function get_token_info ptr -> str :
-  take token in
+// Get prettified information for Token
+function get_token_info token:ptr -> str :
   "\e[95mToken\e[0m: "
-  token Token.get_value str.cat
-  "\n" str.cat
-  token Token.get_location get_location_info str.cat
+  token Token.get_value                       str.cat
+  "\n"                                        str.cat
+  token Token.get_location get_location_info  str.cat
 end
 
 // Remove a file
 // Params
 //    file_name: str
 // Return None
-function remove_file str :
+function remove_file file_name:str :
   // Allocate memory for the arguments
-  List.init
-  take argv file_name in
-
+  List.init take argv in
   "rm"        ptr argv List.append
   file_name   ptr argv List.append
   NULLPTR argv List.first "/usr/bin/rm" execve drop
 end
 
-function get_location_info ptr -> str :
-  take location in
+function get_location_info location:ptr -> str :
   "\e[95mFile\e[0m: "
   location Location.get_file        str.cat
   "\n\e[95mRow\e[0m: "              str.cat
@@ -135,8 +130,7 @@ end
 //    args: Argparser
 // Return
 //    file_name: str
-function get_output_file_name str ptr -> str :
-  take input_file args in
+function get_output_file_name input_file:str args:ptr -> str :
   "--out" args Argparser.get_argument
   take file_name in
 
@@ -149,15 +143,14 @@ end
 // Get Op from Location found in a Program
 // Params: Location, Program
 // Return: Op
-function get_op_from_location ptr ptr -> ptr :
-  int // Cast Location pointer to int
-  over List.len
+function get_op_from_location location:ptr program:ptr -> ptr :
+  location int // Cast Location pointer to int
+  program List.len
   0
   take
     index
     program.len
-    location
-    program
+    location_int
   in
 
   while index program.len < do
@@ -167,7 +160,7 @@ function get_op_from_location ptr ptr -> ptr :
     // Test if the current Op has the same Location pointer
     op Op.get_token Token.get_location int
     take current_location in
-    if location current_location == do
+    if location_int current_location == do
       op return
     endif
     index 1 + index =
@@ -181,15 +174,9 @@ end
 // Check if a Constant with a certain name exists
 // Params: constant_name, List[Constant]
 // Return: bool
-function constant_exists str ptr -> bool :
-  0
-  take
-    index
-    constant_name
-    constants
-  in
-
+function constant_exists constant_name:str constants:ptr -> bool :
   // Iterate over constants and check if a Constant with certain name exists
+  0 take index in
   while index constants List.len < do
 
     // Get the current Constant
@@ -217,8 +204,7 @@ function function_exists str ptr -> bool :
 end
 
 // Get printable representation of TokenType
-function TokenType.repr int -> str :
-  take token_type in
+function TokenType.repr token_type:int -> str :
   if token_type TokenType.ANY == do
     "ANY" return
   elif token_type TokenType.BOOL == do
@@ -246,8 +232,7 @@ end
 //    type1: TokenType
 //    type2: TokenType
 // Return bool
-function matching_token_types int int -> bool :
-  take type1 type2 in
+function matching_token_types type1:int type2:int -> bool :
   type1 type2 ==
   type1 TokenType.ANY == ||
   type2 TokenType.ANY == ||
@@ -256,15 +241,9 @@ end
 // Get a Function with certain name from a list of Functions
 // Params: function_name, List[Functions]
 // Return: Function
-function get_function_by_name str ptr -> ptr :
-  0
-  take
-    index
-    function_name
-    functions
-  in
-
+function get_function_by_name function_name:str functions:ptr -> ptr :
   // Iterate over functions and check if a Function with certain name exists
+  0 take index in
   while index functions List.len < do
 
     // Get the current Function
@@ -285,15 +264,9 @@ end
 // Check if a Memory with a certain name exists
 // Params: memory_name, List[Memory]
 // Return: bool
-function memory_exists str ptr -> bool :
-  0
-  take
-    index
-    memory_name
-    memories
-  in
-
+function memory_exists memory_name:str memories:ptr -> bool :
   // Iterate over memories and check if a Memory with certain name exists
+  0 take index in
   while index memories List.len < do
 
     // Get the current Memory
@@ -321,15 +294,9 @@ end
 // Get Constant with certain name from List[Constants]
 // Params: name (STR), List[Constant]
 // Return: Constant
-function get_constant str ptr -> ptr :
-  0
-  take
-    index
-    name
-    constants
-  in
-
+function get_constant name:str constants:ptr -> ptr :
   // Iterate over each Constant
+  0 take index in
   while index constants List.len < do
 
     // Get current Constant
@@ -350,15 +317,14 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return
 //    type_stack_copy: LinkedList[TypeNode]
-function TypeStack.copy ptr -> ptr :
-  dup Node.get_data
+function TypeStack.copy type_stack:ptr -> ptr :
+  type_stack Node.get_data
   LinkedList.init
   0
   take
     stack_depth
     type_stack_copy
     node
-    type_stack
   in
 
   // Empty TypeStack
@@ -394,15 +360,14 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return
 //    token_types: List[TokenType]
-function TypeStack.get_types ptr -> ptr :
-  dup Node.get_data
+function TypeStack.get_types type_stack:ptr -> ptr :
+  type_stack Node.get_data
   List.init
   0
   take
     stack_depth
     token_types
     node
-    type_stack
   in
 
   // Handle the empty case
@@ -430,8 +395,8 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return
 //    stack_repr: str
-function TypeStack.repr ptr -> str :
-  TypeStack.copy
+function TypeStack.repr type_stack:ptr -> str :
+  type_stack TypeStack.copy
   "" str.copy
   take stack_repr type_stack in
 

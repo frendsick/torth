@@ -38,19 +38,14 @@ function get_included_files str -> ptr :
 end
 
 // Parse included files from a single file. Return the list of files.
-// Params: file_name (STR), included_files (List[str])
+// Params: code_file (STR), included_files (List[str])
 // Return: included_files (List[str])
-function get_included_files_from_file str ptr -> ptr :
+function get_included_files_from_file code_file:str included_files:ptr -> ptr :
   // Add compiler's directory and the 'lib' directory to INCLUDE_PATHS
   List.init
   take INCLUDE_PATHS in
-
   ""      ptr INCLUDE_PATHS List.append
   "lib/"  ptr INCLUDE_PATHS List.append
-  take
-    code_file
-    included_files
-  in
 
   // Get the file contents without comments
   INCLUDE_PATHS code_file get_file_name_from_path read_file
@@ -105,9 +100,7 @@ end
 // Check every directory in PATH and add .torth extension if needed
 // Params: file_name: str, INCLUDE_PATHS: List[str]
 // Return: file_with_path: str
-function get_file_name_from_path str ptr -> str :
-  take file_name INCLUDE_PATHS in
-
+function get_file_name_from_path file_name:str INCLUDE_PATHS:ptr -> str :
   // Get the file name without quotes
   if file_name ptr char.load '"' == do
     file_name get_string_inside_quotes
@@ -158,14 +151,10 @@ end
 //    included_files: List[str]
 // Return:
 //    token_matches: List[Match]
-function get_token_matches_from_files ptr -> ptr :
+function get_token_matches_from_files included_files:ptr -> ptr :
   List.init
   0
-  take
-    index
-    token_matches
-    included_files
-  in
+  take index token_matches in
 
   // Iterate over each included file
   while index included_files List.len < do
@@ -240,9 +229,7 @@ function get_token_value str -> str :
 end
 
 const single_quote 39 end
-function get_token_type str -> int :
-  take token_value in
-  // TODO: TokenType.KEYWORD
+function get_token_type token_value:str -> int :
   // Boolean => True
   if
     token_value str.copy str.upper
@@ -292,9 +279,9 @@ end
 // Generate Token from Match object
 // Params: Match
 // Return: Token
-function get_token_from_match ptr -> ptr :
-  dup   Match.get_value
-  swap  Match.get_location
+function get_token_from_match match:ptr -> ptr :
+  match Match.get_value
+  match Match.get_location
   take location match_value in
 
   // Create Token object
@@ -304,8 +291,11 @@ function get_token_from_match ptr -> ptr :
   swap Token.init
 end
 
-function get_op_type ptr -> int :
-  Token.get_type
+// Get OpType for Token
+// Params: Token
+// Return: OpType
+function get_op_type token:ptr -> int :
+  token Token.get_type
   take token_type in
   if token_type TokenType.BOOL == do
     OpType.PUSH_BOOL return
@@ -347,7 +337,12 @@ end
 //    token_matches: List[Token]
 // Return
 //    token_matches: List[Match]
-function get_token_matches_from_code str str ptr -> ptr :
+function get_token_matches_from_code
+  code:str
+  file_name:str
+  token_matches:ptr
+-> ptr :
+
   List.init   // newline_indexes
   "" str.copy // String buffer for word
   False       // parsing_string
@@ -361,9 +356,6 @@ function get_token_matches_from_code str str ptr -> ptr :
     parsing_string
     word
     newline_indexes
-    code
-    file_name
-    token_matches
   in
 
   // Iterate over every character in code
@@ -458,17 +450,17 @@ end
 // and the indexes of the newline characters found from the file.
 // Params: file_name (STR), position (INT), newline_indexes (List[Int])
 // Return: Location
-function get_token_location str int ptr -> ptr :
-  over
-  1
-  0
+function get_token_location
+  file_name:str
+  position:int
+  newline_indexes:ptr
+-> ptr :
+
+  position 1 0
   take
     index
     row
     col
-    file_name
-    position
-    newline_indexes
   in
 
   // Get Location for found Token Match
@@ -493,12 +485,12 @@ function get_token_location str int ptr -> ptr :
   col 1 + row file_name str.copy Location.init
 end
 
-// Parse Constants from code
+// Parse Constants from Token matches
 // Params
-//    token_matches: List[Match], constants: List[Constant]
+//    token_matches: List[Match]
 // Return
 //    constants: List[Constant]
-function get_constants ptr -> ptr :
+function get_constants token_matches:ptr -> ptr :
   List.init
   ""  str.copy        // constant_name
   dup str.copy        // constant_value
@@ -510,7 +502,6 @@ function get_constants ptr -> ptr :
     constant_value
     constant_name
     constants
-    token_matches
   in
 
   while index token_matches List.len < do
@@ -564,7 +555,7 @@ end
 //    constants: List[Constant]
 // Return
 //    constants: List[Constant]
-function add_enums_to_constants ptr ptr -> ptr :
+function add_enums_to_constants token_matches:ptr constants:ptr -> ptr :
   get_enum_part_delimiters
   "" str.copy
   NULLPTR
@@ -580,8 +571,6 @@ function add_enums_to_constants ptr ptr -> ptr :
     enum_location
     enum_name
     ENUM_PART_DELIMITERS
-    token_matches
-    constants
   in
 
   while index token_matches List.len < do
@@ -687,7 +676,7 @@ end
 //    constants: List[Constant]
 // Return
 //    memories: List[Memory]
-function get_memories ptr ptr -> ptr :
+function get_memories token_matches:ptr constants:ptr -> ptr :
   List.init           // memories
   "" str.copy         // memory_name
   NULL                // memory_size
@@ -699,8 +688,6 @@ function get_memories ptr ptr -> ptr :
     memory_size
     memory_name
     memories
-    token_matches
-    constants
   in
 
   while index token_matches List.len < do
@@ -764,17 +751,15 @@ end
 // Check for redefinition of a Constant object
 // Params
 //    token_value: str
-//    memories: List[Constant]
+//    constants: List[Constant]
 // Return
 //    memory_name: str
-function get_constants_name str ptr -> str :
-  take token_value constants in
-
+function get_constants_name token_value:str constants:ptr -> str :
   // Overwriting another Memory is not allowed
   if token_value constants List.contains_str do
     "Constant '" token_value str.cat
-    "' already exists. Memory name should be unique.\n" str.cat
-    "MEMORY_REDEFINITION" CompilerError
+    "' already exists. Constant name should be unique.\n" str.cat
+    "CONSTANT_REDEFINITION" CompilerError
   endif
   token_value
 end
@@ -785,9 +770,7 @@ end
 //    memories: List[Memory]
 // Return
 //    memory_name: str
-function get_memory_name str ptr -> str :
-  take token_value memories in
-
+function get_memory_name token_value:str memories:ptr -> str :
   // Overwriting another Memory is not allowed
   if token_value memories List.contains_str do
     "Memory '" token_value str.cat
@@ -804,7 +787,11 @@ end
 //    memories:       List[Memory]
 // Return
 //    functions: List[Function]
-function get_functions ptr ptr ptr -> ptr :
+function get_functions
+  token_matches:ptr
+  constants:ptr
+  memories:ptr
+-> ptr :
 
   // Initialize variables
   List.init                     // List[Function]
@@ -814,9 +801,11 @@ function get_functions ptr ptr ptr -> ptr :
   "" str.copy                   // String buffer for function's name
   List.init                     // return_types
   List.init                     // param_types
+  List.init                     // variables
   0                             // index
   take
     index
+    variables
     param_types
     return_types
     function_name
@@ -824,9 +813,6 @@ function get_functions ptr ptr ptr -> ptr :
     current_part
     tokens
     functions
-    token_matches
-    constants
-    memories
   in
 
   while index token_matches List.len < do
@@ -864,7 +850,8 @@ function get_functions ptr ptr ptr -> ptr :
           "EMPTY_FUNCTION" CompilerError
         endif
 
-        // Function(function_name, signature, tokens)
+        // Function(function_name, signature, tokens, variables)
+        variables
         tokens
         return_types param_types Signature.init
         function_name Function.init
@@ -876,6 +863,7 @@ function get_functions ptr ptr ptr -> ptr :
         "" str.copy function_name =
         List.init   param_types   =
         List.init   return_types  =
+        List.init   variables     =
         List.init   tokens        =
         index 1 + index =
         continue
@@ -884,8 +872,6 @@ function get_functions ptr ptr ptr -> ptr :
     elif current_part 1 == do
       token_value function_name =
       current_part 1 + current_part =
-      // TODO: Check for function redefinition
-      // TODO: Check for Constants
 
     elif current_part 2 == do
       // Enable defining functions that do not return anything without the -> token
@@ -897,17 +883,48 @@ function get_functions ptr ptr ptr -> ptr :
         continue
       endif
 
-      // Append word to param_types if valid TokenType
-      token_value Signature.type_map ptr
-      param_types List.append
+      // Split token by colon to name and TokenType
+      // Example => parameter_name:int
+      ":" token_value str.find
+      take param_colon in
+
+      // Parse parameter's TokenType
+      token_value param_colon 1 + str+
+      Signature.type_map
+      take param_type in
+      param_type ptr param_types List.append
+
+      // Handle named parameters
+      if param_colon -1 != do
+        // Empty param_name
+        if param_colon 0 == do
+          "Function '" function_name                  str.cat
+          "' has parameter '"                         str.cat
+          token_value                                 str.cat
+          "' which has a colon but the name is empty" str.cat
+          "SYNTAX_ERROR" CompilerError
+        endif
+
+        // Parse parameter's name
+        token_value str.copy
+        dup param_colon str+ str.empty
+        take param_name in
+
+        // Append parameter to Function's Tokens
+        param_name str.copy token Token.set_value
+        TokenType.WORD      token Token.set_type
+        VarType.TAKE        token Token.set_vartype
+        token tokens List.append
+
+        // Add parameter to the list of Variables
+        memories variables function_name token add_variable_to_list
+      endif
 
     elif current_part 3 == do
-
       // Append word to return_types if valid TokenType
       token_value Signature.type_map ptr
       return_types List.append
     elif current_part 4 == do
-
       // Use Constant's value if a Constant exists named as the Token's value
       if constants token_value str.copy constant_exists do
 
@@ -945,18 +962,13 @@ end
 
 // Parse Variables for Functions
 // Params: List[Function], List[Memory]
-function parse_variables_for_functions ptr ptr :
-  dup List.len
+function parse_variables_for_functions functions:ptr memories:ptr :
+  functions List.len
   0
-  take
-    index
-    len
-    functions
-    memories
-  in
+  take index functions.len in
 
   // Parse Variables for each Function
-  while index len < do
+  while index functions.len < do
     index functions List.nth ptr.load
     memories swap parse_function_variables
     index 1 + index = // index++
@@ -966,9 +978,9 @@ end
 // Parse Variables in Function
 // Params: Function, List[Memory]
 // Return: None
-function parse_function_variables ptr ptr :
-  dup   Function.get_tokens
-  over  Function.get_variables
+function parse_function_variables func:ptr memories:ptr :
+  func Function.get_tokens
+  func Function.get_variables
   False
   "PEEK"
   0
@@ -978,8 +990,6 @@ function parse_function_variables ptr ptr :
     parsing_variables
     variables
     tokens
-    func
-    memories
   in
 
   while index tokens List.len < do
@@ -1015,26 +1025,52 @@ function parse_function_variables ptr ptr :
         "VALUE_ERROR" CompilerError
       endif
 
-      // Append the variable to the list of function's variables
-      token Token.get_type token_value Variable.init
-      variables List.append
+      // Add Variable to Function's list of Variables
+      memories variables func Function.get_name token add_variable_to_list
 
-      // Add the Variable to the list of memories
-      func Function.get_name "_"  str.cat
-      token_value                 str.cat
-      take memory_name in
-      if memories memory_name memory_exists not do
-        token Token.get_location
-        ptr.size // Memory.size
-        memory_name
-        Memory.init
-        memories List.append
-      endif
+    // Token is a function parameter
+    elif token Token.get_vartype 0 != do
+      index 1 + index =
+      continue
 
-    // If Token is already a known Variable just update its boolean value
+    // Token is an already defined Variable
     elif token_value variables List.contains_variable do
       VarType.PUSH token Token.set_vartype
     endif
     index 1 + index =
   done
+end
+
+// Add variable to Function's variable list
+// Params
+//    token: Token
+//    function_name: str
+//    variables: List[Variable]
+//    memories: List[Memory]
+function add_variable_to_list
+  token:ptr
+  function_name:str
+  variables:ptr
+  memories:ptr
+:
+
+  token Token.get_type
+  token Token.get_value
+  take token_value token_type in
+
+  // Append the variable to the list of function's variables
+  token_type token_value Variable.init
+  variables List.append
+
+  // Add the Variable to the list of memories
+  function_name "_" str.cat
+  token_value       str.cat
+  take memory_name in
+  if memories memory_name memory_exists not do
+    token Token.get_location
+    ptr.size // Memory.size
+    memory_name
+    Memory.init
+    memories List.append
+  endif
 end

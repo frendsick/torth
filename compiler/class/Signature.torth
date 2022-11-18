@@ -3,19 +3,27 @@ include "compiler/utils"
 
 // Signature(params: List[TokenType], returns: List[TokenType])
 ENUM Signature.size 8 :
-  Signature.params  // List[TokenType]  => ptr
-  Signature.returns // List[TokenType]  => ptr
+  Signature.params      // List[TokenType]  => ptr
+  Signature.returns     // List[TokenType]  => ptr
 END
 
 // Allocate memory for Signature and the TokenType lists in it
-// Params: param_types (PTR), return_types (PTR)
+// Params
+//    param_names: List[str]
+//    param_types: List[TokenType]
+//    return_types: List[TokenType]
 // Return: Signature
 function Signature.init ptr ptr -> ptr :
   Signature.size malloc
+  take
+    signature
+    param_types
+    return_types
+  in
 
-  // returns signature
-  swap over Signature.params  ptr+ ptr.store
-  swap over Signature.returns ptr+ ptr.store
+  param_types   signature Signature.params        ptr+ ptr.store
+  return_types  signature Signature.returns       ptr+ ptr.store
+  signature
 end
 
 // Get Signature.params
@@ -34,8 +42,8 @@ end
 
 // Get TokenType from certain type in function definition
 function Signature.type_map str -> int :
-  str.copy str.upper
-  take type_upper in
+  dup str.copy str.upper
+  take type_upper type in
 
   if type_upper "ANY" streq do
     TokenType.ANY return
@@ -52,8 +60,8 @@ function Signature.type_map str -> int :
   elif type_upper "UINT8" streq do
     TokenType.UINT8 return
   else
-    "'" type_upper                  str.cat
-    "' is not a valid TokenType\n"  str.cat
+    "'" type                   str.cat
+    "' is not valid TokenType" str.cat
     "FUNCTION_SIGNATURE_ERROR" CompilerError 0 exit
     NULL
   endif
