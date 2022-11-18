@@ -4,8 +4,7 @@ include "compiler/utils"
 
 // Compile and link the assembly file with NASM and LD
 // Params: out_file (STR)
-function compile_executable str :
-  take out_file in
+function compile_executable out_file:str :
   // Compile assembly code file to an object file with NASM
   out_file "NASM" exec_forked
 
@@ -14,52 +13,46 @@ function compile_executable str :
 end
 
 // Compile assembly code file to object file with NASM
-function compile_with_nasm str :
-  dup  ".o"   str.cat
-  swap ".asm" str.cat
-  take asm_file out_file in
-
-  // Allocate memory for the arguments
-  List.init
-  take argv in
+function compile_with_nasm out_file:str :
+  out_file ".o"   str.cat
+  out_file ".asm" str.cat
+  List.init // Allocate memory for arguments
+  take
+    argv
+    asm_file
+    object_file
+  in
 
   "nasm"      ptr argv List.append
   "-felf64"   ptr argv List.append
   "-o"        ptr argv List.append
-  out_file    ptr argv List.append
+  object_file ptr argv List.append
   asm_file    ptr argv List.append
-
   NULLPTR argv List.first "/usr/bin/nasm" execve drop
 end
 
-// Compile assembly code file to object file with NASM
-function link_with_ld str :
-  dup ".o" str.cat
-  take object_file out_file in
-
-  // Allocate memory for the arguments
-  List.init
-  take argv in
+// Link object file with LD
+function link_with_ld out_file:str :
+  out_file ".o" str.cat
+  List.init // Allocate memory for arguments
+  take argv object_file in
 
   "ld"            ptr argv List.append
   "-melf_x86_64"  ptr argv List.append
   "-o"            ptr argv List.append
   out_file        ptr argv List.append
   object_file     ptr argv List.append
-
   NULLPTR argv List.first "/usr/bin/ld" execve drop
 end
 
 // Remove files generated during compilation
 // Params
-//    output_file: str
+//    out_file: str
 // Return None
-function remove_compilation_files str :
-  take output_file in
-
+function remove_compilation_files out_file:str :
   // Remove Assembly file
-  output_file ".asm" str.cat "RM" exec_forked
+  out_file ".asm" str.cat "RM" exec_forked
 
   // Remove object file
-  output_file ".o"   str.cat "RM" exec_forked
+  out_file ".o"   str.cat "RM" exec_forked
 end
