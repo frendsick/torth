@@ -24,8 +24,7 @@ end
 // Params
 //    parser: Argparser
 // Return None
-function Argparser.parse_args ptr :
-  take parser in
+function Argparser.parse_args parser:ptr :
   parser Argparser.get_parser_args
   parser Argparser.get_cmd_args
   0
@@ -66,9 +65,7 @@ end
 //    argument_name: str
 // Return
 //    argument_value: str
-function Argparser.get_argument ptr str -> str :
-  take parser argument_name in
-
+function Argparser.get_argument parser:ptr argument_name:str -> str :
   // Option arguments start with -
   if argument_name "-" str.startswith do
     argument_name parser Argparser.get_option_argument
@@ -83,9 +80,7 @@ end
 //    argument_name: str
 // Return
 //    argument_value: str
-function Argparser.get_positional_argument ptr str -> str :
-  take parser argument_name in
-
+function Argparser.get_positional_argument parser:ptr argument_name:str -> str :
   // Get the position of the certain argument
   argument_name parser Argparser.get_argument_position_by_name
   parser Argparser.get_cmd_args
@@ -144,8 +139,8 @@ end
 //    argument_name: str
 // Return
 //    argument_value: str
-function Argparser.get_option_argument ptr str -> str :
-  dup Argparser.get_cmd_args
+function Argparser.get_option_argument parser:ptr argument_name:str -> str :
+  parser Argparser.get_cmd_args
   dup List.len
   False
   1
@@ -154,8 +149,6 @@ function Argparser.get_option_argument ptr str -> str :
     found
     arguments.len
     arguments
-    parser
-    argument_name
   in
 
   while index arguments.len < do
@@ -198,8 +191,7 @@ end
 // Params
 //    parser: Argparser
 // Return None
-function Argparser.print_help ptr :
-  take parser in
+function Argparser.print_help parser:ptr :
   parser Argparser.get_parser_args
   parser Argparser.get_cmd_args
   take cmd_args parser_args in
@@ -221,9 +213,7 @@ end
 //    cmd_args: List[ParserArgument]
 //    parser_args: List[ParserArgument]
 // Return None
-function Argparser.print_help_usage ptr ptr :
-  take cmd_args parser_args in
-
+function Argparser.print_help_usage cmd_args:ptr parser_args:ptr :
   // Usage: ./executable.bin --required-arg METAVAR [--not-required METAVAR] positional_argument
   "Usage: " puts
   cmd_args List.first ptr.load str puts " " puts
@@ -246,10 +236,10 @@ end
 //    parser_args: List[ParserArgument]
 // Return None
 const ARG_HELP_INDENT 22 end
-function Argparser.print_positional_arguments ptr :
-  take parser_args in
+function Argparser.print_positional_arguments parser_args:ptr :
   parser_args List.len
-  0 take index args_amount in
+  0
+  take index args_amount in
   while index args_amount < do
     index parser_args List.nth ptr.load
     take argument in
@@ -302,10 +292,10 @@ end
 //    parser_args: List[ParserArgument]
 // Return None
 const ARG_HELP_INDENT 22 end
-function Argparser.print_option_arguments ptr :
-  take parser_args in
+function Argparser.print_option_arguments parser_args:ptr :
   parser_args List.len
-  0 take index args_amount in
+  0
+  take index args_amount in
   while index args_amount < do
     index parser_args List.nth ptr.load
     take argument in
@@ -364,10 +354,10 @@ end
 //    cmd_args: List[ParserArgument]
 //    parser_args: List[ParserArgument]
 // Return None
-function Argparser.print_options_inline ptr ptr :
-  take cmd_args parser_args in
+function Argparser.print_options_inline cmd_args:ptr parser_args:ptr :
   parser_args List.len
-  0 take index args_amount in
+  0
+  take index args_amount in
   while index args_amount < do
     index parser_args List.nth ptr.load
     take argument in
@@ -398,10 +388,10 @@ end
 //    cmd_args: List[ParserArgument]
 //    parser_args: List[ParserArgument]
 // Return None
-function Argparser.print_positional_inline ptr ptr :
-  take cmd_args parser_args in
+function Argparser.print_positional_inline cmd_args:ptr parser_args:ptr :
   parser_args List.len
-  0 take index args_amount in
+  0
+  take index args_amount in
   while index args_amount < do
     index parser_args List.nth ptr.load
     take argument in
@@ -480,16 +470,14 @@ end
 //    name: str
 // Return
 //    argument: ParserArgument
-function Argparser.get_argument_by_name ptr str -> ptr :
-  dup Argparser.get_parser_args
+function Argparser.get_argument_by_name parser:ptr name:str -> ptr :
+  parser Argparser.get_parser_args
   dup List.len
   0
   take
     index
     parser_args.len
     parser_args
-    parser
-    name
   in
 
   while index parser_args.len < do
@@ -509,12 +497,12 @@ end
 
 // Get the zero-based position of the positional argument
 // Params
-//    Argparser: ptr
+//    parser: Argparser
 //    name: str
 // Return
 //    index: int
-function Argparser.get_argument_position_by_name ptr str -> int :
-  Argparser.get_parser_args
+function Argparser.get_argument_position_by_name parser:ptr name:str -> int :
+  parser Argparser.get_parser_args
   dup List.len
   0
   0
@@ -523,7 +511,6 @@ function Argparser.get_argument_position_by_name ptr str -> int :
     position
     parser_args.len
     parser_args
-    name
   in
   while index parser_args.len < do
     index parser_args List.nth ptr.load ParserArgument.get_name
