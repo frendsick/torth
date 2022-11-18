@@ -206,7 +206,13 @@ function Argparser.print_help ptr :
 
   parser_args cmd_args Argparser.print_help_usage
   parser Argparser.print_description
+
+  // Print positional arguments
+  "Positional arguments:\n" puts
   parser_args Argparser.print_positional_arguments
+
+  // Print option arguments
+  "\nOptions:\n" puts
   parser_args Argparser.print_option_arguments
 end
 
@@ -242,7 +248,6 @@ end
 const ARG_HELP_INDENT 22 end
 function Argparser.print_positional_arguments ptr :
   take parser_args in
-  "Positional arguments:\n" puts
   parser_args List.len
   0 take index args_amount in
   while index args_amount < do
@@ -279,7 +284,6 @@ function Argparser.print_positional_arguments ptr :
     "\n" puts
     index 1 + index =
   done
-  "\n" puts
 end
 
 // Test if certain command line flag is present
@@ -293,37 +297,48 @@ function Argparser.flag_present ptr str -> bool :
   ptr int bool            // Cast from str to bool
 end
 
-// Print positional arguments in the help of the program (-h|--help)
+// Print option arguments in the help of the program (-h|--help)
 // Params
 //    parser_args: List[ParserArgument]
 // Return None
 const ARG_HELP_INDENT 22 end
 function Argparser.print_option_arguments ptr :
   take parser_args in
-  "Options:\n" puts
   parser_args List.len
   0 take index args_amount in
   while index args_amount < do
     index parser_args List.nth ptr.load
     take argument in
 
-    // Do not print option arguments
+    // Only print option arguments that are not flags
     if argument ParserArgument.is_positional do
       index 1 + index =
       continue
     endif
 
-    // Print the positional argument
+    // Print the option argument
     "  " puts
     argument ParserArgument.get_name
     argument ParserArgument.get_metavar
-    take metavar argument_name in
-    argument_name str.len 1 + metavar str.len +
+    argument ParserArgument.is_flag
+    take
+      flag
+      metavar
+      argument_name
+    in
+
+    argument_name str.len
+    if flag not do
+      1 + metavar str.len +
+    endif
     ARG_HELP_INDENT swap -
     take spaces in
     argument_name puts
-    " " puts
-    metavar puts
+
+    if flag not do
+      " " puts
+      metavar puts
+    endif
 
     // Print argument's help to another line if it's name is long
     if spaces 0 <= do
