@@ -60,8 +60,8 @@ function Signature.type_map str -> int :
   elif type_upper "UINT8" streq do
     TokenType.UINT8 return
   else
-    "'" type                      str.cat
-    "' is not valid TokenType\n"  str.cat
+    "'" type                   str.cat
+    "' is not valid TokenType" str.cat
     "FUNCTION_SIGNATURE_ERROR" CompilerError 0 exit
     NULL
   endif
