@@ -1,4 +1,0 @@
-Successfully forked child!
-Child is sleeping...
-Child exited!
-Continuing execution in the parent process.

@@ -1,5 +1,0 @@
-'A man, a plan, a canal: Panama' is palindrome
-'race a car' is not palindrome
-' ' is palindrome
-'Ed, I saw Harpo Marx ram Oprah W. aside.' is palindrome
-'Doc, note I dissent: a fast never prevents a fatness. I diet on cod.' is palindrome

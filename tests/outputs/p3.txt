@@ -1,1 +1,0 @@
-The largest prime factor of number 600851475143: 6857

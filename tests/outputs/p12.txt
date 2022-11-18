@@ -1,1 +1,0 @@
-The first triangular number to have over 100 divisors: 73920

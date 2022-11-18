@@ -1,1 +1,0 @@
-The largest product in series for 13 adjacent digits: 23514624000

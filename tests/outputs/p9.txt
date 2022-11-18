@@ -1,2 +1,0 @@
-Product of pythagorean triplets that add up to 1000:
-31875000
