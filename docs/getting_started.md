@@ -25,6 +25,14 @@ The following requirements can probably be installed via your distro's package m
 4. Compile the program: `./torth hello.torth`
 5. Run the program: `./hello`
 
+Alternatively you can compile the [Assembly source code](./../bootstrap/torth.asm) with NASM using `make` command.
+
+```sh
+$ make
+nasm -f elf64 -o torth.o bootstrap/torth.asm
+ld -m elf_x86_64 -o torth torth.o
+```
+
 ## Apply syntax highlighting
 
 Coding in any language could be pretty painful without syntax highlighting for the particular editor you are using. Torth currently only supports syntax highlighting for [VIM](syntax_highlighting.md#vim) and [VSCode](syntax_highlighting.md#visual-studio-code). There is also a really barebones and outdated [torth-mode](./../editor/emacs/torth-mode.el) for Emacs.
