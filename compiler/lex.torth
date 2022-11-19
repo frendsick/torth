@@ -965,6 +965,13 @@ function get_functions
     index 1 + index =
   done
 
+  // Verify that the program has MAIN function (case-insensitive)
+  if functions main_function_in_function_list not do
+    "The program does not have an entry point.\n"
+    "Please add Main function (case-insensitive)." str.cat
+    "MISSING_MAIN_FUNCTION" CompilerError
+  endif
+
   // Parse the variables for each function
   memories functions parse_variables_for_functions
   functions
@@ -1084,4 +1091,28 @@ function add_variable_to_list
     Memory.init
     memories List.append
   endif
+end
+
+// Verify if MAIN function is defined (case-insensitive)
+// Params
+//    functions:ptr
+// Return bool
+function main_function_in_function_list functions:ptr -> bool :
+  functions List.len
+  0
+  take index functions.len in
+
+  // Iterate over Function List
+  while index functions.len < do
+    index functions List.nth ptr.load
+    Function.get_name str.copy str.upper
+    take function_name in
+
+    // Return True if MAIN function is found
+    if function_name "MAIN" streq do
+      True return
+    endif
+    index 1 + index =
+  done
+  False
 end
