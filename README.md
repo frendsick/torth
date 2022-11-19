@@ -23,15 +23,10 @@ Stack based programming language inspired by [Porth](https://gitlab.com/tsoding/
 ```pascal
 $ cat hello.torth
 include "std"
-function main : "Hello, World!\n" puts end
+function main :
+  "Hello, World!\n" puts
+end
 $ ./torth -r hello.torth
-[INFO] Getting included files
-[INFO] Parsing code from hello.torth
-[INFO] Type checking the program
-[INFO] Generating Assembly code
-[INFO] Compiling Assembly code
-[INFO] Removing files generated during compilation
-[INFO] Running the program
 Hello, World!
 $ ./torth --help
 Usage: ./torth [-h] [--out FILE] [-r] [-s] [-v] code_file
