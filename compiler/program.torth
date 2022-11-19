@@ -157,8 +157,9 @@ function get_tokens_op_type
       OpType.POP_BIND return
     endif
 
+    token
     "Unknown VarType '" token_vartype itoa str.cat
-    "VALUE_ERROR" CompilerError
+    "VALUE_ERROR" CompilerErrorWithToken
   elif constants token_value constant_exists do
     OpType.PUSH_INT return
   elif functions token_value function_exists do
@@ -206,9 +207,10 @@ function get_tokens_op_type
   endif
 
   // Report error when Op was not found
+  token
   "Operation '"
   token Token.get_value str.cat
-  "' is not found"      str.cat
-  "OP_NOT_FOUND" CompilerError
+  "' is unknown"        str.cat
+  "OP_NOT_FOUND" CompilerErrorWithToken
   NULL 0 exit
 end

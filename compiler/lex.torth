@@ -851,11 +851,12 @@ function get_functions
 
         // Do not allow empty functions
         if tokens List.len 0 == do
+          token
           "Function '"
           function_name                                 str.cat
           "' does not have any tokens\n"                str.cat
           "Creation of empty functions is not allowed"  str.cat
-          "EMPTY_FUNCTION" CompilerError
+          "EMPTY_FUNCTION" CompilerErrorWithToken
         endif
 
         // Function(function_name, signature, tokens, variables)
@@ -906,11 +907,12 @@ function get_functions
       if param_colon -1 != do
         // Empty param_name
         if param_colon 0 == do
+          token
           "Function '" function_name                  str.cat
           "' has parameter '"                         str.cat
           token_value                                 str.cat
           "' which has a colon but the name is empty" str.cat
-          "SYNTAX_ERROR" CompilerError
+          "SYNTAX_ERROR" CompilerErrorWithToken
         endif
 
         // Parse parameter's name
@@ -1029,8 +1031,9 @@ function parse_function_variables func:ptr memories:ptr :
       elif bind_variant "TAKE" streq do
         VarType.TAKE token Token.set_vartype
       else
+        token
         "Unknown VarType '" bind_variant str.cat "'\n" str.cat
-        "VALUE_ERROR" CompilerError
+        "VALUE_ERROR" CompilerErrorWithToken
       endif
 
       // Add Variable to Function's list of Variables

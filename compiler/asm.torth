@@ -126,7 +126,7 @@ function get_op_asm op:ptr program:ptr -> str :
     op get_while_asm
     return
   elif op_type OpType.INTRINSIC == do
-    token_value get_intrinsic_asm
+    op Op.get_token get_intrinsic_asm
     return
   else
     "Generating assembly for '" token_value str.cat
@@ -136,11 +136,11 @@ function get_op_asm op:ptr program:ptr -> str :
 end
 
 // Get assembly code for certain Intrinsic
-// Params: Token.value
+// Params: Token
 // Return: Assembly
-function get_intrinsic_asm str -> str :
-  str.copy str.upper
-  take intrinsic in
+function get_intrinsic_asm ptr -> str :
+  dup Token.get_value str.copy str.upper
+  take intrinsic token in
   if intrinsic "AND" streq do
     get_and_asm return
   elif intrinsic "ARGC" streq do
@@ -166,7 +166,7 @@ function get_intrinsic_asm str -> str :
   elif intrinsic "LT" streq do
     get_lt_asm return
   elif intrinsic "LOAD_" str.startswith do
-    intrinsic get_load_asm
+    token intrinsic get_load_asm
   elif intrinsic "MINUS" streq do
     get_minus_asm return
   elif intrinsic "MUL" streq do
@@ -190,7 +190,7 @@ function get_intrinsic_asm str -> str :
   elif intrinsic "SHR" streq do
     get_shr_asm return
   elif intrinsic "STORE_" str.startswith do
-    intrinsic get_store_asm
+    token intrinsic get_store_asm
   elif intrinsic "SWAP" streq do
     get_swap_asm return
   elif intrinsic "SYSCALL" str.startswith do
@@ -423,8 +423,9 @@ function get_do_asm op:ptr program:ptr -> str :
     endif
     index 1 + index = // index++
   done
-  "The current block is missing the corresponding closing keyword\n"
-  "UNCLOSED_BLOCK" CompilerError ""
+  op Op.get_token
+  "The current block is missing the corresponding closing keyword"
+  "UNCLOSED_BLOCK" CompilerErrorWithToken ""
 end
 
 // DO pops an item from the stack and jumps to jump_destination if it is zero
@@ -790,11 +791,11 @@ function get_lt_asm -> str :
   "cmovl" get_comparison_asm
 end
 
-// Params: load_variant
+// Params: load_variant, Token
 // Return: Assembly
-function get_load_asm str -> str :
+function get_load_asm str ptr -> str :
   str.copy str.upper
-  take load_variant in
+  take load_variant token in
 
   // Get the correct size register for the load_variant
   if    load_variant "LOAD_BYTE"  streq do "bl"
@@ -802,9 +803,10 @@ function get_load_asm str -> str :
   elif  load_variant "LOAD_DWORD" streq do "ebx"
   elif  load_variant "LOAD_QWORD" streq do "rbx"
   else
+    token
     "'" load_variant                  str.cat
     "' is not a valid LOAD Intrinsic" str.cat
-    "VALUE_ERROR" CompilerError ""
+    "VALUE_ERROR" CompilerErrorWithToken ""
   endif
   take register in
 
@@ -926,11 +928,11 @@ function get_shr_asm -> str :
   "  push rbx\n"    str.cat
 end
 
-// Params: store_variant
+// Params: store_variant, Token
 // Return: Assembly
-function get_store_asm str -> str :
+function get_store_asm str ptr -> str :
   str.copy str.upper
-  take store_variant in
+  take store_variant token in
 
   // Get the correct size register for the store_variant
   if    store_variant "STORE_BYTE"  streq do "bl"
@@ -938,9 +940,10 @@ function get_store_asm str -> str :
   elif  store_variant "STORE_DWORD" streq do "ebx"
   elif  store_variant "STORE_QWORD" streq do "rbx"
   else
+    token
     "'" store_variant                  str.cat
     "' is not a valid STORE Intrinsic" str.cat
-    "VALUE_ERROR" CompilerError ""
+    "VALUE_ERROR" CompilerErrorWithToken ""
   endif
   take register in
 
@@ -1237,9 +1240,10 @@ function get_related_endif op:ptr program:ptr -> ptr :
   done
 
   // Report error when corresponding ENDIF was not found
+  op Op.get_token
   "Corresponding ENDIF keyword was not found.\n"
   op Op.get_token Token.get_value str.copy str.upper
-  "AMBIGUOUS_" swap str.cat CompilerError NULLPTR
+  "AMBIGUOUS_" swap str.cat CompilerErrorWithToken NULLPTR
 end
 
 // Returns the current WHILE block's DONE Op
@@ -1272,10 +1276,11 @@ function get_parent_while op:ptr program:ptr -> ptr :
   done
 
   // Report error when parent WHILE was not found
+  op Op.get_token
   "Parent WHILE keyword was not found.\n"
   op Op.get_token Token.get_value str.copy str.upper
   "AMBIGUOUS_" swap str.cat
-  CompilerError NULLPTR
+  CompilerErrorWithToken NULLPTR
 end
 
 // Returns the END Operand for the current WHILE block
