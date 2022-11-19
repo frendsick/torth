@@ -174,6 +174,7 @@ section .bss
   add_variable_to_list_function_name: RESB 8
   add_variable_to_list_variables: RESB 8
   add_variable_to_list_memories: RESB 8
+  main_function_in_function_list_functions: RESB 8
   get_sub_programs_functions: RESB 8
   get_sub_programs_constants: RESB 8
   get_sub_programs_memories: RESB 8
@@ -463,6 +464,7 @@ section .bss
   get_op_asm_op_type: RESB 8
   get_op_asm_token_value: RESB 8
   get_intrinsic_asm_intrinsic: RESB 8
+  get_intrinsic_asm_token: RESB 8
   get_op_comment_asm_token_value: RESB 8
   get_op_comment_asm_op_type_str: RESB 8
   get_op_comment_asm_token_loc: RESB 8
@@ -495,8 +497,10 @@ section .bss
   get_while_asm_function_name: RESB 8
   get_while_asm_op_id: RESB 8
   get_load_asm_load_variant: RESB 8
+  get_load_asm_token: RESB 8
   get_load_asm_register: RESB 8
   get_store_asm_store_variant: RESB 8
+  get_store_asm_token: RESB 8
   get_store_asm_register: RESB 8
   get_syscall_asm_index: RESB 8
   get_syscall_asm_argument_registers: RESB 8
@@ -625,6 +629,9 @@ section .bss
   add_variable_to_list_token_value: RESB 8
   add_variable_to_list_token_type: RESB 8
   add_variable_to_list_memory_name: RESB 8
+  main_function_in_function_list_index: RESB 8
+  main_function_in_function_list_functions.len: RESB 8
+  main_function_in_function_list_function_name: RESB 8
   get_sub_programs_index: RESB 8
   get_sub_programs_sub_programs: RESB 8
   get_sub_programs_func: RESB 8
@@ -9533,7 +9540,7 @@ Z2V0X29wX2FzbQ224:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 65, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF50:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 65, Column: 8
   push qword [get_op_asm_op_type]
@@ -9567,7 +9574,7 @@ get_op_asm_ELIF50:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 68, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF59:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 68, Column: 8
   push qword [get_op_asm_op_type]
@@ -9601,7 +9608,7 @@ get_op_asm_ELIF59:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 71, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF68:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 71, Column: 8
   push qword [get_op_asm_op_type]
@@ -9635,7 +9642,7 @@ get_op_asm_ELIF68:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 74, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF77:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 74, Column: 8
   push qword [get_op_asm_op_type]
@@ -9669,7 +9676,7 @@ get_op_asm_ELIF77:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 77, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF86:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 77, Column: 8
   push qword [get_op_asm_op_type]
@@ -9703,7 +9710,7 @@ get_op_asm_ELIF86:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 80, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF95:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 80, Column: 8
   push qword [get_op_asm_op_type]
@@ -9737,7 +9744,7 @@ get_op_asm_ELIF95:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 83, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF104:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 83, Column: 8
   push qword [get_op_asm_op_type]
@@ -9771,7 +9778,7 @@ get_op_asm_ELIF104:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 86, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF113:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 86, Column: 8
   push qword [get_op_asm_op_type]
@@ -9803,7 +9810,7 @@ get_op_asm_ELIF113:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 89, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF121:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 89, Column: 8
   push qword [get_op_asm_op_type]
@@ -9835,7 +9842,7 @@ get_op_asm_ELIF121:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 92, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF129:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 92, Column: 8
   push qword [get_op_asm_op_type]
@@ -9865,7 +9872,7 @@ get_op_asm_ELIF129:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 95, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF136:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 95, Column: 8
   push qword [get_op_asm_op_type]
@@ -9897,7 +9904,7 @@ get_op_asm_ELIF136:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 98, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF144:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 98, Column: 8
   push qword [get_op_asm_op_type]
@@ -9929,7 +9936,7 @@ get_op_asm_ELIF144:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 101, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF152:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 101, Column: 8
   push qword [get_op_asm_op_type]
@@ -9961,7 +9968,7 @@ get_op_asm_ELIF152:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 104, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF160:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 104, Column: 8
   push qword [get_op_asm_op_type]
@@ -9995,7 +10002,7 @@ get_op_asm_ELIF160:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 107, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF169:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 107, Column: 8
   push qword [get_op_asm_op_type]
@@ -10032,7 +10039,7 @@ get_op_asm_ELIF169:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 110, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF179:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 110, Column: 8
   push qword [get_op_asm_op_type]
@@ -10064,7 +10071,7 @@ get_op_asm_ELIF179:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 113, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF187:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 113, Column: 8
   push qword [get_op_asm_op_type]
@@ -10096,7 +10103,7 @@ get_op_asm_ELIF187:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 116, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF195:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 116, Column: 8
   push qword [get_op_asm_op_type]
@@ -10128,7 +10135,7 @@ get_op_asm_ELIF195:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 119, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF203:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 119, Column: 8
   push qword [get_op_asm_op_type]
@@ -10165,7 +10172,7 @@ get_op_asm_ELIF203:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 122, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF213:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 122, Column: 8
   push qword [get_op_asm_op_type]
@@ -10201,7 +10208,7 @@ get_op_asm_ELIF213:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 125, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF223:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 125, Column: 8
   push qword [get_op_asm_op_type]
@@ -10233,7 +10240,7 @@ get_op_asm_ELIF223:
   ret
 
 ;; [get_op_asm] ELIF | File: compiler/asm.torth, Row: 128, Column: 3
-  jmp get_op_asm_ENDIF248
+  jmp get_op_asm_ENDIF249
 get_op_asm_ELIF231:
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 128, Column: 8
   push qword [get_op_asm_op_type]
@@ -10251,10 +10258,12 @@ get_op_asm_ELIF231:
 ;; [get_op_asm] DO | File: compiler/asm.torth, Row: 128, Column: 36
   pop rax
   test rax, rax
-  jz get_op_asm_ELSE239
+  jz get_op_asm_ELSE240
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 129, Column: 5
-  push qword [get_op_asm_token_value]
-;; [get_op_asm] Call get_intrinsic_asm | File: compiler/asm.torth, Row: 129, Column: 17
+  push qword [get_op_asm_op]
+;; [get_op_asm] Call Op.get_token | File: compiler/asm.torth, Row: 129, Column: 8
+  call T3AuZ2V0X3Rva2211
+;; [get_op_asm] Call get_intrinsic_asm | File: compiler/asm.torth, Row: 129, Column: 21
   call Z2V0X2ludHJpbnNpY19hc2224
 ;; [get_op_asm] RETURN | File: compiler/asm.torth, Row: 130, Column: 5
 ;; [get_op_asm] Return to the address found in return_stack
@@ -10265,22 +10274,22 @@ get_op_asm_ELIF231:
   ret
 
 ;; [get_op_asm] ELSE | File: compiler/asm.torth, Row: 131, Column: 3
-  jmp get_op_asm_ENDIF248
-get_op_asm_ELSE239:
+  jmp get_op_asm_ENDIF249
+get_op_asm_ELSE240:
 ;; [get_op_asm] PUSH_STR | File: compiler/asm.torth, Row: 132, Column: 5
-  mov rsi, get_op_asm_s240 ; Pointer to string
+  mov rsi, get_op_asm_s241 ; Pointer to string
   push rsi
 ;; [get_op_asm] PUSH_BIND | File: compiler/asm.torth, Row: 132, Column: 33
   push qword [get_op_asm_token_value]
 ;; [get_op_asm] Call str.cat | File: compiler/asm.torth, Row: 132, Column: 45
   call c3RyLmNhdA213
 ;; [get_op_asm] PUSH_STR | File: compiler/asm.torth, Row: 133, Column: 5
-  mov rsi, get_op_asm_s243 ; Pointer to string
+  mov rsi, get_op_asm_s244 ; Pointer to string
   push rsi
 ;; [get_op_asm] Call str.cat | File: compiler/asm.torth, Row: 133, Column: 44
   call c3RyLmNhdA213
 ;; [get_op_asm] PUSH_STR | File: compiler/asm.torth, Row: 134, Column: 5
-  mov rsi, get_op_asm_s245 ; Pointer to string
+  mov rsi, get_op_asm_s246 ; Pointer to string
   push rsi
 ;; [get_op_asm] INTRINSIC swap | File: compiler/asm.torth, Row: 134, Column: 8
   pop rax
@@ -10290,7 +10299,7 @@ get_op_asm_ELSE239:
 ;; [get_op_asm] Call NotImplementedError | File: compiler/asm.torth, Row: 134, Column: 13
   call Tm90SW1wbGVtZW50ZWRFcnJvcg225
 ;; [get_op_asm] ENDIF | File: compiler/asm.torth, Row: 135, Column: 3
-get_op_asm_ENDIF248:
+get_op_asm_ENDIF249:
 ;; [get_op_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -10304,26 +10313,34 @@ Z2V0X2ludHJpbnNpY19hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_intrinsic_asm] Call str.copy | File: compiler/asm.torth, Row: 142, Column: 3
+;; [get_intrinsic_asm] INTRINSIC dup | File: compiler/asm.torth, Row: 142, Column: 3
+  pop rax
+  push rax
+  push rax
+;; [get_intrinsic_asm] Call Token.get_value | File: compiler/asm.torth, Row: 142, Column: 7
+  call VG9rZW4uZ2V0X3ZhbH218
+;; [get_intrinsic_asm] Call str.copy | File: compiler/asm.torth, Row: 142, Column: 23
   call c3RyLmNvcH233
-;; [get_intrinsic_asm] Call str.upper | File: compiler/asm.torth, Row: 142, Column: 12
+;; [get_intrinsic_asm] Call str.upper | File: compiler/asm.torth, Row: 142, Column: 32
   call c3RyLnVwcG215
 ;; [get_intrinsic_asm] TAKE | File: compiler/asm.torth, Row: 143, Column: 3
 ;; [get_intrinsic_asm] POP_BIND | File: compiler/asm.torth, Row: 143, Column: 8
   pop qword [get_intrinsic_asm_intrinsic]
-;; [get_intrinsic_asm] IN | File: compiler/asm.torth, Row: 143, Column: 18
+;; [get_intrinsic_asm] POP_BIND | File: compiler/asm.torth, Row: 143, Column: 18
+  pop qword [get_intrinsic_asm_token]
+;; [get_intrinsic_asm] IN | File: compiler/asm.torth, Row: 143, Column: 24
 ;; [get_intrinsic_asm] IF | File: compiler/asm.torth, Row: 144, Column: 3
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 144, Column: 6
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 144, Column: 16
-  mov rsi, get_intrinsic_asm_s7 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s10 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 144, Column: 22
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 144, Column: 28
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF12
+  jz get_intrinsic_asm_ELIF15
 ;; [get_intrinsic_asm] Call get_and_asm | File: compiler/asm.torth, Row: 145, Column: 5
   call Z2V0X2FuZF9hc2224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 145, Column: 17
@@ -10335,19 +10352,19 @@ Z2V0X2ludHJpbnNpY19hc2224:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 146, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF12:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF15:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 146, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 146, Column: 18
-  mov rsi, get_intrinsic_asm_s14 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s17 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 146, Column: 25
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 146, Column: 31
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF19
+  jz get_intrinsic_asm_ELIF22
 ;; [get_intrinsic_asm] Call get_argc_asm | File: compiler/asm.torth, Row: 147, Column: 5
   call Z2V0X2FyZ2NfYX224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 147, Column: 18
@@ -10359,19 +10376,19 @@ get_intrinsic_asm_ELIF12:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 148, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF19:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF22:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 148, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 148, Column: 18
-  mov rsi, get_intrinsic_asm_s21 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s24 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 148, Column: 25
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 148, Column: 31
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF26
+  jz get_intrinsic_asm_ELIF29
 ;; [get_intrinsic_asm] Call get_argv_asm | File: compiler/asm.torth, Row: 149, Column: 5
   call Z2V0X2FyZ3ZfYX224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 149, Column: 18
@@ -10383,19 +10400,19 @@ get_intrinsic_asm_ELIF19:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 150, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF26:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF29:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 150, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 150, Column: 18
-  mov rsi, get_intrinsic_asm_s28 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s31 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 150, Column: 27
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 150, Column: 33
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF33
+  jz get_intrinsic_asm_ELIF36
 ;; [get_intrinsic_asm] Call get_divmod_asm | File: compiler/asm.torth, Row: 151, Column: 5
   call Z2V0X2Rpdm1vZF9hc2224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 151, Column: 20
@@ -10407,19 +10424,19 @@ get_intrinsic_asm_ELIF26:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 152, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF33:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF36:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 152, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 152, Column: 18
-  mov rsi, get_intrinsic_asm_s35 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s38 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 152, Column: 25
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 152, Column: 31
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF40
+  jz get_intrinsic_asm_ELIF43
 ;; [get_intrinsic_asm] Call get_drop_asm | File: compiler/asm.torth, Row: 153, Column: 5
   call Z2V0X2Ryb3BfYX224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 153, Column: 18
@@ -10431,19 +10448,19 @@ get_intrinsic_asm_ELIF33:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 154, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF40:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF43:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 154, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 154, Column: 18
-  mov rsi, get_intrinsic_asm_s42 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s45 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 154, Column: 24
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 154, Column: 30
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF47
+  jz get_intrinsic_asm_ELIF50
 ;; [get_intrinsic_asm] Call get_dup_asm | File: compiler/asm.torth, Row: 155, Column: 5
   call Z2V0X2R1cF9hc2224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 155, Column: 17
@@ -10455,19 +10472,19 @@ get_intrinsic_asm_ELIF40:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 156, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF47:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF50:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 156, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 156, Column: 18
-  mov rsi, get_intrinsic_asm_s49 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s52 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 156, Column: 25
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 156, Column: 31
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF54
+  jz get_intrinsic_asm_ELIF57
 ;; [get_intrinsic_asm] Call get_envp_asm | File: compiler/asm.torth, Row: 157, Column: 5
   call Z2V0X2VudnBfYX224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 157, Column: 18
@@ -10479,19 +10496,19 @@ get_intrinsic_asm_ELIF47:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 158, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF54:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF57:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 158, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 158, Column: 18
-  mov rsi, get_intrinsic_asm_s56 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s59 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 158, Column: 23
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 158, Column: 29
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF61
+  jz get_intrinsic_asm_ELIF64
 ;; [get_intrinsic_asm] Call get_eq_asm | File: compiler/asm.torth, Row: 159, Column: 5
   call Z2V0X2VxX2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 159, Column: 16
@@ -10503,19 +10520,19 @@ get_intrinsic_asm_ELIF54:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 160, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF61:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF64:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 160, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 160, Column: 18
-  mov rsi, get_intrinsic_asm_s63 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s66 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 160, Column: 23
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 160, Column: 29
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF68
+  jz get_intrinsic_asm_ELIF71
 ;; [get_intrinsic_asm] Call get_ge_asm | File: compiler/asm.torth, Row: 161, Column: 5
   call Z2V0X2dlX2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 161, Column: 16
@@ -10527,19 +10544,19 @@ get_intrinsic_asm_ELIF61:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 162, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF68:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF71:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 162, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 162, Column: 18
-  mov rsi, get_intrinsic_asm_s70 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s73 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 162, Column: 23
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 162, Column: 29
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF75
+  jz get_intrinsic_asm_ELIF78
 ;; [get_intrinsic_asm] Call get_gt_asm | File: compiler/asm.torth, Row: 163, Column: 5
   call Z2V0X2d0X2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 163, Column: 16
@@ -10551,19 +10568,19 @@ get_intrinsic_asm_ELIF68:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 164, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF75:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF78:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 164, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 164, Column: 18
-  mov rsi, get_intrinsic_asm_s77 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s80 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 164, Column: 23
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 164, Column: 29
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF82
+  jz get_intrinsic_asm_ELIF85
 ;; [get_intrinsic_asm] Call get_le_asm | File: compiler/asm.torth, Row: 165, Column: 5
   call Z2V0X2xlX2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 165, Column: 16
@@ -10575,19 +10592,19 @@ get_intrinsic_asm_ELIF75:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 166, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF82:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF85:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 166, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 166, Column: 18
-  mov rsi, get_intrinsic_asm_s84 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s87 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 166, Column: 23
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 166, Column: 29
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF89
+  jz get_intrinsic_asm_ELIF92
 ;; [get_intrinsic_asm] Call get_lt_asm | File: compiler/asm.torth, Row: 167, Column: 5
   call Z2V0X2x0X2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 167, Column: 16
@@ -10599,37 +10616,39 @@ get_intrinsic_asm_ELIF82:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 168, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF89:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF92:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 168, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 168, Column: 18
-  mov rsi, get_intrinsic_asm_s91 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s94 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call str.startswith | File: compiler/asm.torth, Row: 168, Column: 26
   call c3RyLnN0YXJ0c3dpdG220
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 168, Column: 41
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF96
+  jz get_intrinsic_asm_ELIF100
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 169, Column: 5
+  push qword [get_intrinsic_asm_token]
+;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 169, Column: 11
   push qword [get_intrinsic_asm_intrinsic]
-;; [get_intrinsic_asm] Call get_load_asm | File: compiler/asm.torth, Row: 169, Column: 15
+;; [get_intrinsic_asm] Call get_load_asm | File: compiler/asm.torth, Row: 169, Column: 21
   call Z2V0X2xvYWRfYX224
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 170, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF96:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF100:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 170, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 170, Column: 18
-  mov rsi, get_intrinsic_asm_s98 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s102 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 170, Column: 26
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 170, Column: 32
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF103
+  jz get_intrinsic_asm_ELIF107
 ;; [get_intrinsic_asm] Call get_minus_asm | File: compiler/asm.torth, Row: 171, Column: 5
   call Z2V0X21pbnVzX2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 171, Column: 19
@@ -10641,19 +10660,19 @@ get_intrinsic_asm_ELIF96:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 172, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF103:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF107:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 172, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 172, Column: 18
-  mov rsi, get_intrinsic_asm_s105 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s109 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 172, Column: 24
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 172, Column: 30
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF110
+  jz get_intrinsic_asm_ELIF114
 ;; [get_intrinsic_asm] Call get_mul_asm | File: compiler/asm.torth, Row: 173, Column: 5
   call Z2V0X211bF9hc2224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 173, Column: 17
@@ -10665,19 +10684,19 @@ get_intrinsic_asm_ELIF103:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 174, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF110:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF114:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 174, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 174, Column: 18
-  mov rsi, get_intrinsic_asm_s112 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s116 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 174, Column: 23
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 174, Column: 29
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF117
+  jz get_intrinsic_asm_ELIF121
 ;; [get_intrinsic_asm] Call get_ne_asm | File: compiler/asm.torth, Row: 175, Column: 5
   call Z2V0X25lX2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 175, Column: 16
@@ -10689,19 +10708,19 @@ get_intrinsic_asm_ELIF110:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 176, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF117:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF121:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 176, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 176, Column: 18
-  mov rsi, get_intrinsic_asm_s119 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s123 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 176, Column: 24
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 176, Column: 30
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF124
+  jz get_intrinsic_asm_ELIF128
 ;; [get_intrinsic_asm] Call get_nth_asm | File: compiler/asm.torth, Row: 177, Column: 5
   call Z2V0X250aF9hc2224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 177, Column: 17
@@ -10713,19 +10732,19 @@ get_intrinsic_asm_ELIF117:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 178, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF124:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF128:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 178, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 178, Column: 18
-  mov rsi, get_intrinsic_asm_s126 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s130 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 178, Column: 23
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 178, Column: 29
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF131
+  jz get_intrinsic_asm_ELIF135
 ;; [get_intrinsic_asm] Call get_or_asm | File: compiler/asm.torth, Row: 179, Column: 5
   call Z2V0X29yX2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 179, Column: 16
@@ -10737,19 +10756,19 @@ get_intrinsic_asm_ELIF124:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 180, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF131:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF135:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 180, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 180, Column: 18
-  mov rsi, get_intrinsic_asm_s133 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s137 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 180, Column: 25
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 180, Column: 31
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF138
+  jz get_intrinsic_asm_ELIF142
 ;; [get_intrinsic_asm] Call get_over_asm | File: compiler/asm.torth, Row: 181, Column: 5
   call Z2V0X292ZXJfYX224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 181, Column: 18
@@ -10761,19 +10780,19 @@ get_intrinsic_asm_ELIF131:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 182, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF138:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF142:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 182, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 182, Column: 18
-  mov rsi, get_intrinsic_asm_s140 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s144 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 182, Column: 25
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 182, Column: 31
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF145
+  jz get_intrinsic_asm_ELIF149
 ;; [get_intrinsic_asm] Call get_plus_asm | File: compiler/asm.torth, Row: 183, Column: 5
   call Z2V0X3BsdXNfYX224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 183, Column: 18
@@ -10785,19 +10804,19 @@ get_intrinsic_asm_ELIF138:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 184, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF145:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF149:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 184, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 184, Column: 18
-  mov rsi, get_intrinsic_asm_s147 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s151 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 184, Column: 26
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 184, Column: 32
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF152
+  jz get_intrinsic_asm_ELIF156
 ;; [get_intrinsic_asm] Call get_print_asm | File: compiler/asm.torth, Row: 185, Column: 5
   call Z2V0X3ByaW50X2FzbQ224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 185, Column: 19
@@ -10809,19 +10828,19 @@ get_intrinsic_asm_ELIF145:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 186, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF152:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF156:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 186, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 186, Column: 18
-  mov rsi, get_intrinsic_asm_s154 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s158 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 186, Column: 24
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 186, Column: 30
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF159
+  jz get_intrinsic_asm_ELIF163
 ;; [get_intrinsic_asm] Call get_rot_asm | File: compiler/asm.torth, Row: 187, Column: 5
   call Z2V0X3JvdF9hc2224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 187, Column: 17
@@ -10833,19 +10852,19 @@ get_intrinsic_asm_ELIF152:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 188, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF159:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF163:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 188, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 188, Column: 18
-  mov rsi, get_intrinsic_asm_s161 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s165 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 188, Column: 24
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 188, Column: 30
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF166
+  jz get_intrinsic_asm_ELIF170
 ;; [get_intrinsic_asm] Call get_shl_asm | File: compiler/asm.torth, Row: 189, Column: 5
   call Z2V0X3NobF9hc2224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 189, Column: 17
@@ -10857,19 +10876,19 @@ get_intrinsic_asm_ELIF159:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 190, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF166:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF170:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 190, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 190, Column: 18
-  mov rsi, get_intrinsic_asm_s168 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s172 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 190, Column: 24
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 190, Column: 30
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF173
+  jz get_intrinsic_asm_ELIF177
 ;; [get_intrinsic_asm] Call get_shr_asm | File: compiler/asm.torth, Row: 191, Column: 5
   call Z2V0X3Nocl9hc2224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 191, Column: 17
@@ -10881,37 +10900,39 @@ get_intrinsic_asm_ELIF166:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 192, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF173:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF177:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 192, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 192, Column: 18
-  mov rsi, get_intrinsic_asm_s175 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s179 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call str.startswith | File: compiler/asm.torth, Row: 192, Column: 27
   call c3RyLnN0YXJ0c3dpdG220
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 192, Column: 42
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF180
+  jz get_intrinsic_asm_ELIF185
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 193, Column: 5
+  push qword [get_intrinsic_asm_token]
+;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 193, Column: 11
   push qword [get_intrinsic_asm_intrinsic]
-;; [get_intrinsic_asm] Call get_store_asm | File: compiler/asm.torth, Row: 193, Column: 15
+;; [get_intrinsic_asm] Call get_store_asm | File: compiler/asm.torth, Row: 193, Column: 21
   call Z2V0X3N0b3JlX2FzbQ224
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 194, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF180:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF185:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 194, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 194, Column: 18
-  mov rsi, get_intrinsic_asm_s182 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s187 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call streq | File: compiler/asm.torth, Row: 194, Column: 25
   call c3RyZX214
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 194, Column: 31
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELIF187
+  jz get_intrinsic_asm_ELIF192
 ;; [get_intrinsic_asm] Call get_swap_asm | File: compiler/asm.torth, Row: 195, Column: 5
   call Z2V0X3N3YXBfYX224
 ;; [get_intrinsic_asm] RETURN | File: compiler/asm.torth, Row: 195, Column: 18
@@ -10923,19 +10944,19 @@ get_intrinsic_asm_ELIF180:
   ret
 
 ;; [get_intrinsic_asm] ELIF | File: compiler/asm.torth, Row: 196, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELIF187:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELIF192:
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 196, Column: 8
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 196, Column: 18
-  mov rsi, get_intrinsic_asm_s189 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s194 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call str.startswith | File: compiler/asm.torth, Row: 196, Column: 28
   call c3RyLnN0YXJ0c3dpdG220
 ;; [get_intrinsic_asm] DO | File: compiler/asm.torth, Row: 196, Column: 43
   pop rax
   test rax, rax
-  jz get_intrinsic_asm_ELSE195
+  jz get_intrinsic_asm_ELSE200
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 197, Column: 5
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] Call get_syscall_asm | File: compiler/asm.torth, Row: 197, Column: 15
@@ -10949,22 +10970,22 @@ get_intrinsic_asm_ELIF187:
   ret
 
 ;; [get_intrinsic_asm] ELSE | File: compiler/asm.torth, Row: 198, Column: 3
-  jmp get_intrinsic_asm_ENDIF204
-get_intrinsic_asm_ELSE195:
+  jmp get_intrinsic_asm_ENDIF209
+get_intrinsic_asm_ELSE200:
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 199, Column: 5
-  mov rsi, get_intrinsic_asm_s196 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s201 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 199, Column: 43
   push qword [get_intrinsic_asm_intrinsic]
 ;; [get_intrinsic_asm] Call str.cat | File: compiler/asm.torth, Row: 199, Column: 53
   call c3RyLmNhdA213
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 200, Column: 5
-  mov rsi, get_intrinsic_asm_s199 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s204 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] Call str.cat | File: compiler/asm.torth, Row: 200, Column: 30
   call c3RyLmNhdA213
 ;; [get_intrinsic_asm] PUSH_STR | File: compiler/asm.torth, Row: 201, Column: 5
-  mov rsi, get_intrinsic_asm_s201 ; Pointer to string
+  mov rsi, get_intrinsic_asm_s206 ; Pointer to string
   push rsi
 ;; [get_intrinsic_asm] INTRINSIC swap | File: compiler/asm.torth, Row: 201, Column: 8
   pop rax
@@ -10974,7 +10995,7 @@ get_intrinsic_asm_ELSE195:
 ;; [get_intrinsic_asm] Call NotImplementedError | File: compiler/asm.torth, Row: 201, Column: 13
   call Tm90SW1wbGVtZW50ZWRFcnJvcg225
 ;; [get_intrinsic_asm] ENDIF | File: compiler/asm.torth, Row: 202, Column: 3
-get_intrinsic_asm_ENDIF204:
+get_intrinsic_asm_ENDIF209:
 ;; [get_intrinsic_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -12140,16 +12161,20 @@ get_do_asm_ENDIF157:
 ;; [get_do_asm] DONE | File: compiler/asm.torth, Row: 425, Column: 3
   jmp get_do_asm_WHILE15
 get_do_asm_DONE163:
-;; [get_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 426, Column: 3
-  mov rsi, get_do_asm_s164 ; Pointer to string
-  push rsi
+;; [get_do_asm] PUSH_BIND | File: compiler/asm.torth, Row: 426, Column: 3
+  push qword [get_do_asm_op]
+;; [get_do_asm] Call Op.get_token | File: compiler/asm.torth, Row: 426, Column: 6
+  call T3AuZ2V0X3Rva2211
 ;; [get_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 427, Column: 3
-  mov rsi, get_do_asm_s165 ; Pointer to string
+  mov rsi, get_do_asm_s166 ; Pointer to string
   push rsi
-;; [get_do_asm] Call CompilerError | File: compiler/asm.torth, Row: 427, Column: 20
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 427, Column: 34
+;; [get_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 428, Column: 3
   mov rsi, get_do_asm_s167 ; Pointer to string
+  push rsi
+;; [get_do_asm] Call CompilerErrorWithToken | File: compiler/asm.torth, Row: 428, Column: 20
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 428, Column: 43
+  mov rsi, get_do_asm_s169 ; Pointer to string
   push rsi
 ;; [get_do_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12164,29 +12189,29 @@ Z2VuZXJhdGVfZG9fYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [generate_do_asm] POP_BIND | File: compiler/asm.torth, Row: 433, Column: 26
+;; [generate_do_asm] POP_BIND | File: compiler/asm.torth, Row: 434, Column: 26
   pop qword [generate_do_asm_jump_destination]
-;; [generate_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 434, Column: 3
+;; [generate_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 435, Column: 3
   mov rsi, generate_do_asm_s1 ; Pointer to string
   push rsi
-;; [generate_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 435, Column: 3
-  mov rsi, generate_do_asm_s2 ; Pointer to string
-  push rsi
-;; [generate_do_asm] Call str.cat | File: compiler/asm.torth, Row: 435, Column: 23
-  call c3RyLmNhdA213
 ;; [generate_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 436, Column: 3
-  mov rsi, generate_do_asm_s4 ; Pointer to string
+  mov rsi, generate_do_asm_s2 ; Pointer to string
   push rsi
 ;; [generate_do_asm] Call str.cat | File: compiler/asm.torth, Row: 436, Column: 23
   call c3RyLmNhdA213
-;; [generate_do_asm] PUSH_BIND | File: compiler/asm.torth, Row: 437, Column: 3
-  push qword [generate_do_asm_jump_destination]
+;; [generate_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 437, Column: 3
+  mov rsi, generate_do_asm_s4 ; Pointer to string
+  push rsi
 ;; [generate_do_asm] Call str.cat | File: compiler/asm.torth, Row: 437, Column: 23
   call c3RyLmNhdA213
-;; [generate_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 438, Column: 3
+;; [generate_do_asm] PUSH_BIND | File: compiler/asm.torth, Row: 438, Column: 3
+  push qword [generate_do_asm_jump_destination]
+;; [generate_do_asm] Call str.cat | File: compiler/asm.torth, Row: 438, Column: 23
+  call c3RyLmNhdA213
+;; [generate_do_asm] PUSH_STR | File: compiler/asm.torth, Row: 439, Column: 3
   mov rsi, generate_do_asm_s8 ; Pointer to string
   push rsi
-;; [generate_do_asm] Call str.cat | File: compiler/asm.torth, Row: 438, Column: 23
+;; [generate_do_asm] Call str.cat | File: compiler/asm.torth, Row: 439, Column: 23
   call c3RyLmNhdA213
 ;; [generate_do_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12201,84 +12226,84 @@ Z2V0X2RvbmVfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 444, Column: 23
+;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 445, Column: 23
   pop qword [get_done_asm_op]
-;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 444, Column: 30
+;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 445, Column: 30
   pop qword [get_done_asm_program]
-;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 446, Column: 3
+;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 447, Column: 3
   push qword [get_done_asm_program]
-;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 446, Column: 11
+;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 447, Column: 11
   push qword [get_done_asm_op]
-;; [get_done_asm] Call get_parent_while | File: compiler/asm.torth, Row: 446, Column: 14
+;; [get_done_asm] Call get_parent_while | File: compiler/asm.torth, Row: 447, Column: 14
   call Z2V0X3BhcmVudF93aGlsZQ209
-;; [get_done_asm] TAKE | File: compiler/asm.torth, Row: 447, Column: 3
-;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 447, Column: 8
+;; [get_done_asm] TAKE | File: compiler/asm.torth, Row: 448, Column: 3
+;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 448, Column: 8
   pop qword [get_done_asm_parent_while]
-;; [get_done_asm] IN | File: compiler/asm.torth, Row: 447, Column: 21
-;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 450, Column: 3
-  push qword [get_done_asm_op]
-;; [get_done_asm] Call Op.get_function | File: compiler/asm.torth, Row: 450, Column: 6
-  call T3AuZ2V0X2Z1bmN0aW221
-;; [get_done_asm] Call Function.get_name | File: compiler/asm.torth, Row: 450, Column: 22
-  call RnVuY3Rpb24uZ2V0X25hbW210
+;; [get_done_asm] IN | File: compiler/asm.torth, Row: 448, Column: 21
 ;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 451, Column: 3
   push qword [get_done_asm_op]
-;; [get_done_asm] Call Op.get_id | File: compiler/asm.torth, Row: 451, Column: 6
-  call T3AuZ2V0X2205
-;; [get_done_asm] Call itoa | File: compiler/asm.torth, Row: 451, Column: 16
-  call aXRvYQ208
+;; [get_done_asm] Call Op.get_function | File: compiler/asm.torth, Row: 451, Column: 6
+  call T3AuZ2V0X2Z1bmN0aW221
+;; [get_done_asm] Call Function.get_name | File: compiler/asm.torth, Row: 451, Column: 22
+  call RnVuY3Rpb24uZ2V0X25hbW210
 ;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 452, Column: 3
-  push qword [get_done_asm_parent_while]
-;; [get_done_asm] Call Op.get_id | File: compiler/asm.torth, Row: 452, Column: 16
+  push qword [get_done_asm_op]
+;; [get_done_asm] Call Op.get_id | File: compiler/asm.torth, Row: 452, Column: 6
   call T3AuZ2V0X2205
-;; [get_done_asm] Call itoa | File: compiler/asm.torth, Row: 452, Column: 26
+;; [get_done_asm] Call itoa | File: compiler/asm.torth, Row: 452, Column: 16
   call aXRvYQ208
-;; [get_done_asm] TAKE | File: compiler/asm.torth, Row: 453, Column: 3
-;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 454, Column: 5
-  pop qword [get_done_asm_parent_while.id]
+;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 453, Column: 3
+  push qword [get_done_asm_parent_while]
+;; [get_done_asm] Call Op.get_id | File: compiler/asm.torth, Row: 453, Column: 16
+  call T3AuZ2V0X2205
+;; [get_done_asm] Call itoa | File: compiler/asm.torth, Row: 453, Column: 26
+  call aXRvYQ208
+;; [get_done_asm] TAKE | File: compiler/asm.torth, Row: 454, Column: 3
 ;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 455, Column: 5
-  pop qword [get_done_asm_op.id]
+  pop qword [get_done_asm_parent_while.id]
 ;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 456, Column: 5
+  pop qword [get_done_asm_op.id]
+;; [get_done_asm] POP_BIND | File: compiler/asm.torth, Row: 457, Column: 5
   pop qword [get_done_asm_function_name]
-;; [get_done_asm] IN | File: compiler/asm.torth, Row: 457, Column: 3
-;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 459, Column: 3
+;; [get_done_asm] IN | File: compiler/asm.torth, Row: 458, Column: 3
+;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 460, Column: 3
   mov rsi, get_done_asm_s22 ; Pointer to string
   push rsi
-;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 460, Column: 3
+;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 461, Column: 3
   push qword [get_done_asm_function_name]
-;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 460, Column: 21
-  call c3RyLmNhdA213
-;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 461, Column: 3
-  mov rsi, get_done_asm_s25 ; Pointer to string
-  push rsi
 ;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 461, Column: 21
   call c3RyLmNhdA213
-;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 462, Column: 3
-  push qword [get_done_asm_parent_while.id]
+;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 462, Column: 3
+  mov rsi, get_done_asm_s25 ; Pointer to string
+  push rsi
 ;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 462, Column: 21
   call c3RyLmNhdA213
-;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 463, Column: 3
-  mov rsi, get_done_asm_s29 ; Pointer to string
-  push rsi
+;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 463, Column: 3
+  push qword [get_done_asm_parent_while.id]
 ;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 463, Column: 21
   call c3RyLmNhdA213
-;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 464, Column: 3
-  push qword [get_done_asm_function_name]
+;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 464, Column: 3
+  mov rsi, get_done_asm_s29 ; Pointer to string
+  push rsi
 ;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 464, Column: 21
   call c3RyLmNhdA213
-;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 465, Column: 3
-  mov rsi, get_done_asm_s33 ; Pointer to string
-  push rsi
+;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 465, Column: 3
+  push qword [get_done_asm_function_name]
 ;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 465, Column: 21
   call c3RyLmNhdA213
-;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 466, Column: 3
-  push qword [get_done_asm_op.id]
+;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 466, Column: 3
+  mov rsi, get_done_asm_s33 ; Pointer to string
+  push rsi
 ;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 466, Column: 21
   call c3RyLmNhdA213
-;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 467, Column: 3
+;; [get_done_asm] PUSH_BIND | File: compiler/asm.torth, Row: 467, Column: 3
+  push qword [get_done_asm_op.id]
+;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 467, Column: 21
+  call c3RyLmNhdA213
+;; [get_done_asm] PUSH_STR | File: compiler/asm.torth, Row: 468, Column: 3
   mov rsi, get_done_asm_s37 ; Pointer to string
   push rsi
-;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 467, Column: 21
+;; [get_done_asm] Call str.cat | File: compiler/asm.torth, Row: 468, Column: 21
   call c3RyLmNhdA213
 ;; [get_done_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12293,84 +12318,84 @@ Z2V0X2VsaWZfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 473, Column: 23
+;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 474, Column: 23
   pop qword [get_elif_asm_op]
-;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 473, Column: 30
+;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 474, Column: 30
   pop qword [get_elif_asm_program]
-;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 475, Column: 3
+;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 476, Column: 3
   push qword [get_elif_asm_program]
-;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 475, Column: 11
+;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 476, Column: 11
   push qword [get_elif_asm_op]
-;; [get_elif_asm] Call get_related_endif | File: compiler/asm.torth, Row: 475, Column: 14
+;; [get_elif_asm] Call get_related_endif | File: compiler/asm.torth, Row: 476, Column: 14
   call Z2V0X3JlbGF0ZWRfZW5kaW207
-;; [get_elif_asm] TAKE | File: compiler/asm.torth, Row: 476, Column: 3
-;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 476, Column: 8
+;; [get_elif_asm] TAKE | File: compiler/asm.torth, Row: 477, Column: 3
+;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 477, Column: 8
   pop qword [get_elif_asm_related_endif]
-;; [get_elif_asm] IN | File: compiler/asm.torth, Row: 476, Column: 22
-;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 479, Column: 3
-  push qword [get_elif_asm_op]
-;; [get_elif_asm] Call Op.get_function | File: compiler/asm.torth, Row: 479, Column: 6
-  call T3AuZ2V0X2Z1bmN0aW221
-;; [get_elif_asm] Call Function.get_name | File: compiler/asm.torth, Row: 479, Column: 22
-  call RnVuY3Rpb24uZ2V0X25hbW210
+;; [get_elif_asm] IN | File: compiler/asm.torth, Row: 477, Column: 22
 ;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 480, Column: 3
   push qword [get_elif_asm_op]
-;; [get_elif_asm] Call Op.get_id | File: compiler/asm.torth, Row: 480, Column: 6
-  call T3AuZ2V0X2205
-;; [get_elif_asm] Call itoa | File: compiler/asm.torth, Row: 480, Column: 16
-  call aXRvYQ208
+;; [get_elif_asm] Call Op.get_function | File: compiler/asm.torth, Row: 480, Column: 6
+  call T3AuZ2V0X2Z1bmN0aW221
+;; [get_elif_asm] Call Function.get_name | File: compiler/asm.torth, Row: 480, Column: 22
+  call RnVuY3Rpb24uZ2V0X25hbW210
 ;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 481, Column: 3
-  push qword [get_elif_asm_related_endif]
-;; [get_elif_asm] Call Op.get_id | File: compiler/asm.torth, Row: 481, Column: 17
+  push qword [get_elif_asm_op]
+;; [get_elif_asm] Call Op.get_id | File: compiler/asm.torth, Row: 481, Column: 6
   call T3AuZ2V0X2205
-;; [get_elif_asm] Call itoa | File: compiler/asm.torth, Row: 481, Column: 27
+;; [get_elif_asm] Call itoa | File: compiler/asm.torth, Row: 481, Column: 16
   call aXRvYQ208
-;; [get_elif_asm] TAKE | File: compiler/asm.torth, Row: 482, Column: 3
-;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 483, Column: 5
-  pop qword [get_elif_asm_related_endif.id]
+;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 482, Column: 3
+  push qword [get_elif_asm_related_endif]
+;; [get_elif_asm] Call Op.get_id | File: compiler/asm.torth, Row: 482, Column: 17
+  call T3AuZ2V0X2205
+;; [get_elif_asm] Call itoa | File: compiler/asm.torth, Row: 482, Column: 27
+  call aXRvYQ208
+;; [get_elif_asm] TAKE | File: compiler/asm.torth, Row: 483, Column: 3
 ;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 484, Column: 5
-  pop qword [get_elif_asm_op.id]
+  pop qword [get_elif_asm_related_endif.id]
 ;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 485, Column: 5
+  pop qword [get_elif_asm_op.id]
+;; [get_elif_asm] POP_BIND | File: compiler/asm.torth, Row: 486, Column: 5
   pop qword [get_elif_asm_function_name]
-;; [get_elif_asm] IN | File: compiler/asm.torth, Row: 486, Column: 3
-;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 488, Column: 3
+;; [get_elif_asm] IN | File: compiler/asm.torth, Row: 487, Column: 3
+;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 489, Column: 3
   mov rsi, get_elif_asm_s22 ; Pointer to string
   push rsi
-;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 489, Column: 3
+;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 490, Column: 3
   push qword [get_elif_asm_function_name]
-;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 489, Column: 21
-  call c3RyLmNhdA213
-;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 490, Column: 3
-  mov rsi, get_elif_asm_s25 ; Pointer to string
-  push rsi
 ;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 490, Column: 21
   call c3RyLmNhdA213
-;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 491, Column: 3
-  push qword [get_elif_asm_related_endif.id]
+;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 491, Column: 3
+  mov rsi, get_elif_asm_s25 ; Pointer to string
+  push rsi
 ;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 491, Column: 21
   call c3RyLmNhdA213
-;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 492, Column: 3
-  mov rsi, get_elif_asm_s29 ; Pointer to string
-  push rsi
+;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 492, Column: 3
+  push qword [get_elif_asm_related_endif.id]
 ;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 492, Column: 21
   call c3RyLmNhdA213
-;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 493, Column: 3
-  push qword [get_elif_asm_function_name]
+;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 493, Column: 3
+  mov rsi, get_elif_asm_s29 ; Pointer to string
+  push rsi
 ;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 493, Column: 21
   call c3RyLmNhdA213
-;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 494, Column: 3
-  mov rsi, get_elif_asm_s33 ; Pointer to string
-  push rsi
+;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 494, Column: 3
+  push qword [get_elif_asm_function_name]
 ;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 494, Column: 21
   call c3RyLmNhdA213
-;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 495, Column: 3
-  push qword [get_elif_asm_op.id]
+;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 495, Column: 3
+  mov rsi, get_elif_asm_s33 ; Pointer to string
+  push rsi
 ;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 495, Column: 21
   call c3RyLmNhdA213
-;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 496, Column: 3
+;; [get_elif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 496, Column: 3
+  push qword [get_elif_asm_op.id]
+;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 496, Column: 21
+  call c3RyLmNhdA213
+;; [get_elif_asm] PUSH_STR | File: compiler/asm.torth, Row: 497, Column: 3
   mov rsi, get_elif_asm_s37 ; Pointer to string
   push rsi
-;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 496, Column: 21
+;; [get_elif_asm] Call str.cat | File: compiler/asm.torth, Row: 497, Column: 21
   call c3RyLmNhdA213
 ;; [get_elif_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12385,84 +12410,84 @@ Z2V0X2Vsc2VfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 502, Column: 23
+;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 503, Column: 23
   pop qword [get_else_asm_op]
-;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 502, Column: 30
+;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 503, Column: 30
   pop qword [get_else_asm_program]
-;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 504, Column: 3
+;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 505, Column: 3
   push qword [get_else_asm_program]
-;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 504, Column: 11
+;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 505, Column: 11
   push qword [get_else_asm_op]
-;; [get_else_asm] Call get_related_endif | File: compiler/asm.torth, Row: 504, Column: 14
+;; [get_else_asm] Call get_related_endif | File: compiler/asm.torth, Row: 505, Column: 14
   call Z2V0X3JlbGF0ZWRfZW5kaW207
-;; [get_else_asm] TAKE | File: compiler/asm.torth, Row: 505, Column: 3
-;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 505, Column: 8
+;; [get_else_asm] TAKE | File: compiler/asm.torth, Row: 506, Column: 3
+;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 506, Column: 8
   pop qword [get_else_asm_related_endif]
-;; [get_else_asm] IN | File: compiler/asm.torth, Row: 505, Column: 22
-;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 508, Column: 3
-  push qword [get_else_asm_op]
-;; [get_else_asm] Call Op.get_function | File: compiler/asm.torth, Row: 508, Column: 6
-  call T3AuZ2V0X2Z1bmN0aW221
-;; [get_else_asm] Call Function.get_name | File: compiler/asm.torth, Row: 508, Column: 22
-  call RnVuY3Rpb24uZ2V0X25hbW210
+;; [get_else_asm] IN | File: compiler/asm.torth, Row: 506, Column: 22
 ;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 509, Column: 3
   push qword [get_else_asm_op]
-;; [get_else_asm] Call Op.get_id | File: compiler/asm.torth, Row: 509, Column: 6
-  call T3AuZ2V0X2205
-;; [get_else_asm] Call itoa | File: compiler/asm.torth, Row: 509, Column: 16
-  call aXRvYQ208
+;; [get_else_asm] Call Op.get_function | File: compiler/asm.torth, Row: 509, Column: 6
+  call T3AuZ2V0X2Z1bmN0aW221
+;; [get_else_asm] Call Function.get_name | File: compiler/asm.torth, Row: 509, Column: 22
+  call RnVuY3Rpb24uZ2V0X25hbW210
 ;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 510, Column: 3
-  push qword [get_else_asm_related_endif]
-;; [get_else_asm] Call Op.get_id | File: compiler/asm.torth, Row: 510, Column: 17
+  push qword [get_else_asm_op]
+;; [get_else_asm] Call Op.get_id | File: compiler/asm.torth, Row: 510, Column: 6
   call T3AuZ2V0X2205
-;; [get_else_asm] Call itoa | File: compiler/asm.torth, Row: 510, Column: 27
+;; [get_else_asm] Call itoa | File: compiler/asm.torth, Row: 510, Column: 16
   call aXRvYQ208
-;; [get_else_asm] TAKE | File: compiler/asm.torth, Row: 511, Column: 3
-;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 512, Column: 5
-  pop qword [get_else_asm_related_endif.id]
+;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 511, Column: 3
+  push qword [get_else_asm_related_endif]
+;; [get_else_asm] Call Op.get_id | File: compiler/asm.torth, Row: 511, Column: 17
+  call T3AuZ2V0X2205
+;; [get_else_asm] Call itoa | File: compiler/asm.torth, Row: 511, Column: 27
+  call aXRvYQ208
+;; [get_else_asm] TAKE | File: compiler/asm.torth, Row: 512, Column: 3
 ;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 513, Column: 5
-  pop qword [get_else_asm_op.id]
+  pop qword [get_else_asm_related_endif.id]
 ;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 514, Column: 5
+  pop qword [get_else_asm_op.id]
+;; [get_else_asm] POP_BIND | File: compiler/asm.torth, Row: 515, Column: 5
   pop qword [get_else_asm_function_name]
-;; [get_else_asm] IN | File: compiler/asm.torth, Row: 515, Column: 3
-;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 517, Column: 3
+;; [get_else_asm] IN | File: compiler/asm.torth, Row: 516, Column: 3
+;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 518, Column: 3
   mov rsi, get_else_asm_s22 ; Pointer to string
   push rsi
-;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 518, Column: 3
+;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 519, Column: 3
   push qword [get_else_asm_function_name]
-;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 518, Column: 21
-  call c3RyLmNhdA213
-;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 519, Column: 3
-  mov rsi, get_else_asm_s25 ; Pointer to string
-  push rsi
 ;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 519, Column: 21
   call c3RyLmNhdA213
-;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 520, Column: 3
-  push qword [get_else_asm_related_endif.id]
+;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 520, Column: 3
+  mov rsi, get_else_asm_s25 ; Pointer to string
+  push rsi
 ;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 520, Column: 21
   call c3RyLmNhdA213
-;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 521, Column: 3
-  mov rsi, get_else_asm_s29 ; Pointer to string
-  push rsi
+;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 521, Column: 3
+  push qword [get_else_asm_related_endif.id]
 ;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 521, Column: 21
   call c3RyLmNhdA213
-;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 522, Column: 3
-  push qword [get_else_asm_function_name]
+;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 522, Column: 3
+  mov rsi, get_else_asm_s29 ; Pointer to string
+  push rsi
 ;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 522, Column: 21
   call c3RyLmNhdA213
-;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 523, Column: 3
-  mov rsi, get_else_asm_s33 ; Pointer to string
-  push rsi
+;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 523, Column: 3
+  push qword [get_else_asm_function_name]
 ;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 523, Column: 21
   call c3RyLmNhdA213
-;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 524, Column: 3
-  push qword [get_else_asm_op.id]
+;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 524, Column: 3
+  mov rsi, get_else_asm_s33 ; Pointer to string
+  push rsi
 ;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 524, Column: 21
   call c3RyLmNhdA213
-;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 525, Column: 3
+;; [get_else_asm] PUSH_BIND | File: compiler/asm.torth, Row: 525, Column: 3
+  push qword [get_else_asm_op.id]
+;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 525, Column: 21
+  call c3RyLmNhdA213
+;; [get_else_asm] PUSH_STR | File: compiler/asm.torth, Row: 526, Column: 3
   mov rsi, get_else_asm_s37 ; Pointer to string
   push rsi
-;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 525, Column: 21
+;; [get_else_asm] Call str.cat | File: compiler/asm.torth, Row: 526, Column: 21
   call c3RyLmNhdA213
 ;; [get_else_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12477,31 +12502,31 @@ Z2V0X2VuZGlmX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_endif_asm] POP_BIND | File: compiler/asm.torth, Row: 531, Column: 24
+;; [get_endif_asm] POP_BIND | File: compiler/asm.torth, Row: 532, Column: 24
   pop qword [get_endif_asm_op]
-;; [get_endif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 532, Column: 3
+;; [get_endif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 533, Column: 3
   push qword [get_endif_asm_op]
-;; [get_endif_asm] Call Op.get_function | File: compiler/asm.torth, Row: 532, Column: 6
+;; [get_endif_asm] Call Op.get_function | File: compiler/asm.torth, Row: 533, Column: 6
   call T3AuZ2V0X2Z1bmN0aW221
-;; [get_endif_asm] Call Function.get_name | File: compiler/asm.torth, Row: 532, Column: 22
+;; [get_endif_asm] Call Function.get_name | File: compiler/asm.torth, Row: 533, Column: 22
   call RnVuY3Rpb24uZ2V0X25hbW210
-;; [get_endif_asm] PUSH_STR | File: compiler/asm.torth, Row: 533, Column: 3
+;; [get_endif_asm] PUSH_STR | File: compiler/asm.torth, Row: 534, Column: 3
   mov rsi, get_endif_asm_s4 ; Pointer to string
   push rsi
-;; [get_endif_asm] Call str.cat | File: compiler/asm.torth, Row: 533, Column: 21
-  call c3RyLmNhdA213
-;; [get_endif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 534, Column: 3
-  push qword [get_endif_asm_op]
-;; [get_endif_asm] Call Op.get_id | File: compiler/asm.torth, Row: 534, Column: 6
-  call T3AuZ2V0X2205
-;; [get_endif_asm] Call itoa | File: compiler/asm.torth, Row: 534, Column: 16
-  call aXRvYQ208
 ;; [get_endif_asm] Call str.cat | File: compiler/asm.torth, Row: 534, Column: 21
   call c3RyLmNhdA213
-;; [get_endif_asm] PUSH_STR | File: compiler/asm.torth, Row: 535, Column: 3
+;; [get_endif_asm] PUSH_BIND | File: compiler/asm.torth, Row: 535, Column: 3
+  push qword [get_endif_asm_op]
+;; [get_endif_asm] Call Op.get_id | File: compiler/asm.torth, Row: 535, Column: 6
+  call T3AuZ2V0X2205
+;; [get_endif_asm] Call itoa | File: compiler/asm.torth, Row: 535, Column: 16
+  call aXRvYQ208
+;; [get_endif_asm] Call str.cat | File: compiler/asm.torth, Row: 535, Column: 21
+  call c3RyLmNhdA213
+;; [get_endif_asm] PUSH_STR | File: compiler/asm.torth, Row: 536, Column: 3
   mov rsi, get_endif_asm_s10 ; Pointer to string
   push rsi
-;; [get_endif_asm] Call str.cat | File: compiler/asm.torth, Row: 535, Column: 21
+;; [get_endif_asm] Call str.cat | File: compiler/asm.torth, Row: 536, Column: 21
   call c3RyLmNhdA213
 ;; [get_endif_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12516,21 +12541,21 @@ Z2V0X2Z1bmN0aW9uX2NhbGxfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_function_call_asm] POP_BIND | File: compiler/asm.torth, Row: 541, Column: 32
+;; [get_function_call_asm] POP_BIND | File: compiler/asm.torth, Row: 542, Column: 32
   pop qword [get_function_call_asm_function_name]
-;; [get_function_call_asm] PUSH_STR | File: compiler/asm.torth, Row: 542, Column: 3
+;; [get_function_call_asm] PUSH_STR | File: compiler/asm.torth, Row: 543, Column: 3
   mov rsi, get_function_call_asm_s1 ; Pointer to string
   push rsi
-;; [get_function_call_asm] PUSH_BIND | File: compiler/asm.torth, Row: 543, Column: 3
+;; [get_function_call_asm] PUSH_BIND | File: compiler/asm.torth, Row: 544, Column: 3
   push qword [get_function_call_asm_function_name]
-;; [get_function_call_asm] Call get_valid_label_for_nasm | File: compiler/asm.torth, Row: 543, Column: 17
+;; [get_function_call_asm] Call get_valid_label_for_nasm | File: compiler/asm.torth, Row: 544, Column: 17
   call Z2V0X3ZhbGlkX2xhYmVsX2Zvcl9uYX224
-;; [get_function_call_asm] Call str.cat | File: compiler/asm.torth, Row: 543, Column: 42
+;; [get_function_call_asm] Call str.cat | File: compiler/asm.torth, Row: 544, Column: 42
   call c3RyLmNhdA213
-;; [get_function_call_asm] PUSH_STR | File: compiler/asm.torth, Row: 544, Column: 3
+;; [get_function_call_asm] PUSH_STR | File: compiler/asm.torth, Row: 545, Column: 3
   mov rsi, get_function_call_asm_s5 ; Pointer to string
   push rsi
-;; [get_function_call_asm] Call str.cat | File: compiler/asm.torth, Row: 544, Column: 8
+;; [get_function_call_asm] Call str.cat | File: compiler/asm.torth, Row: 545, Column: 8
   call c3RyLmNhdA213
 ;; [get_function_call_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12545,7 +12570,7 @@ Z2V0X3BlZWtfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_peek_asm] PUSH_STR | File: compiler/asm.torth, Row: 552, Column: 3
+;; [get_peek_asm] PUSH_STR | File: compiler/asm.torth, Row: 553, Column: 3
   mov rsi, get_peek_asm_s0 ; Pointer to string
   push rsi
 ;; [get_peek_asm] Return to the address found in return_stack
@@ -12561,31 +12586,31 @@ Z2V0X3BlZWtfYmluZF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_peek_bind_asm] POP_BIND | File: compiler/asm.torth, Row: 558, Column: 28
+;; [get_peek_bind_asm] POP_BIND | File: compiler/asm.torth, Row: 559, Column: 28
   pop qword [get_peek_bind_asm_op]
-;; [get_peek_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 559, Column: 3
+;; [get_peek_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 560, Column: 3
   mov rsi, get_peek_bind_asm_s1 ; Pointer to string
   push rsi
-;; [get_peek_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 560, Column: 3
+;; [get_peek_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 561, Column: 3
   mov rsi, get_peek_bind_asm_s2 ; Pointer to string
   push rsi
-;; [get_peek_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 560, Column: 27
-  call c3RyLmNhdA213
-;; [get_peek_bind_asm] PUSH_BIND | File: compiler/asm.torth, Row: 561, Column: 3
-  push qword [get_peek_bind_asm_op]
-;; [get_peek_bind_asm] Call get_variable_memory | File: compiler/asm.torth, Row: 561, Column: 6
-  call Z2V0X3ZhcmlhYmxlX21lbW9yeQ235
 ;; [get_peek_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 561, Column: 27
   call c3RyLmNhdA213
-;; [get_peek_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 562, Column: 3
-  mov rsi, get_peek_bind_asm_s7 ; Pointer to string
-  push rsi
+;; [get_peek_bind_asm] PUSH_BIND | File: compiler/asm.torth, Row: 562, Column: 3
+  push qword [get_peek_bind_asm_op]
+;; [get_peek_bind_asm] Call get_variable_memory | File: compiler/asm.torth, Row: 562, Column: 6
+  call Z2V0X3ZhcmlhYmxlX21lbW9yeQ235
 ;; [get_peek_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 562, Column: 27
   call c3RyLmNhdA213
 ;; [get_peek_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 563, Column: 3
-  mov rsi, get_peek_bind_asm_s9 ; Pointer to string
+  mov rsi, get_peek_bind_asm_s7 ; Pointer to string
   push rsi
 ;; [get_peek_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 563, Column: 27
+  call c3RyLmNhdA213
+;; [get_peek_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 564, Column: 3
+  mov rsi, get_peek_bind_asm_s9 ; Pointer to string
+  push rsi
+;; [get_peek_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 564, Column: 27
   call c3RyLmNhdA213
 ;; [get_peek_bind_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12600,21 +12625,21 @@ Z2V0X3BvcF9iaW5kX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_pop_bind_asm] POP_BIND | File: compiler/asm.torth, Row: 569, Column: 27
+;; [get_pop_bind_asm] POP_BIND | File: compiler/asm.torth, Row: 570, Column: 27
   pop qword [get_pop_bind_asm_op]
-;; [get_pop_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 570, Column: 3
+;; [get_pop_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 571, Column: 3
   mov rsi, get_pop_bind_asm_s1 ; Pointer to string
   push rsi
-;; [get_pop_bind_asm] PUSH_BIND | File: compiler/asm.torth, Row: 571, Column: 3
+;; [get_pop_bind_asm] PUSH_BIND | File: compiler/asm.torth, Row: 572, Column: 3
   push qword [get_pop_bind_asm_op]
-;; [get_pop_bind_asm] Call get_variable_memory | File: compiler/asm.torth, Row: 571, Column: 6
+;; [get_pop_bind_asm] Call get_variable_memory | File: compiler/asm.torth, Row: 572, Column: 6
   call Z2V0X3ZhcmlhYmxlX21lbW9yeQ235
-;; [get_pop_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 571, Column: 27
+;; [get_pop_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 572, Column: 27
   call c3RyLmNhdA213
-;; [get_pop_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 572, Column: 3
+;; [get_pop_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 573, Column: 3
   mov rsi, get_pop_bind_asm_s5 ; Pointer to string
   push rsi
-;; [get_pop_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 572, Column: 27
+;; [get_pop_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 573, Column: 27
   call c3RyLmNhdA213
 ;; [get_pop_bind_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12629,21 +12654,21 @@ Z2V0X3B1c2hfYmluZF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_push_bind_asm] POP_BIND | File: compiler/asm.torth, Row: 578, Column: 28
+;; [get_push_bind_asm] POP_BIND | File: compiler/asm.torth, Row: 579, Column: 28
   pop qword [get_push_bind_asm_op]
-;; [get_push_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 579, Column: 3
+;; [get_push_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 580, Column: 3
   mov rsi, get_push_bind_asm_s1 ; Pointer to string
   push rsi
-;; [get_push_bind_asm] PUSH_BIND | File: compiler/asm.torth, Row: 580, Column: 3
+;; [get_push_bind_asm] PUSH_BIND | File: compiler/asm.torth, Row: 581, Column: 3
   push qword [get_push_bind_asm_op]
-;; [get_push_bind_asm] Call get_variable_memory | File: compiler/asm.torth, Row: 580, Column: 6
+;; [get_push_bind_asm] Call get_variable_memory | File: compiler/asm.torth, Row: 581, Column: 6
   call Z2V0X3ZhcmlhYmxlX21lbW9yeQ235
-;; [get_push_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 580, Column: 27
+;; [get_push_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 581, Column: 27
   call c3RyLmNhdA213
-;; [get_push_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 581, Column: 3
+;; [get_push_bind_asm] PUSH_STR | File: compiler/asm.torth, Row: 582, Column: 3
   mov rsi, get_push_bind_asm_s5 ; Pointer to string
   push rsi
-;; [get_push_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 581, Column: 27
+;; [get_push_bind_asm] Call str.cat | File: compiler/asm.torth, Row: 582, Column: 27
   call c3RyLmNhdA213
 ;; [get_push_bind_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12658,35 +12683,35 @@ Z2V0X3B1c2hfYm9vbF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_push_bool_asm] POP_BIND | File: compiler/asm.torth, Row: 587, Column: 28
+;; [get_push_bool_asm] POP_BIND | File: compiler/asm.torth, Row: 588, Column: 28
   pop qword [get_push_bool_asm_token_value_upper]
-;; [get_push_bool_asm] IF | File: compiler/asm.torth, Row: 588, Column: 3
-;; [get_push_bool_asm] PUSH_BIND | File: compiler/asm.torth, Row: 588, Column: 6
+;; [get_push_bool_asm] IF | File: compiler/asm.torth, Row: 589, Column: 3
+;; [get_push_bool_asm] PUSH_BIND | File: compiler/asm.torth, Row: 589, Column: 6
   push qword [get_push_bool_asm_token_value_upper]
-;; [get_push_bool_asm] PUSH_STR | File: compiler/asm.torth, Row: 588, Column: 24
+;; [get_push_bool_asm] PUSH_STR | File: compiler/asm.torth, Row: 589, Column: 24
   mov rsi, get_push_bool_asm_s3 ; Pointer to string
   push rsi
-;; [get_push_bool_asm] Call streq | File: compiler/asm.torth, Row: 588, Column: 31
+;; [get_push_bool_asm] Call streq | File: compiler/asm.torth, Row: 589, Column: 31
   call c3RyZX214
-;; [get_push_bool_asm] DO | File: compiler/asm.torth, Row: 589, Column: 3
+;; [get_push_bool_asm] DO | File: compiler/asm.torth, Row: 590, Column: 3
   pop rax
   test rax, rax
   jz get_push_bool_asm_ELSE7
-;; [get_push_bool_asm] PUSH_STR | File: compiler/asm.torth, Row: 589, Column: 9
+;; [get_push_bool_asm] PUSH_STR | File: compiler/asm.torth, Row: 590, Column: 9
   mov rsi, get_push_bool_asm_s6 ; Pointer to string
   push rsi
-;; [get_push_bool_asm] ELSE | File: compiler/asm.torth, Row: 590, Column: 3
+;; [get_push_bool_asm] ELSE | File: compiler/asm.torth, Row: 591, Column: 3
   jmp get_push_bool_asm_ENDIF9
 get_push_bool_asm_ELSE7:
-;; [get_push_bool_asm] PUSH_STR | File: compiler/asm.torth, Row: 590, Column: 9
+;; [get_push_bool_asm] PUSH_STR | File: compiler/asm.torth, Row: 591, Column: 9
   mov rsi, get_push_bool_asm_s8 ; Pointer to string
   push rsi
-;; [get_push_bool_asm] ENDIF | File: compiler/asm.torth, Row: 591, Column: 3
+;; [get_push_bool_asm] ENDIF | File: compiler/asm.torth, Row: 592, Column: 3
 get_push_bool_asm_ENDIF9:
-;; [get_push_bool_asm] PUSH_STR | File: compiler/asm.torth, Row: 591, Column: 9
+;; [get_push_bool_asm] PUSH_STR | File: compiler/asm.torth, Row: 592, Column: 9
   mov rsi, get_push_bool_asm_s10 ; Pointer to string
   push rsi
-;; [get_push_bool_asm] Call str.cat | File: compiler/asm.torth, Row: 591, Column: 24
+;; [get_push_bool_asm] Call str.cat | File: compiler/asm.torth, Row: 592, Column: 24
   call c3RyLmNhdA213
 ;; [get_push_bool_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12701,23 +12726,23 @@ Z2V0X3B1c2hfY2hhcl9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_push_char_asm] CAST_INT | File: compiler/asm.torth, Row: 598, Column: 3
-;; [get_push_char_asm] Call itoa | File: compiler/asm.torth, Row: 598, Column: 7
+;; [get_push_char_asm] CAST_INT | File: compiler/asm.torth, Row: 599, Column: 3
+;; [get_push_char_asm] Call itoa | File: compiler/asm.torth, Row: 599, Column: 7
   call aXRvYQ208
-;; [get_push_char_asm] PUSH_STR | File: compiler/asm.torth, Row: 599, Column: 3
+;; [get_push_char_asm] PUSH_STR | File: compiler/asm.torth, Row: 600, Column: 3
   mov rsi, get_push_char_asm_s2 ; Pointer to string
   push rsi
-;; [get_push_char_asm] INTRINSIC swap | File: compiler/asm.torth, Row: 599, Column: 17
+;; [get_push_char_asm] INTRINSIC swap | File: compiler/asm.torth, Row: 600, Column: 17
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_push_char_asm] Call str.cat | File: compiler/asm.torth, Row: 599, Column: 23
+;; [get_push_char_asm] Call str.cat | File: compiler/asm.torth, Row: 600, Column: 23
   call c3RyLmNhdA213
-;; [get_push_char_asm] PUSH_STR | File: compiler/asm.torth, Row: 600, Column: 3
+;; [get_push_char_asm] PUSH_STR | File: compiler/asm.torth, Row: 601, Column: 3
   mov rsi, get_push_char_asm_s5 ; Pointer to string
   push rsi
-;; [get_push_char_asm] Call str.cat | File: compiler/asm.torth, Row: 600, Column: 23
+;; [get_push_char_asm] Call str.cat | File: compiler/asm.torth, Row: 601, Column: 23
   call c3RyLmNhdA213
 ;; [get_push_char_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12732,19 +12757,19 @@ Z2V0X3B1c2hfaW50X2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_push_int_asm] POP_BIND | File: compiler/asm.torth, Row: 606, Column: 27
+;; [get_push_int_asm] POP_BIND | File: compiler/asm.torth, Row: 607, Column: 27
   pop qword [get_push_int_asm_integer]
-;; [get_push_int_asm] PUSH_STR | File: compiler/asm.torth, Row: 607, Column: 3
+;; [get_push_int_asm] PUSH_STR | File: compiler/asm.torth, Row: 608, Column: 3
   mov rsi, get_push_int_asm_s1 ; Pointer to string
   push rsi
-;; [get_push_int_asm] PUSH_BIND | File: compiler/asm.torth, Row: 607, Column: 17
+;; [get_push_int_asm] PUSH_BIND | File: compiler/asm.torth, Row: 608, Column: 17
   push qword [get_push_int_asm_integer]
-;; [get_push_int_asm] Call str.cat | File: compiler/asm.torth, Row: 607, Column: 25
+;; [get_push_int_asm] Call str.cat | File: compiler/asm.torth, Row: 608, Column: 25
   call c3RyLmNhdA213
-;; [get_push_int_asm] PUSH_STR | File: compiler/asm.torth, Row: 608, Column: 3
+;; [get_push_int_asm] PUSH_STR | File: compiler/asm.torth, Row: 609, Column: 3
   mov rsi, get_push_int_asm_s4 ; Pointer to string
   push rsi
-;; [get_push_int_asm] Call str.cat | File: compiler/asm.torth, Row: 608, Column: 25
+;; [get_push_int_asm] Call str.cat | File: compiler/asm.torth, Row: 609, Column: 25
   call c3RyLmNhdA213
 ;; [get_push_int_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12759,19 +12784,19 @@ Z2V0X3B1c2hfcHRyX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_push_ptr_asm] POP_BIND | File: compiler/asm.torth, Row: 614, Column: 27
+;; [get_push_ptr_asm] POP_BIND | File: compiler/asm.torth, Row: 615, Column: 27
   pop qword [get_push_ptr_asm_pointer]
-;; [get_push_ptr_asm] PUSH_STR | File: compiler/asm.torth, Row: 615, Column: 3
+;; [get_push_ptr_asm] PUSH_STR | File: compiler/asm.torth, Row: 616, Column: 3
   mov rsi, get_push_ptr_asm_s1 ; Pointer to string
   push rsi
-;; [get_push_ptr_asm] PUSH_BIND | File: compiler/asm.torth, Row: 615, Column: 17
+;; [get_push_ptr_asm] PUSH_BIND | File: compiler/asm.torth, Row: 616, Column: 17
   push qword [get_push_ptr_asm_pointer]
-;; [get_push_ptr_asm] Call str.cat | File: compiler/asm.torth, Row: 615, Column: 25
+;; [get_push_ptr_asm] Call str.cat | File: compiler/asm.torth, Row: 616, Column: 25
   call c3RyLmNhdA213
-;; [get_push_ptr_asm] PUSH_STR | File: compiler/asm.torth, Row: 616, Column: 3
+;; [get_push_ptr_asm] PUSH_STR | File: compiler/asm.torth, Row: 617, Column: 3
   mov rsi, get_push_ptr_asm_s4 ; Pointer to string
   push rsi
-;; [get_push_ptr_asm] Call str.cat | File: compiler/asm.torth, Row: 616, Column: 25
+;; [get_push_ptr_asm] Call str.cat | File: compiler/asm.torth, Row: 617, Column: 25
   call c3RyLmNhdA213
 ;; [get_push_ptr_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12786,51 +12811,51 @@ Z2V0X3B1c2hfc3RyX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_push_str_asm] POP_BIND | File: compiler/asm.torth, Row: 622, Column: 27
+;; [get_push_str_asm] POP_BIND | File: compiler/asm.torth, Row: 623, Column: 27
   pop qword [get_push_str_asm_op]
-;; [get_push_str_asm] PUSH_BIND | File: compiler/asm.torth, Row: 624, Column: 3
-  push qword [get_push_str_asm_op]
-;; [get_push_str_asm] Call Op.get_id | File: compiler/asm.torth, Row: 624, Column: 6
-  call T3AuZ2V0X2205
-;; [get_push_str_asm] Call itoa | File: compiler/asm.torth, Row: 624, Column: 16
-  call aXRvYQ208
 ;; [get_push_str_asm] PUSH_BIND | File: compiler/asm.torth, Row: 625, Column: 3
   push qword [get_push_str_asm_op]
-;; [get_push_str_asm] Call Op.get_function | File: compiler/asm.torth, Row: 625, Column: 6
+;; [get_push_str_asm] Call Op.get_id | File: compiler/asm.torth, Row: 625, Column: 6
+  call T3AuZ2V0X2205
+;; [get_push_str_asm] Call itoa | File: compiler/asm.torth, Row: 625, Column: 16
+  call aXRvYQ208
+;; [get_push_str_asm] PUSH_BIND | File: compiler/asm.torth, Row: 626, Column: 3
+  push qword [get_push_str_asm_op]
+;; [get_push_str_asm] Call Op.get_function | File: compiler/asm.torth, Row: 626, Column: 6
   call T3AuZ2V0X2Z1bmN0aW221
-;; [get_push_str_asm] Call Function.get_name | File: compiler/asm.torth, Row: 625, Column: 22
+;; [get_push_str_asm] Call Function.get_name | File: compiler/asm.torth, Row: 626, Column: 22
   call RnVuY3Rpb24uZ2V0X25hbW210
-;; [get_push_str_asm] TAKE | File: compiler/asm.torth, Row: 626, Column: 3
-;; [get_push_str_asm] POP_BIND | File: compiler/asm.torth, Row: 626, Column: 8
+;; [get_push_str_asm] TAKE | File: compiler/asm.torth, Row: 627, Column: 3
+;; [get_push_str_asm] POP_BIND | File: compiler/asm.torth, Row: 627, Column: 8
   pop qword [get_push_str_asm_function_name]
-;; [get_push_str_asm] POP_BIND | File: compiler/asm.torth, Row: 626, Column: 22
+;; [get_push_str_asm] POP_BIND | File: compiler/asm.torth, Row: 627, Column: 22
   pop qword [get_push_str_asm_op_id]
-;; [get_push_str_asm] IN | File: compiler/asm.torth, Row: 626, Column: 28
-;; [get_push_str_asm] PUSH_STR | File: compiler/asm.torth, Row: 628, Column: 3
+;; [get_push_str_asm] IN | File: compiler/asm.torth, Row: 627, Column: 28
+;; [get_push_str_asm] PUSH_STR | File: compiler/asm.torth, Row: 629, Column: 3
   mov rsi, get_push_str_asm_s11 ; Pointer to string
   push rsi
-;; [get_push_str_asm] PUSH_BIND | File: compiler/asm.torth, Row: 629, Column: 3
+;; [get_push_str_asm] PUSH_BIND | File: compiler/asm.torth, Row: 630, Column: 3
   push qword [get_push_str_asm_function_name]
-;; [get_push_str_asm] Call str.cat | File: compiler/asm.torth, Row: 629, Column: 29
-  call c3RyLmNhdA213
-;; [get_push_str_asm] PUSH_STR | File: compiler/asm.torth, Row: 630, Column: 3
-  mov rsi, get_push_str_asm_s14 ; Pointer to string
-  push rsi
 ;; [get_push_str_asm] Call str.cat | File: compiler/asm.torth, Row: 630, Column: 29
   call c3RyLmNhdA213
-;; [get_push_str_asm] PUSH_BIND | File: compiler/asm.torth, Row: 631, Column: 3
-  push qword [get_push_str_asm_op_id]
+;; [get_push_str_asm] PUSH_STR | File: compiler/asm.torth, Row: 631, Column: 3
+  mov rsi, get_push_str_asm_s14 ; Pointer to string
+  push rsi
 ;; [get_push_str_asm] Call str.cat | File: compiler/asm.torth, Row: 631, Column: 29
   call c3RyLmNhdA213
-;; [get_push_str_asm] PUSH_STR | File: compiler/asm.torth, Row: 632, Column: 3
-  mov rsi, get_push_str_asm_s18 ; Pointer to string
-  push rsi
+;; [get_push_str_asm] PUSH_BIND | File: compiler/asm.torth, Row: 632, Column: 3
+  push qword [get_push_str_asm_op_id]
 ;; [get_push_str_asm] Call str.cat | File: compiler/asm.torth, Row: 632, Column: 29
   call c3RyLmNhdA213
 ;; [get_push_str_asm] PUSH_STR | File: compiler/asm.torth, Row: 633, Column: 3
-  mov rsi, get_push_str_asm_s20 ; Pointer to string
+  mov rsi, get_push_str_asm_s18 ; Pointer to string
   push rsi
 ;; [get_push_str_asm] Call str.cat | File: compiler/asm.torth, Row: 633, Column: 29
+  call c3RyLmNhdA213
+;; [get_push_str_asm] PUSH_STR | File: compiler/asm.torth, Row: 634, Column: 3
+  mov rsi, get_push_str_asm_s20 ; Pointer to string
+  push rsi
+;; [get_push_str_asm] Call str.cat | File: compiler/asm.torth, Row: 634, Column: 29
   call c3RyLmNhdA213
 ;; [get_push_str_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12845,36 +12870,36 @@ Z2V0X3JldHVybl9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_return_asm] POP_BIND | File: compiler/asm.torth, Row: 639, Column: 25
+;; [get_return_asm] POP_BIND | File: compiler/asm.torth, Row: 640, Column: 25
   pop qword [get_return_asm_function_name]
-;; [get_return_asm] IF | File: compiler/asm.torth, Row: 640, Column: 3
-;; [get_return_asm] PUSH_BIND | File: compiler/asm.torth, Row: 640, Column: 6
+;; [get_return_asm] IF | File: compiler/asm.torth, Row: 641, Column: 3
+;; [get_return_asm] PUSH_BIND | File: compiler/asm.torth, Row: 641, Column: 6
   push qword [get_return_asm_function_name]
-;; [get_return_asm] Call str.copy | File: compiler/asm.torth, Row: 640, Column: 20
+;; [get_return_asm] Call str.copy | File: compiler/asm.torth, Row: 641, Column: 20
   call c3RyLmNvcH233
-;; [get_return_asm] Call str.upper | File: compiler/asm.torth, Row: 640, Column: 29
+;; [get_return_asm] Call str.upper | File: compiler/asm.torth, Row: 641, Column: 29
   call c3RyLnVwcG215
-;; [get_return_asm] PUSH_STR | File: compiler/asm.torth, Row: 640, Column: 39
+;; [get_return_asm] PUSH_STR | File: compiler/asm.torth, Row: 641, Column: 39
   mov rsi, get_return_asm_s5 ; Pointer to string
   push rsi
-;; [get_return_asm] Call streq | File: compiler/asm.torth, Row: 640, Column: 46
+;; [get_return_asm] Call streq | File: compiler/asm.torth, Row: 641, Column: 46
   call c3RyZX214
-;; [get_return_asm] DO | File: compiler/asm.torth, Row: 640, Column: 52
+;; [get_return_asm] DO | File: compiler/asm.torth, Row: 641, Column: 52
   pop rax
   test rax, rax
   jz get_return_asm_ENDIF14
-;; [get_return_asm] PUSH_STR | File: compiler/asm.torth, Row: 641, Column: 5
+;; [get_return_asm] PUSH_STR | File: compiler/asm.torth, Row: 642, Column: 5
   mov rsi, get_return_asm_s8 ; Pointer to string
   push rsi
-;; [get_return_asm] Call get_push_int_asm | File: compiler/asm.torth, Row: 641, Column: 19
+;; [get_return_asm] Call get_push_int_asm | File: compiler/asm.torth, Row: 642, Column: 19
   call Z2V0X3B1c2hfaW50X2FzbQ224
-;; [get_return_asm] PUSH_BIND | File: compiler/asm.torth, Row: 642, Column: 5
+;; [get_return_asm] PUSH_BIND | File: compiler/asm.torth, Row: 643, Column: 5
   push qword [get_return_asm_function_name]
-;; [get_return_asm] Call get_function_end_asm | File: compiler/asm.torth, Row: 642, Column: 19
+;; [get_return_asm] Call get_function_end_asm | File: compiler/asm.torth, Row: 643, Column: 19
   call Z2V0X2Z1bmN0aW9uX2VuZF9hc2224
-;; [get_return_asm] Call str.cat | File: compiler/asm.torth, Row: 642, Column: 40
+;; [get_return_asm] Call str.cat | File: compiler/asm.torth, Row: 643, Column: 40
   call c3RyLmNhdA213
-;; [get_return_asm] RETURN | File: compiler/asm.torth, Row: 643, Column: 5
+;; [get_return_asm] RETURN | File: compiler/asm.torth, Row: 644, Column: 5
 ;; [get_return_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -12882,11 +12907,11 @@ Z2V0X3JldHVybl9hc2224:
   push qword [rax]
   ret
 
-;; [get_return_asm] ENDIF | File: compiler/asm.torth, Row: 644, Column: 3
+;; [get_return_asm] ENDIF | File: compiler/asm.torth, Row: 645, Column: 3
 get_return_asm_ENDIF14:
-;; [get_return_asm] PUSH_BIND | File: compiler/asm.torth, Row: 645, Column: 3
+;; [get_return_asm] PUSH_BIND | File: compiler/asm.torth, Row: 646, Column: 3
   push qword [get_return_asm_function_name]
-;; [get_return_asm] Call get_function_end_asm | File: compiler/asm.torth, Row: 645, Column: 17
+;; [get_return_asm] Call get_function_end_asm | File: compiler/asm.torth, Row: 646, Column: 17
   call Z2V0X2Z1bmN0aW9uX2VuZF9hc2224
 ;; [get_return_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12901,41 +12926,41 @@ Z2V0X3doaWxlX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_while_asm] POP_BIND | File: compiler/asm.torth, Row: 651, Column: 24
+;; [get_while_asm] POP_BIND | File: compiler/asm.torth, Row: 652, Column: 24
   pop qword [get_while_asm_op]
-;; [get_while_asm] PUSH_BIND | File: compiler/asm.torth, Row: 652, Column: 3
-  push qword [get_while_asm_op]
-;; [get_while_asm] Call Op.get_id | File: compiler/asm.torth, Row: 652, Column: 6
-  call T3AuZ2V0X2205
-;; [get_while_asm] Call itoa | File: compiler/asm.torth, Row: 652, Column: 16
-  call aXRvYQ208
 ;; [get_while_asm] PUSH_BIND | File: compiler/asm.torth, Row: 653, Column: 3
   push qword [get_while_asm_op]
-;; [get_while_asm] Call Op.get_function | File: compiler/asm.torth, Row: 653, Column: 6
+;; [get_while_asm] Call Op.get_id | File: compiler/asm.torth, Row: 653, Column: 6
+  call T3AuZ2V0X2205
+;; [get_while_asm] Call itoa | File: compiler/asm.torth, Row: 653, Column: 16
+  call aXRvYQ208
+;; [get_while_asm] PUSH_BIND | File: compiler/asm.torth, Row: 654, Column: 3
+  push qword [get_while_asm_op]
+;; [get_while_asm] Call Op.get_function | File: compiler/asm.torth, Row: 654, Column: 6
   call T3AuZ2V0X2Z1bmN0aW221
-;; [get_while_asm] Call Function.get_name | File: compiler/asm.torth, Row: 653, Column: 22
+;; [get_while_asm] Call Function.get_name | File: compiler/asm.torth, Row: 654, Column: 22
   call RnVuY3Rpb24uZ2V0X25hbW210
-;; [get_while_asm] TAKE | File: compiler/asm.torth, Row: 654, Column: 3
-;; [get_while_asm] POP_BIND | File: compiler/asm.torth, Row: 654, Column: 8
+;; [get_while_asm] TAKE | File: compiler/asm.torth, Row: 655, Column: 3
+;; [get_while_asm] POP_BIND | File: compiler/asm.torth, Row: 655, Column: 8
   pop qword [get_while_asm_function_name]
-;; [get_while_asm] POP_BIND | File: compiler/asm.torth, Row: 654, Column: 22
+;; [get_while_asm] POP_BIND | File: compiler/asm.torth, Row: 655, Column: 22
   pop qword [get_while_asm_op_id]
-;; [get_while_asm] IN | File: compiler/asm.torth, Row: 654, Column: 28
-;; [get_while_asm] PUSH_BIND | File: compiler/asm.torth, Row: 656, Column: 3
+;; [get_while_asm] IN | File: compiler/asm.torth, Row: 655, Column: 28
+;; [get_while_asm] PUSH_BIND | File: compiler/asm.torth, Row: 657, Column: 3
   push qword [get_while_asm_function_name]
-;; [get_while_asm] PUSH_STR | File: compiler/asm.torth, Row: 657, Column: 3
+;; [get_while_asm] PUSH_STR | File: compiler/asm.torth, Row: 658, Column: 3
   mov rsi, get_while_asm_s12 ; Pointer to string
   push rsi
-;; [get_while_asm] Call str.cat | File: compiler/asm.torth, Row: 657, Column: 13
-  call c3RyLmNhdA213
-;; [get_while_asm] PUSH_BIND | File: compiler/asm.torth, Row: 658, Column: 3
-  push qword [get_while_asm_op_id]
 ;; [get_while_asm] Call str.cat | File: compiler/asm.torth, Row: 658, Column: 13
   call c3RyLmNhdA213
-;; [get_while_asm] PUSH_STR | File: compiler/asm.torth, Row: 659, Column: 3
+;; [get_while_asm] PUSH_BIND | File: compiler/asm.torth, Row: 659, Column: 3
+  push qword [get_while_asm_op_id]
+;; [get_while_asm] Call str.cat | File: compiler/asm.torth, Row: 659, Column: 13
+  call c3RyLmNhdA213
+;; [get_while_asm] PUSH_STR | File: compiler/asm.torth, Row: 660, Column: 3
   mov rsi, get_while_asm_s16 ; Pointer to string
   push rsi
-;; [get_while_asm] Call str.cat | File: compiler/asm.torth, Row: 659, Column: 13
+;; [get_while_asm] Call str.cat | File: compiler/asm.torth, Row: 660, Column: 13
   call c3RyLmNhdA213
 ;; [get_while_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12950,29 +12975,29 @@ Z2V0X2FyaXRobWV0aWNfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_arithmetic_asm] POP_BIND | File: compiler/asm.torth, Row: 665, Column: 29
+;; [get_arithmetic_asm] POP_BIND | File: compiler/asm.torth, Row: 666, Column: 29
   pop qword [get_arithmetic_asm_operand]
-;; [get_arithmetic_asm] PUSH_STR | File: compiler/asm.torth, Row: 666, Column: 3
+;; [get_arithmetic_asm] PUSH_STR | File: compiler/asm.torth, Row: 667, Column: 3
   mov rsi, get_arithmetic_asm_s1 ; Pointer to string
   push rsi
-;; [get_arithmetic_asm] PUSH_STR | File: compiler/asm.torth, Row: 667, Column: 3
+;; [get_arithmetic_asm] PUSH_STR | File: compiler/asm.torth, Row: 668, Column: 3
   mov rsi, get_arithmetic_asm_s2 ; Pointer to string
   push rsi
-;; [get_arithmetic_asm] Call str.cat | File: compiler/asm.torth, Row: 667, Column: 19
-  call c3RyLmNhdA213
-;; [get_arithmetic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 668, Column: 3
-  push qword [get_arithmetic_asm_operand]
 ;; [get_arithmetic_asm] Call str.cat | File: compiler/asm.torth, Row: 668, Column: 19
   call c3RyLmNhdA213
-;; [get_arithmetic_asm] PUSH_STR | File: compiler/asm.torth, Row: 669, Column: 3
-  mov rsi, get_arithmetic_asm_s6 ; Pointer to string
-  push rsi
+;; [get_arithmetic_asm] PUSH_BIND | File: compiler/asm.torth, Row: 669, Column: 3
+  push qword [get_arithmetic_asm_operand]
 ;; [get_arithmetic_asm] Call str.cat | File: compiler/asm.torth, Row: 669, Column: 19
   call c3RyLmNhdA213
 ;; [get_arithmetic_asm] PUSH_STR | File: compiler/asm.torth, Row: 670, Column: 3
-  mov rsi, get_arithmetic_asm_s8 ; Pointer to string
+  mov rsi, get_arithmetic_asm_s6 ; Pointer to string
   push rsi
 ;; [get_arithmetic_asm] Call str.cat | File: compiler/asm.torth, Row: 670, Column: 19
+  call c3RyLmNhdA213
+;; [get_arithmetic_asm] PUSH_STR | File: compiler/asm.torth, Row: 671, Column: 3
+  mov rsi, get_arithmetic_asm_s8 ; Pointer to string
+  push rsi
+;; [get_arithmetic_asm] Call str.cat | File: compiler/asm.torth, Row: 671, Column: 19
   call c3RyLmNhdA213
 ;; [get_arithmetic_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -12987,44 +13012,44 @@ Z2V0X2NvbXBhcmlzb25fYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_comparison_asm] POP_BIND | File: compiler/asm.torth, Row: 677, Column: 29
+;; [get_comparison_asm] POP_BIND | File: compiler/asm.torth, Row: 678, Column: 29
   pop qword [get_comparison_asm_cmov_operand]
-;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 678, Column: 3
+;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 679, Column: 3
   mov rsi, get_comparison_asm_s1 ; Pointer to string
   push rsi
-;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 679, Column: 3
-  mov rsi, get_comparison_asm_s2 ; Pointer to string
-  push rsi
-;; [get_comparison_asm] Call str.cat | File: compiler/asm.torth, Row: 679, Column: 25
-  call c3RyLmNhdA213
 ;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 680, Column: 3
-  mov rsi, get_comparison_asm_s4 ; Pointer to string
+  mov rsi, get_comparison_asm_s2 ; Pointer to string
   push rsi
 ;; [get_comparison_asm] Call str.cat | File: compiler/asm.torth, Row: 680, Column: 25
   call c3RyLmNhdA213
 ;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 681, Column: 3
-  mov rsi, get_comparison_asm_s6 ; Pointer to string
+  mov rsi, get_comparison_asm_s4 ; Pointer to string
   push rsi
 ;; [get_comparison_asm] Call str.cat | File: compiler/asm.torth, Row: 681, Column: 25
   call c3RyLmNhdA213
 ;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 682, Column: 3
-  mov rsi, get_comparison_asm_s8 ; Pointer to string
+  mov rsi, get_comparison_asm_s6 ; Pointer to string
   push rsi
 ;; [get_comparison_asm] Call str.cat | File: compiler/asm.torth, Row: 682, Column: 25
   call c3RyLmNhdA213
-;; [get_comparison_asm] PUSH_BIND | File: compiler/asm.torth, Row: 683, Column: 3
-  push qword [get_comparison_asm_cmov_operand]
+;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 683, Column: 3
+  mov rsi, get_comparison_asm_s8 ; Pointer to string
+  push rsi
 ;; [get_comparison_asm] Call str.cat | File: compiler/asm.torth, Row: 683, Column: 25
   call c3RyLmNhdA213
-;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 684, Column: 3
-  mov rsi, get_comparison_asm_s12 ; Pointer to string
-  push rsi
+;; [get_comparison_asm] PUSH_BIND | File: compiler/asm.torth, Row: 684, Column: 3
+  push qword [get_comparison_asm_cmov_operand]
 ;; [get_comparison_asm] Call str.cat | File: compiler/asm.torth, Row: 684, Column: 25
   call c3RyLmNhdA213
 ;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 685, Column: 3
-  mov rsi, get_comparison_asm_s14 ; Pointer to string
+  mov rsi, get_comparison_asm_s12 ; Pointer to string
   push rsi
 ;; [get_comparison_asm] Call str.cat | File: compiler/asm.torth, Row: 685, Column: 25
+  call c3RyLmNhdA213
+;; [get_comparison_asm] PUSH_STR | File: compiler/asm.torth, Row: 686, Column: 3
+  mov rsi, get_comparison_asm_s14 ; Pointer to string
+  push rsi
+;; [get_comparison_asm] Call str.cat | File: compiler/asm.torth, Row: 686, Column: 25
   call c3RyLmNhdA213
 ;; [get_comparison_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13039,23 +13064,23 @@ Z2V0X2FuZF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_and_asm] PUSH_STR | File: compiler/asm.torth, Row: 692, Column: 3
+;; [get_and_asm] PUSH_STR | File: compiler/asm.torth, Row: 693, Column: 3
   mov rsi, get_and_asm_s0 ; Pointer to string
   push rsi
-;; [get_and_asm] PUSH_STR | File: compiler/asm.torth, Row: 693, Column: 3
-  mov rsi, get_and_asm_s1 ; Pointer to string
-  push rsi
-;; [get_and_asm] Call str.cat | File: compiler/asm.torth, Row: 693, Column: 23
-  call c3RyLmNhdA213
 ;; [get_and_asm] PUSH_STR | File: compiler/asm.torth, Row: 694, Column: 3
-  mov rsi, get_and_asm_s3 ; Pointer to string
+  mov rsi, get_and_asm_s1 ; Pointer to string
   push rsi
 ;; [get_and_asm] Call str.cat | File: compiler/asm.torth, Row: 694, Column: 23
   call c3RyLmNhdA213
 ;; [get_and_asm] PUSH_STR | File: compiler/asm.torth, Row: 695, Column: 3
-  mov rsi, get_and_asm_s5 ; Pointer to string
+  mov rsi, get_and_asm_s3 ; Pointer to string
   push rsi
 ;; [get_and_asm] Call str.cat | File: compiler/asm.torth, Row: 695, Column: 23
+  call c3RyLmNhdA213
+;; [get_and_asm] PUSH_STR | File: compiler/asm.torth, Row: 696, Column: 3
+  mov rsi, get_and_asm_s5 ; Pointer to string
+  push rsi
+;; [get_and_asm] Call str.cat | File: compiler/asm.torth, Row: 696, Column: 23
   call c3RyLmNhdA213
 ;; [get_and_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13070,18 +13095,18 @@ Z2V0X2FyZ2NfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_argc_asm] PUSH_STR | File: compiler/asm.torth, Row: 702, Column: 3
+;; [get_argc_asm] PUSH_STR | File: compiler/asm.torth, Row: 703, Column: 3
   mov rsi, get_argc_asm_s0 ; Pointer to string
   push rsi
-;; [get_argc_asm] PUSH_STR | File: compiler/asm.torth, Row: 703, Column: 3
+;; [get_argc_asm] PUSH_STR | File: compiler/asm.torth, Row: 704, Column: 3
   mov rsi, get_argc_asm_s1 ; Pointer to string
   push rsi
-;; [get_argc_asm] Call str.cat | File: compiler/asm.torth, Row: 703, Column: 25
+;; [get_argc_asm] Call str.cat | File: compiler/asm.torth, Row: 704, Column: 25
   call c3RyLmNhdA213
-;; [get_argc_asm] PUSH_STR | File: compiler/asm.torth, Row: 704, Column: 3
+;; [get_argc_asm] PUSH_STR | File: compiler/asm.torth, Row: 705, Column: 3
   mov rsi, get_argc_asm_s3 ; Pointer to string
   push rsi
-;; [get_argc_asm] Call str.cat | File: compiler/asm.torth, Row: 704, Column: 25
+;; [get_argc_asm] Call str.cat | File: compiler/asm.torth, Row: 705, Column: 25
   call c3RyLmNhdA213
 ;; [get_argc_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13096,18 +13121,18 @@ Z2V0X2FyZ3ZfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_argv_asm] PUSH_STR | File: compiler/asm.torth, Row: 711, Column: 3
+;; [get_argv_asm] PUSH_STR | File: compiler/asm.torth, Row: 712, Column: 3
   mov rsi, get_argv_asm_s0 ; Pointer to string
   push rsi
-;; [get_argv_asm] PUSH_STR | File: compiler/asm.torth, Row: 712, Column: 3
+;; [get_argv_asm] PUSH_STR | File: compiler/asm.torth, Row: 713, Column: 3
   mov rsi, get_argv_asm_s1 ; Pointer to string
   push rsi
-;; [get_argv_asm] Call str.cat | File: compiler/asm.torth, Row: 712, Column: 21
+;; [get_argv_asm] Call str.cat | File: compiler/asm.torth, Row: 713, Column: 21
   call c3RyLmNhdA213
-;; [get_argv_asm] PUSH_STR | File: compiler/asm.torth, Row: 713, Column: 3
+;; [get_argv_asm] PUSH_STR | File: compiler/asm.torth, Row: 714, Column: 3
   mov rsi, get_argv_asm_s3 ; Pointer to string
   push rsi
-;; [get_argv_asm] Call str.cat | File: compiler/asm.torth, Row: 713, Column: 21
+;; [get_argv_asm] Call str.cat | File: compiler/asm.torth, Row: 714, Column: 21
   call c3RyLmNhdA213
 ;; [get_argv_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13122,33 +13147,33 @@ Z2V0X2Rpdm1vZF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_divmod_asm] PUSH_STR | File: compiler/asm.torth, Row: 720, Column: 3
+;; [get_divmod_asm] PUSH_STR | File: compiler/asm.torth, Row: 721, Column: 3
   mov rsi, get_divmod_asm_s0 ; Pointer to string
   push rsi
-;; [get_divmod_asm] PUSH_STR | File: compiler/asm.torth, Row: 721, Column: 3
-  mov rsi, get_divmod_asm_s1 ; Pointer to string
-  push rsi
-;; [get_divmod_asm] Call str.cat | File: compiler/asm.torth, Row: 721, Column: 31
-  call c3RyLmNhdA213
 ;; [get_divmod_asm] PUSH_STR | File: compiler/asm.torth, Row: 722, Column: 3
-  mov rsi, get_divmod_asm_s3 ; Pointer to string
+  mov rsi, get_divmod_asm_s1 ; Pointer to string
   push rsi
 ;; [get_divmod_asm] Call str.cat | File: compiler/asm.torth, Row: 722, Column: 31
   call c3RyLmNhdA213
 ;; [get_divmod_asm] PUSH_STR | File: compiler/asm.torth, Row: 723, Column: 3
-  mov rsi, get_divmod_asm_s5 ; Pointer to string
+  mov rsi, get_divmod_asm_s3 ; Pointer to string
   push rsi
 ;; [get_divmod_asm] Call str.cat | File: compiler/asm.torth, Row: 723, Column: 31
   call c3RyLmNhdA213
 ;; [get_divmod_asm] PUSH_STR | File: compiler/asm.torth, Row: 724, Column: 3
-  mov rsi, get_divmod_asm_s7 ; Pointer to string
+  mov rsi, get_divmod_asm_s5 ; Pointer to string
   push rsi
 ;; [get_divmod_asm] Call str.cat | File: compiler/asm.torth, Row: 724, Column: 31
   call c3RyLmNhdA213
 ;; [get_divmod_asm] PUSH_STR | File: compiler/asm.torth, Row: 725, Column: 3
-  mov rsi, get_divmod_asm_s9 ; Pointer to string
+  mov rsi, get_divmod_asm_s7 ; Pointer to string
   push rsi
 ;; [get_divmod_asm] Call str.cat | File: compiler/asm.torth, Row: 725, Column: 31
+  call c3RyLmNhdA213
+;; [get_divmod_asm] PUSH_STR | File: compiler/asm.torth, Row: 726, Column: 3
+  mov rsi, get_divmod_asm_s9 ; Pointer to string
+  push rsi
+;; [get_divmod_asm] Call str.cat | File: compiler/asm.torth, Row: 726, Column: 31
   call c3RyLmNhdA213
 ;; [get_divmod_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13163,7 +13188,7 @@ Z2V0X2Ryb3BfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_drop_asm] PUSH_STR | File: compiler/asm.torth, Row: 732, Column: 3
+;; [get_drop_asm] PUSH_STR | File: compiler/asm.torth, Row: 733, Column: 3
   mov rsi, get_drop_asm_s0 ; Pointer to string
   push rsi
 ;; [get_drop_asm] Return to the address found in return_stack
@@ -13179,18 +13204,18 @@ Z2V0X2R1cF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_dup_asm] PUSH_STR | File: compiler/asm.torth, Row: 739, Column: 3
+;; [get_dup_asm] PUSH_STR | File: compiler/asm.torth, Row: 740, Column: 3
   mov rsi, get_dup_asm_s0 ; Pointer to string
   push rsi
-;; [get_dup_asm] PUSH_STR | File: compiler/asm.torth, Row: 740, Column: 3
+;; [get_dup_asm] PUSH_STR | File: compiler/asm.torth, Row: 741, Column: 3
   mov rsi, get_dup_asm_s1 ; Pointer to string
   push rsi
-;; [get_dup_asm] Call str.cat | File: compiler/asm.torth, Row: 740, Column: 18
+;; [get_dup_asm] Call str.cat | File: compiler/asm.torth, Row: 741, Column: 18
   call c3RyLmNhdA213
-;; [get_dup_asm] PUSH_STR | File: compiler/asm.torth, Row: 741, Column: 3
+;; [get_dup_asm] PUSH_STR | File: compiler/asm.torth, Row: 742, Column: 3
   mov rsi, get_dup_asm_s3 ; Pointer to string
   push rsi
-;; [get_dup_asm] Call str.cat | File: compiler/asm.torth, Row: 741, Column: 18
+;; [get_dup_asm] Call str.cat | File: compiler/asm.torth, Row: 742, Column: 18
   call c3RyLmNhdA213
 ;; [get_dup_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13205,18 +13230,18 @@ Z2V0X2VudnBfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_envp_asm] PUSH_STR | File: compiler/asm.torth, Row: 748, Column: 3
+;; [get_envp_asm] PUSH_STR | File: compiler/asm.torth, Row: 749, Column: 3
   mov rsi, get_envp_asm_s0 ; Pointer to string
   push rsi
-;; [get_envp_asm] PUSH_STR | File: compiler/asm.torth, Row: 749, Column: 3
+;; [get_envp_asm] PUSH_STR | File: compiler/asm.torth, Row: 750, Column: 3
   mov rsi, get_envp_asm_s1 ; Pointer to string
   push rsi
-;; [get_envp_asm] Call str.cat | File: compiler/asm.torth, Row: 749, Column: 21
+;; [get_envp_asm] Call str.cat | File: compiler/asm.torth, Row: 750, Column: 21
   call c3RyLmNhdA213
-;; [get_envp_asm] PUSH_STR | File: compiler/asm.torth, Row: 750, Column: 3
+;; [get_envp_asm] PUSH_STR | File: compiler/asm.torth, Row: 751, Column: 3
   mov rsi, get_envp_asm_s3 ; Pointer to string
   push rsi
-;; [get_envp_asm] Call str.cat | File: compiler/asm.torth, Row: 750, Column: 21
+;; [get_envp_asm] Call str.cat | File: compiler/asm.torth, Row: 751, Column: 21
   call c3RyLmNhdA213
 ;; [get_envp_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13231,10 +13256,10 @@ Z2V0X2VxX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_eq_asm] PUSH_STR | File: compiler/asm.torth, Row: 758, Column: 3
+;; [get_eq_asm] PUSH_STR | File: compiler/asm.torth, Row: 759, Column: 3
   mov rsi, get_eq_asm_s0 ; Pointer to string
   push rsi
-;; [get_eq_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 758, Column: 11
+;; [get_eq_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 759, Column: 11
   call Z2V0X2NvbXBhcmlzb25fYX224
 ;; [get_eq_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13249,10 +13274,10 @@ Z2V0X2dlX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_ge_asm] PUSH_STR | File: compiler/asm.torth, Row: 766, Column: 3
+;; [get_ge_asm] PUSH_STR | File: compiler/asm.torth, Row: 767, Column: 3
   mov rsi, get_ge_asm_s0 ; Pointer to string
   push rsi
-;; [get_ge_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 766, Column: 12
+;; [get_ge_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 767, Column: 12
   call Z2V0X2NvbXBhcmlzb25fYX224
 ;; [get_ge_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13267,10 +13292,10 @@ Z2V0X2d0X2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_gt_asm] PUSH_STR | File: compiler/asm.torth, Row: 774, Column: 3
+;; [get_gt_asm] PUSH_STR | File: compiler/asm.torth, Row: 775, Column: 3
   mov rsi, get_gt_asm_s0 ; Pointer to string
   push rsi
-;; [get_gt_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 774, Column: 11
+;; [get_gt_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 775, Column: 11
   call Z2V0X2NvbXBhcmlzb25fYX224
 ;; [get_gt_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13285,10 +13310,10 @@ Z2V0X2xlX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_le_asm] PUSH_STR | File: compiler/asm.torth, Row: 782, Column: 3
+;; [get_le_asm] PUSH_STR | File: compiler/asm.torth, Row: 783, Column: 3
   mov rsi, get_le_asm_s0 ; Pointer to string
   push rsi
-;; [get_le_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 782, Column: 12
+;; [get_le_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 783, Column: 12
   call Z2V0X2NvbXBhcmlzb25fYX224
 ;; [get_le_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13303,10 +13328,10 @@ Z2V0X2x0X2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_lt_asm] PUSH_STR | File: compiler/asm.torth, Row: 790, Column: 3
+;; [get_lt_asm] PUSH_STR | File: compiler/asm.torth, Row: 791, Column: 3
   mov rsi, get_lt_asm_s0 ; Pointer to string
   push rsi
-;; [get_lt_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 790, Column: 11
+;; [get_lt_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 791, Column: 11
   call Z2V0X2NvbXBhcmlzb25fYX224
 ;; [get_lt_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13321,135 +13346,139 @@ Z2V0X2xvYWRfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_load_asm] Call str.copy | File: compiler/asm.torth, Row: 796, Column: 3
+;; [get_load_asm] Call str.copy | File: compiler/asm.torth, Row: 797, Column: 3
   call c3RyLmNvcH233
-;; [get_load_asm] Call str.upper | File: compiler/asm.torth, Row: 796, Column: 12
+;; [get_load_asm] Call str.upper | File: compiler/asm.torth, Row: 797, Column: 12
   call c3RyLnVwcG215
-;; [get_load_asm] TAKE | File: compiler/asm.torth, Row: 797, Column: 3
-;; [get_load_asm] POP_BIND | File: compiler/asm.torth, Row: 797, Column: 8
+;; [get_load_asm] TAKE | File: compiler/asm.torth, Row: 798, Column: 3
+;; [get_load_asm] POP_BIND | File: compiler/asm.torth, Row: 798, Column: 8
   pop qword [get_load_asm_load_variant]
-;; [get_load_asm] IN | File: compiler/asm.torth, Row: 797, Column: 21
-;; [get_load_asm] IF | File: compiler/asm.torth, Row: 800, Column: 3
-;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 800, Column: 9
-  push qword [get_load_asm_load_variant]
-;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 800, Column: 22
-  mov rsi, get_load_asm_s7 ; Pointer to string
-  push rsi
-;; [get_load_asm] Call streq | File: compiler/asm.torth, Row: 800, Column: 35
-  call c3RyZX214
-;; [get_load_asm] DO | File: compiler/asm.torth, Row: 800, Column: 41
-  pop rax
-  test rax, rax
-  jz get_load_asm_ELIF11
-;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 800, Column: 44
-  mov rsi, get_load_asm_s10 ; Pointer to string
-  push rsi
-;; [get_load_asm] ELIF | File: compiler/asm.torth, Row: 801, Column: 3
-  jmp get_load_asm_ENDIF38
-get_load_asm_ELIF11:
+;; [get_load_asm] POP_BIND | File: compiler/asm.torth, Row: 798, Column: 21
+  pop qword [get_load_asm_token]
+;; [get_load_asm] IN | File: compiler/asm.torth, Row: 798, Column: 27
+;; [get_load_asm] IF | File: compiler/asm.torth, Row: 801, Column: 3
 ;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 801, Column: 9
   push qword [get_load_asm_load_variant]
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 801, Column: 22
-  mov rsi, get_load_asm_s13 ; Pointer to string
+  mov rsi, get_load_asm_s8 ; Pointer to string
   push rsi
 ;; [get_load_asm] Call streq | File: compiler/asm.torth, Row: 801, Column: 35
   call c3RyZX214
 ;; [get_load_asm] DO | File: compiler/asm.torth, Row: 801, Column: 41
   pop rax
   test rax, rax
-  jz get_load_asm_ELIF17
+  jz get_load_asm_ELIF12
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 801, Column: 44
-  mov rsi, get_load_asm_s16 ; Pointer to string
+  mov rsi, get_load_asm_s11 ; Pointer to string
   push rsi
 ;; [get_load_asm] ELIF | File: compiler/asm.torth, Row: 802, Column: 3
-  jmp get_load_asm_ENDIF38
-get_load_asm_ELIF17:
+  jmp get_load_asm_ENDIF40
+get_load_asm_ELIF12:
 ;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 802, Column: 9
   push qword [get_load_asm_load_variant]
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 802, Column: 22
-  mov rsi, get_load_asm_s19 ; Pointer to string
+  mov rsi, get_load_asm_s14 ; Pointer to string
   push rsi
 ;; [get_load_asm] Call streq | File: compiler/asm.torth, Row: 802, Column: 35
   call c3RyZX214
 ;; [get_load_asm] DO | File: compiler/asm.torth, Row: 802, Column: 41
   pop rax
   test rax, rax
-  jz get_load_asm_ELIF23
+  jz get_load_asm_ELIF18
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 802, Column: 44
-  mov rsi, get_load_asm_s22 ; Pointer to string
+  mov rsi, get_load_asm_s17 ; Pointer to string
   push rsi
 ;; [get_load_asm] ELIF | File: compiler/asm.torth, Row: 803, Column: 3
-  jmp get_load_asm_ENDIF38
-get_load_asm_ELIF23:
+  jmp get_load_asm_ENDIF40
+get_load_asm_ELIF18:
 ;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 803, Column: 9
   push qword [get_load_asm_load_variant]
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 803, Column: 22
-  mov rsi, get_load_asm_s25 ; Pointer to string
+  mov rsi, get_load_asm_s20 ; Pointer to string
   push rsi
 ;; [get_load_asm] Call streq | File: compiler/asm.torth, Row: 803, Column: 35
   call c3RyZX214
 ;; [get_load_asm] DO | File: compiler/asm.torth, Row: 803, Column: 41
   pop rax
   test rax, rax
-  jz get_load_asm_ELSE29
+  jz get_load_asm_ELIF24
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 803, Column: 44
-  mov rsi, get_load_asm_s28 ; Pointer to string
+  mov rsi, get_load_asm_s23 ; Pointer to string
   push rsi
-;; [get_load_asm] ELSE | File: compiler/asm.torth, Row: 804, Column: 3
-  jmp get_load_asm_ENDIF38
-get_load_asm_ELSE29:
-;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 805, Column: 5
-  mov rsi, get_load_asm_s30 ; Pointer to string
-  push rsi
-;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 805, Column: 9
+;; [get_load_asm] ELIF | File: compiler/asm.torth, Row: 804, Column: 3
+  jmp get_load_asm_ENDIF40
+get_load_asm_ELIF24:
+;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 804, Column: 9
   push qword [get_load_asm_load_variant]
-;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 805, Column: 39
-  call c3RyLmNhdA213
-;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 806, Column: 5
-  mov rsi, get_load_asm_s33 ; Pointer to string
+;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 804, Column: 22
+  mov rsi, get_load_asm_s26 ; Pointer to string
   push rsi
-;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 806, Column: 39
-  call c3RyLmNhdA213
+;; [get_load_asm] Call streq | File: compiler/asm.torth, Row: 804, Column: 35
+  call c3RyZX214
+;; [get_load_asm] DO | File: compiler/asm.torth, Row: 804, Column: 41
+  pop rax
+  test rax, rax
+  jz get_load_asm_ELSE30
+;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 804, Column: 44
+  mov rsi, get_load_asm_s29 ; Pointer to string
+  push rsi
+;; [get_load_asm] ELSE | File: compiler/asm.torth, Row: 805, Column: 3
+  jmp get_load_asm_ENDIF40
+get_load_asm_ELSE30:
+;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 806, Column: 5
+  push qword [get_load_asm_token]
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 807, Column: 5
+  mov rsi, get_load_asm_s32 ; Pointer to string
+  push rsi
+;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 807, Column: 9
+  push qword [get_load_asm_load_variant]
+;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 807, Column: 39
+  call c3RyLmNhdA213
+;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 808, Column: 5
   mov rsi, get_load_asm_s35 ; Pointer to string
   push rsi
-;; [get_load_asm] Call CompilerError | File: compiler/asm.torth, Row: 807, Column: 19
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 807, Column: 33
+;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 808, Column: 39
+  call c3RyLmNhdA213
+;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 809, Column: 5
   mov rsi, get_load_asm_s37 ; Pointer to string
   push rsi
-;; [get_load_asm] ENDIF | File: compiler/asm.torth, Row: 808, Column: 3
-get_load_asm_ENDIF38:
-;; [get_load_asm] TAKE | File: compiler/asm.torth, Row: 809, Column: 3
-;; [get_load_asm] POP_BIND | File: compiler/asm.torth, Row: 809, Column: 8
+;; [get_load_asm] Call CompilerErrorWithToken | File: compiler/asm.torth, Row: 809, Column: 19
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 809, Column: 42
+  mov rsi, get_load_asm_s39 ; Pointer to string
+  push rsi
+;; [get_load_asm] ENDIF | File: compiler/asm.torth, Row: 810, Column: 3
+get_load_asm_ENDIF40:
+;; [get_load_asm] TAKE | File: compiler/asm.torth, Row: 811, Column: 3
+;; [get_load_asm] POP_BIND | File: compiler/asm.torth, Row: 811, Column: 8
   pop qword [get_load_asm_register]
-;; [get_load_asm] IN | File: compiler/asm.torth, Row: 809, Column: 17
-;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 812, Column: 3
-  mov rsi, get_load_asm_s42 ; Pointer to string
-  push rsi
-;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 813, Column: 3
-  mov rsi, get_load_asm_s43 ; Pointer to string
-  push rsi
-;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 813, Column: 23
-  call c3RyLmNhdA213
+;; [get_load_asm] IN | File: compiler/asm.torth, Row: 811, Column: 17
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 814, Column: 3
+  mov rsi, get_load_asm_s44 ; Pointer to string
+  push rsi
+;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 815, Column: 3
   mov rsi, get_load_asm_s45 ; Pointer to string
   push rsi
-;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 814, Column: 23
-  call c3RyLmNhdA213
-;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 815, Column: 3
-  push qword [get_load_asm_register]
 ;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 815, Column: 23
   call c3RyLmNhdA213
 ;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 816, Column: 3
-  mov rsi, get_load_asm_s49 ; Pointer to string
+  mov rsi, get_load_asm_s47 ; Pointer to string
   push rsi
 ;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 816, Column: 23
   call c3RyLmNhdA213
-;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 817, Column: 3
+;; [get_load_asm] PUSH_BIND | File: compiler/asm.torth, Row: 817, Column: 3
+  push qword [get_load_asm_register]
+;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 817, Column: 23
+  call c3RyLmNhdA213
+;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 818, Column: 3
   mov rsi, get_load_asm_s51 ; Pointer to string
   push rsi
-;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 817, Column: 23
+;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 818, Column: 23
+  call c3RyLmNhdA213
+;; [get_load_asm] PUSH_STR | File: compiler/asm.torth, Row: 819, Column: 3
+  mov rsi, get_load_asm_s53 ; Pointer to string
+  push rsi
+;; [get_load_asm] Call str.cat | File: compiler/asm.torth, Row: 819, Column: 23
   call c3RyLmNhdA213
 ;; [get_load_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13464,10 +13493,10 @@ Z2V0X21pbnVzX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_minus_asm] PUSH_STR | File: compiler/asm.torth, Row: 822, Column: 3
+;; [get_minus_asm] PUSH_STR | File: compiler/asm.torth, Row: 824, Column: 3
   mov rsi, get_minus_asm_s0 ; Pointer to string
   push rsi
-;; [get_minus_asm] Call get_arithmetic_asm | File: compiler/asm.torth, Row: 822, Column: 9
+;; [get_minus_asm] Call get_arithmetic_asm | File: compiler/asm.torth, Row: 824, Column: 9
   call Z2V0X2FyaXRobWV0aWNfYX224
 ;; [get_minus_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13482,23 +13511,23 @@ Z2V0X211bF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_mul_asm] PUSH_STR | File: compiler/asm.torth, Row: 829, Column: 3
+;; [get_mul_asm] PUSH_STR | File: compiler/asm.torth, Row: 831, Column: 3
   mov rsi, get_mul_asm_s0 ; Pointer to string
   push rsi
-;; [get_mul_asm] PUSH_STR | File: compiler/asm.torth, Row: 830, Column: 3
+;; [get_mul_asm] PUSH_STR | File: compiler/asm.torth, Row: 832, Column: 3
   mov rsi, get_mul_asm_s1 ; Pointer to string
   push rsi
-;; [get_mul_asm] Call str.cat | File: compiler/asm.torth, Row: 830, Column: 29
+;; [get_mul_asm] Call str.cat | File: compiler/asm.torth, Row: 832, Column: 29
   call c3RyLmNhdA213
-;; [get_mul_asm] PUSH_STR | File: compiler/asm.torth, Row: 831, Column: 3
+;; [get_mul_asm] PUSH_STR | File: compiler/asm.torth, Row: 833, Column: 3
   mov rsi, get_mul_asm_s3 ; Pointer to string
   push rsi
-;; [get_mul_asm] Call str.cat | File: compiler/asm.torth, Row: 831, Column: 29
+;; [get_mul_asm] Call str.cat | File: compiler/asm.torth, Row: 833, Column: 29
   call c3RyLmNhdA213
-;; [get_mul_asm] PUSH_STR | File: compiler/asm.torth, Row: 832, Column: 3
+;; [get_mul_asm] PUSH_STR | File: compiler/asm.torth, Row: 834, Column: 3
   mov rsi, get_mul_asm_s5 ; Pointer to string
   push rsi
-;; [get_mul_asm] Call str.cat | File: compiler/asm.torth, Row: 832, Column: 29
+;; [get_mul_asm] Call str.cat | File: compiler/asm.torth, Row: 834, Column: 29
   call c3RyLmNhdA213
 ;; [get_mul_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13513,10 +13542,10 @@ Z2V0X25lX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_ne_asm] PUSH_STR | File: compiler/asm.torth, Row: 840, Column: 3
+;; [get_ne_asm] PUSH_STR | File: compiler/asm.torth, Row: 842, Column: 3
   mov rsi, get_ne_asm_s0 ; Pointer to string
   push rsi
-;; [get_ne_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 840, Column: 12
+;; [get_ne_asm] Call get_comparison_asm | File: compiler/asm.torth, Row: 842, Column: 12
   call Z2V0X2NvbXBhcmlzb25fYX224
 ;; [get_ne_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13531,48 +13560,48 @@ Z2V0X250aF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 848, Column: 3
+;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 850, Column: 3
   mov rsi, get_nth_asm_s0 ; Pointer to string
   push rsi
-;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 849, Column: 3
-  mov rsi, get_nth_asm_s1 ; Pointer to string
-  push rsi
-;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 849, Column: 57
-  call c3RyLmNhdA213
-;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 850, Column: 3
-  mov rsi, get_nth_asm_s3 ; Pointer to string
-  push rsi
-;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 850, Column: 57
-  call c3RyLmNhdA213
 ;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 851, Column: 3
-  mov rsi, get_nth_asm_s5 ; Pointer to string
+  mov rsi, get_nth_asm_s1 ; Pointer to string
   push rsi
 ;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 851, Column: 57
   call c3RyLmNhdA213
 ;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 852, Column: 3
-  mov rsi, get_nth_asm_s7 ; Pointer to string
+  mov rsi, get_nth_asm_s3 ; Pointer to string
   push rsi
 ;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 852, Column: 57
   call c3RyLmNhdA213
 ;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 853, Column: 3
-  mov rsi, get_nth_asm_s9 ; Pointer to string
+  mov rsi, get_nth_asm_s5 ; Pointer to string
   push rsi
 ;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 853, Column: 57
   call c3RyLmNhdA213
 ;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 854, Column: 3
-  mov rsi, get_nth_asm_s11 ; Pointer to string
+  mov rsi, get_nth_asm_s7 ; Pointer to string
   push rsi
 ;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 854, Column: 57
   call c3RyLmNhdA213
 ;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 855, Column: 3
-  mov rsi, get_nth_asm_s13 ; Pointer to string
+  mov rsi, get_nth_asm_s9 ; Pointer to string
   push rsi
 ;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 855, Column: 57
   call c3RyLmNhdA213
 ;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 856, Column: 3
-  mov rsi, get_nth_asm_s15 ; Pointer to string
+  mov rsi, get_nth_asm_s11 ; Pointer to string
   push rsi
 ;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 856, Column: 57
+  call c3RyLmNhdA213
+;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 857, Column: 3
+  mov rsi, get_nth_asm_s13 ; Pointer to string
+  push rsi
+;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 857, Column: 57
+  call c3RyLmNhdA213
+;; [get_nth_asm] PUSH_STR | File: compiler/asm.torth, Row: 858, Column: 3
+  mov rsi, get_nth_asm_s15 ; Pointer to string
+  push rsi
+;; [get_nth_asm] Call str.cat | File: compiler/asm.torth, Row: 858, Column: 57
   call c3RyLmNhdA213
 ;; [get_nth_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13587,23 +13616,23 @@ Z2V0X29yX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_or_asm] PUSH_STR | File: compiler/asm.torth, Row: 863, Column: 3
+;; [get_or_asm] PUSH_STR | File: compiler/asm.torth, Row: 865, Column: 3
   mov rsi, get_or_asm_s0 ; Pointer to string
   push rsi
-;; [get_or_asm] PUSH_STR | File: compiler/asm.torth, Row: 864, Column: 3
+;; [get_or_asm] PUSH_STR | File: compiler/asm.torth, Row: 866, Column: 3
   mov rsi, get_or_asm_s1 ; Pointer to string
   push rsi
-;; [get_or_asm] Call str.cat | File: compiler/asm.torth, Row: 864, Column: 21
+;; [get_or_asm] Call str.cat | File: compiler/asm.torth, Row: 866, Column: 21
   call c3RyLmNhdA213
-;; [get_or_asm] PUSH_STR | File: compiler/asm.torth, Row: 865, Column: 3
+;; [get_or_asm] PUSH_STR | File: compiler/asm.torth, Row: 867, Column: 3
   mov rsi, get_or_asm_s3 ; Pointer to string
   push rsi
-;; [get_or_asm] Call str.cat | File: compiler/asm.torth, Row: 865, Column: 21
+;; [get_or_asm] Call str.cat | File: compiler/asm.torth, Row: 867, Column: 21
   call c3RyLmNhdA213
-;; [get_or_asm] PUSH_STR | File: compiler/asm.torth, Row: 866, Column: 3
+;; [get_or_asm] PUSH_STR | File: compiler/asm.torth, Row: 868, Column: 3
   mov rsi, get_or_asm_s5 ; Pointer to string
   push rsi
-;; [get_or_asm] Call str.cat | File: compiler/asm.torth, Row: 866, Column: 21
+;; [get_or_asm] Call str.cat | File: compiler/asm.torth, Row: 868, Column: 21
   call c3RyLmNhdA213
 ;; [get_or_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13618,28 +13647,28 @@ Z2V0X292ZXJfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_over_asm] PUSH_STR | File: compiler/asm.torth, Row: 873, Column: 3
+;; [get_over_asm] PUSH_STR | File: compiler/asm.torth, Row: 875, Column: 3
   mov rsi, get_over_asm_s0 ; Pointer to string
   push rsi
-;; [get_over_asm] PUSH_STR | File: compiler/asm.torth, Row: 874, Column: 3
-  mov rsi, get_over_asm_s1 ; Pointer to string
-  push rsi
-;; [get_over_asm] Call str.cat | File: compiler/asm.torth, Row: 874, Column: 18
-  call c3RyLmNhdA213
-;; [get_over_asm] PUSH_STR | File: compiler/asm.torth, Row: 875, Column: 3
-  mov rsi, get_over_asm_s3 ; Pointer to string
-  push rsi
-;; [get_over_asm] Call str.cat | File: compiler/asm.torth, Row: 875, Column: 18
-  call c3RyLmNhdA213
 ;; [get_over_asm] PUSH_STR | File: compiler/asm.torth, Row: 876, Column: 3
-  mov rsi, get_over_asm_s5 ; Pointer to string
+  mov rsi, get_over_asm_s1 ; Pointer to string
   push rsi
 ;; [get_over_asm] Call str.cat | File: compiler/asm.torth, Row: 876, Column: 18
   call c3RyLmNhdA213
 ;; [get_over_asm] PUSH_STR | File: compiler/asm.torth, Row: 877, Column: 3
-  mov rsi, get_over_asm_s7 ; Pointer to string
+  mov rsi, get_over_asm_s3 ; Pointer to string
   push rsi
 ;; [get_over_asm] Call str.cat | File: compiler/asm.torth, Row: 877, Column: 18
+  call c3RyLmNhdA213
+;; [get_over_asm] PUSH_STR | File: compiler/asm.torth, Row: 878, Column: 3
+  mov rsi, get_over_asm_s5 ; Pointer to string
+  push rsi
+;; [get_over_asm] Call str.cat | File: compiler/asm.torth, Row: 878, Column: 18
+  call c3RyLmNhdA213
+;; [get_over_asm] PUSH_STR | File: compiler/asm.torth, Row: 879, Column: 3
+  mov rsi, get_over_asm_s7 ; Pointer to string
+  push rsi
+;; [get_over_asm] Call str.cat | File: compiler/asm.torth, Row: 879, Column: 18
   call c3RyLmNhdA213
 ;; [get_over_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13654,10 +13683,10 @@ Z2V0X3BsdXNfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_plus_asm] PUSH_STR | File: compiler/asm.torth, Row: 884, Column: 3
+;; [get_plus_asm] PUSH_STR | File: compiler/asm.torth, Row: 886, Column: 3
   mov rsi, get_plus_asm_s0 ; Pointer to string
   push rsi
-;; [get_plus_asm] Call get_arithmetic_asm | File: compiler/asm.torth, Row: 884, Column: 9
+;; [get_plus_asm] Call get_arithmetic_asm | File: compiler/asm.torth, Row: 886, Column: 9
   call Z2V0X2FyaXRobWV0aWNfYX224
 ;; [get_plus_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13672,13 +13701,13 @@ Z2V0X3ByaW50X2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_print_asm] PUSH_STR | File: compiler/asm.torth, Row: 891, Column: 3
+;; [get_print_asm] PUSH_STR | File: compiler/asm.torth, Row: 893, Column: 3
   mov rsi, get_print_asm_s0 ; Pointer to string
   push rsi
-;; [get_print_asm] PUSH_STR | File: compiler/asm.torth, Row: 892, Column: 3
+;; [get_print_asm] PUSH_STR | File: compiler/asm.torth, Row: 894, Column: 3
   mov rsi, get_print_asm_s1 ; Pointer to string
   push rsi
-;; [get_print_asm] Call str.cat | File: compiler/asm.torth, Row: 892, Column: 23
+;; [get_print_asm] Call str.cat | File: compiler/asm.torth, Row: 894, Column: 23
   call c3RyLmNhdA213
 ;; [get_print_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13693,33 +13722,33 @@ Z2V0X3JvdF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 899, Column: 3
+;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 901, Column: 3
   mov rsi, get_rot_asm_s0 ; Pointer to string
   push rsi
-;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 900, Column: 3
-  mov rsi, get_rot_asm_s1 ; Pointer to string
-  push rsi
-;; [get_rot_asm] Call str.cat | File: compiler/asm.torth, Row: 900, Column: 19
-  call c3RyLmNhdA213
-;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 901, Column: 3
-  mov rsi, get_rot_asm_s3 ; Pointer to string
-  push rsi
-;; [get_rot_asm] Call str.cat | File: compiler/asm.torth, Row: 901, Column: 19
-  call c3RyLmNhdA213
 ;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 902, Column: 3
-  mov rsi, get_rot_asm_s5 ; Pointer to string
+  mov rsi, get_rot_asm_s1 ; Pointer to string
   push rsi
 ;; [get_rot_asm] Call str.cat | File: compiler/asm.torth, Row: 902, Column: 19
   call c3RyLmNhdA213
 ;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 903, Column: 3
-  mov rsi, get_rot_asm_s7 ; Pointer to string
+  mov rsi, get_rot_asm_s3 ; Pointer to string
   push rsi
 ;; [get_rot_asm] Call str.cat | File: compiler/asm.torth, Row: 903, Column: 19
   call c3RyLmNhdA213
 ;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 904, Column: 3
-  mov rsi, get_rot_asm_s9 ; Pointer to string
+  mov rsi, get_rot_asm_s5 ; Pointer to string
   push rsi
 ;; [get_rot_asm] Call str.cat | File: compiler/asm.torth, Row: 904, Column: 19
+  call c3RyLmNhdA213
+;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 905, Column: 3
+  mov rsi, get_rot_asm_s7 ; Pointer to string
+  push rsi
+;; [get_rot_asm] Call str.cat | File: compiler/asm.torth, Row: 905, Column: 19
+  call c3RyLmNhdA213
+;; [get_rot_asm] PUSH_STR | File: compiler/asm.torth, Row: 906, Column: 3
+  mov rsi, get_rot_asm_s9 ; Pointer to string
+  push rsi
+;; [get_rot_asm] Call str.cat | File: compiler/asm.torth, Row: 906, Column: 19
   call c3RyLmNhdA213
 ;; [get_rot_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13734,23 +13763,23 @@ Z2V0X3NobF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_shl_asm] PUSH_STR | File: compiler/asm.torth, Row: 912, Column: 3
+;; [get_shl_asm] PUSH_STR | File: compiler/asm.torth, Row: 914, Column: 3
   mov rsi, get_shl_asm_s0 ; Pointer to string
   push rsi
-;; [get_shl_asm] PUSH_STR | File: compiler/asm.torth, Row: 913, Column: 3
+;; [get_shl_asm] PUSH_STR | File: compiler/asm.torth, Row: 915, Column: 3
   mov rsi, get_shl_asm_s1 ; Pointer to string
   push rsi
-;; [get_shl_asm] Call str.cat | File: compiler/asm.torth, Row: 913, Column: 21
+;; [get_shl_asm] Call str.cat | File: compiler/asm.torth, Row: 915, Column: 21
   call c3RyLmNhdA213
-;; [get_shl_asm] PUSH_STR | File: compiler/asm.torth, Row: 914, Column: 3
+;; [get_shl_asm] PUSH_STR | File: compiler/asm.torth, Row: 916, Column: 3
   mov rsi, get_shl_asm_s3 ; Pointer to string
   push rsi
-;; [get_shl_asm] Call str.cat | File: compiler/asm.torth, Row: 914, Column: 21
+;; [get_shl_asm] Call str.cat | File: compiler/asm.torth, Row: 916, Column: 21
   call c3RyLmNhdA213
-;; [get_shl_asm] PUSH_STR | File: compiler/asm.torth, Row: 915, Column: 3
+;; [get_shl_asm] PUSH_STR | File: compiler/asm.torth, Row: 917, Column: 3
   mov rsi, get_shl_asm_s5 ; Pointer to string
   push rsi
-;; [get_shl_asm] Call str.cat | File: compiler/asm.torth, Row: 915, Column: 21
+;; [get_shl_asm] Call str.cat | File: compiler/asm.torth, Row: 917, Column: 21
   call c3RyLmNhdA213
 ;; [get_shl_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13765,23 +13794,23 @@ Z2V0X3Nocl9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_shr_asm] PUSH_STR | File: compiler/asm.torth, Row: 923, Column: 3
+;; [get_shr_asm] PUSH_STR | File: compiler/asm.torth, Row: 925, Column: 3
   mov rsi, get_shr_asm_s0 ; Pointer to string
   push rsi
-;; [get_shr_asm] PUSH_STR | File: compiler/asm.torth, Row: 924, Column: 3
+;; [get_shr_asm] PUSH_STR | File: compiler/asm.torth, Row: 926, Column: 3
   mov rsi, get_shr_asm_s1 ; Pointer to string
   push rsi
-;; [get_shr_asm] Call str.cat | File: compiler/asm.torth, Row: 924, Column: 21
+;; [get_shr_asm] Call str.cat | File: compiler/asm.torth, Row: 926, Column: 21
   call c3RyLmNhdA213
-;; [get_shr_asm] PUSH_STR | File: compiler/asm.torth, Row: 925, Column: 3
+;; [get_shr_asm] PUSH_STR | File: compiler/asm.torth, Row: 927, Column: 3
   mov rsi, get_shr_asm_s3 ; Pointer to string
   push rsi
-;; [get_shr_asm] Call str.cat | File: compiler/asm.torth, Row: 925, Column: 21
+;; [get_shr_asm] Call str.cat | File: compiler/asm.torth, Row: 927, Column: 21
   call c3RyLmNhdA213
-;; [get_shr_asm] PUSH_STR | File: compiler/asm.torth, Row: 926, Column: 3
+;; [get_shr_asm] PUSH_STR | File: compiler/asm.torth, Row: 928, Column: 3
   mov rsi, get_shr_asm_s5 ; Pointer to string
   push rsi
-;; [get_shr_asm] Call str.cat | File: compiler/asm.torth, Row: 926, Column: 21
+;; [get_shr_asm] Call str.cat | File: compiler/asm.torth, Row: 928, Column: 21
   call c3RyLmNhdA213
 ;; [get_shr_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13796,130 +13825,134 @@ Z2V0X3N0b3JlX2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_store_asm] Call str.copy | File: compiler/asm.torth, Row: 932, Column: 3
+;; [get_store_asm] Call str.copy | File: compiler/asm.torth, Row: 934, Column: 3
   call c3RyLmNvcH233
-;; [get_store_asm] Call str.upper | File: compiler/asm.torth, Row: 932, Column: 12
+;; [get_store_asm] Call str.upper | File: compiler/asm.torth, Row: 934, Column: 12
   call c3RyLnVwcG215
-;; [get_store_asm] TAKE | File: compiler/asm.torth, Row: 933, Column: 3
-;; [get_store_asm] POP_BIND | File: compiler/asm.torth, Row: 933, Column: 8
+;; [get_store_asm] TAKE | File: compiler/asm.torth, Row: 935, Column: 3
+;; [get_store_asm] POP_BIND | File: compiler/asm.torth, Row: 935, Column: 8
   pop qword [get_store_asm_store_variant]
-;; [get_store_asm] IN | File: compiler/asm.torth, Row: 933, Column: 22
-;; [get_store_asm] IF | File: compiler/asm.torth, Row: 936, Column: 3
-;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 936, Column: 9
-  push qword [get_store_asm_store_variant]
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 936, Column: 23
-  mov rsi, get_store_asm_s7 ; Pointer to string
-  push rsi
-;; [get_store_asm] Call streq | File: compiler/asm.torth, Row: 936, Column: 37
-  call c3RyZX214
-;; [get_store_asm] DO | File: compiler/asm.torth, Row: 936, Column: 43
-  pop rax
-  test rax, rax
-  jz get_store_asm_ELIF11
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 936, Column: 46
-  mov rsi, get_store_asm_s10 ; Pointer to string
-  push rsi
-;; [get_store_asm] ELIF | File: compiler/asm.torth, Row: 937, Column: 3
-  jmp get_store_asm_ENDIF38
-get_store_asm_ELIF11:
-;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 937, Column: 9
-  push qword [get_store_asm_store_variant]
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 937, Column: 23
-  mov rsi, get_store_asm_s13 ; Pointer to string
-  push rsi
-;; [get_store_asm] Call streq | File: compiler/asm.torth, Row: 937, Column: 37
-  call c3RyZX214
-;; [get_store_asm] DO | File: compiler/asm.torth, Row: 937, Column: 43
-  pop rax
-  test rax, rax
-  jz get_store_asm_ELIF17
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 937, Column: 46
-  mov rsi, get_store_asm_s16 ; Pointer to string
-  push rsi
-;; [get_store_asm] ELIF | File: compiler/asm.torth, Row: 938, Column: 3
-  jmp get_store_asm_ENDIF38
-get_store_asm_ELIF17:
+;; [get_store_asm] POP_BIND | File: compiler/asm.torth, Row: 935, Column: 22
+  pop qword [get_store_asm_token]
+;; [get_store_asm] IN | File: compiler/asm.torth, Row: 935, Column: 28
+;; [get_store_asm] IF | File: compiler/asm.torth, Row: 938, Column: 3
 ;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 938, Column: 9
   push qword [get_store_asm_store_variant]
 ;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 938, Column: 23
-  mov rsi, get_store_asm_s19 ; Pointer to string
+  mov rsi, get_store_asm_s8 ; Pointer to string
   push rsi
 ;; [get_store_asm] Call streq | File: compiler/asm.torth, Row: 938, Column: 37
   call c3RyZX214
 ;; [get_store_asm] DO | File: compiler/asm.torth, Row: 938, Column: 43
   pop rax
   test rax, rax
-  jz get_store_asm_ELIF23
+  jz get_store_asm_ELIF12
 ;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 938, Column: 46
-  mov rsi, get_store_asm_s22 ; Pointer to string
+  mov rsi, get_store_asm_s11 ; Pointer to string
   push rsi
 ;; [get_store_asm] ELIF | File: compiler/asm.torth, Row: 939, Column: 3
-  jmp get_store_asm_ENDIF38
-get_store_asm_ELIF23:
+  jmp get_store_asm_ENDIF40
+get_store_asm_ELIF12:
 ;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 939, Column: 9
   push qword [get_store_asm_store_variant]
 ;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 939, Column: 23
-  mov rsi, get_store_asm_s25 ; Pointer to string
+  mov rsi, get_store_asm_s14 ; Pointer to string
   push rsi
 ;; [get_store_asm] Call streq | File: compiler/asm.torth, Row: 939, Column: 37
   call c3RyZX214
 ;; [get_store_asm] DO | File: compiler/asm.torth, Row: 939, Column: 43
   pop rax
   test rax, rax
-  jz get_store_asm_ELSE29
+  jz get_store_asm_ELIF18
 ;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 939, Column: 46
-  mov rsi, get_store_asm_s28 ; Pointer to string
+  mov rsi, get_store_asm_s17 ; Pointer to string
   push rsi
-;; [get_store_asm] ELSE | File: compiler/asm.torth, Row: 940, Column: 3
-  jmp get_store_asm_ENDIF38
-get_store_asm_ELSE29:
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 941, Column: 5
-  mov rsi, get_store_asm_s30 ; Pointer to string
+;; [get_store_asm] ELIF | File: compiler/asm.torth, Row: 940, Column: 3
+  jmp get_store_asm_ENDIF40
+get_store_asm_ELIF18:
+;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 940, Column: 9
+  push qword [get_store_asm_store_variant]
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 940, Column: 23
+  mov rsi, get_store_asm_s20 ; Pointer to string
   push rsi
+;; [get_store_asm] Call streq | File: compiler/asm.torth, Row: 940, Column: 37
+  call c3RyZX214
+;; [get_store_asm] DO | File: compiler/asm.torth, Row: 940, Column: 43
+  pop rax
+  test rax, rax
+  jz get_store_asm_ELIF24
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 940, Column: 46
+  mov rsi, get_store_asm_s23 ; Pointer to string
+  push rsi
+;; [get_store_asm] ELIF | File: compiler/asm.torth, Row: 941, Column: 3
+  jmp get_store_asm_ENDIF40
+get_store_asm_ELIF24:
 ;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 941, Column: 9
   push qword [get_store_asm_store_variant]
-;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 941, Column: 40
-  call c3RyLmNhdA213
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 942, Column: 5
-  mov rsi, get_store_asm_s33 ; Pointer to string
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 941, Column: 23
+  mov rsi, get_store_asm_s26 ; Pointer to string
   push rsi
-;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 942, Column: 40
+;; [get_store_asm] Call streq | File: compiler/asm.torth, Row: 941, Column: 37
+  call c3RyZX214
+;; [get_store_asm] DO | File: compiler/asm.torth, Row: 941, Column: 43
+  pop rax
+  test rax, rax
+  jz get_store_asm_ELSE30
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 941, Column: 46
+  mov rsi, get_store_asm_s29 ; Pointer to string
+  push rsi
+;; [get_store_asm] ELSE | File: compiler/asm.torth, Row: 942, Column: 3
+  jmp get_store_asm_ENDIF40
+get_store_asm_ELSE30:
+;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 943, Column: 5
+  push qword [get_store_asm_token]
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 944, Column: 5
+  mov rsi, get_store_asm_s32 ; Pointer to string
+  push rsi
+;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 944, Column: 9
+  push qword [get_store_asm_store_variant]
+;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 944, Column: 40
   call c3RyLmNhdA213
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 943, Column: 5
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 945, Column: 5
   mov rsi, get_store_asm_s35 ; Pointer to string
   push rsi
-;; [get_store_asm] Call CompilerError | File: compiler/asm.torth, Row: 943, Column: 19
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 943, Column: 33
+;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 945, Column: 40
+  call c3RyLmNhdA213
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 946, Column: 5
   mov rsi, get_store_asm_s37 ; Pointer to string
   push rsi
-;; [get_store_asm] ENDIF | File: compiler/asm.torth, Row: 944, Column: 3
-get_store_asm_ENDIF38:
-;; [get_store_asm] TAKE | File: compiler/asm.torth, Row: 945, Column: 3
-;; [get_store_asm] POP_BIND | File: compiler/asm.torth, Row: 945, Column: 8
+;; [get_store_asm] Call CompilerErrorWithToken | File: compiler/asm.torth, Row: 946, Column: 19
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 946, Column: 42
+  mov rsi, get_store_asm_s39 ; Pointer to string
+  push rsi
+;; [get_store_asm] ENDIF | File: compiler/asm.torth, Row: 947, Column: 3
+get_store_asm_ENDIF40:
+;; [get_store_asm] TAKE | File: compiler/asm.torth, Row: 948, Column: 3
+;; [get_store_asm] POP_BIND | File: compiler/asm.torth, Row: 948, Column: 8
   pop qword [get_store_asm_register]
-;; [get_store_asm] IN | File: compiler/asm.torth, Row: 945, Column: 17
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 948, Column: 3
-  mov rsi, get_store_asm_s42 ; Pointer to string
+;; [get_store_asm] IN | File: compiler/asm.torth, Row: 948, Column: 17
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 951, Column: 3
+  mov rsi, get_store_asm_s44 ; Pointer to string
   push rsi
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 949, Column: 3
-  mov rsi, get_store_asm_s43 ; Pointer to string
-  push rsi
-;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 949, Column: 19
-  call c3RyLmNhdA213
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 950, Column: 3
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 952, Column: 3
   mov rsi, get_store_asm_s45 ; Pointer to string
   push rsi
-;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 950, Column: 19
-  call c3RyLmNhdA213
-;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 951, Column: 3
-  push qword [get_store_asm_register]
-;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 951, Column: 19
-  call c3RyLmNhdA213
-;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 952, Column: 3
-  mov rsi, get_store_asm_s49 ; Pointer to string
-  push rsi
 ;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 952, Column: 19
+  call c3RyLmNhdA213
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 953, Column: 3
+  mov rsi, get_store_asm_s47 ; Pointer to string
+  push rsi
+;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 953, Column: 19
+  call c3RyLmNhdA213
+;; [get_store_asm] PUSH_BIND | File: compiler/asm.torth, Row: 954, Column: 3
+  push qword [get_store_asm_register]
+;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 954, Column: 19
+  call c3RyLmNhdA213
+;; [get_store_asm] PUSH_STR | File: compiler/asm.torth, Row: 955, Column: 3
+  mov rsi, get_store_asm_s51 ; Pointer to string
+  push rsi
+;; [get_store_asm] Call str.cat | File: compiler/asm.torth, Row: 955, Column: 19
   call c3RyLmNhdA213
 ;; [get_store_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13934,23 +13967,23 @@ Z2V0X3N3YXBfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_swap_asm] PUSH_STR | File: compiler/asm.torth, Row: 959, Column: 3
+;; [get_swap_asm] PUSH_STR | File: compiler/asm.torth, Row: 962, Column: 3
   mov rsi, get_swap_asm_s0 ; Pointer to string
   push rsi
-;; [get_swap_asm] PUSH_STR | File: compiler/asm.torth, Row: 960, Column: 3
+;; [get_swap_asm] PUSH_STR | File: compiler/asm.torth, Row: 963, Column: 3
   mov rsi, get_swap_asm_s1 ; Pointer to string
   push rsi
-;; [get_swap_asm] Call str.cat | File: compiler/asm.torth, Row: 960, Column: 19
+;; [get_swap_asm] Call str.cat | File: compiler/asm.torth, Row: 963, Column: 19
   call c3RyLmNhdA213
-;; [get_swap_asm] PUSH_STR | File: compiler/asm.torth, Row: 961, Column: 3
+;; [get_swap_asm] PUSH_STR | File: compiler/asm.torth, Row: 964, Column: 3
   mov rsi, get_swap_asm_s3 ; Pointer to string
   push rsi
-;; [get_swap_asm] Call str.cat | File: compiler/asm.torth, Row: 961, Column: 19
+;; [get_swap_asm] Call str.cat | File: compiler/asm.torth, Row: 964, Column: 19
   call c3RyLmNhdA213
-;; [get_swap_asm] PUSH_STR | File: compiler/asm.torth, Row: 962, Column: 3
+;; [get_swap_asm] PUSH_STR | File: compiler/asm.torth, Row: 965, Column: 3
   mov rsi, get_swap_asm_s5 ; Pointer to string
   push rsi
-;; [get_swap_asm] Call str.cat | File: compiler/asm.torth, Row: 962, Column: 19
+;; [get_swap_asm] Call str.cat | File: compiler/asm.torth, Row: 965, Column: 19
   call c3RyLmNhdA213
 ;; [get_swap_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -13965,42 +13998,42 @@ Z2V0X3N5c2NhbGxfYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_syscall_asm] PUSH_INT | File: compiler/asm.torth, Row: 972, Column: 3
+;; [get_syscall_asm] PUSH_INT | File: compiler/asm.torth, Row: 975, Column: 3
   mov rax, 7
   push rax
-;; [get_syscall_asm] Call str.char_at | File: compiler/asm.torth, Row: 972, Column: 5
+;; [get_syscall_asm] Call str.char_at | File: compiler/asm.torth, Row: 975, Column: 5
   call c3RyLmNoYXJfYX213
-;; [get_syscall_asm] PUSH_CHAR | File: compiler/asm.torth, Row: 972, Column: 17
+;; [get_syscall_asm] PUSH_CHAR | File: compiler/asm.torth, Row: 975, Column: 17
   mov rax, 48
   push rax
-;; [get_syscall_asm] INTRINSIC MINUS | File: compiler/asm.torth, Row: 972, Column: 21
+;; [get_syscall_asm] INTRINSIC MINUS | File: compiler/asm.torth, Row: 975, Column: 21
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_syscall_asm] Call get_syscall_argument_registers | File: compiler/asm.torth, Row: 975, Column: 3
+;; [get_syscall_asm] Call get_syscall_argument_registers | File: compiler/asm.torth, Row: 978, Column: 3
   call Z2V0X3N5c2NhbGxfYXJndW1lbnRfcmVnaXN0ZX229
-;; [get_syscall_asm] PUSH_INT | File: compiler/asm.torth, Row: 976, Column: 3
+;; [get_syscall_asm] PUSH_INT | File: compiler/asm.torth, Row: 979, Column: 3
   mov rax, 0
   push rax
-;; [get_syscall_asm] TAKE | File: compiler/asm.torth, Row: 977, Column: 3
-;; [get_syscall_asm] POP_BIND | File: compiler/asm.torth, Row: 978, Column: 5
+;; [get_syscall_asm] TAKE | File: compiler/asm.torth, Row: 980, Column: 3
+;; [get_syscall_asm] POP_BIND | File: compiler/asm.torth, Row: 981, Column: 5
   pop qword [get_syscall_asm_index]
-;; [get_syscall_asm] POP_BIND | File: compiler/asm.torth, Row: 979, Column: 5
+;; [get_syscall_asm] POP_BIND | File: compiler/asm.torth, Row: 982, Column: 5
   pop qword [get_syscall_asm_argument_registers]
-;; [get_syscall_asm] POP_BIND | File: compiler/asm.torth, Row: 980, Column: 5
+;; [get_syscall_asm] POP_BIND | File: compiler/asm.torth, Row: 983, Column: 5
   pop qword [get_syscall_asm_syscall_args_count]
-;; [get_syscall_asm] IN | File: compiler/asm.torth, Row: 981, Column: 3
-;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 984, Column: 3
+;; [get_syscall_asm] IN | File: compiler/asm.torth, Row: 984, Column: 3
+;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 987, Column: 3
   mov rsi, get_syscall_asm_s11 ; Pointer to string
   push rsi
-;; [get_syscall_asm] WHILE | File: compiler/asm.torth, Row: 985, Column: 3
+;; [get_syscall_asm] WHILE | File: compiler/asm.torth, Row: 988, Column: 3
 get_syscall_asm_WHILE12:
-;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 985, Column: 9
+;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 988, Column: 9
   push qword [get_syscall_asm_index]
-;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 985, Column: 15
+;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 988, Column: 15
   push qword [get_syscall_asm_syscall_args_count]
-;; [get_syscall_asm] INTRINSIC LT | File: compiler/asm.torth, Row: 985, Column: 34
+;; [get_syscall_asm] INTRINSIC LT | File: compiler/asm.torth, Row: 988, Column: 34
   pop rax
   pop rbx
   mov rcx, 0
@@ -14008,69 +14041,69 @@ get_syscall_asm_WHILE12:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [get_syscall_asm] DO | File: compiler/asm.torth, Row: 985, Column: 36
+;; [get_syscall_asm] DO | File: compiler/asm.torth, Row: 988, Column: 36
   pop rax
   test rax, rax
   jz get_syscall_asm_DONE36
-;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 986, Column: 5
+;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 989, Column: 5
   mov rsi, get_syscall_asm_s17 ; Pointer to string
   push rsi
-;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 986, Column: 49
-  call c3RyLmNhdA213
-;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 987, Column: 5
-  push qword [get_syscall_asm_index]
-;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 987, Column: 11
-  push qword [get_syscall_asm_argument_registers]
-;; [get_syscall_asm] Call List.nth | File: compiler/asm.torth, Row: 987, Column: 30
-  call TGlzdC5udG220
-;; [get_syscall_asm] Call str.load | File: compiler/asm.torth, Row: 987, Column: 39
-  call c3RyLmxvYW197
-;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 987, Column: 49
-  call c3RyLmNhdA213
-;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 988, Column: 5
-  mov rsi, get_syscall_asm_s24 ; Pointer to string
-  push rsi
-;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 988, Column: 49
+;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 989, Column: 49
   call c3RyLmNhdA213
 ;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 990, Column: 5
   push qword [get_syscall_asm_index]
-;; [get_syscall_asm] PUSH_INT | File: compiler/asm.torth, Row: 990, Column: 11
+;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 990, Column: 11
+  push qword [get_syscall_asm_argument_registers]
+;; [get_syscall_asm] Call List.nth | File: compiler/asm.torth, Row: 990, Column: 30
+  call TGlzdC5udG220
+;; [get_syscall_asm] Call str.load | File: compiler/asm.torth, Row: 990, Column: 39
+  call c3RyLmxvYW197
+;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 990, Column: 49
+  call c3RyLmNhdA213
+;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 991, Column: 5
+  mov rsi, get_syscall_asm_s24 ; Pointer to string
+  push rsi
+;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 991, Column: 49
+  call c3RyLmNhdA213
+;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 993, Column: 5
+  push qword [get_syscall_asm_index]
+;; [get_syscall_asm] PUSH_INT | File: compiler/asm.torth, Row: 993, Column: 11
   mov rax, 1
   push rax
-;; [get_syscall_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 990, Column: 13
+;; [get_syscall_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 993, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 990, Column: 15
+;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 993, Column: 15
   push qword [get_syscall_asm_index]
-;; [get_syscall_asm] ASSIGN_BIND | File: compiler/asm.torth, Row: 990, Column: 21
+;; [get_syscall_asm] ASSIGN_BIND | File: compiler/asm.torth, Row: 993, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_syscall_asm_index], rbx
-;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 991, Column: 5
+;; [get_syscall_asm] PUSH_BIND | File: compiler/asm.torth, Row: 994, Column: 5
   push qword [get_syscall_asm_index]
-;; [get_syscall_asm] Call itoa | File: compiler/asm.torth, Row: 991, Column: 11
+;; [get_syscall_asm] Call itoa | File: compiler/asm.torth, Row: 994, Column: 11
   call aXRvYQ208
-;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 991, Column: 49
+;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 994, Column: 49
   call c3RyLmNhdA213
-;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 992, Column: 5
+;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 995, Column: 5
   mov rsi, get_syscall_asm_s34 ; Pointer to string
-  push rsi
-;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 992, Column: 49
-  call c3RyLmNhdA213
-;; [get_syscall_asm] DONE | File: compiler/asm.torth, Row: 993, Column: 3
-  jmp get_syscall_asm_WHILE12
-get_syscall_asm_DONE36:
-;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 995, Column: 3
-  mov rsi, get_syscall_asm_s37 ; Pointer to string
   push rsi
 ;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 995, Column: 49
   call c3RyLmNhdA213
-;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 996, Column: 3
+;; [get_syscall_asm] DONE | File: compiler/asm.torth, Row: 996, Column: 3
+  jmp get_syscall_asm_WHILE12
+get_syscall_asm_DONE36:
+;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 998, Column: 3
+  mov rsi, get_syscall_asm_s37 ; Pointer to string
+  push rsi
+;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 998, Column: 49
+  call c3RyLmNhdA213
+;; [get_syscall_asm] PUSH_STR | File: compiler/asm.torth, Row: 999, Column: 3
   mov rsi, get_syscall_asm_s39 ; Pointer to string
   push rsi
-;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 996, Column: 49
+;; [get_syscall_asm] Call str.cat | File: compiler/asm.torth, Row: 999, Column: 49
   call c3RyLmNhdA213
 ;; [get_syscall_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14085,38 +14118,14 @@ Z2V0X3N5c2NhbGxfYXJndW1lbnRfcmVnaXN0ZX229:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_syscall_argument_registers] Call List.init | File: compiler/asm.torth, Row: 1000, Column: 3
+;; [get_syscall_argument_registers] Call List.init | File: compiler/asm.torth, Row: 1003, Column: 3
   call TGlzdC5pbm221
-;; [get_syscall_argument_registers] TAKE | File: compiler/asm.torth, Row: 1001, Column: 3
-;; [get_syscall_argument_registers] POP_BIND | File: compiler/asm.torth, Row: 1001, Column: 8
+;; [get_syscall_argument_registers] TAKE | File: compiler/asm.torth, Row: 1004, Column: 3
+;; [get_syscall_argument_registers] POP_BIND | File: compiler/asm.torth, Row: 1004, Column: 8
   pop qword [get_syscall_argument_registers_registers]
-;; [get_syscall_argument_registers] IN | File: compiler/asm.torth, Row: 1001, Column: 18
-;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1004, Column: 3
-  mov rsi, get_syscall_argument_registers_s4 ; Pointer to string
-  push rsi
-;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1004, Column: 9
-;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1004, Column: 13
-  push qword [get_syscall_argument_registers_registers]
-;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1004, Column: 23
-  call TGlzdC5hcHBlbm210
-;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1005, Column: 3
-  mov rsi, get_syscall_argument_registers_s8 ; Pointer to string
-  push rsi
-;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1005, Column: 9
-;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1005, Column: 13
-  push qword [get_syscall_argument_registers_registers]
-;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1005, Column: 23
-  call TGlzdC5hcHBlbm210
-;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1006, Column: 3
-  mov rsi, get_syscall_argument_registers_s12 ; Pointer to string
-  push rsi
-;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1006, Column: 9
-;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1006, Column: 13
-  push qword [get_syscall_argument_registers_registers]
-;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1006, Column: 23
-  call TGlzdC5hcHBlbm210
+;; [get_syscall_argument_registers] IN | File: compiler/asm.torth, Row: 1004, Column: 18
 ;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1007, Column: 3
-  mov rsi, get_syscall_argument_registers_s16 ; Pointer to string
+  mov rsi, get_syscall_argument_registers_s4 ; Pointer to string
   push rsi
 ;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1007, Column: 9
 ;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1007, Column: 13
@@ -14124,7 +14133,7 @@ Z2V0X3N5c2NhbGxfYXJndW1lbnRfcmVnaXN0ZX229:
 ;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1007, Column: 23
   call TGlzdC5hcHBlbm210
 ;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1008, Column: 3
-  mov rsi, get_syscall_argument_registers_s20 ; Pointer to string
+  mov rsi, get_syscall_argument_registers_s8 ; Pointer to string
   push rsi
 ;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1008, Column: 9
 ;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1008, Column: 13
@@ -14132,14 +14141,38 @@ Z2V0X3N5c2NhbGxfYXJndW1lbnRfcmVnaXN0ZX229:
 ;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1008, Column: 23
   call TGlzdC5hcHBlbm210
 ;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1009, Column: 3
-  mov rsi, get_syscall_argument_registers_s24 ; Pointer to string
+  mov rsi, get_syscall_argument_registers_s12 ; Pointer to string
   push rsi
 ;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1009, Column: 9
 ;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1009, Column: 13
   push qword [get_syscall_argument_registers_registers]
 ;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1009, Column: 23
   call TGlzdC5hcHBlbm210
-;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1010, Column: 3
+;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1010, Column: 3
+  mov rsi, get_syscall_argument_registers_s16 ; Pointer to string
+  push rsi
+;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1010, Column: 9
+;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1010, Column: 13
+  push qword [get_syscall_argument_registers_registers]
+;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1010, Column: 23
+  call TGlzdC5hcHBlbm210
+;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1011, Column: 3
+  mov rsi, get_syscall_argument_registers_s20 ; Pointer to string
+  push rsi
+;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1011, Column: 9
+;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1011, Column: 13
+  push qword [get_syscall_argument_registers_registers]
+;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1011, Column: 23
+  call TGlzdC5hcHBlbm210
+;; [get_syscall_argument_registers] PUSH_STR | File: compiler/asm.torth, Row: 1012, Column: 3
+  mov rsi, get_syscall_argument_registers_s24 ; Pointer to string
+  push rsi
+;; [get_syscall_argument_registers] CAST_PTR | File: compiler/asm.torth, Row: 1012, Column: 9
+;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1012, Column: 13
+  push qword [get_syscall_argument_registers_registers]
+;; [get_syscall_argument_registers] Call List.append | File: compiler/asm.torth, Row: 1012, Column: 23
+  call TGlzdC5hcHBlbm210
+;; [get_syscall_argument_registers] PUSH_BIND | File: compiler/asm.torth, Row: 1013, Column: 3
   push qword [get_syscall_argument_registers_registers]
 ;; [get_syscall_argument_registers] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14154,23 +14187,23 @@ Z2V0X2V4aXRfYXNzZW1ibH229:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_exit_assembly] PUSH_STR | File: compiler/asm.torth, Row: 1014, Column: 3
+;; [get_exit_assembly] PUSH_STR | File: compiler/asm.torth, Row: 1017, Column: 3
   mov rsi, get_exit_assembly_s0 ; Pointer to string
   push rsi
-;; [get_exit_assembly] PUSH_STR | File: compiler/asm.torth, Row: 1015, Column: 3
+;; [get_exit_assembly] PUSH_STR | File: compiler/asm.torth, Row: 1018, Column: 3
   mov rsi, get_exit_assembly_s1 ; Pointer to string
   push rsi
-;; [get_exit_assembly] Call str.cat | File: compiler/asm.torth, Row: 1015, Column: 27
+;; [get_exit_assembly] Call str.cat | File: compiler/asm.torth, Row: 1018, Column: 27
   call c3RyLmNhdA213
-;; [get_exit_assembly] PUSH_STR | File: compiler/asm.torth, Row: 1016, Column: 3
+;; [get_exit_assembly] PUSH_STR | File: compiler/asm.torth, Row: 1019, Column: 3
   mov rsi, get_exit_assembly_s3 ; Pointer to string
   push rsi
-;; [get_exit_assembly] Call str.cat | File: compiler/asm.torth, Row: 1016, Column: 27
+;; [get_exit_assembly] Call str.cat | File: compiler/asm.torth, Row: 1019, Column: 27
   call c3RyLmNhdA213
-;; [get_exit_assembly] PUSH_STR | File: compiler/asm.torth, Row: 1017, Column: 3
+;; [get_exit_assembly] PUSH_STR | File: compiler/asm.torth, Row: 1020, Column: 3
   mov rsi, get_exit_assembly_s5 ; Pointer to string
   push rsi
-;; [get_exit_assembly] Call str.cat | File: compiler/asm.torth, Row: 1017, Column: 27
+;; [get_exit_assembly] Call str.cat | File: compiler/asm.torth, Row: 1020, Column: 27
   call c3RyLmNhdA213
 ;; [get_exit_assembly] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14185,45 +14218,45 @@ Z2VuZXJhdGVfYXNzZW1ibHlfZmlsZQ209:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1024, Column: 3
+;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1027, Column: 3
   pop qword [generate_assembly_file_file_name]
-;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1025, Column: 3
+;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1028, Column: 3
   pop qword [generate_assembly_file_sub_programs]
-;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1026, Column: 3
+;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1029, Column: 3
   pop qword [generate_assembly_file_memories]
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1028, Column: 3
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1031, Column: 3
   push qword [generate_assembly_file_sub_programs]
-;; [generate_assembly_file] Call List.len | File: compiler/asm.torth, Row: 1028, Column: 16
+;; [generate_assembly_file] Call List.len | File: compiler/asm.torth, Row: 1031, Column: 16
   call TGlzdC5sZW211
-;; [generate_assembly_file] PUSH_STR | File: compiler/asm.torth, Row: 1029, Column: 3
+;; [generate_assembly_file] PUSH_STR | File: compiler/asm.torth, Row: 1032, Column: 3
   mov rsi, generate_assembly_file_s5 ; Pointer to string
   push rsi
-;; [generate_assembly_file] Call str.copy | File: compiler/asm.torth, Row: 1029, Column: 21
+;; [generate_assembly_file] Call str.copy | File: compiler/asm.torth, Row: 1032, Column: 21
   call c3RyLmNvcH233
-;; [generate_assembly_file] PUSH_INT | File: compiler/asm.torth, Row: 1030, Column: 3
+;; [generate_assembly_file] PUSH_INT | File: compiler/asm.torth, Row: 1033, Column: 3
   mov rax, 0
   push rax
-;; [generate_assembly_file] TAKE | File: compiler/asm.torth, Row: 1031, Column: 3
-;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1032, Column: 5
+;; [generate_assembly_file] TAKE | File: compiler/asm.torth, Row: 1034, Column: 3
+;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1035, Column: 5
   pop qword [generate_assembly_file_index]
-;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1033, Column: 5
+;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1036, Column: 5
   pop qword [generate_assembly_file_data_section_asm]
-;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1034, Column: 5
+;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1037, Column: 5
   pop qword [generate_assembly_file_sub_programs.len]
-;; [generate_assembly_file] IN | File: compiler/asm.torth, Row: 1035, Column: 3
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1038, Column: 3
+;; [generate_assembly_file] IN | File: compiler/asm.torth, Row: 1038, Column: 3
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1041, Column: 3
   push qword [generate_assembly_file_memories]
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1038, Column: 12
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1041, Column: 12
   push qword [generate_assembly_file_file_name]
-;; [generate_assembly_file] Call initialize_asm_file | File: compiler/asm.torth, Row: 1038, Column: 22
+;; [generate_assembly_file] Call initialize_asm_file | File: compiler/asm.torth, Row: 1041, Column: 22
   call aW5pdGlhbGl6ZV9hc21fZmlsZQ209
-;; [generate_assembly_file] WHILE | File: compiler/asm.torth, Row: 1041, Column: 3
+;; [generate_assembly_file] WHILE | File: compiler/asm.torth, Row: 1044, Column: 3
 generate_assembly_file_WHILE16:
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1041, Column: 9
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1044, Column: 9
   push qword [generate_assembly_file_index]
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1041, Column: 15
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1044, Column: 15
   push qword [generate_assembly_file_sub_programs.len]
-;; [generate_assembly_file] INTRINSIC LT | File: compiler/asm.torth, Row: 1041, Column: 32
+;; [generate_assembly_file] INTRINSIC LT | File: compiler/asm.torth, Row: 1044, Column: 32
   pop rax
   pop rbx
   mov rcx, 0
@@ -14231,81 +14264,81 @@ generate_assembly_file_WHILE16:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [generate_assembly_file] DO | File: compiler/asm.torth, Row: 1041, Column: 34
+;; [generate_assembly_file] DO | File: compiler/asm.torth, Row: 1044, Column: 34
   pop rax
   test rax, rax
   jz generate_assembly_file_DONE46
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1044, Column: 5
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1047, Column: 5
   push qword [generate_assembly_file_sub_programs]
-;; [generate_assembly_file] Call List.first | File: compiler/asm.torth, Row: 1044, Column: 18
+;; [generate_assembly_file] Call List.first | File: compiler/asm.torth, Row: 1047, Column: 18
   call TGlzdC5maXJzdA231
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1045, Column: 5
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1048, Column: 5
   push qword [generate_assembly_file_index]
-;; [generate_assembly_file] PUSH_INT | File: compiler/asm.torth, Row: 1045, Column: 11
+;; [generate_assembly_file] PUSH_INT | File: compiler/asm.torth, Row: 1048, Column: 11
   mov rax, 8
   push rax
-;; [generate_assembly_file] INTRINSIC MUL | File: compiler/asm.torth, Row: 1045, Column: 20
+;; [generate_assembly_file] INTRINSIC MUL | File: compiler/asm.torth, Row: 1048, Column: 20
   pop rax
   pop rbx
   mul rbx
   push rax  ; Product
-;; [generate_assembly_file] Call ptr+ | File: compiler/asm.torth, Row: 1045, Column: 22
+;; [generate_assembly_file] Call ptr+ | File: compiler/asm.torth, Row: 1048, Column: 22
   call cHRyKw157
-;; [generate_assembly_file] Call ptr.load | File: compiler/asm.torth, Row: 1045, Column: 27
+;; [generate_assembly_file] Call ptr.load | File: compiler/asm.torth, Row: 1048, Column: 27
   call cHRyLmxvYW197
-;; [generate_assembly_file] TAKE | File: compiler/asm.torth, Row: 1046, Column: 5
-;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1046, Column: 10
+;; [generate_assembly_file] TAKE | File: compiler/asm.torth, Row: 1049, Column: 5
+;; [generate_assembly_file] POP_BIND | File: compiler/asm.torth, Row: 1049, Column: 10
   pop qword [generate_assembly_file_program]
-;; [generate_assembly_file] IN | File: compiler/asm.torth, Row: 1046, Column: 18
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1049, Column: 5
-  push qword [generate_assembly_file_program]
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1049, Column: 13
-  push qword [generate_assembly_file_file_name]
-;; [generate_assembly_file] Call append_programs_assembly_code | File: compiler/asm.torth, Row: 1049, Column: 23
-  call YXBwZW5kX3Byb2dyYW1zX2Fzc2VtYmx5X2NvZG201
+;; [generate_assembly_file] IN | File: compiler/asm.torth, Row: 1049, Column: 18
 ;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1052, Column: 5
   push qword [generate_assembly_file_program]
-;; [generate_assembly_file] Call get_string_variables_for_data_section | File: compiler/asm.torth, Row: 1052, Column: 13
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1052, Column: 13
+  push qword [generate_assembly_file_file_name]
+;; [generate_assembly_file] Call append_programs_assembly_code | File: compiler/asm.torth, Row: 1052, Column: 23
+  call YXBwZW5kX3Byb2dyYW1zX2Fzc2VtYmx5X2NvZG201
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1055, Column: 5
+  push qword [generate_assembly_file_program]
+;; [generate_assembly_file] Call get_string_variables_for_data_section | File: compiler/asm.torth, Row: 1055, Column: 13
   call Z2V0X3N0cmluZ192YXJpYWJsZXNfZm9yX2RhdGFfc2VjdGlvbg221
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1053, Column: 5
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1056, Column: 5
   push qword [generate_assembly_file_data_section_asm]
-;; [generate_assembly_file] INTRINSIC swap | File: compiler/asm.torth, Row: 1053, Column: 22
+;; [generate_assembly_file] INTRINSIC swap | File: compiler/asm.torth, Row: 1056, Column: 22
   pop rax
   pop rbx
   push rax
   push rbx
-;; [generate_assembly_file] Call str.cat | File: compiler/asm.torth, Row: 1053, Column: 27
+;; [generate_assembly_file] Call str.cat | File: compiler/asm.torth, Row: 1056, Column: 27
   call c3RyLmNhdA213
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1054, Column: 5
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1057, Column: 5
   push qword [generate_assembly_file_data_section_asm]
-;; [generate_assembly_file] ASSIGN_BIND | File: compiler/asm.torth, Row: 1054, Column: 22
+;; [generate_assembly_file] ASSIGN_BIND | File: compiler/asm.torth, Row: 1057, Column: 22
   pop rax  ; Old value
   pop rbx  ; New value
   mov [generate_assembly_file_data_section_asm], rbx
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1056, Column: 5
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1059, Column: 5
   push qword [generate_assembly_file_index]
-;; [generate_assembly_file] PUSH_INT | File: compiler/asm.torth, Row: 1056, Column: 11
+;; [generate_assembly_file] PUSH_INT | File: compiler/asm.torth, Row: 1059, Column: 11
   mov rax, 1
   push rax
-;; [generate_assembly_file] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1056, Column: 13
+;; [generate_assembly_file] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1059, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1056, Column: 15
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1059, Column: 15
   push qword [generate_assembly_file_index]
-;; [generate_assembly_file] ASSIGN_BIND | File: compiler/asm.torth, Row: 1056, Column: 21
+;; [generate_assembly_file] ASSIGN_BIND | File: compiler/asm.torth, Row: 1059, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [generate_assembly_file_index], rbx
-;; [generate_assembly_file] DONE | File: compiler/asm.torth, Row: 1057, Column: 3
+;; [generate_assembly_file] DONE | File: compiler/asm.torth, Row: 1060, Column: 3
   jmp generate_assembly_file_WHILE16
 generate_assembly_file_DONE46:
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1060, Column: 3
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1063, Column: 3
   push qword [generate_assembly_file_data_section_asm]
-;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1060, Column: 20
+;; [generate_assembly_file] PUSH_BIND | File: compiler/asm.torth, Row: 1063, Column: 20
   push qword [generate_assembly_file_file_name]
-;; [generate_assembly_file] Call append_file | File: compiler/asm.torth, Row: 1060, Column: 30
+;; [generate_assembly_file] Call append_file | File: compiler/asm.torth, Row: 1063, Column: 30
   call YXBwZW5kX2ZpbG209
 ;; [generate_assembly_file] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14320,31 +14353,31 @@ Z2V0X3N0cmluZ192YXJpYWJsZXNfZm9yX2RhdGFfc2VjdGlvbg221:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1064, Column: 48
+;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1067, Column: 48
   pop qword [get_string_variables_for_data_section_program]
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1065, Column: 3
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1068, Column: 3
   mov rsi, get_string_variables_for_data_section_s1 ; Pointer to string
   push rsi
-;; [get_string_variables_for_data_section] Call str.copy | File: compiler/asm.torth, Row: 1065, Column: 6
+;; [get_string_variables_for_data_section] Call str.copy | File: compiler/asm.torth, Row: 1068, Column: 6
   call c3RyLmNvcH233
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1066, Column: 3
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1069, Column: 3
   mov rax, 0
   push rax
-;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 1067, Column: 3
-;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1067, Column: 8
+;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 1070, Column: 3
+;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1070, Column: 8
   pop qword [get_string_variables_for_data_section_index]
-;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1067, Column: 14
+;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1070, Column: 14
   pop qword [get_string_variables_for_data_section_assembly_code]
-;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 1067, Column: 28
-;; [get_string_variables_for_data_section] WHILE | File: compiler/asm.torth, Row: 1068, Column: 3
+;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 1070, Column: 28
+;; [get_string_variables_for_data_section] WHILE | File: compiler/asm.torth, Row: 1071, Column: 3
 get_string_variables_for_data_section_WHILE8:
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1068, Column: 9
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1071, Column: 9
   push qword [get_string_variables_for_data_section_index]
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1068, Column: 15
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1071, Column: 15
   push qword [get_string_variables_for_data_section_program]
-;; [get_string_variables_for_data_section] Call List.len | File: compiler/asm.torth, Row: 1068, Column: 23
+;; [get_string_variables_for_data_section] Call List.len | File: compiler/asm.torth, Row: 1071, Column: 23
   call TGlzdC5sZW211
-;; [get_string_variables_for_data_section] INTRINSIC LT | File: compiler/asm.torth, Row: 1068, Column: 32
+;; [get_string_variables_for_data_section] INTRINSIC LT | File: compiler/asm.torth, Row: 1071, Column: 32
   pop rax
   pop rbx
   mov rcx, 0
@@ -14352,31 +14385,31 @@ get_string_variables_for_data_section_WHILE8:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 1068, Column: 34
+;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 1071, Column: 34
   pop rax
   test rax, rax
   jz get_string_variables_for_data_section_DONE76
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1070, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1073, Column: 5
   push qword [get_string_variables_for_data_section_index]
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1070, Column: 11
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1073, Column: 11
   push qword [get_string_variables_for_data_section_program]
-;; [get_string_variables_for_data_section] Call List.nth | File: compiler/asm.torth, Row: 1070, Column: 19
+;; [get_string_variables_for_data_section] Call List.nth | File: compiler/asm.torth, Row: 1073, Column: 19
   call TGlzdC5udG220
-;; [get_string_variables_for_data_section] Call ptr.load | File: compiler/asm.torth, Row: 1070, Column: 28
+;; [get_string_variables_for_data_section] Call ptr.load | File: compiler/asm.torth, Row: 1073, Column: 28
   call cHRyLmxvYW197
-;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 1071, Column: 5
-;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1071, Column: 10
+;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 1074, Column: 5
+;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1074, Column: 10
   pop qword [get_string_variables_for_data_section_op]
-;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 1071, Column: 13
-;; [get_string_variables_for_data_section] IF | File: compiler/asm.torth, Row: 1074, Column: 5
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1074, Column: 8
+;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 1074, Column: 13
+;; [get_string_variables_for_data_section] IF | File: compiler/asm.torth, Row: 1077, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1077, Column: 8
   push qword [get_string_variables_for_data_section_op]
-;; [get_string_variables_for_data_section] Call Op.get_type | File: compiler/asm.torth, Row: 1074, Column: 11
+;; [get_string_variables_for_data_section] Call Op.get_type | File: compiler/asm.torth, Row: 1077, Column: 11
   call T3AuZ2V0X3R5cG213
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1074, Column: 23
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1077, Column: 23
   mov rax, 28
   push rax
-;; [get_string_variables_for_data_section] INTRINSIC NE | File: compiler/asm.torth, Row: 1074, Column: 39
+;; [get_string_variables_for_data_section] INTRINSIC NE | File: compiler/asm.torth, Row: 1077, Column: 39
   pop rax
   pop rbx
   mov rcx, 0
@@ -14384,135 +14417,135 @@ get_string_variables_for_data_section_WHILE8:
   cmp rbx, rax
   cmovne rcx, rdx
   push rcx
-;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 1074, Column: 42
+;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 1077, Column: 42
   pop rax
   test rax, rax
   jz get_string_variables_for_data_section_ENDIF33
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1075, Column: 7
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1078, Column: 7
   push qword [get_string_variables_for_data_section_index]
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1075, Column: 13
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1078, Column: 13
   mov rax, 1
   push rax
-;; [get_string_variables_for_data_section] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1075, Column: 15
+;; [get_string_variables_for_data_section] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1078, Column: 15
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1075, Column: 17
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1078, Column: 17
   push qword [get_string_variables_for_data_section_index]
-;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 1075, Column: 23
+;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 1078, Column: 23
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_string_variables_for_data_section_index], rbx
-;; [get_string_variables_for_data_section] CONTINUE | File: compiler/asm.torth, Row: 1076, Column: 7
-  jmp get_string_variables_for_data_section_WHILE8;; [get_string_variables_for_data_section] ENDIF | File: compiler/asm.torth, Row: 1077, Column: 5
+;; [get_string_variables_for_data_section] CONTINUE | File: compiler/asm.torth, Row: 1079, Column: 7
+  jmp get_string_variables_for_data_section_WHILE8;; [get_string_variables_for_data_section] ENDIF | File: compiler/asm.torth, Row: 1080, Column: 5
 get_string_variables_for_data_section_ENDIF33:
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1079, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1082, Column: 5
   push qword [get_string_variables_for_data_section_op]
-;; [get_string_variables_for_data_section] Call Op.get_id | File: compiler/asm.torth, Row: 1079, Column: 11
+;; [get_string_variables_for_data_section] Call Op.get_id | File: compiler/asm.torth, Row: 1082, Column: 11
   call T3AuZ2V0X2205
-;; [get_string_variables_for_data_section] Call itoa | File: compiler/asm.torth, Row: 1079, Column: 21
+;; [get_string_variables_for_data_section] Call itoa | File: compiler/asm.torth, Row: 1082, Column: 21
   call aXRvYQ208
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1080, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1083, Column: 5
   push qword [get_string_variables_for_data_section_op]
-;; [get_string_variables_for_data_section] Call Op.get_function | File: compiler/asm.torth, Row: 1080, Column: 11
+;; [get_string_variables_for_data_section] Call Op.get_function | File: compiler/asm.torth, Row: 1083, Column: 11
   call T3AuZ2V0X2Z1bmN0aW221
-;; [get_string_variables_for_data_section] Call Function.get_name | File: compiler/asm.torth, Row: 1080, Column: 27
+;; [get_string_variables_for_data_section] Call Function.get_name | File: compiler/asm.torth, Row: 1083, Column: 27
   call RnVuY3Rpb24uZ2V0X25hbW210
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1081, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1084, Column: 5
   push qword [get_string_variables_for_data_section_op]
-;; [get_string_variables_for_data_section] Call Op.get_token | File: compiler/asm.torth, Row: 1081, Column: 11
+;; [get_string_variables_for_data_section] Call Op.get_token | File: compiler/asm.torth, Row: 1084, Column: 11
   call T3AuZ2V0X3Rva2211
-;; [get_string_variables_for_data_section] INTRINSIC dup | File: compiler/asm.torth, Row: 1082, Column: 5
+;; [get_string_variables_for_data_section] INTRINSIC dup | File: compiler/asm.torth, Row: 1085, Column: 5
   pop rax
   push rax
   push rax
-;; [get_string_variables_for_data_section] Call Token.get_value | File: compiler/asm.torth, Row: 1082, Column: 11
+;; [get_string_variables_for_data_section] Call Token.get_value | File: compiler/asm.torth, Row: 1085, Column: 11
   call VG9rZW4uZ2V0X3ZhbH218
-;; [get_string_variables_for_data_section] Call format_escape_sequences_for_nasm | File: compiler/asm.torth, Row: 1082, Column: 27
+;; [get_string_variables_for_data_section] Call format_escape_sequences_for_nasm | File: compiler/asm.torth, Row: 1085, Column: 27
   call Zm9ybWF0X2VzY2FwZV9zZXF1ZW5jZXNfZm9yX25hc2224
-;; [get_string_variables_for_data_section] INTRINSIC swap | File: compiler/asm.torth, Row: 1083, Column: 5
+;; [get_string_variables_for_data_section] INTRINSIC swap | File: compiler/asm.torth, Row: 1086, Column: 5
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_string_variables_for_data_section] Call Token.get_location | File: compiler/asm.torth, Row: 1083, Column: 11
+;; [get_string_variables_for_data_section] Call Token.get_location | File: compiler/asm.torth, Row: 1086, Column: 11
   call VG9rZW4uZ2V0X2xvY2F0aW221
-;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 1084, Column: 5
-;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1085, Column: 7
-  pop qword [get_string_variables_for_data_section_token_location]
-;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1086, Column: 7
-  pop qword [get_string_variables_for_data_section_string]
-;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1087, Column: 7
-  pop qword [get_string_variables_for_data_section_function_name]
+;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 1087, Column: 5
 ;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1088, Column: 7
+  pop qword [get_string_variables_for_data_section_token_location]
+;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1089, Column: 7
+  pop qword [get_string_variables_for_data_section_string]
+;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1090, Column: 7
+  pop qword [get_string_variables_for_data_section_function_name]
+;; [get_string_variables_for_data_section] POP_BIND | File: compiler/asm.torth, Row: 1091, Column: 7
   pop qword [get_string_variables_for_data_section_op_id]
-;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 1089, Column: 5
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1091, Column: 5
+;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 1092, Column: 5
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1094, Column: 5
   mov rsi, get_string_variables_for_data_section_s53 ; Pointer to string
   push rsi
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1092, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1095, Column: 5
   push qword [get_string_variables_for_data_section_function_name]
-;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1092, Column: 19
-  call c3RyLmNhdA213
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1093, Column: 5
-  mov rsi, get_string_variables_for_data_section_s56 ; Pointer to string
-  push rsi
-;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1093, Column: 19
-  call c3RyLmNhdA213
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1094, Column: 5
-  push qword [get_string_variables_for_data_section_op_id]
-;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1094, Column: 19
-  call c3RyLmNhdA213
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1095, Column: 5
-  mov rsi, get_string_variables_for_data_section_s60 ; Pointer to string
-  push rsi
 ;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1095, Column: 19
   call c3RyLmNhdA213
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1096, Column: 5
-  push qword [get_string_variables_for_data_section_string]
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1096, Column: 5
+  mov rsi, get_string_variables_for_data_section_s56 ; Pointer to string
+  push rsi
 ;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1096, Column: 19
   call c3RyLmNhdA213
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1097, Column: 5
-  mov rsi, get_string_variables_for_data_section_s64 ; Pointer to string
-  push rsi
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1097, Column: 5
+  push qword [get_string_variables_for_data_section_op_id]
 ;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1097, Column: 19
   call c3RyLmNhdA213
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1098, Column: 5
+  mov rsi, get_string_variables_for_data_section_s60 ; Pointer to string
+  push rsi
+;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1098, Column: 19
+  call c3RyLmNhdA213
 ;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1099, Column: 5
+  push qword [get_string_variables_for_data_section_string]
+;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1099, Column: 19
+  call c3RyLmNhdA213
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 1100, Column: 5
+  mov rsi, get_string_variables_for_data_section_s64 ; Pointer to string
+  push rsi
+;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1100, Column: 19
+  call c3RyLmNhdA213
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1102, Column: 5
   push qword [get_string_variables_for_data_section_assembly_code]
-;; [get_string_variables_for_data_section] INTRINSIC swap | File: compiler/asm.torth, Row: 1099, Column: 19
+;; [get_string_variables_for_data_section] INTRINSIC swap | File: compiler/asm.torth, Row: 1102, Column: 19
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1099, Column: 24
+;; [get_string_variables_for_data_section] Call str.cat | File: compiler/asm.torth, Row: 1102, Column: 24
   call c3RyLmNhdA213
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1100, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1103, Column: 5
   push qword [get_string_variables_for_data_section_assembly_code]
-;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 1100, Column: 19
+;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 1103, Column: 19
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_string_variables_for_data_section_assembly_code], rbx
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1101, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1104, Column: 5
   push qword [get_string_variables_for_data_section_index]
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1101, Column: 11
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1104, Column: 11
   mov rax, 1
   push rax
-;; [get_string_variables_for_data_section] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1101, Column: 13
+;; [get_string_variables_for_data_section] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1104, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1101, Column: 15
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1104, Column: 15
   push qword [get_string_variables_for_data_section_index]
-;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 1101, Column: 21
+;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 1104, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_string_variables_for_data_section_index], rbx
-;; [get_string_variables_for_data_section] DONE | File: compiler/asm.torth, Row: 1102, Column: 3
+;; [get_string_variables_for_data_section] DONE | File: compiler/asm.torth, Row: 1105, Column: 3
   jmp get_string_variables_for_data_section_WHILE8
 get_string_variables_for_data_section_DONE76:
-;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1103, Column: 3
+;; [get_string_variables_for_data_section] PUSH_BIND | File: compiler/asm.torth, Row: 1106, Column: 3
   push qword [get_string_variables_for_data_section_assembly_code]
 ;; [get_string_variables_for_data_section] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14527,100 +14560,77 @@ Zm9ybWF0X2VzY2FwZV9zZXF1ZW5jZXNfZm9yX25hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1106, Column: 43
+;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1109, Column: 43
   pop qword [format_escape_sequences_for_nasm_string]
-;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1107, Column: 3
-  mov rax, 9
-  push rax
-;; [format_escape_sequences_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1107, Column: 6
-;; [format_escape_sequences_for_nasm] Call char.to_string | File: compiler/asm.torth, Row: 1107, Column: 11
-  call Y2hhci50b19zdHJpbm213
-;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1108, Column: 3
-  mov rax, 10
-  push rax
-;; [format_escape_sequences_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1108, Column: 6
-;; [format_escape_sequences_for_nasm] Call char.to_string | File: compiler/asm.torth, Row: 1108, Column: 11
-  call Y2hhci50b19zdHJpbm213
-;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1109, Column: 3
-  mov rax, 13
-  push rax
-;; [format_escape_sequences_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1109, Column: 6
-;; [format_escape_sequences_for_nasm] Call char.to_string | File: compiler/asm.torth, Row: 1109, Column: 11
-  call Y2hhci50b19zdHJpbm213
 ;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1110, Column: 3
-  mov rax, 27
+  mov rax, 9
   push rax
 ;; [format_escape_sequences_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1110, Column: 6
 ;; [format_escape_sequences_for_nasm] Call char.to_string | File: compiler/asm.torth, Row: 1110, Column: 11
   call Y2hhci50b19zdHJpbm213
 ;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1111, Column: 3
-  mov rax, 34
+  mov rax, 10
   push rax
 ;; [format_escape_sequences_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1111, Column: 6
 ;; [format_escape_sequences_for_nasm] Call char.to_string | File: compiler/asm.torth, Row: 1111, Column: 11
   call Y2hhci50b19zdHJpbm213
-;; [format_escape_sequences_for_nasm] TAKE | File: compiler/asm.torth, Row: 1112, Column: 3
-;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1113, Column: 5
-  pop qword [format_escape_sequences_for_nasm_DoubleQuote]
-;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1114, Column: 5
-  pop qword [format_escape_sequences_for_nasm_Escape]
-;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1115, Column: 5
-  pop qword [format_escape_sequences_for_nasm_CR]
+;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1112, Column: 3
+  mov rax, 13
+  push rax
+;; [format_escape_sequences_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1112, Column: 6
+;; [format_escape_sequences_for_nasm] Call char.to_string | File: compiler/asm.torth, Row: 1112, Column: 11
+  call Y2hhci50b19zdHJpbm213
+;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1113, Column: 3
+  mov rax, 27
+  push rax
+;; [format_escape_sequences_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1113, Column: 6
+;; [format_escape_sequences_for_nasm] Call char.to_string | File: compiler/asm.torth, Row: 1113, Column: 11
+  call Y2hhci50b19zdHJpbm213
+;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1114, Column: 3
+  mov rax, 34
+  push rax
+;; [format_escape_sequences_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1114, Column: 6
+;; [format_escape_sequences_for_nasm] Call char.to_string | File: compiler/asm.torth, Row: 1114, Column: 11
+  call Y2hhci50b19zdHJpbm213
+;; [format_escape_sequences_for_nasm] TAKE | File: compiler/asm.torth, Row: 1115, Column: 3
 ;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1116, Column: 5
-  pop qword [format_escape_sequences_for_nasm_LF]
+  pop qword [format_escape_sequences_for_nasm_DoubleQuote]
 ;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1117, Column: 5
+  pop qword [format_escape_sequences_for_nasm_Escape]
+;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1118, Column: 5
+  pop qword [format_escape_sequences_for_nasm_CR]
+;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1119, Column: 5
+  pop qword [format_escape_sequences_for_nasm_LF]
+;; [format_escape_sequences_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1120, Column: 5
   pop qword [format_escape_sequences_for_nasm_Tab]
-;; [format_escape_sequences_for_nasm] IN | File: compiler/asm.torth, Row: 1118, Column: 3
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1121, Column: 3
-  push qword [format_escape_sequences_for_nasm_DoubleQuote]
-;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1121, Column: 15
-  mov rsi, format_escape_sequences_for_nasm_s24 ; Pointer to string
-  push rsi
-;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1121, Column: 21
-  call c3RyLmNhdA213
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1121, Column: 29
-  push qword [format_escape_sequences_for_nasm_DoubleQuote]
-;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1121, Column: 41
-  call c3RyLmNhdA213
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1122, Column: 3
-  push qword [format_escape_sequences_for_nasm_Tab]
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1122, Column: 7
-  push qword [format_escape_sequences_for_nasm_string]
-;; [format_escape_sequences_for_nasm] Call str.replace_all | File: compiler/asm.torth, Row: 1122, Column: 14
-  call c3RyLnJlcGxhY2VfYW216
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1122, Column: 30
-  push qword [format_escape_sequences_for_nasm_string]
-;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1122, Column: 37
-  pop rax  ; Old value
-  pop rbx  ; New value
-  mov [format_escape_sequences_for_nasm_string], rbx
+;; [format_escape_sequences_for_nasm] IN | File: compiler/asm.torth, Row: 1121, Column: 3
 ;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1124, Column: 3
   push qword [format_escape_sequences_for_nasm_DoubleQuote]
 ;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1124, Column: 15
-  mov rsi, format_escape_sequences_for_nasm_s34 ; Pointer to string
+  mov rsi, format_escape_sequences_for_nasm_s24 ; Pointer to string
   push rsi
-;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1124, Column: 22
+;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1124, Column: 21
   call c3RyLmNhdA213
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1124, Column: 30
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1124, Column: 29
   push qword [format_escape_sequences_for_nasm_DoubleQuote]
-;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1124, Column: 42
+;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1124, Column: 41
   call c3RyLmNhdA213
 ;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1125, Column: 3
-  push qword [format_escape_sequences_for_nasm_LF]
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1125, Column: 6
+  push qword [format_escape_sequences_for_nasm_Tab]
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1125, Column: 7
   push qword [format_escape_sequences_for_nasm_string]
-;; [format_escape_sequences_for_nasm] Call str.replace_all | File: compiler/asm.torth, Row: 1125, Column: 13
+;; [format_escape_sequences_for_nasm] Call str.replace_all | File: compiler/asm.torth, Row: 1125, Column: 14
   call c3RyLnJlcGxhY2VfYW216
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1125, Column: 29
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1125, Column: 30
   push qword [format_escape_sequences_for_nasm_string]
-;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1125, Column: 36
+;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1125, Column: 37
   pop rax  ; Old value
   pop rbx  ; New value
   mov [format_escape_sequences_for_nasm_string], rbx
 ;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1127, Column: 3
   push qword [format_escape_sequences_for_nasm_DoubleQuote]
 ;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1127, Column: 15
-  mov rsi, format_escape_sequences_for_nasm_s44 ; Pointer to string
+  mov rsi, format_escape_sequences_for_nasm_s34 ; Pointer to string
   push rsi
 ;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1127, Column: 22
   call c3RyLmNhdA213
@@ -14629,7 +14639,7 @@ Zm9ybWF0X2VzY2FwZV9zZXF1ZW5jZXNfZm9yX25hc2224:
 ;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1127, Column: 42
   call c3RyLmNhdA213
 ;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1128, Column: 3
-  push qword [format_escape_sequences_for_nasm_CR]
+  push qword [format_escape_sequences_for_nasm_LF]
 ;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1128, Column: 6
   push qword [format_escape_sequences_for_nasm_string]
 ;; [format_escape_sequences_for_nasm] Call str.replace_all | File: compiler/asm.torth, Row: 1128, Column: 13
@@ -14643,7 +14653,7 @@ Zm9ybWF0X2VzY2FwZV9zZXF1ZW5jZXNfZm9yX25hc2224:
 ;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1130, Column: 3
   push qword [format_escape_sequences_for_nasm_DoubleQuote]
 ;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1130, Column: 15
-  mov rsi, format_escape_sequences_for_nasm_s54 ; Pointer to string
+  mov rsi, format_escape_sequences_for_nasm_s44 ; Pointer to string
   push rsi
 ;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1130, Column: 22
   call c3RyLmNhdA213
@@ -14652,10 +14662,33 @@ Zm9ybWF0X2VzY2FwZV9zZXF1ZW5jZXNfZm9yX25hc2224:
 ;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1130, Column: 42
   call c3RyLmNhdA213
 ;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1131, Column: 3
-  push qword [format_escape_sequences_for_nasm_Escape]
-;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1131, Column: 10
+  push qword [format_escape_sequences_for_nasm_CR]
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1131, Column: 6
   push qword [format_escape_sequences_for_nasm_string]
-;; [format_escape_sequences_for_nasm] Call str.replace_all | File: compiler/asm.torth, Row: 1131, Column: 17
+;; [format_escape_sequences_for_nasm] Call str.replace_all | File: compiler/asm.torth, Row: 1131, Column: 13
+  call c3RyLnJlcGxhY2VfYW216
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1131, Column: 29
+  push qword [format_escape_sequences_for_nasm_string]
+;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1131, Column: 36
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [format_escape_sequences_for_nasm_string], rbx
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1133, Column: 3
+  push qword [format_escape_sequences_for_nasm_DoubleQuote]
+;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1133, Column: 15
+  mov rsi, format_escape_sequences_for_nasm_s54 ; Pointer to string
+  push rsi
+;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1133, Column: 22
+  call c3RyLmNhdA213
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1133, Column: 30
+  push qword [format_escape_sequences_for_nasm_DoubleQuote]
+;; [format_escape_sequences_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1133, Column: 42
+  call c3RyLmNhdA213
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1134, Column: 3
+  push qword [format_escape_sequences_for_nasm_Escape]
+;; [format_escape_sequences_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1134, Column: 10
+  push qword [format_escape_sequences_for_nasm_string]
+;; [format_escape_sequences_for_nasm] Call str.replace_all | File: compiler/asm.torth, Row: 1134, Column: 17
   call c3RyLnJlcGxhY2VfYW216
 ;; [format_escape_sequences_for_nasm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14670,38 +14703,38 @@ Z2V0X2Z1bmN0aW9uX3N0YXJ0X2FzbQ224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_function_start_asm] POP_BIND | File: compiler/asm.torth, Row: 1137, Column: 33
+;; [get_function_start_asm] POP_BIND | File: compiler/asm.torth, Row: 1140, Column: 33
   pop qword [get_function_start_asm_function_name]
-;; [get_function_start_asm] IF | File: compiler/asm.torth, Row: 1139, Column: 3
-;; [get_function_start_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1139, Column: 6
+;; [get_function_start_asm] IF | File: compiler/asm.torth, Row: 1142, Column: 3
+;; [get_function_start_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1142, Column: 6
   push qword [get_function_start_asm_function_name]
-;; [get_function_start_asm] Call str.copy | File: compiler/asm.torth, Row: 1139, Column: 20
+;; [get_function_start_asm] Call str.copy | File: compiler/asm.torth, Row: 1142, Column: 20
   call c3RyLmNvcH233
-;; [get_function_start_asm] Call str.upper | File: compiler/asm.torth, Row: 1139, Column: 29
+;; [get_function_start_asm] Call str.upper | File: compiler/asm.torth, Row: 1142, Column: 29
   call c3RyLnVwcG215
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1139, Column: 39
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1142, Column: 39
   mov rsi, get_function_start_asm_s5 ; Pointer to string
   push rsi
-;; [get_function_start_asm] Call streq | File: compiler/asm.torth, Row: 1139, Column: 46
+;; [get_function_start_asm] Call streq | File: compiler/asm.torth, Row: 1142, Column: 46
   call c3RyZX214
-;; [get_function_start_asm] DO | File: compiler/asm.torth, Row: 1139, Column: 52
+;; [get_function_start_asm] DO | File: compiler/asm.torth, Row: 1142, Column: 52
   pop rax
   test rax, rax
   jz get_function_start_asm_ENDIF14
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1140, Column: 5
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1143, Column: 5
   mov rsi, get_function_start_asm_s8 ; Pointer to string
   push rsi
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1141, Column: 5
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1144, Column: 5
   mov rsi, get_function_start_asm_s9 ; Pointer to string
   push rsi
-;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1141, Column: 75
+;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1144, Column: 75
   call c3RyLmNhdA213
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1142, Column: 5
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1145, Column: 5
   mov rsi, get_function_start_asm_s11 ; Pointer to string
   push rsi
-;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1142, Column: 75
+;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1145, Column: 75
   call c3RyLmNhdA213
-;; [get_function_start_asm] RETURN | File: compiler/asm.torth, Row: 1143, Column: 5
+;; [get_function_start_asm] RETURN | File: compiler/asm.torth, Row: 1146, Column: 5
 ;; [get_function_start_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -14709,45 +14742,45 @@ Z2V0X2Z1bmN0aW9uX3N0YXJ0X2FzbQ224:
   push qword [rax]
   ret
 
-;; [get_function_start_asm] ENDIF | File: compiler/asm.torth, Row: 1144, Column: 3
+;; [get_function_start_asm] ENDIF | File: compiler/asm.torth, Row: 1147, Column: 3
 get_function_start_asm_ENDIF14:
-;; [get_function_start_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1146, Column: 3
+;; [get_function_start_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1149, Column: 3
   push qword [get_function_start_asm_function_name]
-;; [get_function_start_asm] Call get_valid_label_for_nasm | File: compiler/asm.torth, Row: 1146, Column: 17
+;; [get_function_start_asm] Call get_valid_label_for_nasm | File: compiler/asm.torth, Row: 1149, Column: 17
   call Z2V0X3ZhbGlkX2xhYmVsX2Zvcl9uYX224
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1147, Column: 3
-  mov rsi, get_function_start_asm_s17 ; Pointer to string
-  push rsi
-;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1147, Column: 75
-  call c3RyLmNhdA213
-;; [get_function_start_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1148, Column: 3
-  push qword [get_function_start_asm_function_name]
-;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1148, Column: 75
-  call c3RyLmNhdA213
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1149, Column: 3
-  mov rsi, get_function_start_asm_s21 ; Pointer to string
-  push rsi
-;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1149, Column: 75
-  call c3RyLmNhdA213
 ;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1150, Column: 3
-  mov rsi, get_function_start_asm_s23 ; Pointer to string
+  mov rsi, get_function_start_asm_s17 ; Pointer to string
   push rsi
 ;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1150, Column: 75
   call c3RyLmNhdA213
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1151, Column: 3
-  mov rsi, get_function_start_asm_s25 ; Pointer to string
-  push rsi
+;; [get_function_start_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1151, Column: 3
+  push qword [get_function_start_asm_function_name]
 ;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1151, Column: 75
   call c3RyLmNhdA213
 ;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1152, Column: 3
-  mov rsi, get_function_start_asm_s27 ; Pointer to string
+  mov rsi, get_function_start_asm_s21 ; Pointer to string
   push rsi
 ;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1152, Column: 75
   call c3RyLmNhdA213
 ;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1153, Column: 3
-  mov rsi, get_function_start_asm_s29 ; Pointer to string
+  mov rsi, get_function_start_asm_s23 ; Pointer to string
   push rsi
 ;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1153, Column: 75
+  call c3RyLmNhdA213
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1154, Column: 3
+  mov rsi, get_function_start_asm_s25 ; Pointer to string
+  push rsi
+;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1154, Column: 75
+  call c3RyLmNhdA213
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1155, Column: 3
+  mov rsi, get_function_start_asm_s27 ; Pointer to string
+  push rsi
+;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1155, Column: 75
+  call c3RyLmNhdA213
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1156, Column: 3
+  mov rsi, get_function_start_asm_s29 ; Pointer to string
+  push rsi
+;; [get_function_start_asm] Call str.cat | File: compiler/asm.torth, Row: 1156, Column: 75
   call c3RyLmNhdA213
 ;; [get_function_start_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14762,27 +14795,27 @@ Z2V0X2Z1bmN0aW9uX2VuZF9hc2224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_function_end_asm] POP_BIND | File: compiler/asm.torth, Row: 1159, Column: 31
+;; [get_function_end_asm] POP_BIND | File: compiler/asm.torth, Row: 1162, Column: 31
   pop qword [get_function_end_asm_function_name]
-;; [get_function_end_asm] IF | File: compiler/asm.torth, Row: 1161, Column: 3
-;; [get_function_end_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1161, Column: 6
+;; [get_function_end_asm] IF | File: compiler/asm.torth, Row: 1164, Column: 3
+;; [get_function_end_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1164, Column: 6
   push qword [get_function_end_asm_function_name]
-;; [get_function_end_asm] Call str.copy | File: compiler/asm.torth, Row: 1161, Column: 20
+;; [get_function_end_asm] Call str.copy | File: compiler/asm.torth, Row: 1164, Column: 20
   call c3RyLmNvcH233
-;; [get_function_end_asm] Call str.upper | File: compiler/asm.torth, Row: 1161, Column: 29
+;; [get_function_end_asm] Call str.upper | File: compiler/asm.torth, Row: 1164, Column: 29
   call c3RyLnVwcG215
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1161, Column: 39
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1164, Column: 39
   mov rsi, get_function_end_asm_s5 ; Pointer to string
   push rsi
-;; [get_function_end_asm] Call streq | File: compiler/asm.torth, Row: 1161, Column: 46
+;; [get_function_end_asm] Call streq | File: compiler/asm.torth, Row: 1164, Column: 46
   call c3RyZX214
-;; [get_function_end_asm] DO | File: compiler/asm.torth, Row: 1161, Column: 52
+;; [get_function_end_asm] DO | File: compiler/asm.torth, Row: 1164, Column: 52
   pop rax
   test rax, rax
   jz get_function_end_asm_ENDIF10
-;; [get_function_end_asm] Call get_exit_assembly | File: compiler/asm.torth, Row: 1162, Column: 5
+;; [get_function_end_asm] Call get_exit_assembly | File: compiler/asm.torth, Row: 1165, Column: 5
   call Z2V0X2V4aXRfYXNzZW1ibH229
-;; [get_function_end_asm] RETURN | File: compiler/asm.torth, Row: 1162, Column: 23
+;; [get_function_end_asm] RETURN | File: compiler/asm.torth, Row: 1165, Column: 23
 ;; [get_function_end_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -14790,44 +14823,44 @@ Z2V0X2Z1bmN0aW9uX2VuZF9hc2224:
   push qword [rax]
   ret
 
-;; [get_function_end_asm] ENDIF | File: compiler/asm.torth, Row: 1163, Column: 3
+;; [get_function_end_asm] ENDIF | File: compiler/asm.torth, Row: 1166, Column: 3
 get_function_end_asm_ENDIF10:
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1165, Column: 3
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1168, Column: 3
   mov rsi, get_function_end_asm_s11 ; Pointer to string
   push rsi
-;; [get_function_end_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1166, Column: 3
+;; [get_function_end_asm] PUSH_BIND | File: compiler/asm.torth, Row: 1169, Column: 3
   push qword [get_function_end_asm_function_name]
-;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1166, Column: 75
-  call c3RyLmNhdA213
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1167, Column: 3
-  mov rsi, get_function_end_asm_s14 ; Pointer to string
-  push rsi
-;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1167, Column: 75
-  call c3RyLmNhdA213
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1168, Column: 3
-  mov rsi, get_function_end_asm_s16 ; Pointer to string
-  push rsi
-;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1168, Column: 75
-  call c3RyLmNhdA213
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1169, Column: 3
-  mov rsi, get_function_end_asm_s18 ; Pointer to string
-  push rsi
 ;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1169, Column: 75
   call c3RyLmNhdA213
 ;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1170, Column: 3
-  mov rsi, get_function_end_asm_s20 ; Pointer to string
+  mov rsi, get_function_end_asm_s14 ; Pointer to string
   push rsi
 ;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1170, Column: 75
   call c3RyLmNhdA213
 ;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1171, Column: 3
-  mov rsi, get_function_end_asm_s22 ; Pointer to string
+  mov rsi, get_function_end_asm_s16 ; Pointer to string
   push rsi
 ;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1171, Column: 75
   call c3RyLmNhdA213
 ;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1172, Column: 3
-  mov rsi, get_function_end_asm_s24 ; Pointer to string
+  mov rsi, get_function_end_asm_s18 ; Pointer to string
   push rsi
 ;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1172, Column: 75
+  call c3RyLmNhdA213
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1173, Column: 3
+  mov rsi, get_function_end_asm_s20 ; Pointer to string
+  push rsi
+;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1173, Column: 75
+  call c3RyLmNhdA213
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1174, Column: 3
+  mov rsi, get_function_end_asm_s22 ; Pointer to string
+  push rsi
+;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1174, Column: 75
+  call c3RyLmNhdA213
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1175, Column: 3
+  mov rsi, get_function_end_asm_s24 ; Pointer to string
+  push rsi
+;; [get_function_end_asm] Call str.cat | File: compiler/asm.torth, Row: 1175, Column: 75
   call c3RyLmNhdA213
 ;; [get_function_end_asm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14842,52 +14875,52 @@ YXBwZW5kX3Byb2dyYW1zX2Fzc2VtYmx5X2NvZG201:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1175, Column: 40
+;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1178, Column: 40
   pop qword [append_programs_assembly_code_file_name]
-;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1175, Column: 54
+;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1178, Column: 54
   pop qword [append_programs_assembly_code_program]
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1176, Column: 3
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1179, Column: 3
   push qword [append_programs_assembly_code_program]
-;; [append_programs_assembly_code] Call List.len | File: compiler/asm.torth, Row: 1176, Column: 11
+;; [append_programs_assembly_code] Call List.len | File: compiler/asm.torth, Row: 1179, Column: 11
   call TGlzdC5sZW211
-;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1177, Column: 3
+;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1180, Column: 3
   mov rax, 0
   push rax
-;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1178, Column: 3
-;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1178, Column: 8
+;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1181, Column: 3
+;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1181, Column: 8
   pop qword [append_programs_assembly_code_index]
-;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1178, Column: 14
+;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1181, Column: 14
   pop qword [append_programs_assembly_code_program.len]
-;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1178, Column: 26
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1182, Column: 3
+;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1181, Column: 26
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1185, Column: 3
   push qword [append_programs_assembly_code_program]
-;; [append_programs_assembly_code] Call List.first | File: compiler/asm.torth, Row: 1182, Column: 11
+;; [append_programs_assembly_code] Call List.first | File: compiler/asm.torth, Row: 1185, Column: 11
   call TGlzdC5maXJzdA231
-;; [append_programs_assembly_code] Call ptr.load | File: compiler/asm.torth, Row: 1182, Column: 22
+;; [append_programs_assembly_code] Call ptr.load | File: compiler/asm.torth, Row: 1185, Column: 22
   call cHRyLmxvYW197
-;; [append_programs_assembly_code] Call Op.get_function | File: compiler/asm.torth, Row: 1182, Column: 31
+;; [append_programs_assembly_code] Call Op.get_function | File: compiler/asm.torth, Row: 1185, Column: 31
   call T3AuZ2V0X2Z1bmN0aW221
-;; [append_programs_assembly_code] Call Function.get_name | File: compiler/asm.torth, Row: 1182, Column: 47
+;; [append_programs_assembly_code] Call Function.get_name | File: compiler/asm.torth, Row: 1185, Column: 47
   call RnVuY3Rpb24uZ2V0X25hbW210
-;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1183, Column: 3
-;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1183, Column: 8
+;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1186, Column: 3
+;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1186, Column: 8
   pop qword [append_programs_assembly_code_function_name]
-;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1183, Column: 22
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1186, Column: 3
+;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1186, Column: 22
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1189, Column: 3
   push qword [append_programs_assembly_code_function_name]
-;; [append_programs_assembly_code] Call get_function_start_asm | File: compiler/asm.torth, Row: 1186, Column: 17
+;; [append_programs_assembly_code] Call get_function_start_asm | File: compiler/asm.torth, Row: 1189, Column: 17
   call Z2V0X2Z1bmN0aW9uX3N0YXJ0X2FzbQ224
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1186, Column: 40
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1189, Column: 40
   push qword [append_programs_assembly_code_file_name]
-;; [append_programs_assembly_code] Call append_file | File: compiler/asm.torth, Row: 1186, Column: 50
+;; [append_programs_assembly_code] Call append_file | File: compiler/asm.torth, Row: 1189, Column: 50
   call YXBwZW5kX2ZpbG209
-;; [append_programs_assembly_code] WHILE | File: compiler/asm.torth, Row: 1189, Column: 3
+;; [append_programs_assembly_code] WHILE | File: compiler/asm.torth, Row: 1192, Column: 3
 append_programs_assembly_code_WHILE21:
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1189, Column: 9
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1192, Column: 9
   push qword [append_programs_assembly_code_index]
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1189, Column: 15
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1192, Column: 15
   push qword [append_programs_assembly_code_program.len]
-;; [append_programs_assembly_code] INTRINSIC LT | File: compiler/asm.torth, Row: 1189, Column: 27
+;; [append_programs_assembly_code] INTRINSIC LT | File: compiler/asm.torth, Row: 1192, Column: 27
   pop rax
   pop rbx
   mov rcx, 0
@@ -14895,76 +14928,76 @@ append_programs_assembly_code_WHILE21:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [append_programs_assembly_code] DO | File: compiler/asm.torth, Row: 1189, Column: 29
+;; [append_programs_assembly_code] DO | File: compiler/asm.torth, Row: 1192, Column: 29
   pop rax
   test rax, rax
   jz append_programs_assembly_code_DONE50
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1192, Column: 5
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1195, Column: 5
   push qword [append_programs_assembly_code_program]
-;; [append_programs_assembly_code] Call List.first | File: compiler/asm.torth, Row: 1192, Column: 13
+;; [append_programs_assembly_code] Call List.first | File: compiler/asm.torth, Row: 1195, Column: 13
   call TGlzdC5maXJzdA231
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1193, Column: 5
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1196, Column: 5
   push qword [append_programs_assembly_code_index]
-;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1193, Column: 11
+;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1196, Column: 11
   mov rax, 8
   push rax
-;; [append_programs_assembly_code] INTRINSIC MUL | File: compiler/asm.torth, Row: 1193, Column: 20
+;; [append_programs_assembly_code] INTRINSIC MUL | File: compiler/asm.torth, Row: 1196, Column: 20
   pop rax
   pop rbx
   mul rbx
   push rax  ; Product
-;; [append_programs_assembly_code] Call ptr+ | File: compiler/asm.torth, Row: 1193, Column: 22
+;; [append_programs_assembly_code] Call ptr+ | File: compiler/asm.torth, Row: 1196, Column: 22
   call cHRyKw157
-;; [append_programs_assembly_code] Call ptr.load | File: compiler/asm.torth, Row: 1193, Column: 27
+;; [append_programs_assembly_code] Call ptr.load | File: compiler/asm.torth, Row: 1196, Column: 27
   call cHRyLmxvYW197
-;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1194, Column: 5
-;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1194, Column: 10
+;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1197, Column: 5
+;; [append_programs_assembly_code] POP_BIND | File: compiler/asm.torth, Row: 1197, Column: 10
   pop qword [append_programs_assembly_code_op]
-;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1194, Column: 13
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1197, Column: 5
-  push qword [append_programs_assembly_code_op]
-;; [append_programs_assembly_code] Call get_op_comment_asm | File: compiler/asm.torth, Row: 1197, Column: 8
-  call Z2V0X29wX2NvbW1lbnRfYX224
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1197, Column: 27
-  push qword [append_programs_assembly_code_file_name]
-;; [append_programs_assembly_code] Call append_file | File: compiler/asm.torth, Row: 1197, Column: 37
-  call YXBwZW5kX2ZpbG209
+;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1197, Column: 13
 ;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1200, Column: 5
-  push qword [append_programs_assembly_code_program]
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1200, Column: 13
   push qword [append_programs_assembly_code_op]
-;; [append_programs_assembly_code] Call get_op_asm | File: compiler/asm.torth, Row: 1200, Column: 16
-  call Z2V0X29wX2FzbQ224
+;; [append_programs_assembly_code] Call get_op_comment_asm | File: compiler/asm.torth, Row: 1200, Column: 8
+  call Z2V0X29wX2NvbW1lbnRfYX224
 ;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1200, Column: 27
   push qword [append_programs_assembly_code_file_name]
 ;; [append_programs_assembly_code] Call append_file | File: compiler/asm.torth, Row: 1200, Column: 37
   call YXBwZW5kX2ZpbG209
 ;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1203, Column: 5
+  push qword [append_programs_assembly_code_program]
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1203, Column: 13
+  push qword [append_programs_assembly_code_op]
+;; [append_programs_assembly_code] Call get_op_asm | File: compiler/asm.torth, Row: 1203, Column: 16
+  call Z2V0X29wX2FzbQ224
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1203, Column: 27
+  push qword [append_programs_assembly_code_file_name]
+;; [append_programs_assembly_code] Call append_file | File: compiler/asm.torth, Row: 1203, Column: 37
+  call YXBwZW5kX2ZpbG209
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1206, Column: 5
   push qword [append_programs_assembly_code_index]
-;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1203, Column: 11
+;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1206, Column: 11
   mov rax, 1
   push rax
-;; [append_programs_assembly_code] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1203, Column: 13
+;; [append_programs_assembly_code] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1206, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1203, Column: 15
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1206, Column: 15
   push qword [append_programs_assembly_code_index]
-;; [append_programs_assembly_code] ASSIGN_BIND | File: compiler/asm.torth, Row: 1203, Column: 21
+;; [append_programs_assembly_code] ASSIGN_BIND | File: compiler/asm.torth, Row: 1206, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [append_programs_assembly_code_index], rbx
-;; [append_programs_assembly_code] DONE | File: compiler/asm.torth, Row: 1204, Column: 3
+;; [append_programs_assembly_code] DONE | File: compiler/asm.torth, Row: 1207, Column: 3
   jmp append_programs_assembly_code_WHILE21
 append_programs_assembly_code_DONE50:
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1207, Column: 3
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1210, Column: 3
   push qword [append_programs_assembly_code_function_name]
-;; [append_programs_assembly_code] Call get_function_end_asm | File: compiler/asm.torth, Row: 1207, Column: 17
+;; [append_programs_assembly_code] Call get_function_end_asm | File: compiler/asm.torth, Row: 1210, Column: 17
   call Z2V0X2Z1bmN0aW9uX2VuZF9hc2224
-;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1207, Column: 38
+;; [append_programs_assembly_code] PUSH_BIND | File: compiler/asm.torth, Row: 1210, Column: 38
   push qword [append_programs_assembly_code_file_name]
-;; [append_programs_assembly_code] Call append_file | File: compiler/asm.torth, Row: 1207, Column: 48
+;; [append_programs_assembly_code] Call append_file | File: compiler/asm.torth, Row: 1210, Column: 48
   call YXBwZW5kX2ZpbG209
 ;; [append_programs_assembly_code] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -14979,40 +15012,40 @@ Z2V0X3JlbGF0ZWRfZW5kaW207:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1213, Column: 28
+;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1216, Column: 28
   pop qword [get_related_endif_op]
-;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1213, Column: 35
+;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1216, Column: 35
   pop qword [get_related_endif_program]
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1214, Column: 3
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1217, Column: 3
   push qword [get_related_endif_op]
-;; [get_related_endif] Call Op.get_id | File: compiler/asm.torth, Row: 1214, Column: 6
+;; [get_related_endif] Call Op.get_id | File: compiler/asm.torth, Row: 1217, Column: 6
   call T3AuZ2V0X2205
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1214, Column: 16
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1217, Column: 16
   mov rax, 1
   push rax
-;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1214, Column: 18
+;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1217, Column: 18
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1215, Column: 3
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1218, Column: 3
   mov rax, 0
   push rax
-;; [get_related_endif] TAKE | File: compiler/asm.torth, Row: 1216, Column: 3
-;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1216, Column: 8
+;; [get_related_endif] TAKE | File: compiler/asm.torth, Row: 1219, Column: 3
+;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1219, Column: 8
   pop qword [get_related_endif_if_count]
-;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1216, Column: 17
+;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1219, Column: 17
   pop qword [get_related_endif_index]
-;; [get_related_endif] IN | File: compiler/asm.torth, Row: 1216, Column: 23
-;; [get_related_endif] WHILE | File: compiler/asm.torth, Row: 1218, Column: 3
+;; [get_related_endif] IN | File: compiler/asm.torth, Row: 1219, Column: 23
+;; [get_related_endif] WHILE | File: compiler/asm.torth, Row: 1221, Column: 3
 get_related_endif_WHILE11:
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1218, Column: 9
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1221, Column: 9
   push qword [get_related_endif_index]
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1218, Column: 15
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1221, Column: 15
   push qword [get_related_endif_program]
-;; [get_related_endif] Call List.len | File: compiler/asm.torth, Row: 1218, Column: 23
+;; [get_related_endif] Call List.len | File: compiler/asm.torth, Row: 1221, Column: 23
   call TGlzdC5sZW211
-;; [get_related_endif] INTRINSIC LT | File: compiler/asm.torth, Row: 1218, Column: 32
+;; [get_related_endif] INTRINSIC LT | File: compiler/asm.torth, Row: 1221, Column: 32
   pop rax
   pop rbx
   mov rcx, 0
@@ -15020,37 +15053,37 @@ get_related_endif_WHILE11:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1218, Column: 34
+;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1221, Column: 34
   pop rax
   test rax, rax
   jz get_related_endif_DONE62
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1219, Column: 5
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1222, Column: 5
   push qword [get_related_endif_index]
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1219, Column: 11
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1222, Column: 11
   push qword [get_related_endif_program]
-;; [get_related_endif] Call List.nth | File: compiler/asm.torth, Row: 1219, Column: 19
+;; [get_related_endif] Call List.nth | File: compiler/asm.torth, Row: 1222, Column: 19
   call TGlzdC5udG220
-;; [get_related_endif] Call ptr.load | File: compiler/asm.torth, Row: 1219, Column: 28
+;; [get_related_endif] Call ptr.load | File: compiler/asm.torth, Row: 1222, Column: 28
   call cHRyLmxvYW197
-;; [get_related_endif] INTRINSIC dup | File: compiler/asm.torth, Row: 1220, Column: 5
+;; [get_related_endif] INTRINSIC dup | File: compiler/asm.torth, Row: 1223, Column: 5
   pop rax
   push rax
   push rax
-;; [get_related_endif] Call Op.get_type | File: compiler/asm.torth, Row: 1220, Column: 9
+;; [get_related_endif] Call Op.get_type | File: compiler/asm.torth, Row: 1223, Column: 9
   call T3AuZ2V0X3R5cG213
-;; [get_related_endif] TAKE | File: compiler/asm.torth, Row: 1221, Column: 5
-;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1221, Column: 10
+;; [get_related_endif] TAKE | File: compiler/asm.torth, Row: 1224, Column: 5
+;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1224, Column: 10
   pop qword [get_related_endif_current_op_type]
-;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1221, Column: 26
+;; [get_related_endif] POP_BIND | File: compiler/asm.torth, Row: 1224, Column: 26
   pop qword [get_related_endif_current_op]
-;; [get_related_endif] IN | File: compiler/asm.torth, Row: 1221, Column: 37
-;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1224, Column: 5
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1224, Column: 8
+;; [get_related_endif] IN | File: compiler/asm.torth, Row: 1224, Column: 37
+;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1227, Column: 5
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1227, Column: 8
   push qword [get_related_endif_current_op_type]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1224, Column: 24
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1227, Column: 24
   mov rax, 14
   push rax
-;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1224, Column: 37
+;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1227, Column: 37
   pop rax
   pop rbx
   mov rcx, 0
@@ -15058,17 +15091,17 @@ get_related_endif_WHILE11:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1224, Column: 40
+;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1227, Column: 40
   pop rax
   test rax, rax
   jz get_related_endif_ENDIF45
-;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1225, Column: 7
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1225, Column: 10
+;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1228, Column: 7
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1228, Column: 10
   push qword [get_related_endif_if_count]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1225, Column: 19
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1228, Column: 19
   mov rax, 0
   push rax
-;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1225, Column: 21
+;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1228, Column: 21
   pop rax
   pop rbx
   mov rcx, 0
@@ -15076,13 +15109,13 @@ get_related_endif_WHILE11:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1225, Column: 24
+;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1228, Column: 24
   pop rax
   test rax, rax
   jz get_related_endif_ENDIF39
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1226, Column: 9
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1229, Column: 9
   push qword [get_related_endif_current_op]
-;; [get_related_endif] RETURN | File: compiler/asm.torth, Row: 1226, Column: 20
+;; [get_related_endif] RETURN | File: compiler/asm.torth, Row: 1229, Column: 20
 ;; [get_related_endif] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -15090,33 +15123,33 @@ get_related_endif_WHILE11:
   push qword [rax]
   ret
 
-;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1227, Column: 7
+;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1230, Column: 7
 get_related_endif_ENDIF39:
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1228, Column: 7
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1231, Column: 7
   push qword [get_related_endif_if_count]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1228, Column: 16
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1231, Column: 16
   mov rax, 1
   push rax
-;; [get_related_endif] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1228, Column: 18
+;; [get_related_endif] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1231, Column: 18
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1228, Column: 20
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1231, Column: 20
   push qword [get_related_endif_if_count]
-;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1228, Column: 29
+;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1231, Column: 29
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_related_endif_if_count], rbx
-;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1229, Column: 5
+;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1232, Column: 5
 get_related_endif_ENDIF45:
-;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1232, Column: 5
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1232, Column: 8
+;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1235, Column: 5
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1235, Column: 8
   push qword [get_related_endif_current_op_type]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1232, Column: 24
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1235, Column: 24
   mov rax, 17
   push rax
-;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1232, Column: 34
+;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1235, Column: 34
   pop rax
   pop rbx
   mov rcx, 0
@@ -15124,73 +15157,77 @@ get_related_endif_ENDIF45:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1232, Column: 37
+;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1235, Column: 37
   pop rax
   test rax, rax
   jz get_related_endif_ENDIF56
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1233, Column: 7
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1236, Column: 7
   push qword [get_related_endif_if_count]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1233, Column: 16
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1236, Column: 16
   mov rax, 1
   push rax
-;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1233, Column: 18
+;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1236, Column: 18
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1233, Column: 20
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1236, Column: 20
   push qword [get_related_endif_if_count]
-;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1233, Column: 29
+;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1236, Column: 29
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_related_endif_if_count], rbx
-;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1234, Column: 5
+;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1237, Column: 5
 get_related_endif_ENDIF56:
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1236, Column: 5
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1239, Column: 5
   push qword [get_related_endif_index]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1236, Column: 11
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1239, Column: 11
   mov rax, 1
   push rax
-;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1236, Column: 13
+;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1239, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1236, Column: 15
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1239, Column: 15
   push qword [get_related_endif_index]
-;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1236, Column: 21
+;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1239, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_related_endif_index], rbx
-;; [get_related_endif] DONE | File: compiler/asm.torth, Row: 1237, Column: 3
+;; [get_related_endif] DONE | File: compiler/asm.torth, Row: 1240, Column: 3
   jmp get_related_endif_WHILE11
 get_related_endif_DONE62:
-;; [get_related_endif] PUSH_STR | File: compiler/asm.torth, Row: 1240, Column: 3
-  mov rsi, get_related_endif_s63 ; Pointer to string
-  push rsi
-;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1241, Column: 3
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1243, Column: 3
   push qword [get_related_endif_op]
-;; [get_related_endif] Call Op.get_token | File: compiler/asm.torth, Row: 1241, Column: 6
+;; [get_related_endif] Call Op.get_token | File: compiler/asm.torth, Row: 1243, Column: 6
   call T3AuZ2V0X3Rva2211
-;; [get_related_endif] Call Token.get_value | File: compiler/asm.torth, Row: 1241, Column: 19
-  call VG9rZW4uZ2V0X3ZhbH218
-;; [get_related_endif] Call str.copy | File: compiler/asm.torth, Row: 1241, Column: 35
-  call c3RyLmNvcH233
-;; [get_related_endif] Call str.upper | File: compiler/asm.torth, Row: 1241, Column: 44
-  call c3RyLnVwcG215
-;; [get_related_endif] PUSH_STR | File: compiler/asm.torth, Row: 1242, Column: 3
-  mov rsi, get_related_endif_s69 ; Pointer to string
+;; [get_related_endif] PUSH_STR | File: compiler/asm.torth, Row: 1244, Column: 3
+  mov rsi, get_related_endif_s65 ; Pointer to string
   push rsi
-;; [get_related_endif] INTRINSIC swap | File: compiler/asm.torth, Row: 1242, Column: 16
+;; [get_related_endif] PUSH_BIND | File: compiler/asm.torth, Row: 1245, Column: 3
+  push qword [get_related_endif_op]
+;; [get_related_endif] Call Op.get_token | File: compiler/asm.torth, Row: 1245, Column: 6
+  call T3AuZ2V0X3Rva2211
+;; [get_related_endif] Call Token.get_value | File: compiler/asm.torth, Row: 1245, Column: 19
+  call VG9rZW4uZ2V0X3ZhbH218
+;; [get_related_endif] Call str.copy | File: compiler/asm.torth, Row: 1245, Column: 35
+  call c3RyLmNvcH233
+;; [get_related_endif] Call str.upper | File: compiler/asm.torth, Row: 1245, Column: 44
+  call c3RyLnVwcG215
+;; [get_related_endif] PUSH_STR | File: compiler/asm.torth, Row: 1246, Column: 3
+  mov rsi, get_related_endif_s71 ; Pointer to string
+  push rsi
+;; [get_related_endif] INTRINSIC swap | File: compiler/asm.torth, Row: 1246, Column: 16
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_related_endif] Call str.cat | File: compiler/asm.torth, Row: 1242, Column: 21
+;; [get_related_endif] Call str.cat | File: compiler/asm.torth, Row: 1246, Column: 21
   call c3RyLmNhdA213
-;; [get_related_endif] Call CompilerError | File: compiler/asm.torth, Row: 1242, Column: 29
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_related_endif] Call NULLPTR | File: compiler/asm.torth, Row: 1242, Column: 43
+;; [get_related_endif] Call CompilerErrorWithToken | File: compiler/asm.torth, Row: 1246, Column: 29
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_related_endif] Call NULLPTR | File: compiler/asm.torth, Row: 1246, Column: 52
   call TlVMTFBUUg166
 ;; [get_related_endif] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -15205,39 +15242,39 @@ Z2V0X3BhcmVudF93aGlsZQ209:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1248, Column: 27
+;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1252, Column: 27
   pop qword [get_parent_while_op]
-;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1248, Column: 34
+;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1252, Column: 34
   pop qword [get_parent_while_program]
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1249, Column: 3
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1253, Column: 3
   push qword [get_parent_while_op]
-;; [get_parent_while] Call Op.get_id | File: compiler/asm.torth, Row: 1249, Column: 6
+;; [get_parent_while] Call Op.get_id | File: compiler/asm.torth, Row: 1253, Column: 6
   call T3AuZ2V0X2205
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1249, Column: 16
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1253, Column: 16
   mov rax, 1
   push rax
-;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1249, Column: 18
+;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1253, Column: 18
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1250, Column: 3
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1254, Column: 3
   mov rax, 0
   push rax
-;; [get_parent_while] TAKE | File: compiler/asm.torth, Row: 1251, Column: 3
-;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1251, Column: 8
+;; [get_parent_while] TAKE | File: compiler/asm.torth, Row: 1255, Column: 3
+;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1255, Column: 8
   pop qword [get_parent_while_done_count]
-;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1251, Column: 19
+;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1255, Column: 19
   pop qword [get_parent_while_index]
-;; [get_parent_while] IN | File: compiler/asm.torth, Row: 1251, Column: 25
-;; [get_parent_while] WHILE | File: compiler/asm.torth, Row: 1253, Column: 3
+;; [get_parent_while] IN | File: compiler/asm.torth, Row: 1255, Column: 25
+;; [get_parent_while] WHILE | File: compiler/asm.torth, Row: 1257, Column: 3
 get_parent_while_WHILE11:
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1253, Column: 9
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1257, Column: 9
   push qword [get_parent_while_index]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1253, Column: 15
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1257, Column: 15
   mov rax, -1
   push rax
-;; [get_parent_while] INTRINSIC GT | File: compiler/asm.torth, Row: 1253, Column: 18
+;; [get_parent_while] INTRINSIC GT | File: compiler/asm.torth, Row: 1257, Column: 18
   pop rax
   pop rbx
   mov rcx, 0
@@ -15245,37 +15282,37 @@ get_parent_while_WHILE11:
   cmp rbx, rax
   cmovg rcx, rdx
   push rcx
-;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1253, Column: 20
+;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1257, Column: 20
   pop rax
   test rax, rax
   jz get_parent_while_DONE61
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1254, Column: 5
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1258, Column: 5
   push qword [get_parent_while_index]
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1254, Column: 11
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1258, Column: 11
   push qword [get_parent_while_program]
-;; [get_parent_while] Call List.nth | File: compiler/asm.torth, Row: 1254, Column: 19
+;; [get_parent_while] Call List.nth | File: compiler/asm.torth, Row: 1258, Column: 19
   call TGlzdC5udG220
-;; [get_parent_while] Call ptr.load | File: compiler/asm.torth, Row: 1254, Column: 28
+;; [get_parent_while] Call ptr.load | File: compiler/asm.torth, Row: 1258, Column: 28
   call cHRyLmxvYW197
-;; [get_parent_while] INTRINSIC dup | File: compiler/asm.torth, Row: 1255, Column: 5
+;; [get_parent_while] INTRINSIC dup | File: compiler/asm.torth, Row: 1259, Column: 5
   pop rax
   push rax
   push rax
-;; [get_parent_while] Call Op.get_type | File: compiler/asm.torth, Row: 1255, Column: 9
+;; [get_parent_while] Call Op.get_type | File: compiler/asm.torth, Row: 1259, Column: 9
   call T3AuZ2V0X3R5cG213
-;; [get_parent_while] TAKE | File: compiler/asm.torth, Row: 1256, Column: 5
-;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1256, Column: 10
+;; [get_parent_while] TAKE | File: compiler/asm.torth, Row: 1260, Column: 5
+;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1260, Column: 10
   pop qword [get_parent_while_current_op_type]
-;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1256, Column: 26
+;; [get_parent_while] POP_BIND | File: compiler/asm.torth, Row: 1260, Column: 26
   pop qword [get_parent_while_current_op]
-;; [get_parent_while] IN | File: compiler/asm.torth, Row: 1256, Column: 37
-;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1259, Column: 5
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1259, Column: 8
+;; [get_parent_while] IN | File: compiler/asm.torth, Row: 1260, Column: 37
+;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1263, Column: 5
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1263, Column: 8
   push qword [get_parent_while_current_op_type]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1259, Column: 24
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1263, Column: 24
   mov rax, 32
   push rax
-;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1259, Column: 37
+;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1263, Column: 37
   pop rax
   pop rbx
   mov rcx, 0
@@ -15283,17 +15320,17 @@ get_parent_while_WHILE11:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1259, Column: 40
+;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1263, Column: 40
   pop rax
   test rax, rax
   jz get_parent_while_ENDIF44
-;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1260, Column: 7
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1260, Column: 10
+;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1264, Column: 7
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1264, Column: 10
   push qword [get_parent_while_done_count]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1260, Column: 21
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1264, Column: 21
   mov rax, 0
   push rax
-;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1260, Column: 23
+;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1264, Column: 23
   pop rax
   pop rbx
   mov rcx, 0
@@ -15301,13 +15338,13 @@ get_parent_while_WHILE11:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1260, Column: 26
+;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1264, Column: 26
   pop rax
   test rax, rax
   jz get_parent_while_ENDIF38
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1261, Column: 9
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1265, Column: 9
   push qword [get_parent_while_current_op]
-;; [get_parent_while] RETURN | File: compiler/asm.torth, Row: 1261, Column: 20
+;; [get_parent_while] RETURN | File: compiler/asm.torth, Row: 1265, Column: 20
 ;; [get_parent_while] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -15315,33 +15352,33 @@ get_parent_while_WHILE11:
   push qword [rax]
   ret
 
-;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1262, Column: 7
+;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1266, Column: 7
 get_parent_while_ENDIF38:
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1263, Column: 7
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1267, Column: 7
   push qword [get_parent_while_done_count]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1263, Column: 18
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1267, Column: 18
   mov rax, 1
   push rax
-;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1263, Column: 20
+;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1267, Column: 20
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1263, Column: 22
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1267, Column: 22
   push qword [get_parent_while_done_count]
-;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1263, Column: 33
+;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1267, Column: 33
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_parent_while_done_count], rbx
-;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1264, Column: 5
+;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1268, Column: 5
 get_parent_while_ENDIF44:
-;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1267, Column: 5
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1267, Column: 8
+;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1271, Column: 5
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1271, Column: 8
   push qword [get_parent_while_current_op_type]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1267, Column: 24
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1271, Column: 24
   mov rax, 10
   push rax
-;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1267, Column: 36
+;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1271, Column: 36
   pop rax
   pop rbx
   mov rcx, 0
@@ -15349,73 +15386,77 @@ get_parent_while_ENDIF44:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1267, Column: 39
+;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1271, Column: 39
   pop rax
   test rax, rax
   jz get_parent_while_ENDIF55
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1268, Column: 7
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1272, Column: 7
   push qword [get_parent_while_done_count]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1268, Column: 18
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1272, Column: 18
   mov rax, 1
   push rax
-;; [get_parent_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1268, Column: 20
+;; [get_parent_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1272, Column: 20
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1268, Column: 22
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1272, Column: 22
   push qword [get_parent_while_done_count]
-;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1268, Column: 33
+;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1272, Column: 33
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_parent_while_done_count], rbx
-;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1269, Column: 5
+;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1273, Column: 5
 get_parent_while_ENDIF55:
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1271, Column: 5
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1275, Column: 5
   push qword [get_parent_while_index]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1271, Column: 11
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1275, Column: 11
   mov rax, 1
   push rax
-;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1271, Column: 13
+;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1275, Column: 13
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1271, Column: 15
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1275, Column: 15
   push qword [get_parent_while_index]
-;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1271, Column: 21
+;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1275, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_parent_while_index], rbx
-;; [get_parent_while] DONE | File: compiler/asm.torth, Row: 1272, Column: 3
+;; [get_parent_while] DONE | File: compiler/asm.torth, Row: 1276, Column: 3
   jmp get_parent_while_WHILE11
 get_parent_while_DONE61:
-;; [get_parent_while] PUSH_STR | File: compiler/asm.torth, Row: 1275, Column: 3
-  mov rsi, get_parent_while_s62 ; Pointer to string
-  push rsi
-;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1276, Column: 3
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1279, Column: 3
   push qword [get_parent_while_op]
-;; [get_parent_while] Call Op.get_token | File: compiler/asm.torth, Row: 1276, Column: 6
+;; [get_parent_while] Call Op.get_token | File: compiler/asm.torth, Row: 1279, Column: 6
   call T3AuZ2V0X3Rva2211
-;; [get_parent_while] Call Token.get_value | File: compiler/asm.torth, Row: 1276, Column: 19
-  call VG9rZW4uZ2V0X3ZhbH218
-;; [get_parent_while] Call str.copy | File: compiler/asm.torth, Row: 1276, Column: 35
-  call c3RyLmNvcH233
-;; [get_parent_while] Call str.upper | File: compiler/asm.torth, Row: 1276, Column: 44
-  call c3RyLnVwcG215
-;; [get_parent_while] PUSH_STR | File: compiler/asm.torth, Row: 1277, Column: 3
-  mov rsi, get_parent_while_s68 ; Pointer to string
+;; [get_parent_while] PUSH_STR | File: compiler/asm.torth, Row: 1280, Column: 3
+  mov rsi, get_parent_while_s64 ; Pointer to string
   push rsi
-;; [get_parent_while] INTRINSIC swap | File: compiler/asm.torth, Row: 1277, Column: 16
+;; [get_parent_while] PUSH_BIND | File: compiler/asm.torth, Row: 1281, Column: 3
+  push qword [get_parent_while_op]
+;; [get_parent_while] Call Op.get_token | File: compiler/asm.torth, Row: 1281, Column: 6
+  call T3AuZ2V0X3Rva2211
+;; [get_parent_while] Call Token.get_value | File: compiler/asm.torth, Row: 1281, Column: 19
+  call VG9rZW4uZ2V0X3ZhbH218
+;; [get_parent_while] Call str.copy | File: compiler/asm.torth, Row: 1281, Column: 35
+  call c3RyLmNvcH233
+;; [get_parent_while] Call str.upper | File: compiler/asm.torth, Row: 1281, Column: 44
+  call c3RyLnVwcG215
+;; [get_parent_while] PUSH_STR | File: compiler/asm.torth, Row: 1282, Column: 3
+  mov rsi, get_parent_while_s70 ; Pointer to string
+  push rsi
+;; [get_parent_while] INTRINSIC swap | File: compiler/asm.torth, Row: 1282, Column: 16
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_parent_while] Call str.cat | File: compiler/asm.torth, Row: 1277, Column: 21
+;; [get_parent_while] Call str.cat | File: compiler/asm.torth, Row: 1282, Column: 21
   call c3RyLmNhdA213
-;; [get_parent_while] Call CompilerError | File: compiler/asm.torth, Row: 1278, Column: 3
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_parent_while] Call NULLPTR | File: compiler/asm.torth, Row: 1278, Column: 17
+;; [get_parent_while] Call CompilerErrorWithToken | File: compiler/asm.torth, Row: 1283, Column: 3
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_parent_while] Call NULLPTR | File: compiler/asm.torth, Row: 1283, Column: 26
   call TlVMTFBUUg166
 ;; [get_parent_while] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -15430,32 +15471,32 @@ Z2V0X2RvbmVfb3BfZm9yX3doaW209:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1284, Column: 32
+;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1289, Column: 32
   pop qword [get_done_op_for_while_op]
-;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1284, Column: 39
+;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1289, Column: 39
   pop qword [get_done_op_for_while_program]
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1285, Column: 3
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1290, Column: 3
   push qword [get_done_op_for_while_op]
-;; [get_done_op_for_while] Call Op.get_id | File: compiler/asm.torth, Row: 1285, Column: 6
+;; [get_done_op_for_while] Call Op.get_id | File: compiler/asm.torth, Row: 1290, Column: 6
   call T3AuZ2V0X2205
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1286, Column: 3
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1291, Column: 3
   mov rax, 0
   push rax
-;; [get_done_op_for_while] TAKE | File: compiler/asm.torth, Row: 1287, Column: 3
-;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1287, Column: 8
+;; [get_done_op_for_while] TAKE | File: compiler/asm.torth, Row: 1292, Column: 3
+;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1292, Column: 8
   pop qword [get_done_op_for_while_while_count]
-;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1287, Column: 20
+;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1292, Column: 20
   pop qword [get_done_op_for_while_index]
-;; [get_done_op_for_while] IN | File: compiler/asm.torth, Row: 1287, Column: 26
-;; [get_done_op_for_while] WHILE | File: compiler/asm.torth, Row: 1290, Column: 3
+;; [get_done_op_for_while] IN | File: compiler/asm.torth, Row: 1292, Column: 26
+;; [get_done_op_for_while] WHILE | File: compiler/asm.torth, Row: 1295, Column: 3
 get_done_op_for_while_WHILE9:
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1290, Column: 9
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1295, Column: 9
   push qword [get_done_op_for_while_index]
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1290, Column: 15
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1295, Column: 15
   push qword [get_done_op_for_while_program]
-;; [get_done_op_for_while] Call List.len | File: compiler/asm.torth, Row: 1290, Column: 23
+;; [get_done_op_for_while] Call List.len | File: compiler/asm.torth, Row: 1295, Column: 23
   call TGlzdC5sZW211
-;; [get_done_op_for_while] INTRINSIC LT | File: compiler/asm.torth, Row: 1290, Column: 32
+;; [get_done_op_for_while] INTRINSIC LT | File: compiler/asm.torth, Row: 1295, Column: 32
   pop rax
   pop rbx
   mov rcx, 0
@@ -15463,37 +15504,37 @@ get_done_op_for_while_WHILE9:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1290, Column: 34
+;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1295, Column: 34
   pop rax
   test rax, rax
   jz get_done_op_for_while_DONE60
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1293, Column: 5
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1298, Column: 5
   push qword [get_done_op_for_while_index]
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1293, Column: 11
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1298, Column: 11
   push qword [get_done_op_for_while_program]
-;; [get_done_op_for_while] Call List.nth | File: compiler/asm.torth, Row: 1293, Column: 19
+;; [get_done_op_for_while] Call List.nth | File: compiler/asm.torth, Row: 1298, Column: 19
   call TGlzdC5udG220
-;; [get_done_op_for_while] Call ptr.load | File: compiler/asm.torth, Row: 1293, Column: 28
+;; [get_done_op_for_while] Call ptr.load | File: compiler/asm.torth, Row: 1298, Column: 28
   call cHRyLmxvYW197
-;; [get_done_op_for_while] INTRINSIC dup | File: compiler/asm.torth, Row: 1294, Column: 5
+;; [get_done_op_for_while] INTRINSIC dup | File: compiler/asm.torth, Row: 1299, Column: 5
   pop rax
   push rax
   push rax
-;; [get_done_op_for_while] Call Op.get_type | File: compiler/asm.torth, Row: 1294, Column: 9
+;; [get_done_op_for_while] Call Op.get_type | File: compiler/asm.torth, Row: 1299, Column: 9
   call T3AuZ2V0X3R5cG213
-;; [get_done_op_for_while] TAKE | File: compiler/asm.torth, Row: 1295, Column: 5
-;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1295, Column: 10
+;; [get_done_op_for_while] TAKE | File: compiler/asm.torth, Row: 1300, Column: 5
+;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1300, Column: 10
   pop qword [get_done_op_for_while_current_op_type]
-;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1295, Column: 26
+;; [get_done_op_for_while] POP_BIND | File: compiler/asm.torth, Row: 1300, Column: 26
   pop qword [get_done_op_for_while_current_op]
-;; [get_done_op_for_while] IN | File: compiler/asm.torth, Row: 1295, Column: 37
-;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1298, Column: 5
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1298, Column: 8
+;; [get_done_op_for_while] IN | File: compiler/asm.torth, Row: 1300, Column: 37
+;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1303, Column: 5
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1303, Column: 8
   push qword [get_done_op_for_while_current_op_type]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1298, Column: 24
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1303, Column: 24
   mov rax, 10
   push rax
-;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1298, Column: 36
+;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1303, Column: 36
   pop rax
   pop rbx
   mov rcx, 0
@@ -15501,33 +15542,33 @@ get_done_op_for_while_WHILE9:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1298, Column: 39
+;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1303, Column: 39
   pop rax
   test rax, rax
   jz get_done_op_for_while_ENDIF43
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1299, Column: 7
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1304, Column: 7
   push qword [get_done_op_for_while_while_count]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1299, Column: 19
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1304, Column: 19
   mov rax, 1
   push rax
-;; [get_done_op_for_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1299, Column: 21
+;; [get_done_op_for_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1304, Column: 21
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1299, Column: 23
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1304, Column: 23
   push qword [get_done_op_for_while_while_count]
-;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1299, Column: 35
+;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1304, Column: 35
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_done_op_for_while_while_count], rbx
-;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1300, Column: 7
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1300, Column: 10
+;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1305, Column: 7
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1305, Column: 10
   push qword [get_done_op_for_while_while_count]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1300, Column: 22
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1305, Column: 22
   mov rax, 0
   push rax
-;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1300, Column: 24
+;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1305, Column: 24
   pop rax
   pop rbx
   mov rcx, 0
@@ -15535,13 +15576,13 @@ get_done_op_for_while_WHILE9:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1300, Column: 27
+;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1305, Column: 27
   pop rax
   test rax, rax
   jz get_done_op_for_while_ENDIF42
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1301, Column: 9
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1306, Column: 9
   push qword [get_done_op_for_while_current_op]
-;; [get_done_op_for_while] RETURN | File: compiler/asm.torth, Row: 1301, Column: 20
+;; [get_done_op_for_while] RETURN | File: compiler/asm.torth, Row: 1306, Column: 20
 ;; [get_done_op_for_while] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -15549,17 +15590,17 @@ get_done_op_for_while_WHILE9:
   push qword [rax]
   ret
 
-;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1302, Column: 7
+;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1307, Column: 7
 get_done_op_for_while_ENDIF42:
-;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1303, Column: 5
+;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1308, Column: 5
 get_done_op_for_while_ENDIF43:
-;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1306, Column: 5
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1306, Column: 8
+;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1311, Column: 5
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1311, Column: 8
   push qword [get_done_op_for_while_current_op_type]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1306, Column: 24
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1311, Column: 24
   mov rax, 32
   push rax
-;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1306, Column: 37
+;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1311, Column: 37
   pop rax
   pop rbx
   mov rcx, 0
@@ -15567,77 +15608,77 @@ get_done_op_for_while_ENDIF43:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1306, Column: 40
+;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1311, Column: 40
   pop rax
   test rax, rax
   jz get_done_op_for_while_ENDIF54
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1307, Column: 7
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1312, Column: 7
   push qword [get_done_op_for_while_while_count]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1307, Column: 19
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1312, Column: 19
   mov rax, 1
   push rax
-;; [get_done_op_for_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1307, Column: 21
+;; [get_done_op_for_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1312, Column: 21
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1307, Column: 23
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1312, Column: 23
   push qword [get_done_op_for_while_while_count]
-;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1307, Column: 35
+;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1312, Column: 35
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_done_op_for_while_while_count], rbx
-;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1308, Column: 5
+;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1313, Column: 5
 get_done_op_for_while_ENDIF54:
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1310, Column: 5
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1315, Column: 5
   push qword [get_done_op_for_while_index]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1310, Column: 11
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1315, Column: 11
   mov rax, 1
   push rax
-;; [get_done_op_for_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1310, Column: 13
+;; [get_done_op_for_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1315, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1310, Column: 15
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1315, Column: 15
   push qword [get_done_op_for_while_index]
-;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1310, Column: 21
+;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1315, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_done_op_for_while_index], rbx
-;; [get_done_op_for_while] DONE | File: compiler/asm.torth, Row: 1311, Column: 3
+;; [get_done_op_for_while] DONE | File: compiler/asm.torth, Row: 1316, Column: 3
   jmp get_done_op_for_while_WHILE9
 get_done_op_for_while_DONE60:
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1314, Column: 3
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1319, Column: 3
   push qword [get_done_op_for_while_op]
-;; [get_done_op_for_while] Call Op.get_token | File: compiler/asm.torth, Row: 1314, Column: 6
+;; [get_done_op_for_while] Call Op.get_token | File: compiler/asm.torth, Row: 1319, Column: 6
   call T3AuZ2V0X3Rva2211
-;; [get_done_op_for_while] PUSH_STR | File: compiler/asm.torth, Row: 1315, Column: 3
+;; [get_done_op_for_while] PUSH_STR | File: compiler/asm.torth, Row: 1320, Column: 3
   mov rsi, get_done_op_for_while_s63 ; Pointer to string
   push rsi
-;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1316, Column: 3
+;; [get_done_op_for_while] PUSH_BIND | File: compiler/asm.torth, Row: 1321, Column: 3
   push qword [get_done_op_for_while_op]
-;; [get_done_op_for_while] Call Op.get_token | File: compiler/asm.torth, Row: 1316, Column: 6
+;; [get_done_op_for_while] Call Op.get_token | File: compiler/asm.torth, Row: 1321, Column: 6
   call T3AuZ2V0X3Rva2211
-;; [get_done_op_for_while] Call Token.get_value | File: compiler/asm.torth, Row: 1316, Column: 19
+;; [get_done_op_for_while] Call Token.get_value | File: compiler/asm.torth, Row: 1321, Column: 19
   call VG9rZW4uZ2V0X3ZhbH218
-;; [get_done_op_for_while] Call str.copy | File: compiler/asm.torth, Row: 1316, Column: 35
+;; [get_done_op_for_while] Call str.copy | File: compiler/asm.torth, Row: 1321, Column: 35
   call c3RyLmNvcH233
-;; [get_done_op_for_while] Call str.upper | File: compiler/asm.torth, Row: 1316, Column: 44
+;; [get_done_op_for_while] Call str.upper | File: compiler/asm.torth, Row: 1321, Column: 44
   call c3RyLnVwcG215
-;; [get_done_op_for_while] PUSH_STR | File: compiler/asm.torth, Row: 1317, Column: 3
+;; [get_done_op_for_while] PUSH_STR | File: compiler/asm.torth, Row: 1322, Column: 3
   mov rsi, get_done_op_for_while_s69 ; Pointer to string
   push rsi
-;; [get_done_op_for_while] INTRINSIC swap | File: compiler/asm.torth, Row: 1317, Column: 16
+;; [get_done_op_for_while] INTRINSIC swap | File: compiler/asm.torth, Row: 1322, Column: 16
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_done_op_for_while] Call str.cat | File: compiler/asm.torth, Row: 1317, Column: 21
+;; [get_done_op_for_while] Call str.cat | File: compiler/asm.torth, Row: 1322, Column: 21
   call c3RyLmNhdA213
-;; [get_done_op_for_while] Call CompilerErrorWithToken | File: compiler/asm.torth, Row: 1317, Column: 29
+;; [get_done_op_for_while] Call CompilerErrorWithToken | File: compiler/asm.torth, Row: 1322, Column: 29
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
-;; [get_done_op_for_while] Call NULLPTR | File: compiler/asm.torth, Row: 1317, Column: 52
+;; [get_done_op_for_while] Call NULLPTR | File: compiler/asm.torth, Row: 1322, Column: 52
   call TlVMTFBUUg166
 ;; [get_done_op_for_while] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -15652,31 +15693,31 @@ Z2V0X3ZhcmlhYmxlX21lbW9yeQ235:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_variable_memory] POP_BIND | File: compiler/asm.torth, Row: 1323, Column: 30
+;; [get_variable_memory] POP_BIND | File: compiler/asm.torth, Row: 1328, Column: 30
   pop qword [get_variable_memory_op]
-;; [get_variable_memory] PUSH_BIND | File: compiler/asm.torth, Row: 1325, Column: 3
+;; [get_variable_memory] PUSH_BIND | File: compiler/asm.torth, Row: 1330, Column: 3
   push qword [get_variable_memory_op]
-;; [get_variable_memory] Call Op.get_token | File: compiler/asm.torth, Row: 1325, Column: 6
+;; [get_variable_memory] Call Op.get_token | File: compiler/asm.torth, Row: 1330, Column: 6
   call T3AuZ2V0X3Rva2211
-;; [get_variable_memory] Call Token.get_value | File: compiler/asm.torth, Row: 1325, Column: 23
+;; [get_variable_memory] Call Token.get_value | File: compiler/asm.torth, Row: 1330, Column: 23
   call VG9rZW4uZ2V0X3ZhbH218
-;; [get_variable_memory] PUSH_BIND | File: compiler/asm.torth, Row: 1326, Column: 3
+;; [get_variable_memory] PUSH_BIND | File: compiler/asm.torth, Row: 1331, Column: 3
   push qword [get_variable_memory_op]
-;; [get_variable_memory] Call Op.get_function | File: compiler/asm.torth, Row: 1326, Column: 6
+;; [get_variable_memory] Call Op.get_function | File: compiler/asm.torth, Row: 1331, Column: 6
   call T3AuZ2V0X2Z1bmN0aW221
-;; [get_variable_memory] Call Function.get_name | File: compiler/asm.torth, Row: 1326, Column: 23
+;; [get_variable_memory] Call Function.get_name | File: compiler/asm.torth, Row: 1331, Column: 23
   call RnVuY3Rpb24uZ2V0X25hbW210
-;; [get_variable_memory] PUSH_STR | File: compiler/asm.torth, Row: 1327, Column: 3
+;; [get_variable_memory] PUSH_STR | File: compiler/asm.torth, Row: 1332, Column: 3
   mov rsi, get_variable_memory_s7 ; Pointer to string
   push rsi
-;; [get_variable_memory] Call str.cat | File: compiler/asm.torth, Row: 1327, Column: 7
+;; [get_variable_memory] Call str.cat | File: compiler/asm.torth, Row: 1332, Column: 7
   call c3RyLmNhdA213
-;; [get_variable_memory] INTRINSIC swap | File: compiler/asm.torth, Row: 1327, Column: 15
+;; [get_variable_memory] INTRINSIC swap | File: compiler/asm.torth, Row: 1332, Column: 15
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_variable_memory] Call str.cat | File: compiler/asm.torth, Row: 1327, Column: 20
+;; [get_variable_memory] Call str.cat | File: compiler/asm.torth, Row: 1332, Column: 20
   call c3RyLmNhdA213
 ;; [get_variable_memory] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -15691,97 +15732,97 @@ Z2V0X3ZhbGlkX2xhYmVsX2Zvcl9uYX224:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [get_valid_label_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1333, Column: 35
+;; [get_valid_label_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1338, Column: 35
   pop qword [get_valid_label_for_nasm_function_name]
-;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1334, Column: 3
+;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1339, Column: 3
   push qword [get_valid_label_for_nasm_function_name]
-;; [get_valid_label_for_nasm] Call base64.encode | File: compiler/asm.torth, Row: 1334, Column: 17
+;; [get_valid_label_for_nasm] Call base64.encode | File: compiler/asm.torth, Row: 1339, Column: 17
   call YmFzZTY0LmVuY29kZQ201
-;; [get_valid_label_for_nasm] TAKE | File: compiler/asm.torth, Row: 1335, Column: 3
-;; [get_valid_label_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1335, Column: 8
+;; [get_valid_label_for_nasm] TAKE | File: compiler/asm.torth, Row: 1340, Column: 3
+;; [get_valid_label_for_nasm] POP_BIND | File: compiler/asm.torth, Row: 1340, Column: 8
   pop qword [get_valid_label_for_nasm_b64_function_name]
-;; [get_valid_label_for_nasm] IN | File: compiler/asm.torth, Row: 1335, Column: 26
-;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1336, Column: 3
+;; [get_valid_label_for_nasm] IN | File: compiler/asm.torth, Row: 1340, Column: 26
+;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1341, Column: 3
   push qword [get_valid_label_for_nasm_b64_function_name]
-;; [get_valid_label_for_nasm] INTRINSIC dup | File: compiler/asm.torth, Row: 1336, Column: 21
+;; [get_valid_label_for_nasm] INTRINSIC dup | File: compiler/asm.torth, Row: 1341, Column: 21
   pop rax
   push rax
   push rax
-;; [get_valid_label_for_nasm] Call str.len | File: compiler/asm.torth, Row: 1336, Column: 25
+;; [get_valid_label_for_nasm] Call str.len | File: compiler/asm.torth, Row: 1341, Column: 25
   call c3RyLmxlbg211
-;; [get_valid_label_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1336, Column: 33
+;; [get_valid_label_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1341, Column: 33
   mov rax, 2
   push rax
-;; [get_valid_label_for_nasm] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1336, Column: 35
+;; [get_valid_label_for_nasm] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1341, Column: 35
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_valid_label_for_nasm] Call str+ | File: compiler/asm.torth, Row: 1336, Column: 37
+;; [get_valid_label_for_nasm] Call str+ | File: compiler/asm.torth, Row: 1341, Column: 37
   call c3RyKw157
-;; [get_valid_label_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1337, Column: 3
+;; [get_valid_label_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1342, Column: 3
   mov rax, 0
   push rax
-;; [get_valid_label_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1337, Column: 8
-;; [get_valid_label_for_nasm] INTRINSIC swap | File: compiler/asm.torth, Row: 1337, Column: 13
+;; [get_valid_label_for_nasm] CAST_CHAR | File: compiler/asm.torth, Row: 1342, Column: 8
+;; [get_valid_label_for_nasm] INTRINSIC swap | File: compiler/asm.torth, Row: 1342, Column: 13
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_valid_label_for_nasm] CAST_PTR | File: compiler/asm.torth, Row: 1337, Column: 18
-;; [get_valid_label_for_nasm] Call char.store | File: compiler/asm.torth, Row: 1337, Column: 22
+;; [get_valid_label_for_nasm] CAST_PTR | File: compiler/asm.torth, Row: 1342, Column: 18
+;; [get_valid_label_for_nasm] Call char.store | File: compiler/asm.torth, Row: 1342, Column: 22
   call Y2hhci5zdG9yZQ215
-;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1341, Column: 3
+;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1346, Column: 3
   push qword [get_valid_label_for_nasm_function_name]
-;; [get_valid_label_for_nasm] INTRINSIC dup | File: compiler/asm.torth, Row: 1341, Column: 17
+;; [get_valid_label_for_nasm] INTRINSIC dup | File: compiler/asm.torth, Row: 1346, Column: 17
   pop rax
   push rax
   push rax
-;; [get_valid_label_for_nasm] Call str.len | File: compiler/asm.torth, Row: 1341, Column: 21
+;; [get_valid_label_for_nasm] Call str.len | File: compiler/asm.torth, Row: 1346, Column: 21
   call c3RyLmxlbg211
-;; [get_valid_label_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1341, Column: 29
+;; [get_valid_label_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1346, Column: 29
   mov rax, 1
   push rax
-;; [get_valid_label_for_nasm] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1341, Column: 31
+;; [get_valid_label_for_nasm] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1346, Column: 31
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_valid_label_for_nasm] Call str.char_at | File: compiler/asm.torth, Row: 1341, Column: 33
+;; [get_valid_label_for_nasm] Call str.char_at | File: compiler/asm.torth, Row: 1346, Column: 33
   call c3RyLmNoYXJfYX213
-;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1342, Column: 3
+;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1347, Column: 3
   push qword [get_valid_label_for_nasm_function_name]
-;; [get_valid_label_for_nasm] INTRINSIC dup | File: compiler/asm.torth, Row: 1342, Column: 17
+;; [get_valid_label_for_nasm] INTRINSIC dup | File: compiler/asm.torth, Row: 1347, Column: 17
   pop rax
   push rax
   push rax
-;; [get_valid_label_for_nasm] Call str.len | File: compiler/asm.torth, Row: 1342, Column: 21
+;; [get_valid_label_for_nasm] Call str.len | File: compiler/asm.torth, Row: 1347, Column: 21
   call c3RyLmxlbg211
-;; [get_valid_label_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1342, Column: 29
+;; [get_valid_label_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1347, Column: 29
   mov rax, 2
   push rax
-;; [get_valid_label_for_nasm] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1342, Column: 31
+;; [get_valid_label_for_nasm] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1347, Column: 31
   pop rbx
   pop rax
   sub rax, rbx
   push rax
-;; [get_valid_label_for_nasm] Call str.char_at | File: compiler/asm.torth, Row: 1342, Column: 33
+;; [get_valid_label_for_nasm] Call str.char_at | File: compiler/asm.torth, Row: 1347, Column: 33
   call c3RyLmNoYXJfYX213
-;; [get_valid_label_for_nasm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1342, Column: 45
+;; [get_valid_label_for_nasm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1347, Column: 45
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1343, Column: 3
+;; [get_valid_label_for_nasm] PUSH_BIND | File: compiler/asm.torth, Row: 1348, Column: 3
   push qword [get_valid_label_for_nasm_b64_function_name]
-;; [get_valid_label_for_nasm] INTRINSIC swap | File: compiler/asm.torth, Row: 1343, Column: 21
+;; [get_valid_label_for_nasm] INTRINSIC swap | File: compiler/asm.torth, Row: 1348, Column: 21
   pop rax
   pop rbx
   push rax
   push rbx
-;; [get_valid_label_for_nasm] Call itoa | File: compiler/asm.torth, Row: 1343, Column: 26
+;; [get_valid_label_for_nasm] Call itoa | File: compiler/asm.torth, Row: 1348, Column: 26
   call aXRvYQ208
-;; [get_valid_label_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1343, Column: 31
+;; [get_valid_label_for_nasm] Call str.cat | File: compiler/asm.torth, Row: 1348, Column: 31
   call c3RyLmNhdA213
 ;; [get_valid_label_for_nasm] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -20044,7 +20085,7 @@ get_functions_WHILE24:
 ;; [get_functions] DO | File: compiler/lex.torth, Row: 826, Column: 40
   pop rax
   test rax, rax
-  jz get_functions_DONE310
+  jz get_functions_DONE312
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 828, Column: 5
   push qword [get_functions_index]
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 828, Column: 11
@@ -20087,7 +20128,7 @@ get_functions_WHILE24:
 ;; [get_functions] DO | File: compiler/lex.torth, Row: 837, Column: 5
   pop rax
   test rax, rax
-  jz get_functions_ELIF129
+  jz get_functions_ELIF130
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 838, Column: 7
   push qword [get_functions_current_part]
 ;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 838, Column: 20
@@ -20125,7 +20166,7 @@ get_functions_WHILE24:
 ;; [get_functions] DO | File: compiler/lex.torth, Row: 843, Column: 53
   pop rax
   test rax, rax
-  jz get_functions_ENDIF128
+  jz get_functions_ENDIF129
 ;; [get_functions] IF | File: compiler/lex.torth, Row: 846, Column: 9
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 846, Column: 12
   push qword [get_functions_function_name]
@@ -20179,120 +20220,122 @@ get_functions_ENDIF80:
 ;; [get_functions] DO | File: compiler/lex.torth, Row: 853, Column: 33
   pop rax
   test rax, rax
-  jz get_functions_ENDIF96
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 854, Column: 11
-  mov rsi, get_functions_s87 ; Pointer to string
+  jz get_functions_ENDIF97
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 854, Column: 11
+  push qword [get_functions_token]
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 855, Column: 11
+  mov rsi, get_functions_s88 ; Pointer to string
   push rsi
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 855, Column: 11
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 856, Column: 11
   push qword [get_functions_function_name]
-;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 855, Column: 57
-  call c3RyLmNhdA213
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 856, Column: 11
-  mov rsi, get_functions_s90 ; Pointer to string
-  push rsi
 ;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 856, Column: 57
   call c3RyLmNhdA213
 ;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 857, Column: 11
-  mov rsi, get_functions_s92 ; Pointer to string
+  mov rsi, get_functions_s91 ; Pointer to string
   push rsi
 ;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 857, Column: 57
   call c3RyLmNhdA213
 ;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 858, Column: 11
-  mov rsi, get_functions_s94 ; Pointer to string
+  mov rsi, get_functions_s93 ; Pointer to string
   push rsi
-;; [get_functions] Call CompilerError | File: compiler/lex.torth, Row: 858, Column: 28
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 859, Column: 9
-get_functions_ENDIF96:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 862, Column: 9
-  push qword [get_functions_variables]
+;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 858, Column: 57
+  call c3RyLmNhdA213
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 859, Column: 11
+  mov rsi, get_functions_s95 ; Pointer to string
+  push rsi
+;; [get_functions] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 859, Column: 28
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 860, Column: 9
+get_functions_ENDIF97:
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 863, Column: 9
-  push qword [get_functions_tokens]
+  push qword [get_functions_variables]
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 864, Column: 9
-  push qword [get_functions_return_types]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 864, Column: 22
-  push qword [get_functions_param_types]
-;; [get_functions] Call Signature.init | File: compiler/lex.torth, Row: 864, Column: 34
-  call U2lnbmF0dXJlLmluaX221
+  push qword [get_functions_tokens]
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 865, Column: 9
-  push qword [get_functions_function_name]
-;; [get_functions] Call Function.init | File: compiler/lex.torth, Row: 865, Column: 23
-  call RnVuY3Rpb24uaW5pdA221
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 868, Column: 9
-  push qword [get_functions_functions]
-;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 868, Column: 19
-  call TGlzdC5hcHBlbm210
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 871, Column: 9
-  mov rsi, get_functions_s106 ; Pointer to string
-  push rsi
-;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 871, Column: 12
-  call c3RyLmNvcH233
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 871, Column: 21
-  push qword [get_functions_function_name]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 871, Column: 35
-  pop rax  ; Old value
-  pop rbx  ; New value
-  mov [get_functions_function_name], rbx
-;; [get_functions] Call List.init | File: compiler/lex.torth, Row: 872, Column: 9
-  call TGlzdC5pbm221
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 872, Column: 21
+  push qword [get_functions_return_types]
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 865, Column: 22
   push qword [get_functions_param_types]
+;; [get_functions] Call Signature.init | File: compiler/lex.torth, Row: 865, Column: 34
+  call U2lnbmF0dXJlLmluaX221
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 866, Column: 9
+  push qword [get_functions_function_name]
+;; [get_functions] Call Function.init | File: compiler/lex.torth, Row: 866, Column: 23
+  call RnVuY3Rpb24uaW5pdA221
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 869, Column: 9
+  push qword [get_functions_functions]
+;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 869, Column: 19
+  call TGlzdC5hcHBlbm210
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 872, Column: 9
+  mov rsi, get_functions_s107 ; Pointer to string
+  push rsi
+;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 872, Column: 12
+  call c3RyLmNvcH233
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 872, Column: 21
+  push qword [get_functions_function_name]
 ;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 872, Column: 35
   pop rax  ; Old value
   pop rbx  ; New value
-  mov [get_functions_param_types], rbx
+  mov [get_functions_function_name], rbx
 ;; [get_functions] Call List.init | File: compiler/lex.torth, Row: 873, Column: 9
   call TGlzdC5pbm221
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 873, Column: 21
-  push qword [get_functions_return_types]
+  push qword [get_functions_param_types]
 ;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 873, Column: 35
   pop rax  ; Old value
   pop rbx  ; New value
-  mov [get_functions_return_types], rbx
+  mov [get_functions_param_types], rbx
 ;; [get_functions] Call List.init | File: compiler/lex.torth, Row: 874, Column: 9
   call TGlzdC5pbm221
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 874, Column: 21
-  push qword [get_functions_variables]
+  push qword [get_functions_return_types]
 ;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 874, Column: 35
   pop rax  ; Old value
   pop rbx  ; New value
-  mov [get_functions_variables], rbx
+  mov [get_functions_return_types], rbx
 ;; [get_functions] Call List.init | File: compiler/lex.torth, Row: 875, Column: 9
   call TGlzdC5pbm221
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 875, Column: 21
-  push qword [get_functions_tokens]
+  push qword [get_functions_variables]
 ;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 875, Column: 35
   pop rax  ; Old value
   pop rbx  ; New value
+  mov [get_functions_variables], rbx
+;; [get_functions] Call List.init | File: compiler/lex.torth, Row: 876, Column: 9
+  call TGlzdC5pbm221
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 876, Column: 21
+  push qword [get_functions_tokens]
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 876, Column: 35
+  pop rax  ; Old value
+  pop rbx  ; New value
   mov [get_functions_tokens], rbx
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 876, Column: 9
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 877, Column: 9
   push qword [get_functions_index]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 876, Column: 15
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 877, Column: 15
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 876, Column: 17
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 877, Column: 17
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 876, Column: 19
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 877, Column: 19
   push qword [get_functions_index]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 876, Column: 25
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 877, Column: 25
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions_index], rbx
-;; [get_functions] CONTINUE | File: compiler/lex.torth, Row: 877, Column: 9
-  jmp get_functions_WHILE24;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 878, Column: 7
-get_functions_ENDIF128:
-;; [get_functions] ELIF | File: compiler/lex.torth, Row: 880, Column: 5
-  jmp get_functions_ENDIF304
-get_functions_ELIF129:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 880, Column: 10
+;; [get_functions] CONTINUE | File: compiler/lex.torth, Row: 878, Column: 9
+  jmp get_functions_WHILE24;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 879, Column: 7
+get_functions_ENDIF129:
+;; [get_functions] ELIF | File: compiler/lex.torth, Row: 881, Column: 5
+  jmp get_functions_ENDIF306
+get_functions_ELIF130:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 881, Column: 10
   push qword [get_functions_current_part]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 880, Column: 23
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 881, Column: 23
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 880, Column: 25
+;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 881, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -20300,43 +20343,43 @@ get_functions_ELIF129:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_functions] DO | File: compiler/lex.torth, Row: 880, Column: 28
+;; [get_functions] DO | File: compiler/lex.torth, Row: 881, Column: 28
   pop rax
   test rax, rax
-  jz get_functions_ELIF142
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 881, Column: 7
+  jz get_functions_ELIF143
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 882, Column: 7
   push qword [get_functions_token_value]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 881, Column: 19
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 882, Column: 19
   push qword [get_functions_function_name]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 881, Column: 33
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 882, Column: 33
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions_function_name], rbx
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 882, Column: 7
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 883, Column: 7
   push qword [get_functions_current_part]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 882, Column: 20
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 883, Column: 20
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 882, Column: 22
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 883, Column: 22
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 882, Column: 24
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 883, Column: 24
   push qword [get_functions_current_part]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 882, Column: 37
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 883, Column: 37
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions_current_part], rbx
-;; [get_functions] ELIF | File: compiler/lex.torth, Row: 884, Column: 5
-  jmp get_functions_ENDIF304
-get_functions_ELIF142:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 884, Column: 10
+;; [get_functions] ELIF | File: compiler/lex.torth, Row: 885, Column: 5
+  jmp get_functions_ENDIF306
+get_functions_ELIF143:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 885, Column: 10
   push qword [get_functions_current_part]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 884, Column: 23
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 885, Column: 23
   mov rax, 2
   push rax
-;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 884, Column: 25
+;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 885, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -20344,106 +20387,106 @@ get_functions_ELIF142:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_functions] DO | File: compiler/lex.torth, Row: 884, Column: 28
+;; [get_functions] DO | File: compiler/lex.torth, Row: 885, Column: 28
   pop rax
   test rax, rax
-  jz get_functions_ELIF235
-;; [get_functions] IF | File: compiler/lex.torth, Row: 887, Column: 7
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 887, Column: 10
+  jz get_functions_ELIF237
+;; [get_functions] IF | File: compiler/lex.torth, Row: 888, Column: 7
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 888, Column: 10
   push qword [get_functions_token_value]
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 887, Column: 22
-  mov rsi, get_functions_s149 ; Pointer to string
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 888, Column: 22
+  mov rsi, get_functions_s150 ; Pointer to string
   push rsi
-;; [get_functions] Call streq | File: compiler/lex.torth, Row: 887, Column: 26
+;; [get_functions] Call streq | File: compiler/lex.torth, Row: 888, Column: 26
   call c3RyZX214
-;; [get_functions] DO | File: compiler/lex.torth, Row: 887, Column: 32
+;; [get_functions] DO | File: compiler/lex.torth, Row: 888, Column: 32
   pop rax
   test rax, rax
-  jz get_functions_ENDIF165
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 888, Column: 9
+  jz get_functions_ENDIF166
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 889, Column: 9
   push qword [get_functions_current_part]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 888, Column: 22
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 889, Column: 22
   mov rax, 2
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 888, Column: 24
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 889, Column: 24
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 888, Column: 26
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 889, Column: 26
   push qword [get_functions_current_part]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 888, Column: 39
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 889, Column: 39
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions_current_part], rbx
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 889, Column: 9
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 890, Column: 9
   push qword [get_functions_index]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 889, Column: 15
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 890, Column: 15
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 889, Column: 17
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 890, Column: 17
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 889, Column: 19
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 890, Column: 19
   push qword [get_functions_index]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 889, Column: 25
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 890, Column: 25
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions_index], rbx
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 890, Column: 9
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 891, Column: 9
   push qword [get_functions_token_value]
-;; [get_functions] Call str.delete | File: compiler/lex.torth, Row: 890, Column: 21
+;; [get_functions] Call str.delete | File: compiler/lex.torth, Row: 891, Column: 21
   call c3RyLmRlbGV0ZQ217
-;; [get_functions] CONTINUE | File: compiler/lex.torth, Row: 891, Column: 9
-  jmp get_functions_WHILE24;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 892, Column: 7
-get_functions_ENDIF165:
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 896, Column: 7
-  mov rsi, get_functions_s166 ; Pointer to string
+;; [get_functions] CONTINUE | File: compiler/lex.torth, Row: 892, Column: 9
+  jmp get_functions_WHILE24;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 893, Column: 7
+get_functions_ENDIF166:
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 897, Column: 7
+  mov rsi, get_functions_s167 ; Pointer to string
   push rsi
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 896, Column: 11
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 897, Column: 11
   push qword [get_functions_token_value]
-;; [get_functions] Call str.find | File: compiler/lex.torth, Row: 896, Column: 23
+;; [get_functions] Call str.find | File: compiler/lex.torth, Row: 897, Column: 23
   call c3RyLmZpbm210
-;; [get_functions] TAKE | File: compiler/lex.torth, Row: 897, Column: 7
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 897, Column: 12
+;; [get_functions] TAKE | File: compiler/lex.torth, Row: 898, Column: 7
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 898, Column: 12
   pop qword [get_functions_param_colon]
-;; [get_functions] IN | File: compiler/lex.torth, Row: 897, Column: 24
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 900, Column: 7
+;; [get_functions] IN | File: compiler/lex.torth, Row: 898, Column: 24
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 901, Column: 7
   push qword [get_functions_token_value]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 900, Column: 19
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 901, Column: 19
   push qword [get_functions_param_colon]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 900, Column: 31
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 901, Column: 31
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 900, Column: 33
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 901, Column: 33
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_functions] Call str+ | File: compiler/lex.torth, Row: 900, Column: 35
+;; [get_functions] Call str+ | File: compiler/lex.torth, Row: 901, Column: 35
   call c3RyKw157
-;; [get_functions] Call Signature.type_map | File: compiler/lex.torth, Row: 901, Column: 7
+;; [get_functions] Call Signature.type_map | File: compiler/lex.torth, Row: 902, Column: 7
   call U2lnbmF0dXJlLnR5cGVfbW209
-;; [get_functions] TAKE | File: compiler/lex.torth, Row: 902, Column: 7
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 902, Column: 12
+;; [get_functions] TAKE | File: compiler/lex.torth, Row: 903, Column: 7
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 903, Column: 12
   pop qword [get_functions_param_type]
-;; [get_functions] IN | File: compiler/lex.torth, Row: 902, Column: 23
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 903, Column: 7
+;; [get_functions] IN | File: compiler/lex.torth, Row: 903, Column: 23
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 904, Column: 7
   push qword [get_functions_param_type]
-;; [get_functions] CAST_PTR | File: compiler/lex.torth, Row: 903, Column: 18
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 903, Column: 22
+;; [get_functions] CAST_PTR | File: compiler/lex.torth, Row: 904, Column: 18
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 904, Column: 22
   push qword [get_functions_param_types]
-;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 903, Column: 34
+;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 904, Column: 34
   call TGlzdC5hcHBlbm210
-;; [get_functions] IF | File: compiler/lex.torth, Row: 906, Column: 7
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 906, Column: 10
+;; [get_functions] IF | File: compiler/lex.torth, Row: 907, Column: 7
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 907, Column: 10
   push qword [get_functions_param_colon]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 906, Column: 22
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 907, Column: 22
   mov rax, -1
   push rax
-;; [get_functions] INTRINSIC NE | File: compiler/lex.torth, Row: 906, Column: 25
+;; [get_functions] INTRINSIC NE | File: compiler/lex.torth, Row: 907, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -20451,17 +20494,17 @@ get_functions_ENDIF165:
   cmp rbx, rax
   cmovne rcx, rdx
   push rcx
-;; [get_functions] DO | File: compiler/lex.torth, Row: 906, Column: 28
+;; [get_functions] DO | File: compiler/lex.torth, Row: 907, Column: 28
   pop rax
   test rax, rax
-  jz get_functions_ENDIF234
-;; [get_functions] IF | File: compiler/lex.torth, Row: 908, Column: 9
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 908, Column: 12
+  jz get_functions_ENDIF236
+;; [get_functions] IF | File: compiler/lex.torth, Row: 909, Column: 9
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 909, Column: 12
   push qword [get_functions_param_colon]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 908, Column: 24
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 909, Column: 24
   mov rax, 0
   push rax
-;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 908, Column: 26
+;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 909, Column: 26
   pop rax
   pop rbx
   mov rcx, 0
@@ -20469,105 +20512,107 @@ get_functions_ENDIF165:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_functions] DO | File: compiler/lex.torth, Row: 908, Column: 29
+;; [get_functions] DO | File: compiler/lex.torth, Row: 909, Column: 29
   pop rax
   test rax, rax
-  jz get_functions_ENDIF206
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 909, Column: 11
-  mov rsi, get_functions_s195 ; Pointer to string
+  jz get_functions_ENDIF208
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 910, Column: 11
+  push qword [get_functions_token]
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 911, Column: 11
+  mov rsi, get_functions_s197 ; Pointer to string
   push rsi
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 909, Column: 24
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 911, Column: 24
   push qword [get_functions_function_name]
-;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 909, Column: 55
-  call c3RyLmNhdA213
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 910, Column: 11
-  mov rsi, get_functions_s198 ; Pointer to string
-  push rsi
-;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 910, Column: 55
-  call c3RyLmNhdA213
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 911, Column: 11
-  push qword [get_functions_token_value]
 ;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 911, Column: 55
   call c3RyLmNhdA213
 ;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 912, Column: 11
-  mov rsi, get_functions_s202 ; Pointer to string
+  mov rsi, get_functions_s200 ; Pointer to string
   push rsi
 ;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 912, Column: 55
   call c3RyLmNhdA213
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 913, Column: 11
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 913, Column: 11
+  push qword [get_functions_token_value]
+;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 913, Column: 55
+  call c3RyLmNhdA213
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 914, Column: 11
   mov rsi, get_functions_s204 ; Pointer to string
   push rsi
-;; [get_functions] Call CompilerError | File: compiler/lex.torth, Row: 913, Column: 26
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 914, Column: 9
-get_functions_ENDIF206:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 917, Column: 9
+;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 914, Column: 55
+  call c3RyLmNhdA213
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 915, Column: 11
+  mov rsi, get_functions_s206 ; Pointer to string
+  push rsi
+;; [get_functions] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 915, Column: 26
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 916, Column: 9
+get_functions_ENDIF208:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 919, Column: 9
   push qword [get_functions_token_value]
-;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 917, Column: 21
+;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 919, Column: 21
   call c3RyLmNvcH233
-;; [get_functions] INTRINSIC dup | File: compiler/lex.torth, Row: 918, Column: 9
+;; [get_functions] INTRINSIC dup | File: compiler/lex.torth, Row: 920, Column: 9
   pop rax
   push rax
   push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 918, Column: 13
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 920, Column: 13
   push qword [get_functions_param_colon]
-;; [get_functions] Call str+ | File: compiler/lex.torth, Row: 918, Column: 25
+;; [get_functions] Call str+ | File: compiler/lex.torth, Row: 920, Column: 25
   call c3RyKw157
-;; [get_functions] Call str.empty | File: compiler/lex.torth, Row: 918, Column: 30
+;; [get_functions] Call str.empty | File: compiler/lex.torth, Row: 920, Column: 30
   call c3RyLmVtcH237
-;; [get_functions] TAKE | File: compiler/lex.torth, Row: 919, Column: 9
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 919, Column: 14
+;; [get_functions] TAKE | File: compiler/lex.torth, Row: 921, Column: 9
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 921, Column: 14
   pop qword [get_functions_param_name]
-;; [get_functions] IN | File: compiler/lex.torth, Row: 919, Column: 25
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 922, Column: 9
+;; [get_functions] IN | File: compiler/lex.torth, Row: 921, Column: 25
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 924, Column: 9
   push qword [get_functions_param_name]
-;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 922, Column: 20
+;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 924, Column: 20
   call c3RyLmNvcH233
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 922, Column: 29
-  push qword [get_functions_token]
-;; [get_functions] Call Token.set_value | File: compiler/lex.torth, Row: 922, Column: 35
-  call VG9rZW4uc2V0X3ZhbH218
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 923, Column: 9
-  mov rax, 8
-  push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 923, Column: 29
-  push qword [get_functions_token]
-;; [get_functions] Call Token.set_type | File: compiler/lex.torth, Row: 923, Column: 35
-  call VG9rZW4uc2V0X3R5cG213
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 924, Column: 9
-  mov rax, 3
-  push rax
 ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 924, Column: 29
   push qword [get_functions_token]
-;; [get_functions] Call Token.set_vartype | File: compiler/lex.torth, Row: 924, Column: 35
-  call VG9rZW4uc2V0X3ZhcnR5cG213
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 925, Column: 9
+;; [get_functions] Call Token.set_value | File: compiler/lex.torth, Row: 924, Column: 35
+  call VG9rZW4uc2V0X3ZhbH218
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 925, Column: 9
+  mov rax, 8
+  push rax
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 925, Column: 29
   push qword [get_functions_token]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 925, Column: 15
-  push qword [get_functions_tokens]
-;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 925, Column: 22
-  call TGlzdC5hcHBlbm210
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 928, Column: 9
-  push qword [get_functions_memories]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 928, Column: 18
-  push qword [get_functions_variables]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 928, Column: 28
-  push qword [get_functions_function_name]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 928, Column: 42
-  push qword [get_functions_token]
-;; [get_functions] Call add_variable_to_list | File: compiler/lex.torth, Row: 928, Column: 48
-  call YWRkX3ZhcmlhYmxlX3RvX2xpc3231
-;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 929, Column: 7
-get_functions_ENDIF234:
-;; [get_functions] ELIF | File: compiler/lex.torth, Row: 931, Column: 5
-  jmp get_functions_ENDIF304
-get_functions_ELIF235:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 931, Column: 10
-  push qword [get_functions_current_part]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 931, Column: 23
+;; [get_functions] Call Token.set_type | File: compiler/lex.torth, Row: 925, Column: 35
+  call VG9rZW4uc2V0X3R5cG213
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 926, Column: 9
   mov rax, 3
   push rax
-;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 931, Column: 25
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 926, Column: 29
+  push qword [get_functions_token]
+;; [get_functions] Call Token.set_vartype | File: compiler/lex.torth, Row: 926, Column: 35
+  call VG9rZW4uc2V0X3ZhcnR5cG213
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 927, Column: 9
+  push qword [get_functions_token]
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 927, Column: 15
+  push qword [get_functions_tokens]
+;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 927, Column: 22
+  call TGlzdC5hcHBlbm210
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 930, Column: 9
+  push qword [get_functions_memories]
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 930, Column: 18
+  push qword [get_functions_variables]
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 930, Column: 28
+  push qword [get_functions_function_name]
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 930, Column: 42
+  push qword [get_functions_token]
+;; [get_functions] Call add_variable_to_list | File: compiler/lex.torth, Row: 930, Column: 48
+  call YWRkX3ZhcmlhYmxlX3RvX2xpc3231
+;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 931, Column: 7
+get_functions_ENDIF236:
+;; [get_functions] ELIF | File: compiler/lex.torth, Row: 933, Column: 5
+  jmp get_functions_ENDIF306
+get_functions_ELIF237:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 933, Column: 10
+  push qword [get_functions_current_part]
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 933, Column: 23
+  mov rax, 3
+  push rax
+;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 933, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -20575,28 +20620,28 @@ get_functions_ELIF235:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_functions] DO | File: compiler/lex.torth, Row: 931, Column: 28
+;; [get_functions] DO | File: compiler/lex.torth, Row: 933, Column: 28
   pop rax
   test rax, rax
-  jz get_functions_ELIF245
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 933, Column: 7
+  jz get_functions_ELIF247
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 935, Column: 7
   push qword [get_functions_token_value]
-;; [get_functions] Call Signature.type_map | File: compiler/lex.torth, Row: 933, Column: 19
+;; [get_functions] Call Signature.type_map | File: compiler/lex.torth, Row: 935, Column: 19
   call U2lnbmF0dXJlLnR5cGVfbW209
-;; [get_functions] CAST_PTR | File: compiler/lex.torth, Row: 933, Column: 38
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 934, Column: 7
+;; [get_functions] CAST_PTR | File: compiler/lex.torth, Row: 935, Column: 38
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 936, Column: 7
   push qword [get_functions_return_types]
-;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 934, Column: 20
+;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 936, Column: 20
   call TGlzdC5hcHBlbm210
-;; [get_functions] ELIF | File: compiler/lex.torth, Row: 935, Column: 5
-  jmp get_functions_ENDIF304
-get_functions_ELIF245:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 935, Column: 10
+;; [get_functions] ELIF | File: compiler/lex.torth, Row: 937, Column: 5
+  jmp get_functions_ENDIF306
+get_functions_ELIF247:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 937, Column: 10
   push qword [get_functions_current_part]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 935, Column: 23
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 937, Column: 23
   mov rax, 4
   push rax
-;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 935, Column: 25
+;; [get_functions] INTRINSIC EQ | File: compiler/lex.torth, Row: 937, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -20604,39 +20649,39 @@ get_functions_ELIF245:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_functions] DO | File: compiler/lex.torth, Row: 935, Column: 28
+;; [get_functions] DO | File: compiler/lex.torth, Row: 937, Column: 28
   pop rax
   test rax, rax
-  jz get_functions_ELSE299
-;; [get_functions] IF | File: compiler/lex.torth, Row: 937, Column: 7
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 937, Column: 10
+  jz get_functions_ELSE301
+;; [get_functions] IF | File: compiler/lex.torth, Row: 939, Column: 7
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 939, Column: 10
   push qword [get_functions_constants]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 937, Column: 20
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 939, Column: 20
   push qword [get_functions_token_value]
-;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 937, Column: 32
+;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 939, Column: 32
   call c3RyLmNvcH233
-;; [get_functions] Call constant_exists | File: compiler/lex.torth, Row: 937, Column: 41
+;; [get_functions] Call constant_exists | File: compiler/lex.torth, Row: 939, Column: 41
   call Y29uc3RhbnRfZXhpc3231
-;; [get_functions] DO | File: compiler/lex.torth, Row: 937, Column: 57
+;; [get_functions] DO | File: compiler/lex.torth, Row: 939, Column: 57
   pop rax
   test rax, rax
-  jz get_functions_ENDIF295
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 940, Column: 9
+  jz get_functions_ENDIF297
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 942, Column: 9
   mov rax, 0
   push rax
-;; [get_functions] TAKE | File: compiler/lex.torth, Row: 940, Column: 11
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 940, Column: 16
+;; [get_functions] TAKE | File: compiler/lex.torth, Row: 942, Column: 11
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 942, Column: 16
   pop qword [get_functions_constant_index]
-;; [get_functions] IN | File: compiler/lex.torth, Row: 940, Column: 31
-;; [get_functions] WHILE | File: compiler/lex.torth, Row: 941, Column: 9
-get_functions_WHILE260:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 941, Column: 15
+;; [get_functions] IN | File: compiler/lex.torth, Row: 942, Column: 31
+;; [get_functions] WHILE | File: compiler/lex.torth, Row: 943, Column: 9
+get_functions_WHILE262:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 943, Column: 15
   push qword [get_functions_constant_index]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 941, Column: 30
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 943, Column: 30
   push qword [get_functions_constants]
-;; [get_functions] Call List.len | File: compiler/lex.torth, Row: 941, Column: 40
+;; [get_functions] Call List.len | File: compiler/lex.torth, Row: 943, Column: 40
   call TGlzdC5sZW211
-;; [get_functions] INTRINSIC LT | File: compiler/lex.torth, Row: 941, Column: 49
+;; [get_functions] INTRINSIC LT | File: compiler/lex.torth, Row: 943, Column: 49
   pop rax
   pop rbx
   mov rcx, 0
@@ -20644,121 +20689,147 @@ get_functions_WHILE260:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [get_functions] DO | File: compiler/lex.torth, Row: 941, Column: 51
+;; [get_functions] DO | File: compiler/lex.torth, Row: 943, Column: 51
   pop rax
   test rax, rax
-  jz get_functions_DONE294
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 942, Column: 11
+  jz get_functions_DONE296
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 944, Column: 11
   push qword [get_functions_constant_index]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 942, Column: 26
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 944, Column: 26
   push qword [get_functions_constants]
-;; [get_functions] Call List.nth | File: compiler/lex.torth, Row: 942, Column: 36
+;; [get_functions] Call List.nth | File: compiler/lex.torth, Row: 944, Column: 36
   call TGlzdC5udG220
-;; [get_functions] Call ptr.load | File: compiler/lex.torth, Row: 942, Column: 45
+;; [get_functions] Call ptr.load | File: compiler/lex.torth, Row: 944, Column: 45
   call cHRyLmxvYW197
-;; [get_functions] TAKE | File: compiler/lex.torth, Row: 943, Column: 11
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 943, Column: 16
+;; [get_functions] TAKE | File: compiler/lex.torth, Row: 945, Column: 11
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 945, Column: 16
   pop qword [get_functions_constant]
-;; [get_functions] IN | File: compiler/lex.torth, Row: 943, Column: 25
-;; [get_functions] IF | File: compiler/lex.torth, Row: 945, Column: 11
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 945, Column: 14
+;; [get_functions] IN | File: compiler/lex.torth, Row: 945, Column: 25
+;; [get_functions] IF | File: compiler/lex.torth, Row: 947, Column: 11
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 947, Column: 14
   push qword [get_functions_constant]
-;; [get_functions] Call Constant.get_name | File: compiler/lex.torth, Row: 945, Column: 23
+;; [get_functions] Call Constant.get_name | File: compiler/lex.torth, Row: 947, Column: 23
   call Q29uc3RhbnQuZ2V0X25hbW210
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 945, Column: 41
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 947, Column: 41
   push qword [get_functions_token_value]
-;; [get_functions] Call streq | File: compiler/lex.torth, Row: 945, Column: 53
+;; [get_functions] Call streq | File: compiler/lex.torth, Row: 947, Column: 53
   call c3RyZX214
-;; [get_functions] DO | File: compiler/lex.torth, Row: 945, Column: 59
+;; [get_functions] DO | File: compiler/lex.torth, Row: 947, Column: 59
   pop rax
   test rax, rax
-  jz get_functions_ENDIF288
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 946, Column: 13
+  jz get_functions_ENDIF290
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 948, Column: 13
   push qword [get_functions_constant]
-;; [get_functions] Call Constant.get_value | File: compiler/lex.torth, Row: 946, Column: 22
+;; [get_functions] Call Constant.get_value | File: compiler/lex.torth, Row: 948, Column: 22
   call Q29uc3RhbnQuZ2V0X3ZhbH218
-;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 946, Column: 41
+;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 948, Column: 41
   call c3RyLmNvcH233
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 947, Column: 13
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 949, Column: 13
   push qword [get_functions_token]
-;; [get_functions] Call Token.set_value | File: compiler/lex.torth, Row: 947, Column: 19
+;; [get_functions] Call Token.set_value | File: compiler/lex.torth, Row: 949, Column: 19
   call VG9rZW4uc2V0X3ZhbH218
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 948, Column: 13
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 950, Column: 13
   mov rax, 3
   push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 948, Column: 27
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 950, Column: 27
   push qword [get_functions_token]
-;; [get_functions] Call Token.set_type | File: compiler/lex.torth, Row: 948, Column: 33
+;; [get_functions] Call Token.set_type | File: compiler/lex.torth, Row: 950, Column: 33
   call VG9rZW4uc2V0X3R5cG213
-;; [get_functions] BREAK | File: compiler/lex.torth, Row: 949, Column: 13
-  jmp get_functions_DONE294;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 950, Column: 11
-get_functions_ENDIF288:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 951, Column: 11
+;; [get_functions] BREAK | File: compiler/lex.torth, Row: 951, Column: 13
+  jmp get_functions_DONE296;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 952, Column: 11
+get_functions_ENDIF290:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 953, Column: 11
   push qword [get_functions_constant_index]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 951, Column: 26
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 953, Column: 26
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 951, Column: 28
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 953, Column: 28
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 951, Column: 30
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 953, Column: 30
   push qword [get_functions_constant_index]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 951, Column: 45
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 953, Column: 45
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions_constant_index], rbx
-;; [get_functions] DONE | File: compiler/lex.torth, Row: 952, Column: 9
-  jmp get_functions_WHILE260
-get_functions_DONE294:
-;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 953, Column: 7
-get_functions_ENDIF295:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 956, Column: 7
+;; [get_functions] DONE | File: compiler/lex.torth, Row: 954, Column: 9
+  jmp get_functions_WHILE262
+get_functions_DONE296:
+;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 955, Column: 7
+get_functions_ENDIF297:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 958, Column: 7
   push qword [get_functions_token]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 956, Column: 13
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 958, Column: 13
   push qword [get_functions_tokens]
-;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 956, Column: 20
+;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 958, Column: 20
   call TGlzdC5hcHBlbm210
-;; [get_functions] ELSE | File: compiler/lex.torth, Row: 959, Column: 5
-  jmp get_functions_ENDIF304
-get_functions_ELSE299:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 960, Column: 7
+;; [get_functions] ELSE | File: compiler/lex.torth, Row: 961, Column: 5
+  jmp get_functions_ENDIF306
+get_functions_ELSE301:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 962, Column: 7
   push qword [get_functions_token]
-;; [get_functions] Call Token.delete | File: compiler/lex.torth, Row: 960, Column: 13
+;; [get_functions] Call Token.delete | File: compiler/lex.torth, Row: 962, Column: 13
   call VG9rZW4uZGVsZX217
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 961, Column: 7
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 963, Column: 7
   push qword [get_functions_token_value]
-;; [get_functions] Call str.delete | File: compiler/lex.torth, Row: 961, Column: 19
+;; [get_functions] Call str.delete | File: compiler/lex.torth, Row: 963, Column: 19
   call c3RyLmRlbGV0ZQ217
-;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 962, Column: 5
-get_functions_ENDIF304:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 963, Column: 5
+;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 964, Column: 5
+get_functions_ENDIF306:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 965, Column: 5
   push qword [get_functions_index]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 963, Column: 11
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 965, Column: 11
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 963, Column: 13
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 965, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 963, Column: 15
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 965, Column: 15
   push qword [get_functions_index]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 963, Column: 21
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 965, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions_index], rbx
-;; [get_functions] DONE | File: compiler/lex.torth, Row: 964, Column: 3
+;; [get_functions] DONE | File: compiler/lex.torth, Row: 966, Column: 3
   jmp get_functions_WHILE24
-get_functions_DONE310:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 967, Column: 3
-  push qword [get_functions_memories]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 967, Column: 12
+get_functions_DONE312:
+;; [get_functions] IF | File: compiler/lex.torth, Row: 969, Column: 3
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 969, Column: 6
   push qword [get_functions_functions]
-;; [get_functions] Call parse_variables_for_functions | File: compiler/lex.torth, Row: 967, Column: 22
+;; [get_functions] Call main_function_in_function_list | File: compiler/lex.torth, Row: 969, Column: 16
+  call bWFpbl9mdW5jdGlvbl9pbl9mdW5jdGlvbl9saX231
+;; [get_functions] Call not | File: compiler/lex.torth, Row: 969, Column: 47
+  call bm227
+;; [get_functions] DO | File: compiler/lex.torth, Row: 969, Column: 51
+  pop rax
+  test rax, rax
+  jz get_functions_ENDIF323
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 970, Column: 5
+  mov rsi, get_functions_s318 ; Pointer to string
+  push rsi
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 971, Column: 5
+  mov rsi, get_functions_s319 ; Pointer to string
+  push rsi
+;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 971, Column: 52
+  call c3RyLmNhdA213
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 972, Column: 5
+  mov rsi, get_functions_s321 ; Pointer to string
+  push rsi
+;; [get_functions] Call CompilerError | File: compiler/lex.torth, Row: 972, Column: 29
+  call Q29tcGlsZXJFcnJvcg225
+;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 973, Column: 3
+get_functions_ENDIF323:
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 976, Column: 3
+  push qword [get_functions_memories]
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 976, Column: 12
+  push qword [get_functions_functions]
+;; [get_functions] Call parse_variables_for_functions | File: compiler/lex.torth, Row: 976, Column: 22
   call cGFyc2VfdmFyaWFibGVzX2Zvcl9mdW5jdGlvbn225
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 968, Column: 3
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 977, Column: 3
   push qword [get_functions_functions]
 ;; [get_functions] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -20773,30 +20844,30 @@ cGFyc2VfdmFyaWFibGVzX2Zvcl9mdW5jdGlvbn225:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 973, Column: 40
+;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 982, Column: 40
   pop qword [parse_variables_for_functions_functions]
-;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 973, Column: 54
+;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 982, Column: 54
   pop qword [parse_variables_for_functions_memories]
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 974, Column: 3
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 983, Column: 3
   push qword [parse_variables_for_functions_functions]
-;; [parse_variables_for_functions] Call List.len | File: compiler/lex.torth, Row: 974, Column: 13
+;; [parse_variables_for_functions] Call List.len | File: compiler/lex.torth, Row: 983, Column: 13
   call TGlzdC5sZW211
-;; [parse_variables_for_functions] PUSH_INT | File: compiler/lex.torth, Row: 975, Column: 3
+;; [parse_variables_for_functions] PUSH_INT | File: compiler/lex.torth, Row: 984, Column: 3
   mov rax, 0
   push rax
-;; [parse_variables_for_functions] TAKE | File: compiler/lex.torth, Row: 976, Column: 3
-;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 976, Column: 8
+;; [parse_variables_for_functions] TAKE | File: compiler/lex.torth, Row: 985, Column: 3
+;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 985, Column: 8
   pop qword [parse_variables_for_functions_index]
-;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 976, Column: 14
+;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 985, Column: 14
   pop qword [parse_variables_for_functions_functions.len]
-;; [parse_variables_for_functions] IN | File: compiler/lex.torth, Row: 976, Column: 28
-;; [parse_variables_for_functions] WHILE | File: compiler/lex.torth, Row: 979, Column: 3
+;; [parse_variables_for_functions] IN | File: compiler/lex.torth, Row: 985, Column: 28
+;; [parse_variables_for_functions] WHILE | File: compiler/lex.torth, Row: 988, Column: 3
 parse_variables_for_functions_WHILE9:
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 979, Column: 9
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 988, Column: 9
   push qword [parse_variables_for_functions_index]
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 979, Column: 15
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 988, Column: 15
   push qword [parse_variables_for_functions_functions.len]
-;; [parse_variables_for_functions] INTRINSIC LT | File: compiler/lex.torth, Row: 979, Column: 29
+;; [parse_variables_for_functions] INTRINSIC LT | File: compiler/lex.torth, Row: 988, Column: 29
   pop rax
   pop rbx
   mov rcx, 0
@@ -20804,44 +20875,44 @@ parse_variables_for_functions_WHILE9:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_variables_for_functions] DO | File: compiler/lex.torth, Row: 979, Column: 31
+;; [parse_variables_for_functions] DO | File: compiler/lex.torth, Row: 988, Column: 31
   pop rax
   test rax, rax
   jz parse_variables_for_functions_DONE26
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 980, Column: 5
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 989, Column: 5
   push qword [parse_variables_for_functions_index]
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 980, Column: 11
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 989, Column: 11
   push qword [parse_variables_for_functions_functions]
-;; [parse_variables_for_functions] Call List.nth | File: compiler/lex.torth, Row: 980, Column: 21
+;; [parse_variables_for_functions] Call List.nth | File: compiler/lex.torth, Row: 989, Column: 21
   call TGlzdC5udG220
-;; [parse_variables_for_functions] Call ptr.load | File: compiler/lex.torth, Row: 980, Column: 30
+;; [parse_variables_for_functions] Call ptr.load | File: compiler/lex.torth, Row: 989, Column: 30
   call cHRyLmxvYW197
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 981, Column: 5
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 990, Column: 5
   push qword [parse_variables_for_functions_memories]
-;; [parse_variables_for_functions] INTRINSIC swap | File: compiler/lex.torth, Row: 981, Column: 14
+;; [parse_variables_for_functions] INTRINSIC swap | File: compiler/lex.torth, Row: 990, Column: 14
   pop rax
   pop rbx
   push rax
   push rbx
-;; [parse_variables_for_functions] Call parse_function_variables | File: compiler/lex.torth, Row: 981, Column: 19
+;; [parse_variables_for_functions] Call parse_function_variables | File: compiler/lex.torth, Row: 990, Column: 19
   call cGFyc2VfZnVuY3Rpb25fdmFyaWFibG216
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 982, Column: 5
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 991, Column: 5
   push qword [parse_variables_for_functions_index]
-;; [parse_variables_for_functions] PUSH_INT | File: compiler/lex.torth, Row: 982, Column: 11
+;; [parse_variables_for_functions] PUSH_INT | File: compiler/lex.torth, Row: 991, Column: 11
   mov rax, 1
   push rax
-;; [parse_variables_for_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 982, Column: 13
+;; [parse_variables_for_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 991, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 982, Column: 15
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 991, Column: 15
   push qword [parse_variables_for_functions_index]
-;; [parse_variables_for_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 982, Column: 21
+;; [parse_variables_for_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 991, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_variables_for_functions_index], rbx
-;; [parse_variables_for_functions] DONE | File: compiler/lex.torth, Row: 983, Column: 3
+;; [parse_variables_for_functions] DONE | File: compiler/lex.torth, Row: 992, Column: 3
   jmp parse_variables_for_functions_WHILE9
 parse_variables_for_functions_DONE26:
 ;; [parse_variables_for_functions] Return to the address found in return_stack
@@ -20857,48 +20928,48 @@ cGFyc2VfZnVuY3Rpb25fdmFyaWFibG216:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 989, Column: 35
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 998, Column: 35
   pop qword [parse_function_variables_func]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 989, Column: 44
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 998, Column: 44
   pop qword [parse_function_variables_memories]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 990, Column: 3
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 999, Column: 3
   push qword [parse_function_variables_func]
-;; [parse_function_variables] Call Function.get_tokens | File: compiler/lex.torth, Row: 990, Column: 8
+;; [parse_function_variables] Call Function.get_tokens | File: compiler/lex.torth, Row: 999, Column: 8
   call RnVuY3Rpb24uZ2V0X3Rva2Vucw225
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 991, Column: 3
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1000, Column: 3
   push qword [parse_function_variables_func]
-;; [parse_function_variables] Call Function.get_variables | File: compiler/lex.torth, Row: 991, Column: 8
+;; [parse_function_variables] Call Function.get_variables | File: compiler/lex.torth, Row: 1000, Column: 8
   call RnVuY3Rpb24uZ2V0X3ZhcmlhYmxlcw216
-;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 992, Column: 3
+;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1001, Column: 3
   mov rax, 0
   push rax
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 993, Column: 3
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1002, Column: 3
   mov rsi, parse_function_variables_s7 ; Pointer to string
   push rsi
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 994, Column: 3
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1003, Column: 3
   mov rax, 0
   push rax
-;; [parse_function_variables] TAKE | File: compiler/lex.torth, Row: 995, Column: 3
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 996, Column: 5
+;; [parse_function_variables] TAKE | File: compiler/lex.torth, Row: 1004, Column: 3
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1005, Column: 5
   pop qword [parse_function_variables_index]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 997, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1006, Column: 5
   pop qword [parse_function_variables_bind_variant]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 998, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1007, Column: 5
   pop qword [parse_function_variables_parsing_variables]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 999, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1008, Column: 5
   pop qword [parse_function_variables_variables]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1000, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1009, Column: 5
   pop qword [parse_function_variables_tokens]
-;; [parse_function_variables] IN | File: compiler/lex.torth, Row: 1001, Column: 3
-;; [parse_function_variables] WHILE | File: compiler/lex.torth, Row: 1003, Column: 3
+;; [parse_function_variables] IN | File: compiler/lex.torth, Row: 1010, Column: 3
+;; [parse_function_variables] WHILE | File: compiler/lex.torth, Row: 1012, Column: 3
 parse_function_variables_WHILE16:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1003, Column: 9
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1012, Column: 9
   push qword [parse_function_variables_index]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1003, Column: 15
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1012, Column: 15
   push qword [parse_function_variables_tokens]
-;; [parse_function_variables] Call List.len | File: compiler/lex.torth, Row: 1003, Column: 22
+;; [parse_function_variables] Call List.len | File: compiler/lex.torth, Row: 1012, Column: 22
   call TGlzdC5sZW211
-;; [parse_function_variables] INTRINSIC LT | File: compiler/lex.torth, Row: 1003, Column: 31
+;; [parse_function_variables] INTRINSIC LT | File: compiler/lex.torth, Row: 1012, Column: 31
   pop rax
   pop rbx
   mov rcx, 0
@@ -20906,204 +20977,206 @@ parse_function_variables_WHILE16:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1003, Column: 33
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1012, Column: 33
   pop rax
   test rax, rax
-  jz parse_function_variables_DONE122
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1004, Column: 5
+  jz parse_function_variables_DONE123
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1013, Column: 5
   push qword [parse_function_variables_index]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1004, Column: 11
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1013, Column: 11
   push qword [parse_function_variables_tokens]
-;; [parse_function_variables] Call List.nth | File: compiler/lex.torth, Row: 1004, Column: 18
+;; [parse_function_variables] Call List.nth | File: compiler/lex.torth, Row: 1013, Column: 18
   call TGlzdC5udG220
-;; [parse_function_variables] Call ptr.load | File: compiler/lex.torth, Row: 1004, Column: 27
+;; [parse_function_variables] Call ptr.load | File: compiler/lex.torth, Row: 1013, Column: 27
   call cHRyLmxvYW197
-;; [parse_function_variables] INTRINSIC dup | File: compiler/lex.torth, Row: 1005, Column: 5
+;; [parse_function_variables] INTRINSIC dup | File: compiler/lex.torth, Row: 1014, Column: 5
   pop rax
   push rax
   push rax
-;; [parse_function_variables] Call Token.get_value | File: compiler/lex.torth, Row: 1005, Column: 9
+;; [parse_function_variables] Call Token.get_value | File: compiler/lex.torth, Row: 1014, Column: 9
   call VG9rZW4uZ2V0X3ZhbH218
-;; [parse_function_variables] TAKE | File: compiler/lex.torth, Row: 1006, Column: 5
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1007, Column: 7
+;; [parse_function_variables] TAKE | File: compiler/lex.torth, Row: 1015, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1016, Column: 7
   pop qword [parse_function_variables_token_value]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1008, Column: 7
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1017, Column: 7
   pop qword [parse_function_variables_token]
-;; [parse_function_variables] IN | File: compiler/lex.torth, Row: 1009, Column: 5
-;; [parse_function_variables] IF | File: compiler/lex.torth, Row: 1012, Column: 5
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1013, Column: 7
+;; [parse_function_variables] IN | File: compiler/lex.torth, Row: 1018, Column: 5
+;; [parse_function_variables] IF | File: compiler/lex.torth, Row: 1021, Column: 5
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1022, Column: 7
   push qword [parse_function_variables_token_value]
-;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1013, Column: 19
+;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1022, Column: 19
   call c3RyLmNvcH233
-;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1013, Column: 28
+;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1022, Column: 28
   call c3RyLnVwcG215
-;; [parse_function_variables] INTRINSIC dup | File: compiler/lex.torth, Row: 1014, Column: 7
+;; [parse_function_variables] INTRINSIC dup | File: compiler/lex.torth, Row: 1023, Column: 7
   pop rax
   push rax
   push rax
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1014, Column: 12
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1023, Column: 12
   mov rsi, parse_function_variables_s37 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1014, Column: 19
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1023, Column: 19
   call c3RyZX214
-;; [parse_function_variables] INTRINSIC swap | File: compiler/lex.torth, Row: 1015, Column: 7
+;; [parse_function_variables] INTRINSIC swap | File: compiler/lex.torth, Row: 1024, Column: 7
   pop rax
   pop rbx
   push rax
   push rbx
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1015, Column: 12
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1024, Column: 12
   mov rsi, parse_function_variables_s40 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1015, Column: 19
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1024, Column: 19
   call c3RyZX214
-;; [parse_function_variables] Call || | File: compiler/lex.torth, Row: 1016, Column: 7
+;; [parse_function_variables] Call || | File: compiler/lex.torth, Row: 1025, Column: 7
   call fH248
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1017, Column: 5
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1026, Column: 5
   pop rax
   test rax, rax
   jz parse_function_variables_ELIF52
-;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1018, Column: 7
+;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1027, Column: 7
   mov rax, 1
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1018, Column: 12
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1027, Column: 12
   push qword [parse_function_variables_parsing_variables]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1018, Column: 30
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1027, Column: 30
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables_parsing_variables], rbx
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1019, Column: 7
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1028, Column: 7
   push qword [parse_function_variables_token_value]
-;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1019, Column: 19
+;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1028, Column: 19
   call c3RyLmNvcH233
-;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1019, Column: 28
+;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1028, Column: 28
   call c3RyLnVwcG215
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1019, Column: 38
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1028, Column: 38
   push qword [parse_function_variables_bind_variant]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1019, Column: 51
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1028, Column: 51
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables_bind_variant], rbx
-;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1022, Column: 5
-  jmp parse_function_variables_ENDIF116
+;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1031, Column: 5
+  jmp parse_function_variables_ENDIF117
 parse_function_variables_ELIF52:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1022, Column: 10
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1031, Column: 10
   push qword [parse_function_variables_token_value]
-;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1022, Column: 22
+;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1031, Column: 22
   call c3RyLmNvcH233
-;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1022, Column: 31
+;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1031, Column: 31
   call c3RyLnVwcG215
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1022, Column: 41
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1031, Column: 41
   mov rsi, parse_function_variables_s56 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1022, Column: 46
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1031, Column: 46
   call c3RyZX214
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1022, Column: 52
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1031, Column: 52
   pop rax
   test rax, rax
   jz parse_function_variables_ELIF62
-;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1023, Column: 7
+;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1032, Column: 7
   mov rax, 0
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1023, Column: 13
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1032, Column: 13
   push qword [parse_function_variables_parsing_variables]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1023, Column: 31
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1032, Column: 31
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables_parsing_variables], rbx
-;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1026, Column: 5
-  jmp parse_function_variables_ENDIF116
+;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1035, Column: 5
+  jmp parse_function_variables_ENDIF117
 parse_function_variables_ELIF62:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1026, Column: 10
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1035, Column: 10
   push qword [parse_function_variables_parsing_variables]
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1026, Column: 28
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1035, Column: 28
   pop rax
   test rax, rax
-  jz parse_function_variables_ELIF96
-;; [parse_function_variables] IF | File: compiler/lex.torth, Row: 1027, Column: 7
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1027, Column: 10
+  jz parse_function_variables_ELIF97
+;; [parse_function_variables] IF | File: compiler/lex.torth, Row: 1036, Column: 7
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1036, Column: 10
   push qword [parse_function_variables_bind_variant]
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1027, Column: 23
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1036, Column: 23
   mov rsi, parse_function_variables_s67 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1027, Column: 30
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1036, Column: 30
   call c3RyZX214
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1027, Column: 36
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1036, Column: 36
   pop rax
   test rax, rax
   jz parse_function_variables_ELIF73
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1028, Column: 9
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1037, Column: 9
   mov rax, 1
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1028, Column: 22
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1037, Column: 22
   push qword [parse_function_variables_token]
-;; [parse_function_variables] Call Token.set_vartype | File: compiler/lex.torth, Row: 1028, Column: 28
+;; [parse_function_variables] Call Token.set_vartype | File: compiler/lex.torth, Row: 1037, Column: 28
   call VG9rZW4uc2V0X3ZhcnR5cG213
-;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1029, Column: 7
-  jmp parse_function_variables_ENDIF89
+;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1038, Column: 7
+  jmp parse_function_variables_ENDIF90
 parse_function_variables_ELIF73:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1029, Column: 12
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1038, Column: 12
   push qword [parse_function_variables_bind_variant]
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1029, Column: 25
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1038, Column: 25
   mov rsi, parse_function_variables_s75 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1029, Column: 32
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1038, Column: 32
   call c3RyZX214
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1029, Column: 38
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1038, Column: 38
   pop rax
   test rax, rax
   jz parse_function_variables_ELSE81
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1030, Column: 9
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1039, Column: 9
   mov rax, 3
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1030, Column: 22
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1039, Column: 22
   push qword [parse_function_variables_token]
-;; [parse_function_variables] Call Token.set_vartype | File: compiler/lex.torth, Row: 1030, Column: 28
+;; [parse_function_variables] Call Token.set_vartype | File: compiler/lex.torth, Row: 1039, Column: 28
   call VG9rZW4uc2V0X3ZhcnR5cG213
-;; [parse_function_variables] ELSE | File: compiler/lex.torth, Row: 1031, Column: 7
-  jmp parse_function_variables_ENDIF89
+;; [parse_function_variables] ELSE | File: compiler/lex.torth, Row: 1040, Column: 7
+  jmp parse_function_variables_ENDIF90
 parse_function_variables_ELSE81:
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1032, Column: 9
-  mov rsi, parse_function_variables_s82 ; Pointer to string
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1041, Column: 9
+  push qword [parse_function_variables_token]
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1042, Column: 9
+  mov rsi, parse_function_variables_s83 ; Pointer to string
   push rsi
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1032, Column: 29
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1042, Column: 29
   push qword [parse_function_variables_bind_variant]
-;; [parse_function_variables] Call str.cat | File: compiler/lex.torth, Row: 1032, Column: 42
+;; [parse_function_variables] Call str.cat | File: compiler/lex.torth, Row: 1042, Column: 42
   call c3RyLmNhdA213
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1032, Column: 50
-  mov rsi, parse_function_variables_s85 ; Pointer to string
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1042, Column: 50
+  mov rsi, parse_function_variables_s86 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call str.cat | File: compiler/lex.torth, Row: 1032, Column: 56
+;; [parse_function_variables] Call str.cat | File: compiler/lex.torth, Row: 1042, Column: 56
   call c3RyLmNhdA213
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1033, Column: 9
-  mov rsi, parse_function_variables_s87 ; Pointer to string
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1043, Column: 9
+  mov rsi, parse_function_variables_s88 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call CompilerError | File: compiler/lex.torth, Row: 1033, Column: 23
-  call Q29tcGlsZXJFcnJvcg225
-;; [parse_function_variables] ENDIF | File: compiler/lex.torth, Row: 1034, Column: 7
-parse_function_variables_ENDIF89:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1037, Column: 7
+;; [parse_function_variables] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 1043, Column: 23
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [parse_function_variables] ENDIF | File: compiler/lex.torth, Row: 1044, Column: 7
+parse_function_variables_ENDIF90:
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1047, Column: 7
   push qword [parse_function_variables_memories]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1037, Column: 16
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1047, Column: 16
   push qword [parse_function_variables_variables]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1037, Column: 26
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1047, Column: 26
   push qword [parse_function_variables_func]
-;; [parse_function_variables] Call Function.get_name | File: compiler/lex.torth, Row: 1037, Column: 31
+;; [parse_function_variables] Call Function.get_name | File: compiler/lex.torth, Row: 1047, Column: 31
   call RnVuY3Rpb24uZ2V0X25hbW210
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1037, Column: 49
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1047, Column: 49
   push qword [parse_function_variables_token]
-;; [parse_function_variables] Call add_variable_to_list | File: compiler/lex.torth, Row: 1037, Column: 55
+;; [parse_function_variables] Call add_variable_to_list | File: compiler/lex.torth, Row: 1047, Column: 55
   call YWRkX3ZhcmlhYmxlX3RvX2xpc3231
-;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1040, Column: 5
-  jmp parse_function_variables_ENDIF116
-parse_function_variables_ELIF96:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1040, Column: 10
+;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1050, Column: 5
+  jmp parse_function_variables_ENDIF117
+parse_function_variables_ELIF97:
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1050, Column: 10
   push qword [parse_function_variables_token]
-;; [parse_function_variables] Call Token.get_vartype | File: compiler/lex.torth, Row: 1040, Column: 16
+;; [parse_function_variables] Call Token.get_vartype | File: compiler/lex.torth, Row: 1050, Column: 16
   call VG9rZW4uZ2V0X3ZhcnR5cG213
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1040, Column: 34
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1050, Column: 34
   mov rax, 0
   push rax
-;; [parse_function_variables] INTRINSIC NE | File: compiler/lex.torth, Row: 1040, Column: 36
+;; [parse_function_variables] INTRINSIC NE | File: compiler/lex.torth, Row: 1050, Column: 36
   pop rax
   pop rbx
   mov rcx, 0
@@ -21111,68 +21184,68 @@ parse_function_variables_ELIF96:
   cmp rbx, rax
   cmovne rcx, rdx
   push rcx
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1040, Column: 39
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1050, Column: 39
   pop rax
   test rax, rax
-  jz parse_function_variables_ELIF108
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1041, Column: 7
+  jz parse_function_variables_ELIF109
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1051, Column: 7
   push qword [parse_function_variables_index]
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1041, Column: 13
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1051, Column: 13
   mov rax, 1
   push rax
-;; [parse_function_variables] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1041, Column: 15
+;; [parse_function_variables] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1051, Column: 15
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1041, Column: 17
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1051, Column: 17
   push qword [parse_function_variables_index]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1041, Column: 23
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1051, Column: 23
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables_index], rbx
-;; [parse_function_variables] CONTINUE | File: compiler/lex.torth, Row: 1042, Column: 7
-  jmp parse_function_variables_WHILE16;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1045, Column: 5
-  jmp parse_function_variables_ENDIF116
-parse_function_variables_ELIF108:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1045, Column: 10
+;; [parse_function_variables] CONTINUE | File: compiler/lex.torth, Row: 1052, Column: 7
+  jmp parse_function_variables_WHILE16;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1055, Column: 5
+  jmp parse_function_variables_ENDIF117
+parse_function_variables_ELIF109:
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1055, Column: 10
   push qword [parse_function_variables_token_value]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1045, Column: 22
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1055, Column: 22
   push qword [parse_function_variables_variables]
-;; [parse_function_variables] Call List.contains_variable | File: compiler/lex.torth, Row: 1045, Column: 32
+;; [parse_function_variables] Call List.contains_variable | File: compiler/lex.torth, Row: 1055, Column: 32
   call TGlzdC5jb250YWluc192YXJpYWJsZQ209
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1045, Column: 55
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1055, Column: 55
   pop rax
   test rax, rax
-  jz parse_function_variables_ENDIF116
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1046, Column: 7
+  jz parse_function_variables_ENDIF117
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1056, Column: 7
   mov rax, 2
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1046, Column: 20
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1056, Column: 20
   push qword [parse_function_variables_token]
-;; [parse_function_variables] Call Token.set_vartype | File: compiler/lex.torth, Row: 1046, Column: 26
+;; [parse_function_variables] Call Token.set_vartype | File: compiler/lex.torth, Row: 1056, Column: 26
   call VG9rZW4uc2V0X3ZhcnR5cG213
-;; [parse_function_variables] ENDIF | File: compiler/lex.torth, Row: 1047, Column: 5
-parse_function_variables_ENDIF116:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1048, Column: 5
+;; [parse_function_variables] ENDIF | File: compiler/lex.torth, Row: 1057, Column: 5
+parse_function_variables_ENDIF117:
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1058, Column: 5
   push qword [parse_function_variables_index]
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1048, Column: 11
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1058, Column: 11
   mov rax, 1
   push rax
-;; [parse_function_variables] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1048, Column: 13
+;; [parse_function_variables] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1058, Column: 13
   pop rbx
   pop rax
   add rax, rbx
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1048, Column: 15
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1058, Column: 15
   push qword [parse_function_variables_index]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1048, Column: 21
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1058, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables_index], rbx
-;; [parse_function_variables] DONE | File: compiler/lex.torth, Row: 1049, Column: 3
+;; [parse_function_variables] DONE | File: compiler/lex.torth, Row: 1059, Column: 3
   jmp parse_function_variables_WHILE16
-parse_function_variables_DONE122:
+parse_function_variables_DONE123:
 ;; [parse_function_variables] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -21186,84 +21259,195 @@ YWRkX3ZhcmlhYmxlX3RvX2xpc3231:
   add rax, [return_stack_index]
   pop qword [rax]
   add qword [return_stack_index], 8  ; Increment return_stack_index
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1059, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1069, Column: 3
   pop qword [add_variable_to_list_token]
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1060, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1070, Column: 3
   pop qword [add_variable_to_list_function_name]
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1061, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1071, Column: 3
   pop qword [add_variable_to_list_variables]
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1062, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1072, Column: 3
   pop qword [add_variable_to_list_memories]
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1065, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1075, Column: 3
   push qword [add_variable_to_list_token]
-;; [add_variable_to_list] Call Token.get_type | File: compiler/lex.torth, Row: 1065, Column: 9
+;; [add_variable_to_list] Call Token.get_type | File: compiler/lex.torth, Row: 1075, Column: 9
   call VG9rZW4uZ2V0X3R5cG213
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1066, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1076, Column: 3
   push qword [add_variable_to_list_token]
-;; [add_variable_to_list] Call Token.get_value | File: compiler/lex.torth, Row: 1066, Column: 9
+;; [add_variable_to_list] Call Token.get_value | File: compiler/lex.torth, Row: 1076, Column: 9
   call VG9rZW4uZ2V0X3ZhbH218
-;; [add_variable_to_list] TAKE | File: compiler/lex.torth, Row: 1067, Column: 3
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1067, Column: 8
+;; [add_variable_to_list] TAKE | File: compiler/lex.torth, Row: 1077, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1077, Column: 8
   pop qword [add_variable_to_list_token_value]
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1067, Column: 20
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1077, Column: 20
   pop qword [add_variable_to_list_token_type]
-;; [add_variable_to_list] IN | File: compiler/lex.torth, Row: 1067, Column: 31
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1070, Column: 3
+;; [add_variable_to_list] IN | File: compiler/lex.torth, Row: 1077, Column: 31
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1080, Column: 3
   push qword [add_variable_to_list_token_type]
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1070, Column: 14
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1080, Column: 14
   push qword [add_variable_to_list_token_value]
-;; [add_variable_to_list] Call Variable.init | File: compiler/lex.torth, Row: 1070, Column: 26
+;; [add_variable_to_list] Call Variable.init | File: compiler/lex.torth, Row: 1080, Column: 26
   call VmFyaWFibGUuaW5pdA221
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1071, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1081, Column: 3
   push qword [add_variable_to_list_variables]
-;; [add_variable_to_list] Call List.append | File: compiler/lex.torth, Row: 1071, Column: 13
+;; [add_variable_to_list] Call List.append | File: compiler/lex.torth, Row: 1081, Column: 13
   call TGlzdC5hcHBlbm210
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1074, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1084, Column: 3
   push qword [add_variable_to_list_function_name]
-;; [add_variable_to_list] PUSH_STR | File: compiler/lex.torth, Row: 1074, Column: 17
+;; [add_variable_to_list] PUSH_STR | File: compiler/lex.torth, Row: 1084, Column: 17
   mov rsi, add_variable_to_list_s18 ; Pointer to string
   push rsi
-;; [add_variable_to_list] Call str.cat | File: compiler/lex.torth, Row: 1074, Column: 21
+;; [add_variable_to_list] Call str.cat | File: compiler/lex.torth, Row: 1084, Column: 21
   call c3RyLmNhdA213
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1075, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1085, Column: 3
   push qword [add_variable_to_list_token_value]
-;; [add_variable_to_list] Call str.cat | File: compiler/lex.torth, Row: 1075, Column: 21
+;; [add_variable_to_list] Call str.cat | File: compiler/lex.torth, Row: 1085, Column: 21
   call c3RyLmNhdA213
-;; [add_variable_to_list] TAKE | File: compiler/lex.torth, Row: 1076, Column: 3
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1076, Column: 8
+;; [add_variable_to_list] TAKE | File: compiler/lex.torth, Row: 1086, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1086, Column: 8
   pop qword [add_variable_to_list_memory_name]
-;; [add_variable_to_list] IN | File: compiler/lex.torth, Row: 1076, Column: 20
-;; [add_variable_to_list] IF | File: compiler/lex.torth, Row: 1077, Column: 3
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1077, Column: 6
+;; [add_variable_to_list] IN | File: compiler/lex.torth, Row: 1086, Column: 20
+;; [add_variable_to_list] IF | File: compiler/lex.torth, Row: 1087, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1087, Column: 6
   push qword [add_variable_to_list_memories]
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1077, Column: 15
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1087, Column: 15
   push qword [add_variable_to_list_memory_name]
-;; [add_variable_to_list] Call memory_exists | File: compiler/lex.torth, Row: 1077, Column: 27
+;; [add_variable_to_list] Call memory_exists | File: compiler/lex.torth, Row: 1087, Column: 27
   call bWVtb3J5X2V4aXN0cw231
-;; [add_variable_to_list] Call not | File: compiler/lex.torth, Row: 1077, Column: 41
+;; [add_variable_to_list] Call not | File: compiler/lex.torth, Row: 1087, Column: 41
   call bm227
-;; [add_variable_to_list] DO | File: compiler/lex.torth, Row: 1077, Column: 45
+;; [add_variable_to_list] DO | File: compiler/lex.torth, Row: 1087, Column: 45
   pop rax
   test rax, rax
   jz add_variable_to_list_ENDIF38
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1078, Column: 5
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1088, Column: 5
   push qword [add_variable_to_list_token]
-;; [add_variable_to_list] Call Token.get_location | File: compiler/lex.torth, Row: 1078, Column: 11
+;; [add_variable_to_list] Call Token.get_location | File: compiler/lex.torth, Row: 1088, Column: 11
   call VG9rZW4uZ2V0X2xvY2F0aW221
-;; [add_variable_to_list] PUSH_INT | File: compiler/lex.torth, Row: 1079, Column: 5
+;; [add_variable_to_list] PUSH_INT | File: compiler/lex.torth, Row: 1089, Column: 5
   mov rax, 8
   push rax
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1080, Column: 5
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1090, Column: 5
   push qword [add_variable_to_list_memory_name]
-;; [add_variable_to_list] Call Memory.init | File: compiler/lex.torth, Row: 1081, Column: 5
+;; [add_variable_to_list] Call Memory.init | File: compiler/lex.torth, Row: 1091, Column: 5
   call TWVtb3J5LmluaX221
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1082, Column: 5
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1092, Column: 5
   push qword [add_variable_to_list_memories]
-;; [add_variable_to_list] Call List.append | File: compiler/lex.torth, Row: 1082, Column: 14
+;; [add_variable_to_list] Call List.append | File: compiler/lex.torth, Row: 1092, Column: 14
   call TGlzdC5hcHBlbm210
-;; [add_variable_to_list] ENDIF | File: compiler/lex.torth, Row: 1083, Column: 3
+;; [add_variable_to_list] ENDIF | File: compiler/lex.torth, Row: 1093, Column: 3
 add_variable_to_list_ENDIF38:
 ;; [add_variable_to_list] Return to the address found in return_stack
+  sub qword [return_stack_index], 8  ; Decrement return_stack_index
+  mov rax, return_stack
+  add rax, [return_stack_index]
+  push qword [rax]
+  ret
+
+bWFpbl9mdW5jdGlvbl9pbl9mdW5jdGlvbl9saX231:
+;; [main_function_in_function_list] Save the return address to return_stack
+  mov rax, return_stack
+  add rax, [return_stack_index]
+  pop qword [rax]
+  add qword [return_stack_index], 8  ; Increment return_stack_index
+;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1100, Column: 41
+  pop qword [main_function_in_function_list_functions]
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1101, Column: 3
+  push qword [main_function_in_function_list_functions]
+;; [main_function_in_function_list] Call List.len | File: compiler/lex.torth, Row: 1101, Column: 13
+  call TGlzdC5sZW211
+;; [main_function_in_function_list] PUSH_INT | File: compiler/lex.torth, Row: 1102, Column: 3
+  mov rax, 0
+  push rax
+;; [main_function_in_function_list] TAKE | File: compiler/lex.torth, Row: 1103, Column: 3
+;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1103, Column: 8
+  pop qword [main_function_in_function_list_index]
+;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1103, Column: 14
+  pop qword [main_function_in_function_list_functions.len]
+;; [main_function_in_function_list] IN | File: compiler/lex.torth, Row: 1103, Column: 28
+;; [main_function_in_function_list] WHILE | File: compiler/lex.torth, Row: 1106, Column: 3
+main_function_in_function_list_WHILE8:
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1106, Column: 9
+  push qword [main_function_in_function_list_index]
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1106, Column: 15
+  push qword [main_function_in_function_list_functions.len]
+;; [main_function_in_function_list] INTRINSIC LT | File: compiler/lex.torth, Row: 1106, Column: 29
+  pop rax
+  pop rbx
+  mov rcx, 0
+  mov rdx, 1
+  cmp rbx, rax
+  cmovl rcx, rdx
+  push rcx
+;; [main_function_in_function_list] DO | File: compiler/lex.torth, Row: 1106, Column: 31
+  pop rax
+  test rax, rax
+  jz main_function_in_function_list_DONE36
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1107, Column: 5
+  push qword [main_function_in_function_list_index]
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1107, Column: 11
+  push qword [main_function_in_function_list_functions]
+;; [main_function_in_function_list] Call List.nth | File: compiler/lex.torth, Row: 1107, Column: 21
+  call TGlzdC5udG220
+;; [main_function_in_function_list] Call ptr.load | File: compiler/lex.torth, Row: 1107, Column: 30
+  call cHRyLmxvYW197
+;; [main_function_in_function_list] Call Function.get_name | File: compiler/lex.torth, Row: 1108, Column: 5
+  call RnVuY3Rpb24uZ2V0X25hbW210
+;; [main_function_in_function_list] Call str.copy | File: compiler/lex.torth, Row: 1108, Column: 23
+  call c3RyLmNvcH233
+;; [main_function_in_function_list] Call str.upper | File: compiler/lex.torth, Row: 1108, Column: 32
+  call c3RyLnVwcG215
+;; [main_function_in_function_list] TAKE | File: compiler/lex.torth, Row: 1109, Column: 5
+;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1109, Column: 10
+  pop qword [main_function_in_function_list_function_name]
+;; [main_function_in_function_list] IN | File: compiler/lex.torth, Row: 1109, Column: 24
+;; [main_function_in_function_list] IF | File: compiler/lex.torth, Row: 1112, Column: 5
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1112, Column: 8
+  push qword [main_function_in_function_list_function_name]
+;; [main_function_in_function_list] PUSH_STR | File: compiler/lex.torth, Row: 1112, Column: 22
+  mov rsi, main_function_in_function_list_s25 ; Pointer to string
+  push rsi
+;; [main_function_in_function_list] Call streq | File: compiler/lex.torth, Row: 1112, Column: 29
+  call c3RyZX214
+;; [main_function_in_function_list] DO | File: compiler/lex.torth, Row: 1112, Column: 35
+  pop rax
+  test rax, rax
+  jz main_function_in_function_list_ENDIF30
+;; [main_function_in_function_list] PUSH_BOOL | File: compiler/lex.torth, Row: 1113, Column: 7
+  mov rax, 1
+  push rax
+;; [main_function_in_function_list] RETURN | File: compiler/lex.torth, Row: 1113, Column: 12
+;; [main_function_in_function_list] Return to the address found in return_stack
+  sub qword [return_stack_index], 8  ; Decrement return_stack_index
+  mov rax, return_stack
+  add rax, [return_stack_index]
+  push qword [rax]
+  ret
+
+;; [main_function_in_function_list] ENDIF | File: compiler/lex.torth, Row: 1114, Column: 5
+main_function_in_function_list_ENDIF30:
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1115, Column: 5
+  push qword [main_function_in_function_list_index]
+;; [main_function_in_function_list] PUSH_INT | File: compiler/lex.torth, Row: 1115, Column: 11
+  mov rax, 1
+  push rax
+;; [main_function_in_function_list] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1115, Column: 13
+  pop rbx
+  pop rax
+  add rax, rbx
+  push rax
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1115, Column: 15
+  push qword [main_function_in_function_list_index]
+;; [main_function_in_function_list] ASSIGN_BIND | File: compiler/lex.torth, Row: 1115, Column: 21
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [main_function_in_function_list_index], rbx
+;; [main_function_in_function_list] DONE | File: compiler/lex.torth, Row: 1116, Column: 3
+  jmp main_function_in_function_list_WHILE8
+main_function_in_function_list_DONE36:
+;; [main_function_in_function_list] PUSH_BOOL | File: compiler/lex.torth, Row: 1117, Column: 3
+  mov rax, 0
+  push rax
+;; [main_function_in_function_list] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
   add rax, [return_stack_index]
@@ -21569,7 +21753,7 @@ Z2V0X3Rva2Vuc19vcF90eX213:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 97, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF23:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 97, Column: 8
   push qword [get_tokens_op_type_token_type]
@@ -21600,7 +21784,7 @@ get_tokens_op_type_ELIF23:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 99, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF30:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 99, Column: 8
   push qword [get_tokens_op_type_token_type]
@@ -21631,7 +21815,7 @@ get_tokens_op_type_ELIF30:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 101, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF37:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 101, Column: 8
   push qword [get_tokens_op_type_token_type]
@@ -21662,7 +21846,7 @@ get_tokens_op_type_ELIF37:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 103, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF44:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 103, Column: 8
   push qword [get_tokens_op_type_token_type]
@@ -21693,7 +21877,7 @@ get_tokens_op_type_ELIF44:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 105, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF51:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 105, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21718,7 +21902,7 @@ get_tokens_op_type_ELIF51:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 107, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF58:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 107, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21743,7 +21927,7 @@ get_tokens_op_type_ELIF58:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 109, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF65:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 109, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21768,7 +21952,7 @@ get_tokens_op_type_ELIF65:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 111, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF72:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 111, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21793,7 +21977,7 @@ get_tokens_op_type_ELIF72:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 113, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF79:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 113, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21818,7 +22002,7 @@ get_tokens_op_type_ELIF79:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 115, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF86:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 115, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21843,7 +22027,7 @@ get_tokens_op_type_ELIF86:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 117, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF93:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 117, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21868,7 +22052,7 @@ get_tokens_op_type_ELIF93:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 119, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF100:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 119, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21893,7 +22077,7 @@ get_tokens_op_type_ELIF100:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 121, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF107:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 121, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21918,7 +22102,7 @@ get_tokens_op_type_ELIF107:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 123, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF114:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 123, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21943,7 +22127,7 @@ get_tokens_op_type_ELIF114:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 125, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF121:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 125, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21968,7 +22152,7 @@ get_tokens_op_type_ELIF121:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 127, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF128:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 127, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -21993,7 +22177,7 @@ get_tokens_op_type_ELIF128:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 129, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF135:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 129, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22018,7 +22202,7 @@ get_tokens_op_type_ELIF135:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 131, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF142:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 131, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22043,7 +22227,7 @@ get_tokens_op_type_ELIF142:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 133, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF149:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 133, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22068,7 +22252,7 @@ get_tokens_op_type_ELIF149:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 135, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF156:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 135, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22093,7 +22277,7 @@ get_tokens_op_type_ELIF156:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 137, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF163:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 137, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22118,7 +22302,7 @@ get_tokens_op_type_ELIF163:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 139, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF170:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 139, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22143,7 +22327,7 @@ get_tokens_op_type_ELIF170:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 141, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF177:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 141, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22168,7 +22352,7 @@ get_tokens_op_type_ELIF177:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 143, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF184:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 143, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22193,7 +22377,7 @@ get_tokens_op_type_ELIF184:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 145, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF191:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 145, Column: 8
   push qword [get_tokens_op_type_token_upper]
@@ -22218,7 +22402,7 @@ get_tokens_op_type_ELIF191:
   ret
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 147, Column: 3
-  jmp get_tokens_op_type_ENDIF397
+  jmp get_tokens_op_type_ENDIF398
 get_tokens_op_type_ELIF198:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 147, Column: 8
   push qword [get_tokens_op_type_token]
@@ -22238,7 +22422,7 @@ get_tokens_op_type_ELIF198:
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 147, Column: 48
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF237
+  jz get_tokens_op_type_ELIF238
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 148, Column: 5
   push qword [get_tokens_op_type_token]
 ;; [get_tokens_op_type] Call Token.get_vartype | File: compiler/program.torth, Row: 148, Column: 11
@@ -22340,37 +22524,39 @@ get_tokens_op_type_ELIF223:
 
 ;; [get_tokens_op_type] ENDIF | File: compiler/program.torth, Row: 158, Column: 5
 get_tokens_op_type_ENDIF230:
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 160, Column: 5
-  mov rsi, get_tokens_op_type_s231 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 160, Column: 25
-  push qword [get_tokens_op_type_token_vartype]
-;; [get_tokens_op_type] Call itoa | File: compiler/program.torth, Row: 160, Column: 39
-  call aXRvYQ208
-;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 160, Column: 44
-  call c3RyLmNhdA213
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 160, Column: 5
+  push qword [get_tokens_op_type_token]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 161, Column: 5
-  mov rsi, get_tokens_op_type_s235 ; Pointer to string
+  mov rsi, get_tokens_op_type_s232 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call CompilerError | File: compiler/program.torth, Row: 161, Column: 19
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 162, Column: 3
-  jmp get_tokens_op_type_ENDIF397
-get_tokens_op_type_ELIF237:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 162, Column: 8
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 161, Column: 25
+  push qword [get_tokens_op_type_token_vartype]
+;; [get_tokens_op_type] Call itoa | File: compiler/program.torth, Row: 161, Column: 39
+  call aXRvYQ208
+;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 161, Column: 44
+  call c3RyLmNhdA213
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 162, Column: 5
+  mov rsi, get_tokens_op_type_s236 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call CompilerErrorWithToken | File: compiler/program.torth, Row: 162, Column: 19
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 163, Column: 3
+  jmp get_tokens_op_type_ENDIF398
+get_tokens_op_type_ELIF238:
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 163, Column: 8
   push qword [get_tokens_op_type_constants]
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 162, Column: 18
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 163, Column: 18
   push qword [get_tokens_op_type_token_value]
-;; [get_tokens_op_type] Call constant_exists | File: compiler/program.torth, Row: 162, Column: 30
+;; [get_tokens_op_type] Call constant_exists | File: compiler/program.torth, Row: 163, Column: 30
   call Y29uc3RhbnRfZXhpc3231
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 162, Column: 46
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 163, Column: 46
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF244
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 163, Column: 5
+  jz get_tokens_op_type_ELIF245
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 164, Column: 5
   mov rax, 26
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 163, Column: 21
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 164, Column: 21
 ;; [get_tokens_op_type] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -22378,23 +22564,23 @@ get_tokens_op_type_ELIF237:
   push qword [rax]
   ret
 
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 164, Column: 3
-  jmp get_tokens_op_type_ENDIF397
-get_tokens_op_type_ELIF244:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 164, Column: 8
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 165, Column: 3
+  jmp get_tokens_op_type_ENDIF398
+get_tokens_op_type_ELIF245:
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 165, Column: 8
   push qword [get_tokens_op_type_functions]
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 164, Column: 18
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 165, Column: 18
   push qword [get_tokens_op_type_token_value]
-;; [get_tokens_op_type] Call function_exists | File: compiler/program.torth, Row: 164, Column: 30
+;; [get_tokens_op_type] Call function_exists | File: compiler/program.torth, Row: 165, Column: 30
   call ZnVuY3Rpb25fZXhpc3231
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 164, Column: 46
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 165, Column: 46
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF251
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 165, Column: 5
+  jz get_tokens_op_type_ELIF252
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 166, Column: 5
   mov rax, 15
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 165, Column: 26
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 166, Column: 26
 ;; [get_tokens_op_type] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -22402,23 +22588,23 @@ get_tokens_op_type_ELIF244:
   push qword [rax]
   ret
 
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 166, Column: 3
-  jmp get_tokens_op_type_ENDIF397
-get_tokens_op_type_ELIF251:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 166, Column: 8
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 167, Column: 3
+  jmp get_tokens_op_type_ENDIF398
+get_tokens_op_type_ELIF252:
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 167, Column: 8
   push qword [get_tokens_op_type_memories]
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 166, Column: 17
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 167, Column: 17
   push qword [get_tokens_op_type_token_value]
-;; [get_tokens_op_type] Call memory_exists | File: compiler/program.torth, Row: 166, Column: 29
+;; [get_tokens_op_type] Call memory_exists | File: compiler/program.torth, Row: 167, Column: 29
   call bWVtb3J5X2V4aXN0cw231
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 166, Column: 43
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 167, Column: 43
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF258
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 167, Column: 5
+  jz get_tokens_op_type_ELIF259
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 168, Column: 5
   mov rax, 27
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 167, Column: 21
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 168, Column: 21
 ;; [get_tokens_op_type] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -22426,29 +22612,20 @@ get_tokens_op_type_ELIF251:
   push qword [rax]
   ret
 
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 169, Column: 3
-  jmp get_tokens_op_type_ENDIF397
-get_tokens_op_type_ELIF258:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 170, Column: 5
-  push qword [get_tokens_op_type_token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 170, Column: 17
-  mov rsi, get_tokens_op_type_s260 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 170, Column: 31
-  call c3RyZX214
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 170, Column: 3
+  jmp get_tokens_op_type_ENDIF398
+get_tokens_op_type_ELIF259:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 171, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 171, Column: 17
-  mov rsi, get_tokens_op_type_s263 ; Pointer to string
+  mov rsi, get_tokens_op_type_s261 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 171, Column: 31
   call c3RyZX214
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 171, Column: 37
-  call fH248
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 172, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 172, Column: 17
-  mov rsi, get_tokens_op_type_s267 ; Pointer to string
+  mov rsi, get_tokens_op_type_s264 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 172, Column: 31
   call c3RyZX214
@@ -22457,7 +22634,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 173, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 173, Column: 17
-  mov rsi, get_tokens_op_type_s271 ; Pointer to string
+  mov rsi, get_tokens_op_type_s268 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 173, Column: 31
   call c3RyZX214
@@ -22466,7 +22643,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 174, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 174, Column: 17
-  mov rsi, get_tokens_op_type_s275 ; Pointer to string
+  mov rsi, get_tokens_op_type_s272 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 174, Column: 31
   call c3RyZX214
@@ -22475,7 +22652,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 175, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 175, Column: 17
-  mov rsi, get_tokens_op_type_s279 ; Pointer to string
+  mov rsi, get_tokens_op_type_s276 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 175, Column: 31
   call c3RyZX214
@@ -22484,7 +22661,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 176, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 176, Column: 17
-  mov rsi, get_tokens_op_type_s283 ; Pointer to string
+  mov rsi, get_tokens_op_type_s280 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 176, Column: 31
   call c3RyZX214
@@ -22493,7 +22670,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 177, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 177, Column: 17
-  mov rsi, get_tokens_op_type_s287 ; Pointer to string
+  mov rsi, get_tokens_op_type_s284 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 177, Column: 31
   call c3RyZX214
@@ -22502,7 +22679,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 178, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 178, Column: 17
-  mov rsi, get_tokens_op_type_s291 ; Pointer to string
+  mov rsi, get_tokens_op_type_s288 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 178, Column: 31
   call c3RyZX214
@@ -22511,7 +22688,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 179, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 179, Column: 17
-  mov rsi, get_tokens_op_type_s295 ; Pointer to string
+  mov rsi, get_tokens_op_type_s292 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 179, Column: 31
   call c3RyZX214
@@ -22520,7 +22697,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 180, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 180, Column: 17
-  mov rsi, get_tokens_op_type_s299 ; Pointer to string
+  mov rsi, get_tokens_op_type_s296 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 180, Column: 31
   call c3RyZX214
@@ -22529,7 +22706,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 181, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 181, Column: 17
-  mov rsi, get_tokens_op_type_s303 ; Pointer to string
+  mov rsi, get_tokens_op_type_s300 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 181, Column: 31
   call c3RyZX214
@@ -22538,25 +22715,25 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 182, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 182, Column: 17
-  mov rsi, get_tokens_op_type_s307 ; Pointer to string
+  mov rsi, get_tokens_op_type_s304 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 182, Column: 25
-  call c3RyLnN0YXJ0c3dpdG220
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 182, Column: 40
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 182, Column: 31
+  call c3RyZX214
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 182, Column: 37
   call fH248
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 183, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 183, Column: 17
-  mov rsi, get_tokens_op_type_s311 ; Pointer to string
+  mov rsi, get_tokens_op_type_s308 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 183, Column: 31
-  call c3RyZX214
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 183, Column: 37
+;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 183, Column: 25
+  call c3RyLnN0YXJ0c3dpdG220
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 183, Column: 40
   call fH248
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 184, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 184, Column: 17
-  mov rsi, get_tokens_op_type_s315 ; Pointer to string
+  mov rsi, get_tokens_op_type_s312 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 184, Column: 31
   call c3RyZX214
@@ -22565,7 +22742,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 185, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 185, Column: 17
-  mov rsi, get_tokens_op_type_s319 ; Pointer to string
+  mov rsi, get_tokens_op_type_s316 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 185, Column: 31
   call c3RyZX214
@@ -22574,7 +22751,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 186, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 186, Column: 17
-  mov rsi, get_tokens_op_type_s323 ; Pointer to string
+  mov rsi, get_tokens_op_type_s320 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 186, Column: 31
   call c3RyZX214
@@ -22583,7 +22760,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 187, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 187, Column: 17
-  mov rsi, get_tokens_op_type_s327 ; Pointer to string
+  mov rsi, get_tokens_op_type_s324 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 187, Column: 31
   call c3RyZX214
@@ -22592,7 +22769,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 188, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 188, Column: 17
-  mov rsi, get_tokens_op_type_s331 ; Pointer to string
+  mov rsi, get_tokens_op_type_s328 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 188, Column: 31
   call c3RyZX214
@@ -22601,7 +22778,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 189, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 189, Column: 17
-  mov rsi, get_tokens_op_type_s335 ; Pointer to string
+  mov rsi, get_tokens_op_type_s332 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 189, Column: 31
   call c3RyZX214
@@ -22610,7 +22787,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 190, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 190, Column: 17
-  mov rsi, get_tokens_op_type_s339 ; Pointer to string
+  mov rsi, get_tokens_op_type_s336 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 190, Column: 31
   call c3RyZX214
@@ -22619,7 +22796,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 191, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 191, Column: 17
-  mov rsi, get_tokens_op_type_s343 ; Pointer to string
+  mov rsi, get_tokens_op_type_s340 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 191, Column: 31
   call c3RyZX214
@@ -22628,7 +22805,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 192, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 192, Column: 17
-  mov rsi, get_tokens_op_type_s347 ; Pointer to string
+  mov rsi, get_tokens_op_type_s344 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 192, Column: 31
   call c3RyZX214
@@ -22637,7 +22814,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 193, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 193, Column: 17
-  mov rsi, get_tokens_op_type_s351 ; Pointer to string
+  mov rsi, get_tokens_op_type_s348 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 193, Column: 31
   call c3RyZX214
@@ -22646,7 +22823,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 194, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 194, Column: 17
-  mov rsi, get_tokens_op_type_s355 ; Pointer to string
+  mov rsi, get_tokens_op_type_s352 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 194, Column: 31
   call c3RyZX214
@@ -22655,25 +22832,25 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 195, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 195, Column: 17
-  mov rsi, get_tokens_op_type_s359 ; Pointer to string
+  mov rsi, get_tokens_op_type_s356 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 195, Column: 26
-  call c3RyLnN0YXJ0c3dpdG220
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 195, Column: 41
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 195, Column: 31
+  call c3RyZX214
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 195, Column: 37
   call fH248
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 196, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 196, Column: 17
-  mov rsi, get_tokens_op_type_s363 ; Pointer to string
+  mov rsi, get_tokens_op_type_s360 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 196, Column: 31
-  call c3RyZX214
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 196, Column: 37
+;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 196, Column: 26
+  call c3RyLnN0YXJ0c3dpdG220
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 196, Column: 41
   call fH248
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 197, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 197, Column: 17
-  mov rsi, get_tokens_op_type_s367 ; Pointer to string
+  mov rsi, get_tokens_op_type_s364 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 197, Column: 31
   call c3RyZX214
@@ -22682,7 +22859,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 198, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 198, Column: 17
-  mov rsi, get_tokens_op_type_s371 ; Pointer to string
+  mov rsi, get_tokens_op_type_s368 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 198, Column: 31
   call c3RyZX214
@@ -22691,7 +22868,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 199, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 199, Column: 17
-  mov rsi, get_tokens_op_type_s375 ; Pointer to string
+  mov rsi, get_tokens_op_type_s372 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 199, Column: 31
   call c3RyZX214
@@ -22700,7 +22877,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 200, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 200, Column: 17
-  mov rsi, get_tokens_op_type_s379 ; Pointer to string
+  mov rsi, get_tokens_op_type_s376 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 200, Column: 31
   call c3RyZX214
@@ -22709,7 +22886,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 201, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 201, Column: 17
-  mov rsi, get_tokens_op_type_s383 ; Pointer to string
+  mov rsi, get_tokens_op_type_s380 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 201, Column: 31
   call c3RyZX214
@@ -22718,7 +22895,7 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 202, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 202, Column: 17
-  mov rsi, get_tokens_op_type_s387 ; Pointer to string
+  mov rsi, get_tokens_op_type_s384 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 202, Column: 31
   call c3RyZX214
@@ -22727,20 +22904,29 @@ get_tokens_op_type_ELIF258:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 203, Column: 5
   push qword [get_tokens_op_type_token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 203, Column: 17
-  mov rsi, get_tokens_op_type_s391 ; Pointer to string
+  mov rsi, get_tokens_op_type_s388 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 203, Column: 31
   call c3RyZX214
 ;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 203, Column: 37
   call fH248
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 204, Column: 3
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 204, Column: 5
+  push qword [get_tokens_op_type_token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 204, Column: 17
+  mov rsi, get_tokens_op_type_s392 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 204, Column: 31
+  call c3RyZX214
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 204, Column: 37
+  call fH248
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 205, Column: 3
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ENDIF397
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 205, Column: 5
+  jz get_tokens_op_type_ENDIF398
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 206, Column: 5
   mov rax, 19
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 205, Column: 22
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 206, Column: 22
 ;; [get_tokens_op_type] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
   mov rax, return_stack
@@ -22748,34 +22934,36 @@ get_tokens_op_type_ELIF258:
   push qword [rax]
   ret
 
-;; [get_tokens_op_type] ENDIF | File: compiler/program.torth, Row: 206, Column: 3
-get_tokens_op_type_ENDIF397:
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 209, Column: 3
-  mov rsi, get_tokens_op_type_s398 ; Pointer to string
-  push rsi
+;; [get_tokens_op_type] ENDIF | File: compiler/program.torth, Row: 207, Column: 3
+get_tokens_op_type_ENDIF398:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 210, Column: 3
   push qword [get_tokens_op_type_token]
-;; [get_tokens_op_type] Call Token.get_value | File: compiler/program.torth, Row: 210, Column: 9
-  call VG9rZW4uZ2V0X3ZhbH218
-;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 210, Column: 25
-  call c3RyLmNhdA213
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 211, Column: 3
-  mov rsi, get_tokens_op_type_s402 ; Pointer to string
+  mov rsi, get_tokens_op_type_s400 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 211, Column: 25
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 212, Column: 3
+  push qword [get_tokens_op_type_token]
+;; [get_tokens_op_type] Call Token.get_value | File: compiler/program.torth, Row: 212, Column: 9
+  call VG9rZW4uZ2V0X3ZhbH218
+;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 212, Column: 25
   call c3RyLmNhdA213
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 212, Column: 3
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 213, Column: 3
   mov rsi, get_tokens_op_type_s404 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call CompilerError | File: compiler/program.torth, Row: 212, Column: 18
-  call Q29tcGlsZXJFcnJvcg225
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 213, Column: 3
+;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 213, Column: 25
+  call c3RyLmNhdA213
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 214, Column: 3
+  mov rsi, get_tokens_op_type_s406 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call CompilerErrorWithToken | File: compiler/program.torth, Row: 214, Column: 18
+  call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg211
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 215, Column: 3
   mov rax, 0
   push rax
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 213, Column: 8
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 215, Column: 8
   mov rax, 0
   push rax
-;; [get_tokens_op_type] Call exit | File: compiler/program.torth, Row: 213, Column: 10
+;; [get_tokens_op_type] Call exit | File: compiler/program.torth, Row: 215, Column: 10
   call ZXhpdA221
 ;; [get_tokens_op_type] Return to the address found in return_stack
   sub qword [return_stack_index], 8  ; Decrement return_stack_index
@@ -38829,39 +39017,39 @@ section .data
   get_memory_definitions_asm_s36 db "",10,"",0
   get_memory_definitions_asm_s47 db "",10,"",0
   get_op_asm_s48 db "",0
-  get_op_asm_s240 db "Generating assembly for '",0
-  get_op_asm_s243 db "' is not implemented: Unknown word",10,"",0
-  get_op_asm_s245 db "",0
-  get_intrinsic_asm_s7 db "AND",0
-  get_intrinsic_asm_s14 db "ARGC",0
-  get_intrinsic_asm_s21 db "ARGV",0
-  get_intrinsic_asm_s28 db "DIVMOD",0
-  get_intrinsic_asm_s35 db "DROP",0
-  get_intrinsic_asm_s42 db "DUP",0
-  get_intrinsic_asm_s49 db "ENVP",0
-  get_intrinsic_asm_s56 db "EQ",0
-  get_intrinsic_asm_s63 db "GE",0
-  get_intrinsic_asm_s70 db "GT",0
-  get_intrinsic_asm_s77 db "LE",0
-  get_intrinsic_asm_s84 db "LT",0
-  get_intrinsic_asm_s91 db "LOAD_",0
-  get_intrinsic_asm_s98 db "MINUS",0
-  get_intrinsic_asm_s105 db "MUL",0
-  get_intrinsic_asm_s112 db "NE",0
-  get_intrinsic_asm_s119 db "NTH",0
-  get_intrinsic_asm_s126 db "OR",0
-  get_intrinsic_asm_s133 db "OVER",0
-  get_intrinsic_asm_s140 db "PLUS",0
-  get_intrinsic_asm_s147 db "PRINT",0
-  get_intrinsic_asm_s154 db "ROT",0
-  get_intrinsic_asm_s161 db "SHL",0
-  get_intrinsic_asm_s168 db "SHR",0
-  get_intrinsic_asm_s175 db "STORE_",0
-  get_intrinsic_asm_s182 db "SWAP",0
-  get_intrinsic_asm_s189 db "SYSCALL",0
-  get_intrinsic_asm_s196 db "Generating assembly for intrinsic '",0
-  get_intrinsic_asm_s199 db "' is not implemented",10,"",0
-  get_intrinsic_asm_s201 db "",0
+  get_op_asm_s241 db "Generating assembly for '",0
+  get_op_asm_s244 db "' is not implemented: Unknown word",10,"",0
+  get_op_asm_s246 db "",0
+  get_intrinsic_asm_s10 db "AND",0
+  get_intrinsic_asm_s17 db "ARGC",0
+  get_intrinsic_asm_s24 db "ARGV",0
+  get_intrinsic_asm_s31 db "DIVMOD",0
+  get_intrinsic_asm_s38 db "DROP",0
+  get_intrinsic_asm_s45 db "DUP",0
+  get_intrinsic_asm_s52 db "ENVP",0
+  get_intrinsic_asm_s59 db "EQ",0
+  get_intrinsic_asm_s66 db "GE",0
+  get_intrinsic_asm_s73 db "GT",0
+  get_intrinsic_asm_s80 db "LE",0
+  get_intrinsic_asm_s87 db "LT",0
+  get_intrinsic_asm_s94 db "LOAD_",0
+  get_intrinsic_asm_s102 db "MINUS",0
+  get_intrinsic_asm_s109 db "MUL",0
+  get_intrinsic_asm_s116 db "NE",0
+  get_intrinsic_asm_s123 db "NTH",0
+  get_intrinsic_asm_s130 db "OR",0
+  get_intrinsic_asm_s137 db "OVER",0
+  get_intrinsic_asm_s144 db "PLUS",0
+  get_intrinsic_asm_s151 db "PRINT",0
+  get_intrinsic_asm_s158 db "ROT",0
+  get_intrinsic_asm_s165 db "SHL",0
+  get_intrinsic_asm_s172 db "SHR",0
+  get_intrinsic_asm_s179 db "STORE_",0
+  get_intrinsic_asm_s187 db "SWAP",0
+  get_intrinsic_asm_s194 db "SYSCALL",0
+  get_intrinsic_asm_s201 db "Generating assembly for intrinsic '",0
+  get_intrinsic_asm_s204 db "' is not implemented",10,"",0
+  get_intrinsic_asm_s206 db "",0
   get_op_comment_asm_s11 db ";; [",0
   get_op_comment_asm_s16 db "] ",0
   get_op_comment_asm_s20 db "FUNCTION_CALL",0
@@ -38884,9 +39072,9 @@ section .data
   get_parent_op_type_do_s80 db "DO operand without parent IF, ELIF or WHILE",10,"",0
   get_parent_op_type_do_s81 db "AMBIGUOUS_DO",0
   get_do_asm_s110 db "_",0
-  get_do_asm_s164 db "The current block is missing the corresponding closing keyword",10,"",0
-  get_do_asm_s165 db "UNCLOSED_BLOCK",0
-  get_do_asm_s167 db "",0
+  get_do_asm_s166 db "The current block is missing the corresponding closing keyword",0
+  get_do_asm_s167 db "UNCLOSED_BLOCK",0
+  get_do_asm_s169 db "",0
   generate_do_asm_s1 db "  pop rax",10,"",0
   generate_do_asm_s2 db "  test rax, rax",10,"",0
   generate_do_asm_s4 db "  jz ",0
@@ -38976,23 +39164,23 @@ section .data
   get_gt_asm_s0 db "cmovg",0
   get_le_asm_s0 db "cmovle",0
   get_lt_asm_s0 db "cmovl",0
-  get_load_asm_s7 db "LOAD_BYTE",0
-  get_load_asm_s10 db "bl",0
-  get_load_asm_s13 db "LOAD_WORD",0
-  get_load_asm_s16 db "bx",0
-  get_load_asm_s19 db "LOAD_DWORD",0
-  get_load_asm_s22 db "ebx",0
-  get_load_asm_s25 db "LOAD_QWORD",0
-  get_load_asm_s28 db "rbx",0
-  get_load_asm_s30 db "'",0
-  get_load_asm_s33 db "' is not a valid LOAD Intrinsic",0
-  get_load_asm_s35 db "VALUE_ERROR",0
-  get_load_asm_s37 db "",0
-  get_load_asm_s42 db "  pop rax",10,"",0
-  get_load_asm_s43 db "  xor rbx, rbx",10,"",0
-  get_load_asm_s45 db "  mov ",0
-  get_load_asm_s49 db ", [rax]",10,"",0
-  get_load_asm_s51 db "  push rbx",10,"",0
+  get_load_asm_s8 db "LOAD_BYTE",0
+  get_load_asm_s11 db "bl",0
+  get_load_asm_s14 db "LOAD_WORD",0
+  get_load_asm_s17 db "bx",0
+  get_load_asm_s20 db "LOAD_DWORD",0
+  get_load_asm_s23 db "ebx",0
+  get_load_asm_s26 db "LOAD_QWORD",0
+  get_load_asm_s29 db "rbx",0
+  get_load_asm_s32 db "'",0
+  get_load_asm_s35 db "' is not a valid LOAD Intrinsic",0
+  get_load_asm_s37 db "VALUE_ERROR",0
+  get_load_asm_s39 db "",0
+  get_load_asm_s44 db "  pop rax",10,"",0
+  get_load_asm_s45 db "  xor rbx, rbx",10,"",0
+  get_load_asm_s47 db "  mov ",0
+  get_load_asm_s51 db ", [rax]",10,"",0
+  get_load_asm_s53 db "  push rbx",10,"",0
   get_minus_asm_s0 db "sub",0
   get_mul_asm_s0 db "  pop rax",10,"",0
   get_mul_asm_s1 db "  pop rbx",10,"",0
@@ -39034,22 +39222,22 @@ section .data
   get_shr_asm_s1 db "  pop rbx",10,"",0
   get_shr_asm_s3 db "  shr rbx, cl",10,"",0
   get_shr_asm_s5 db "  push rbx",10,"",0
-  get_store_asm_s7 db "STORE_BYTE",0
-  get_store_asm_s10 db "bl",0
-  get_store_asm_s13 db "STORE_WORD",0
-  get_store_asm_s16 db "bx",0
-  get_store_asm_s19 db "STORE_DWORD",0
-  get_store_asm_s22 db "ebx",0
-  get_store_asm_s25 db "STORE_QWORD",0
-  get_store_asm_s28 db "rbx",0
-  get_store_asm_s30 db "'",0
-  get_store_asm_s33 db "' is not a valid STORE Intrinsic",0
-  get_store_asm_s35 db "VALUE_ERROR",0
-  get_store_asm_s37 db "",0
-  get_store_asm_s42 db "  pop rax",10,"",0
-  get_store_asm_s43 db "  pop rbx",10,"",0
-  get_store_asm_s45 db "  mov [rax], ",0
-  get_store_asm_s49 db "",10,"",0
+  get_store_asm_s8 db "STORE_BYTE",0
+  get_store_asm_s11 db "bl",0
+  get_store_asm_s14 db "STORE_WORD",0
+  get_store_asm_s17 db "bx",0
+  get_store_asm_s20 db "STORE_DWORD",0
+  get_store_asm_s23 db "ebx",0
+  get_store_asm_s26 db "STORE_QWORD",0
+  get_store_asm_s29 db "rbx",0
+  get_store_asm_s32 db "'",0
+  get_store_asm_s35 db "' is not a valid STORE Intrinsic",0
+  get_store_asm_s37 db "VALUE_ERROR",0
+  get_store_asm_s39 db "",0
+  get_store_asm_s44 db "  pop rax",10,"",0
+  get_store_asm_s45 db "  pop rbx",10,"",0
+  get_store_asm_s47 db "  mov [rax], ",0
+  get_store_asm_s51 db "",10,"",0
   get_swap_asm_s0 db "  pop rax",10,"",0
   get_swap_asm_s1 db "  pop rbx",10,"",0
   get_swap_asm_s3 db "  push rax",10,"",0
@@ -39098,10 +39286,10 @@ section .data
   get_function_end_asm_s20 db "  add rax, [return_stack_index]",10,"",0
   get_function_end_asm_s22 db "  push qword [rax]",10,"",0
   get_function_end_asm_s24 db "  ret",10,"",10,"",0
-  get_related_endif_s63 db "Corresponding ENDIF keyword was not found.",10,"",0
-  get_related_endif_s69 db "AMBIGUOUS_",0
-  get_parent_while_s62 db "Parent WHILE keyword was not found.",10,"",0
-  get_parent_while_s68 db "AMBIGUOUS_",0
+  get_related_endif_s65 db "Corresponding ENDIF keyword was not found.",10,"",0
+  get_related_endif_s71 db "AMBIGUOUS_",0
+  get_parent_while_s64 db "Parent WHILE keyword was not found.",10,"",0
+  get_parent_while_s70 db "AMBIGUOUS_",0
   get_done_op_for_while_s63 db "END keyword was not found for the current WHILE loop.",10,"",0
   get_done_op_for_while_s69 db "AMBIGUOUS_",0
   get_variable_memory_s7 db "_",0
@@ -39212,27 +39400,31 @@ section .data
   get_functions_s63 db "END",0
   get_functions_s70 db "MAIN",0
   get_functions_s76 db "0",0
-  get_functions_s87 db "Function '",0
-  get_functions_s90 db "' does not have any tokens",10,"",0
-  get_functions_s92 db "Creation of empty functions is not allowed",0
-  get_functions_s94 db "EMPTY_FUNCTION",0
-  get_functions_s106 db "",0
-  get_functions_s149 db ":",0
-  get_functions_s166 db ":",0
-  get_functions_s195 db "Function '",0
-  get_functions_s198 db "' has parameter '",0
-  get_functions_s202 db "' which has a colon but the name is empty",0
-  get_functions_s204 db "SYNTAX_ERROR",0
+  get_functions_s88 db "Function '",0
+  get_functions_s91 db "' does not have any tokens",10,"",0
+  get_functions_s93 db "Creation of empty functions is not allowed",0
+  get_functions_s95 db "EMPTY_FUNCTION",0
+  get_functions_s107 db "",0
+  get_functions_s150 db ":",0
+  get_functions_s167 db ":",0
+  get_functions_s197 db "Function '",0
+  get_functions_s200 db "' has parameter '",0
+  get_functions_s204 db "' which has a colon but the name is empty",0
+  get_functions_s206 db "SYNTAX_ERROR",0
+  get_functions_s318 db "The program does not have an entry point.",10,"",0
+  get_functions_s319 db "Please add Main function (case-insensitive).",0
+  get_functions_s321 db "MISSING_MAIN_FUNCTION",0
   parse_function_variables_s7 db "PEEK",0
   parse_function_variables_s37 db "PEEK",0
   parse_function_variables_s40 db "TAKE",0
   parse_function_variables_s56 db "IN",0
   parse_function_variables_s67 db "PEEK",0
   parse_function_variables_s75 db "TAKE",0
-  parse_function_variables_s82 db "Unknown VarType '",0
-  parse_function_variables_s85 db "'",10,"",0
-  parse_function_variables_s87 db "VALUE_ERROR",0
+  parse_function_variables_s83 db "Unknown VarType '",0
+  parse_function_variables_s86 db "'",10,"",0
+  parse_function_variables_s88 db "VALUE_ERROR",0
   add_variable_to_list_s18 db "_",0
+  main_function_in_function_list_s25 db "MAIN",0
   get_tokens_op_type_s53 db "ASSIGN",0
   get_tokens_op_type_s60 db "BOOL",0
   get_tokens_op_type_s67 db "BREAK",0
@@ -39254,45 +39446,45 @@ section .data
   get_tokens_op_type_s179 db "TAKE",0
   get_tokens_op_type_s186 db "UINT8",0
   get_tokens_op_type_s193 db "WHILE",0
-  get_tokens_op_type_s231 db "Unknown VarType '",0
-  get_tokens_op_type_s235 db "VALUE_ERROR",0
-  get_tokens_op_type_s260 db "AND",0
-  get_tokens_op_type_s263 db "ARGC",0
-  get_tokens_op_type_s267 db "ARGV",0
-  get_tokens_op_type_s271 db "DIVMOD",0
-  get_tokens_op_type_s275 db "DROP",0
-  get_tokens_op_type_s279 db "DUP",0
-  get_tokens_op_type_s283 db "ENVP",0
-  get_tokens_op_type_s287 db "EQ",0
-  get_tokens_op_type_s291 db "GE",0
-  get_tokens_op_type_s295 db "GT",0
-  get_tokens_op_type_s299 db "DUP",0
-  get_tokens_op_type_s303 db "LE",0
-  get_tokens_op_type_s307 db "LOAD_",0
-  get_tokens_op_type_s311 db "LT",0
-  get_tokens_op_type_s315 db "MINUS",0
-  get_tokens_op_type_s319 db "MUL",0
-  get_tokens_op_type_s323 db "NE",0
-  get_tokens_op_type_s327 db "NTH",0
-  get_tokens_op_type_s331 db "OR",0
-  get_tokens_op_type_s335 db "OVER",0
-  get_tokens_op_type_s339 db "PLUS",0
-  get_tokens_op_type_s343 db "PRINT",0
-  get_tokens_op_type_s347 db "ROT",0
-  get_tokens_op_type_s351 db "SHL",0
-  get_tokens_op_type_s355 db "SHR",0
-  get_tokens_op_type_s359 db "STORE_",0
-  get_tokens_op_type_s363 db "SWAP",0
-  get_tokens_op_type_s367 db "SYSCALL0",0
-  get_tokens_op_type_s371 db "SYSCALL1",0
-  get_tokens_op_type_s375 db "SYSCALL2",0
-  get_tokens_op_type_s379 db "SYSCALL3",0
-  get_tokens_op_type_s383 db "SYSCALL4",0
-  get_tokens_op_type_s387 db "SYSCALL5",0
-  get_tokens_op_type_s391 db "SYSCALL6",0
-  get_tokens_op_type_s398 db "Operation '",0
-  get_tokens_op_type_s402 db "' is not found",0
-  get_tokens_op_type_s404 db "OP_NOT_FOUND",0
+  get_tokens_op_type_s232 db "Unknown VarType '",0
+  get_tokens_op_type_s236 db "VALUE_ERROR",0
+  get_tokens_op_type_s261 db "AND",0
+  get_tokens_op_type_s264 db "ARGC",0
+  get_tokens_op_type_s268 db "ARGV",0
+  get_tokens_op_type_s272 db "DIVMOD",0
+  get_tokens_op_type_s276 db "DROP",0
+  get_tokens_op_type_s280 db "DUP",0
+  get_tokens_op_type_s284 db "ENVP",0
+  get_tokens_op_type_s288 db "EQ",0
+  get_tokens_op_type_s292 db "GE",0
+  get_tokens_op_type_s296 db "GT",0
+  get_tokens_op_type_s300 db "DUP",0
+  get_tokens_op_type_s304 db "LE",0
+  get_tokens_op_type_s308 db "LOAD_",0
+  get_tokens_op_type_s312 db "LT",0
+  get_tokens_op_type_s316 db "MINUS",0
+  get_tokens_op_type_s320 db "MUL",0
+  get_tokens_op_type_s324 db "NE",0
+  get_tokens_op_type_s328 db "NTH",0
+  get_tokens_op_type_s332 db "OR",0
+  get_tokens_op_type_s336 db "OVER",0
+  get_tokens_op_type_s340 db "PLUS",0
+  get_tokens_op_type_s344 db "PRINT",0
+  get_tokens_op_type_s348 db "ROT",0
+  get_tokens_op_type_s352 db "SHL",0
+  get_tokens_op_type_s356 db "SHR",0
+  get_tokens_op_type_s360 db "STORE_",0
+  get_tokens_op_type_s364 db "SWAP",0
+  get_tokens_op_type_s368 db "SYSCALL0",0
+  get_tokens_op_type_s372 db "SYSCALL1",0
+  get_tokens_op_type_s376 db "SYSCALL2",0
+  get_tokens_op_type_s380 db "SYSCALL3",0
+  get_tokens_op_type_s384 db "SYSCALL4",0
+  get_tokens_op_type_s388 db "SYSCALL5",0
+  get_tokens_op_type_s392 db "SYSCALL6",0
+  get_tokens_op_type_s400 db "Operation '",0
+  get_tokens_op_type_s404 db "' is unknown",0
+  get_tokens_op_type_s406 db "OP_NOT_FOUND",0
   type_check_op_s374 db "Parsing token '",0
   type_check_op_s377 db "' is not implemented yet",10,"",0
   type_check_op_s379 db "NOT_IMPLEMENTED",0
