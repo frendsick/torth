@@ -366,7 +366,7 @@ function get_token_matches_from_code
   do
     // Keep track of the indexes of newline characters (LF)
     if current_char LF == do
-      index ptr newline_indexes List.append
+      index 1 + ptr newline_indexes List.append
     endif
 
     // Only a newline ends a comment
@@ -425,10 +425,8 @@ function get_token_matches_from_code
         continue
       endif
 
-      // Match(word, location)
-      newline_indexes index word str.len - file_name get_token_location
-      word Match.init
-      token_matches List.append
+      // Append found Match to token_matches
+      newline_indexes index file_name token_matches word append_word_to_token_matches
       "" str.copy word =
     else
       // Append current character to word
@@ -439,11 +437,25 @@ function get_token_matches_from_code
 
   // Append the last word if the file ended with a word
   if word str.len 0 > do
-    newline_indexes index word str.len - file_name get_token_location
-    word Match.init
-    token_matches List.append
+    newline_indexes index file_name token_matches word append_word_to_token_matches
   endif
   token_matches
+end
+
+// Append a word to a List of Matches
+function append_word_to_token_matches
+  word:str
+  token_matches:ptr
+  file_name:str
+  index:int
+  newline_indexes:ptr
+:
+  // Get Location for the Match
+  newline_indexes index word str.len - file_name get_token_location
+
+  // Append the Match to token_matches
+  word Match.init
+  token_matches List.append
 end
 
 // Calculate position for Token based on it's position from the start of the file
@@ -465,21 +477,17 @@ function get_token_location
 
   // Get Location for found Token Match
   while index newline_indexes List.len < do
+    index newline_indexes List.nth int.load
+    take nl_index in
 
-    if index 0 > do
-      index 1 - newline_indexes List.nth int.load
-      take nl_index in
-
-      row 1 + row = // row++
-      position nl_index - 1 - col = // col = position - nl_index - 1
+    // Break when the correct row is found
+    if nl_index position > do
+      break
     endif
 
-    // Return when the current Token Location is found
-    if index newline_indexes List.nth int.load position > do
-      col 1 + row file_name str.copy Location.init
-      return
-    endif
-    index 1 + index =
+    position nl_index - col = // col = position - nl_index
+    row 1 + row =             // row++
+    index 1 + index =         // index++
   done
 
   col 1 + row file_name str.copy Location.init
