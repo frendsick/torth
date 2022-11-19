@@ -63,7 +63,7 @@
       "patterns": [
         {
           "name": "storage.type.torth",
-          "match": "\\b(?i)(const|end|enum|function|in|memory|peek|take)\\b"
+          "match": "\\b(?i)(class|const|end|enum|function|in|memory|method|peek|take)\\b"
         },
         {
           "name": "markup.deleted.torth",
@@ -71,7 +71,7 @@
         },
         {
           "name": "entity.name.function.torth",
-          "match": "(?i)(?<=(enum|function)\\s)\\b(\\S+)\\b"
+          "match": "(?i)(?<=(class|enum|function|method)\\s)\\b(\\S+)\\b"
         }
       ]
     },
