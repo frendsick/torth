@@ -311,19 +311,15 @@ function get_op_type token:ptr -> int :
   OpType.INTRINSIC
 end
 
-// Functions are made of four parts:
-//   1 : name
-//   2 : param types
-//   3 : return types
-//   4 : location
-//  (0 : Not lexing a function)
-//  FUNCTION_PART_DELIMITERS: List[str] = ["FUNCTION", "->", ":", "END"]
+// Functions are made of the following parts:
+//   1 : Parameter types
+//   2 : Return types
+//   3 : Body
+//  FUNCTION_PART_DELIMITERS: List[str] = ["->", ":", "END"]
 function get_function_part_delimiters -> ptr :
   List.init
   take FUNCTION_PART_DELIMITERS in
 
-  "FUNCTION"  ptr FUNCTION_PART_DELIMITERS List.append
-  ""          ptr FUNCTION_PART_DELIMITERS List.append
   "->"        ptr FUNCTION_PART_DELIMITERS List.append
   ":"         ptr FUNCTION_PART_DELIMITERS List.append
   "END"       ptr FUNCTION_PART_DELIMITERS List.append
@@ -788,7 +784,7 @@ function get_memory_name token_value:str memories:ptr -> str :
   token_value
 end
 
-// Parse Functions from code
+// Parse Functions from list of token Matches
 // Params
 //    token_matches:  List[Match]
 //    constants:      List[Constant]
@@ -800,32 +796,82 @@ function get_functions
   constants:ptr
   memories:ptr
 -> ptr :
+  List.init // List[Function]
+  0
+  take index functions in
+  while index token_matches List.len < do
+    // Get current word
+    index token_matches List.nth ptr.load
+    get_token_from_match Token.get_value str.copy str.upper
+    take token_upper in
+    
+    if token_upper "FUNCTION" streq do
+      index 1 + index =
+      memories constants index token_matches parse_function
+      functions List.append
+    endif
+    index 1 + index =
+  done
 
+  // Verify that the program has MAIN function (case-insensitive)
+  if functions main_function_in_function_list not do
+    "The program does not have an entry point.\n"
+    "Please add Main function (case-insensitive)." str.cat
+    "MISSING_MAIN_FUNCTION" CompilerError
+  endif
+
+  // Parse the variables for each function
+  memories functions parse_variables_for_functions
+  functions
+end
+
+// Parse Function from list of token Matches
+// Params
+//    token_matches:  List[Match]
+//    token_index:    int
+//    constants:      List[Constant]
+//    memories:       List[Memory]
+// Return Function
+function parse_function
+  token_matches:ptr
+  token_index:int
+  constants:ptr
+  memories:ptr
+-> ptr :
   // Initialize variables
-  List.init                     // List[Function]
+  get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
   List.init                     // List[Token]
   0                             // current_part
-  get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
-  "" str.copy                   // String buffer for function's name
+  "" str.copy                   // function_name
   List.init                     // return_types
   List.init                     // param_types
   List.init                     // variables
-  0                             // index
   take
-    index
     variables
     param_types
     return_types
     function_name
-    FUNCTION_PART_DELIMITERS
     current_part
     tokens
-    functions
+    FUNCTION_PART_DELIMITERS
   in
 
-  while index token_matches List.len < do
+  if token_index token_matches List.len >= do
+    "Program cannot end with '"
+    token_matches List.last ptr.load
+    Match.get_value str.cat
+    "' token"       str.cat
+    "SYNTAX_ERROR" CompilerError
+  endif
+
+  // Set Function.name
+  token_index token_matches List.nth ptr.load
+  Match.get_value function_name =
+  token_index 1 + token_index =
+
+  while token_index token_matches List.len < do
     // Get current word
-    index token_matches List.nth ptr.load
+    token_index token_matches List.nth ptr.load
     get_token_from_match
     dup Token.get_value
     take token_value token in
@@ -836,7 +882,6 @@ function get_functions
       streq
     do
       current_part 1 +
-      FUNCTION_PART_DELIMITERS List.len %
       current_part =
 
       // Append Function and reset variables when function is fully lexed
@@ -852,42 +897,26 @@ function get_functions
         // Do not allow empty functions
         if tokens List.len 0 == do
           token
-          "Function '"
-          function_name                                 str.cat
+          "Function '" function_name                    str.cat
           "' does not have any tokens\n"                str.cat
           "Creation of empty functions is not allowed"  str.cat
           "EMPTY_FUNCTION" CompilerErrorWithToken
         endif
 
-        // Function(function_name, signature, tokens, variables)
+        // return Function(function_name, signature, tokens, variables)
         variables
         tokens
         return_types param_types Signature.init
         function_name Function.init
-
-        // Append the current function to functions list
-        functions List.append
-
-        // Reset variables
-        "" str.copy function_name =
-        List.init   param_types   =
-        List.init   return_types  =
-        List.init   variables     =
-        List.init   tokens        =
-        index 1 + index =
-        continue
+        return
       endif
 
-    elif current_part 1 == do
-      token_value function_name =
-      current_part 1 + current_part =
-
-    elif current_part 2 == do
+    elif current_part 0 == do
       // Enable defining functions that do not return anything without the -> token
       // FUNCTION <name> <param_types> : <function_body> END
       if token_value ":" streq do
         current_part 2 + current_part =
-        index 1 + index =
+        token_index 1 + token_index =
         token_value str.delete
         continue
       endif
@@ -930,11 +959,12 @@ function get_functions
         memories variables function_name token add_variable_to_list
       endif
 
-    elif current_part 3 == do
+    elif current_part 1 == do
       // Append word to return_types if valid TokenType
       token_value Signature.type_map ptr
       return_types List.append
-    elif current_part 4 == do
+
+    elif current_part 2 == do
       // Use Constant's value if a Constant exists named as the Token's value
       if constants token_value str.copy constant_exists do
 
@@ -957,24 +987,20 @@ function get_functions
       // Append the current Token to the list of tokens
       token tokens List.append
 
-    // Not parsing a function
     else
-      token Token.delete
-      token_value str.delete
+      "Unknown error - Function parsing failed"
+      "ASSERTION_ERROR" CompilerError
     endif
-    index 1 + index =
+    token_index 1 + token_index =
   done
 
-  // Verify that the program has MAIN function (case-insensitive)
-  if functions main_function_in_function_list not do
-    "The program does not have an entry point.\n"
-    "Please add Main function (case-insensitive)." str.cat
-    "MISSING_MAIN_FUNCTION" CompilerError
-  endif
-
-  // Parse the variables for each function
-  memories functions parse_variables_for_functions
-  functions
+  // Could not parse Function
+  token
+  "Could not parse function '"
+  function_name               str.cat
+  "'\nUnexpected end of file" str.cat
+  "SYNTAX_ERROR" CompilerErrorWithToken
+  NULLPTR
 end
 
 // Parse Variables for Functions
