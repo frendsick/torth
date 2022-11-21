@@ -41,6 +41,15 @@ function Location.get_column ptr -> int :
   Location.column ptr+ int.load
 end
 
+function Location.repr ptr -> str :
+  take location in
+  location Location.get_file
+  ","                               str.cat
+  location Location.get_row itoa    str.cat
+  ","                               str.cat
+  location Location.get_column itoa str.cat
+end
+
 function Location.print ptr :
   "Location.file      => "  puts
   dup Location.file         ptr+

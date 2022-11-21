@@ -425,11 +425,13 @@ function TypeStack.repr type_stack:ptr -> str :
   take index node in
   while node int -1 != do
     "[" index
-    itoa                                  str.cat
-    "] "                                  str.cat
-    node TypeNode.get_type TokenType.repr str.cat
-    "\n"                                  str.cat
-    stack_repr swap                       str.cat
+    itoa                                      str.cat
+    "] "                                      str.cat
+    node TypeNode.get_type TokenType.repr     str.cat
+    " ("                                      str.cat
+    node TypeNode.get_location Location.repr  str.cat
+    ")\n"                                     str.cat
+    stack_repr swap                           str.cat
     stack_repr =
 
     // Pop the next item from TypeStack
