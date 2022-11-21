@@ -388,8 +388,8 @@ end
 function correct_return_types func:ptr type_stack:ptr -> bool :
   func  get_function_type_stack
   func  Func.signature
-  dup   Signature.get_returns
-  swap  Signature.get_params
+  dup   Signature.returns
+  swap  Signature.params
   0
   take
     index
@@ -880,8 +880,8 @@ function type_check_function_call
   // Get the Func's Signature
   functions function_name get_function_by_name
   Func.signature
-  dup   Signature.get_returns
-  over  Signature.get_params
+  dup   Signature.returns
+  over  Signature.params
   take
     param_types
     return_types
@@ -1090,7 +1090,7 @@ function type_check_return
 -> ptr :
   op  Op.func
   dup Func.signature
-  dup Signature.get_returns
+  dup Signature.returns
   type_stack TypeStack.get_types
   take
     stack_types
@@ -1685,7 +1685,7 @@ end
 // Return
 //    type_stack: LinkedList[TypeNode]
 function get_function_type_stack func:ptr -> ptr :
-  func Func.signature Signature.get_params
+  func Func.signature Signature.params
   dup List.len 1 -
   LinkedList.init
   take
