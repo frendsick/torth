@@ -1,9 +1,13 @@
 include "std"
 include "compiler/utils"
+include "compiler/class/Func"
+include "compiler/class/Location"
+include "compiler/class/Mem"
 include "compiler/class/Op"
+include "compiler/class/Token"
 
 // Generate the beginning of the assembly file
-// Params: file_name, List[Memory]
+// Params: file_name, List[Mem]
 // Return: Assembly
 function initialize_asm_file file_name:str memories:ptr :
   "compiler/templates/start.asm" read_file
@@ -12,22 +16,22 @@ function initialize_asm_file file_name:str memories:ptr :
   mode_644 file_name write_file drop
 end
 
-// Generate assembly code from Memory definitions
+// Generate assembly code from Mem definitions
 function get_memory_definitions_asm memories:ptr -> str :
   "" str.copy
   0
   take index assembly_code in
 
-  // Iterate over each Memory and generate assembly code for it
+  // Iterate over each Mem and generate assembly code for it
   while index memories List.len < do
 
-    // Get the Memory's name and size
+    // Get the Mem's name and size
     index memories List.nth ptr.load
-    dup   Memory.get_name
-    swap  Memory.get_size
+    dup   Mem.name
+    swap  Mem.bytes
     take memory_size memory_name in
 
-    // Append current Memory to assembly_code
+    // Append current Mem to assembly_code
     assembly_code
     "  "              str.cat
     memory_name       str.cat
@@ -1021,7 +1025,7 @@ function get_exit_assembly -> str :
 end
 
 // Generate NASM x86_64 assembly file
-// Params: file_name, sub_programs (List[Program]), List[Memory]
+// Params: file_name, sub_programs (List[Program]), List[Mem]
 // Return: None
 function generate_assembly_file
   file_name:str

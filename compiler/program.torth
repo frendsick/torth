@@ -6,7 +6,7 @@ include "compiler/defs"
 include "compiler/class/Token"
 
 // Generate Program for each Func
-// Params: List[Func], List[Constant], List[Memory]
+// Params: List[Func], List[Constant], List[Mem]
 // Return: List[Program]
 function get_sub_programs
   functions:ptr
@@ -36,7 +36,7 @@ function get_sub_programs
 end
 
 // Generate Program from Func
-// Params: Func, List[Func], List[Constant], List[Memory]
+// Params: Func, List[Func], List[Constant], List[Mem]
 // Return: Program
 function generate_program
   func:ptr
@@ -73,7 +73,7 @@ function generate_program
 end
 
 // Get OpType for Token
-// Params: Token, List[Func], List[Constant], List[Memory]
+// Params: Token, List[Func], List[Constant], List[Mem]
 // Return: OpType
 function get_tokens_op_type
   token:ptr

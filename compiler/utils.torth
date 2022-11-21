@@ -276,26 +276,26 @@ function get_function_by_name function_name:str functions:ptr -> ptr :
   NULLPTR
 end
 
-// Check if a Memory with a certain name exists
-// Params: memory_name, List[Memory]
+// Check if a Mem with a certain name exists
+// Params: memory_name, List[Mem]
 // Return: bool
 function memory_exists memory_name:str memories:ptr -> bool :
-  // Iterate over memories and check if a Memory with certain name exists
+  // Iterate over memories and check if a Mem with certain name exists
   0 take index in
   while index memories List.len < do
 
-    // Get the current Memory
-    index memories List.nth ptr.load Memory.get_name
+    // Get the current Mem
+    index memories List.nth ptr.load Mem.name
     take current_name in
 
-    // Return True if current Memory's name matches memory_name parameter
+    // Return True if current Mem's name matches memory_name parameter
     if current_name memory_name streq do
       True return
     endif
     index 1 + index = // index++
   done
 
-  // Return False if the Memory was not found
+  // Return False if the Mem was not found
   False
 end
 

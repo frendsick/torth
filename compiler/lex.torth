@@ -6,7 +6,7 @@ include "compiler/utils"
 include "compiler/class/Constant"
 include "compiler/class/Func"
 include "compiler/class/Match"
-include "compiler/class/Memory"
+include "compiler/class/Mem"
 include "compiler/class/Op"
 include "compiler/class/Token"
 include "compiler/class/Signature"
@@ -679,7 +679,7 @@ end
 //    token_matches: List[Match]
 //    constants: List[Constant]
 // Return
-//    memories: List[Memory]
+//    memories: List[Mem]
 function get_memories token_matches:ptr constants:ptr -> ptr :
   List.init           // memories
   "" str.copy         // memory_name
@@ -700,10 +700,10 @@ function get_memories token_matches:ptr constants:ptr -> ptr :
     swap  Match.location
     take location token_value in
 
-    // Parse Memory only when inside Memory block
+    // Parse Mem only when inside Mem block
     if defining_memory do
 
-      // Parse Memory name
+      // Parse Mem name
       if memory_name str.len 0 == do
         memories token_value get_memory_name
         memory_name =
@@ -712,7 +712,7 @@ function get_memories token_matches:ptr constants:ptr -> ptr :
         continue
       endif
 
-      // Append the current Memory to memories
+      // Append the current Mem to memories
       if memory_size 0 == do
 
         // Use the token_value as memory_size if it is numeric
@@ -731,8 +731,8 @@ function get_memories token_matches:ptr constants:ptr -> ptr :
           endif
         endif
 
-        // Generate Memory object
-        location memory_size memory_name str.copy Memory.init
+        // Generate Mem object
+        location memory_size memory_name str.copy Mem.init
         memories List.append
 
         // Reset variables
@@ -759,7 +759,7 @@ end
 // Return
 //    memory_name: str
 function get_constants_name token_value:str constants:ptr -> str :
-  // Overwriting another Memory is not allowed
+  // Overwriting another Mem is not allowed
   if token_value constants List.contains_str do
     "Constant '" token_value str.cat
     "' already exists. Constant name should be unique.\n" str.cat
@@ -768,17 +768,17 @@ function get_constants_name token_value:str constants:ptr -> str :
   token_value
 end
 
-// Check for redefinition of a Memory object
+// Check for redefinition of a Mem object
 // Params
 //    token_value: str
-//    memories: List[Memory]
+//    memories: List[Mem]
 // Return
 //    memory_name: str
 function get_memory_name token_value:str memories:ptr -> str :
-  // Overwriting another Memory is not allowed
+  // Overwriting another Mem is not allowed
   if token_value memories List.contains_str do
-    "Memory '" token_value str.cat
-    "' already exists. Memory name should be unique.\n" str.cat
+    "Mem '" token_value str.cat
+    "' already exists. Mem name should be unique.\n" str.cat
     "MEMORY_REDEFINITION" CompilerError
   endif
   token_value
@@ -788,7 +788,7 @@ end
 // Params
 //    token_matches:  List[Match]
 //    constants:      List[Constant]
-//    memories:       List[Memory]
+//    memories:       List[Mem]
 // Return
 //    functions: List[Func]
 function get_functions
@@ -827,7 +827,7 @@ end
 //    token_matches:  List[Match]
 //    token_index:    int
 //    constants:      List[Constant]
-//    memories:       List[Memory]
+//    memories:       List[Mem]
 // Return Func
 function parse_function
   token_matches:ptr
@@ -1012,7 +1012,7 @@ end
 //    token_matches:  List[Match]
 //    functions:      List[Func]
 //    constants:      List[Constant]
-//    memories:       List[Memory]
+//    memories:       List[Mem]
 // Return
 //    functions: List[Func]
 function parse_classes
@@ -1270,7 +1270,7 @@ function get_attribute_function_tokens
 end
 
 // Parse Variables for Funcs
-// Params: List[Func], List[Memory]
+// Params: List[Func], List[Mem]
 function parse_variables_for_functions functions:ptr memories:ptr :
   functions List.len
   0
@@ -1285,7 +1285,7 @@ function parse_variables_for_functions functions:ptr memories:ptr :
 end
 
 // Parse Variables in Func
-// Params: Func, List[Memory]
+// Params: Func, List[Mem]
 // Return: None
 function parse_function_variables func:ptr memories:ptr :
   func Func.tokens
@@ -1356,7 +1356,7 @@ end
 //    token: Token
 //    function_name: str
 //    variables: List[Variable]
-//    memories: List[Memory]
+//    memories: List[Mem]
 function add_variable_to_list
   token:ptr
   function_name:str
@@ -1378,9 +1378,9 @@ function add_variable_to_list
   take memory_name in
   if memories memory_name memory_exists not do
     token Token.location
-    ptr.size // Memory.size
+    ptr.size // Mem.bytes
     memory_name
-    Memory.init
+    Mem.init
     memories List.append
   endif
 end
