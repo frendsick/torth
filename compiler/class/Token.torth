@@ -20,17 +20,4 @@ class Token
   method delete self:ptr :
     Token.size self munmap
   end
-
-  method print self:ptr :
-    "Token.value        => "      puts
-    self Token.value puts "\n"    puts
-
-    "Token.type         => "      puts
-    self Token.type putu "\n"     puts
-
-    "Token.vartype      => "      puts
-    self Token.vartype putu "\n"  puts
-
-    self Token.location Location.print
-  end
 endclass
