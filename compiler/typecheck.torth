@@ -50,7 +50,7 @@ function type_check_application sub_programs:ptr functions:ptr :
     index sub_programs List.nth ptr.load
     take sub_program in
 
-    sub_program List.first ptr.load Op.get_function
+    sub_program List.first ptr.load Op.func
     take func in
 
     functions func sub_program type_check_sub_program
@@ -129,9 +129,9 @@ function type_check_op
   if_block_return_stacks:ptr
 -> ptr :
   // Initialize variables
-  op  Op.get_token
+  op  Op.token
   dup Token.value
-  op  Op.get_type
+  op  Op.type
   branched_stacks List.last ptr.load
   take
     type_stack
@@ -536,7 +536,7 @@ function type_check_assign_bind
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   endif
 
-  program t1 TypeNode.get_location get_op_from_location Op.get_token
+  program t1 TypeNode.get_location get_op_from_location Op.token
   take assign_token in
 
   if assign_token Token.vartype VarType.NONE == do
@@ -1088,7 +1088,7 @@ function type_check_return
   type_stack:ptr
   if_block_return_stack:ptr
 -> ptr :
-  op  Op.get_function
+  op  Op.func
   dup Func.signature
   dup Signature.get_returns
   type_stack TypeStack.get_types
@@ -1101,7 +1101,7 @@ function type_check_return
 
   // Test if current TypeStack matches with Signature.returns
   if return_types stack_types List.equals not do
-    type_stack op Op.get_token
+    type_stack op Op.token
     "Stack state does not match with the return types of '"
     func Func.name            str.cat
     "' function\n\n"          str.cat
@@ -1263,7 +1263,7 @@ function type_check_nth
 
   // Get the Token representing N
   program type TypeNode.get_location get_op_from_location
-  Op.get_token dup Token.value
+  Op.token dup Token.value
   take n_token_value n_token in
 
   // Only support integers for N

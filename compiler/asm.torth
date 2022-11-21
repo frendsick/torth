@@ -49,8 +49,8 @@ end
 // Return: Assembly
 function get_op_asm op:ptr program:ptr -> str :
   // Save Op and Token.value in Binding
-  op Op.get_token Token.value
-  op Op.get_type
+  op Op.token Token.value
+  op Op.type
   take op_type token_value in
 
   // Get assembly for the correct OpType
@@ -124,13 +124,13 @@ function get_op_asm op:ptr program:ptr -> str :
     token_value 1 str+ get_push_int_asm
     return
   elif op_type OpType.RETURN == do
-    op Op.get_function Func.name get_return_asm
+    op Op.func Func.name get_return_asm
     return
   elif op_type OpType.WHILE == do
     op get_while_asm
     return
   elif op_type OpType.INTRINSIC == do
-    op Op.get_token get_intrinsic_asm
+    op Op.token get_intrinsic_asm
     return
   else
     "Generating assembly for '" token_value str.cat
@@ -210,14 +210,14 @@ end
 // Params: Pointer to Op (PTR)
 // Return: Comment string (STR)
 function get_op_comment_asm op:ptr -> str :
-  op Op.get_type OpType.str
-  op Op.get_token Token.value
+  op Op.type OpType.repr
+  op Op.token Token.value
   take token_value op_type_str in
 
   // Comment format as Python3 f-string:
   // f";; [{function_name}] {op_type_str} | File: {file}, Row: {row}, Col: {col}\n"
   ";; ["
-  op Op.get_function Func.name          str.cat
+  op Op.func Func.name                  str.cat
   "] "                                  str.cat
 
   if op_type_str "FUNCTION_CALL" streq do
@@ -233,7 +233,7 @@ function get_op_comment_asm op:ptr -> str :
 
   // Add Op.token Location information
   " | File: "                           str.cat
-  op Op.get_token Token.location
+  op Op.token Token.location
   take token_loc in
 
   // Add file, row and column information
@@ -250,11 +250,11 @@ end
 // Return: Assembly
 function get_assign_bind_asm op:ptr program:ptr -> str :
   // memory_name = program[op.id - 1].token.value
-  op Op.get_id 1 - program List.nth ptr.load
-  Op.get_token Token.value
+  op Op.id 1 - program List.nth ptr.load
+  Op.token Token.value
 
   // variable = f"{op.func.name}_{memory_name}"
-  op Op.get_function Func.name
+  op Op.func Func.name
   "_" str.cat swap str.cat
   take variable in
 
@@ -272,8 +272,8 @@ end
 function get_break_asm op:ptr program:ptr -> str :
   program op get_parent_while
   program swap get_done_op_for_while
-  Op.get_id
-  op Op.get_function Func.name
+  Op.id
+  op Op.func Func.name
   take function_name parent_done.id in
 
   "  jmp "
@@ -287,8 +287,8 @@ end
 // Return: Assembly
 function get_continue_asm op:ptr program:ptr -> str :
   program op get_parent_while
-  Op.get_id
-  op Op.get_function Func.name
+  Op.id
+  op Op.func Func.name
   take function_name parent_while.id in
 
   "  jmp "
@@ -299,7 +299,7 @@ end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
 function get_parent_op_type_do op:ptr program:ptr -> int :
-  op Op.get_id 1 - // index = op.id - 1
+  op Op.id 1 - // index = op.id - 1
   0
   take parent_count index in
 
@@ -307,7 +307,7 @@ function get_parent_op_type_do op:ptr program:ptr -> int :
   while index -1 > do
 
     // Get the current Op's OpType
-    index program List.nth ptr.load Op.get_type
+    index program List.nth ptr.load Op.type
     take op_type in
 
     if
@@ -332,7 +332,7 @@ function get_parent_op_type_do op:ptr program:ptr -> int :
     endif
     index 1 - index = // index--
   done
-  op Op.get_token
+  op Op.token
   "DO operand without parent IF, ELIF or WHILE\n"
   "AMBIGUOUS_DO" CompilerErrorWithToken NULL
 end
@@ -342,7 +342,7 @@ end
 // Return: Assembly
 function get_do_asm op:ptr program:ptr -> str :
   program op get_parent_op_type_do
-  op Op.get_id 1 + // index = op.id + 1
+  op Op.id 1 + // index = op.id + 1
   0
   take
     parent_op_count
@@ -352,7 +352,7 @@ function get_do_asm op:ptr program:ptr -> str :
 
   while index program List.len < do
     // Get the current operand's OpType
-    index program List.nth ptr.load Op.get_type
+    index program List.nth ptr.load Op.type
     take op_type in
 
     // Keep count on the nested IFs or WHILEs depending on the parent Op
@@ -404,10 +404,10 @@ function get_do_asm op:ptr program:ptr -> str :
       &&
     do
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
-      op Op.get_function Func.name
-      "_"                                                     str.cat
-      index program List.nth ptr.load Op.get_type OpType.str  str.cat
-      index itoa                                              str.cat
+      op Op.func Func.name
+      "_"                                                 str.cat
+      index program List.nth ptr.load Op.type OpType.repr str.cat
+      index itoa                                          str.cat
       generate_do_asm return
     endif
 
@@ -427,7 +427,7 @@ function get_do_asm op:ptr program:ptr -> str :
     endif
     index 1 + index = // index++
   done
-  op Op.get_token
+  op Op.token
   "The current block is missing the corresponding closing keyword"
   "UNCLOSED_BLOCK" CompilerErrorWithToken ""
 end
@@ -452,9 +452,9 @@ function get_done_asm op:ptr program:ptr -> str :
   take parent_while in
 
   // Generate assembly
-  op Op.get_function Func.name
-  op Op.get_id itoa
-  parent_while Op.get_id itoa
+  op Op.func Func.name
+  op Op.id itoa
+  parent_while Op.id itoa
   take
     parent_while.id
     op.id
@@ -481,9 +481,9 @@ function get_elif_asm op:ptr program:ptr -> str :
   take related_endif in
 
   // Generate assembly
-  op Op.get_function Func.name
-  op Op.get_id itoa
-  related_endif Op.get_id itoa
+  op Op.func Func.name
+  op Op.id itoa
+  related_endif Op.id itoa
   take
     related_endif.id
     op.id
@@ -510,9 +510,9 @@ function get_else_asm op:ptr program:ptr -> str :
   take related_endif in
 
   // Generate assembly
-  op Op.get_function Func.name
-  op Op.get_id itoa
-  related_endif Op.get_id itoa
+  op Op.func Func.name
+  op Op.id itoa
+  related_endif Op.id itoa
   take
     related_endif.id
     op.id
@@ -534,10 +534,10 @@ end
 // Params: Op
 // Return: Assembly
 function get_endif_asm op:ptr -> str :
-  op Op.get_function Func.name
-  "_ENDIF"          str.cat
-  op Op.get_id itoa str.cat
-  ":\n"             str.cat
+  op Op.func Func.name
+  "_ENDIF"      str.cat
+  op Op.id itoa str.cat
+  ":\n"         str.cat
 end
 
 // Generate assembly for calling a function
@@ -626,8 +626,8 @@ end
 // Return: Assembly
 function get_push_str_asm op:ptr -> str :
   // Initialize variables
-  op Op.get_id itoa
-  op Op.get_function Func.name
+  op Op.id itoa
+  op Op.func Func.name
   take function_name op_id in
 
   "  mov rsi, "
@@ -654,8 +654,8 @@ end
 // Params: Op
 // Return: Assembly
 function get_while_asm op:ptr -> str :
-  op Op.get_id itoa
-  op Op.get_function Func.name
+  op Op.id itoa
+  op Op.func Func.name
   take function_name op_id in
 
   function_name
@@ -1078,14 +1078,14 @@ function get_string_variables_for_data_section program:ptr -> str :
     take op in
 
     // Add only strings to the assembly
-    if op Op.get_type OpType.PUSH_STR != do
+    if op Op.type OpType.PUSH_STR != do
       index 1 + index =
       continue
     endif
 
-    op    Op.get_id itoa
-    op    Op.get_function Func.name
-    op    Op.get_token
+    op    Op.id itoa
+    op    Op.func Func.name
+    op    Op.token
     dup   Token.value format_escape_sequences_for_nasm
     swap  Token.location
     take
@@ -1186,7 +1186,7 @@ function append_programs_assembly_code file_name:str program:ptr :
 
   // Get the Func's name to be added to the assembly code
   // Exception: MAIN Func should be named '_start'
-  program List.first ptr.load Op.get_function Func.name
+  program List.first ptr.load Op.func Func.name
   take function_name in
 
   // Write Func's start assembly to file
@@ -1218,13 +1218,13 @@ end
 // Params: Op, Program
 // Return: Op
 function get_related_endif op:ptr program:ptr -> ptr :
-  op Op.get_id 1 + // index = op.id + 1
+  op Op.id 1 + // index = op.id + 1
   0 // if_count => Keep count of the nested IF blocks
   take if_count index in
 
   while index program List.len < do
     index program List.nth ptr.load
-    dup Op.get_type
+    dup Op.type
     take current_op_type current_op in
 
     // Return the found ENDIF if it's not inside nested IF block
@@ -1244,9 +1244,9 @@ function get_related_endif op:ptr program:ptr -> ptr :
   done
 
   // Report error when corresponding ENDIF was not found
-  op Op.get_token
+  op Op.token
   "Corresponding ENDIF keyword was not found.\n"
-  op Op.get_token Token.value str.copy str.upper
+  op Op.token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat CompilerErrorWithToken NULLPTR
 end
 
@@ -1254,13 +1254,13 @@ end
 // Params: Op, Program
 // Return: Op
 function get_parent_while op:ptr program:ptr -> ptr :
-  op Op.get_id 1 - // index = op.id - 1
+  op Op.id 1 - // index = op.id - 1
   0 // done_count => Keep count of the nested WHILE blocks
   take done_count index in
 
   while index -1 > do
     index program List.nth ptr.load
-    dup Op.get_type
+    dup Op.type
     take current_op_type current_op in
 
     // Return the found ENDIF if it's not inside nested IF block
@@ -1280,9 +1280,9 @@ function get_parent_while op:ptr program:ptr -> ptr :
   done
 
   // Report error when parent WHILE was not found
-  op Op.get_token
+  op Op.token
   "Parent WHILE keyword was not found.\n"
-  op Op.get_token Token.value str.copy str.upper
+  op Op.token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat
   CompilerErrorWithToken NULLPTR
 end
@@ -1291,7 +1291,7 @@ end
 // Params: Op, Program
 // Return: Op
 function get_done_op_for_while op:ptr program:ptr -> ptr :
-  op Op.get_id
+  op Op.id
   0
   take while_count index in
 
@@ -1300,7 +1300,7 @@ function get_done_op_for_while op:ptr program:ptr -> ptr :
 
     // Get the current Operands OpType
     index program List.nth ptr.load
-    dup Op.get_type
+    dup Op.type
     take current_op_type current_op in
 
     // Return the found DONE if it's not inside nested WHILE block
@@ -1320,9 +1320,9 @@ function get_done_op_for_while op:ptr program:ptr -> ptr :
   done
 
   // Report error when END Keyword was not found for the WHILE block
-  op Op.get_token
+  op Op.token
   "END keyword was not found for the current WHILE loop.\n"
-  op Op.get_token Token.value str.copy str.upper
+  op Op.token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat CompilerErrorWithToken NULLPTR
 end
 
@@ -1331,8 +1331,8 @@ end
 // Return: variable
 function get_variable_memory op:ptr -> str :
   // variable = f"{op.func.name}_{memory_name}"
-  op Op.get_token     Token.value
-  op Op.get_function  Func.name
+  op Op.token     Token.value
+  op Op.func  Func.name
   "_" str.cat swap str.cat
 end
 
