@@ -1,5 +1,6 @@
 include "std"
 include "compiler/class/Memory"
+include "compiler/class/Signature"
 include "compiler/class/Token"
 include "compiler/class/Variable"
 class Func
@@ -25,7 +26,7 @@ class Func
 
     "Func.signature => "      puts
     self Func.signature
-    Signature.repr            puts
+    Signature.repr puts "\n"  puts
 
     "Func.tokens    => "      puts
     self Func.tokens
@@ -38,14 +39,15 @@ class Func
     in
 
     while index tokens.len < do
-      // Get the tokens value
-      tokens List.first
-      index ptr.size * ptr+
-      ptr.load str.load
+      // Get the current Token
+      index tokens List.nth ptr.load
 
-      // Print each token in single quotes
-      "'" puts puts "' " puts
+      // Print Token's value in single quotes
+      "'"         puts
+      Token.value puts
+      "' "        puts
       index 1 + index =
     done
+    "\n" puts
   end
 endclass
