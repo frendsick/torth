@@ -73,6 +73,13 @@ function Token.set_type ptr int :
   Token.type ptr+ int.store
 end
 
+// Set the existing Token's Location
+// Params: Token, Location
+// Return: None
+function Token.set_location ptr ptr :
+  Token.location ptr+ ptr.store
+end
+
 function Token.delete ptr :
   Token.size swap munmap
 end

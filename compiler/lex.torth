@@ -330,7 +330,7 @@ end
 // Params
 //    code: str
 //    file_name: str
-//    token_matches: List[Token]
+//    token_matches: List[Match]
 // Return
 //    token_matches: List[Match]
 function get_token_matches_from_code
@@ -807,7 +807,7 @@ function get_functions
     
     if token_upper "FUNCTION" streq do
       index 1 + index =
-      memories constants index token_matches parse_function
+      "" memories constants index token_matches parse_function
       functions List.append
     endif
     index 1 + index =
@@ -819,9 +819,6 @@ function get_functions
     "Please add Main function (case-insensitive)." str.cat
     "MISSING_MAIN_FUNCTION" CompilerError
   endif
-
-  // Parse the variables for each function
-  memories functions parse_variables_for_functions
   functions
 end
 
@@ -837,12 +834,12 @@ function parse_function
   token_index:int
   constants:ptr
   memories:ptr
+  class_name:str
 -> ptr :
   // Initialize variables
   get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
   List.init                     // List[Token]
   0                             // current_part
-  "" str.copy                   // function_name
   List.init                     // return_types
   List.init                     // param_types
   List.init                     // variables
@@ -850,7 +847,6 @@ function parse_function
     variables
     param_types
     return_types
-    function_name
     current_part
     tokens
     FUNCTION_PART_DELIMITERS
@@ -865,9 +861,17 @@ function parse_function
   endif
 
   // Set Function.name
-  token_index token_matches List.nth ptr.load
-  Match.get_value function_name =
+  token_index token_matches List.nth ptr.load Match.get_value
+  take function_name in
   token_index 1 + token_index =
+
+  // Class methods are called as <class_name>.<method>
+  // Example: Dog.bark
+  if class_name "" streq not do
+    class_name "."  str.cat
+    function_name   str.cat
+    function_name =
+  endif
 
   while token_index token_matches List.len < do
     // Get current word
@@ -966,7 +970,7 @@ function parse_function
 
     elif current_part 2 == do
       // Use Constant's value if a Constant exists named as the Token's value
-      if constants token_value str.copy constant_exists do
+      if constants token_value constant_exists do
 
         // Find the constant from list of Constants
         0 take constant_index in
@@ -1001,6 +1005,267 @@ function parse_function
   "'\nUnexpected end of file" str.cat
   "SYNTAX_ERROR" CompilerErrorWithToken
   NULLPTR
+end
+
+// Parse Classes from code
+// Params
+//    token_matches:  List[Match]
+//    functions:      List[Function]
+//    constants:      List[Constant]
+//    memories:       List[Memory]
+// Return
+//    functions: List[Function]
+function parse_classes
+  token_matches:ptr
+  functions:ptr
+  constants:ptr
+  memories:ptr
+:
+  0 take index in
+  while index token_matches List.len < do
+    // Get current word
+    index token_matches List.nth ptr.load
+    get_token_from_match Token.get_value str.copy str.upper
+    take token_upper in
+
+    if token_upper str.copy str.upper "CLASS" streq do
+      index 1 + index =
+      memories constants functions index token_matches parse_class
+    endif
+    index 1 + index =
+  done
+
+  // Parse the variables for each function
+  memories functions parse_variables_for_functions
+end
+
+function parse_class
+  token_matches:ptr
+  token_index:int
+  functions:ptr
+  constants:ptr
+  memories:ptr
+:
+  if token_index token_matches List.len >= do
+    "Class cannot end with '"
+    token_matches List.last ptr.load
+    Match.get_value str.cat
+    "' token"       str.cat
+    "SYNTAX_ERROR" CompilerError
+  endif
+
+  // Get Class name
+  token_index token_matches List.nth ptr.load Match.get_value
+  take class_name in
+  token_index 1 + token_index =
+
+  0 take attribute_count in
+  while token_index token_matches List.len < do
+    // Get current word
+    token_index token_matches List.nth ptr.load
+    get_token_from_match
+    dup Token.get_value
+    take token_value token in
+
+    if token_value str.copy str.upper "METHOD" streq do
+      // Parse all methods
+      token_index 1 - token_index =
+      while token_index token_matches List.len < do
+        // Get current Token
+        token_index token_matches List.nth ptr.load Match.get_value
+        token_value =
+
+        if token_value str.copy str.upper "METHOD" streq do
+          token_index 1 + token_index =
+          class_name memories constants token_index token_matches parse_function
+          take class_method in
+
+          // Add method to list of functions
+          class_method functions List.append
+
+        // Class ends with ENDCLASS
+        elif token_value str.copy str.upper "ENDCLASS" streq do
+          // Add function called <class_name>.size
+          token attribute_count class_name get_object_size_function
+          functions List.append
+          return
+        endif
+        token_index 1 + token_index =
+      done
+    endif
+
+    // Class ends with ENDCLASS
+    if token_value str.copy str.upper "ENDCLASS" streq do
+      // Add function called <class_name>.size
+      token attribute_count class_name get_object_size_function
+      functions List.append
+      return
+    endif
+
+    // Split token by colon to attribute's name and TokenType
+    // Example => attribute_name:int
+    ":" token_value str.find
+    take attribute_colon in
+
+    // Attribute should have a colon to separate its name and TokenType
+    if
+      attribute_colon -1 ==
+      attribute_colon 0  ==
+      ||
+    do
+      token
+      "Invalid instance attribute '" token_value                            str.cat
+      "'.\nThe attribute have a colon to separate its name and TokenType\n" str.cat
+      "Example => attribute_name:int"                                       str.cat
+      "SYNTAX_ERROR" CompilerErrorWithToken
+    endif
+
+    // Parse attribute's TokenType
+    token_value attribute_colon 1 + str+
+    Signature.type_map
+    take attribute_type in
+
+    // Parse attribute's name
+    token_value str.copy
+    dup attribute_colon str+ str.empty
+    take attribute_name in
+
+    // Calculate attributes byte offset from object base pointer
+    attribute_count int.size *
+    take attribute_offset in
+
+    // Add getter to Function list
+    True token attribute_offset attribute_type attribute_name class_name
+    generate_attribution_functions functions List.append
+
+    // Add setter to Function list
+    False token attribute_offset attribute_type attribute_name class_name
+    generate_attribution_functions functions List.append
+
+    // Increment attribute count and loop counter
+    attribute_count 1 + attribute_count =
+    token_index 1 + token_index =
+  done
+
+  // Could not parse class
+  token
+  "Could not parse class '"
+  class_name                  str.cat
+  "'\nUnexpected end of file" str.cat
+  "SYNTAX_ERROR" CompilerErrorWithToken
+end
+
+function get_object_size_function
+  class_name:str
+  attribute_count:int
+  endclass_token:ptr
+-> ptr :
+  class_name ".size" str.cat  // function_name
+  List.init                   // tokens
+  List.init                   // return_types
+  attribute_count ptr.size *  // class_size
+  take
+    class_size
+    return_types
+    tokens
+    function_name
+  in
+
+  // Insert integer Token containing class_size to Token list
+  endclass_token Token.get_location TokenType.INT class_size itoa Token.init
+  tokens List.append
+
+  // Signature: None -> INT
+  TokenType.INT ptr return_types List.append
+  return_types List.init Signature.init
+  take signature in
+
+  List.init tokens signature function_name Function.init
+end
+
+function generate_attribution_functions
+  class_name:str
+  attribute_name:str
+  attribute_type:int
+  attribute_offset:int
+  attribute_token:ptr
+  is_getter:bool // Getter => True, Setter => False
+-> ptr :
+  // Function.name => Class.attribute OR Class->attribute
+  class_name
+  if is_getter
+  do   "."
+  else "->"
+  endif           str.cat
+  attribute_name  str.cat
+  take function_name in
+
+  // Function.Signature
+  List.init
+  List.init
+  take param_types return_types in
+  TokenType.PTR  ptr param_types List.append
+  attribute_type ptr
+  // Insert attribute_type to either parameter or return types
+  // depending on if the function is getter or setter
+  if is_getter
+  do   return_types
+  else param_types
+  endif List.append
+  return_types param_types Signature.init
+  take signature in
+
+  // Function.tokens
+  is_getter attribute_token attribute_offset attribute_type attribute_name class_name get_attribute_function_tokens
+  take tokens in
+
+  // Create Function and append it to list of Functions
+  List.init tokens signature function_name Function.init
+end
+
+function get_attribute_function_tokens
+  class_name:str
+  attribute_name:str
+  attribute_type:int
+  attribute_offset:int
+  attribute_token:ptr
+  is_getter:bool // Getter => True, Setter => False
+-> ptr :
+  attribute_offset itoa
+  " swap int + ptr " str.cat
+  if is_getter
+  do   "LOAD_QWORD "  str.cat attribute_type TokenType.repr str.cat
+  else "STORE_QWORD " str.cat
+  endif
+  List.init
+  attribute_token Token.get_location
+  dup Location.get_file
+  take
+    file_name
+    location
+    token_matches
+    code
+  in
+
+  token_matches file_name code get_token_matches_from_code
+  List.init
+  0
+  take
+    index
+    tokens
+    token_matches
+  in
+  while index token_matches List.len < do
+    index token_matches List.nth ptr.load
+    get_token_from_match
+    take token in
+
+    // Fix the Location to correspond with the attribute's Token
+    location token Token.set_location
+    token tokens List.append
+    index 1 + index =
+  done
+  tokens
 end
 
 // Parse Variables for Functions

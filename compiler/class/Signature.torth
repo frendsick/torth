@@ -9,7 +9,6 @@ END
 
 // Allocate memory for Signature and the TokenType lists in it
 // Params
-//    param_names: List[str]
 //    param_types: List[TokenType]
 //    return_types: List[TokenType]
 // Return: Signature
