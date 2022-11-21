@@ -722,7 +722,7 @@ function get_memories token_matches:ptr constants:ptr -> ptr :
           // Test if Constant exists
           if constants token_value constant_exists do
             constants token_value get_constant
-            Constant.get_value atoi
+            Constant.value atoi
             memory_size =
           else
             "The memory size should be an integer. Got: "
@@ -978,8 +978,8 @@ function parse_function
           constant_index constants List.nth ptr.load
           take constant in
 
-          if constant Constant.get_name token_value streq do
-            constant Constant.get_value str.copy
+          if constant Constant.name token_value streq do
+            constant Constant.value str.copy
             token Token->value
             TokenType.INT token Token->type
             break

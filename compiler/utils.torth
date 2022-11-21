@@ -195,7 +195,7 @@ function constant_exists constant_name:str constants:ptr -> bool :
   while index constants List.len < do
 
     // Get the current Constant
-    index constants List.nth ptr.load Constant.get_name
+    index constants List.nth ptr.load Constant.name
     take current_name in
 
     // Return True if current Constant's name matches constant_name parameter
@@ -319,7 +319,7 @@ function get_constant name:str constants:ptr -> ptr :
     take constant in
 
     // Return current Constant if its name matches the name parameter
-    if constant Constant.get_name name streq do
+    if constant Constant.name name streq do
       constant return
     endif
     index 1 + index = // index++
