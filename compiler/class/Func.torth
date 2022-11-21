@@ -1,0 +1,51 @@
+include "std"
+include "compiler/class/Memory"
+include "compiler/class/Token"
+include "compiler/class/Variable"
+class Func
+  name:str
+  signature:ptr
+  tokens:ptr
+  variables:ptr
+
+  method init name:str signature:ptr tokens:ptr variables:ptr -> ptr :
+    Func.size malloc
+    take func in
+
+    name      func Func->name
+    signature func Func->signature
+    tokens    func Func->tokens
+    variables func Func->variables
+    func
+  end
+
+  method print self:ptr :
+    "Func.name      => "      puts
+    self Func.name puts "\n"  puts
+
+    "Func.signature => "      puts
+    self Func.signature
+    Signature.repr            puts
+
+    "Func.tokens    => "      puts
+    self Func.tokens
+    dup List.len  // tokens.len
+    0             // index
+    take
+      index
+      tokens.len
+      tokens
+    in
+
+    while index tokens.len < do
+      // Get the tokens value
+      tokens List.first
+      index ptr.size * ptr+
+      ptr.load str.load
+
+      // Print each token in single quotes
+      "'" puts puts "' " puts
+      index 1 + index =
+    done
+  end
+endclass

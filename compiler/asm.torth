@@ -120,7 +120,7 @@ function get_op_asm op:ptr program:ptr -> str :
     token_value 1 str+ get_push_int_asm
     return
   elif op_type OpType.RETURN == do
-    op Op.get_function Function.get_name get_return_asm
+    op Op.get_function Func.name get_return_asm
     return
   elif op_type OpType.WHILE == do
     op get_while_asm
@@ -213,7 +213,7 @@ function get_op_comment_asm op:ptr -> str :
   // Comment format as Python3 f-string:
   // f";; [{function_name}] {op_type_str} | File: {file}, Row: {row}, Col: {col}\n"
   ";; ["
-  op Op.get_function Function.get_name  str.cat
+  op Op.get_function Func.name          str.cat
   "] "                                  str.cat
 
   if op_type_str "FUNCTION_CALL" streq do
@@ -250,7 +250,7 @@ function get_assign_bind_asm op:ptr program:ptr -> str :
   Op.get_token Token.value
 
   // variable = f"{op.func.name}_{memory_name}"
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   "_" str.cat swap str.cat
   take variable in
 
@@ -269,7 +269,7 @@ function get_break_asm op:ptr program:ptr -> str :
   program op get_parent_while
   program swap get_done_op_for_while
   Op.get_id
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   take function_name parent_done.id in
 
   "  jmp "
@@ -284,7 +284,7 @@ end
 function get_continue_asm op:ptr program:ptr -> str :
   program op get_parent_while
   Op.get_id
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   take function_name parent_while.id in
 
   "  jmp "
@@ -400,7 +400,7 @@ function get_do_asm op:ptr program:ptr -> str :
       &&
     do
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
-      op Op.get_function Function.get_name
+      op Op.get_function Func.name
       "_"                                                     str.cat
       index program List.nth ptr.load Op.get_type OpType.str  str.cat
       index itoa                                              str.cat
@@ -448,7 +448,7 @@ function get_done_asm op:ptr program:ptr -> str :
   take parent_while in
 
   // Generate assembly
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   op Op.get_id itoa
   parent_while Op.get_id itoa
   take
@@ -477,7 +477,7 @@ function get_elif_asm op:ptr program:ptr -> str :
   take related_endif in
 
   // Generate assembly
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   op Op.get_id itoa
   related_endif Op.get_id itoa
   take
@@ -506,7 +506,7 @@ function get_else_asm op:ptr program:ptr -> str :
   take related_endif in
 
   // Generate assembly
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   op Op.get_id itoa
   related_endif Op.get_id itoa
   take
@@ -530,14 +530,14 @@ end
 // Params: Op
 // Return: Assembly
 function get_endif_asm op:ptr -> str :
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   "_ENDIF"          str.cat
   op Op.get_id itoa str.cat
   ":\n"             str.cat
 end
 
 // Generate assembly for calling a function
-// Params: Function's name
+// Params: Func's name
 // Return: Assembly
 function get_function_call_asm function_name:str -> str :
   "  call "
@@ -623,7 +623,7 @@ end
 function get_push_str_asm op:ptr -> str :
   // Initialize variables
   op Op.get_id itoa
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   take function_name op_id in
 
   "  mov rsi, "
@@ -635,7 +635,7 @@ function get_push_str_asm op:ptr -> str :
 end
 
 // Generate Assembly for OpType.RETURN
-// Params: Function.name
+// Params: Func.name
 // Return: Assembly
 function get_return_asm function_name:str -> str :
   if function_name str.copy str.upper "MAIN" streq do
@@ -651,7 +651,7 @@ end
 // Return: Assembly
 function get_while_asm op:ptr -> str :
   op Op.get_id itoa
-  op Op.get_function Function.get_name
+  op Op.get_function Func.name
   take function_name op_id in
 
   function_name
@@ -1080,7 +1080,7 @@ function get_string_variables_for_data_section program:ptr -> str :
     endif
 
     op    Op.get_id itoa
-    op    Op.get_function Function.get_name
+    op    Op.get_function Func.name
     op    Op.get_token
     dup   Token.value format_escape_sequences_for_nasm
     swap  Token.location
@@ -1135,10 +1135,10 @@ function format_escape_sequences_for_nasm string:str -> str :
 end
 
 // Return the beginning of the assembly code of each Program
-// Params: Function's name
+// Params: Func's name
 // Return: Assembly code
 function get_function_start_asm function_name:str -> str :
-  // MAIN Function differs from the others
+  // MAIN Func differs from the others
   if function_name str.copy str.upper "MAIN" streq do
     "global _start\n"
     "_start:\n"                                                           str.cat
@@ -1157,10 +1157,10 @@ function get_function_start_asm function_name:str -> str :
 end
 
 // Return the end of the assembly code of each Program
-// Params: Function's name
+// Params: Func's name
 // Return: Assembly code
 function get_function_end_asm function_name:str -> str :
-  // MAIN Function differs from the others
+  // MAIN Func differs from the others
   if function_name str.copy str.upper "MAIN" streq do
     get_exit_assembly return
   endif
@@ -1180,12 +1180,12 @@ function append_programs_assembly_code file_name:str program:ptr :
   0
   take index program.len in
 
-  // Get the Function's name to be added to the assembly code
-  // Exception: MAIN Function should be named '_start'
-  program List.first ptr.load Op.get_function Function.get_name
+  // Get the Func's name to be added to the assembly code
+  // Exception: MAIN Func should be named '_start'
+  program List.first ptr.load Op.get_function Func.name
   take function_name in
 
-  // Write Function's start assembly to file
+  // Write Func's start assembly to file
   function_name get_function_start_asm file_name append_file
 
   // Generate assembly for each Op in Program
@@ -1206,7 +1206,7 @@ function append_programs_assembly_code file_name:str program:ptr :
     index 1 + index =
   done
 
-  // Prepend the Function's beginning code and prepend the ending code
+  // Prepend the Func's beginning code and prepend the ending code
   function_name get_function_end_asm file_name append_file
 end
 

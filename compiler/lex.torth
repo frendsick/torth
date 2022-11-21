@@ -4,7 +4,7 @@ include "typing"
 include "compiler/defs"
 include "compiler/utils"
 include "compiler/class/Constant"
-include "compiler/class/Function"
+include "compiler/class/Func"
 include "compiler/class/Match"
 include "compiler/class/Memory"
 include "compiler/class/Op"
@@ -311,7 +311,7 @@ function get_op_type token:ptr -> int :
   OpType.INTRINSIC
 end
 
-// Functions are made of the following parts:
+// Funcs are made of the following parts:
 //   1 : Parameter types
 //   2 : Return types
 //   3 : Body
@@ -784,19 +784,19 @@ function get_memory_name token_value:str memories:ptr -> str :
   token_value
 end
 
-// Parse Functions from list of token Matches
+// Parse Funcs from list of token Matches
 // Params
 //    token_matches:  List[Match]
 //    constants:      List[Constant]
 //    memories:       List[Memory]
 // Return
-//    functions: List[Function]
+//    functions: List[Func]
 function get_functions
   token_matches:ptr
   constants:ptr
   memories:ptr
 -> ptr :
-  List.init // List[Function]
+  List.init // List[Func]
   0
   take index functions in
   while index token_matches List.len < do
@@ -822,13 +822,13 @@ function get_functions
   functions
 end
 
-// Parse Function from list of token Matches
+// Parse Func from list of token Matches
 // Params
 //    token_matches:  List[Match]
 //    token_index:    int
 //    constants:      List[Constant]
 //    memories:       List[Memory]
-// Return Function
+// Return Func
 function parse_function
   token_matches:ptr
   token_index:int
@@ -860,7 +860,7 @@ function parse_function
     "SYNTAX_ERROR" CompilerError
   endif
 
-  // Set Function.name
+  // Set Func.name
   token_index token_matches List.nth ptr.load Match.get_value
   take function_name in
   token_index 1 + token_index =
@@ -888,7 +888,7 @@ function parse_function
       current_part 1 +
       current_part =
 
-      // Append Function and reset variables when function is fully lexed
+      // Append Func and reset variables when function is fully lexed
       if token_value str.copy str.upper "END" streq do
 
         // Append 0 token as the exit code for MAIN function
@@ -901,17 +901,17 @@ function parse_function
         // Do not allow empty functions
         if tokens List.len 0 == do
           token
-          "Function '" function_name                    str.cat
+          "Func '" function_name                        str.cat
           "' does not have any tokens\n"                str.cat
           "Creation of empty functions is not allowed"  str.cat
           "EMPTY_FUNCTION" CompilerErrorWithToken
         endif
 
-        // return Function(function_name, signature, tokens, variables)
+        // return Func(function_name, signature, tokens, variables)
         variables
         tokens
         return_types param_types Signature.init
-        function_name Function.init
+        function_name Func.init
         return
       endif
 
@@ -941,7 +941,7 @@ function parse_function
         // Empty param_name
         if param_colon 0 == do
           token
-          "Function '" function_name                  str.cat
+          "Func '" function_name                      str.cat
           "' has parameter '"                         str.cat
           token_value                                 str.cat
           "' which has a colon but the name is empty" str.cat
@@ -953,7 +953,7 @@ function parse_function
         dup param_colon str+ str.empty
         take param_name in
 
-        // Append parameter to Function's Tokens
+        // Append parameter to Func's Tokens
         param_name str.copy token Token->value
         TokenType.WORD      token Token->type
         VarType.TAKE        token Token->vartype
@@ -998,7 +998,7 @@ function parse_function
     token_index 1 + token_index =
   done
 
-  // Could not parse Function
+  // Could not parse Func
   token
   "Could not parse function '"
   function_name               str.cat
@@ -1010,11 +1010,11 @@ end
 // Parse Classes from code
 // Params
 //    token_matches:  List[Match]
-//    functions:      List[Function]
+//    functions:      List[Func]
 //    constants:      List[Constant]
 //    memories:       List[Memory]
 // Return
-//    functions: List[Function]
+//    functions: List[Func]
 function parse_classes
   token_matches:ptr
   functions:ptr
@@ -1147,11 +1147,11 @@ function parse_class_attribute
   attribute_count int.size *
   take attribute_offset in
 
-  // Add getter to Function list
+  // Add getter to Func list
   True token attribute_offset attribute_type attribute_name class_name
   generate_attribution_functions functions List.append
 
-  // Add setter to Function list
+  // Add setter to Func list
   False token attribute_offset attribute_type attribute_name class_name
   generate_attribution_functions functions List.append
 end
@@ -1181,7 +1181,7 @@ function get_object_size_function
   return_types List.init Signature.init
   take signature in
 
-  List.init tokens signature function_name Function.init
+  List.init tokens signature function_name Func.init
 end
 
 function generate_attribution_functions
@@ -1192,7 +1192,7 @@ function generate_attribution_functions
   attribute_token:ptr
   is_getter:bool // Getter => True, Setter => False
 -> ptr :
-  // Function.name => Class.attribute OR Class->attribute
+  // Func.name => Class.attribute OR Class->attribute
   class_name
   if is_getter
   do   "."
@@ -1201,7 +1201,7 @@ function generate_attribution_functions
   attribute_name  str.cat
   take function_name in
 
-  // Function.Signature
+  // Func.Signature
   List.init
   List.init
   take param_types return_types in
@@ -1216,12 +1216,12 @@ function generate_attribution_functions
   return_types param_types Signature.init
   take signature in
 
-  // Function.tokens
+  // Func.tokens
   is_getter attribute_token attribute_offset attribute_type attribute_name class_name get_attribute_function_tokens
   take tokens in
 
-  // Create Function and append it to list of Functions
-  List.init tokens signature function_name Function.init
+  // Create Func and append it to list of Funcs
+  List.init tokens signature function_name Func.init
 end
 
 function get_attribute_function_tokens
@@ -1269,14 +1269,14 @@ function get_attribute_function_tokens
   tokens
 end
 
-// Parse Variables for Functions
-// Params: List[Function], List[Memory]
+// Parse Variables for Funcs
+// Params: List[Func], List[Memory]
 function parse_variables_for_functions functions:ptr memories:ptr :
   functions List.len
   0
   take index functions.len in
 
-  // Parse Variables for each Function
+  // Parse Variables for each Func
   while index functions.len < do
     index functions List.nth ptr.load
     memories swap parse_function_variables
@@ -1284,12 +1284,12 @@ function parse_variables_for_functions functions:ptr memories:ptr :
   done
 end
 
-// Parse Variables in Function
-// Params: Function, List[Memory]
+// Parse Variables in Func
+// Params: Func, List[Memory]
 // Return: None
 function parse_function_variables func:ptr memories:ptr :
-  func Function.get_tokens
-  func Function.get_variables
+  func Func.tokens
+  func Func.variables
   False
   "PEEK"
   0
@@ -1335,8 +1335,8 @@ function parse_function_variables func:ptr memories:ptr :
         "VALUE_ERROR" CompilerErrorWithToken
       endif
 
-      // Add Variable to Function's list of Variables
-      memories variables func Function.get_name token add_variable_to_list
+      // Add Variable to Func's list of Variables
+      memories variables func Func.name token add_variable_to_list
 
     // Token is a function parameter
     elif token Token.vartype 0 != do
@@ -1351,7 +1351,7 @@ function parse_function_variables func:ptr memories:ptr :
   done
 end
 
-// Add variable to Function's variable list
+// Add variable to Func's variable list
 // Params
 //    token: Token
 //    function_name: str
@@ -1394,10 +1394,10 @@ function main_function_in_function_list functions:ptr -> bool :
   0
   take index functions.len in
 
-  // Iterate over Function List
+  // Iterate over Func List
   while index functions.len < do
     index functions List.nth ptr.load
-    Function.get_name str.copy str.upper
+    Func.name str.copy str.upper
     take function_name in
 
     // Return True if MAIN function is found

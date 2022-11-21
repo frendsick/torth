@@ -209,11 +209,11 @@ function constant_exists constant_name:str constants:ptr -> bool :
   False
 end
 
-// Check if a Function with a certain name exists
-// Params: function_name, List[Functions]
+// Check if a Func with a certain name exists
+// Params: function_name, List[Funcs]
 // Return: bool
 function function_exists str ptr -> bool :
-  // Function does not exist if get_function_by_name returns NULLPTR
+  // Func does not exist if get_function_by_name returns NULLPTR
   get_function_by_name int
   NULL !=
 end
@@ -253,26 +253,26 @@ function matching_token_types type1:int type2:int -> bool :
   type2 TokenType.ANY == ||
 end
 
-// Get a Function with certain name from a list of Functions
-// Params: function_name, List[Functions]
-// Return: Function
+// Get a Func with certain name from a list of Funcs
+// Params: function_name, List[Funcs]
+// Return: Func
 function get_function_by_name function_name:str functions:ptr -> ptr :
-  // Iterate over functions and check if a Function with certain name exists
+  // Iterate over functions and check if a Func with certain name exists
   0 take index in
   while index functions List.len < do
 
-    // Get the current Function
+    // Get the current Func
     index functions List.nth ptr.load
     take func in
 
-    // Return True if current Function's name matches function_name parameter
-    if func Function.get_name function_name streq do
+    // Return True if current Func's name matches function_name parameter
+    if func Func.name function_name streq do
       func return
     endif
     index 1 + index = // index++
   done
 
-  // Return NULLPTR if the Function was not found
+  // Return NULLPTR if the Func was not found
   NULLPTR
 end
 
