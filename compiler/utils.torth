@@ -112,9 +112,9 @@ end
 // Get prettified information for Token
 function get_token_info token:ptr -> str :
   "\e[95mToken\e[0m: "
-  token Token.get_value                       str.cat
-  "\n"                                        str.cat
-  token Token.get_location get_location_info  str.cat
+  token Token.value                       str.cat
+  "\n"                                    str.cat
+  token Token.location get_location_info  str.cat
 end
 
 // Remove a file
@@ -173,7 +173,7 @@ function get_op_from_location location:ptr program:ptr -> ptr :
     take op in
 
     // Test if the current Op has the same Location pointer
-    op Op.get_token Token.get_location int
+    op Op.get_token Token.location int
     take current_location in
     if location_int current_location == do
       op return

@@ -1,100 +1,36 @@
 include "std"
 
-// Token(value: str, type: TokenType, location: Location)
-ENUM Token.size 8 :
-  Token.value       // str
-  Token.type        // TokenType => int
-  Token.vartype     // VarType   => int
-  Token.location    // Location  => ptr
-END
+class Token
+  value:str
+  type:int
+  vartype:int
+  location:ptr
 
-// Initialize Token from parameters
-// Params: Token.value, Token.type, Token.location
-// Return: Pointer to Token
-function Token.init str int ptr -> ptr :
-  // Allocate memory for Token
-  Token.size malloc
-  take token value type location in
+  method init value:str type:int location:ptr -> ptr :
+    Token.size malloc
+    take token in
 
-  // Load the parameters to the allocated memory
-  value         token Token.value     ptr+ str.store
-  type          token Token.type      ptr+ int.store
-  VarType.NONE  token Token.vartype   ptr+ int.store
-  location      token Token.location  ptr+ ptr.store
-  token
-end
+    value         token Token->value
+    type          token Token->type
+    VarType.NONE  token Token->vartype
+    location      token Token->location
+    token
+  end
 
-// Get Token.value
-// Params: Pointer to Token (PTR)
-// Return: Token.value (STR)
-function Token.get_value ptr -> str :
-  str.load
-end
+  method delete self:ptr :
+    Token.size self munmap
+  end
 
-// Get Token.type
-// Params: Pointer to Token (PTR)
-// Return: Token.type (TokenType => INT)
-function Token.get_type ptr -> int :
-  Token.type ptr+ int.load
-end
+  method print self:ptr :
+    "Token.value        => "      puts
+    self Token.value puts "\n"    puts
 
-// Get Token.location
-// Params: Pointer to Token (PTR)
-// Return: Token.vartype (VarType => INT)
-function Token.get_vartype ptr -> int :
-  Token.vartype ptr+ int.load
-end
+    "Token.type         => "      puts
+    self Token.type putu "\n"     puts
 
-// Get Token.location
-// Params: Pointer to Token (PTR)
-// Return: Token.location (Location => PTR)
-function Token.get_location ptr -> ptr :
-  Token.location ptr+ ptr.load
-end
+    "Token.vartype      => "      puts
+    self Token.vartype putu "\n"  puts
 
-// Set the existing Token's value
-// Params: Token, new_value (STR)
-// Return: None
-function Token.set_value ptr str :
-  str.store
-end
-
-// Set Token.vartype
-// Params: Token, VarType
-// Return: None
-function Token.set_vartype ptr int :
-  Token.vartype ptr+ int.store
-end
-
-// Set the existing Token's TokenType
-// Params: Token, TokenType
-// Return: None
-function Token.set_type ptr int :
-  Token.type ptr+ int.store
-end
-
-// Set the existing Token's Location
-// Params: Token, Location
-// Return: None
-function Token.set_location ptr ptr :
-  Token.location ptr+ ptr.store
-end
-
-function Token.delete ptr :
-  Token.size swap munmap
-end
-
-function Token.print ptr :
-  take token in
-
-  "Token.value        => " puts
-  token Token.get_value puts "\n" puts
-
-  "Token.type         => " puts
-  token Token.get_type putu "\n" puts
-
-  "Token.vartype      => " puts
-  token Token.get_vartype putu "\n" puts
-
-  token Token.get_location Location.print
-end
+    self Token.location Location.print
+  end
+endclass

@@ -130,7 +130,7 @@ function type_check_op
 -> ptr :
   // Initialize variables
   op  Op.get_token
-  dup Token.get_value
+  dup Token.value
   op  Op.get_type
   branched_stacks List.last ptr.load
   take
@@ -277,7 +277,7 @@ function type_check_intrinsic
   type_stack:ptr
   program:ptr
 :
-  token Token.get_value str.copy str.upper
+  token Token.value str.copy str.upper
   take intrinsic in
 
   // Switch like if block with every type of Intrinsic
@@ -407,7 +407,7 @@ function correct_return_types func:ptr type_stack:ptr -> bool :
   // Push return types to temp_stack
   0 index =
   while index returns List.len < do
-    func Function.get_tokens List.first ptr.load Token.get_location
+    func Function.get_tokens List.first ptr.load Token.location
     index returns List.nth int.load TypeNode.init
     temp_stack LinkedList.push
     index 1 + index =
@@ -469,7 +469,7 @@ function type_check_end_of_branch
 
   // If branched_stacks is empty we are not inside a branch block
   if branched_stacks List.len 0 <= do
-    token Token.get_value str.copy str.upper
+    token Token.value str.copy str.upper
     take token_value in
 
     type_stack token
@@ -539,14 +539,14 @@ function type_check_assign_bind
   program t1 TypeNode.get_location get_op_from_location Op.get_token
   take assign_token in
 
-  if assign_token Token.get_vartype VarType.NONE == do
+  if assign_token Token.vartype VarType.NONE == do
     temp_stack token
     "ASSIGN operation requires a variable name in the top of the stack"
     "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Get initial variable assignment Token
-  assign_token Token.get_value variables List.get_variable Variable.get_type
+  assign_token Token.value variables List.get_variable Variable.get_type
   t2 TypeNode.get_type
   take popped_type variable_type in
 
@@ -556,7 +556,7 @@ function type_check_assign_bind
     "Cannot assign "
     popped_type TokenType.repr     str.cat
     " to variable '"                str.cat
-    assign_token Token.get_value  str.cat
+    assign_token Token.value  str.cat
     "' of type "                    str.cat
     variable_type TokenType.repr   str.cat
     "VALUE_ERROR" CompilerErrorWithStack
@@ -586,7 +586,7 @@ function type_check_cast_bool token:ptr type_stack:ptr :
   endif
 
   // Push a boolean back to the stack
-  token Token.get_location TokenType.BOOL TypeNode.init
+  token Token.location TokenType.BOOL TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -617,7 +617,7 @@ function type_check_cast_char token:ptr type_stack:ptr :
   endif
 
   // Push a character back to the stack
-  token Token.get_location TokenType.CHAR TypeNode.init
+  token Token.location TokenType.CHAR TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -637,7 +637,7 @@ function type_check_cast_int token:ptr type_stack:ptr :
   endif
 
   // Push an integer back to the stack
-  token Token.get_location TokenType.INT TypeNode.init
+  token Token.location TokenType.INT TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -667,7 +667,7 @@ function type_check_cast_ptr token:ptr type_stack:ptr :
   endif
 
   // Push a pointer back to the stack
-  token Token.get_location TokenType.PTR TypeNode.init
+  token Token.location TokenType.PTR TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -693,7 +693,7 @@ function type_check_cast_str token:ptr type_stack:ptr :
   endif
 
   // Push a string back to the stack
-  token Token.get_location TokenType.STR TypeNode.init
+  token Token.location TokenType.STR TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -720,7 +720,7 @@ function type_check_cast_uint8 token:ptr type_stack:ptr :
   endif
 
   // Push 8-bit unsigned integer back to the stack
-  token Token.get_location TokenType.UINT8 TypeNode.init
+  token Token.location TokenType.UINT8 TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -873,7 +873,7 @@ function type_check_function_call
   type_stack:ptr
   functions:ptr
 :
-  token Token.get_value
+  token Token.value
   type_stack TypeStack.copy
   take temp_stack function_name in
 
@@ -934,7 +934,7 @@ function type_check_function_call
     take return_type in
 
     // Push the current return type to the stack
-    token Token.get_location return_type TypeNode.init
+    token Token.location return_type TypeNode.init
     type_stack LinkedList.push
     index 1 + index =
   done
@@ -971,7 +971,7 @@ function type_check_peek_bind
   endif
 
   // Save the popped type to the Variable
-  type TypeNode.get_type token Token.get_value Variable.init
+  type TypeNode.get_type token Token.value Variable.init
   variables List.append
 end
 
@@ -996,7 +996,7 @@ function type_check_pop_bind
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   endif
 
-  type TypeNode.get_type token Token.get_value Variable.init
+  type TypeNode.get_type token Token.value Variable.init
   variables List.append
 end
 
@@ -1011,8 +1011,8 @@ function type_check_push_bind
   type_stack:ptr
   variables:ptr
 :
-  token Token.get_location
-  token Token.get_value variables List.get_variable Variable.get_type
+  token Token.location
+  token Token.value variables List.get_variable Variable.get_type
   TypeNode.init type_stack LinkedList.push
 end
 
@@ -1022,7 +1022,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_bool token:ptr type_stack:ptr :
-  token Token.get_location TokenType.BOOL TypeNode.init
+  token Token.location TokenType.BOOL TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1032,7 +1032,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_char token:ptr type_stack:ptr :
-  token Token.get_location TokenType.CHAR TypeNode.init
+  token Token.location TokenType.CHAR TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1042,7 +1042,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_int token:ptr type_stack:ptr :
-  token Token.get_location TokenType.INT TypeNode.init
+  token Token.location TokenType.INT TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1052,7 +1052,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_ptr token:ptr type_stack:ptr :
-  token Token.get_location TokenType.PTR TypeNode.init
+  token Token.location TokenType.PTR TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1062,7 +1062,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_str token:ptr type_stack:ptr :
-  token Token.get_location TokenType.STR TypeNode.init
+  token Token.location TokenType.STR TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1072,7 +1072,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_uint8 token:ptr type_stack:ptr :
-  token Token.get_location TokenType.UINT8 TypeNode.init
+  token Token.location TokenType.UINT8 TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1119,7 +1119,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_divmod token:ptr type_stack:ptr :
-  token Token.get_value str.copy str.upper
+  token Token.value str.copy str.upper
   type_stack TypeStack.copy
 
   // Pop two items from the stack
@@ -1151,7 +1151,7 @@ function type_check_divmod token:ptr type_stack:ptr :
   endif
 
   // Push the remainder and the quotient to the stack
-  token Token.get_location
+  token Token.location
   take location in
   location TokenType.INT TypeNode.init type_stack LinkedList.push
   location TokenType.INT TypeNode.init type_stack LinkedList.push
@@ -1218,7 +1218,7 @@ function type_check_load token:ptr type_stack:ptr :
   // Wrong token type
   elif type TypeNode.get_type POINTER_TYPES Array.contains_int not do
     temp_stack token
-    dup Token.get_value str.copy str.upper
+    dup Token.value str.copy str.upper
     " requires a pointer\n\n"                   str.cat
     "Popped type: "                             str.cat
     type TypeNode.get_type TokenType.repr  str.cat
@@ -1226,7 +1226,7 @@ function type_check_load token:ptr type_stack:ptr :
   endif
 
   // Push loaded value which could be of any type
-  token Token.get_location TokenType.ANY TypeNode.init
+  token Token.location TokenType.ANY TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1263,7 +1263,7 @@ function type_check_nth
 
   // Get the Token representing N
   program type TypeNode.get_location get_op_from_location
-  Op.get_token dup Token.get_value
+  Op.get_token dup Token.value
   take n_token_value n_token in
 
   // Only support integers for N
@@ -1293,7 +1293,7 @@ function type_check_nth
   endif
 
   // Push the Nth item to the real TypeStack
-  token Token.get_location popped TypeNode.get_type TypeNode.init
+  token Token.location popped TypeNode.get_type TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1391,7 +1391,7 @@ function type_check_store token:ptr type_stack:ptr :
   take t2 t1 temp_stack in
 
   // Generate error message beforehand
-  token Token.get_value str.copy str.upper
+  token Token.value str.copy str.upper
   " intrinsic requires two values on the stack, PTR and value" str.cat
   take required_values_str in
 
@@ -1449,7 +1449,7 @@ end
 // Return None
 function type_check_syscall token:ptr type_stack:ptr :
   type_stack TypeStack.copy
-  token Token.get_value str.copy str.upper
+  token Token.value str.copy str.upper
 
   // The parameter count for the SYSCALL intrinsic is the last character of the Token.value
   // SYSCALL0 --> No parameters
@@ -1507,7 +1507,7 @@ function type_check_syscall token:ptr type_stack:ptr :
   done
 
   // Push syscall return code to the stack
-  token Token.get_location TokenType.INT TypeNode.init
+  token Token.location TokenType.INT TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1518,7 +1518,7 @@ end
 // Return None
 function type_check_bitwise token:ptr type_stack:ptr :
   // Pop two items from the stack
-  token Token.get_value str.copy str.upper
+  token Token.value str.copy str.upper
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   type_stack LinkedList.pop
@@ -1544,7 +1544,7 @@ function type_check_bitwise token:ptr type_stack:ptr :
   endif
 
   // Push the result to the stack
-  token Token.get_location TokenType.INT TypeNode.init
+  token Token.location TokenType.INT TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1557,7 +1557,7 @@ end
 // Return None
 function type_check_bitshift token:ptr type_stack:ptr :
   // Pop two items from the stack
-  token Token.get_value str.copy str.upper
+  token Token.value str.copy str.upper
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   type_stack LinkedList.pop
@@ -1583,7 +1583,7 @@ function type_check_bitshift token:ptr type_stack:ptr :
   endif
 
   // Push the result to the stack
-  token Token.get_location TokenType.INT TypeNode.init
+  token Token.location TokenType.INT TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1594,7 +1594,7 @@ end
 // Return None
 function type_check_calculations token:ptr type_stack:ptr :
   // Pop two items from the stack
-  token Token.get_value str.copy str.upper
+  token Token.value str.copy str.upper
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   type_stack LinkedList.pop
@@ -1620,7 +1620,7 @@ function type_check_calculations token:ptr type_stack:ptr :
   endif
 
   // Push the result to the stack
-  token Token.get_location TokenType.INT TypeNode.init
+  token Token.location TokenType.INT TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1633,7 +1633,7 @@ end
 // Return None
 function type_check_comparison token:ptr type_stack:ptr :
   // Pop two items from the stack
-  token Token.get_value str.copy str.upper
+  token Token.value str.copy str.upper
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   type_stack LinkedList.pop
@@ -1659,7 +1659,7 @@ function type_check_comparison token:ptr type_stack:ptr :
   endif
 
   // Push the result to the stack
-  token Token.get_location TokenType.BOOL TypeNode.init
+  token Token.location TokenType.BOOL TypeNode.init
   type_stack LinkedList.push
 end
 
@@ -1695,7 +1695,7 @@ function get_function_type_stack func:ptr -> ptr :
   in
 
   // Get the first Token's location for TypeNodes
-  func Function.get_tokens List.first ptr.load Token.get_location
+  func Function.get_tokens List.first ptr.load Token.location
   take location in
 
   // Insert all parameter types to type_stack in the reverse order

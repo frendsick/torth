@@ -45,7 +45,7 @@ end
 // Return: Assembly
 function get_op_asm op:ptr program:ptr -> str :
   // Save Op and Token.value in Binding
-  op Op.get_token Token.get_value
+  op Op.get_token Token.value
   op Op.get_type
   take op_type token_value in
 
@@ -139,7 +139,7 @@ end
 // Params: Token
 // Return: Assembly
 function get_intrinsic_asm ptr -> str :
-  dup Token.get_value str.copy str.upper
+  dup Token.value str.copy str.upper
   take intrinsic token in
   if intrinsic "AND" streq do
     get_and_asm return
@@ -207,7 +207,7 @@ end
 // Return: Comment string (STR)
 function get_op_comment_asm op:ptr -> str :
   op Op.get_type OpType.str
-  op Op.get_token Token.get_value
+  op Op.get_token Token.value
   take token_value op_type_str in
 
   // Comment format as Python3 f-string:
@@ -229,7 +229,7 @@ function get_op_comment_asm op:ptr -> str :
 
   // Add Op.token Location information
   " | File: "                           str.cat
-  op Op.get_token Token.get_location
+  op Op.get_token Token.location
   take token_loc in
 
   // Add file, row and column information
@@ -247,7 +247,7 @@ end
 function get_assign_bind_asm op:ptr program:ptr -> str :
   // memory_name = program[op.id - 1].token.value
   op Op.get_id 1 - program List.nth ptr.load
-  Op.get_token Token.get_value
+  Op.get_token Token.value
 
   // variable = f"{op.func.name}_{memory_name}"
   op Op.get_function Function.get_name
@@ -1082,8 +1082,8 @@ function get_string_variables_for_data_section program:ptr -> str :
     op    Op.get_id itoa
     op    Op.get_function Function.get_name
     op    Op.get_token
-    dup   Token.get_value format_escape_sequences_for_nasm
-    swap  Token.get_location
+    dup   Token.value format_escape_sequences_for_nasm
+    swap  Token.location
     take
       token_location
       string
@@ -1242,7 +1242,7 @@ function get_related_endif op:ptr program:ptr -> ptr :
   // Report error when corresponding ENDIF was not found
   op Op.get_token
   "Corresponding ENDIF keyword was not found.\n"
-  op Op.get_token Token.get_value str.copy str.upper
+  op Op.get_token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat CompilerErrorWithToken NULLPTR
 end
 
@@ -1278,7 +1278,7 @@ function get_parent_while op:ptr program:ptr -> ptr :
   // Report error when parent WHILE was not found
   op Op.get_token
   "Parent WHILE keyword was not found.\n"
-  op Op.get_token Token.get_value str.copy str.upper
+  op Op.get_token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat
   CompilerErrorWithToken NULLPTR
 end
@@ -1318,7 +1318,7 @@ function get_done_op_for_while op:ptr program:ptr -> ptr :
   // Report error when END Keyword was not found for the WHILE block
   op Op.get_token
   "END keyword was not found for the current WHILE loop.\n"
-  op Op.get_token Token.get_value str.copy str.upper
+  op Op.get_token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat CompilerErrorWithToken NULLPTR
 end
 
@@ -1327,7 +1327,7 @@ end
 // Return: variable
 function get_variable_memory op:ptr -> str :
   // variable = f"{op.func.name}_{memory_name}"
-  op Op.get_token     Token.get_value
+  op Op.get_token     Token.value
   op Op.get_function  Function.get_name
   "_" str.cat swap str.cat
 end

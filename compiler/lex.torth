@@ -295,7 +295,7 @@ end
 // Params: Token
 // Return: OpType
 function get_op_type token:ptr -> int :
-  token Token.get_type
+  token Token.type
   take token_type in
   if token_type TokenType.BOOL == do
     OpType.PUSH_BOOL return
@@ -802,7 +802,7 @@ function get_functions
   while index token_matches List.len < do
     // Get current word
     index token_matches List.nth ptr.load
-    get_token_from_match Token.get_value str.copy str.upper
+    get_token_from_match Token.value str.copy str.upper
     take token_upper in
     
     if token_upper "FUNCTION" streq do
@@ -877,7 +877,7 @@ function parse_function
     // Get current word
     token_index token_matches List.nth ptr.load
     get_token_from_match
-    dup Token.get_value
+    dup Token.value
     take token_value token in
 
     if
@@ -893,7 +893,7 @@ function parse_function
 
         // Append 0 token as the exit code for MAIN function
         if function_name str.copy str.upper "MAIN" streq do
-          token Token.get_location
+          token Token.location
           TokenType.INT "0" Token.init
           tokens List.append
         endif
@@ -954,9 +954,9 @@ function parse_function
         take param_name in
 
         // Append parameter to Function's Tokens
-        param_name str.copy token Token.set_value
-        TokenType.WORD      token Token.set_type
-        VarType.TAKE        token Token.set_vartype
+        param_name str.copy token Token->value
+        TokenType.WORD      token Token->type
+        VarType.TAKE        token Token->vartype
         token tokens List.append
 
         // Add parameter to the list of Variables
@@ -980,8 +980,8 @@ function parse_function
 
           if constant Constant.get_name token_value streq do
             constant Constant.get_value str.copy
-            token Token.set_value
-            TokenType.INT token Token.set_type
+            token Token->value
+            TokenType.INT token Token->type
             break
           endif
           constant_index 1 + constant_index =
@@ -1025,7 +1025,7 @@ function parse_classes
   while index token_matches List.len < do
     // Get current word
     index token_matches List.nth ptr.load
-    get_token_from_match Token.get_value str.copy str.upper
+    get_token_from_match Token.value str.copy str.upper
     take token_upper in
 
     if token_upper str.copy str.upper "CLASS" streq do
@@ -1064,7 +1064,7 @@ function parse_class
     // Get current word
     token_index token_matches List.nth ptr.load
     get_token_from_match
-    dup Token.get_value
+    dup Token.value
     take token_value token in
 
     if token_value str.copy str.upper "METHOD" streq do
@@ -1079,7 +1079,7 @@ function parse_class
       // Go over the method's END keyword
       while token_index token_matches List.len < do
         token_index token_matches List.nth ptr.load
-        if Token.get_value str.copy str.upper "END" streq do
+        if Token.value str.copy str.upper "END" streq do
           break
         endif
         token_index 1 + token_index =
@@ -1116,7 +1116,7 @@ function parse_class_attribute
 :
   // Split token by colon to attribute's name and TokenType
   // Example => attribute_name:int
-  token Token.get_value
+  token Token.value
   ":" over str.find
   take attribute_colon token_value in
 
@@ -1173,7 +1173,7 @@ function get_object_size_function
   in
 
   // Insert integer Token containing class_size to Token list
-  endclass_token Token.get_location TokenType.INT class_size itoa Token.init
+  endclass_token Token.location TokenType.INT class_size itoa Token.init
   tokens List.append
 
   // Signature: None -> INT
@@ -1239,7 +1239,7 @@ function get_attribute_function_tokens
   else "STORE_QWORD " str.cat
   endif
   List.init
-  attribute_token Token.get_location
+  attribute_token Token.location
   dup Location.get_file
   take
     file_name
@@ -1262,7 +1262,7 @@ function get_attribute_function_tokens
     take token in
 
     // Fix the Location to correspond with the attribute's Token
-    location token Token.set_location
+    location token Token->location
     token tokens List.append
     index 1 + index =
   done
@@ -1303,7 +1303,7 @@ function parse_function_variables func:ptr memories:ptr :
 
   while index tokens List.len < do
     index tokens List.nth ptr.load
-    dup Token.get_value
+    dup Token.value
     take
       token_value
       token
@@ -1326,9 +1326,9 @@ function parse_function_variables func:ptr memories:ptr :
     // Every word is considered as a Variable in the block between PEEK/TAKE and IN
     elif parsing_variables do
       if bind_variant "PEEK" streq do
-        VarType.PEEK token Token.set_vartype
+        VarType.PEEK token Token->vartype
       elif bind_variant "TAKE" streq do
-        VarType.TAKE token Token.set_vartype
+        VarType.TAKE token Token->vartype
       else
         token
         "Unknown VarType '" bind_variant str.cat "'\n" str.cat
@@ -1339,13 +1339,13 @@ function parse_function_variables func:ptr memories:ptr :
       memories variables func Function.get_name token add_variable_to_list
 
     // Token is a function parameter
-    elif token Token.get_vartype 0 != do
+    elif token Token.vartype 0 != do
       index 1 + index =
       continue
 
     // Token is an already defined Variable
     elif token_value variables List.contains_variable do
-      VarType.PUSH token Token.set_vartype
+      VarType.PUSH token Token->vartype
     endif
     index 1 + index =
   done
@@ -1364,8 +1364,8 @@ function add_variable_to_list
   memories:ptr
 :
 
-  token Token.get_type
-  token Token.get_value
+  token Token.type
+  token Token.value
   take token_value token_type in
 
   // Append the variable to the list of function's variables
@@ -1377,7 +1377,7 @@ function add_variable_to_list
   token_value       str.cat
   take memory_name in
   if memories memory_name memory_exists not do
-    token Token.get_location
+    token Token.location
     ptr.size // Memory.size
     memory_name
     Memory.init

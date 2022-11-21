@@ -83,8 +83,8 @@ function get_tokens_op_type
 -> int :
 
   // Initialize variables
-  token Token.get_type
-  token Token.get_value
+  token Token.type
+  token Token.value
   dup str.copy str.upper
   take
     token_upper
@@ -144,8 +144,8 @@ function get_tokens_op_type
     OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
     OpType.WHILE return
-  elif token Token.get_vartype VarType.NONE != do
-    token Token.get_vartype
+  elif token Token.vartype VarType.NONE != do
+    token Token.vartype
     take token_vartype in
 
     // Check the VarType of the Token
@@ -209,7 +209,7 @@ function get_tokens_op_type
   // Report error when Op was not found
   token
   "Operation '"
-  token Token.get_value str.cat
+  token Token.value str.cat
   "' is unknown"        str.cat
   "OP_NOT_FOUND" CompilerErrorWithToken
   NULL 0 exit
