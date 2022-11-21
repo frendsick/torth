@@ -58,6 +58,15 @@ function Function.get_variables ptr -> ptr :
   Function.variables ptr+ ptr.load
 end
 
+// Get Function.set_name
+// Params
+//    func: Function
+//    name: str
+// Return None
+function Function.set_name ptr str :
+  str.store
+end
+
 // Print Function name and Signature to stdout
 // Params: Pointer to Function
 // Return: None
