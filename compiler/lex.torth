@@ -61,7 +61,7 @@ function get_included_files_from_file code_file:str included_files:ptr -> ptr :
   while index token_matches List.len < do
     // Get Nth word from words list
     index token_matches List.nth ptr.load
-    Match.get_value
+    Match.value
     take token_value in
 
     // Parse the file name for the include
@@ -280,8 +280,8 @@ end
 // Params: Match
 // Return: Token
 function get_token_from_match match:ptr -> ptr :
-  match Match.get_value
-  match Match.get_location
+  match Match.value
+  match Match.location
   take location match_value in
 
   // Create Token object
@@ -510,8 +510,8 @@ function get_constants token_matches:ptr -> ptr :
 
   while index token_matches List.len < do
     index token_matches List.nth ptr.load
-    dup   Match.get_value
-    swap  Match.get_location
+    dup   Match.value
+    swap  Match.location
     take location token_value in
 
     // Parse Constant only when inside Constant block
@@ -581,8 +581,8 @@ function add_enums_to_constants token_matches:ptr constants:ptr -> ptr :
 
     // Get the current Token Matches value
     index token_matches List.nth ptr.load
-    dup  Match.get_value
-    swap Match.get_location
+    dup  Match.value
+    swap Match.location
 
     take location token_value in
 
@@ -696,8 +696,8 @@ function get_memories token_matches:ptr constants:ptr -> ptr :
 
   while index token_matches List.len < do
     index token_matches List.nth ptr.load
-    dup   Match.get_value
-    swap  Match.get_location
+    dup   Match.value
+    swap  Match.location
     take location token_value in
 
     // Parse Memory only when inside Memory block
@@ -855,13 +855,13 @@ function parse_function
   if token_index token_matches List.len >= do
     "Program cannot end with '"
     token_matches List.last ptr.load
-    Match.get_value str.cat
+    Match.value str.cat
     "' token"       str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
   // Set Func.name
-  token_index token_matches List.nth ptr.load Match.get_value
+  token_index token_matches List.nth ptr.load Match.value
   take function_name in
   token_index 1 + token_index =
 
@@ -1049,13 +1049,13 @@ function parse_class
   if token_index token_matches List.len >= do
     "Class cannot end with '"
     token_matches List.last ptr.load
-    Match.get_value str.cat
+    Match.value str.cat
     "' token"       str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
   // Get Class name
-  token_index token_matches List.nth ptr.load Match.get_value
+  token_index token_matches List.nth ptr.load Match.value
   take class_name in
   token_index 1 + token_index =
 
