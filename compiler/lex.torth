@@ -1069,81 +1069,34 @@ function parse_class
 
     if token_value str.copy str.upper "METHOD" streq do
       // Parse all methods
-      token_index 1 - token_index =
+      token_index 1 + token_index =
+      class_name memories constants token_index token_matches parse_function
+      take class_method in
+
+      // Add method to list of functions
+      class_method functions List.append
+
+      // Go over the method's END keyword
       while token_index token_matches List.len < do
-        // Get current Token
-        token_index token_matches List.nth ptr.load Match.get_value
-        token_value =
-
-        if token_value str.copy str.upper "METHOD" streq do
-          token_index 1 + token_index =
-          class_name memories constants token_index token_matches parse_function
-          take class_method in
-
-          // Add method to list of functions
-          class_method functions List.append
-
-        // Class ends with ENDCLASS
-        elif token_value str.copy str.upper "ENDCLASS" streq do
-          // Add function called <class_name>.size
-          token attribute_count class_name get_object_size_function
-          functions List.append
-          return
+        token_index token_matches List.nth ptr.load
+        if Token.get_value str.copy str.upper "END" streq do
+          break
         endif
         token_index 1 + token_index =
       done
-    endif
 
     // Class ends with ENDCLASS
-    if token_value str.copy str.upper "ENDCLASS" streq do
+    elif token_value str.copy str.upper "ENDCLASS" streq do
       // Add function called <class_name>.size
       token attribute_count class_name get_object_size_function
       functions List.append
       return
+
+    // Parse class attributes
+    else
+      functions token attribute_count class_name parse_class_attribute
+      attribute_count 1 + attribute_count =
     endif
-
-    // Split token by colon to attribute's name and TokenType
-    // Example => attribute_name:int
-    ":" token_value str.find
-    take attribute_colon in
-
-    // Attribute should have a colon to separate its name and TokenType
-    if
-      attribute_colon -1 ==
-      attribute_colon 0  ==
-      ||
-    do
-      token
-      "Invalid instance attribute '" token_value                            str.cat
-      "'.\nThe attribute have a colon to separate its name and TokenType\n" str.cat
-      "Example => attribute_name:int"                                       str.cat
-      "SYNTAX_ERROR" CompilerErrorWithToken
-    endif
-
-    // Parse attribute's TokenType
-    token_value attribute_colon 1 + str+
-    Signature.type_map
-    take attribute_type in
-
-    // Parse attribute's name
-    token_value str.copy
-    dup attribute_colon str+ str.empty
-    take attribute_name in
-
-    // Calculate attributes byte offset from object base pointer
-    attribute_count int.size *
-    take attribute_offset in
-
-    // Add getter to Function list
-    True token attribute_offset attribute_type attribute_name class_name
-    generate_attribution_functions functions List.append
-
-    // Add setter to Function list
-    False token attribute_offset attribute_type attribute_name class_name
-    generate_attribution_functions functions List.append
-
-    // Increment attribute count and loop counter
-    attribute_count 1 + attribute_count =
     token_index 1 + token_index =
   done
 
@@ -1153,6 +1106,54 @@ function parse_class
   class_name                  str.cat
   "'\nUnexpected end of file" str.cat
   "SYNTAX_ERROR" CompilerErrorWithToken
+end
+
+function parse_class_attribute
+  class_name:str
+  attribute_count:int
+  token:ptr
+  functions:ptr
+:
+  // Split token by colon to attribute's name and TokenType
+  // Example => attribute_name:int
+  token Token.get_value
+  ":" over str.find
+  take attribute_colon token_value in
+
+  // Attribute should have a colon to separate its name and TokenType
+  if
+    attribute_colon -1 ==
+    attribute_colon 0  ==
+    ||
+  do
+    token
+    "Invalid instance attribute '" token_value                            str.cat
+    "'.\nThe attribute have a colon to separate its name and TokenType\n" str.cat
+    "Example => attribute_name:int"                                       str.cat
+    "SYNTAX_ERROR" CompilerErrorWithToken
+  endif
+
+  // Parse attribute's TokenType
+  token_value attribute_colon 1 + str+
+  Signature.type_map
+  take attribute_type in
+
+  // Parse attribute's name
+  token_value str.copy
+  dup attribute_colon str+ str.empty
+  take attribute_name in
+
+  // Calculate attributes byte offset from object base pointer
+  attribute_count int.size *
+  take attribute_offset in
+
+  // Add getter to Function list
+  True token attribute_offset attribute_type attribute_name class_name
+  generate_attribution_functions functions List.append
+
+  // Add setter to Function list
+  False token attribute_offset attribute_type attribute_name class_name
+  generate_attribution_functions functions List.append
 end
 
 function get_object_size_function
