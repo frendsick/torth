@@ -1240,7 +1240,7 @@ function get_attribute_function_tokens
   endif
   List.init
   attribute_token Token.location
-  dup Location.get_file
+  dup Location.file
   take
     file_name
     location

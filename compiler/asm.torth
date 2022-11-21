@@ -233,12 +233,12 @@ function get_op_comment_asm op:ptr -> str :
   take token_loc in
 
   // Add file, row and column information
-  token_loc Location.get_file           str.cat
-  ", Row: "                             str.cat
-  token_loc Location.get_row itoa       str.cat
-  ", Column: "                          str.cat
-  token_loc Location.get_column itoa    str.cat
-  "\n"                                  str.cat
+  token_loc Location.file         str.cat
+  ", Row: "                       str.cat
+  token_loc Location.row itoa     str.cat
+  ", Column: "                    str.cat
+  token_loc Location.column itoa  str.cat
+  "\n"                            str.cat
 end
 
 // Assign a value to Variable

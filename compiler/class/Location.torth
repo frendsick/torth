@@ -1,65 +1,35 @@
 include "std"
+class Location
+  file:str
+  row:int
+  column:int
 
-// Location(file: str, row: int, col: int)
-ENUM Location.size 8 :
-  Location.file   // str
-  Location.row    // int
-  Location.column // int
-END
+  method init file:str row:int column:int -> ptr :
+    Location.size malloc
+    take location in
 
-// Initialize Location from parameters
-// Params: Location.file, Location.row, Location.column
-// Return: Pointer to Location
-function Location.init str int int -> ptr :
-  // Allocate memory for Location
-  Location.size malloc
+    file    location Location->file
+    row     location Location->row
+    column  location Location->column
+    location
+  end
 
-  // Load the parameters to the allocated memory
-  swap over Location.file    ptr+ str.store
-  swap over Location.row     ptr+ int.store
-  swap over Location.column  ptr+ int.store
-end
+  method repr self:ptr -> str :
+    self Location.file
+    ","                       str.cat
+    self Location.row itoa    str.cat
+    ","                       str.cat
+    self Location.column itoa str.cat
+  end
 
-// Get Location.file
-// Params: Pointer to Location (PTR)
-// Return: Location.file (STR)
-function Location.get_file ptr -> str :
-  str.load
-end
+  method print self:ptr :
+    "Location.file      => "        puts
+    self Location.file puts "\n"    puts
 
-// Get Location.row
-// Params: Pointer to Location (PTR)
-// Return: Location.row (INT)
-function Location.get_row ptr -> int :
-  Location.row ptr+ int.load
-end
+    "Location.row       => "        puts
+    self Location.row print "\n"    puts
 
-// Get Location.column
-// Params: Pointer to Location (PTR)
-// Return: Location.column (STR)
-function Location.get_column ptr -> int :
-  Location.column ptr+ int.load
-end
-
-function Location.repr ptr -> str :
-  take location in
-  location Location.get_file
-  ","                               str.cat
-  location Location.get_row itoa    str.cat
-  ","                               str.cat
-  location Location.get_column itoa str.cat
-end
-
-function Location.print ptr :
-  "Location.file      => "  puts
-  dup Location.file         ptr+
-  str.load puts "\n"        puts
-
-  "Location.row       => "  puts
-  dup Location.row          ptr+
-  int.load print "\n"       puts
-
-  "Location.column    => "  puts
-      Location.column       ptr+
-  int.load print "\n"       puts
-end
+    "Location.column    => "        puts
+    self Location.column print "\n" puts
+  end
+endclass

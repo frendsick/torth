@@ -131,12 +131,12 @@ end
 
 function get_location_info location:ptr -> str :
   "\e[95mFile\e[0m: "
-  location Location.get_file        str.cat
-  "\n\e[95mRow\e[0m: "              str.cat
-  location Location.get_row itoa    str.cat
-  "\n\e[95mColumn\e[0m: "           str.cat
-  location Location.get_column itoa str.cat
-  "\n"                              str.cat
+  location Location.file        str.cat
+  "\n\e[95mRow\e[0m: "          str.cat
+  location Location.row itoa    str.cat
+  "\n\e[95mColumn\e[0m: "       str.cat
+  location Location.column itoa str.cat
+  "\n"                          str.cat
 end
 
 // Get the output file name from command line arguments
