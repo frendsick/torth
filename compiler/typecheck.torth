@@ -173,14 +173,14 @@ function type_check_op
     type_check_info return
   elif op_type OpType.ELIF == do
     // Set type_check_info.else_present to False
-    False type_check_info TypeCheckInfo.set_else_present
+    False type_check_info TypeCheckInfo->else_present
     // Call type_check_elif
     if_block_return_stacks List.last ptr.load
     branched_stacks type_stack token type_check_elif
     type_check_info return
   elif op_type OpType.ELSE == do
     // Set type_check_info.else_present to True
-    True type_check_info TypeCheckInfo.set_else_present
+    True type_check_info TypeCheckInfo->else_present
     // Call type_check_else
     if_block_original_stacks List.last ptr.load
     if_block_return_stacks List.last ptr.load
@@ -188,28 +188,28 @@ function type_check_op
     type_check_info return
   elif op_type OpType.ENDIF == do
     // Check if ELSE or RETURN is present
-    type_check_info TypeCheckInfo.is_else_present
-    type_check_info TypeCheckInfo.is_return_present ||
+    type_check_info TypeCheckInfo.else_present
+    type_check_info TypeCheckInfo.return_present ||
     // Call type_check_endif
     if_block_original_stacks if_block_return_stacks
     branched_stacks type_stack token type_check_endif
     // Set type_check_info.else_present to False
-    False type_check_info TypeCheckInfo.set_else_present
+    False type_check_info TypeCheckInfo->else_present
     type_check_info return
   elif op_type OpType.FUNCTION_CALL == do
     functions type_stack token type_check_function_call
     type_check_info return
   elif op_type OpType.IF == do
-    False type_check_info TypeCheckInfo.set_return_present
+    False type_check_info TypeCheckInfo->return_present
     type_stack TypeStack.copy if_block_original_stacks List.append
     LinkedList.init if_block_return_stacks List.append
     type_check_info return
   elif op_type OpType.IN == do
-    0 type_check_info TypeCheckInfo.set_peek_count
+    0 type_check_info TypeCheckInfo->peek_count
     type_check_info return
   elif op_type OpType.PEEK_BIND == do
-    type_check_info TypeCheckInfo.get_peek_count 1 +
-    dup type_check_info TypeCheckInfo.set_peek_count
+    type_check_info TypeCheckInfo.peek_count 1 +
+    dup type_check_info TypeCheckInfo->peek_count
     variables type_stack token type_check_peek_bind
     type_check_info return
   elif op_type OpType.POP_BIND == do
@@ -237,7 +237,7 @@ function type_check_op
     type_stack token type_check_push_uint8
     type_check_info return
   elif op_type OpType.RETURN == do
-    True type_check_info TypeCheckInfo.set_return_present
+    True type_check_info TypeCheckInfo->return_present
     // IF block's stack is determined by the previous sections in the block
     if_block_return_stacks List.last ptr.load
     take if_block_return_stack in
