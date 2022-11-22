@@ -8,6 +8,7 @@ include "compiler/class/Location"
 include "compiler/class/Signature"
 include "compiler/class/Token"
 include "compiler/class/TypeNode"
+include "compiler/class/Variable"
 
 // Parse command line arguments with Argparser
 // Params: None
@@ -526,4 +527,53 @@ function OpType.repr int -> str :
   op_type itoa str.cat
   " is not taken into account in OpType.repr method.\n" str.cat
   "ASSERTION_ERROR" CompilerError ""
+end
+
+// Get Variable with certain name from Array
+// Return NULLPTR if not found
+// Params: Array[Variable], str
+// Return: Variable
+function Array.get_variable ptr str -> ptr :
+  dup Array.len
+  0
+  take
+    index
+    len
+    array
+    name
+  in
+
+  while index len < do
+    index array Array.nth ptr.load
+    take variable in
+
+    // Return True if the current string matches with the parameter
+    if variable Variable.name name streq do
+      variable return
+    endif
+    index 1 + index =
+  done
+  NULLPTR
+end
+
+// Test if Array contains Variable with certain name
+// Params: Array[Variable], str
+// Return: bool
+function Array.contains_variable ptr str -> bool :
+  Array.get_variable int NULL !=
+end
+
+// Get Variable with certain name from List
+// Return NULLPTR if not found
+// Params: List[Variable], str
+// Return: Variable
+function List.get_variable ptr str -> ptr :
+  List.get_array Array.get_variable
+end
+
+// Test if List contains Variable with certain name
+// Params: List[Variable], str
+// Return: bool
+function List.contains_variable ptr str -> bool :
+  List.get_array Array.contains_variable
 end

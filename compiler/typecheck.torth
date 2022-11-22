@@ -546,7 +546,7 @@ function type_check_assign_bind
   endif
 
   // Get initial variable assignment Token
-  assign_token Token.value variables List.get_variable Variable.get_type
+  assign_token Token.value variables List.get_variable Variable.type
   t2 TypeNode.type
   take popped_type variable_type in
 
@@ -1012,7 +1012,7 @@ function type_check_push_bind
   variables:ptr
 :
   token Token.location
-  token Token.value variables List.get_variable Variable.get_type
+  token Token.value variables List.get_variable Variable.type
   TypeNode.init type_stack LinkedList.push
 end
 
