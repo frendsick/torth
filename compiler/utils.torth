@@ -358,8 +358,8 @@ function TypeStack.copy type_stack:ptr -> ptr :
     // Generate new TypeNode from the original stack
     node Node.get_data
     take type_node in
-    type_node TypeNode.get_location
-    type_node TypeNode.get_type
+    type_node TypeNode.location
+    type_node TypeNode.type
     TypeNode.init
     type_stack_copy LinkedList.push
 
@@ -399,7 +399,7 @@ function TypeStack.get_types type_stack:ptr -> ptr :
   // Fill List with the TokenTypes inside TypeStack
   while stack_depth 0 >= do
     node Node.get_data
-    TypeNode.get_type ptr token_types List.append
+    TypeNode.type ptr token_types List.append
     stack_depth 1 - stack_depth =
   done
   token_types
@@ -425,13 +425,13 @@ function TypeStack.repr type_stack:ptr -> str :
   take index node in
   while node int -1 != do
     "[" index
-    itoa                                      str.cat
-    "] "                                      str.cat
-    node TypeNode.get_type TokenType.repr     str.cat
-    " ("                                      str.cat
-    node TypeNode.get_location Location.repr  str.cat
-    ")\n"                                     str.cat
-    stack_repr swap                           str.cat
+    itoa                                  str.cat
+    "] "                                  str.cat
+    node TypeNode.type TokenType.repr     str.cat
+    " ("                                  str.cat
+    node TypeNode.location Location.repr  str.cat
+    ")\n"                                 str.cat
+    stack_repr swap                       str.cat
     stack_repr =
 
     // Pop the next item from TypeStack
