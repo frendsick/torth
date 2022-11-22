@@ -31,11 +31,15 @@ class Dog
 endclass
 
 function main :
-  // Create a Dog object
+  // Create two Dog objects
   "Golden retriever" "Gooby" Dog.init
-  take dog in
+  "Bull terrier"     "Rocky" Dog.init
+  take rocky gooby in
 
-  // Call Dog.talk method with the object
-  // Prints: Golden retriever Gooby says Woof
-  dog Dog.talk
+  // Terrier growls
+  "Grrrr" rocky Dog->says
+
+  // Call Dog.talk method with the objects
+  gooby Dog.talk
+  rocky Dog.talk
 end
