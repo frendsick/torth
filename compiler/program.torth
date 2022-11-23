@@ -5,8 +5,8 @@ include "typing"
 include "compiler/defs"
 include "compiler/class/Token"
 
-// Generate Program for each Function
-// Params: List[Function], List[Constant], List[Memory]
+// Generate Program for each Func
+// Params: List[Func], List[Constant], List[Mem]
 // Return: List[Program]
 function get_sub_programs
   functions:ptr
@@ -18,14 +18,14 @@ function get_sub_programs
   0         // index
   take index sub_programs in
 
-  // Iterate over every Function is functions
+  // Iterate over every Func is functions
   while index functions List.len < do
 
-    // Get the current Function from the list
+    // Get the current Func from the list
     index functions List.nth ptr.load
     take func in
 
-    // Generate Program from the current Function
+    // Generate Program from the current Func
     memories functions constants func generate_program
 
     // Append the generated Program to sub_programs
@@ -35,8 +35,8 @@ function get_sub_programs
   sub_programs
 end
 
-// Generate Program from Function
-// Params: Function, List[Function], List[Constant], List[Memory]
+// Generate Program from Func
+// Params: Func, List[Func], List[Constant], List[Mem]
 // Return: Program
 function generate_program
   func:ptr
@@ -45,7 +45,7 @@ function generate_program
   memories:ptr
 -> ptr :
 
-  func Function.tokens ptr+ ptr.load
+  func Func.tokens
   List.init
   0
   take
@@ -73,7 +73,7 @@ function generate_program
 end
 
 // Get OpType for Token
-// Params: Token, List[Function], List[Constant], List[Memory]
+// Params: Token, List[Func], List[Constant], List[Mem]
 // Return: OpType
 function get_tokens_op_type
   token:ptr
@@ -83,8 +83,8 @@ function get_tokens_op_type
 -> int :
 
   // Initialize variables
-  token Token.get_type
-  token Token.get_value
+  token Token.type
+  token Token.value
   dup str.copy str.upper
   take
     token_upper
@@ -144,8 +144,8 @@ function get_tokens_op_type
     OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
     OpType.WHILE return
-  elif token Token.get_vartype VarType.NONE != do
-    token Token.get_vartype
+  elif token Token.vartype VarType.NONE != do
+    token Token.vartype
     take token_vartype in
 
     // Check the VarType of the Token
@@ -209,7 +209,7 @@ function get_tokens_op_type
   // Report error when Op was not found
   token
   "Operation '"
-  token Token.get_value str.cat
+  token Token.value str.cat
   "' is unknown"        str.cat
   "OP_NOT_FOUND" CompilerErrorWithToken
   NULL 0 exit

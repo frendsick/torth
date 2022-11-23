@@ -1,0 +1,16 @@
+include "std"
+class Mem
+  name:str
+  bytes:int
+  location:ptr
+
+  method init name:str bytes:int location:ptr -> ptr :
+    Mem.size malloc
+    take mem in
+
+    name      mem Mem->name
+    bytes     mem Mem->bytes
+    location  mem Mem->location
+    mem
+  end
+endclass

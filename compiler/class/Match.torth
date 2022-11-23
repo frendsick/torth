@@ -1,45 +1,15 @@
 include "std"
 include "compiler/class/Location"
+class Match
+  value:str
+  location:ptr
 
-// Match(value: str, location: Location)
-ENUM Match.size 8 :
-  Match.value     // str
-  Match.location  // Location => PTR
-END
+  method init value:str location:ptr -> ptr :
+    Match.size malloc
+    take match in
 
-// Initialize Match from parameters
-// Params: Match.value, Match.location
-// Return: Pointer to Match
-function Match.init str ptr -> ptr :
-  // Allocate memory for Match
-  Match.size malloc
-  take match value location in
-
-  // Load the parameters to the allocated memory
-  value     match Match.value     ptr+ str.store
-  location  match Match.location  ptr+ ptr.store
-  match
-end
-
-// Get Match.value
-// Params: Pointer to Match (PTR)
-// Return: Match.value (STR)
-function Match.get_value ptr -> str :
-  str.load
-end
-
-// Get Match.location
-// Params: Pointer to Match (PTR)
-// Return: Match.location (Location => PTR)
-function Match.get_location ptr -> ptr :
-  Match.location ptr+ ptr.load
-end
-
-// Print the Match contents
-function Match.print ptr :
-  "Match.value        => "  puts
-  dup Match.value           ptr+
-  str.load puts "\n"        puts
-
-  Match.location ptr+ ptr.load Location.print
-end
+    value     match Match->value
+    location  match Match->location
+    match
+  end
+endclass

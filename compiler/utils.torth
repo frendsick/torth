@@ -8,6 +8,7 @@ include "compiler/class/Location"
 include "compiler/class/Signature"
 include "compiler/class/Token"
 include "compiler/class/TypeNode"
+include "compiler/class/Variable"
 
 // Parse command line arguments with Argparser
 // Params: None
@@ -112,9 +113,9 @@ end
 // Get prettified information for Token
 function get_token_info token:ptr -> str :
   "\e[95mToken\e[0m: "
-  token Token.get_value                       str.cat
-  "\n"                                        str.cat
-  token Token.get_location get_location_info  str.cat
+  token Token.value                       str.cat
+  "\n"                                    str.cat
+  token Token.location get_location_info  str.cat
 end
 
 // Remove a file
@@ -131,12 +132,12 @@ end
 
 function get_location_info location:ptr -> str :
   "\e[95mFile\e[0m: "
-  location Location.get_file        str.cat
-  "\n\e[95mRow\e[0m: "              str.cat
-  location Location.get_row itoa    str.cat
-  "\n\e[95mColumn\e[0m: "           str.cat
-  location Location.get_column itoa str.cat
-  "\n"                              str.cat
+  location Location.file        str.cat
+  "\n\e[95mRow\e[0m: "          str.cat
+  location Location.row itoa    str.cat
+  "\n\e[95mColumn\e[0m: "       str.cat
+  location Location.column itoa str.cat
+  "\n"                          str.cat
 end
 
 // Get the output file name from command line arguments
@@ -173,7 +174,7 @@ function get_op_from_location location:ptr program:ptr -> ptr :
     take op in
 
     // Test if the current Op has the same Location pointer
-    op Op.get_token Token.get_location int
+    op Op.token Token.location int
     take current_location in
     if location_int current_location == do
       op return
@@ -195,7 +196,7 @@ function constant_exists constant_name:str constants:ptr -> bool :
   while index constants List.len < do
 
     // Get the current Constant
-    index constants List.nth ptr.load Constant.get_name
+    index constants List.nth ptr.load Constant.name
     take current_name in
 
     // Return True if current Constant's name matches constant_name parameter
@@ -209,11 +210,11 @@ function constant_exists constant_name:str constants:ptr -> bool :
   False
 end
 
-// Check if a Function with a certain name exists
-// Params: function_name, List[Functions]
+// Check if a Func with a certain name exists
+// Params: function_name, List[Funcs]
 // Return: bool
 function function_exists str ptr -> bool :
-  // Function does not exist if get_function_by_name returns NULLPTR
+  // Func does not exist if get_function_by_name returns NULLPTR
   get_function_by_name int
   NULL !=
 end
@@ -253,49 +254,49 @@ function matching_token_types type1:int type2:int -> bool :
   type2 TokenType.ANY == ||
 end
 
-// Get a Function with certain name from a list of Functions
-// Params: function_name, List[Functions]
-// Return: Function
+// Get a Func with certain name from a list of Funcs
+// Params: function_name, List[Funcs]
+// Return: Func
 function get_function_by_name function_name:str functions:ptr -> ptr :
-  // Iterate over functions and check if a Function with certain name exists
+  // Iterate over functions and check if a Func with certain name exists
   0 take index in
   while index functions List.len < do
 
-    // Get the current Function
+    // Get the current Func
     index functions List.nth ptr.load
     take func in
 
-    // Return True if current Function's name matches function_name parameter
-    if func Function.get_name function_name streq do
+    // Return True if current Func's name matches function_name parameter
+    if func Func.name function_name streq do
       func return
     endif
     index 1 + index = // index++
   done
 
-  // Return NULLPTR if the Function was not found
+  // Return NULLPTR if the Func was not found
   NULLPTR
 end
 
-// Check if a Memory with a certain name exists
-// Params: memory_name, List[Memory]
+// Check if a Mem with a certain name exists
+// Params: memory_name, List[Mem]
 // Return: bool
 function memory_exists memory_name:str memories:ptr -> bool :
-  // Iterate over memories and check if a Memory with certain name exists
+  // Iterate over memories and check if a Mem with certain name exists
   0 take index in
   while index memories List.len < do
 
-    // Get the current Memory
-    index memories List.nth ptr.load Memory.get_name
+    // Get the current Mem
+    index memories List.nth ptr.load Mem.name
     take current_name in
 
-    // Return True if current Memory's name matches memory_name parameter
+    // Return True if current Mem's name matches memory_name parameter
     if current_name memory_name streq do
       True return
     endif
     index 1 + index = // index++
   done
 
-  // Return False if the Memory was not found
+  // Return False if the Mem was not found
   False
 end
 
@@ -319,7 +320,7 @@ function get_constant name:str constants:ptr -> ptr :
     take constant in
 
     // Return current Constant if its name matches the name parameter
-    if constant Constant.get_name name streq do
+    if constant Constant.name name streq do
       constant return
     endif
     index 1 + index = // index++
@@ -358,8 +359,8 @@ function TypeStack.copy type_stack:ptr -> ptr :
     // Generate new TypeNode from the original stack
     node Node.get_data
     take type_node in
-    type_node TypeNode.get_location
-    type_node TypeNode.get_type
+    type_node TypeNode.location
+    type_node TypeNode.type
     TypeNode.init
     type_stack_copy LinkedList.push
 
@@ -399,7 +400,7 @@ function TypeStack.get_types type_stack:ptr -> ptr :
   // Fill List with the TokenTypes inside TypeStack
   while stack_depth 0 >= do
     node Node.get_data
-    TypeNode.get_type ptr token_types List.append
+    TypeNode.type ptr token_types List.append
     stack_depth 1 - stack_depth =
   done
   token_types
@@ -427,8 +428,10 @@ function TypeStack.repr type_stack:ptr -> str :
     "[" index
     itoa                                  str.cat
     "] "                                  str.cat
-    node TypeNode.get_type TokenType.repr str.cat
-    "\n"                                  str.cat
+    node TypeNode.type TokenType.repr     str.cat
+    " ("                                  str.cat
+    node TypeNode.location Location.repr  str.cat
+    ")\n"                                 str.cat
     stack_repr swap                       str.cat
     stack_repr =
 
@@ -437,4 +440,140 @@ function TypeStack.repr type_stack:ptr -> str :
     index 1 + index =
   done
   stack_repr
+end
+
+// Get the string representation of the OpType
+// Params: OpType
+// Return: str(OpType)
+function OpType.repr int -> str :
+  // Assert that every OpType has been taken into account
+  if OpType.len 33 != do
+    "All OpTypes are not taken into account in OpType.repr method.\n"
+    "ASSERTION_ERROR" CompilerError
+  endif
+
+  // Return the string representation of a certain OpType
+  take op_type in
+  if op_type OpType.ASSIGN_BIND == do
+    "ASSIGN_BIND" return
+  elif op_type OpType.BREAK == do
+    "BREAK" return
+  elif op_type OpType.CAST_BOOL == do
+    "CAST_BOOL" return
+  elif op_type OpType.CAST_CHAR == do
+    "CAST_CHAR" return
+  elif op_type OpType.CAST_INT == do
+    "CAST_INT" return
+  elif op_type OpType.CAST_PTR == do
+    "CAST_PTR" return
+  elif op_type OpType.CAST_STR == do
+    "CAST_STR" return
+  elif op_type OpType.CAST_UINT8 == do
+    "CAST_UINT8" return
+  elif op_type OpType.CONTINUE == do
+    "CONTINUE" return
+  elif op_type OpType.DO == do
+    "DO" return
+  elif op_type OpType.DONE == do
+    "DONE" return
+  elif op_type OpType.ELIF == do
+    "ELIF" return
+  elif op_type OpType.ELSE == do
+    "ELSE" return
+  elif op_type OpType.END == do
+    "END" return
+  elif op_type OpType.ENDIF == do
+    "ENDIF" return
+  elif op_type OpType.FUNCTION_CALL == do
+    "FUNCTION_CALL" return
+  elif op_type OpType.FUNCTION_RETURN == do
+    "FUNCTION_RETURN" return
+  elif op_type OpType.IF == do
+    "IF" return
+  elif op_type OpType.IN == do
+    "IN" return
+  elif op_type OpType.INTRINSIC == do
+    "INTRINSIC" return
+  elif op_type OpType.PEEK == do
+    "PEEK" return
+  elif op_type OpType.PEEK_BIND == do
+    "PEEK_BIND" return
+  elif op_type OpType.POP_BIND == do
+    "POP_BIND" return
+  elif op_type OpType.PUSH_BIND == do
+    "PUSH_BIND" return
+  elif op_type OpType.PUSH_BOOL == do
+    "PUSH_BOOL" return
+  elif op_type OpType.PUSH_CHAR == do
+    "PUSH_CHAR" return
+  elif op_type OpType.PUSH_INT == do
+    "PUSH_INT" return
+  elif op_type OpType.PUSH_PTR == do
+    "PUSH_PTR" return
+  elif op_type OpType.PUSH_STR == do
+    "PUSH_STR" return
+  elif op_type OpType.PUSH_UINT8 == do
+    "PUSH_UINT8" return
+  elif op_type OpType.RETURN == do
+    "RETURN" return
+  elif op_type OpType.TAKE == do
+    "TAKE" return
+  elif op_type OpType.WHILE == do
+    "WHILE" return
+  endif
+
+  // Report error if the given OpType was not handled
+  "OpType "
+  op_type itoa str.cat
+  " is not taken into account in OpType.repr method.\n" str.cat
+  "ASSERTION_ERROR" CompilerError ""
+end
+
+// Get Variable with certain name from Array
+// Return NULLPTR if not found
+// Params: Array[Variable], str
+// Return: Variable
+function Array.get_variable ptr str -> ptr :
+  dup Array.len
+  0
+  take
+    index
+    len
+    array
+    name
+  in
+
+  while index len < do
+    index array Array.nth ptr.load
+    take variable in
+
+    // Return True if the current string matches with the parameter
+    if variable Variable.name name streq do
+      variable return
+    endif
+    index 1 + index =
+  done
+  NULLPTR
+end
+
+// Test if Array contains Variable with certain name
+// Params: Array[Variable], str
+// Return: bool
+function Array.contains_variable ptr str -> bool :
+  Array.get_variable int NULL !=
+end
+
+// Get Variable with certain name from List
+// Return NULLPTR if not found
+// Params: List[Variable], str
+// Return: Variable
+function List.get_variable ptr str -> ptr :
+  List.get_array Array.get_variable
+end
+
+// Test if List contains Variable with certain name
+// Params: List[Variable], str
+// Return: bool
+function List.contains_variable ptr str -> bool :
+  List.get_array Array.contains_variable
 end

@@ -1,53 +1,16 @@
-// Constant(name: str, value: str, location: Location)
-ENUM Constant.size 8 :
-  Constant.name     // str
-  Constant.value    // str
-  Constant.location // Location => ptr
-END
+include "std"
+class Constant
+  name:str
+  value:str
+  location:ptr
 
-// Initialize Constant from parameters
-// Params: Constant.name, Constant.value, Constant.location
-// Return: Pointer to Constant
-function Constant.init str str ptr -> ptr :
-  // Allocate memory for Constant
-  Constant.size malloc
-  take constant name value location in
+  method init name:str value:str location:ptr -> ptr :
+    Constant.size malloc
+    take constant in
 
-  // Load the parameters to the allocated memory
-  name      constant Constant.name     ptr+ str.store
-  value     constant Constant.value    ptr+ str.store
-  location  constant Constant.location ptr+ ptr.store
-  constant
-end
-
-// Get Constant.name
-// Params: Pointer to Constant (PTR)
-// Return: Constant.name (STR)
-function Constant.get_name ptr -> str :
-  str.load
-end
-
-// Get Constant.value
-// Params: Pointer to Constant (PTR)
-// Return: Constant.value (STR)
-function Constant.get_value ptr -> str :
-  Constant.value ptr+ str.load
-end
-
-// Get Constant.location
-// Params: Pointer to Constant (PTR)
-// Return: Constant.location (Location => PTR)
-function Constant.get_location ptr -> ptr :
-  Constant.location ptr+ ptr.load
-end
-
-function Constant.print ptr :
-  take constant in
-  "Constant.name      => " puts
-  constant Constant.get_name puts "\n" puts
-
-  "Constant.value     => " puts
-  constant Constant.get_value puts "\n" puts
-
-  constant Constant.get_location Location.print
-end
+    name      constant Constant->name
+    value     constant Constant->value
+    location  constant Constant->location
+    constant
+  end
+endclass

@@ -1,157 +1,18 @@
 include "std"
+class Op
+  id:int
+  type:int
+  token:ptr
+  func:ptr
 
-// Op(id: int, type: OpType, token: Token, function: Function)
-ENUM Op.size 8 :
-  Op.id       // int
-  Op.type     // OpType   => int
-  Op.token    // Token    => ptr
-  Op.function // Function => ptr
-END
+  method init id:int type:int token:ptr func:ptr -> ptr :
+    Op.size malloc
+    take op in
 
-// Initialize Op from parameters
-// Params: Op.id, Op.type, Op.token, Op.function
-// Return: Pointer to Op
-function Op.init int int ptr ptr -> ptr :
-  // Allocate memory for Op
-  Op.size malloc
-
-  // Load the parameters to the allocated memory
-  swap over Op.id       ptr+ int.store
-  swap over Op.type     ptr+ int.store
-  swap over Op.token    ptr+ ptr.store
-  swap over Op.function ptr+ ptr.store
-end
-
-// Get Op.id
-// Params: Pointer to Op (PTR)
-// Return: Op.id (INT)
-function Op.get_id ptr -> int :
-  int.load
-end
-
-// Get Op.type
-// Params: Pointer to Op (PTR)
-// Return: Op.type (OpType => INT)
-function Op.get_type ptr -> int :
-  Op.type ptr+ int.load
-end
-
-// Get Op.token
-// Params: Pointer to Op (PTR)
-// Return: Op.token (Token => PTR)
-function Op.get_token ptr -> ptr :
-  Op.token ptr+ ptr.load
-end
-
-// Get Op.function
-// Params: Pointer to Op (PTR)
-// Return: Op.function (Function => PTR)
-function Op.get_function ptr -> ptr :
-  Op.function ptr+ ptr.load
-end
-
-// Print Op contents to stdout
-// Params: Pointer to Op
-// Return: None
-function Op.print ptr :
-  "Op.id              => " puts
-  dup Op.id       ptr+
-  int.load print "\n" puts
-
-  "Op.type            => " puts
-  dup Op.type     ptr+
-  int.load print "\n" puts
-
-  dup Op.token ptr+ ptr.load
-  Token.print
-
-  Op.function ptr+ ptr.load
-  Function.print
-end
-
-// Get the string representation of the OpType
-// Params: OpType
-// Return: str(OpType)
-function OpType.str int -> str :
-  // Assert that every OpType has been taken into account
-  if OpType.len 33 != do
-    "All OpTypes are not taken into account in OpType.str method.\n"
-    "ASSERTION_ERROR" CompilerError
-  endif
-
-  // Return the string representation of a certain OpType
-  take op_type in
-  if op_type OpType.ASSIGN_BIND == do
-    "ASSIGN_BIND" return
-  elif op_type OpType.BREAK == do
-    "BREAK" return
-  elif op_type OpType.CAST_BOOL == do
-    "CAST_BOOL" return
-  elif op_type OpType.CAST_CHAR == do
-    "CAST_CHAR" return
-  elif op_type OpType.CAST_INT == do
-    "CAST_INT" return
-  elif op_type OpType.CAST_PTR == do
-    "CAST_PTR" return
-  elif op_type OpType.CAST_STR == do
-    "CAST_STR" return
-  elif op_type OpType.CAST_UINT8 == do
-    "CAST_UINT8" return
-  elif op_type OpType.CONTINUE == do
-    "CONTINUE" return
-  elif op_type OpType.DO == do
-    "DO" return
-  elif op_type OpType.DONE == do
-    "DONE" return
-  elif op_type OpType.ELIF == do
-    "ELIF" return
-  elif op_type OpType.ELSE == do
-    "ELSE" return
-  elif op_type OpType.END == do
-    "END" return
-  elif op_type OpType.ENDIF == do
-    "ENDIF" return
-  elif op_type OpType.FUNCTION_CALL == do
-    "FUNCTION_CALL" return
-  elif op_type OpType.FUNCTION_RETURN == do
-    "FUNCTION_RETURN" return
-  elif op_type OpType.IF == do
-    "IF" return
-  elif op_type OpType.IN == do
-    "IN" return
-  elif op_type OpType.INTRINSIC == do
-    "INTRINSIC" return
-  elif op_type OpType.PEEK == do
-    "PEEK" return
-  elif op_type OpType.PEEK_BIND == do
-    "PEEK_BIND" return
-  elif op_type OpType.POP_BIND == do
-    "POP_BIND" return
-  elif op_type OpType.PUSH_BIND == do
-    "PUSH_BIND" return
-  elif op_type OpType.PUSH_BOOL == do
-    "PUSH_BOOL" return
-  elif op_type OpType.PUSH_CHAR == do
-    "PUSH_CHAR" return
-  elif op_type OpType.PUSH_INT == do
-    "PUSH_INT" return
-  elif op_type OpType.PUSH_PTR == do
-    "PUSH_PTR" return
-  elif op_type OpType.PUSH_STR == do
-    "PUSH_STR" return
-  elif op_type OpType.PUSH_UINT8 == do
-    "PUSH_UINT8" return
-  elif op_type OpType.RETURN == do
-    "RETURN" return
-  elif op_type OpType.TAKE == do
-    "TAKE" return
-  elif op_type OpType.WHILE == do
-    "WHILE" return
-  endif
-
-  // Report error if the given OpType was not handled
-  "OpType "
-  op_type itoa str.cat
-  " is not taken into account in OpType.str method.\n" str.cat
-  "ASSERTION_ERROR" CompilerError ""
-end
+    id    op Op->id
+    type  op Op->type
+    token op Op->token
+    func  op Op->func
+    op
+  end
+endclass

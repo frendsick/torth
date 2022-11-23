@@ -40,6 +40,9 @@ function main :
   memories constants token_matches get_functions
   take functions in
 
+  // Parse classes
+  memories constants functions token_matches parse_classes
+
   // Get the intermediate representation (Program) of each Function
   memories constants functions get_sub_programs
   take sub_programs in
