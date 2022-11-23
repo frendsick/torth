@@ -25,23 +25,23 @@ function main :
 
   // Parse diffent code components
   args "Parsing code from " code_file str.cat verbose_output
-  included_files get_token_matches_from_files
-  take token_matches in
+  included_files get_tokens_from_files
+  take tokens in
 
   // Parse Constants
-  token_matches get_constants
+  tokens get_constants
   take constants in
 
   // Parse Memories
-  constants token_matches get_memories
+  constants tokens get_memories
   take memories in
 
   // Parse Functions
-  memories constants token_matches get_functions
+  memories constants tokens get_functions
   take functions in
 
   // Parse classes
-  memories constants functions token_matches parse_classes
+  memories constants functions tokens parse_classes
 
   // Get the intermediate representation (Program) of each Function
   memories constants functions get_sub_programs

@@ -5,7 +5,6 @@ include "compiler/defs"
 include "compiler/utils"
 include "compiler/class/Constant"
 include "compiler/class/Func"
-include "compiler/class/Match"
 include "compiler/class/Mem"
 include "compiler/class/Op"
 include "compiler/class/Token"
@@ -49,19 +48,18 @@ function get_included_files_from_file code_file:str included_files:ptr -> ptr :
 
   // Get the file contents without comments
   INCLUDE_PATHS code_file get_file_name_from_path read_file
-  List.init code_file rot get_token_matches_from_code
+  List.init code_file rot get_tokens_from_code
   False
   0
   take
     index
     parsing_include
-    token_matches
+    tokens
   in
 
-  while index token_matches List.len < do
-    // Get Nth word from words list
-    index token_matches List.nth ptr.load
-    Match.value
+  while index tokens List.len < do
+    // Get Nth Token
+    index tokens List.nth ptr.load Token.value
     take token_value in
 
     // Parse the file name for the include
@@ -146,15 +144,15 @@ function get_file_name_from_path file_name:str INCLUDE_PATHS:ptr -> str :
   "INCLUDE_ERROR" CompilerError ""
 end
 
-// Get Token Matches from the code inside included files
+// Get Tokens from the code inside included files
 // Params:
 //    included_files: List[str]
 // Return:
-//    token_matches: List[Match]
-function get_token_matches_from_files included_files:ptr -> ptr :
+//    tokens: List[Token]
+function get_tokens_from_files included_files:ptr -> ptr :
   List.init
   0
-  take index token_matches in
+  take index tokens in
 
   // Iterate over each included file
   while index included_files List.len < do
@@ -164,12 +162,12 @@ function get_token_matches_from_files included_files:ptr -> ptr :
     dup read_file
     take code file_name in
 
-    // Parse Token Matches from the current file's code
-    token_matches file_name code get_token_matches_from_code
-    token_matches =
+    // Parse Tokens from the current file's code
+    tokens file_name code get_tokens_from_code
+    tokens =
     index 1 + index = // index++
   done
-  token_matches
+  tokens
 end
 
 // Get multiline string inside double quotes ""
@@ -199,33 +197,31 @@ function get_string_inside_quotes str -> str :
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
-// Params: Token match from code (STR)
+// Params: Token value from code (STR)
 // Return: Value for Token (STR)
-function get_token_value str -> str :
-  str.copy
-  take token_match in
-  if   token_match "="  streq do
+function get_token_value token_value:str -> str :
+  if   token_value "="  streq do
     "ASSIGN" return
-  elif token_match "==" streq do
+  elif token_value "==" streq do
     "EQ" return
-  elif token_match ">=" streq do
+  elif token_value ">=" streq do
     "GE" return
-  elif token_match ">"  streq do
+  elif token_value ">"  streq do
     "GT" return
-  elif token_match "<=" streq do
+  elif token_value "<=" streq do
     "LE" return
-  elif token_match "<"  streq do
+  elif token_value "<"  streq do
     "LT" return
-  elif token_match "-"  streq do
+  elif token_value "-"  streq do
     "MINUS" return
-  elif token_match "*"  streq do
+  elif token_value "*"  streq do
     "MUL" return
-  elif token_match "!=" streq do
+  elif token_value "!=" streq do
     "NE" return
-  elif token_match "+"  streq do
+  elif token_value "+"  streq do
     "PLUS" return
   endif
-  token_match str.escape
+  token_value str.escape
 end
 
 const single_quote 39 end
@@ -276,21 +272,6 @@ function get_token_type token_value:str -> int :
   TokenType.WORD
 end
 
-// Generate Token from Match object
-// Params: Match
-// Return: Token
-function get_token_from_match match:ptr -> ptr :
-  match Match.value
-  match Match.location
-  take location match_value in
-
-  // Create Token object
-  location
-  match_value get_token_value
-  dup get_token_type
-  swap Token.init
-end
-
 // Get OpType for Token
 // Params: Token
 // Return: OpType
@@ -330,13 +311,13 @@ end
 // Params
 //    code: str
 //    file_name: str
-//    token_matches: List[Match]
+//    tokens: List[Token]
 // Return
-//    token_matches: List[Match]
-function get_token_matches_from_code
+//    tokens: List[Token]
+function get_tokens_from_code
   code:str
   file_name:str
-  token_matches:ptr
+  tokens:ptr
 -> ptr :
 
   List.init   // newline_indexes
@@ -421,8 +402,8 @@ function get_token_matches_from_code
         continue
       endif
 
-      // Append found Match to token_matches
-      newline_indexes index file_name token_matches word append_word_to_token_matches
+      // Append found Token to list
+      newline_indexes index file_name tokens word append_word_to_tokens
       "" str.copy word =
     else
       // Append current character to word
@@ -433,25 +414,30 @@ function get_token_matches_from_code
 
   // Append the last word if the file ended with a word
   if word str.len 0 > do
-    newline_indexes index file_name token_matches word append_word_to_token_matches
+    newline_indexes index file_name tokens word append_word_to_tokens
   endif
-  token_matches
+  tokens
 end
 
-// Append a word to a List of Matches
-function append_word_to_token_matches
+// Append a word to a List of Tokens
+function append_word_to_tokens
   word:str
-  token_matches:ptr
+  tokens:ptr
   file_name:str
   index:int
   newline_indexes:ptr
 :
-  // Get Location for the Match
+  // Token.Location
   newline_indexes index word str.len - file_name get_token_location
+  // Token.name
+  word get_token_value
+  // Token.type
+  dup get_token_type
+  take type value location in
 
-  // Append the Match to token_matches
-  word Match.init
-  token_matches List.append
+  // Append the Token to list
+  location type value Token.init
+  tokens List.append
 end
 
 // Calculate position for Token based on it's position from the start of the file
@@ -471,7 +457,7 @@ function get_token_location
     col
   in
 
-  // Get Location for found Token Match
+  // Get Location for found Token
   while index newline_indexes List.len < do
     index newline_indexes List.nth int.load
     take nl_index in
@@ -489,12 +475,12 @@ function get_token_location
   col 1 + row file_name str.copy Location.init
 end
 
-// Parse Constants from Token matches
+// Parse Constants from Tokens
 // Params
-//    token_matches: List[Match]
+//    tokens: List[Token]
 // Return
 //    constants: List[Constant]
-function get_constants token_matches:ptr -> ptr :
+function get_constants tokens:ptr -> ptr :
   List.init
   ""  str.copy        // constant_name
   dup str.copy        // constant_value
@@ -508,10 +494,10 @@ function get_constants token_matches:ptr -> ptr :
     constants
   in
 
-  while index token_matches List.len < do
-    index token_matches List.nth ptr.load
-    dup   Match.value
-    swap  Match.location
+  while index tokens List.len < do
+    index tokens List.nth ptr.load
+    dup   Token.value
+    swap  Token.location
     take location token_value in
 
     // Parse Constant only when inside Constant block
@@ -549,17 +535,17 @@ function get_constants token_matches:ptr -> ptr :
     endif
     index 1 + index = // index++
   done
-  constants token_matches add_enums_to_constants
+  constants tokens add_enums_to_constants
 end
 
 // Parse and add ENUM block contents to a list of Constants.
 // Items inside ENUM blocks are interpreted as running integers starting from 0.
 // Params
-//    token_matches: List[Match]
+//    tokens: List[Token]
 //    constants: List[Constant]
 // Return
 //    constants: List[Constant]
-function add_enums_to_constants token_matches:ptr constants:ptr -> ptr :
+function add_enums_to_constants tokens:ptr constants:ptr -> ptr :
   get_enum_part_delimiters
   "" str.copy
   NULLPTR
@@ -577,12 +563,12 @@ function add_enums_to_constants token_matches:ptr constants:ptr -> ptr :
     ENUM_PART_DELIMITERS
   in
 
-  while index token_matches List.len < do
+  while index tokens List.len < do
 
-    // Get the current Token Matches value
-    index token_matches List.nth ptr.load
-    dup  Match.value
-    swap Match.location
+    // Get the current Token's value
+    index tokens List.nth ptr.load
+    dup  Token.value
+    swap Token.location
 
     take location token_value in
 
@@ -676,11 +662,11 @@ end
 
 // Parse Memories from code
 // Params
-//    token_matches: List[Match]
+//    tokens: List[Token]
 //    constants: List[Constant]
 // Return
 //    memories: List[Mem]
-function get_memories token_matches:ptr constants:ptr -> ptr :
+function get_memories tokens:ptr constants:ptr -> ptr :
   List.init           // memories
   "" str.copy         // memory_name
   NULL                // memory_size
@@ -694,10 +680,10 @@ function get_memories token_matches:ptr constants:ptr -> ptr :
     memories
   in
 
-  while index token_matches List.len < do
-    index token_matches List.nth ptr.load
-    dup   Match.value
-    swap  Match.location
+  while index tokens List.len < do
+    index tokens List.nth ptr.load
+    dup   Token.value
+    swap  Token.location
     take location token_value in
 
     // Parse Mem only when inside Mem block
@@ -784,30 +770,30 @@ function get_memory_name token_value:str memories:ptr -> str :
   token_value
 end
 
-// Parse Funcs from list of token Matches
+// Parse Functions from list of Tokens
 // Params
-//    token_matches:  List[Match]
-//    constants:      List[Constant]
-//    memories:       List[Mem]
+//    tokens:     List[Token]
+//    constants:  List[Constant]
+//    memories:   List[Mem]
 // Return
 //    functions: List[Func]
 function get_functions
-  token_matches:ptr
+  tokens:ptr
   constants:ptr
   memories:ptr
 -> ptr :
   List.init // List[Func]
   0
   take index functions in
-  while index token_matches List.len < do
+  while index tokens List.len < do
     // Get current word
-    index token_matches List.nth ptr.load
-    get_token_from_match Token.value str.copy str.upper
+    index tokens List.nth ptr.load
+    Token.value str.copy str.upper
     take token_upper in
     
     if token_upper "FUNCTION" streq do
       index 1 + index =
-      "" memories constants index token_matches parse_function
+      "" memories constants index tokens parse_function
       functions List.append
     endif
     index 1 + index =
@@ -822,15 +808,15 @@ function get_functions
   functions
 end
 
-// Parse Func from list of token Matches
+// Parse Function from list of Tokens
 // Params
-//    token_matches:  List[Match]
-//    token_index:    int
-//    constants:      List[Constant]
-//    memories:       List[Mem]
+//    tokens:       List[Token]
+//    token_index:  int
+//    constants:    List[Constant]
+//    memories:     List[Mem]
 // Return Func
 function parse_function
-  token_matches:ptr
+  tokens:ptr
   token_index:int
   constants:ptr
   memories:ptr
@@ -838,7 +824,7 @@ function parse_function
 -> ptr :
   // Initialize variables
   get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
-  List.init                     // List[Token]
+  List.init                     // function_tokens
   0                             // current_part
   List.init                     // return_types
   List.init                     // param_types
@@ -848,20 +834,20 @@ function parse_function
     param_types
     return_types
     current_part
-    tokens
+    function_tokens
     FUNCTION_PART_DELIMITERS
   in
 
-  if token_index token_matches List.len >= do
+  if token_index tokens List.len >= do
     "Program cannot end with '"
-    token_matches List.last ptr.load
-    Match.value str.cat
+    tokens List.last ptr.load
+    Token.value str.cat
     "' token"       str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
   // Set Func.name
-  token_index token_matches List.nth ptr.load Match.value
+  token_index tokens List.nth ptr.load Token.value
   take function_name in
   token_index 1 + token_index =
 
@@ -873,10 +859,9 @@ function parse_function
     function_name =
   endif
 
-  while token_index token_matches List.len < do
+  while token_index tokens List.len < do
     // Get current word
-    token_index token_matches List.nth ptr.load
-    get_token_from_match
+    token_index tokens List.nth ptr.load
     dup Token.value
     take token_value token in
 
@@ -895,11 +880,11 @@ function parse_function
         if function_name str.copy str.upper "MAIN" streq do
           token Token.location
           TokenType.INT "0" Token.init
-          tokens List.append
+          function_tokens List.append
         endif
 
         // Do not allow empty functions
-        if tokens List.len 0 == do
+        if function_tokens List.len 0 == do
           token
           "Func '" function_name                        str.cat
           "' does not have any tokens\n"                str.cat
@@ -907,9 +892,9 @@ function parse_function
           "EMPTY_FUNCTION" CompilerErrorWithToken
         endif
 
-        // return Func(function_name, signature, tokens, variables)
+        // return Func(function_name, signature, function_tokens, variables)
         variables
-        tokens
+        function_tokens
         return_types param_types Signature.init
         function_name Func.init
         return
@@ -954,13 +939,16 @@ function parse_function
         take param_name in
 
         // Append parameter to Func's Tokens
-        param_name str.copy token Token->value
-        TokenType.WORD      token Token->type
-        VarType.TAKE        token Token->vartype
-        token tokens List.append
+        token Token.location
+        TokenType.WORD
+        param_name str.copy
+        Token.init
+        take param_token in
+        VarType.TAKE param_token Token->vartype
+        param_token function_tokens List.append
 
         // Add parameter to the list of Variables
-        memories variables function_name token add_variable_to_list
+        memories variables function_name param_token add_variable_to_list
       endif
 
     elif current_part 1 == do
@@ -989,7 +977,7 @@ function parse_function
       endif
 
       // Append the current Token to the list of tokens
-      token tokens List.append
+      token function_tokens List.append
 
     else
       "Unknown error - Function parsing failed"
@@ -1009,28 +997,28 @@ end
 
 // Parse Classes from code
 // Params
-//    token_matches:  List[Match]
-//    functions:      List[Func]
-//    constants:      List[Constant]
-//    memories:       List[Mem]
+//    tokens:     List[Token]
+//    functions:  List[Func]
+//    constants:  List[Constant]
+//    memories:   List[Mem]
 // Return
 //    functions: List[Func]
 function parse_classes
-  token_matches:ptr
+  tokens:ptr
   functions:ptr
   constants:ptr
   memories:ptr
 :
   0 take index in
-  while index token_matches List.len < do
+  while index tokens List.len < do
     // Get current word
-    index token_matches List.nth ptr.load
-    get_token_from_match Token.value str.copy str.upper
+    index tokens List.nth ptr.load
+    Token.value str.copy str.upper
     take token_upper in
 
     if token_upper str.copy str.upper "CLASS" streq do
       index 1 + index =
-      memories constants functions index token_matches parse_class
+      memories constants functions index tokens parse_class
     endif
     index 1 + index =
   done
@@ -1040,45 +1028,44 @@ function parse_classes
 end
 
 function parse_class
-  token_matches:ptr
+  tokens:ptr
   token_index:int
   functions:ptr
   constants:ptr
   memories:ptr
 :
-  if token_index token_matches List.len >= do
+  if token_index tokens List.len >= do
     "Class cannot end with '"
-    token_matches List.last ptr.load
-    Match.value str.cat
+    tokens List.last ptr.load
+    Token.value str.cat
     "' token"       str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
   // Get Class name
-  token_index token_matches List.nth ptr.load Match.value
+  token_index tokens List.nth ptr.load Token.value
   take class_name in
   token_index 1 + token_index =
 
   0 take attribute_count in
-  while token_index token_matches List.len < do
+  while token_index tokens List.len < do
     // Get current word
-    token_index token_matches List.nth ptr.load
-    get_token_from_match
+    token_index tokens List.nth ptr.load
     dup Token.value
     take token_value token in
 
     if token_value str.copy str.upper "METHOD" streq do
       // Parse all methods
       token_index 1 + token_index =
-      class_name memories constants token_index token_matches parse_function
+      class_name memories constants token_index tokens parse_function
       take class_method in
 
       // Add method to list of functions
       class_method functions List.append
 
       // Go over the method's END keyword
-      while token_index token_matches List.len < do
-        token_index token_matches List.nth ptr.load
+      while token_index tokens List.len < do
+        token_index tokens List.nth ptr.load
         if Token.value str.copy str.upper "END" streq do
           break
         endif
@@ -1244,29 +1231,28 @@ function get_attribute_function_tokens
   take
     file_name
     location
-    token_matches
+    tokens
     code
   in
 
-  token_matches file_name code get_token_matches_from_code
+  tokens file_name code get_tokens_from_code
   List.init
   0
   take
     index
+    function_tokens
     tokens
-    token_matches
   in
-  while index token_matches List.len < do
-    index token_matches List.nth ptr.load
-    get_token_from_match
+  while index tokens List.len < do
+    index tokens List.nth ptr.load
     take token in
 
     // Fix the Location to correspond with the attribute's Token
     location token Token->location
-    token tokens List.append
+    token function_tokens List.append
     index 1 + index =
   done
-  tokens
+  function_tokens
 end
 
 // Parse Variables for Funcs
