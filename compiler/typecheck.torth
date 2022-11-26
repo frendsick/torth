@@ -408,7 +408,7 @@ function correct_return_types func:Func type_stack:Node -> bool :
   0 index =
   while index returns List.len < do
     func Func.tokens List.first ptr.load Token.location
-    index returns List.nth str.load TypeNode.init
+    index returns List.nth str.load TypeNode.init ptr
     temp_stack LinkedList.push
     index 1 + index =
   done
@@ -590,7 +590,7 @@ function type_check_cast_bool token:Token type_stack:Node :
   endif
 
   // Push a boolean back to the stack
-  token Token.location "bool" TypeNode.init
+  token Token.location "bool" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -621,7 +621,7 @@ function type_check_cast_char token:Token type_stack:Node :
   endif
 
   // Push a character back to the stack
-  token Token.location "char" TypeNode.init
+  token Token.location "char" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -641,7 +641,7 @@ function type_check_cast_int token:Token type_stack:Node :
   endif
 
   // Push an integer back to the stack
-  token Token.location "int" TypeNode.init
+  token Token.location "int" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -671,7 +671,7 @@ function type_check_cast_ptr token:Token type_stack:Node :
   endif
 
   // Push a pointer back to the stack
-  token Token.location "ptr" TypeNode.init
+  token Token.location "ptr" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -697,7 +697,7 @@ function type_check_cast_str token:Token type_stack:Node :
   endif
 
   // Push a string back to the stack
-  token Token.location "str" TypeNode.init
+  token Token.location "str" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -723,7 +723,7 @@ function type_check_cast_uint8 token:Token type_stack:Node :
   endif
 
   // Push 8-bit unsigned integer back to the stack
-  token Token.location "uint8" TypeNode.init
+  token Token.location "uint8" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -939,7 +939,7 @@ function type_check_function_call
     take return_type in
 
     // Push the current return type to the stack
-    token Token.location return_type TypeNode.init
+    token Token.location return_type TypeNode.init ptr
     type_stack LinkedList.push
     index 1 + index =
   done
@@ -1018,7 +1018,7 @@ function type_check_push_bind
 :
   token Token.location
   token Token.value variables List.get_variable Variable.type
-  TypeNode.init type_stack LinkedList.push
+  TypeNode.init ptr type_stack LinkedList.push
 end
 
 // Push a boolean to the stack
@@ -1027,7 +1027,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_bool token:Token type_stack:Node :
-  token Token.location "bool" TypeNode.init
+  token Token.location "bool" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1037,7 +1037,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_char token:Token type_stack:Node :
-  token Token.location "char" TypeNode.init
+  token Token.location "char" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1047,7 +1047,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_int token:Token type_stack:Node :
-  token Token.location "int" TypeNode.init
+  token Token.location "int" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1057,7 +1057,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_ptr token:Token type_stack:Node :
-  token Token.location "ptr" TypeNode.init
+  token Token.location "ptr" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1067,7 +1067,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_str token:Token type_stack:Node :
-  token Token.location "str" TypeNode.init
+  token Token.location "str" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1077,7 +1077,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_uint8 token:Token type_stack:Node :
-  token Token.location "uint8" TypeNode.init
+  token Token.location "uint8" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1158,8 +1158,8 @@ function type_check_divmod token:Token type_stack:Node :
   // Push the remainder and the quotient to the stack
   token Token.location
   take location in
-  location "int" TypeNode.init type_stack LinkedList.push
-  location "int" TypeNode.init type_stack LinkedList.push
+  location "int" TypeNode.init ptr type_stack LinkedList.push
+  location "int" TypeNode.init ptr type_stack LinkedList.push
 end
 
 // DROP removes one item from the stack
@@ -1231,7 +1231,7 @@ function type_check_load token:Token type_stack:Node :
   endif
 
   // Push loaded value which could be of any type
-  token Token.location "any" TypeNode.init
+  token Token.location "any" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1298,7 +1298,7 @@ function type_check_nth
   endif
 
   // Push the Nth item to the real TypeStack
-  token Token.location popped TypeNode.type TypeNode.init
+  token Token.location popped TypeNode.type TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1512,7 +1512,7 @@ function type_check_syscall token:Token type_stack:Node :
   done
 
   // Push syscall return code to the stack
-  token Token.location "int" TypeNode.init
+  token Token.location "int" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1549,7 +1549,7 @@ function type_check_bitwise token:Token type_stack:Node :
   endif
 
   // Push the result to the stack
-  token Token.location "int" TypeNode.init
+  token Token.location "int" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1588,7 +1588,7 @@ function type_check_bitshift token:Token type_stack:Node :
   endif
 
   // Push the result to the stack
-  token Token.location "int" TypeNode.init
+  token Token.location "int" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1625,7 +1625,7 @@ function type_check_calculations token:Token type_stack:Node :
   endif
 
   // Push the result to the stack
-  token Token.location "int" TypeNode.init
+  token Token.location "int" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1664,7 +1664,7 @@ function type_check_comparison token:Token type_stack:Node :
   endif
 
   // Push the result to the stack
-  token Token.location "bool" TypeNode.init
+  token Token.location "bool" TypeNode.init ptr
   type_stack LinkedList.push
 end
 
@@ -1708,7 +1708,7 @@ function get_function_type_stack func:Func -> Node :
     // Add TypeNode from current parameter to type_stack
     location
     index params List.nth str.load
-    TypeNode.init
+    TypeNode.init ptr
     type_stack LinkedList.push
     index 1 - index =
   done

@@ -339,7 +339,7 @@ function TypeStack.copy type_stack:Node -> Node :
     take type_node in
     type_node TypeNode.location
     type_node TypeNode.type
-    TypeNode.init
+    TypeNode.init ptr
     type_stack_copy LinkedList.push
 
     // Get the next item in the stack
