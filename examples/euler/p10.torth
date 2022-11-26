@@ -19,14 +19,6 @@ function mark_multiples_to_sieve int int :
   done
 end
 
-// Params: prime
-// Return: None
-function add_prime int :
-  // sum += prime
-  prime_sum int.load +
-  prime_sum int.store
-end
-
 // Params: max_prime
 // Return: prime_sum
 function summation_of_primes int -> int :
@@ -49,7 +41,7 @@ function summation_of_primes int -> int :
   prime_sum
 end
 
-function Main :
+function main :
   MAX_PRIME summation_of_primes
   "The sum of primes below " puts MAX_PRIME putu ": " puts putu "\n" puts
 end

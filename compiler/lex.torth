@@ -535,7 +535,11 @@ function get_constants tokens:ptr -> ptr :
     endif
     index 1 + index = // index++
   done
-  constants tokens add_enums_to_constants
+
+  if tokens List.len 0 > do
+    constants tokens add_enums_to_constants
+  endif
+  constants
 end
 
 // Parse and add ENUM block contents to a list of Constants.
@@ -545,7 +549,7 @@ end
 //    constants: List[Constant]
 // Return
 //    constants: List[Constant]
-function add_enums_to_constants tokens:ptr constants:ptr -> ptr :
+function add_enums_to_constants tokens:ptr constants:ptr :
   get_enum_part_delimiters
   "" str.copy
   tokens List.first Token.load Token.location
@@ -639,7 +643,6 @@ function add_enums_to_constants tokens:ptr constants:ptr -> ptr :
     endif
     index 1 + index = // index++
   done
-  constants
 end
 
 // Enums are made of four parts:
@@ -799,10 +802,10 @@ function get_functions
     index 1 + index =
   done
 
-  // Verify that the program has MAIN function (case-insensitive)
+  // Verify that the program has a 'main' function
   if functions main_function_in_function_list not do
     "The program does not have an entry point.\n"
-    "Please add Main function (case-insensitive)." str.cat
+    "Please add 'main' function." str.cat
     "MISSING_MAIN_FUNCTION" CompilerError
   endif
   functions
@@ -1358,7 +1361,7 @@ function add_variable_to_list
   endif
 end
 
-// Verify if MAIN function is defined (case-insensitive)
+// Verify if 'main' function is defined (case-sensitive)
 // Params
 //    functions:ptr
 // Return bool
@@ -1369,12 +1372,11 @@ function main_function_in_function_list functions:ptr -> bool :
 
   // Iterate over Func List
   while index functions.len < do
-    index functions List.nth ptr.load
-    Func.name str.copy str.upper
+    index functions List.nth ptr.load Func.name
     take function_name in
 
     // Return True if MAIN function is found
-    if function_name "MAIN" streq do
+    if function_name "main" streq do
       True return
     endif
     index 1 + index =

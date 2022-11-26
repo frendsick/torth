@@ -1,5 +1,5 @@
 include "std"
-function Main :
+function main :
     "WHILE loop:\n" puts                // puts("WHILE loop");
     1                                   // i = 1;
     WHILE dup 100 <= DO                 // while (i <= 100) {

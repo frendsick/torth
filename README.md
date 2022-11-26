@@ -52,7 +52,7 @@ More examples are found from the [examples](./examples/)-folder.
 
 ```pascal
 include "std"
-function Main :
+function main :
     "Hello, World!\n" puts
 end
 ```

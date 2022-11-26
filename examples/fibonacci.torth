@@ -14,7 +14,7 @@ function Fib int -> int :
   previous
 end
 
-function Main :
+function main :
   20  // Limit
   "The " puts dup putu ". fibonacci number is: " puts
   Fib putu "\n" puts  // Answer: 4181
