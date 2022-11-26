@@ -17,20 +17,36 @@ The following requirements can probably be installed via your distro's package m
 - LD (**binutils** package in APT)
 - Git (For cloning the repository, not required)
 
-## Compile your first program
+## Compile the compiler
 
-1. Download **torth** binary from [Releases](https://github.com/CyberPaddy/torth/releases/latest)
-2. Create a file with .torth extension. Let's do _hello.torth_.
-3. Include the code from [Hello World](../examples/hello_world.torth) example.
-4. Compile the program: `./torth hello.torth`
-5. Run the program: `./hello`
+The Torth compiler does not ship with the repository. Instead, you have to compile the compiler from its [Assembly version](../bootstrap/torth.asm).
 
-Alternatively you can compile the [Assembly source code](./../bootstrap/torth.asm) with NASM using `make` command.
+1. Clone the [Torth](https://github.com/CyberPaddy/torth) repository from Github
+1. Compile the Assembly source code with NASM using `make` command
 
 ```sh
+$ git clone https://github.com/CyberPaddy/torth.git
+$ cd torth/
 $ make
-nasm -f elf64 -o torth.o bootstrap/torth.asm
-ld -m elf_x86_64 -o torth torth.o
+$ ./torth --help
+```
+
+## Compile your first program
+
+1. Create a file with **.torth** extension. Let's do _hello.torth_.
+1. Copy the code from [Hello World](../examples/hello_world.torth) example to your _hello.torth_ file.
+1. Compile the program: `./torth -v hello.torth`
+1. Run the compiled executable: `./hello`
+
+```sh
+$ cat hello.torth
+include "std"
+function main :
+  "Hello, World!\n" puts
+end
+$ ./torth hello.torth
+$ ./hello
+Hello, World!
 ```
 
 ## Apply syntax highlighting
