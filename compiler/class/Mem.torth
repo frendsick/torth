@@ -4,8 +4,8 @@ class Mem
   bytes:int
   location:Location
 
-  method init name:str bytes:int location:Location -> ptr :
-    Mem.size malloc
+  method init name:str bytes:int location:Location -> Mem :
+    Mem.size malloc cast_any
     take mem in
 
     name      mem Mem->name
