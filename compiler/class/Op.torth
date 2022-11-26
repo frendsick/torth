@@ -3,9 +3,9 @@ class Op
   id:int
   type:int
   token:Token
-  func:ptr
+  func:Func
 
-  method init id:int type:int token:Token func:ptr -> ptr :
+  method init id:int type:int token:Token func:Func -> ptr :
     Op.size malloc
     take op in
 

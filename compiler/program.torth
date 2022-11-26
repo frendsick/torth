@@ -22,7 +22,7 @@ function get_sub_programs
   while index functions List.len < do
 
     // Get the current Func from the list
-    index functions List.nth ptr.load
+    index functions List.nth Func.load
     take func in
 
     // Generate Program from the current Func
@@ -39,7 +39,7 @@ end
 // Params: Func, List[Func], List[Constant], List[Mem]
 // Return: Program
 function generate_program
-  func:ptr
+  func:Func
   functions:ptr
   constants:ptr
   memories:ptr

@@ -66,7 +66,7 @@ end
 // Return None
 function type_check_sub_program
   program:ptr
-  func:ptr
+  func:Func
   functions:ptr
 :
   // Initialize variables
@@ -349,7 +349,7 @@ end
 //    func: Func
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_end_of_program func:ptr type_stack:ptr :
+function type_check_end_of_program func:Func type_stack:ptr :
   func Func.name
   func Func.tokens List.last Token.load
   take last_token function_name in
@@ -385,7 +385,7 @@ end
 //    func: Func
 //    type_stack: LinkedList[TypeNode]
 // Return bool
-function correct_return_types func:ptr type_stack:ptr -> bool :
+function correct_return_types func:Func type_stack:ptr -> bool :
   func  get_function_type_stack
   func  Func.signature
   dup   Signature.returns
@@ -1686,7 +1686,7 @@ end
 //    func: Func
 // Return
 //    type_stack: LinkedList[TypeNode]
-function get_function_type_stack func:ptr -> ptr :
+function get_function_type_stack func:Func -> ptr :
   func Func.signature Signature.params
   dup List.len 1 -
   LinkedList.init

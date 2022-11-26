@@ -824,7 +824,7 @@ function parse_function
   constants:ptr
   memories:ptr
   class_name:str
--> ptr :
+-> Func :
   // Initialize variables
   get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
   List.init                     // function_tokens
@@ -984,7 +984,7 @@ function parse_function
   function_name               str.cat
   "'\nUnexpected end of file" str.cat
   "SYNTAX_ERROR" CompilerErrorWithToken
-  NULLPTR
+  NULL cast_any
 end
 
 // Parse Classes from code
@@ -1127,18 +1127,18 @@ function parse_class_attribute
 
   // Add getter to Func list
   True token attribute_offset attribute_type attribute_name class_name
-  generate_attribution_functions functions List.append
+  generate_attribution_function functions List.append
 
   // Add setter to Func list
   False token attribute_offset attribute_type attribute_name class_name
-  generate_attribution_functions functions List.append
+  generate_attribution_function functions List.append
 end
 
 function get_object_size_function
   class_name:str
   attribute_count:int
   endclass_token:Token
--> ptr :
+-> Func :
   class_name ".size" str.cat  // function_name
   List.init                   // tokens
   List.init                   // return_types
@@ -1162,14 +1162,14 @@ function get_object_size_function
   List.init tokens signature function_name Func.init
 end
 
-function generate_attribution_functions
+function generate_attribution_function
   class_name:str
   attribute_name:str
   attribute_type:str
   attribute_offset:int
   attribute_token:Token
   is_getter:bool // Getter => True, Setter => False
--> ptr :
+-> Func :
   // Func.name => Class.attribute OR Class->attribute
   class_name
   if is_getter
@@ -1255,7 +1255,7 @@ function parse_variables_for_functions functions:ptr memories:ptr :
 
   // Parse Variables for each Func
   while index functions.len < do
-    index functions List.nth ptr.load
+    index functions List.nth Func.load
     memories swap parse_function_variables
     index 1 + index = // index++
   done
@@ -1264,7 +1264,7 @@ end
 // Parse Variables in Func
 // Params: Func, List[Mem]
 // Return: None
-function parse_function_variables func:ptr memories:ptr :
+function parse_function_variables func:Func memories:ptr :
   func Func.tokens
   func Func.variables
   False

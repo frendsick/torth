@@ -9,8 +9,8 @@ class Func
   tokens:ptr
   variables:ptr
 
-  method init name:str signature:Signature tokens:ptr variables:ptr -> ptr :
-    Func.size malloc
+  method init name:str signature:Signature tokens:ptr variables:ptr -> Func :
+    Func.size malloc cast_any
     take func in
 
     name      func Func->name
@@ -20,7 +20,11 @@ class Func
     func
   end
 
-  method print self:ptr :
+  method load ptr -> Func :
+    ptr.load cast_any
+  end
+
+  method print self:Func :
     "Func.name      => "      puts
     self Func.name puts "\n"  puts
 
@@ -40,7 +44,7 @@ class Func
 
     while index tokens.len < do
       // Get the current Token
-      index tokens List.nth ptr.load
+      index tokens List.nth Token.load
 
       // Print Token's value in single quotes
       "'"         puts
