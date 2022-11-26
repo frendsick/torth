@@ -111,7 +111,7 @@ function execute_program file:str :
 end
 
 // Get prettified information for Token
-function get_token_info token:ptr -> str :
+function get_token_info token:Token -> str :
   "\e[95mToken\e[0m: "
   token Token.value                       str.cat
   "\n"                                    str.cat
@@ -130,7 +130,7 @@ function remove_file file_name:str :
   NULLPTR argv List.first "/usr/bin/rm" execve drop
 end
 
-function get_location_info location:ptr -> str :
+function get_location_info location:Location -> str :
   "\e[95mFile\e[0m: "
   location Location.file        str.cat
   "\n\e[95mRow\e[0m: "          str.cat
@@ -159,7 +159,7 @@ end
 // Get Op from Location found in a Program
 // Params: Location, Program
 // Return: Op
-function get_op_from_location location:ptr program:ptr -> ptr :
+function get_op_from_location location:Location program:ptr -> ptr :
   location int // Cast Location pointer to int
   program List.len
   0

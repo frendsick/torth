@@ -2,10 +2,10 @@ include "std"
 class Constant
   name:str
   value:str
-  location:ptr
+  location:Location
 
-  method init name:str value:str location:ptr -> ptr :
-    Constant.size malloc
+  method init name:str value:str location:Location -> Constant :
+    Constant.size malloc cast_any
     take constant in
 
     name      constant Constant->name

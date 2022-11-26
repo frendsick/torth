@@ -2,9 +2,9 @@ include "std"
 class Mem
   name:str
   bytes:int
-  location:ptr
+  location:Location
 
-  method init name:str bytes:int location:ptr -> ptr :
+  method init name:str bytes:int location:Location -> ptr :
     Mem.size malloc
     take mem in
 

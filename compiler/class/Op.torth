@@ -2,10 +2,10 @@ include "std"
 class Op
   id:int
   type:int
-  token:ptr
+  token:Token
   func:ptr
 
-  method init id:int type:int token:ptr func:ptr -> ptr :
+  method init id:int type:int token:Token func:ptr -> ptr :
     Op.size malloc
     take op in
 

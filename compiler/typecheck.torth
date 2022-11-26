@@ -273,7 +273,7 @@ end
 //    program: Program
 // Return None
 function type_check_intrinsic
-  token:ptr
+  token:Token
   type_stack:ptr
   program:ptr
 :
@@ -351,7 +351,7 @@ end
 // Return None
 function type_check_end_of_program func:ptr type_stack:ptr :
   func Func.name
-  func Func.tokens List.last ptr.load
+  func Func.tokens List.last Token.load
   take last_token function_name in
 
   // There should be one INT in the stack when the program ends
@@ -431,10 +431,14 @@ function equal_stacks type_stack1:ptr type_stack2:ptr -> bool :
     &&
   do
     // Return early if the current types do not match
+    type_node1 Node.get_data TypeNode.type
+    type_node2 Node.get_data TypeNode.type
+    take type1 type2 in
+
     if
-      type_node1 Node.get_data TypeNode.type
-      type_node2 Node.get_data TypeNode.type
-      streq not
+      type1 "any" streq
+      type2 "any" streq || not
+      type1 type2 streq not &&
     do
       False return
     endif
@@ -457,7 +461,7 @@ end
 //    if_block_return_stack: Optional[TypeStack]
 // Return None
 function type_check_end_of_branch
-  token:ptr
+  token:Token
   type_stack:ptr
   branched_stacks:ptr
   if_block_return_stack:ptr
@@ -520,7 +524,7 @@ end
 //    variables: List[Variable]
 // Return None
 function type_check_assign_bind
-  token:ptr
+  token:Token
   type_stack:ptr
   program:ptr
   variables:ptr
@@ -569,7 +573,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_cast_bool token:ptr type_stack:ptr :
+function type_check_cast_bool token:Token type_stack:ptr :
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   take type temp_stack in
@@ -596,7 +600,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_cast_char token:ptr type_stack:ptr :
+function type_check_cast_char token:Token type_stack:ptr :
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   take type temp_stack in
@@ -626,7 +630,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_cast_int token:ptr type_stack:ptr :
+function type_check_cast_int token:Token type_stack:ptr :
   type_stack LinkedList.pop
   take type in
 
@@ -646,7 +650,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_cast_ptr token:ptr type_stack:ptr :
+function type_check_cast_ptr token:Token type_stack:ptr :
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   take type temp_stack in
@@ -676,7 +680,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_cast_str token:ptr type_stack:ptr :
+function type_check_cast_str token:Token type_stack:ptr :
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   take type temp_stack in
@@ -702,7 +706,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_cast_uint8 token:ptr type_stack:ptr :
+function type_check_cast_uint8 token:Token type_stack:ptr :
   type_stack TypeStack.copy
   type_stack LinkedList.pop
   take type temp_stack in
@@ -730,7 +734,7 @@ end
 //    branched_stacks: List[LinkedList[TypeNode]]
 // Return None
 function type_check_do
-  token:ptr
+  token:Token
   type_stack:ptr
   branched_stacks:ptr
 :
@@ -759,7 +763,7 @@ end
 //    if_block_return_stack: LinkedList[TypeNode]
 // Return None
 function type_check_elif
-  token:ptr
+  token:Token
   type_stack:ptr
   branched_stacks:ptr
   if_block_return_stack:ptr
@@ -780,7 +784,7 @@ end
 //    if_block_original_stack: LinkedList[TypeNode]
 // Return None
 function type_check_else
-  token:ptr
+  token:Token
   type_stack:ptr
   branched_stacks:ptr
   if_block_return_stack:ptr
@@ -809,7 +813,7 @@ end
 //    else_or_return_present: bool
 // Return None
 function type_check_endif
-  token:ptr
+  token:Token
   type_stack:ptr
   branched_stacks:ptr
   if_block_return_stacks:ptr
@@ -867,7 +871,7 @@ end
 //    functions: List[Func]
 // Return None
 function type_check_function_call
-  token:ptr
+  token:Token
   type_stack:ptr
   functions:ptr
 :
@@ -946,7 +950,7 @@ end
 //    count: int
 // Return None
 function type_check_peek_bind
-  token:ptr
+  token:Token
   type_stack:ptr
   variables:ptr
   count:int
@@ -980,7 +984,7 @@ end
 //    variables: List[Variable]
 // Return None
 function type_check_pop_bind
-  token:ptr
+  token:Token
   type_stack:ptr
   variables:ptr
 :
@@ -1005,7 +1009,7 @@ end
 //    variables: List[Variable]
 // Return None
 function type_check_push_bind
-  token:ptr
+  token:Token
   type_stack:ptr
   variables:ptr
 :
@@ -1019,7 +1023,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_bool token:ptr type_stack:ptr :
+function type_check_push_bool token:Token type_stack:ptr :
   token Token.location "bool" TypeNode.init
   type_stack LinkedList.push
 end
@@ -1029,7 +1033,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_char token:ptr type_stack:ptr :
+function type_check_push_char token:Token type_stack:ptr :
   token Token.location "char" TypeNode.init
   type_stack LinkedList.push
 end
@@ -1039,7 +1043,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_int token:ptr type_stack:ptr :
+function type_check_push_int token:Token type_stack:ptr :
   token Token.location "int" TypeNode.init
   type_stack LinkedList.push
 end
@@ -1049,7 +1053,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_ptr token:ptr type_stack:ptr :
+function type_check_push_ptr token:Token type_stack:ptr :
   token Token.location "ptr" TypeNode.init
   type_stack LinkedList.push
 end
@@ -1059,7 +1063,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_str token:ptr type_stack:ptr :
+function type_check_push_str token:Token type_stack:ptr :
   token Token.location "str" TypeNode.init
   type_stack LinkedList.push
 end
@@ -1069,7 +1073,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_push_uint8 token:ptr type_stack:ptr :
+function type_check_push_uint8 token:Token type_stack:ptr :
   token Token.location "uint8" TypeNode.init
   type_stack LinkedList.push
 end
@@ -1116,7 +1120,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_divmod token:ptr type_stack:ptr :
+function type_check_divmod token:Token type_stack:ptr :
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
 
@@ -1160,7 +1164,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_drop token:ptr type_stack:ptr :
+function type_check_drop token:Token type_stack:ptr :
   // Pop one item from the stack
   type_stack LinkedList.pop
   take type in
@@ -1178,7 +1182,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_dup token:ptr type_stack:ptr :
+function type_check_dup token:Token type_stack:ptr :
   // Pop one item from the stack
   type_stack LinkedList.pop
   take type in
@@ -1202,7 +1206,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_load token:ptr type_stack:ptr :
+function type_check_load token:Token type_stack:ptr :
   // Pop one item from the stack
   type_stack TypeStack.copy
   type_stack LinkedList.pop
@@ -1237,7 +1241,7 @@ end
 //    program: Program
 // Return None
 function type_check_nth
-  token:ptr
+  token:Token
   type_stack:ptr
   program:ptr
 :
@@ -1301,7 +1305,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_over token:ptr type_stack:ptr :
+function type_check_over token:Token type_stack:ptr :
   // Pop two items from the stack
   type_stack TypeStack.copy
   type_stack LinkedList.pop
@@ -1326,7 +1330,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_print token:ptr type_stack:ptr :
+function type_check_print token:Token type_stack:ptr :
   // Pop one item from the stack
   type_stack TypeStack.copy
   type_stack LinkedList.pop
@@ -1353,7 +1357,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_rot token:ptr type_stack:ptr :
+function type_check_rot token:Token type_stack:ptr :
   // Pop three items from the stack
   type_stack TypeStack.copy
   type_stack LinkedList.pop
@@ -1381,7 +1385,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_store token:ptr type_stack:ptr :
+function type_check_store token:Token type_stack:ptr :
   // Pop two items from the stack
   type_stack TypeStack.copy
   type_stack LinkedList.pop
@@ -1416,7 +1420,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_swap token:ptr type_stack:ptr :
+function type_check_swap token:Token type_stack:ptr :
   // Pop two items from the stack
   type_stack TypeStack.copy
   type_stack LinkedList.pop
@@ -1445,7 +1449,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_syscall token:ptr type_stack:ptr :
+function type_check_syscall token:Token type_stack:ptr :
   type_stack TypeStack.copy
   token Token.value str.copy str.upper
 
@@ -1514,7 +1518,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_bitwise token:ptr type_stack:ptr :
+function type_check_bitwise token:Token type_stack:ptr :
   // Pop two items from the stack
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
@@ -1553,7 +1557,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_bitshift token:ptr type_stack:ptr :
+function type_check_bitshift token:Token type_stack:ptr :
   // Pop two items from the stack
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
@@ -1590,7 +1594,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_calculations token:ptr type_stack:ptr :
+function type_check_calculations token:Token type_stack:ptr :
   // Pop two items from the stack
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
@@ -1629,7 +1633,7 @@ end
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_comparison token:ptr type_stack:ptr :
+function type_check_comparison token:Token type_stack:ptr :
   // Pop two items from the stack
   token Token.value str.copy str.upper
   type_stack TypeStack.copy

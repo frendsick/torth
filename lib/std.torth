@@ -49,6 +49,9 @@ function land     bool bool -> bool : int swap int and bool end
 function ||       bool bool -> bool : lor                   end
 function &&       bool bool -> bool : land                  end
 
+// Casting
+function cast_any any -> any : 1 drop end
+
 // Get user input from stdin
 function input -> str :
   // Allocate memory for the user input

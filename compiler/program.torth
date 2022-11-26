@@ -56,8 +56,7 @@ function generate_program
 
   while index tokens List.len < do
     // Get current Token
-    tokens List.first
-    index ptr.size * ptr+ ptr.load
+    index tokens List.nth Token.load
     take token in
 
     // Get the Token's OpType
@@ -76,7 +75,7 @@ end
 // Params: Token, List[Func], List[Constant], List[Mem]
 // Return: OpType
 function get_tokens_op_type
-  token:ptr
+  token:Token
   functions:ptr
   constants:ptr
   memories:ptr
@@ -210,7 +209,7 @@ function get_tokens_op_type
   token
   "Operation '"
   token Token.value str.cat
-  "' is unknown"        str.cat
+  "' is unknown"    str.cat
   "OP_NOT_FOUND" CompilerErrorWithToken
   NULL 0 exit
 end

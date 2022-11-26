@@ -5,8 +5,8 @@ class Signature
   params:ptr
   returns:ptr
 
-  method init param_types:ptr return_types:ptr -> ptr :
-    Signature.size malloc
+  method init param_types:ptr return_types:ptr -> Signature :
+    Signature.size malloc cast_any
     take signature in
 
     param_types   signature Signature->params
@@ -14,7 +14,7 @@ class Signature
     signature
   end
 
-  method repr self:ptr -> str :
+  method repr self:Signature -> str :
     self Signature.returns
     self Signature.params
     ""    str.copy
@@ -54,4 +54,3 @@ class Signature
     returns_repr      str.cat
   end
 endclass
-

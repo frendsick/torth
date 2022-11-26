@@ -5,11 +5,11 @@ include "compiler/class/Token"
 include "compiler/class/Variable"
 class Func
   name:str
-  signature:ptr
+  signature:Signature
   tokens:ptr
   variables:ptr
 
-  method init name:str signature:ptr tokens:ptr variables:ptr -> ptr :
+  method init name:str signature:Signature tokens:ptr variables:ptr -> ptr :
     Func.size malloc
     take func in
 

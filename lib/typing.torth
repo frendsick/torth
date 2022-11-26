@@ -104,27 +104,27 @@ function Array.nth ptr int -> ptr :
 end
 
 // Append value pointer to an array
-// Params: array (PTR), value_ptr (PTR)
+// Params: array (PTR), value (ANY)
 // Return: list (PTR)
-function Array.append ptr ptr :
+function Array.append ptr any :
   dup Array.len
   take
     len
     array
-    value_ptr
+    value
   in
 
-  // Add the value_ptr to the end of the array
+  // Add the value to the end of the Array
   array int.size ptr+
   ptr.size len * ptr+
-  value_ptr swap
+  value swap
   ptr.store
 
-  // Increment the array's length by one
+  // Increment the Array's length by one
   len 1 + array int.store
 end
 
-// Remove an item from the certain index of the array
+// Remove an item from the certain index of the Array
 // Params: array, index
 // Return: None
 function Array.pop ptr int :
@@ -375,9 +375,9 @@ function List.delete ptr :
 end
 
 // Append value pointer to a list
-// Params: list (PTR), value_ptr (PTR)
+// Params: list (PTR), value (ANY)
 // Return: list (PTR)
-function List.append ptr ptr :
+function List.append ptr any :
   take list value_ptr in
 
   list List.get_capacity  // Capacity of the list

@@ -275,7 +275,7 @@ end
 // Get OpType for Token
 // Params: Token
 // Return: OpType
-function get_op_type token:ptr -> int :
+function get_op_type token:Token -> int :
   token Token.type
   take token_type in
   if token_type "bool" streq do
@@ -448,7 +448,7 @@ function get_token_location
   file_name:str
   position:int
   newline_indexes:ptr
--> ptr :
+-> Location :
 
   position 1 0
   take
@@ -548,7 +548,7 @@ end
 function add_enums_to_constants tokens:ptr constants:ptr -> ptr :
   get_enum_part_delimiters
   "" str.copy
-  NULLPTR
+  tokens List.first Token.load Token.location
   0
   0
   0
@@ -860,8 +860,8 @@ function parse_function
   endif
 
   while token_index tokens List.len < do
-    // Get current word
-    token_index tokens List.nth ptr.load
+    // Get current Token
+    token_index tokens List.nth Token.load
     dup Token.value
     take token_value token in
 
@@ -881,15 +881,6 @@ function parse_function
           token Token.location
           "int" "0" Token.init
           function_tokens List.append
-        endif
-
-        // Do not allow empty functions
-        if function_tokens List.len 0 == do
-          token
-          "Func '" function_name                        str.cat
-          "' does not have any tokens\n"                str.cat
-          "Creation of empty functions is not allowed"  str.cat
-          "EMPTY_FUNCTION" CompilerErrorWithToken
         endif
 
         // return Func(function_name, signature, function_tokens, variables)
@@ -1034,9 +1025,9 @@ function parse_class
 :
   if token_index tokens List.len >= do
     "Class cannot end with '"
-    tokens List.last ptr.load
+    tokens List.last Token.load
     Token.value str.cat
-    "' token"       str.cat
+    "' token"   str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
@@ -1048,7 +1039,7 @@ function parse_class
   0 take attribute_count in
   while token_index tokens List.len < do
     // Get current word
-    token_index tokens List.nth ptr.load
+    token_index tokens List.nth Token.load
     dup Token.value
     take token_value token in
 
@@ -1096,7 +1087,7 @@ end
 function parse_class_attribute
   class_name:str
   attribute_count:int
-  token:ptr
+  token:Token
   functions:ptr
 :
   // Split token by colon to attribute's name and TokenType
@@ -1143,7 +1134,7 @@ end
 function get_object_size_function
   class_name:str
   attribute_count:int
-  endclass_token:ptr
+  endclass_token:Token
 -> ptr :
   class_name ".size" str.cat  // function_name
   List.init                   // tokens
@@ -1173,7 +1164,7 @@ function generate_attribution_functions
   attribute_name:str
   attribute_type:str
   attribute_offset:int
-  attribute_token:ptr
+  attribute_token:Token
   is_getter:bool // Getter => True, Setter => False
 -> ptr :
   // Func.name => Class.attribute OR Class->attribute
@@ -1189,7 +1180,7 @@ function generate_attribution_functions
   List.init
   List.init
   take param_types return_types in
-  "ptr"           ptr param_types List.append
+  "any"           ptr param_types List.append
   attribute_type  ptr
   // Insert attribute_type to either parameter or return types
   // depending on if the function is getter or setter
@@ -1213,13 +1204,13 @@ function get_attribute_function_tokens
   attribute_name:str
   attribute_type:str
   attribute_offset:int
-  attribute_token:ptr
+  attribute_token:Token
   is_getter:bool // Getter => True, Setter => False
 -> ptr :
   attribute_offset itoa
   " swap int + ptr " str.cat
   if is_getter
-  do   "LOAD_QWORD "  str.cat attribute_type str.cat
+  do   "LOAD_QWORD "  str.cat
   else "STORE_QWORD " str.cat
   endif
   List.init
@@ -1285,7 +1276,7 @@ function parse_function_variables func:ptr memories:ptr :
   in
 
   while index tokens List.len < do
-    index tokens List.nth ptr.load
+    index tokens List.nth Token.load
     dup Token.value
     take
       token_value
@@ -1341,12 +1332,11 @@ end
 //    variables: List[Variable]
 //    memories: List[Mem]
 function add_variable_to_list
-  token:ptr
+  token:Token
   function_name:str
   variables:ptr
   memories:ptr
 :
-
   token Token.type
   token Token.value
   take token_value token_type in
