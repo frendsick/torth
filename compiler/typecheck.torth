@@ -124,10 +124,10 @@ function type_check_op
   program:ptr
   functions:ptr
   variables:ptr
-  type_check_info:ptr
+  type_check_info:TypeCheckInfo
   if_block_original_stacks:ptr
   if_block_return_stacks:ptr
--> ptr :
+-> TypeCheckInfo :
   // Initialize variables
   op  Op.token
   dup Token.value
@@ -263,7 +263,7 @@ function type_check_op
   token_value                   str.cat
   "' is not implemented yet\n"  str.cat
   "NOT_IMPLEMENTED" CompilerErrorWithStack
-  NULLPTR
+  NULL cast_any
 end
 
 // Type check an intrinsic
