@@ -15,49 +15,57 @@ const ITERABLE_CAPACITY 128 end
 // Include space for one extra integer (list length)
 // Params: size (INT)
 // Return: array (PTR)
-function Array.init int -> ptr :
+function Array.init int -> Array :
   // Allocate memory for the array
-  ptr.size * int.size + malloc
+  ptr.size * int.size + malloc cast_any
 
   // Set the size to 0
   0 over int.store
 end
 
+function Array.load ptr -> Array :
+  ptr.load cast_any
+end
+
+function Array.store ptr Array :
+  swap ptr swap ptr.store
+end
+
 // Free the allocated memory for a certain array
 // Params: array (PTR)
 // Return: None
-function Array.delete ptr :
+function Array.delete Array :
   take array in
   array Array.size
-  array munmap
+  array ptr munmap
 end
 
 // Get the length of an array (number of elements)
 // Params: array (PTR)
 // Return: len (INT)
-function Array.len ptr -> int :
+function Array.len Array -> int :
   // The length is stored at the array pointer
-  int.load
+  ptr int.load
 end
 
 // Get array's allocated memory size in bytes
 // Params: array (PTR)
 // Return: size (INT)
-function Array.size ptr -> int :
+function Array.size Array -> int :
   Array.len int.size * int.size +
 end
 
 // Empty the array by setting the length value to 0
 // Params: array (PTR)
 // Return: None
-function Array.empty ptr :
-  0 swap int.store
+function Array.empty Array :
+  0 swap ptr int.store
 end
 
 // Copy the array to new memory location
 // Params: array (PTR)
 // Return: new_array (PTR)
-function Array.copy ptr -> ptr :
+function Array.copy Array -> Array :
   // Initialize variables
   dup Array.len ptr.size * int.size +
   dup Array.init
@@ -68,21 +76,21 @@ function Array.copy ptr -> ptr :
   in
 
   // Copy the old memory to the new location
-  memory_size old_array new_array memcpy
+  memory_size old_array ptr new_array ptr memcpy
   new_array
 end
 
 // Get pointer to the first element of the array
 // Params: array (PTR)
 // Return: array[0] (PTR)
-function Array.first ptr -> ptr :
-  int.size ptr+
+function Array.first Array -> ptr :
+  ptr int.size ptr+
 end
 
 // Get pointer to the Nth element of the array
 // Params: array (PTR), N (INT)
 // Return: array[N] (PTR)
-function Array.nth ptr int -> ptr :
+function Array.nth Array int -> ptr :
   dup Array.len
   take len array N in
 
@@ -100,13 +108,13 @@ function Array.nth ptr int -> ptr :
   endif
 
   // Return pointer to the Nth element from the array
-  array N ptr.size * int.size + ptr+
+  array ptr N ptr.size * int.size + ptr+
 end
 
 // Append value pointer to an array
 // Params: array (PTR), value (ANY)
 // Return: list (PTR)
-function Array.append ptr any :
+function Array.append Array any :
   dup Array.len
   take
     len
@@ -115,19 +123,19 @@ function Array.append ptr any :
   in
 
   // Add the value to the end of the Array
-  array int.size ptr+
+  array ptr int.size ptr+
   ptr.size len * ptr+
   value swap
   ptr.store
 
   // Increment the Array's length by one
-  len 1 + array int.store
+  len 1 + array ptr int.store
 end
 
 // Remove an item from the certain index of the Array
 // Params: array, index
 // Return: None
-function Array.pop ptr int :
+function Array.pop Array int :
   dup Array.len
   take
     len
@@ -156,13 +164,13 @@ function Array.pop ptr int :
   done
 
   // Decrement the Array.len
-  len 1 - array int.store
+  len 1 - array ptr int.store
 end
 
 // Test if array contains an integer
 // Params: Array[int], int
 // Return: bool
-function Array.contains_int ptr int -> bool :
+function Array.contains_int Array int -> bool :
   dup Array.len
   0
   take
@@ -188,7 +196,7 @@ end
 // Test if array contains a string
 // Params: Array[str], str
 // Return: bool
-function Array.contains_str ptr str -> bool :
+function Array.contains_str Array str -> bool :
   dup Array.len
   0
   take
@@ -214,7 +222,7 @@ end
 // Test if two Arrays have equal integer-like items in them
 // Params: Array[int], Array[int]
 // Return: bool
-function Array.equals ptr ptr -> bool :
+function Array.equals Array Array -> bool :
   dup   Array.len
   over  Array.len
   0
@@ -248,7 +256,7 @@ end
 // Test if two Arrays have equal strings in them
 // Params: Array[str], Array[str]
 // Return: bool
-function Array.streq ptr ptr -> bool :
+function Array.streq Array Array -> bool :
   dup   Array.len
   over  Array.len
   0
@@ -282,8 +290,8 @@ end
 // Print array of integer-like values
 // Params: array (PTR)
 // Return: None
-function Array.print ptr :
-  dup int.load
+function Array.print Array :
+  dup ptr int.load
   take len array in
   0 while dup len < do
     array Array.first
@@ -296,8 +304,8 @@ end
 // Print array of strings
 // Params: array (PTR)
 // Return: None
-function Array.puts ptr :
-  dup int.load
+function Array.puts Array :
+  dup ptr int.load
   take len array in
   0 while dup len < do
     array Array.first
@@ -329,13 +337,13 @@ END
 // Initialize list with a size of ITERABLE_CAPACITY
 // Params: None
 // Return: list (PTR)
-function List.init -> ptr :
+function List.init -> List :
   // Allocate memory for the initial array
-  ITERABLE_CAPACITY Array.init
+  ITERABLE_CAPACITY Array.init cast_any
   take array in
 
   // Allocate memory for List object
-  List.size malloc
+  List.size malloc cast_any
   take list in
 
   // List(array=array, capacity=ITERABLE_CAPACITY)
@@ -345,25 +353,33 @@ function List.init -> ptr :
 end
 
 // List getters
-function List.get_array ptr -> ptr :
-  ptr.load
+function List.get_array List -> Array :
+  ptr Array.load
 end
 
-function List.get_capacity ptr -> int :
-  List.capacity ptr+ int.load
+function List.get_capacity List -> int :
+  ptr List.capacity ptr+ int.load
 end
 
 // List setters
-function List.set_array ptr ptr :
-  ptr.store
+function List.set_array List Array :
+  ptr Array.store
 end
 
-function List.set_capacity ptr int :
-  List.capacity ptr+ int.store
+function List.set_capacity List int :
+  ptr List.capacity ptr+ int.store
+end
+
+function List.load ptr -> List :
+  ptr.load cast_any
+end
+
+function List.store ptr List :
+  swap ptr swap ptr.store
 end
 
 // Free the allocated memory for a certain list
-function List.delete ptr :
+function List.delete List :
   dup List.get_array
   take array list in
 
@@ -371,13 +387,13 @@ function List.delete ptr :
   array Array.delete
 
   // Deallocate the List object
-  List.size list munmap
+  List.size list ptr munmap
 end
 
 // Append value pointer to a list
 // Params: list (PTR), value (ANY)
 // Return: list (PTR)
-function List.append ptr any :
+function List.append List any :
   take list value_ptr in
 
   list List.get_capacity  // Capacity of the list
@@ -402,11 +418,11 @@ function List.append ptr any :
     capacity list List.set_capacity
 
     // Copy the old array to new_array
-    //dest (PTR), src (PTR), len (INT)
-    array Array.size array new_array memcpy
+    // dest (PTR), src (PTR), len (INT)
+    array Array.size array ptr new_array ptr memcpy
 
     // Update new array length
-    len new_array int.store
+    len new_array ptr int.store
 
     // Deallocate the old array
     array Array.delete
@@ -424,19 +440,19 @@ end
 // Get the length of a list
 // Params: list (PTR)
 // Return: len (INT)
-function List.len ptr -> int :
+function List.len List -> int :
   List.get_array Array.len
 end
 
 // Empty the list by setting the length value of pointed array to 0
 // Params: list (PTR)
 // Return: None
-function List.empty ptr :
+function List.empty List :
   List.get_array Array.empty
 end
 
 // Copy the list to new memory location
-function List.copy ptr -> ptr :
+function List.copy List -> List :
   // Initialize variables
   dup List.len ptr.size * int.size +
   List.init
@@ -447,42 +463,42 @@ function List.copy ptr -> ptr :
   in
 
   // Copy the old memory to the new location
-  memory_size old_list new_list memcpy
+  memory_size old_list ptr new_list ptr memcpy
   new_list
 end
 
 // Get pointer to the first element of the list
 // Params: list (PTR)
 // Return: list[0] (PTR)
-function List.first ptr -> ptr :
+function List.first List -> ptr :
   0 swap List.nth
 end
 
 // Get pointer to the last element of the list
 // Params: list (PTR)
 // Return: list[0] (PTR)
-function List.last ptr -> ptr :
+function List.last List -> ptr :
   dup List.len 1 - swap List.nth
 end
 
 // Get pointer to the Nth element of the list
 // Params: list (PTR), N (INT)
 // Return: list[N] (PTR)
-function List.nth ptr int -> ptr :
+function List.nth List int -> ptr :
   List.get_array Array.nth
 end
 
 // Remove an item from the certain index of the list
 // Params: List, index
 // Return: None
-function List.pop ptr int :
+function List.pop List int :
   List.get_array Array.pop
 end
 
 // Test if two Arrays have equal integer-like items in them
 // Params: List[int], List[int]
 // Return: bool
-function List.equals ptr ptr -> bool :
+function List.equals List List -> bool :
   List.get_array
   swap List.get_array
   Array.equals
@@ -491,7 +507,7 @@ end
 // Test if two Arrays have equal strings in them
 // Params: List[str], List[str]
 // Return: bool
-function List.streq ptr ptr -> bool :
+function List.streq List List -> bool :
   List.get_array
   swap List.get_array
   Array.streq
@@ -500,14 +516,14 @@ end
 // Test if list contains an integer
 // Params: List[int], int
 // Return: bool
-function List.contains_int ptr int -> bool :
+function List.contains_int List int -> bool :
   List.get_array Array.contains_int
 end
 
 // Test if list contains a string
 // Params: List[str], str
 // Return: bool
-function List.contains_str ptr str -> bool :
+function List.contains_str List str -> bool :
   List.get_array Array.contains_str
 end
 
@@ -516,8 +532,8 @@ end
 //    LinkedList is a doubly linked list of Nodes linked by pointers.
 //    TODO: Rename LinkedList to indicate it is a doubly linked lists
 //    LinkedList.init returns a pointer to the head Node.
-function LinkedList.init -> ptr :
-  ptr.size malloc
+function LinkedList.init -> Node :
+  ptr.size malloc cast_any
   NULLPTR over ptr.store
 end
 
@@ -527,28 +543,36 @@ enum Node.size 8 :
   Node.prev // PTR
 end
 
-function Node.get_data ptr -> ptr :
-  ptr.load
+function Node.get_data Node -> ptr :
+  ptr ptr.load
 end
 
-function Node.get_next ptr -> ptr :
-  Node.next ptr+ ptr.load
+function Node.get_next Node -> Node :
+  ptr Node.next ptr+ Node.load
 end
 
-function Node.get_prev ptr -> ptr :
-  Node.prev ptr+ ptr.load
+function Node.get_prev Node -> Node :
+  ptr Node.prev ptr+ Node.load
 end
 
-function Node.set_data ptr ptr :
-  ptr.store
+function Node.set_data Node ptr :
+  ptr ptr.store
 end
 
-function Node.set_next ptr ptr :
-  Node.next ptr+ ptr.store
+function Node.set_next Node ptr :
+  ptr Node.next ptr+ ptr.store
 end
 
-function Node.set_prev ptr ptr :
-  Node.prev ptr+ ptr.store
+function Node.set_prev Node ptr :
+  ptr Node.prev ptr+ ptr.store
+end
+
+function Node.load ptr -> Node :
+  ptr.load cast_any
+end
+
+function Node.store ptr Node :
+  swap cast_any swap ptr.store
 end
 
 // Push Node to LinkedList
@@ -556,11 +580,11 @@ end
 //    head_ptr: Node
 //    new_data: ptr
 // Return None
-function LinkedList.push ptr ptr :
-  dup ptr.load
+function LinkedList.push Node ptr :
+  dup ptr Node.load
 
   // Allocate new Node
-  Node.size malloc
+  Node.size malloc cast_any
   take
     new_node
     head_node
@@ -572,8 +596,8 @@ function LinkedList.push ptr ptr :
   new_data new_node Node.set_data
 
   // Make the old head new Node's next and previous as NULL
-  head_node new_node Node.set_next
-  NULLPTR new_node Node.set_prev
+  head_node ptr new_node Node.set_next
+  NULL cast_any new_node Node.set_prev
 
   // Set the old head's prev to point to new Node
   if head_node int NULL != do
@@ -581,7 +605,7 @@ function LinkedList.push ptr ptr :
   endif
 
   // Insert the new Node to head_ptr
-  new_node head_ptr ptr.store
+  new_node head_ptr ptr Node.store
 end
 
 // Pop Node from LinkedList
@@ -590,8 +614,8 @@ end
 //    head_ptr: Node
 // Return
 //    popped_data: ptr
-function LinkedList.pop ptr -> ptr :
-  dup ptr.load
+function LinkedList.pop Node -> ptr :
+  dup ptr Node.load
   take head head_ptr in
 
   // Underflow condition
@@ -604,10 +628,10 @@ function LinkedList.pop ptr -> ptr :
   take popped_data in
 
   // Unlink the old head
-  head Node.get_next head_ptr ptr.store
+  head Node.get_next head_ptr ptr Node.store
 
   // Deallocate the old head
-  Node.size head munmap
+  Node.size head ptr munmap
 
   // Return the popped data
   popped_data
@@ -618,8 +642,8 @@ end
 //    head_ptr: Node
 // Return
 //    length: int
-function LinkedList.len ptr -> int :
-  ptr.load 0
+function LinkedList.len Node -> int :
+  ptr Node.load 0
   take count current in
 
   while current int NULL != do
@@ -634,6 +658,6 @@ end
 // Params
 //    head_ptr: Node
 // Return bool
-function LinkedList.is_empty ptr -> bool :
-  int.load 0 ==
+function LinkedList.is_empty Node -> bool :
+  ptr int.load 0 ==
 end
