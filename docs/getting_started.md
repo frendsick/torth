@@ -55,6 +55,10 @@ Coding in any language could be pretty painful without syntax highlighting for t
 
 If you want a support for a particular editor, please create a [feature request issue](https://github.com/CyberPaddy/torth/issues/new/choose). Contributions are also appreciated so feel free to create syntax highlighting configuration to an editor to the [editor](../editor/) folder and hit me with a pull request!
 
+## Check examples
+
+The [examples](../examples/) folder contains some example programs that show how the language can be used. For example, there are [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as implementations of some [Project Euler problems](../examples/euler/). The [torth.torth](./../torth.torth) compiler itself is also written in Torth so it could also be used as an example.
+
 ## Read documentation
 
 - [Intrinsics](intrinsics.md)
@@ -62,7 +66,3 @@ If you want a support for a particular editor, please create a [feature request 
 - [Types](types.md)
 - [Control flow statements](control_flow.md)
 - [Syntax highlighting](syntax_highlighting.md)
-
-## Check examples
-
-The [examples](../examples/) folder contains some example programs that show how the language can be used. For example, there are [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as implementations of some [Project Euler problems](../examples/euler/). The [torth.torth](./../torth.torth) compiler itself is also written in Torth so it could also be used as an example.
