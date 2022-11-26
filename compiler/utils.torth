@@ -159,7 +159,7 @@ end
 // Get Op from Location found in a Program
 // Params: Location, Program
 // Return: Op
-function get_op_from_location location:Location program:ptr -> ptr :
+function get_op_from_location location:Location program:ptr -> Op :
   location int // Cast Location pointer to int
   program List.len
   0
@@ -170,7 +170,7 @@ function get_op_from_location location:Location program:ptr -> ptr :
   in
 
   while index program.len < do
-    index program List.nth ptr.load
+    index program List.nth Op.load
     take op in
 
     // Test if the current Op has the same Location pointer
@@ -184,7 +184,8 @@ function get_op_from_location location:Location program:ptr -> ptr :
 
   "OP_NOT_FOUND"
   "Operand could not be found from the given location"
-  CompilerError NULLPTR
+  CompilerError
+  NULL cast_any
 end
 
 // Check if a Constant with a certain name exists

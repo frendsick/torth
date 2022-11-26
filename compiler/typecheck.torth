@@ -93,7 +93,7 @@ function type_check_sub_program
 
   // Type check every Op in Program
   while index program.len < do
-    index program List.nth ptr.load
+    index program List.nth Op.load
     take op in
     if_block_return_stacks if_block_original_stacks type_check_info
     variables functions program branched_stacks op type_check_op
@@ -119,7 +119,7 @@ end
 //    if_block_return_stacks: List[TypeStack[TypeNode]]
 // Return TypeCheckInfo
 function type_check_op
-  op:ptr
+  op:Op
   branched_stacks:ptr
   program:ptr
   functions:ptr
@@ -1086,7 +1086,7 @@ end
 //    if_block_return_stack: LinkedList[TypeNode]
 // Return TypeStack
 function type_check_return
-  op:ptr
+  op:Op
   type_stack:ptr
   if_block_return_stack:ptr
 -> ptr :

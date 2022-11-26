@@ -5,8 +5,8 @@ class Op
   token:Token
   func:Func
 
-  method init id:int type:int token:Token func:Func -> ptr :
-    Op.size malloc
+  method init id:int type:int token:Token func:Func -> Op :
+    Op.size malloc cast_any
     take op in
 
     id    op Op->id
@@ -14,5 +14,9 @@ class Op
     token op Op->token
     func  op Op->func
     op
+  end
+
+  method load ptr -> Op :
+    ptr.load cast_any
   end
 endclass
