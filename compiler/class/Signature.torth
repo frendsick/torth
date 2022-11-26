@@ -2,10 +2,10 @@ include "std"
 include "compiler/defs"
 include "compiler/utils"
 class Signature
-  params:ptr
-  returns:ptr
+  params:List
+  returns:List
 
-  method init param_types:ptr return_types:ptr -> Signature :
+  method init param_types:List return_types:List -> Signature :
     Signature.size malloc cast_any
     take signature in
 

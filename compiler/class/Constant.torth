@@ -13,4 +13,8 @@ class Constant
     location  constant Constant->location
     constant
   end
+
+  method load ptr -> Constant :
+    ptr.load cast_any
+  end
 endclass

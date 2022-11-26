@@ -14,7 +14,7 @@ include "compiler/class/Variable"
 // Parse included files from a code string. Return the list of files.
 // Params: code_file (STR)
 // Return: List[str]
-function get_included_files str -> ptr :
+function get_included_files str -> List :
   ptr List.init
   peek included_files in List.append
 
@@ -39,7 +39,7 @@ end
 // Parse included files from a single file. Return the list of files.
 // Params: code_file (STR), included_files (List[str])
 // Return: included_files (List[str])
-function get_included_files_from_file code_file:str included_files:ptr -> ptr :
+function get_included_files_from_file code_file:str included_files:List -> List :
   // Add compiler's directory and the 'lib' directory to INCLUDE_PATHS
   List.init
   take INCLUDE_PATHS in
@@ -98,7 +98,7 @@ end
 // Check every directory in PATH and add .torth extension if needed
 // Params: file_name: str, INCLUDE_PATHS: List[str]
 // Return: file_with_path: str
-function get_file_name_from_path file_name:str INCLUDE_PATHS:ptr -> str :
+function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
   // Get the file name without quotes
   if file_name ptr char.load '"' == do
     file_name get_string_inside_quotes
@@ -149,7 +149,7 @@ end
 //    included_files: List[str]
 // Return:
 //    tokens: List[Token]
-function get_tokens_from_files included_files:ptr -> ptr :
+function get_tokens_from_files included_files:List -> List :
   List.init
   0
   take index tokens in
@@ -297,7 +297,7 @@ end
 //   2 : Return types
 //   3 : Body
 //  FUNCTION_PART_DELIMITERS: List[str] = ["->", ":", "END"]
-function get_function_part_delimiters -> ptr :
+function get_function_part_delimiters -> List :
   List.init
   take FUNCTION_PART_DELIMITERS in
 
@@ -317,8 +317,8 @@ end
 function get_tokens_from_code
   code:str
   file_name:str
-  tokens:ptr
--> ptr :
+  tokens:List
+-> List :
 
   List.init   // newline_indexes
   "" str.copy // String buffer for word
@@ -422,10 +422,10 @@ end
 // Append a word to a List of Tokens
 function append_word_to_tokens
   word:str
-  tokens:ptr
+  tokens:List
   file_name:str
   index:int
-  newline_indexes:ptr
+  newline_indexes:List
 :
   // Token.Location
   newline_indexes index word str.len - file_name get_token_location
@@ -447,7 +447,7 @@ end
 function get_token_location
   file_name:str
   position:int
-  newline_indexes:ptr
+  newline_indexes:List
 -> Location :
 
   position 1 0
@@ -480,7 +480,7 @@ end
 //    tokens: List[Token]
 // Return
 //    constants: List[Constant]
-function get_constants tokens:ptr -> ptr :
+function get_constants tokens:List -> List :
   List.init
   ""  str.copy        // constant_name
   dup str.copy        // constant_value
@@ -549,7 +549,7 @@ end
 //    constants: List[Constant]
 // Return
 //    constants: List[Constant]
-function add_enums_to_constants tokens:ptr constants:ptr :
+function add_enums_to_constants tokens:List constants:List :
   get_enum_part_delimiters
   "" str.copy
   tokens List.first Token.load Token.location
@@ -652,7 +652,7 @@ end
 //   4 : items
 //  (0 : Not lexing Enum)
 //  ENUM_PART_DELIMITERS: List[str] = ["ENUM", "", "", ":", "END"]
-function get_enum_part_delimiters -> ptr :
+function get_enum_part_delimiters -> List :
   List.init
   take ENUM_PART_DELIMITERS in
   "ENUM"  ptr ENUM_PART_DELIMITERS List.append
@@ -669,7 +669,7 @@ end
 //    constants: List[Constant]
 // Return
 //    memories: List[Mem]
-function get_memories tokens:ptr constants:ptr -> ptr :
+function get_memories tokens:List constants:List -> List :
   List.init           // memories
   "" str.copy         // memory_name
   NULL                // memory_size
@@ -747,7 +747,7 @@ end
 //    constants: List[Constant]
 // Return
 //    memory_name: str
-function get_constants_name token_value:str constants:ptr -> str :
+function get_constants_name token_value:str constants:List -> str :
   // Overwriting another Mem is not allowed
   if token_value constants List.contains_str do
     "Constant '" token_value str.cat
@@ -763,7 +763,7 @@ end
 //    memories: List[Mem]
 // Return
 //    memory_name: str
-function get_memory_name token_value:str memories:ptr -> str :
+function get_memory_name token_value:str memories:List -> str :
   // Overwriting another Mem is not allowed
   if token_value memories List.contains_str do
     "Mem '" token_value str.cat
@@ -781,10 +781,10 @@ end
 // Return
 //    functions: List[Func]
 function get_functions
-  tokens:ptr
-  constants:ptr
-  memories:ptr
--> ptr :
+  tokens:List
+  constants:List
+  memories:List
+-> List :
   List.init // List[Func]
   0
   take index functions in
@@ -819,10 +819,10 @@ end
 //    memories:     List[Mem]
 // Return Func
 function parse_function
-  tokens:ptr
+  tokens:List
   token_index:int
-  constants:ptr
-  memories:ptr
+  constants:List
+  memories:List
   class_name:str
 -> Func :
   // Initialize variables
@@ -996,10 +996,10 @@ end
 // Return
 //    functions: List[Func]
 function parse_classes
-  tokens:ptr
-  functions:ptr
-  constants:ptr
-  memories:ptr
+  tokens:List
+  functions:List
+  constants:List
+  memories:List
 :
   0 take index in
   while index tokens List.len < do
@@ -1020,11 +1020,11 @@ function parse_classes
 end
 
 function parse_class
-  tokens:ptr
+  tokens:List
   token_index:int
-  functions:ptr
-  constants:ptr
-  memories:ptr
+  functions:List
+  constants:List
+  memories:List
 :
   if token_index tokens List.len >= do
     "Class cannot end with '"
@@ -1091,7 +1091,7 @@ function parse_class_attribute
   class_name:str
   attribute_count:int
   token:Token
-  functions:ptr
+  functions:List
 :
   // Split token by colon to attribute's name and TokenType
   // Example => attribute_name:int
@@ -1209,7 +1209,7 @@ function get_attribute_function_tokens
   attribute_offset:int
   attribute_token:Token
   is_getter:bool // Getter => True, Setter => False
--> ptr :
+-> List :
   attribute_offset itoa
   " swap int + ptr " str.cat
   if is_getter
@@ -1248,7 +1248,7 @@ end
 
 // Parse Variables for Funcs
 // Params: List[Func], List[Mem]
-function parse_variables_for_functions functions:ptr memories:ptr :
+function parse_variables_for_functions functions:List memories:List :
   functions List.len
   0
   take index functions.len in
@@ -1264,7 +1264,7 @@ end
 // Parse Variables in Func
 // Params: Func, List[Mem]
 // Return: None
-function parse_function_variables func:Func memories:ptr :
+function parse_function_variables func:Func memories:List :
   func Func.tokens
   func Func.variables
   False
@@ -1337,8 +1337,8 @@ end
 function add_variable_to_list
   token:Token
   function_name:str
-  variables:ptr
-  memories:ptr
+  variables:List
+  memories:List
 :
   token Token.type
   token Token.value
@@ -1363,9 +1363,9 @@ end
 
 // Verify if 'main' function is defined (case-sensitive)
 // Params
-//    functions:ptr
+//    functions:List
 // Return bool
-function main_function_in_function_list functions:ptr -> bool :
+function main_function_in_function_list functions:List -> bool :
   functions List.len
   0
   take index functions.len in

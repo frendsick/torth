@@ -45,7 +45,7 @@ function CompilerErrorWithStack
   error_type:str
   message:str
   token:Token
-  type_stack:ptr
+  type_stack:Node
 :
   message error_type print_error
   "\nCurrent stack state:\n"  eputs

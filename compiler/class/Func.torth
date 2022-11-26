@@ -6,10 +6,10 @@ include "compiler/class/Variable"
 class Func
   name:str
   signature:Signature
-  tokens:ptr
-  variables:ptr
+  tokens:List
+  variables:List
 
-  method init name:str signature:Signature tokens:ptr variables:ptr -> Func :
+  method init name:str signature:Signature tokens:List variables:List -> Func :
     Func.size malloc cast_any
     take func in
 

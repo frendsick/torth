@@ -13,7 +13,7 @@ include "compiler/class/Variable"
 // Parse command line arguments with Argparser
 // Params: None
 // Return: Argparser
-function parse_command_line_arguments -> ptr :
+function parse_command_line_arguments -> Argparser :
   "Torth compiler" Argparser.init
   take parser in
   True  "" "Input file" "code_file"                       parser Argparser.add_argument
@@ -30,7 +30,7 @@ end
 //    args: Argparser
 // Return
 //    code_file: str
-function get_code_file_name args:ptr -> str :
+function get_code_file_name args:Argparser -> str :
   "code_file" args Argparser.get_argument
   take code_file in
 
@@ -48,7 +48,7 @@ end
 //    message: str
 //    args: Argparser
 // Return None
-function verbose_output message:str args:ptr :
+function verbose_output message:str args:Argparser :
   if "-v" args Argparser.flag_present do
     "[\e[95mVERBOSE\e[0m] "  puts
     message                   puts
@@ -146,7 +146,7 @@ end
 //    args: Argparser
 // Return
 //    file_name: str
-function get_output_file_name input_file:str args:ptr -> str :
+function get_output_file_name input_file:str args:Argparser -> str :
   "--out" args Argparser.get_argument
   take file_name in
 
@@ -159,7 +159,7 @@ end
 // Get Op from Location found in a Program
 // Params: Location, Program
 // Return: Op
-function get_op_from_location location:Location program:ptr -> Op :
+function get_op_from_location location:Location program:List -> Op :
   location int // Cast Location pointer to int
   program List.len
   0
@@ -191,7 +191,7 @@ end
 // Check if a Constant with a certain name exists
 // Params: constant_name, List[Constant]
 // Return: bool
-function constant_exists constant_name:str constants:ptr -> bool :
+function constant_exists constant_name:str constants:List -> bool :
   // Iterate over constants and check if a Constant with certain name exists
   0 take index in
   while index constants List.len < do
@@ -214,7 +214,7 @@ end
 // Check if a Func with a certain name exists
 // Params: function_name, List[Funcs]
 // Return: bool
-function function_exists str ptr -> bool :
+function function_exists str List -> bool :
   // Func does not exist if get_function_by_name returns NULLPTR
   get_function_by_name int
   NULL !=
@@ -235,13 +235,13 @@ end
 // Get a Func with certain name from a list of Funcs
 // Params: function_name, List[Funcs]
 // Return: Func
-function get_function_by_name function_name:str functions:ptr -> ptr :
+function get_function_by_name function_name:str functions:List -> Func :
   // Iterate over functions and check if a Func with certain name exists
   0 take index in
   while index functions List.len < do
 
     // Get the current Func
-    index functions List.nth ptr.load
+    index functions List.nth Func.load
     take func in
 
     // Return True if current Func's name matches function_name parameter
@@ -251,14 +251,14 @@ function get_function_by_name function_name:str functions:ptr -> ptr :
     index 1 + index = // index++
   done
 
-  // Return NULLPTR if the Func was not found
-  NULLPTR
+  // Return NULL if the Func was not found
+  NULL cast_any
 end
 
 // Check if a Mem with a certain name exists
 // Params: memory_name, List[Mem]
 // Return: bool
-function memory_exists memory_name:str memories:ptr -> bool :
+function memory_exists memory_name:str memories:List -> bool :
   // Iterate over memories and check if a Mem with certain name exists
   0 take index in
   while index memories List.len < do
@@ -288,13 +288,13 @@ end
 // Get Constant with certain name from List[Constants]
 // Params: name (STR), List[Constant]
 // Return: Constant
-function get_constant name:str constants:ptr -> ptr :
+function get_constant name:str constants:List -> Constant :
   // Iterate over each Constant
   0 take index in
   while index constants List.len < do
 
     // Get current Constant
-    index constants List.nth ptr.load
+    index constants List.nth Constant.load
     take constant in
 
     // Return current Constant if its name matches the name parameter
@@ -303,7 +303,7 @@ function get_constant name:str constants:ptr -> ptr :
     endif
     index 1 + index = // index++
   done
-  NULLPTR // Constant was not found
+  NULL cast_any // Constant was not found
 end
 
 // Perform a deep copy of the TypeStack
@@ -311,8 +311,8 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return
 //    type_stack_copy: LinkedList[TypeNode]
-function TypeStack.copy type_stack:ptr -> ptr :
-  type_stack Node.get_data
+function TypeStack.copy type_stack:Node -> Node :
+  type_stack ptr Node.load
   LinkedList.init
   0
   take
@@ -354,8 +354,8 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return
 //    token_types: List[TokenType]
-function TypeStack.get_types type_stack:ptr -> ptr :
-  type_stack Node.get_data
+function TypeStack.get_types type_stack:Node -> List :
+  type_stack ptr Node.load
   List.init
   0
   take
@@ -389,7 +389,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return
 //    stack_repr: str
-function TypeStack.repr type_stack:ptr -> str :
+function TypeStack.repr type_stack:Node -> str :
   type_stack TypeStack.copy
   "" str.copy
   take stack_repr type_stack in
@@ -508,10 +508,10 @@ function OpType.repr int -> str :
 end
 
 // Get Variable with certain name from Array
-// Return NULLPTR if not found
+// Return NULL if not found
 // Params: Array[Variable], str
 // Return: Variable
-function Array.get_variable ptr str -> ptr :
+function Array.get_variable Array str -> Variable :
   dup Array.len
   0
   take
@@ -522,7 +522,7 @@ function Array.get_variable ptr str -> ptr :
   in
 
   while index len < do
-    index array Array.nth ptr.load
+    index array Array.nth Variable.load
     take variable in
 
     // Return True if the current string matches with the parameter
@@ -531,13 +531,13 @@ function Array.get_variable ptr str -> ptr :
     endif
     index 1 + index =
   done
-  NULLPTR
+  NULL cast_any // Variable was not found
 end
 
 // Test if Array contains Variable with certain name
 // Params: Array[Variable], str
 // Return: bool
-function Array.contains_variable ptr str -> bool :
+function Array.contains_variable Array str -> bool :
   Array.get_variable int NULL !=
 end
 
@@ -545,13 +545,13 @@ end
 // Return NULLPTR if not found
 // Params: List[Variable], str
 // Return: Variable
-function List.get_variable ptr str -> ptr :
+function List.get_variable List str -> Variable :
   List.get_array Array.get_variable
 end
 
 // Test if List contains Variable with certain name
 // Params: List[Variable], str
 // Return: bool
-function List.contains_variable ptr str -> bool :
+function List.contains_variable List str -> bool :
   List.get_array Array.contains_variable
 end

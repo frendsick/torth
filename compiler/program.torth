@@ -9,10 +9,10 @@ include "compiler/class/Token"
 // Params: List[Func], List[Constant], List[Mem]
 // Return: List[Program]
 function get_sub_programs
-  functions:ptr
-  constants:ptr
-  memories:ptr
--> ptr :
+  functions:List
+  constants:List
+  memories:List
+-> List :
 
   List.init // sub_programs = List[Program]
   0         // index
@@ -40,10 +40,10 @@ end
 // Return: Program
 function generate_program
   func:Func
-  functions:ptr
-  constants:ptr
-  memories:ptr
--> ptr :
+  functions:List
+  constants:List
+  memories:List
+-> List :
 
   func Func.tokens
   List.init
@@ -76,9 +76,9 @@ end
 // Return: OpType
 function get_tokens_op_type
   token:Token
-  functions:ptr
-  constants:ptr
-  memories:ptr
+  functions:List
+  constants:List
+  memories:List
 -> int :
 
   // Initialize variables
