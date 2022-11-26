@@ -92,15 +92,15 @@ function get_tokens_op_type
     token_type
   in
 
-  if token_type TokenType.BOOL ==    do
+  if token_type "bool"        streq do
     OpType.PUSH_BOOL return
-  elif token_type TokenType.CHAR ==  do
+  elif token_type "char"      streq  do
     OpType.PUSH_CHAR return
-  elif token_type TokenType.INT ==   do
+  elif token_type "int"       streq  do
     OpType.PUSH_INT return
-  elif token_type TokenType.STR ==   do
+  elif token_type "str"       streq  do
     OpType.PUSH_STR return
-  elif token_type TokenType.UINT8 == do
+  elif token_type "uint8"     streq  do
     OpType.PUSH_UINT8 return
   elif token_upper "ASSIGN"   streq  do
     OpType.ASSIGN_BIND return

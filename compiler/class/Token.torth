@@ -2,11 +2,11 @@ include "std"
 include "compiler/class/Location"
 class Token
   value:str
-  type:int
+  type:str
   vartype:int
   location:ptr
 
-  method init value:str type:int location:ptr -> ptr :
+  method init value:str type:str location:ptr -> ptr :
     Token.size malloc
     take token in
 

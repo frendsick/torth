@@ -219,39 +219,16 @@ function function_exists str ptr -> bool :
   NULL !=
 end
 
-// Get printable representation of TokenType
-function TokenType.repr token_type:int -> str :
-  if token_type TokenType.ANY == do
-    "ANY" return
-  elif token_type TokenType.BOOL == do
-    "BOOL" return
-  elif token_type TokenType.CHAR == do
-    "CHAR" return
-  elif token_type TokenType.INT == do
-    "INT" return
-  elif token_type TokenType.PTR == do
-    "PTR" return
-  elif token_type TokenType.STR == do
-    "STR" return
-  elif token_type TokenType.UINT8 == do
-    "UINT8" return
-  endif
-  "Unknown TokenType: " eputs
-  token_type eputi
-  "\n" eputs
-  1 exit ""
-end
-
 // Two TokenTypes are matching if they are equal
 // or if either of them is TokenType.ANY
 // Params
 //    type1: TokenType
 //    type2: TokenType
 // Return bool
-function matching_token_types type1:int type2:int -> bool :
-  type1 type2 ==
-  type1 TokenType.ANY == ||
-  type2 TokenType.ANY == ||
+function matching_token_types type1:str type2:str -> bool :
+  type1 type2 streq
+  type1 "any" streq ||
+  type2 "any" streq ||
 end
 
 // Get a Func with certain name from a list of Funcs
@@ -428,7 +405,7 @@ function TypeStack.repr type_stack:ptr -> str :
     "[" index
     itoa                                  str.cat
     "] "                                  str.cat
-    node TypeNode.type TokenType.repr     str.cat
+    node TypeNode.type                    str.cat
     " ("                                  str.cat
     node TypeNode.location Location.repr  str.cat
     ")\n"                                 str.cat

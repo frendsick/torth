@@ -1,9 +1,9 @@
 include "std"
 class Variable
   name:str
-  type:int
+  type:str
 
-  method init name:str type:int -> ptr :
+  method init name:str type:str -> ptr :
     Variable.size malloc
     take variable in
 

@@ -225,7 +225,7 @@ function get_token_value token_value:str -> str :
 end
 
 const single_quote 39 end
-function get_token_type token_value:str -> int :
+function get_token_type token_value:str -> str :
   // Boolean => True
   if
     token_value str.copy str.upper
@@ -233,7 +233,7 @@ function get_token_type token_value:str -> int :
     swap  "FALSE" streq
     ||
   do
-    TokenType.BOOL return
+    "bool" return
   // Character => 'a'
   elif
     token_value str.len 3 ==
@@ -241,35 +241,35 @@ function get_token_type token_value:str -> int :
     token_value 2 str.char_at single_quote ==
     && &&
   do
-    TokenType.CHAR return
+   "char" return
   // Integer => 1337
   elif
     token_value str.is_numeric
   do
-    TokenType.INT return
+    "int" return
   // Hexadecimal => 0x1337
   elif
     token_value ptr char.load '0' ==
     token_value 1 str.char_at 'x' ==
     &&
   do
-    TokenType.INT return
+    "int" return
   // String => "This is string\n"
   elif
     token_value ptr char.load                '"' ==
     token_value dup str.len 1 - str.char_at  '"' ==
     &&
   do
-  TokenType.STR return
+  "str" return
   // uint8 => u69
   elif
     token_value ptr char.load 'u' ==
     token_value 1 str.char_at char.is_numeric
     &&
   do
-    TokenType.UINT8 return
+    "uint8" return
   endif
-  TokenType.WORD
+  "word"
 end
 
 // Get OpType for Token
@@ -278,15 +278,15 @@ end
 function get_op_type token:ptr -> int :
   token Token.type
   take token_type in
-  if token_type TokenType.BOOL == do
+  if token_type "bool" streq do
     OpType.PUSH_BOOL return
-  elif token_type TokenType.CHAR == do
+  elif token_type "char" streq do
     OpType.PUSH_CHAR return
-  elif token_type TokenType.INT == do
+  elif token_type "int" streq do
     OpType.PUSH_INT return
-  elif token_type TokenType.STR == do
+  elif token_type "str" streq do
     OpType.PUSH_STR return
-  elif token_type TokenType.UINT8 == do
+  elif token_type "uint8" streq do
     OpType.PUSH_UINT8 return
   endif
   OpType.INTRINSIC
@@ -879,7 +879,7 @@ function parse_function
         // Append 0 token as the exit code for MAIN function
         if function_name str.copy str.upper "MAIN" streq do
           token Token.location
-          TokenType.INT "0" Token.init
+          "int" "0" Token.init
           function_tokens List.append
         endif
 
@@ -917,7 +917,6 @@ function parse_function
 
       // Parse parameter's TokenType
       token_value param_colon 1 + str+
-      Signature.type_map
       take param_type in
       param_type ptr param_types List.append
 
@@ -940,7 +939,7 @@ function parse_function
 
         // Append parameter to Func's Tokens
         token Token.location
-        TokenType.WORD
+        "word"
         param_name str.copy
         Token.init
         take param_token in
@@ -953,8 +952,7 @@ function parse_function
 
     elif current_part 1 == do
       // Append word to return_types if valid TokenType
-      token_value Signature.type_map ptr
-      return_types List.append
+      token_value ptr return_types List.append
 
     elif current_part 2 == do
       // Use Constant's value if a Constant exists named as the Token's value
@@ -969,7 +967,7 @@ function parse_function
           if constant Constant.name token_value streq do
             constant Constant.value str.copy
             token Token->value
-            TokenType.INT token Token->type
+            "int" token Token->type
             break
           endif
           constant_index 1 + constant_index =
@@ -1122,7 +1120,6 @@ function parse_class_attribute
 
   // Parse attribute's TokenType
   token_value attribute_colon 1 + str+
-  Signature.type_map
   take attribute_type in
 
   // Parse attribute's name
@@ -1160,11 +1157,11 @@ function get_object_size_function
   in
 
   // Insert integer Token containing class_size to Token list
-  endclass_token Token.location TokenType.INT class_size itoa Token.init
+  endclass_token Token.location "int" class_size itoa Token.init
   tokens List.append
 
   // Signature: None -> INT
-  TokenType.INT ptr return_types List.append
+  "int" ptr return_types List.append
   return_types List.init Signature.init
   take signature in
 
@@ -1174,7 +1171,7 @@ end
 function generate_attribution_functions
   class_name:str
   attribute_name:str
-  attribute_type:int
+  attribute_type:str
   attribute_offset:int
   attribute_token:ptr
   is_getter:bool // Getter => True, Setter => False
@@ -1192,8 +1189,8 @@ function generate_attribution_functions
   List.init
   List.init
   take param_types return_types in
-  TokenType.PTR  ptr param_types List.append
-  attribute_type ptr
+  "ptr"           ptr param_types List.append
+  attribute_type  ptr
   // Insert attribute_type to either parameter or return types
   // depending on if the function is getter or setter
   if is_getter
@@ -1214,7 +1211,7 @@ end
 function get_attribute_function_tokens
   class_name:str
   attribute_name:str
-  attribute_type:int
+  attribute_type:str
   attribute_offset:int
   attribute_token:ptr
   is_getter:bool // Getter => True, Setter => False
@@ -1222,7 +1219,7 @@ function get_attribute_function_tokens
   attribute_offset itoa
   " swap int + ptr " str.cat
   if is_getter
-  do   "LOAD_QWORD "  str.cat attribute_type TokenType.repr str.cat
+  do   "LOAD_QWORD "  str.cat attribute_type str.cat
   else "STORE_QWORD " str.cat
   endif
   List.init

@@ -245,6 +245,40 @@ function Array.equals ptr ptr -> bool :
   True
 end
 
+// Test if two Arrays have equal strings in them
+// Params: Array[str], Array[str]
+// Return: bool
+function Array.streq ptr ptr -> bool :
+  dup   Array.len
+  over  Array.len
+  0
+  take
+    index
+    array2.len
+    array1.len
+    array1
+    array2
+  in
+
+  // Arrays of different length cannot be equal
+  if array1.len array2.len != do
+    False return
+  endif
+
+  // Iterate over every item in arrays and check if the strings are equal
+  while index array1.len < do
+    if
+      index array1 Array.nth str.load
+      index array2 Array.nth str.load
+      streq not
+    do
+      False return
+    endif
+    index 1 + index =
+  done
+  True
+end
+
 // Print array of integer-like values
 // Params: array (PTR)
 // Return: None
@@ -452,6 +486,15 @@ function List.equals ptr ptr -> bool :
   List.get_array
   swap List.get_array
   Array.equals
+end
+
+// Test if two Arrays have equal strings in them
+// Params: List[str], List[str]
+// Return: bool
+function List.streq ptr ptr -> bool :
+  List.get_array
+  swap List.get_array
+  Array.streq
 end
 
 // Test if list contains an integer

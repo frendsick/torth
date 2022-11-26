@@ -102,19 +102,6 @@ ENUM OpType.len 1 :
   OpType.WHILE
 END
 
-// TokenType
-ENUM TokenType.len 1 :
-  TokenType.ANY
-  TokenType.BOOL
-  TokenType.CHAR
-  TokenType.INT
-  TokenType.KEYWORD
-  TokenType.PTR
-  TokenType.STR
-  TokenType.UINT8
-  TokenType.WORD
-END
-
 // VarType
 ENUM VarType.len 1 :
   VarType.NONE

@@ -1,9 +1,9 @@
 include "std"
 class TypeNode
-  type:int
+  type:str
   location:ptr
 
-  method init type:int location:ptr -> ptr :
+  method init type:str location:ptr -> ptr :
     TypeNode.size malloc
     take node in
 
