@@ -1,4 +1,5 @@
 include "std"
+include "typing"
 include "compiler/utils"
 include "compiler/class/Func"
 include "compiler/class/Location"
@@ -9,7 +10,7 @@ include "compiler/class/Token"
 // Generate the beginning of the assembly file
 // Params: file_name, List[Mem]
 // Return: Assembly
-function initialize_asm_file file_name:str memories:List :
+function initialize_asm_file file_name:str memories:List[Mem] :
   "compiler/templates/start.asm" read_file
   memories get_memory_definitions_asm       str.cat
   "compiler/templates/print.asm" read_file  str.cat
@@ -17,16 +18,16 @@ function initialize_asm_file file_name:str memories:List :
 end
 
 // Generate assembly code from Mem definitions
-function get_memory_definitions_asm memories:List -> str :
+function get_memory_definitions_asm memories:List[Mem] -> str :
   "" str.copy
   0
   take index assembly_code in
 
   // Iterate over each Mem and generate assembly code for it
-  while index memories List.len < do
+  while index memories cast_list List.len < do
 
     // Get the Mem's name and size
-    index memories List.nth ptr.load
+    index memories cast_list List.nth ptr.load
     dup   Mem.name
     swap  Mem.bytes
     take memory_size memory_name in
@@ -47,7 +48,7 @@ end
 // Get Assembly for certain Op
 // Params: Pointer to Op (PTR), Program
 // Return: Assembly
-function get_op_asm op:Op program:List -> str :
+function get_op_asm op:Op program:Program -> str :
   // Save Op and Token.value in Binding
   op Op.token Token.value
   op Op.type
@@ -248,9 +249,9 @@ end
 // Assign a value to Variable
 // Params: Op, Program
 // Return: Assembly
-function get_assign_bind_asm op:Op program:List -> str :
+function get_assign_bind_asm op:Op program:Program -> str :
   // memory_name = program[op.id - 1].token.value
-  op Op.id 1 - program List.nth Op.load
+  op Op.id 1 - program cast_list List.nth Op.load
   Op.token Token.value
 
   // variable = f"{op.func.name}_{memory_name}"
@@ -269,7 +270,7 @@ end
 // BREAK is an unconditional jump to operand after current loop's DONE
 // Params: Op, Program
 // Return: Assembly
-function get_break_asm op:Op program:List -> str :
+function get_break_asm op:Op program:Program -> str :
   program op get_parent_while
   program swap get_done_op_for_while
   Op.id
@@ -285,7 +286,7 @@ end
 // CONTINUE is an unconditional jump to current loop's WHILE
 // Params: Op, Program
 // Return: Assembly
-function get_continue_asm op:Op program:List -> str :
+function get_continue_asm op:Op program:Program -> str :
   program op get_parent_while
   Op.id
   op Op.func Func.name
@@ -298,7 +299,7 @@ function get_continue_asm op:Op program:List -> str :
 end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
-function get_parent_op_type_do op:Op program:List -> int :
+function get_parent_op_type_do op:Op program:Program -> int :
   op Op.id 1 - // index = op.id - 1
   0
   take parent_count index in
@@ -307,7 +308,7 @@ function get_parent_op_type_do op:Op program:List -> int :
   while index -1 > do
 
     // Get the current Op's OpType
-    index program List.nth ptr.load Op.type
+    index program cast_list List.nth ptr.load Op.type
     take op_type in
 
     if
@@ -340,7 +341,7 @@ end
 // DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 // Params: Op, Program
 // Return: Assembly
-function get_do_asm op:Op program:List -> str :
+function get_do_asm op:Op program:Program -> str :
   program op get_parent_op_type_do
   op Op.id 1 + // index = op.id + 1
   0
@@ -350,9 +351,9 @@ function get_do_asm op:Op program:List -> str :
     parent_op_type
   in
 
-  while index program List.len < do
+  while index program cast_list List.len < do
     // Get the current operand's OpType
-    index program List.nth ptr.load Op.type
+    index program cast_list List.nth ptr.load Op.type
     take op_type in
 
     // Keep count on the nested IFs or WHILEs depending on the parent Op
@@ -405,9 +406,9 @@ function get_do_asm op:Op program:List -> str :
     do
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
       op Op.func Func.name
-      "_"                                                 str.cat
-      index program List.nth ptr.load Op.type OpType.repr str.cat
-      index itoa                                          str.cat
+      "_"                                                           str.cat
+      index program cast_list List.nth ptr.load Op.type OpType.repr str.cat
+      index itoa                                                    str.cat
       generate_do_asm return
     endif
 
@@ -446,7 +447,7 @@ end
 // DONE is an unconditional jump to current loop's WHILE
 // Params: Op, Program
 // Return: Assembly
-function get_done_asm op:Op program:List -> str :
+function get_done_asm op:Op program:Program -> str :
   // Get the parent WHILE Op
   program op get_parent_while
   take parent_while in
@@ -475,7 +476,7 @@ end
 // ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to
 // Params: Op, Program
 // Return: Assembly
-function get_elif_asm op:Op program:List -> str :
+function get_elif_asm op:Op program:Program -> str :
   // Get the related ENDIF Op
   program op get_related_endif
   take related_endif in
@@ -504,7 +505,7 @@ end
 // ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to
 // Params: Op, Program
 // Return: Assembly
-function get_else_asm op:Op program:List -> str :
+function get_else_asm op:Op program:Program -> str :
   // Get the related ENDIF Op
   program op get_related_endif
   take related_endif in
@@ -1029,10 +1030,10 @@ end
 // Return: None
 function generate_assembly_file
   file_name:str
-  sub_programs:List
-  memories:List
+  sub_programs:List[Program]
+  memories:List[Mem]
 :
-  sub_programs List.len
+  sub_programs cast_list List.len
   "section .data\n" str.copy
   0
   take
@@ -1048,7 +1049,7 @@ function generate_assembly_file
   while index sub_programs.len < do
 
     // Get the current Program
-    index sub_programs List.nth List.load
+    index sub_programs cast_list List.nth ptr.load cast_any
     take program in
 
     // Get assembly code for the current Program
@@ -1067,13 +1068,13 @@ function generate_assembly_file
 end
 
 // Get Assembly code to be added to .data section from Program's string variables
-function get_string_variables_for_data_section program:List -> str :
+function get_string_variables_for_data_section program:Program -> str :
   "" str.copy
   0
   take index assembly_code in
-  while index program List.len < do
+  while index program cast_list List.len < do
     // Get current Op
-    index program List.nth Op.load
+    index program cast_list List.nth Op.load
     take op in
 
     // Add only strings to the assembly
@@ -1178,14 +1179,14 @@ function get_function_end_asm function_name:str -> str :
   "  ret\n\n"                                                             str.cat
 end
 
-function append_programs_assembly_code file_name:str program:List :
-  program List.len
+function append_programs_assembly_code file_name:str program:Program :
+  program cast_list List.len
   0
   take index program.len in
 
   // Get the Func's name to be added to the assembly code
   // Exception: MAIN Func should be named '_start'
-  program List.first ptr.load Op.func Func.name
+  program cast_list List.first ptr.load Op.func Func.name
   take function_name in
 
   // Write Func's start assembly to file
@@ -1195,7 +1196,7 @@ function append_programs_assembly_code file_name:str program:List :
   while index program.len < do
 
     // Get the current Op
-    index program List.nth Op.load
+    index program cast_list List.nth Op.load
     take op in
 
     // Generate comment for Op
@@ -1215,13 +1216,13 @@ end
 // Returns the current IF block's ENDIF Op
 // Params: Op, Program
 // Return: Op
-function get_related_endif op:Op program:List -> Op :
+function get_related_endif op:Op program:Program -> Op :
   op Op.id 1 + // index = op.id + 1
   0 // if_count => Keep count of the nested IF blocks
   take if_count index in
 
-  while index program List.len < do
-    index program List.nth Op.load
+  while index program cast_list List.len < do
+    index program cast_list List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 
@@ -1252,13 +1253,13 @@ end
 // Returns the current WHILE block's DONE Op
 // Params: Op, Program
 // Return: Op
-function get_parent_while op:Op program:List -> Op :
+function get_parent_while op:Op program:Program -> Op :
   op Op.id 1 - // index = op.id - 1
   0 // done_count => Keep count of the nested WHILE blocks
   take done_count index in
 
   while index -1 > do
-    index program List.nth Op.load
+    index program cast_list List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 
@@ -1290,16 +1291,16 @@ end
 // Returns the END Operand for the current WHILE block
 // Params: Op, Program
 // Return: Op
-function get_done_op_for_while op:Op program:List -> Op :
+function get_done_op_for_while op:Op program:Program -> Op :
   op Op.id
   0
   take while_count index in
 
   // Iterate over each Op of the Program starting from the parameter Op
-  while index program List.len < do
+  while index program cast_list List.len < do
 
     // Get the current Operands OpType
-    index program List.nth Op.load
+    index program cast_list List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 

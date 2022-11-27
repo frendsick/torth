@@ -159,9 +159,9 @@ end
 // Get Op from Location found in a Program
 // Params: Location, Program
 // Return: Op
-function get_op_from_location location:Location program:List -> Op :
+function get_op_from_location location:Location program:Program -> Op :
   location int // Cast Location pointer to int
-  program List.len
+  program cast_list List.len
   0
   take
     index
@@ -170,7 +170,7 @@ function get_op_from_location location:Location program:List -> Op :
   in
 
   while index program.len < do
-    index program List.nth Op.load
+    index program cast_list List.nth Op.load
     take op in
 
     // Test if the current Op has the same Location pointer
@@ -191,13 +191,13 @@ end
 // Check if a Constant with a certain name exists
 // Params: constant_name, List[Constant]
 // Return: bool
-function constant_exists constant_name:str constants:List -> bool :
+function constant_exists constant_name:str constants:List[Constant] -> bool :
   // Iterate over constants and check if a Constant with certain name exists
   0 take index in
-  while index constants List.len < do
+  while index constants cast_list List.len < do
 
     // Get the current Constant
-    index constants List.nth ptr.load Constant.name
+    index constants cast_list List.nth ptr.load Constant.name
     take current_name in
 
     // Return True if current Constant's name matches constant_name parameter
@@ -212,9 +212,9 @@ function constant_exists constant_name:str constants:List -> bool :
 end
 
 // Check if a Func with a certain name exists
-// Params: function_name, List[Funcs]
+// Params: function_name, List[Func]
 // Return: bool
-function function_exists str List -> bool :
+function function_exists str List[Func] -> bool :
   // Func does not exist if get_function_by_name returns NULLPTR
   get_function_by_name int
   NULL !=
@@ -235,13 +235,13 @@ end
 // Get a Func with certain name from a list of Funcs
 // Params: function_name, List[Funcs]
 // Return: Func
-function get_function_by_name function_name:str functions:List -> Func :
+function get_function_by_name function_name:str functions:List[Func] -> Func :
   // Iterate over functions and check if a Func with certain name exists
   0 take index in
-  while index functions List.len < do
+  while index functions cast_list List.len < do
 
     // Get the current Func
-    index functions List.nth Func.load
+    index functions cast_list List.nth Func.load
     take func in
 
     // Return True if current Func's name matches function_name parameter
@@ -258,13 +258,13 @@ end
 // Check if a Mem with a certain name exists
 // Params: memory_name, List[Mem]
 // Return: bool
-function memory_exists memory_name:str memories:List -> bool :
+function memory_exists memory_name:str memories:List[Mem] -> bool :
   // Iterate over memories and check if a Mem with certain name exists
   0 take index in
-  while index memories List.len < do
+  while index memories cast_list List.len < do
 
     // Get the current Mem
-    index memories List.nth ptr.load Mem.name
+    index memories cast_list List.nth ptr.load Mem.name
     take current_name in
 
     // Return True if current Mem's name matches memory_name parameter
@@ -288,13 +288,13 @@ end
 // Get Constant with certain name from List[Constants]
 // Params: name (STR), List[Constant]
 // Return: Constant
-function get_constant name:str constants:List -> Constant :
+function get_constant name:str constants:List[Constant] -> Constant :
   // Iterate over each Constant
   0 take index in
-  while index constants List.len < do
+  while index constants cast_list List.len < do
 
     // Get current Constant
-    index constants List.nth Constant.load
+    index constants cast_list List.nth Constant.load
     take constant in
 
     // Return current Constant if its name matches the name parameter
@@ -511,8 +511,8 @@ end
 // Return NULL if not found
 // Params: Array[Variable], str
 // Return: Variable
-function Array.get_variable Array str -> Variable :
-  dup Array.len
+function Array.get_variable Array[Variable] str -> Variable :
+  cast_array dup Array.len
   0
   take
     index
@@ -537,7 +537,7 @@ end
 // Test if Array contains Variable with certain name
 // Params: Array[Variable], str
 // Return: bool
-function Array.contains_variable Array str -> bool :
+function Array.contains_variable Array[Variable] str -> bool :
   Array.get_variable int NULL !=
 end
 
@@ -545,13 +545,13 @@ end
 // Return NULLPTR if not found
 // Params: List[Variable], str
 // Return: Variable
-function List.get_variable List str -> Variable :
-  List.get_array Array.get_variable
+function List.get_variable List[Variable] str -> Variable :
+  cast_list List.get_array cast_any Array.get_variable
 end
 
 // Test if List contains Variable with certain name
 // Params: List[Variable], str
 // Return: bool
-function List.contains_variable List str -> bool :
-  List.get_array Array.contains_variable
+function List.contains_variable List[Variable] str -> bool :
+  cast_list List.get_array cast_any Array.contains_variable
 end

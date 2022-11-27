@@ -6,33 +6,31 @@ include "compiler/defs"
 include "compiler/class/Token"
 
 // Generate Program for each Func
-// Params: List[Func], List[Constant], List[Mem]
-// Return: List[Program]
 function get_sub_programs
-  functions:List
-  constants:List
-  memories:List
--> List :
+  functions:List[Func]
+  constants:List[Constant]
+  memories:List[Mem]
+-> List[Program] :
 
   List.init // sub_programs = List[Program]
   0         // index
   take index sub_programs in
 
   // Iterate over every Func is functions
-  while index functions List.len < do
+  while index functions cast_list List.len < do
 
     // Get the current Func from the list
-    index functions List.nth Func.load
+    index functions cast_list List.nth Func.load
     take func in
 
     // Generate Program from the current Func
-    memories functions constants func generate_program
+    memories constants functions func generate_program
 
     // Append the generated Program to sub_programs
-    sub_programs List.append
+    sub_programs cast_list List.append
     index 1 + index = // index++
   done
-  sub_programs
+  sub_programs cast_any
 end
 
 // Generate Program from Func
@@ -40,10 +38,10 @@ end
 // Return: Program
 function generate_program
   func:Func
-  functions:List
-  constants:List
-  memories:List
--> List :
+  functions:List[Func]
+  constants:List[Constant]
+  memories:List[Mem]
+-> Program :
 
   func Func.tokens
   List.init
@@ -54,21 +52,21 @@ function generate_program
     tokens
   in
 
-  while index tokens List.len < do
+  while index tokens cast_list List.len < do
     // Get current Token
-    index tokens List.nth Token.load
+    index tokens cast_list List.nth Token.load
     take token in
 
     // Get the Token's OpType
-    memories functions constants token get_tokens_op_type
+    memories constants functions token get_tokens_op_type
     take op_type in
 
     // Append Op to Program
     func token op_type index Op.init
-    program List.append
+    program cast_list List.append
     index 1 + index = // index++
   done
-  program
+  program cast_any
 end
 
 // Get OpType for Token
@@ -76,9 +74,9 @@ end
 // Return: OpType
 function get_tokens_op_type
   token:Token
-  functions:List
-  constants:List
-  memories:List
+  functions:List[Func]
+  constants:List[Constant]
+  memories:List[Mem]
 -> int :
 
   // Initialize variables

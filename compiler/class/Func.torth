@@ -6,10 +6,15 @@ include "compiler/class/Variable"
 class Func
   name:str
   signature:Signature
-  tokens:List
-  variables:List
+  tokens:List[Token]
+  variables:List[Variable]
 
-  method init name:str signature:Signature tokens:List variables:List -> Func :
+  method init
+    name:str
+    signature:Signature
+    tokens:List[Token]
+    variables:List[Variable]
+  -> Func :
     Func.size malloc cast_any
     take func in
 
@@ -33,9 +38,9 @@ class Func
     Signature.repr puts "\n"  puts
 
     "Func.tokens    => "      puts
-    self Func.tokens
-    dup List.len  // tokens.len
-    0             // index
+    self Func.tokens cast_list
+    dup cast_list List.len  // tokens.len
+    0
     take
       index
       tokens.len

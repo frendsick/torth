@@ -40,20 +40,17 @@ end
 //    sub_programs: List[Program]
 //    functions: List[Func]
 // Return None
-function type_check_application sub_programs:List functions:List :
-  sub_programs List.len
+function type_check_application sub_programs:List[Program] functions:List[Func] :
+  sub_programs cast_list List.len
   0
   take index sub_programs.len in
 
   // Type check every sub-program in the application
   while index sub_programs.len < do
-    index sub_programs List.nth List.load
+    index sub_programs cast_list List.nth ptr.load cast_any
     take sub_program in
 
-    sub_program List.first Func.load Op.func
-    take func in
-
-    functions func sub_program type_check_sub_program
+    functions sub_program type_check_sub_program
     index 1 + index =
   done
 end
@@ -61,16 +58,14 @@ end
 // Type check a sub-program ("function")
 // Params
 //    program: Program
-//    func: Func
 //    functions: List[Func]
 // Return None
 function type_check_sub_program
-  program:List
-  func:Func
-  functions:List
+  program:Program
+  functions:List[Func]
 :
   // Initialize variables
-  program List.len
+  program cast_list List.len
   TypeCheckInfo.init
   List.init LinkedList.init over List.append
   List.init LinkedList.init over List.append
@@ -83,20 +78,29 @@ function type_check_sub_program
     program.len
   in
 
+  // Handle empty Program
+  if program.len 0 == do
+    return
+  endif
+
+  // Get first Op's Function
+  program cast_list List.first ptr.load Op.func
+  take func in
+
   // Generate initial type stack for sub program
   // based on the function params
   List.init dup
   func get_function_type_stack
   swap List.append
-  List.init // List[Variable]
+  List.init cast_any // List[Variable]
   take variables branched_stacks in
 
   // Type check every Op in Program
   while index program.len < do
-    index program List.nth Op.load
+    index program cast_list List.nth Op.load
     take op in
-    if_block_return_stacks if_block_original_stacks type_check_info
-    variables functions program branched_stacks op type_check_op
+    if_block_return_stacks cast_any if_block_original_stacks cast_any
+    type_check_info variables functions program branched_stacks op type_check_op
     type_check_info =
     index 1 + index =
   done
@@ -121,12 +125,12 @@ end
 function type_check_op
   op:Op
   branched_stacks:List
-  program:List
-  functions:List
-  variables:List
+  program:Program
+  functions:List[Func]
+  variables:List[Variable]
   type_check_info:TypeCheckInfo
-  if_block_original_stacks:List
-  if_block_return_stacks:List
+  if_block_original_stacks:List[TypeStack]
+  if_block_return_stacks:List[TypeStack]
 -> TypeCheckInfo :
   // Initialize variables
   op  Op.token
@@ -175,15 +179,15 @@ function type_check_op
     // Set type_check_info.else_present to False
     False type_check_info TypeCheckInfo->else_present
     // Call type_check_elif
-    if_block_return_stacks List.last Node.load
+    if_block_return_stacks cast_list List.last Node.load
     branched_stacks type_stack token type_check_elif
     type_check_info return
   elif op_type OpType.ELSE == do
     // Set type_check_info.else_present to True
     True type_check_info TypeCheckInfo->else_present
     // Call type_check_else
-    if_block_original_stacks  List.last Node.load
-    if_block_return_stacks    List.last Node.load
+    if_block_original_stacks  cast_list List.last Node.load
+    if_block_return_stacks    cast_list List.last Node.load
     branched_stacks type_stack token type_check_else
     type_check_info return
   elif op_type OpType.ENDIF == do
@@ -201,8 +205,9 @@ function type_check_op
     type_check_info return
   elif op_type OpType.IF == do
     False type_check_info TypeCheckInfo->return_present
-    type_stack TypeStack.copy if_block_original_stacks List.append
-    LinkedList.init if_block_return_stacks List.append
+    type_stack TypeStack.copy
+    if_block_original_stacks cast_list List.append
+    LinkedList.init if_block_return_stacks cast_list List.append
     type_check_info return
   elif op_type OpType.IN == do
     0 type_check_info TypeCheckInfo->peek_count
@@ -239,10 +244,10 @@ function type_check_op
   elif op_type OpType.RETURN == do
     True type_check_info TypeCheckInfo->return_present
     // IF block's stack is determined by the previous sections in the block
-    if_block_return_stacks List.last Node.load
+    if_block_return_stacks cast_list List.last Node.load
     take if_block_return_stack in
     if if_block_return_stack Node.get_data int NULL == do
-      if_block_original_stacks List.last Node.load TypeStack.copy
+      if_block_original_stacks cast_list List.last Node.load TypeStack.copy
       if_block_return_stack =
     endif
     // Set stack state to the return value of type_check_return
@@ -275,7 +280,7 @@ end
 function type_check_intrinsic
   token:Token
   type_stack:Node
-  program:List
+  program:Program
 :
   token Token.value str.copy str.upper
   take intrinsic in
@@ -351,7 +356,7 @@ end
 // Return None
 function type_check_end_of_program func:Func type_stack:Node :
   func Func.name
-  func Func.tokens List.last Token.load
+  func Func.tokens cast_list List.last Token.load
   take last_token function_name in
 
   // There should be one INT in the stack when the program ends
@@ -407,7 +412,7 @@ function correct_return_types func:Func type_stack:Node -> bool :
   // Push return types to temp_stack
   0 index =
   while index returns List.len < do
-    func Func.tokens List.first ptr.load Token.location
+    func Func.tokens cast_list List.first Token.load Token.location
     index returns List.nth str.load TypeNode.init ptr
     temp_stack LinkedList.push
     index 1 + index =
@@ -526,8 +531,8 @@ end
 function type_check_assign_bind
   token:Token
   type_stack:Node
-  program:List
-  variables:List
+  program:Program
+  variables:List[Variable]
 :
   type_stack TypeStack.copy
   type_stack LinkedList.pop
@@ -555,7 +560,7 @@ function type_check_assign_bind
   take popped_type variable_type in
 
   // Check if Variable has the same type as the popped value
-  if popped_type variable_type streq not do
+  if popped_type variable_type matching_token_types not do
     temp_stack token
     "Cannot assign "
     popped_type               str.cat
@@ -818,12 +823,12 @@ function type_check_endif
   token:Token
   type_stack:Node
   branched_stacks:List
-  if_block_return_stacks:List
-  if_block_original_stacks:List
+  if_block_return_stacks:List[TypeStack]
+  if_block_original_stacks:List[TypeStack]
   else_or_return_present:bool
 :
   // Get return stack for the current IF block
-  if_block_return_stacks List.last Node.load
+  if_block_return_stacks cast_list List.last Node.load
   take if_block_return_stack in
 
   // Save the state of the stack after the first part of the IF block
@@ -863,8 +868,8 @@ function type_check_endif
   endif
 
   // Reset IF-block variables
-  if_block_original_stacks dup List.len 1 - swap List.pop
-  if_block_return_stacks   dup List.len 1 - swap List.pop
+  if_block_original_stacks cast_list dup List.len 1 - swap List.pop
+  if_block_return_stacks   cast_list dup List.len 1 - swap List.pop
 end
 
 // Pop a value from the stack to a Variable
@@ -876,7 +881,7 @@ end
 function type_check_function_call
   token:Token
   type_stack:Node
-  functions:List
+  functions:List[Func]
 :
   token Token.value
   type_stack TypeStack.copy
@@ -955,7 +960,7 @@ end
 function type_check_peek_bind
   token:Token
   type_stack:Node
-  variables:List
+  variables:List[Variable]
   count:int
 :
   // Get the Nth value's TokenType from the stack, based on count
@@ -977,7 +982,7 @@ function type_check_peek_bind
 
   // Save the popped type to the Variable
   type TypeNode.type token Token.value Variable.init
-  variables List.append
+  variables cast_list List.append
 end
 
 // Pop a value from the stack to a Variable
@@ -989,7 +994,7 @@ end
 function type_check_pop_bind
   token:Token
   type_stack:Node
-  variables:List
+  variables:List[Variable]
 :
   type_stack LinkedList.pop
   take type in
@@ -1002,7 +1007,7 @@ function type_check_pop_bind
   endif
 
   type TypeNode.type token Token.value Variable.init
-  variables List.append
+  variables cast_list List.append
 end
 
 // Push a value from Variable to the stack
@@ -1014,7 +1019,7 @@ end
 function type_check_push_bind
   token:Token
   type_stack:Node
-  variables:List
+  variables:List[Variable]
 :
   token Token.location
   token Token.value variables List.get_variable Variable.type
@@ -1246,7 +1251,7 @@ end
 function type_check_nth
   token:Token
   type_stack:Node
-  program:List
+  program:Program
 :
   // Pop the value representing N from the stack
   type_stack TypeStack.copy
@@ -1700,7 +1705,7 @@ function get_function_type_stack func:Func -> Node :
   in
 
   // Get the first Token's location for TypeNodes
-  func Func.tokens List.first ptr.load Token.location
+  func Func.tokens cast_list List.first ptr.load Token.location
   take location in
 
   // Insert all parameter types to type_stack in the reverse order

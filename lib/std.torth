@@ -50,7 +50,8 @@ function ||       bool bool -> bool : lor                   end
 function &&       bool bool -> bool : land                  end
 
 // Casting
-function cast_any any -> any : 1 drop end
+// TODO: Enable creation of empty functions
+function cast_any any -> any : NULL drop end
 
 // Get user input from stdin
 function input -> str :
