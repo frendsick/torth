@@ -142,12 +142,9 @@ function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
   "INCLUDE_ERROR" CompilerError ""
 end
 
-function cast_token_list List -> List[Token] :
-  cast_any
-end
 // Get Tokens from the code inside included files
 function get_tokens_from_files included_files:List -> List[Token] :
-  List.init cast_token_list
+  List.init cast_any
   0
   take index tokens in
 
