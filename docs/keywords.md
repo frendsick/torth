@@ -2,9 +2,8 @@
 
 This is the documentation for different keywords available in the Torth language.
 
-- [BOOL](#Casting)
 - [BREAK](#BREAK)
-- [CHAR](#Casting)
+- [CAST](#CAST)
 - [CONST](#CONST)
 - [CONTINUE](#CONTINUE)
 - [DO](#DO)
@@ -16,31 +15,32 @@ This is the documentation for different keywords available in the Torth language
 - [FUNCTION](#FUNCTION)
 - [IF](#IF)
 - [INCLUDE](#INCLUDE)
-- [INT](#Casting)
 - [MEMORY](#MEMORY)
-- [PTR](#Casting)
 - [RETURN](#RETURN)
-- [STR](#Casting)
-- [UINT8](#Casting)
 - [WHILE](#WHILE)
-
-## Casting
-
-The supported [types](types.md) can be used as keywords to cast a topmost value in the stack to the keyword's type. For example, if you want to cast a value to INT, just use `int` keyword.
-
-There are some limitations on what type of values can be cast to another:
-
-- Only [integer-like](definitions.md#integer-types) types can be cast to [BOOL](types.md#bool---boolean)
-- Only [integer-like](definitions.md#integer-types) types can be cast to [CHAR](types.md#char---character)
-  - Exeption: [BOOL](types.md#bool---boolean) type cannot be cast to [CHAR](types.md#char---character)
-- [BOOL](types.md#bool---boolean) and [CHAR](types.md#char---character) types cannot be cast to [PTR](types.md#ptr---pointer)
-- [Integer-like](definitions.md#integer-types) types cannot be cast to [STR](types.md#str---string)
 
 ## BREAK
 
 BREAK is unconditional jump to the operation after [DONE](#done) of the current loop.
 
 - [How to use BREAK?](control_flow.md#break-statement)
+
+## CAST
+
+CAST keyword is used to cast any type to another. It enables using a checking of a value which has a different type than a [function](#function) signature expects. The keyword does not generate any assembly code and thus does not affect the effectiveness of the resulting binary.
+
+### Examples
+
+```pascal
+function main :
+  // Cast character 'a' to integer representation 97
+  // and call print_integer function with it being its parameter.
+  // Function call would not be possible without casting because it requires an integer.
+  'a' cast(int) print_integer
+end
+
+function print_integer int : print end
+```
 
 ## CONST
 

@@ -125,8 +125,8 @@ end
 function remove_file file_name:str :
   // Allocate memory for the arguments
   List.init take argv in
-  "rm"        ptr argv List.append
-  file_name   ptr argv List.append
+  "rm"        cast(ptr) argv List.append
+  file_name   cast(ptr) argv List.append
   NULLPTR argv List.first "/usr/bin/rm" execve drop
 end
 
@@ -150,7 +150,7 @@ function get_output_file_name input_file:str args:Argparser -> str :
   "--out" args Argparser.get_argument
   take file_name in
 
-  if file_name ptr int NULL == do
+  if file_name cast(int) NULL == do
     input_file ".torth" over str.removesuffix return
   endif
   file_name
@@ -160,7 +160,7 @@ end
 // Params: Location, Program
 // Return: Op
 function get_op_from_location location:Location program:Program -> Op :
-  location int // Cast Location pointer to int
+  location cast(int) // Cast Location pointer to int
   program cast_list List.len
   0
   take
@@ -174,7 +174,7 @@ function get_op_from_location location:Location program:Program -> Op :
     take op in
 
     // Test if the current Op has the same Location pointer
-    op Op.token Token.location int
+    op Op.token Token.location cast(int)
     take current_location in
     if location_int current_location == do
       op return
@@ -185,7 +185,7 @@ function get_op_from_location location:Location program:Program -> Op :
   "OP_NOT_FOUND"
   "Operand could not be found from the given location"
   CompilerError
-  NULL cast_any
+  NULL cast(Op)
 end
 
 // Check if a Constant with a certain name exists
@@ -216,7 +216,7 @@ end
 // Return: bool
 function function_exists str List[Func] -> bool :
   // Func does not exist if get_function_by_name returns NULLPTR
-  get_function_by_name int
+  get_function_by_name cast(int)
   NULL !=
 end
 
@@ -252,7 +252,7 @@ function get_function_by_name function_name:str functions:List[Func] -> Func :
   done
 
   // Return NULL if the Func was not found
-  NULL cast_any
+  NULL cast(Func)
 end
 
 // Check if a Mem with a certain name exists
@@ -303,7 +303,7 @@ function get_constant name:str constants:List[Constant] -> Constant :
     endif
     index 1 + index = // index++
   done
-  NULL cast_any // Constant was not found
+  NULL cast(Constant) // Constant was not found
 end
 
 // Perform a deep copy of the TypeStack
@@ -312,7 +312,7 @@ end
 // Return
 //    type_stack_copy: LinkedList[TypeNode]
 function TypeStack.copy type_stack:Node -> Node :
-  type_stack ptr Node.load
+  type_stack cast(ptr) Node.load
   LinkedList.init
   0
   take
@@ -327,7 +327,7 @@ function TypeStack.copy type_stack:Node -> Node :
   endif
 
   // Traverse the TypeStack to the first Node
-  while node Node.get_next int NULL != do
+  while node Node.get_next cast(int) NULL != do
     node Node.get_next node =
     stack_depth 1 + stack_depth =
   done
@@ -339,7 +339,7 @@ function TypeStack.copy type_stack:Node -> Node :
     take type_node in
     type_node TypeNode.location
     type_node TypeNode.type
-    TypeNode.init ptr
+    TypeNode.init cast(ptr)
     type_stack_copy LinkedList.push
 
     // Get the next item in the stack
@@ -355,7 +355,7 @@ end
 // Return
 //    token_types: List[TokenType]
 function TypeStack.get_types type_stack:Node -> List :
-  type_stack ptr Node.load
+  type_stack cast(ptr) Node.load
   List.init
   0
   take
@@ -370,7 +370,7 @@ function TypeStack.get_types type_stack:Node -> List :
   endif
 
   // Traverse the TypeStack to the first Node
-  while node Node.get_next int NULL != do
+  while node Node.get_next cast(int) NULL != do
     node Node.get_next node =
     stack_depth 1 + stack_depth =
   done
@@ -378,7 +378,7 @@ function TypeStack.get_types type_stack:Node -> List :
   // Fill List with the TokenTypes inside TypeStack
   while stack_depth 0 >= do
     node Node.get_data
-    TypeNode.type ptr token_types List.append
+    TypeNode.type cast(ptr) token_types List.append
     stack_depth 1 - stack_depth =
   done
   token_types
@@ -402,7 +402,7 @@ function TypeStack.repr type_stack:Node -> str :
   type_stack LinkedList.pop
   1
   take index node in
-  while node int -1 != do
+  while node cast(int) -1 != do
     "[" index
     itoa                                  str.cat
     "] "                                  str.cat
@@ -425,7 +425,7 @@ end
 // Return: str(OpType)
 function OpType.repr int -> str :
   // Assert that every OpType has been taken into account
-  if OpType.len 34 != do
+  if OpType.len 28 != do
     "All OpTypes are not taken into account in OpType.repr method.\n"
     "ASSERTION_ERROR" CompilerError
   endif
@@ -437,19 +437,7 @@ function OpType.repr int -> str :
   elif op_type OpType.BREAK == do
     "BREAK" return
   elif op_type OpType.CAST == do
-    "CAST_BOOL" return
-  elif op_type OpType.CAST_BOOL == do
-    "CAST_BOOL" return
-  elif op_type OpType.CAST_CHAR == do
-    "CAST_CHAR" return
-  elif op_type OpType.CAST_INT == do
-    "CAST_INT" return
-  elif op_type OpType.CAST_PTR == do
-    "CAST_PTR" return
-  elif op_type OpType.CAST_STR == do
-    "CAST_STR" return
-  elif op_type OpType.CAST_UINT8 == do
-    "CAST_UINT8" return
+    "CAST" return
   elif op_type OpType.CONTINUE == do
     "CONTINUE" return
   elif op_type OpType.DO == do
@@ -533,14 +521,14 @@ function Array.get_variable Array[Variable] str -> Variable :
     endif
     index 1 + index =
   done
-  NULL cast_any // Variable was not found
+  NULL cast(Variable) // Variable was not found
 end
 
 // Test if Array contains Variable with certain name
 // Params: Array[Variable], str
 // Return: bool
 function Array.contains_variable Array[Variable] str -> bool :
-  Array.get_variable int NULL !=
+  Array.get_variable cast(int) NULL !=
 end
 
 // Get Variable with certain name from List
@@ -548,12 +536,12 @@ end
 // Params: List[Variable], str
 // Return: Variable
 function List.get_variable List[Variable] str -> Variable :
-  cast_list List.get_array cast_any Array.get_variable
+  cast_list List.get_array cast(Array[Variable]) Array.get_variable
 end
 
 // Test if List contains Variable with certain name
 // Params: List[Variable], str
 // Return: bool
 function List.contains_variable List[Variable] str -> bool :
-  cast_list List.get_array cast_any Array.contains_variable
+  cast_list List.get_array cast(Array[Variable]) Array.contains_variable
 end

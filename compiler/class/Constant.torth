@@ -5,7 +5,7 @@ class Constant
   location:Location
 
   method init name:str value:str location:Location -> Constant :
-    Constant.size malloc cast_any
+    Constant.size malloc cast(Constant)
     take constant in
 
     name      constant Constant->name
@@ -15,6 +15,6 @@ class Constant
   end
 
   method load ptr -> Constant :
-    ptr.load cast_any
+    ptr.load cast(Constant)
   end
 endclass

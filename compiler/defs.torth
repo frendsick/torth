@@ -29,12 +29,6 @@ ENUM OpType.len 1 :
   OpType.ASSIGN_BIND
   OpType.BREAK
   OpType.CAST
-  OpType.CAST_BOOL
-  OpType.CAST_CHAR
-  OpType.CAST_INT
-  OpType.CAST_PTR
-  OpType.CAST_STR
-  OpType.CAST_UINT8
   OpType.CONTINUE
   OpType.DO
   OpType.DONE

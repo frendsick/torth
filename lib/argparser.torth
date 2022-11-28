@@ -36,10 +36,10 @@ function Argparser.parse_args parser:Argparser :
 
   // Parse all command line arguments to Argparser.cmd_args
   while index ARGC < do
-    index get_argument ptr
+    index get_argument cast(ptr)
 
     // Break if all arguments are checked
-    if dup int NULL == do
+    if dup cast(int) NULL == do
       break
     endif
 
@@ -122,7 +122,7 @@ function Argparser.get_positional_argument parser:Argparser argument_name:str ->
   // Raise error if the positional argument is required
   argument_name parser Argparser.get_argument_by_name
   if ParserArgument.is_required not do
-    NULLPTR str return
+    NULL cast(str) return
   endif drop
   "[ERROR] Could not find required positional argument '" eputs
   argument_name eputs
@@ -168,7 +168,7 @@ function Argparser.get_option_argument parser:Argparser argument_name:str -> str
       argument_name parser Argparser.get_argument_by_name
       if ParserArgument.is_flag do
         // TODO: Find a better way to return truthy value when flag is present
-        1 ptr str return
+        1 cast(str) return
       endif drop
       True found =
     endif
@@ -179,7 +179,7 @@ function Argparser.get_option_argument parser:Argparser argument_name:str -> str
   // Raise error if the option is required
   argument_name parser Argparser.get_argument_by_name
   if ParserArgument.is_required not do
-    NULLPTR str return
+    NULL cast(str) return
   endif drop
   "[ERROR] Could not find required option argument '" eputs
   argument_name eputs
@@ -216,7 +216,7 @@ end
 function Argparser.print_help_usage cmd_args:List parser_args:List :
   // Usage: ./executable.bin --required-arg METAVAR [--not-required METAVAR] positional_argument
   "Usage: " puts
-  cmd_args List.first ptr.load str puts " " puts
+  cmd_args List.first str.load puts " " puts
   parser_args cmd_args Argparser.print_options_inline
   parser_args cmd_args Argparser.print_positional_inline
   "\n\n" puts
@@ -283,8 +283,7 @@ end
 // Return
 //    present: bool
 function Argparser.flag_present Argparser str -> bool :
-  Argparser.get_argument  // Returns 1 or 0
-  ptr int bool            // Cast from str to bool
+  Argparser.get_argument cast(bool) // Returns 1 or 0
 end
 
 // Print option arguments in the help of the program (-h|--help)
@@ -415,7 +414,7 @@ end
 //    parser: Argparser
 function Argparser.init str -> Argparser :
   // Allocate memory for Argparser object
-  Argparser.size malloc cast_any
+  Argparser.size malloc cast(Argparser)
   peek parser in
 
   Argparser.set_description
@@ -427,30 +426,30 @@ end
 
 // Argparser getters
 function Argparser.get_description Argparser -> str :
-  ptr str.load
+  cast(ptr) str.load
 end
 
 function Argparser.get_parser_args Argparser -> List :
-  ptr Argparser.parser_args ptr+ List.load
+  cast(ptr) Argparser.parser_args ptr+ List.load
 end
 
 function Argparser.get_cmd_args Argparser -> List :
-  ptr Argparser.cmd_args ptr+ List.load
+  cast(ptr) Argparser.cmd_args ptr+ List.load
 end
 
 // Argparser setters
 function Argparser.set_description Argparser str :
-  ptr swap str.copy swap str.store
+  cast(ptr) swap str.copy swap str.store
 end
 
 function Argparser.set_parser_args parser:Argparser parser_args:List :
-  parser_args ptr
-  parser ptr Argparser.parser_args ptr+ ptr.store
+  parser_args cast(ptr)
+  parser cast(ptr) Argparser.parser_args ptr+ ptr.store
 end
 
 function Argparser.set_cmd_args parser:Argparser cmd_args:List :
-  cmd_args ptr
-  parser ptr Argparser.cmd_args ptr+ ptr.store
+  cmd_args cast(ptr)
+  parser cast(ptr) Argparser.cmd_args ptr+ ptr.store
 end
 
 // Add argument to Argparser
@@ -496,7 +495,7 @@ function Argparser.get_argument_by_name parser:Argparser name:str -> ParserArgum
   name eputs
   "'\n" eputs
   1 exit
-  NULL cast_any
+  NULL cast(ParserArgument)
 end
 
 // Get the zero-based position of the positional argument
@@ -549,7 +548,7 @@ k// Initialize ParserArgument object
 //    argument: ParserArgument
 function ParserArgument.init str str str bool -> ParserArgument :
   // Allocate memory for ParserArgument
-  ParserArgument.size malloc cast_any
+  ParserArgument.size malloc cast(ParserArgument)
   take argument in
 
   if dup "--" str.startswith do
@@ -571,56 +570,56 @@ end
 
 // ParserArgument getters
 function ParserArgument.get_name ParserArgument -> str :
-  ptr str.load
+  cast(ptr) str.load
 end
 
 function ParserArgument.get_help ParserArgument -> str :
-  ptr ParserArgument.help ptr+ str.load
+  cast(ptr) ParserArgument.help ptr+ str.load
 end
 
 function ParserArgument.get_metavar ParserArgument -> str :
-  ptr ParserArgument.metavar ptr+ str.load
+  cast(ptr) ParserArgument.metavar ptr+ str.load
 end
 
 function ParserArgument.is_required ParserArgument -> bool :
-  ptr ParserArgument.required ptr+ bool.load
+  cast(ptr) ParserArgument.required ptr+ bool.load
 end
 
 function ParserArgument.is_positional ParserArgument -> bool :
-  ptr ParserArgument.positional ptr+ bool.load
+  cast(ptr) ParserArgument.positional ptr+ bool.load
 end
 
 function ParserArgument.is_flag ParserArgument -> bool :
-  ptr ParserArgument.flag ptr+ bool.load
+  cast(ptr) ParserArgument.flag ptr+ bool.load
 end
 
 // ParserArgument setters
 function ParserArgument.set_name ParserArgument str :
-  ptr swap str.copy swap str.store
+  cast(ptr) swap str.copy swap str.store
 end
 
 function ParserArgument.set_help ParserArgument str :
   swap str.copy swap
-  ptr ParserArgument.help ptr+ str.store
+  cast(ptr) ParserArgument.help ptr+ str.store
 end
 
 function ParserArgument.set_metavar ParserArgument str :
   swap str.copy swap
-  ptr ParserArgument.metavar ptr+ str.store
+  cast(ptr) ParserArgument.metavar ptr+ str.store
 end
 
 function ParserArgument.set_required ParserArgument bool :
-  ptr ParserArgument.required ptr+ bool.store
+  cast(ptr) ParserArgument.required ptr+ bool.store
 end
 
 function ParserArgument.set_positional ParserArgument bool :
-  ptr ParserArgument.positional ptr+ bool.store
+  cast(ptr) ParserArgument.positional ptr+ bool.store
 end
 
 function ParserArgument.set_flag ParserArgument bool :
-  ptr ParserArgument.flag ptr+ bool.store
+  cast(ptr) ParserArgument.flag ptr+ bool.store
 end
 
 function ParserArgument.load ptr -> ParserArgument :
-  ptr.load cast_any
+  ptr.load cast(ParserArgument)
 end

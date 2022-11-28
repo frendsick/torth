@@ -36,31 +36,27 @@ const mode_640 0x1a0 end
 const mode_600 0x180 end
 
 // Extra intrinsics
-function NULLPTR            -> ptr  : NULL ptr              end
-function div      int int   -> int  : divmod swap drop      end
-function mod      int int   -> int  : divmod drop           end
-function /        int int   -> int  : div                   end
-function %        int int   -> int  : mod                   end
-function ^        int int   -> int  : pow                   end
-function not      bool      -> bool : True !=               end
-function |        int int   -> int  : or                    end
-function lor      bool bool -> bool : int swap int or bool  end
-function land     bool bool -> bool : int swap int and bool end
-function ||       bool bool -> bool : lor                   end
-function &&       bool bool -> bool : land                  end
-
-// Casting
-// TODO: Enable creation of empty functions
-function cast_any any -> any : NULL drop end
+function NULLPTR            -> ptr  : NULL cast(ptr)                          end
+function div      int int   -> int  : divmod swap drop                        end
+function mod      int int   -> int  : divmod drop                             end
+function /        int int   -> int  : div                                     end
+function %        int int   -> int  : mod                                     end
+function ^        int int   -> int  : pow                                     end
+function not      bool      -> bool : True !=                                 end
+function |        int int   -> int  : or                                      end
+function lor      bool bool -> bool : cast(int) swap cast(int) or cast(bool)  end
+function land     bool bool -> bool : cast(int) swap cast(int) and cast(bool) end
+function ||       bool bool -> bool : lor                                     end
+function &&       bool bool -> bool : land                                    end
 
 // Get user input from stdin
 function input -> str :
   // Allocate memory for the user input
   MEMORY_CAPACITY malloc
-  MEMORY_CAPACITY over str stdin read // Returns the amount of bytes read
+  MEMORY_CAPACITY over cast(str) stdin read // Returns the amount of bytes read
 
   // Remove the newline character from the end
-  over swap 1 - ptr+ NULL char swap char.store str
+  over swap 1 - ptr+ NULL cast(char) swap char.store cast(str)
 end
 
 // Write a string to a file descriptor
@@ -102,7 +98,7 @@ function malloc length:int -> ptr :
   MAP_ANONYMOUS MAP_PRIVATE |
   PROT_READ PROT_WRITE |
   length
-  NULL SYS_mmap SYSCALL6 ptr
+  NULL SYS_mmap SYSCALL6 cast(ptr)
 end
 
 // Deallocate memory
@@ -143,28 +139,28 @@ function puti int : itoa puts end
 function eputi int : itoa eputs end
 
 // Ptr functions
-function ptr+       int ptr -> ptr : swap int + ptr end
-function ptr-       int ptr -> ptr : swap int - ptr end
-function ptr++      ptr     -> ptr : ptr.size ptr+  end
-function ptr.load   ptr     -> ptr : LOAD_QWORD ptr end
-function ptr.store  ptr ptr ->     : STORE_QWORD    end
+function ptr+       int ptr -> ptr : swap cast(int) + cast(ptr) end
+function ptr-       int ptr -> ptr : swap cast(int) - cast(ptr) end
+function ptr++      ptr     -> ptr : ptr.size ptr+              end
+function ptr.load   ptr     -> ptr : LOAD_QWORD cast(ptr)       end
+function ptr.store  ptr ptr ->     : STORE_QWORD                end
 
 // Bool functions
-function bool.load  ptr       -> bool : LOAD_BYTE bool  end
-function bool.store ptr bool  ->      : STORE_BYTE      end
+function bool.load  ptr       -> bool : LOAD_BYTE cast(bool)    end
+function bool.store ptr bool  ->      : STORE_BYTE              end
 
 // Char functions
-function char.load  ptr       -> char : LOAD_BYTE char  end
-function char.store ptr char  ->      : STORE_BYTE      end
+function char.load  ptr       -> char : LOAD_BYTE cast(char)    end
+function char.store ptr char  ->      : STORE_BYTE              end
 
 // Return the lowercase character for the given character
 function char.lower char -> char :
-  if dup char.is_uppercase do 32 + char endif
+  if dup char.is_uppercase do 32 + cast(char) endif
 end
 
 // Return the uppercase character for the given character
 function char.upper char -> char :
-  if dup char.is_lowercase do 32 - char endif
+  if dup char.is_lowercase do 32 - cast(char) endif
 end
 
 // Test if character is a number
@@ -219,10 +215,10 @@ function char.to_string character:char -> str :
 end
 
 // Int functions
-function int.load     ptr       -> int    : LOAD_QWORD int    end
-function int.store    ptr int   ->        : STORE_QWORD       end
-function uint8.load   ptr       -> uint8  : LOAD_BYTE uint8   end
-function uint8.store  ptr uint8 ->        : STORE_BYTE        end
+function int.load     ptr       -> int    : LOAD_QWORD cast(int)  end
+function int.store    ptr int   ->        : STORE_QWORD           end
+function uint8.load   ptr       -> uint8  : LOAD_BYTE cast(uint8) end
+function uint8.store  ptr uint8 ->        : STORE_BYTE            end
 
 // Get the amount of digits in an integer
 // Params: number
@@ -269,9 +265,9 @@ function itoa num:int -> str :
   endif
 
   // Allocate memory to the string representation
-  num int.get_digits  // digits
-  dup 2 + malloc str      // string
-  10                      // base
+  num int.get_digits        // digits
+  dup 2 + malloc cast(str)  // string
+  10                        // base
   take
     base
     string
@@ -286,7 +282,7 @@ function itoa num:int -> str :
     if dup 9 >
     do    10 - 'a' +
     else  '0' +
-    endif char
+    endif cast(char)
     string str.append
 
     num base / num =  // num = num/base
@@ -332,15 +328,15 @@ function atoi string:str -> int :
 end
 
 // String functions
-function str+         int str   -> str  : swap int + ptr str  end
-function str.load     ptr       -> str  : LOAD_QWORD str      end
-function str.store    ptr str   ->      : STORE_QWORD         end
+function str+         int str   -> str  : swap cast(int) + cast(ptr) cast(str)  end
+function str.load     ptr       -> str  : LOAD_QWORD cast(str)                  end
+function str.store    ptr str   ->      : STORE_QWORD                           end
 
 // Copy string to a newly allocated memory location and return the copied string
 function str.copy str -> str :
   // Allocate memory which can store the string
   dup str.len malloc
-  swap  // str
+  swap // str
   str.fill
 end
 
@@ -365,7 +361,7 @@ function str.fill string:str pointer:ptr -> str :
     pointer index ptr+ char.store
     index 1 + index =
   done
-  pointer str
+  pointer cast(str)
 end
 
 // Insert a string inside another strings at certain index
@@ -395,7 +391,7 @@ function str.insert_at
   // Split the str2 from the index
   str1 index str+ str.copy
   take str1_end in
-  str1 index str+ NULL char swap ptr char.store
+  str1 index str+ NULL cast(char) swap cast(ptr) char.store
 
   final_str str1 str.fill
   str2 str.cat
@@ -405,11 +401,11 @@ end
 // Replace escape sequences with the corresponding characters
 // Example: "Escape newline\n" => "Escape newline<LF>"
 function str.escape string:str -> str :
-  9  char char.to_string
-  10 char char.to_string
-  13 char char.to_string
-  27 char char.to_string
-  92 char char.to_string
+  9  cast(char) char.to_string
+  10 cast(char) char.to_string
+  13 cast(char) char.to_string
+  27 cast(char) char.to_string
+  92 cast(char) char.to_string
   take
     backslash
     Escape
@@ -484,7 +480,7 @@ function str.replace
   endif
 
   // Split the string from the index
-  string index str+ ptr NULL char swap char.store
+  string index str+ cast(ptr) NULL cast(char) swap char.store
   string index substring str.len + str+
   take string_end in
 
@@ -535,25 +531,25 @@ function str.cat str2:str str1:str -> str :
   take final_str in
 
   // Append str2 to final_string
-  final_str dup str.len str+ ptr
+  final_str dup str.len str+ cast(ptr)
   str2 str.fill drop
   final_str
 end
 
 // Free the parameter string's memory
 function str.delete string:str :
-  string str.len 1 + string ptr munmap
+  string str.len 1 + string cast(ptr) munmap
 end
 
 // Append a character to the end of a string buffer
 // Params: string, character
 // Return: None
-function str.append str char : ptr dup str str.len ptr+ char.store end
+function str.append str char : cast(ptr) dup cast(str) str.len ptr+ char.store end
 
 // Get the character at a certain index of a string
 // Params: index, string
 // Return: character_at_index
-function str.char_at int str -> char : swap ptr swap ptr+ char.load end
+function str.char_at int str -> char : swap cast(ptr) swap ptr+ char.load end
 
 // Test if a string is a palindrome (reads the same backward or forward)
 function str.is_palindrome str -> bool : dup str.reverse streq end
@@ -561,14 +557,14 @@ function str.is_palindrome str -> bool : dup str.reverse streq end
 // Test if string only contains numeric characters
 function str.is_numeric string:str -> bool :
   // Check for negative numbers
-  if string ptr char.load '-' == do
+  if string cast(ptr) char.load '-' == do
     string 1 str+ string =
   endif
 
   // Iterate over every character of the string
-  while string ptr char.load NULL != do
+  while string cast(ptr) char.load NULL != do
     // Break if non-numeric character is found
-    if string ptr char.load char.is_numeric not do
+    if string cast(ptr) char.load char.is_numeric not do
       break
     endif
     string 1 str+ string = // Point to the next character
@@ -580,7 +576,7 @@ end
 // Overwrite a string with NULL-bytes
 function str.empty string:str :
   0 while string over str.char_at NULL != do
-    string over str+ ptr NULL char swap char.store
+    string over str+ cast(ptr) NULL cast(char) swap char.store
     1 +
   done drop
 end
@@ -594,7 +590,7 @@ function str.lower string:str -> str :
   // Rewrite string with lowercase characters
   while index len < do
     string index str.char_at char.lower
-    string ptr index ptr+ char.store
+    string cast(ptr) index ptr+ char.store
     index 1 + index = // index++
   done string
 end
@@ -608,7 +604,7 @@ function str.upper string:str -> str :
   // Rewrite string with uppercase characters
   while index len < do
     string index str.char_at char.upper
-    string ptr index ptr+ char.store
+    string cast(ptr) index ptr+ char.store
     index 1 + index = // index++
   done string
 end
@@ -616,7 +612,7 @@ end
 // Strip all non-alphanumeric characters from a string
 function str.alphanumeric str -> str :
   // Allocate enough memory to hold the whole string
-  dup str.len malloc str
+  dup str.len malloc cast(str)
   swap
   0 while over str.len over > do
     // Get the current character
@@ -704,8 +700,8 @@ function str.removesuffix string:str suffix:str :
 
   // Clear the suffix if it exists
   if string suffix str.endswith do
-    string ptr string.len suffix.len -
-    ptr+ str str.empty
+    string cast(ptr) string.len suffix.len -
+    ptr+ cast(str) str.empty
   endif
 end
 
@@ -744,7 +740,7 @@ end
 // Reverse a string
 function str.reverse original:str -> str :
   // Allocate memory for the reversed string
-  original str.len dup malloc str
+  original str.len dup malloc cast(str)
   take reversed index in
 
   // Append characters from the parameter string to allocated memory in the reversed order
@@ -761,7 +757,7 @@ end
 function base64.encode string:str -> str :
   string str.len
   dup 3 %
-  over 2 * malloc str
+  over 2 * malloc cast(str)
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" str.copy
   0
   0
@@ -795,15 +791,15 @@ function base64.encode string:str -> str :
     // This 24-bit number gets separated into four 6-bit numbers
     List.init
     take 6bit_list in
-    24bit_number 18 shr 63 and ptr 6bit_list List.append
-    24bit_number 12 shr 63 and ptr 6bit_list List.append
-    24bit_number 6  shr 63 and ptr 6bit_list List.append
-    24bit_number        63 and ptr 6bit_list List.append
+    24bit_number 18 shr 63 and cast(ptr) 6bit_list List.append
+    24bit_number 12 shr 63 and cast(ptr) 6bit_list List.append
+    24bit_number 6  shr 63 and cast(ptr) 6bit_list List.append
+    24bit_number        63 and cast(ptr) 6bit_list List.append
 
     // Those four 6-bit numbers are used as indices into the base64 character list
     0 while dup 4 < do
       base64_characters over 6bit_list List.nth int.load str.char_at
-      base64_string ptr base64_index ptr+ char.store
+      base64_string cast(ptr) base64_index ptr+ char.store
       base64_index 1 + base64_index = // base64_index++
       1 +
     done drop
@@ -812,7 +808,7 @@ function base64.encode string:str -> str :
   done
 
   // Append the padding characters and return the result
-  NULL char base64_string dup str.len padding_size - str+ ptr char.store
+  NULL cast(char) base64_string dup str.len padding_size - str+ cast(ptr) char.store
   if    padding_size 1 ==
   do    base64_string "="   str.cat return
   elif  padding_size 2 ==
@@ -852,7 +848,7 @@ function read_file path:str -> str :
   path O_RDONLY open_file
 
   // Allocate string buffer
-  MEMORY_CAPACITY malloc str
+  MEMORY_CAPACITY malloc cast(str)
   take buffer fd in
 
   // Read the file to the string buffer and return it
@@ -870,7 +866,7 @@ function read_file path:str -> str :
   MEMORY_CAPACITY read_bytes - offset -
   take excessive_bytes in
 
-  excessive_bytes buffer ptr read_bytes offset + ptr+ munmap
+  excessive_bytes buffer cast(ptr) read_bytes offset + ptr+ munmap
 
   // Close the file descriptor
   fd SYS_close syscall1 drop
@@ -965,7 +961,7 @@ end
 function getenv evar_key:str -> str :
   // Check environment variables one by one
   0 take index in
-  while envp ptr.load int NULL != do
+  while envp int.load NULL != do
     envp index ptr.size * ptr+ str.load
     take evar_value in
 
@@ -976,12 +972,12 @@ function getenv evar_key:str -> str :
       done
 
       // Get the string from the character after '='
-      evar_value ptr swap 1 + ptr+ str
+      evar_value cast(ptr) swap 1 + ptr+ cast(str)
       return
     endif
     index 1 + index = // index++
   done
 
   // Return NULLPTR if evar_key was not found
-  NULLPTR str
+  NULLPTR cast(str)
 end

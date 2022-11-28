@@ -6,7 +6,7 @@ class Op
   func:Func
 
   method init id:int type:int token:Token func:Func -> Op :
-    Op.size malloc cast_any
+    Op.size malloc cast(Op)
     take op in
 
     id    op Op->id
@@ -17,6 +17,6 @@ class Op
   end
 
   method load ptr -> Op :
-    ptr.load cast_any
+    ptr.load cast(Op)
   end
 endclass

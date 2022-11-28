@@ -6,7 +6,7 @@ class TypeCheckInfo
   return_present:bool
 
   method init -> TypeCheckInfo :
-    TypeCheckInfo.size malloc cast_any
+    TypeCheckInfo.size malloc cast(TypeCheckInfo)
     take type_check_info in
 
     // Initialize TypeCheckInfo object with default values

@@ -6,7 +6,7 @@ class Signature
   returns:List
 
   method init param_types:List return_types:List -> Signature :
-    Signature.size malloc cast_any
+    Signature.size malloc cast(Signature)
     take signature in
 
     param_types   signature Signature->params

@@ -7,7 +7,7 @@ class Token
   location:Location
 
   method init value:str type:str location:Location -> Token :
-    Token.size malloc cast_any
+    Token.size malloc cast(Token)
     take token in
 
     value         token Token->value
@@ -18,10 +18,10 @@ class Token
   end
 
   method load ptr -> Token :
-    ptr.load cast_any
+    ptr.load cast(Token)
   end
 
   method delete self:Token :
-    Token.size self ptr munmap
+    Token.size self cast(ptr) munmap
   end
 endclass

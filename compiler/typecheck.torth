@@ -13,11 +13,11 @@ include "compiler/class/TypeNode"
 function INTEGER_TYPES -> Array :
   5 Array.init
   take array in
-  "any"   ptr array Array.append
-  "bool"  ptr array Array.append
-  "char"  ptr array Array.append
-  "int"   ptr array Array.append
-  "uint8" ptr array Array.append
+  "any"   cast(ptr) array Array.append
+  "bool"  cast(ptr) array Array.append
+  "char"  cast(ptr) array Array.append
+  "int"   cast(ptr) array Array.append
+  "uint8" cast(ptr) array Array.append
   array
 end
 
@@ -29,9 +29,9 @@ end
 function POINTER_TYPES -> Array :
   3 Array.init
   take array in
-  "any" ptr array Array.append
-  "ptr" ptr array Array.append
-  "str" ptr array Array.append
+  "any" cast(ptr) array Array.append
+  "ptr" cast(ptr) array Array.append
+  "str" cast(ptr) array Array.append
   array
 end
 
@@ -47,7 +47,7 @@ function type_check_application sub_programs:List[Program] functions:List[Func] 
 
   // Type check every sub-program in the application
   while index sub_programs.len < do
-    index sub_programs cast_list List.nth ptr.load cast_any
+    index sub_programs cast_list List.nth ptr.load cast(Program)
     take sub_program in
 
     functions sub_program type_check_sub_program
@@ -92,14 +92,15 @@ function type_check_sub_program
   List.init dup
   func get_function_type_stack
   swap List.append
-  List.init cast_any // List[Variable]
+  List.init cast(List[Variable])
   take variables branched_stacks in
 
   // Type check every Op in Program
   while index program.len < do
     index program cast_list List.nth Op.load
     take op in
-    if_block_return_stacks cast_any if_block_original_stacks cast_any
+    if_block_return_stacks    cast(List[TypeStack])
+    if_block_original_stacks  cast(List[TypeStack])
     type_check_info variables functions program branched_stacks op type_check_op
     type_check_info =
     index 1 + index =
@@ -154,29 +155,11 @@ function type_check_op
   elif op_type OpType.CAST == do
     type_stack token type_check_cast
     type_check_info return
-  elif op_type OpType.CAST_BOOL == do
-    type_stack token type_check_cast_bool
-    type_check_info return
-  elif op_type OpType.CAST_CHAR == do
-    type_stack token type_check_cast_char
-    type_check_info return
-  elif op_type OpType.CAST_INT == do
-    type_stack token type_check_cast_int
-    type_check_info return
-  elif op_type OpType.CAST_PTR == do
-    type_stack token type_check_cast_ptr
-    type_check_info return
-  elif op_type OpType.CAST_STR == do
-    type_stack token type_check_cast_str
-    type_check_info return
-  elif op_type OpType.CAST_UINT8 == do
-    type_stack token type_check_cast_uint8
-    type_check_info return
   elif op_type OpType.DO == do
     branched_stacks type_stack token type_check_do
     type_check_info return
   elif op_type OpType.DONE == do
-    NULL cast_any branched_stacks type_stack token type_check_end_of_branch
+    NULL cast(Node) branched_stacks type_stack token type_check_end_of_branch
     type_check_info return
   elif op_type OpType.ELIF == do
     // Set type_check_info.else_present to False
@@ -249,7 +232,7 @@ function type_check_op
     // IF block's stack is determined by the previous sections in the block
     if_block_return_stacks cast_list List.last Node.load
     take if_block_return_stack in
-    if if_block_return_stack Node.get_data int NULL == do
+    if if_block_return_stack Node.get_data cast(int) NULL == do
       if_block_original_stacks cast_list List.last Node.load TypeStack.copy
       if_block_return_stack =
     endif
@@ -271,7 +254,7 @@ function type_check_op
   token_value                   str.cat
   "' is not implemented yet\n"  str.cat
   "NOT_IMPLEMENTED" CompilerErrorWithStack
-  NULL cast_any
+  NULL cast(TypeCheckInfo)
 end
 
 // Type check an intrinsic
@@ -365,7 +348,7 @@ function type_check_end_of_program func:Func type_stack:Node :
   // There should be one INT in the stack when the program ends
   if function_name str.copy str.upper "MAIN" streq do
     List.init take return_types in
-    "int" ptr return_types List.append
+    "int" cast(ptr) return_types List.append
 
     // Return early if there is only one integer in the stack
     if type_stack TypeStack.get_types return_types List.streq do
@@ -416,7 +399,7 @@ function correct_return_types func:Func type_stack:Node -> bool :
   0 index =
   while index returns List.len < do
     func Func.tokens cast_list List.first Token.load Token.location
-    index returns List.nth str.load TypeNode.init ptr
+    index returns List.nth str.load TypeNode.init cast(ptr)
     temp_stack LinkedList.push
     index 1 + index =
   done
@@ -429,13 +412,13 @@ end
 //    type_stack2: LinkedList[TypeNode]
 // Return bool
 function equal_stacks type_stack1:Node type_stack2:Node -> bool :
-  type_stack1 ptr Node.load
-  type_stack2 ptr Node.load
+  type_stack1 cast(ptr) Node.load
+  type_stack2 cast(ptr) Node.load
   take type_node2 type_node1 in
 
   while
-    type_node1 int NULL !=
-    type_node2 int NULL !=
+    type_node1 cast(int) NULL !=
+    type_node2 cast(int) NULL !=
     &&
   do
     // Return early if the current types do not match
@@ -456,8 +439,8 @@ function equal_stacks type_stack1:Node type_stack2:Node -> bool :
   done
 
   // Stacks are equal if both TypeStacks are empty after the loop
-  type_node1 int NULL ==
-  type_node2 int NULL == &&
+  type_node1 cast(int) NULL ==
+  type_node2 cast(int) NULL == &&
 end
 
 // Check if the stack state is the same after the branch block whether or not the branch condition is matched
@@ -492,7 +475,7 @@ function type_check_end_of_branch
   endif
 
   // Check if stack states are different between sections inside IF block
-  if if_block_return_stack int NULL != do
+  if if_block_return_stack cast(int) NULL != do
     // Return early if the stacks are equal with the previous sections of IF block
     if stack_after_branch if_block_return_stack equal_stacks do
       return
@@ -542,7 +525,7 @@ function type_check_assign_bind
   type_stack LinkedList.pop
   take t2 t1 temp_stack in
 
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     "ASSIGN operation requires two values on the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -575,7 +558,7 @@ function type_check_assign_bind
   endif
 end
 
-// CAST(<type>) explicitely casts the top element of the stack to <type>.
+// CAST(<type>) explicitely casts the top element of the stack to <type>
 // Params
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
@@ -584,7 +567,7 @@ function type_check_cast token:Token type_stack:Node :
   // Pop the current type
   type_stack LinkedList.pop
   take type in
-  if type int -1 == do
+  if type cast(int) -1 == do
     type_stack token
     "The stack is empty"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -594,172 +577,12 @@ function type_check_cast token:Token type_stack:Node :
   token Token.value str.copy
   take token_value in
   token_value dup str.len 1 - str+
-  ptr NULL char swap char.store
+  cast(ptr) NULL cast(char) swap char.store
   "(" token_value str.find 1 +
   token_value swap str+
 
   // Push <type> to the stack
-  token Token.location swap TypeNode.init ptr
-  type_stack LinkedList.push
-end
-
-// CAST_BOOL explicitely casts the top element of the stack to BOOL type.
-// The top element must be an integer to be cast to BOOL.
-// Params
-//    token: Token
-//    type_stack: LinkedList[TypeNode]
-// Return None
-function type_check_cast_bool token:Token type_stack:Node :
-  type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  take type temp_stack in
-
-  if type int -1 == do
-    temp_stack token
-    "The stack is empty"
-    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  elif type TypeNode.type INTEGER_TYPES Array.contains_str not do
-    temp_stack token
-    "Only integer-like values can be cast to BOOL\nPopped type: "
-    type TypeNode.type str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
-  endif
-
-  // Push a boolean back to the stack
-  token Token.location "bool" TypeNode.init ptr
-  type_stack LinkedList.push
-end
-
-// CAST_CHAR explicitely casts the top element of the stack to CHAR type.
-// The top element must be in INTEGER_TYPES to be cast to CHAR.
-// Params
-//    token: Token
-//    type_stack: LinkedList[TypeNode]
-// Return None
-function type_check_cast_char token:Token type_stack:Node :
-  type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  take type temp_stack in
-
-  if type int -1 == do
-    temp_stack token
-    "The stack is empty"
-    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  elif type TypeNode.type "bool" streq do
-    temp_stack token
-    "A boolean value cannot be cast to CHAR"
-    "VALUE_ERROR" CompilerErrorWithStack
-  elif type TypeNode.type INTEGER_TYPES Array.contains_str not do
-    temp_stack token
-    "Only integer-like values can be cast to CHAR\nPopped type: "
-    type TypeNode.type str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
-  endif
-
-  // Push a character back to the stack
-  token Token.location "char" TypeNode.init ptr
-  type_stack LinkedList.push
-end
-
-// CAST_INT explicitely casts the top element of the stack to INT type.
-// Params
-//    token: Token
-//    type_stack: LinkedList[TypeNode]
-// Return None
-function type_check_cast_int token:Token type_stack:Node :
-  type_stack LinkedList.pop
-  take type in
-
-  if type int -1 == do
-    type_stack token
-    "The stack is empty"
-    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  endif
-
-  // Push an integer back to the stack
-  token Token.location "int" TypeNode.init ptr
-  type_stack LinkedList.push
-end
-
-// CAST_PTR explicitely casts the top element of the stack to PTR type.
-// Params
-//    token: Token
-//    type_stack: LinkedList[TypeNode]
-// Return None
-function type_check_cast_ptr token:Token type_stack:Node :
-  type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  take type temp_stack in
-
-  if type int -1 == do
-    temp_stack token
-    "The stack is empty"
-    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  elif
-    type TypeNode.type "bool" streq
-    type TypeNode.type "char" streq
-    ||
-  do
-    temp_stack token
-    type TypeNode.type
-    " cannot be cast to PTR" str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
-  endif
-
-  // Push a pointer back to the stack
-  token Token.location "ptr" TypeNode.init ptr
-  type_stack LinkedList.push
-end
-
-// CAST_STR explicitely casts the top element of the stack to STR type.
-// Params
-//    token: Token
-//    type_stack: LinkedList[TypeNode]
-// Return None
-function type_check_cast_str token:Token type_stack:Node :
-  type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  take type temp_stack in
-
-  if type int -1 == do
-    temp_stack token
-    "The stack is empty"
-    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  elif type TypeNode.type POINTER_TYPES Array.contains_str not do
-    temp_stack token
-    type TypeNode.type
-    " cannot be cast to STR" str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
-  endif
-
-  // Push a string back to the stack
-  token Token.location "str" TypeNode.init ptr
-  type_stack LinkedList.push
-end
-
-// CAST_UINT8 explicitely casts the top element of the stack to UINT8 type.
-// Params
-//    token: Token
-//    type_stack: LinkedList[TypeNode]
-// Return None
-function type_check_cast_uint8 token:Token type_stack:Node :
-  type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  take type temp_stack in
-
-  if type int -1 == do
-    temp_stack token
-    "The stack is empty"
-    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  elif type TypeNode.type INTEGER_TYPES Array.contains_str not do
-    temp_stack token
-    "Only integer-like values can be cast to UINT8\nPopped type: "
-    type TypeNode.type str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
-  endif
-
-  // Push 8-bit unsigned integer back to the stack
-  token Token.location "uint8" TypeNode.init ptr
+  token Token.location swap TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -778,7 +601,7 @@ function type_check_do
   type_stack LinkedList.pop
   take type temp_stack in
 
-  if type int -1 == do
+  if type cast(int) -1 == do
     temp_stack token
     "The stack is empty"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -805,9 +628,9 @@ function type_check_elif
   if_block_return_stack:Node
 :
   // Save the state of the stack after the first part of the IF block
-  if if_block_return_stack Node.get_data int NULL == do
-    type_stack TypeStack.copy ptr Node.load
-    if_block_return_stack     ptr Node.store
+  if if_block_return_stack Node.get_data cast(int) NULL == do
+    type_stack TypeStack.copy cast(ptr) Node.load
+    if_block_return_stack     cast(ptr) Node.store
   endif
   if_block_return_stack branched_stacks type_stack token type_check_end_of_branch
 end
@@ -828,9 +651,9 @@ function type_check_else
   if_block_original_stack:Node
 :
   // Save the state of the stack after the first part of the IF block
-  if if_block_return_stack Node.get_data int NULL == do
-    type_stack TypeStack.copy ptr Node.load
-    if_block_return_stack     ptr Node.store
+  if if_block_return_stack Node.get_data cast(int) NULL == do
+    type_stack TypeStack.copy cast(ptr) Node.load
+    if_block_return_stack     cast(ptr) Node.store
   endif
   if_block_return_stack branched_stacks type_stack token type_check_end_of_branch
 
@@ -863,9 +686,9 @@ function type_check_endif
   take if_block_return_stack in
 
   // Save the state of the stack after the first part of the IF block
-  if if_block_return_stack Node.get_data int NULL == do
-    type_stack TypeStack.copy ptr Node.load
-    if_block_return_stack     ptr Node.store
+  if if_block_return_stack Node.get_data cast(int) NULL == do
+    type_stack TypeStack.copy cast(ptr) Node.load
+    if_block_return_stack     cast(ptr) Node.store
   endif
 
   // Type check the ENDIF as the end of the IF block
@@ -894,8 +717,8 @@ function type_check_endif
   endif
 
   // Make the IF block's return stack the new stack for the program
-  if if_block_return_stack Node.get_data int NULL != do
-    if_block_return_stack branched_stacks List.last ptr Node.store
+  if if_block_return_stack Node.get_data cast(int) NULL != do
+    if_block_return_stack branched_stacks List.last cast(ptr) Node.store
   endif
 
   // Reset IF-block variables
@@ -940,7 +763,7 @@ function type_check_function_call
 
   // Pop param types
   while index param_types.len < do
-    if type_stack Node.get_data int NULL == do
+    if type_stack Node.get_data cast(int) NULL == do
       temp_stack token
       "Not enough parameters for '"
       function_name             str.cat
@@ -975,7 +798,7 @@ function type_check_function_call
     take return_type in
 
     // Push the current return type to the stack
-    token Token.location return_type TypeNode.init ptr
+    token Token.location return_type TypeNode.init cast(ptr)
     type_stack LinkedList.push
     index 1 + index =
   done
@@ -1003,7 +826,7 @@ function type_check_peek_bind
     index 1 + index =
   done
 
-  if type int -1 == do
+  if type cast(int) -1 == do
     type_stack token
     "Could not peek "
     count itoa str.cat
@@ -1031,7 +854,7 @@ function type_check_pop_bind
   take type in
 
   // Stack is empty
-  if type int -1 == do
+  if type cast(int) -1 == do
     type_stack token
     "Cannot drop value from empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1054,7 +877,7 @@ function type_check_push_bind
 :
   token Token.location
   token Token.value variables List.get_variable Variable.type
-  TypeNode.init ptr type_stack LinkedList.push
+  TypeNode.init cast(ptr) type_stack LinkedList.push
 end
 
 // Push a boolean to the stack
@@ -1063,7 +886,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_bool token:Token type_stack:Node :
-  token Token.location "bool" TypeNode.init ptr
+  token Token.location "bool" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1073,7 +896,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_char token:Token type_stack:Node :
-  token Token.location "char" TypeNode.init ptr
+  token Token.location "char" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1083,7 +906,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_int token:Token type_stack:Node :
-  token Token.location "int" TypeNode.init ptr
+  token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1093,7 +916,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_ptr token:Token type_stack:Node :
-  token Token.location "ptr" TypeNode.init ptr
+  token Token.location "ptr" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1103,7 +926,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_str token:Token type_stack:Node :
-  token Token.location "str" TypeNode.init ptr
+  token Token.location "str" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1113,7 +936,7 @@ end
 //    type_stack: LinkedList[TypeNode]
 // Return None
 function type_check_push_uint8 token:Token type_stack:Node :
-  token Token.location "uint8" TypeNode.init ptr
+  token Token.location "uint8" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1173,7 +996,7 @@ function type_check_divmod token:Token type_stack:Node :
   in
 
   // Not enough values in the stack
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     token_value " intrinsic requires two integers" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1194,8 +1017,8 @@ function type_check_divmod token:Token type_stack:Node :
   // Push the remainder and the quotient to the stack
   token Token.location
   take location in
-  location "int" TypeNode.init ptr type_stack LinkedList.push
-  location "int" TypeNode.init ptr type_stack LinkedList.push
+  location "int" TypeNode.init cast(ptr) type_stack LinkedList.push
+  location "int" TypeNode.init cast(ptr) type_stack LinkedList.push
 end
 
 // DROP removes one item from the stack
@@ -1209,7 +1032,7 @@ function type_check_drop token:Token type_stack:Node :
   take type in
 
   // Stack is empty
-  if type int -1 == do
+  if type cast(int) -1 == do
     type_stack token
     "Cannot drop value from empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1227,7 +1050,7 @@ function type_check_dup token:Token type_stack:Node :
   take type in
 
   // Stack is empty
-  if type int -1 == do
+  if type cast(int) -1 == do
     type_stack token
     "Cannot duplicate value from empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1252,7 +1075,7 @@ function type_check_load token:Token type_stack:Node :
   take type temp_stack in
 
   // Stack is empty
-  if type int -1 == do
+  if type cast(int) -1 == do
     temp_stack token
     "The stack is empty - PTR required"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1267,7 +1090,7 @@ function type_check_load token:Token type_stack:Node :
   endif
 
   // Push loaded value which could be of any type
-  token Token.location "any" TypeNode.init ptr
+  token Token.location "any" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1290,7 +1113,7 @@ function type_check_nth
   take type temp_stack in
 
   // Not enough values in the stack
-  if type int -1 == do
+  if type cast(int) -1 == do
     temp_stack token
     "NTH intrinsic requires an integer"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1325,7 +1148,7 @@ function type_check_nth
   done
 
   // Not enough items in the stack
-  if popped int -1 == do
+  if popped cast(int) -1 == do
     type_stack token
     "Cannot get "
     N itoa str.cat
@@ -1334,7 +1157,7 @@ function type_check_nth
   endif
 
   // Push the Nth item to the real TypeStack
-  token Token.location popped TypeNode.type TypeNode.init ptr
+  token Token.location popped TypeNode.type TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1352,7 +1175,7 @@ function type_check_over token:Token type_stack:Node :
   take t2 t1 temp_stack in
 
   // Not enough values in the stack
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     "OVER intrinsic requires two values in the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1376,7 +1199,7 @@ function type_check_print token:Token type_stack:Node :
   take type temp_stack in
 
   // Not enough values in the stack
-  if type int -1 == do
+  if type cast(int) -1 == do
     temp_stack token
     "Cannot print from an empty stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1405,7 +1228,7 @@ function type_check_rot token:Token type_stack:Node :
   take t3 t2 t1 temp_stack in
 
   // Not enough values in the stack
-  if t3 int -1 == do
+  if t3 cast(int) -1 == do
     temp_stack token
     "ROT intrinsic requires three values in the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1437,7 +1260,7 @@ function type_check_store token:Token type_stack:Node :
   take required_values_str in
 
   // Not enough values in the stack
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     required_values_str
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1467,7 +1290,7 @@ function type_check_swap token:Token type_stack:Node :
   take t2 t1 temp_stack in
 
   // Not enough values in the stack
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     "SWAP intrinsic requires two values in the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1507,7 +1330,7 @@ function type_check_syscall token:Token type_stack:Node :
   in
 
   // SYSCALLx intrinsics require x+1 parameters
-  if type int -1 == do
+  if type cast(int) -1 == do
     temp_stack token
     token_value " intrinsic requires "  str.cat
     parameter_count 1 + itoa            str.cat
@@ -1533,7 +1356,7 @@ function type_check_syscall token:Token type_stack:Node :
     type =
 
     // There is not enough values in the stack
-    if type int -1 == do
+    if type cast(int) -1 == do
       temp_stack token
       token_value " intrinsic requires "  str.cat
       parameter_count 1 + itoa            str.cat
@@ -1548,7 +1371,7 @@ function type_check_syscall token:Token type_stack:Node :
   done
 
   // Push syscall return code to the stack
-  token Token.location "int" TypeNode.init ptr
+  token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1566,7 +1389,7 @@ function type_check_bitwise token:Token type_stack:Node :
   take t2 t1 temp_stack token_value in
 
   // Not enough values in the stack
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     token_value " intrinsic requires two integers" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1585,7 +1408,7 @@ function type_check_bitwise token:Token type_stack:Node :
   endif
 
   // Push the result to the stack
-  token Token.location "int" TypeNode.init ptr
+  token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1605,7 +1428,7 @@ function type_check_bitshift token:Token type_stack:Node :
   take t2 t1 temp_stack token_value in
 
   // Not enough values in the stack
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     token_value " intrinsic requires two values in the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1624,7 +1447,7 @@ function type_check_bitshift token:Token type_stack:Node :
   endif
 
   // Push the result to the stack
-  token Token.location "int" TypeNode.init ptr
+  token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1642,7 +1465,7 @@ function type_check_calculations token:Token type_stack:Node :
   take t2 t1 temp_stack token_value in
 
   // Not enough values in the stack
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     token_value " requires two values on the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1661,7 +1484,7 @@ function type_check_calculations token:Token type_stack:Node :
   endif
 
   // Push the result to the stack
-  token Token.location "int" TypeNode.init ptr
+  token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1681,7 +1504,7 @@ function type_check_comparison token:Token type_stack:Node :
   take t2 t1 temp_stack token_value in
 
   // Not enough values in the stack
-  if t2 int -1 == do
+  if t2 cast(int) -1 == do
     temp_stack token
     token_value " requires two values on the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
@@ -1700,7 +1523,7 @@ function type_check_comparison token:Token type_stack:Node :
   endif
 
   // Push the result to the stack
-  token Token.location "bool" TypeNode.init ptr
+  token Token.location "bool" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
@@ -1712,11 +1535,11 @@ end
 function get_not_typed_tokens -> List :
   // ["BREAK", "CONTINUE", "PEEK", "TAKE", "WHILE"]
   List.init take not_typed_tokens in
-  "BREAK"     ptr not_typed_tokens List.append
-  "CONTINUE"  ptr not_typed_tokens List.append
-  "PEEK"      ptr not_typed_tokens List.append
-  "TAKE"      ptr not_typed_tokens List.append
-  "WHILE"     ptr not_typed_tokens List.append
+  "BREAK"     cast(ptr) not_typed_tokens List.append
+  "CONTINUE"  cast(ptr) not_typed_tokens List.append
+  "PEEK"      cast(ptr) not_typed_tokens List.append
+  "TAKE"      cast(ptr) not_typed_tokens List.append
+  "WHILE"     cast(ptr) not_typed_tokens List.append
   not_typed_tokens
 end
 
@@ -1744,7 +1567,7 @@ function get_function_type_stack func:Func -> Node :
     // Add TypeNode from current parameter to type_stack
     location
     index params List.nth str.load
-    TypeNode.init ptr
+    TypeNode.init cast(ptr)
     type_stack LinkedList.push
     index 1 - index =
   done

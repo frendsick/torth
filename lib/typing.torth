@@ -17,18 +17,19 @@ const ITERABLE_CAPACITY 128 end
 // Return: array (PTR)
 function Array.init int -> Array :
   // Allocate memory for the array
-  ptr.size * int.size + malloc cast_any
+  ptr.size * int.size + malloc
 
   // Set the size to 0
   0 over int.store
+  cast(Array) // Return Array
 end
 
 function Array.load ptr -> Array :
-  ptr.load cast_any
+  ptr.load cast(Array)
 end
 
 function Array.store ptr Array :
-  swap ptr swap ptr.store
+  swap cast(ptr) swap ptr.store
 end
 
 // Cast any type to Array
@@ -41,7 +42,7 @@ function cast_array any -> Array : NULL drop end
 function Array.delete Array :
   take array in
   array Array.size
-  array ptr munmap
+  array cast(ptr) munmap
 end
 
 // Get the length of an array (number of elements)
@@ -49,7 +50,7 @@ end
 // Return: len (INT)
 function Array.len Array -> int :
   // The length is stored at the array pointer
-  ptr int.load
+  cast(ptr) int.load
 end
 
 // Get array's allocated memory size in bytes
@@ -63,7 +64,7 @@ end
 // Params: array (PTR)
 // Return: None
 function Array.empty Array :
-  0 swap ptr int.store
+  0 swap cast(ptr) int.store
 end
 
 // Copy the array to new memory location
@@ -80,7 +81,7 @@ function Array.copy Array -> Array :
   in
 
   // Copy the old memory to the new location
-  memory_size old_array ptr new_array ptr memcpy
+  memory_size old_array cast(ptr) new_array cast(ptr) memcpy
   new_array
 end
 
@@ -88,7 +89,7 @@ end
 // Params: array (PTR)
 // Return: array[0] (PTR)
 function Array.first Array -> ptr :
-  ptr int.size ptr+
+  cast(ptr) int.size ptr+
 end
 
 // Get pointer to the Nth element of the array
@@ -107,12 +108,12 @@ function Array.nth Array int -> ptr :
     "[ERROR] Cannot get " eputs
     N   eputi ". value from the array with " eputs
     len eputi " items\n" eputs
-    0 exit NULL ptr
+    0 exit NULL cast(ptr)
     return
   endif
 
   // Return pointer to the Nth element from the array
-  array ptr N ptr.size * int.size + ptr+
+  array cast(ptr) N ptr.size * int.size + ptr+
 end
 
 // Append value pointer to an array
@@ -127,13 +128,13 @@ function Array.append Array any :
   in
 
   // Add the value to the end of the Array
-  array ptr int.size ptr+
+  array cast(ptr) int.size ptr+
   ptr.size len * ptr+
   value swap
   ptr.store
 
   // Increment the Array's length by one
-  len 1 + array ptr int.store
+  len 1 + array cast(ptr) int.store
 end
 
 // Remove an item from the certain index of the Array
@@ -168,7 +169,7 @@ function Array.pop Array int :
   done
 
   // Decrement the Array.len
-  len 1 - array ptr int.store
+  len 1 - array cast(ptr) int.store
 end
 
 // Test if array contains an integer
@@ -295,7 +296,7 @@ end
 // Params: array (PTR)
 // Return: None
 function Array.print Array :
-  dup ptr int.load
+  dup cast(ptr) int.load
   take len array in
   0 while dup len < do
     array Array.first
@@ -309,7 +310,7 @@ end
 // Params: array (PTR)
 // Return: None
 function Array.puts Array :
-  dup ptr int.load
+  dup cast(ptr) int.load
   take len array in
   0 while dup len < do
     array Array.first
@@ -343,43 +344,43 @@ END
 // Return: list (PTR)
 function List.init -> List :
   // Allocate memory for the initial array
-  ITERABLE_CAPACITY Array.init cast_any
+  ITERABLE_CAPACITY Array.init
   take array in
 
   // Allocate memory for List object
-  List.size malloc cast_any
+  List.size malloc
   take list in
 
   // List(array=array, capacity=ITERABLE_CAPACITY)
-  array             list List.array     ptr+ ptr.store
+  array cast(ptr)   list List.array     ptr+ ptr.store
   ITERABLE_CAPACITY list List.capacity  ptr+ int.store
-  list
+  list cast(List)
 end
 
 // List getters
 function List.get_array List -> Array :
-  ptr Array.load
+  cast(ptr) Array.load
 end
 
 function List.get_capacity List -> int :
-  ptr List.capacity ptr+ int.load
+  cast(ptr) List.capacity ptr+ int.load
 end
 
 // List setters
 function List.set_array List Array :
-  ptr Array.store
+  cast(ptr) Array.store
 end
 
 function List.set_capacity List int :
-  ptr List.capacity ptr+ int.store
+  cast(ptr) List.capacity ptr+ int.store
 end
 
 function List.load ptr -> List :
-  ptr.load cast_any
+  ptr.load cast(List)
 end
 
 function List.store ptr List :
-  swap ptr swap ptr.store
+  swap cast(ptr) swap ptr.store
 end
 
 // Cast any type to List
@@ -395,7 +396,7 @@ function List.delete List :
   array Array.delete
 
   // Deallocate the List object
-  List.size list ptr munmap
+  List.size list cast(ptr) munmap
 end
 
 // Append value pointer to a list
@@ -427,10 +428,10 @@ function List.append List any :
 
     // Copy the old array to new_array
     // dest (PTR), src (PTR), len (INT)
-    array Array.size array ptr new_array ptr memcpy
+    array Array.size array cast(ptr) new_array cast(ptr) memcpy
 
     // Update new array length
-    len new_array ptr int.store
+    len new_array cast(ptr) int.store
 
     // Deallocate the old array
     array Array.delete
@@ -471,7 +472,7 @@ function List.copy List -> List :
   in
 
   // Copy the old memory to the new location
-  memory_size old_list ptr new_list ptr memcpy
+  memory_size old_list cast(ptr) new_list cast(ptr) memcpy
   new_list
 end
 
@@ -541,8 +542,9 @@ end
 //    TODO: Rename LinkedList to indicate it is a doubly linked lists
 //    LinkedList.init returns a pointer to the head Node.
 function LinkedList.init -> Node :
-  ptr.size malloc cast_any
+  ptr.size malloc
   NULLPTR over ptr.store
+  cast(Node)
 end
 
 enum Node.size 8 :
@@ -552,35 +554,35 @@ enum Node.size 8 :
 end
 
 function Node.get_data Node -> ptr :
-  ptr ptr.load
+  cast(ptr) ptr.load
 end
 
 function Node.get_next Node -> Node :
-  ptr Node.next ptr+ Node.load
+  cast(ptr) Node.next ptr+ Node.load
 end
 
 function Node.get_prev Node -> Node :
-  ptr Node.prev ptr+ Node.load
+  cast(ptr) Node.prev ptr+ Node.load
 end
 
 function Node.set_data Node ptr :
-  ptr ptr.store
+  cast(ptr) ptr.store
 end
 
 function Node.set_next Node ptr :
-  ptr Node.next ptr+ ptr.store
+  cast(ptr) Node.next ptr+ ptr.store
 end
 
 function Node.set_prev Node ptr :
-  ptr Node.prev ptr+ ptr.store
+  cast(ptr) Node.prev ptr+ ptr.store
 end
 
 function Node.load ptr -> Node :
-  ptr.load cast_any
+  ptr.load cast(Node)
 end
 
 function Node.store ptr Node :
-  swap cast_any swap ptr.store
+  swap cast(ptr) swap ptr.store
 end
 
 // Push Node to LinkedList
@@ -589,10 +591,10 @@ end
 //    new_data: ptr
 // Return None
 function LinkedList.push Node ptr :
-  dup ptr Node.load
+  dup cast(ptr) Node.load
 
   // Allocate new Node
-  Node.size malloc cast_any
+  Node.size malloc cast(Node)
   take
     new_node
     head_node
@@ -604,16 +606,16 @@ function LinkedList.push Node ptr :
   new_data new_node Node.set_data
 
   // Make the old head new Node's next and previous as NULL
-  head_node ptr new_node Node.set_next
-  NULL cast_any new_node Node.set_prev
+  head_node cast(ptr) new_node Node.set_next
+  NULL      cast(ptr) new_node Node.set_prev
 
   // Set the old head's prev to point to new Node
-  if head_node int NULL != do
-    new_node head_node Node.set_prev
+  if head_node cast(int) NULL != do
+    new_node cast(ptr) head_node Node.set_prev
   endif
 
   // Insert the new Node to head_ptr
-  new_node head_ptr ptr Node.store
+  new_node head_ptr cast(ptr) Node.store
 end
 
 // Pop Node from LinkedList
@@ -623,12 +625,12 @@ end
 // Return
 //    popped_data: ptr
 function LinkedList.pop Node -> ptr :
-  dup ptr Node.load
+  dup cast(ptr) Node.load
   take head head_ptr in
 
   // Underflow condition
-  if head int NULL == do
-    -1 ptr return
+  if head cast(int) NULL == do
+    -1 cast(ptr) return
   endif
 
   // Get the old head data
@@ -636,10 +638,10 @@ function LinkedList.pop Node -> ptr :
   take popped_data in
 
   // Unlink the old head
-  head Node.get_next head_ptr ptr Node.store
+  head Node.get_next head_ptr cast(ptr) Node.store
 
   // Deallocate the old head
-  Node.size head ptr munmap
+  Node.size head cast(ptr) munmap
 
   // Return the popped data
   popped_data
@@ -651,10 +653,10 @@ end
 // Return
 //    length: int
 function LinkedList.len Node -> int :
-  ptr Node.load 0
+  cast(ptr) Node.load 0
   take count current in
 
-  while current int NULL != do
+  while current cast(int) NULL != do
     count 1 + count =
     current Node.get_next
     current =
@@ -667,5 +669,5 @@ end
 //    head_ptr: Node
 // Return bool
 function LinkedList.is_empty Node -> bool :
-  ptr int.load 0 ==
+  cast(ptr) int.load 0 ==
 end

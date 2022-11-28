@@ -4,7 +4,7 @@ class TypeNode
   location:Location
 
   method init type:str location:Location -> TypeNode :
-    TypeNode.size malloc cast_any
+    TypeNode.size malloc cast(TypeNode)
     take node in
 
     type      node TypeNode->type

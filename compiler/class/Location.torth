@@ -5,7 +5,7 @@ class Location
   column:int
 
   method init file:str row:int column:int -> Location :
-    Location.size malloc cast_any
+    Location.size malloc cast(Location)
     take location in
 
     file    location Location->file

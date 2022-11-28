@@ -4,7 +4,7 @@ class Variable
   type:str
 
   method init name:str type:str -> Variable :
-    Variable.size malloc cast_any
+    Variable.size malloc cast(Variable)
     take variable in
 
     // Load the parameters to the allocated memory
@@ -14,6 +14,6 @@ class Variable
   end
 
   method load ptr -> Variable :
-    ptr.load cast_any
+    ptr.load cast(Variable)
   end
 endclass

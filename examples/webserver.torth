@@ -36,12 +36,12 @@ end
 //    path: str
 // Return
 //    http_headers: str
-function get_http_headers str -> str :
-  if file_exists do
+function get_http_headers path:str -> str :
+  if path file_exists do
     "HTTP/1.1 200 OK\r\n"
   else
     "HTTP/1.1 404 Not Found\r\n"
-  endif swap drop
+  endif
 
   "Server: HTTorth\r\n"         str.cat
   "Content-Type: text/html\r\n" str.cat
@@ -100,8 +100,8 @@ function main :
     take conn_fd in
 
     // Read from client
-    CLIENT_BUF_CAP client_buf str conn_fd read drop
-    client_buf str
+    CLIENT_BUF_CAP client_buf cast(str) conn_fd read drop
+    client_buf cast(str)
     take request in
 
     // Read path from request and prepend it with dot (current directory)

@@ -15,7 +15,7 @@ class Func
     tokens:List[Token]
     variables:List[Variable]
   -> Func :
-    Func.size malloc cast_any
+    Func.size malloc cast(Func)
     take func in
 
     name      func Func->name
@@ -26,7 +26,7 @@ class Func
   end
 
   method load ptr -> Func :
-    ptr.load cast_any
+    ptr.load cast(Func)
   end
 
   method print self:Func :

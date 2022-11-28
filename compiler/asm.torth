@@ -57,12 +57,6 @@ function get_op_asm op:Op program:Program -> str :
   // Get assembly for the correct OpType
   if
     op_type OpType.CAST ==
-    op_type OpType.CAST_BOOL ==   ||
-    op_type OpType.CAST_CHAR ==   ||
-    op_type OpType.CAST_INT ==    ||
-    op_type OpType.CAST_PTR ==    ||
-    op_type OpType.CAST_STR ==    ||
-    op_type OpType.CAST_UINT8 ==  ||
     op_type OpType.IF ==          ||
     op_type OpType.IN ==          ||
     op_type OpType.TAKE ==        ||
@@ -602,7 +596,7 @@ end
 // Params: Op.token.value[1] ('a' => a)
 // Return: Assembly
 function get_push_char_asm char -> str :
-  int itoa
+  cast(int) itoa
   "  mov rax, " swap  str.cat
   "\n  push rax\n"    str.cat
 end
@@ -1010,12 +1004,12 @@ function get_syscall_argument_registers -> List :
   take registers in
 
   // Add Syscall argument registers in the correct order
-  "rdi" ptr registers List.append
-  "rsi" ptr registers List.append
-  "rdx" ptr registers List.append
-  "r10" ptr registers List.append
-  "r8"  ptr registers List.append
-  "r9"  ptr registers List.append
+  "rdi" cast(ptr) registers List.append
+  "rsi" cast(ptr) registers List.append
+  "rdx" cast(ptr) registers List.append
+  "r10" cast(ptr) registers List.append
+  "r8"  cast(ptr) registers List.append
+  "r9"  cast(ptr) registers List.append
   registers
 end
 
@@ -1050,7 +1044,7 @@ function generate_assembly_file
   while index sub_programs.len < do
 
     // Get the current Program
-    index sub_programs cast_list List.nth ptr.load cast_any
+    index sub_programs cast_list List.nth ptr.load cast(Program)
     take program in
 
     // Get assembly code for the current Program
@@ -1112,11 +1106,11 @@ function get_string_variables_for_data_section program:Program -> str :
 end
 
 function format_escape_sequences_for_nasm string:str -> str :
-  9  char char.to_string
-  10 char char.to_string
-  13 char char.to_string
-  27 char char.to_string
-  34 char char.to_string
+  9  cast(char) char.to_string
+  10 cast(char) char.to_string
+  13 cast(char) char.to_string
+  27 cast(char) char.to_string
+  34 cast(char) char.to_string
   take
     DoubleQuote
     Escape
@@ -1248,7 +1242,7 @@ function get_related_endif op:Op program:Program -> Op :
   "Corresponding ENDIF keyword was not found.\n"
   op Op.token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat CompilerErrorWithToken
-  NULL cast_any
+  NULL cast(Op)
 end
 
 // Returns the current WHILE block's DONE Op
@@ -1286,7 +1280,7 @@ function get_parent_while op:Op program:Program -> Op :
   op Op.token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat
   CompilerErrorWithToken
-  NULL cast_any
+  NULL cast(Op)
 end
 
 // Returns the END Operand for the current WHILE block
@@ -1326,7 +1320,7 @@ function get_done_op_for_while op:Op program:Program -> Op :
   "END keyword was not found for the current WHILE loop.\n"
   op Op.token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat CompilerErrorWithToken
-  NULL cast_any
+  NULL cast(Op)
 end
 
 // Get memory name for assembly used by a variable

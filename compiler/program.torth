@@ -12,8 +12,8 @@ function get_sub_programs
   memories:List[Mem]
 -> List[Program] :
 
-  List.init // sub_programs = List[Program]
-  0         // index
+  List.init cast(List[Program])
+  0
   take index sub_programs in
 
   // Iterate over every Func is functions
@@ -30,7 +30,7 @@ function get_sub_programs
     sub_programs cast_list List.append
     index 1 + index = // index++
   done
-  sub_programs cast_any
+  sub_programs
 end
 
 // Generate Program from Func
@@ -44,7 +44,7 @@ function generate_program
 -> Program :
 
   func Func.tokens
-  List.init
+  List.init cast(Program)
   0
   take
     index
@@ -66,7 +66,7 @@ function generate_program
     program cast_list List.append
     index 1 + index = // index++
   done
-  program cast_any
+  program
 end
 
 // Get OpType for Token
@@ -101,12 +101,8 @@ function get_tokens_op_type
     OpType.PUSH_UINT8 return
   elif token_upper "ASSIGN"   streq  do
     OpType.ASSIGN_BIND return
-  elif token_upper "BOOL"     streq  do
-    OpType.CAST_BOOL return
   elif token_upper "BREAK"    streq  do
     OpType.BREAK return
-  elif token_upper "CHAR"     streq  do
-    OpType.CAST_CHAR return
   elif token_upper "CONTINUE" streq  do
     OpType.CONTINUE return
   elif token_upper "DO"       streq  do
@@ -125,20 +121,12 @@ function get_tokens_op_type
     OpType.IF return
   elif token_upper "IN"       streq  do
     OpType.IN return
-  elif token_upper "INT"      streq  do
-    OpType.CAST_INT return
   elif token_upper "PEEK"     streq  do
     OpType.PEEK return
-  elif token_upper "PTR"      streq  do
-    OpType.CAST_PTR return
   elif token_upper "RETURN"   streq  do
     OpType.RETURN return
-  elif token_upper "STR"      streq  do
-    OpType.CAST_STR return
   elif token_upper "TAKE"     streq  do
     OpType.TAKE return
-  elif token_upper "UINT8"    streq  do
-    OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
     OpType.WHILE return
   elif

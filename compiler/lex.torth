@@ -13,7 +13,7 @@ include "compiler/class/Variable"
 
 // Parse included files from a code string. Return the list of files.
 function get_included_files str -> List :
-  ptr List.init
+  cast(ptr) List.init
   peek included_files in List.append
 
   // Iterate over all of the new included files for this loop iteration
@@ -41,12 +41,12 @@ function get_included_files_from_file code_file:str included_files:List -> List 
   // Add compiler's directory and the 'lib' directory to INCLUDE_PATHS
   List.init
   take INCLUDE_PATHS in
-  ""      ptr INCLUDE_PATHS List.append
-  "lib/"  ptr INCLUDE_PATHS List.append
+  ""      cast(ptr) INCLUDE_PATHS List.append
+  "lib/"  cast(ptr) INCLUDE_PATHS List.append
 
   // Get the file contents without comments
   INCLUDE_PATHS code_file get_file_name_from_path read_file
-  List.init cast_any code_file rot get_tokens_from_code
+  List.init cast(List[Token]) code_file rot get_tokens_from_code
   False
   0
   take
@@ -64,7 +64,7 @@ function get_included_files_from_file code_file:str included_files:List -> List 
     if parsing_include do
       token_value take file_name in
 
-      if file_name int NULL == do
+      if file_name cast(int) NULL == do
         "INCLUDE keyword used without given file name\n"
         "INCLUDE_ERROR" CompilerError
       endif
@@ -81,7 +81,7 @@ function get_included_files_from_file code_file:str included_files:List -> List 
       endif
 
       // Save the file name to included_files
-      file_name ptr included_files List.append
+      file_name cast(ptr) included_files List.append
       False parsing_include =
     endif
 
@@ -98,12 +98,12 @@ end
 // Return: file_with_path: str
 function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
   // Get the file name without quotes
-  if file_name ptr char.load '"' == do
+  if file_name cast(ptr) char.load '"' == do
     file_name get_string_inside_quotes
     file_name =
   endif
 
-  if file_name int NULL == do
+  if file_name cast(int) NULL == do
     "Cannot include file '"
     file_name str.cat
     "'.\n"      str.cat
@@ -144,7 +144,7 @@ end
 
 // Get Tokens from the code inside included files
 function get_tokens_from_files included_files:List -> List[Token] :
-  List.init cast_any
+  List.init cast(List[Token])
   0
   take index tokens in
 
@@ -173,8 +173,8 @@ function get_string_inside_quotes str -> str :
   take original in
 
   // Return NULL if the first character is not a double quote
-  if original ptr char.load '"' != do
-    NULLPTR str return
+  if original cast(ptr) char.load '"' != do
+    NULLPTR cast(str) return
   endif
 
   1 while dup original str.len < do
@@ -182,12 +182,12 @@ function get_string_inside_quotes str -> str :
 
     // Return when the other quote is found
     if original over str.char_at '"' == do
-      original ptr over ptr+ NULL char swap char.store
+      original cast(ptr) over ptr+ NULL cast(char) swap char.store
       drop
       original 1 str+ return
     endif
   done drop
-  NULLPTR str
+  NULLPTR cast(str)
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -231,7 +231,7 @@ function get_token_type token_value:str -> str :
   // Character => 'a'
   elif
     token_value str.len 3 ==
-    token_value ptr char.load single_quote ==
+    token_value cast(ptr) char.load single_quote ==
     token_value 2 str.char_at single_quote ==
     && &&
   do
@@ -243,21 +243,21 @@ function get_token_type token_value:str -> str :
     "int" return
   // Hexadecimal => 0x1337
   elif
-    token_value ptr char.load '0' ==
+    token_value cast(ptr) char.load '0' ==
     token_value 1 str.char_at 'x' ==
     &&
   do
     "int" return
   // String => "This is string\n"
   elif
-    token_value ptr char.load                '"' ==
+    token_value cast(ptr) char.load                '"' ==
     token_value dup str.len 1 - str.char_at  '"' ==
     &&
   do
   "str" return
   // uint8 => u69
   elif
-    token_value ptr char.load 'u' ==
+    token_value cast(ptr) char.load 'u' ==
     token_value 1 str.char_at char.is_numeric
     &&
   do
@@ -275,9 +275,9 @@ function get_function_part_delimiters -> List :
   List.init
   take FUNCTION_PART_DELIMITERS in
 
-  "->"        ptr FUNCTION_PART_DELIMITERS List.append
-  ":"         ptr FUNCTION_PART_DELIMITERS List.append
-  "END"       ptr FUNCTION_PART_DELIMITERS List.append
+  "->"        cast(ptr) FUNCTION_PART_DELIMITERS List.append
+  ":"         cast(ptr) FUNCTION_PART_DELIMITERS List.append
+  "END"       cast(ptr) FUNCTION_PART_DELIMITERS List.append
   FUNCTION_PART_DELIMITERS
 end
 
@@ -317,7 +317,7 @@ function get_tokens_from_code
   do
     // Keep track of the indexes of newline characters (LF)
     if current_char LF == do
-      index 1 + ptr newline_indexes List.append
+      index 1 + cast(ptr) newline_indexes List.append
     endif
 
     // Only a newline ends a comment
@@ -455,7 +455,7 @@ end
 // Return
 //    constants: List[Constant]
 function get_constants tokens:List[Token] -> List[Constant] :
-  List.init cast_any
+  List.init cast(List[Constant])
   ""  str.copy        // constant_name
   dup str.copy        // constant_value
   False               // defining_constant
@@ -493,7 +493,7 @@ function get_constants tokens:List[Token] -> List[Constant] :
 
         // Generate Constant object
         location constant_value constant_name Constant.init
-        constants List.append
+        constants cast(List) List.append
 
         // Reset variables
         ""    constant_name   =
@@ -629,11 +629,11 @@ end
 function get_enum_part_delimiters -> List :
   List.init
   take ENUM_PART_DELIMITERS in
-  "ENUM"  ptr ENUM_PART_DELIMITERS List.append
-  ""      ptr ENUM_PART_DELIMITERS List.append
-  ""      ptr ENUM_PART_DELIMITERS List.append
-  ":"     ptr ENUM_PART_DELIMITERS List.append
-  "END"   ptr ENUM_PART_DELIMITERS List.append
+  "ENUM"  cast(ptr) ENUM_PART_DELIMITERS List.append
+  ""      cast(ptr) ENUM_PART_DELIMITERS List.append
+  ""      cast(ptr) ENUM_PART_DELIMITERS List.append
+  ":"     cast(ptr) ENUM_PART_DELIMITERS List.append
+  "END"   cast(ptr) ENUM_PART_DELIMITERS List.append
   ENUM_PART_DELIMITERS
 end
 
@@ -644,7 +644,7 @@ end
 // Return
 //    memories: List[Mem]
 function get_memories tokens:List[Token] constants:List[Constant] -> List[Mem] :
-  List.init cast_any  // memories
+  List.init cast(List[Mem])
   "" str.copy         // memory_name
   NULL                // memory_size
   False               // defining_memory
@@ -696,7 +696,7 @@ function get_memories tokens:List[Token] constants:List[Constant] -> List[Mem] :
 
         // Generate Mem object
         location memory_size memory_name str.copy Mem.init
-        memories List.append
+        memories cast(List) List.append
 
         // Reset variables
         ""    memory_name =
@@ -754,7 +754,7 @@ function get_functions
   constants:List[Constant]
   memories:List[Mem]
 -> List[Func] :
-  List.init cast_any // List[Func]
+  List.init cast(List[Func])
   0
   take index functions in
   while index tokens cast_list List.len < do
@@ -766,7 +766,7 @@ function get_functions
     if token_upper "FUNCTION" streq do
       index 1 + index =
       "" memories constants index tokens parse_function
-      functions List.append
+      functions cast(List) List.append
     endif
     index 1 + index =
   done
@@ -795,12 +795,12 @@ function parse_function
   class_name:str
 -> Func :
   // Initialize variables
-  get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
-  List.init cast_any            // function_tokens
-  0                             // current_part
-  List.init                     // return_types
-  List.init                     // param_types
-  List.init cast_any            // variables
+  get_function_part_delimiters    // FUNCTION_PART_DELIMITERS
+  List.init cast(List[Token])     // function_tokens
+  0                               // current_part
+  List.init                       // return_types
+  List.init                       // param_types
+  List.init cast(List[Variable])  // variables
   take
     variables
     param_types
@@ -852,7 +852,7 @@ function parse_function
         if function_name str.copy str.upper "MAIN" streq do
           token Token.location
           "int" "0" Token.init
-          function_tokens List.append
+          function_tokens cast(List) List.append
         endif
 
         // return Func(function_name, signature, function_tokens, variables)
@@ -881,7 +881,7 @@ function parse_function
       // Parse parameter's TokenType
       token_value param_colon 1 + str+
       take param_type in
-      param_type ptr param_types List.append
+      param_type cast(ptr) param_types List.append
 
       // Handle named parameters
       if param_colon -1 != do
@@ -907,7 +907,7 @@ function parse_function
         Token.init
         take param_token in
         VarType.TAKE param_token Token->vartype
-        param_token function_tokens List.append
+        param_token function_tokens cast(List) List.append
 
         // Add parameter to the list of Variables
         memories variables function_name param_token add_variable_to_list
@@ -915,7 +915,7 @@ function parse_function
 
     elif current_part 1 == do
       // Append word to return_types if valid TokenType
-      token_value ptr return_types List.append
+      token_value cast(ptr) return_types List.append
 
     elif current_part 2 == do
       // Use Constant's value if a Constant exists named as the Token's value
@@ -938,7 +938,7 @@ function parse_function
       endif
 
       // Append the current Token to the list of tokens
-      token function_tokens List.append
+      token function_tokens cast(List) List.append
 
     else
       "Unknown error - Function parsing failed"
@@ -953,7 +953,7 @@ function parse_function
   function_name               str.cat
   "'\nUnexpected end of file" str.cat
   "SYNTAX_ERROR" CompilerErrorWithToken
-  NULL cast_any
+  NULL cast(Func)
 end
 
 // Parse Classes from code
@@ -1109,7 +1109,7 @@ function get_object_size_function
   endclass_token:Token
 -> Func :
   class_name ".size" str.cat  // function_name
-  List.init cast_any          // tokens
+  List.init cast(List[Token]) // tokens
   List.init                   // return_types
   attribute_count ptr.size *  // class_size
   take
@@ -1121,14 +1121,14 @@ function get_object_size_function
 
   // Insert integer Token containing class_size to Token list
   endclass_token Token.location "int" class_size itoa Token.init
-  tokens List.append
+  tokens cast(List) List.append
 
   // Signature: None -> INT
-  "int" ptr return_types List.append
+  "int" cast(ptr) return_types List.append
   return_types List.init Signature.init
   take signature in
 
-  List.init cast_any tokens signature function_name Func.init
+  List.init cast(List[Variable]) tokens signature function_name Func.init
 end
 
 function generate_attribution_function
@@ -1152,8 +1152,8 @@ function generate_attribution_function
   List.init
   List.init
   take param_types return_types in
-  "any"           ptr param_types List.append
-  attribute_type  ptr
+  "any"           cast(ptr) param_types List.append
+  attribute_type  cast(ptr)
   // Insert attribute_type to either parameter or return types
   // depending on if the function is getter or setter
   if is_getter
@@ -1168,7 +1168,7 @@ function generate_attribution_function
   take tokens in
 
   // Create Func and append it to list of Funcs
-  List.init cast_any tokens signature function_name Func.init
+  List.init cast(List[Variable]) tokens signature function_name Func.init
 end
 
 function get_attribute_function_tokens
@@ -1180,7 +1180,7 @@ function get_attribute_function_tokens
   is_getter:bool // Getter => True, Setter => False
 -> List[Token] :
   attribute_offset itoa
-  " swap int + ptr " str.cat
+  " swap cast(int) + cast(ptr) " str.cat
   if is_getter
   do   "LOAD_QWORD "  str.cat
   else "STORE_QWORD " str.cat
@@ -1195,8 +1195,8 @@ function get_attribute_function_tokens
     code
   in
 
-  tokens cast_any file_name code get_tokens_from_code
-  List.init cast_any
+  tokens cast(List[Token]) file_name code get_tokens_from_code
+  List.init cast(List[Token])
   0
   take
     index
@@ -1209,7 +1209,7 @@ function get_attribute_function_tokens
 
     // Fix the Location to correspond with the attribute's Token
     location token Token->location
-    token function_tokens List.append
+    token function_tokens cast(List) List.append
     index 1 + index =
   done
   function_tokens

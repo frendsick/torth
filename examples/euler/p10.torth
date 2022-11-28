@@ -14,7 +14,7 @@ function mark_multiples_to_sieve int int :
   // for i in range(prime*prime, MAX_PRIME, prime)
   while curr max_prime < do
     // sieve[i] = True
-    sieve curr ptr+ True uint8 swap uint8.store
+    sieve curr ptr+ True cast(uint8) swap uint8.store
     curr orig + curr =  // curr += orig
   done
 end
