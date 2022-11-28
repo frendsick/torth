@@ -24,47 +24,6 @@ ENUM Keyword.len 1 :
   Keyword.WHILE
 END
 
-// Intrinsics
-ENUM Intrinsic.len 1 :
-  Intrinsic.AND
-  Intrinsic.ARGC
-  Intrinsic.ARGV
-  Intrinsic.DIVMOD
-  Intrinsic.DROP
-  Intrinsic.DUP
-  Intrinsic.ENVP
-  Intrinsic.EQ
-  Intrinsic.GE
-  Intrinsic.GT
-  Intrinsic.LE
-  Intrinsic.LOAD_BYTE
-  Intrinsic.LOAD_WORD
-  Intrinsic.LOAD_DWORD
-  Intrinsic.LOAD_QWORD
-  Intrinsic.LT
-  Intrinsic.MINUS
-  Intrinsic.MUL
-  Intrinsic.NE
-  Intrinsic.NTH
-  Intrinsic.OR
-  Intrinsic.OVER
-  Intrinsic.PLUS
-  Intrinsic.PRINT
-  Intrinsic.ROT
-  Intrinsic.STORE_BYTE
-  Intrinsic.STORE_WORD
-  Intrinsic.STORE_DWORD
-  Intrinsic.STORE_QWORD
-  Intrinsic.SWAP
-  Intrinsic.SYSCALL0
-  Intrinsic.SYSCALL1
-  Intrinsic.SYSCALL2
-  Intrinsic.SYSCALL3
-  Intrinsic.SYSCALL4
-  Intrinsic.SYSCALL5
-  Intrinsic.SYSCALL6
-END
-
 // OpType
 ENUM OpType.len 1 :
   OpType.ASSIGN_BIND
