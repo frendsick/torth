@@ -56,7 +56,8 @@ function get_op_asm op:Op program:Program -> str :
 
   // Get assembly for the correct OpType
   if
-    op_type OpType.CAST_BOOL ==
+    op_type OpType.CAST ==
+    op_type OpType.CAST_BOOL ==   ||
     op_type OpType.CAST_CHAR ==   ||
     op_type OpType.CAST_INT ==    ||
     op_type OpType.CAST_PTR ==    ||

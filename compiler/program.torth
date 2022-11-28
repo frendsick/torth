@@ -141,6 +141,13 @@ function get_tokens_op_type
     OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
     OpType.WHILE return
+  elif
+    // CAST(<type>)
+    token_upper "CAST(" str.startswith
+    token_upper ")"     str.endswith
+    &&
+  do
+    OpType.CAST return
   elif token Token.vartype VarType.NONE != do
     token Token.vartype
     take token_vartype in
