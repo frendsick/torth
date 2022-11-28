@@ -41,13 +41,13 @@ end
 //    functions: List[Func]
 // Return None
 function type_check_application sub_programs:List[Program] functions:List[Func] :
-  sub_programs cast_list List.len
+  sub_programs cast(List) List.len
   0
   take index sub_programs.len in
 
   // Type check every sub-program in the application
   while index sub_programs.len < do
-    index sub_programs cast_list List.nth ptr.load cast(Program)
+    index sub_programs cast(List) List.nth ptr.load cast(Program)
     take sub_program in
 
     functions sub_program type_check_sub_program
@@ -65,7 +65,7 @@ function type_check_sub_program
   functions:List[Func]
 :
   // Initialize variables
-  program cast_list List.len
+  program cast(List) List.len
   TypeCheckInfo.init
   List.init LinkedList.init over List.append
   List.init LinkedList.init over List.append
@@ -84,7 +84,7 @@ function type_check_sub_program
   endif
 
   // Get first Op's Function
-  program cast_list List.first ptr.load Op.func
+  program cast(List) List.first ptr.load Op.func
   take func in
 
   // Generate initial type stack for sub program
@@ -97,7 +97,7 @@ function type_check_sub_program
 
   // Type check every Op in Program
   while index program.len < do
-    index program cast_list List.nth Op.load
+    index program cast(List) List.nth Op.load
     take op in
     if_block_return_stacks    cast(List[TypeStack])
     if_block_original_stacks  cast(List[TypeStack])
@@ -165,15 +165,15 @@ function type_check_op
     // Set type_check_info.else_present to False
     False type_check_info TypeCheckInfo->else_present
     // Call type_check_elif
-    if_block_return_stacks cast_list List.last Node.load
+    if_block_return_stacks cast(List) List.last Node.load
     branched_stacks type_stack token type_check_elif
     type_check_info return
   elif op_type OpType.ELSE == do
     // Set type_check_info.else_present to True
     True type_check_info TypeCheckInfo->else_present
     // Call type_check_else
-    if_block_original_stacks  cast_list List.last Node.load
-    if_block_return_stacks    cast_list List.last Node.load
+    if_block_original_stacks  cast(List) List.last Node.load
+    if_block_return_stacks    cast(List) List.last Node.load
     branched_stacks type_stack token type_check_else
     type_check_info return
   elif op_type OpType.ENDIF == do
@@ -192,8 +192,8 @@ function type_check_op
   elif op_type OpType.IF == do
     False type_check_info TypeCheckInfo->return_present
     type_stack TypeStack.copy
-    if_block_original_stacks cast_list List.append
-    LinkedList.init if_block_return_stacks cast_list List.append
+    if_block_original_stacks cast(List) List.append
+    LinkedList.init if_block_return_stacks cast(List) List.append
     type_check_info return
   elif op_type OpType.IN == do
     0 type_check_info TypeCheckInfo->peek_count
@@ -230,10 +230,10 @@ function type_check_op
   elif op_type OpType.RETURN == do
     True type_check_info TypeCheckInfo->return_present
     // IF block's stack is determined by the previous sections in the block
-    if_block_return_stacks cast_list List.last Node.load
+    if_block_return_stacks cast(List) List.last Node.load
     take if_block_return_stack in
     if if_block_return_stack Node.get_data cast(int) NULL == do
-      if_block_original_stacks cast_list List.last Node.load TypeStack.copy
+      if_block_original_stacks cast(List) List.last Node.load TypeStack.copy
       if_block_return_stack =
     endif
     // Set stack state to the return value of type_check_return
@@ -342,7 +342,7 @@ end
 // Return None
 function type_check_end_of_program func:Func type_stack:Node :
   func Func.name
-  func Func.tokens cast_list List.last Token.load
+  func Func.tokens cast(List) List.last Token.load
   take last_token function_name in
 
   // There should be one INT in the stack when the program ends
@@ -398,7 +398,7 @@ function correct_return_types func:Func type_stack:Node -> bool :
   // Push return types to temp_stack
   0 index =
   while index returns List.len < do
-    func Func.tokens cast_list List.first Token.load Token.location
+    func Func.tokens cast(List) List.first Token.load Token.location
     index returns List.nth str.load TypeNode.init cast(ptr)
     temp_stack LinkedList.push
     index 1 + index =
@@ -682,7 +682,7 @@ function type_check_endif
   else_or_return_present:bool
 :
   // Get return stack for the current IF block
-  if_block_return_stacks cast_list List.last Node.load
+  if_block_return_stacks cast(List) List.last Node.load
   take if_block_return_stack in
 
   // Save the state of the stack after the first part of the IF block
@@ -722,8 +722,8 @@ function type_check_endif
   endif
 
   // Reset IF-block variables
-  if_block_original_stacks cast_list dup List.len 1 - swap List.pop
-  if_block_return_stacks   cast_list dup List.len 1 - swap List.pop
+  if_block_original_stacks cast(List) dup List.len 1 - swap List.pop
+  if_block_return_stacks   cast(List) dup List.len 1 - swap List.pop
 end
 
 // Pop a value from the stack to a Variable
@@ -836,7 +836,7 @@ function type_check_peek_bind
 
   // Save the popped type to the Variable
   type TypeNode.type token Token.value Variable.init
-  variables cast_list List.append
+  variables cast(List) List.append
 end
 
 // Pop a value from the stack to a Variable
@@ -861,7 +861,7 @@ function type_check_pop_bind
   endif
 
   type TypeNode.type token Token.value Variable.init
-  variables cast_list List.append
+  variables cast(List) List.append
 end
 
 // Push a value from Variable to the stack
@@ -1559,7 +1559,7 @@ function get_function_type_stack func:Func -> Node :
   in
 
   // Get the first Token's location for TypeNodes
-  func Func.tokens cast_list List.first ptr.load Token.location
+  func Func.tokens cast(List) List.first ptr.load Token.location
   take location in
 
   // Insert all parameter types to type_stack in the reverse order

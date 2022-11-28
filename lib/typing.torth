@@ -32,10 +32,6 @@ function Array.store ptr Array :
   swap cast(ptr) swap ptr.store
 end
 
-// Cast any type to Array
-// TODO: Enable creation of empty functions
-function cast_array any -> Array : NULL drop end
-
 // Free the allocated memory for a certain array
 // Params: array (PTR)
 // Return: None
@@ -382,10 +378,6 @@ end
 function List.store ptr List :
   swap cast(ptr) swap ptr.store
 end
-
-// Cast any type to List
-// TODO: Enable creation of empty functions
-function cast_list any -> List : NULL drop end
 
 // Free the allocated memory for a certain list
 function List.delete List :

@@ -38,8 +38,8 @@ class Func
     Signature.repr puts "\n"  puts
 
     "Func.tokens    => "      puts
-    self Func.tokens cast_list
-    dup cast_list List.len  // tokens.len
+    self Func.tokens cast(List)
+    dup cast(List) List.len  // tokens.len
     0
     take
       index

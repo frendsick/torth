@@ -17,17 +17,17 @@ function get_sub_programs
   take index sub_programs in
 
   // Iterate over every Func is functions
-  while index functions cast_list List.len < do
+  while index functions cast(List) List.len < do
 
     // Get the current Func from the list
-    index functions cast_list List.nth Func.load
+    index functions cast(List) List.nth Func.load
     take func in
 
     // Generate Program from the current Func
     memories constants functions func generate_program
 
     // Append the generated Program to sub_programs
-    sub_programs cast_list List.append
+    sub_programs cast(List) List.append
     index 1 + index = // index++
   done
   sub_programs
@@ -52,9 +52,9 @@ function generate_program
     tokens
   in
 
-  while index tokens cast_list List.len < do
+  while index tokens cast(List) List.len < do
     // Get current Token
-    index tokens cast_list List.nth Token.load
+    index tokens cast(List) List.nth Token.load
     take token in
 
     // Get the Token's OpType
@@ -63,7 +63,7 @@ function generate_program
 
     // Append Op to Program
     func token op_type index Op.init
-    program cast_list List.append
+    program cast(List) List.append
     index 1 + index = // index++
   done
   program

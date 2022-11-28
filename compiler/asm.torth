@@ -24,10 +24,10 @@ function get_memory_definitions_asm memories:List[Mem] -> str :
   take index assembly_code in
 
   // Iterate over each Mem and generate assembly code for it
-  while index memories cast_list List.len < do
+  while index memories cast(List) List.len < do
 
     // Get the Mem's name and size
-    index memories cast_list List.nth ptr.load
+    index memories cast(List) List.nth ptr.load
     dup   Mem.name
     swap  Mem.bytes
     take memory_size memory_name in
@@ -246,7 +246,7 @@ end
 // Return: Assembly
 function get_assign_bind_asm op:Op program:Program -> str :
   // memory_name = program[op.id - 1].token.value
-  op Op.id 1 - program cast_list List.nth Op.load
+  op Op.id 1 - program cast(List) List.nth Op.load
   Op.token Token.value
 
   // variable = f"{op.func.name}_{memory_name}"
@@ -303,7 +303,7 @@ function get_parent_op_type_do op:Op program:Program -> int :
   while index -1 > do
 
     // Get the current Op's OpType
-    index program cast_list List.nth ptr.load Op.type
+    index program cast(List) List.nth ptr.load Op.type
     take op_type in
 
     if
@@ -346,9 +346,9 @@ function get_do_asm op:Op program:Program -> str :
     parent_op_type
   in
 
-  while index program cast_list List.len < do
+  while index program cast(List) List.len < do
     // Get the current operand's OpType
-    index program cast_list List.nth ptr.load Op.type
+    index program cast(List) List.nth ptr.load Op.type
     take op_type in
 
     // Keep count on the nested IFs or WHILEs depending on the parent Op
@@ -401,9 +401,9 @@ function get_do_asm op:Op program:Program -> str :
     do
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
       op Op.func Func.name
-      "_"                                                           str.cat
-      index program cast_list List.nth ptr.load Op.type OpType.repr str.cat
-      index itoa                                                    str.cat
+      "_"                                                             str.cat
+      index program cast(List) List.nth ptr.load Op.type OpType.repr  str.cat
+      index itoa                                                      str.cat
       generate_do_asm return
     endif
 
@@ -1028,7 +1028,7 @@ function generate_assembly_file
   sub_programs:List[Program]
   memories:List[Mem]
 :
-  sub_programs cast_list List.len
+  sub_programs cast(List) List.len
   "section .data\n" str.copy
   0
   take
@@ -1044,7 +1044,7 @@ function generate_assembly_file
   while index sub_programs.len < do
 
     // Get the current Program
-    index sub_programs cast_list List.nth ptr.load cast(Program)
+    index sub_programs cast(List) List.nth ptr.load cast(Program)
     take program in
 
     // Get assembly code for the current Program
@@ -1067,9 +1067,9 @@ function get_string_variables_for_data_section program:Program -> str :
   "" str.copy
   0
   take index assembly_code in
-  while index program cast_list List.len < do
+  while index program cast(List) List.len < do
     // Get current Op
-    index program cast_list List.nth Op.load
+    index program cast(List) List.nth Op.load
     take op in
 
     // Add only strings to the assembly
@@ -1175,13 +1175,13 @@ function get_function_end_asm function_name:str -> str :
 end
 
 function append_programs_assembly_code file_name:str program:Program :
-  program cast_list List.len
+  program cast(List) List.len
   0
   take index program.len in
 
   // Get the Func's name to be added to the assembly code
   // Exception: MAIN Func should be named '_start'
-  program cast_list List.first ptr.load Op.func Func.name
+  program cast(List) List.first ptr.load Op.func Func.name
   take function_name in
 
   // Write Func's start assembly to file
@@ -1191,7 +1191,7 @@ function append_programs_assembly_code file_name:str program:Program :
   while index program.len < do
 
     // Get the current Op
-    index program cast_list List.nth Op.load
+    index program cast(List) List.nth Op.load
     take op in
 
     // Generate comment for Op
@@ -1216,8 +1216,8 @@ function get_related_endif op:Op program:Program -> Op :
   0 // if_count => Keep count of the nested IF blocks
   take if_count index in
 
-  while index program cast_list List.len < do
-    index program cast_list List.nth Op.load
+  while index program cast(List) List.len < do
+    index program cast(List) List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 
@@ -1254,7 +1254,7 @@ function get_parent_while op:Op program:Program -> Op :
   take done_count index in
 
   while index -1 > do
-    index program cast_list List.nth Op.load
+    index program cast(List) List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 
@@ -1292,10 +1292,10 @@ function get_done_op_for_while op:Op program:Program -> Op :
   take while_count index in
 
   // Iterate over each Op of the Program starting from the parameter Op
-  while index program cast_list List.len < do
+  while index program cast(List) List.len < do
 
     // Get the current Operands OpType
-    index program cast_list List.nth Op.load
+    index program cast(List) List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 

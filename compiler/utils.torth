@@ -161,7 +161,7 @@ end
 // Return: Op
 function get_op_from_location location:Location program:Program -> Op :
   location cast(int) // Cast Location pointer to int
-  program cast_list List.len
+  program cast(List) List.len
   0
   take
     index
@@ -170,7 +170,7 @@ function get_op_from_location location:Location program:Program -> Op :
   in
 
   while index program.len < do
-    index program cast_list List.nth Op.load
+    index program cast(List) List.nth Op.load
     take op in
 
     // Test if the current Op has the same Location pointer
@@ -194,10 +194,10 @@ end
 function constant_exists constant_name:str constants:List[Constant] -> bool :
   // Iterate over constants and check if a Constant with certain name exists
   0 take index in
-  while index constants cast_list List.len < do
+  while index constants cast(List) List.len < do
 
     // Get the current Constant
-    index constants cast_list List.nth ptr.load Constant.name
+    index constants cast(List) List.nth ptr.load Constant.name
     take current_name in
 
     // Return True if current Constant's name matches constant_name parameter
@@ -238,10 +238,10 @@ end
 function get_function_by_name function_name:str functions:List[Func] -> Func :
   // Iterate over functions and check if a Func with certain name exists
   0 take index in
-  while index functions cast_list List.len < do
+  while index functions cast(List) List.len < do
 
     // Get the current Func
-    index functions cast_list List.nth Func.load
+    index functions cast(List) List.nth Func.load
     take func in
 
     // Return True if current Func's name matches function_name parameter
@@ -261,10 +261,10 @@ end
 function memory_exists memory_name:str memories:List[Mem] -> bool :
   // Iterate over memories and check if a Mem with certain name exists
   0 take index in
-  while index memories cast_list List.len < do
+  while index memories cast(List) List.len < do
 
     // Get the current Mem
-    index memories cast_list List.nth ptr.load Mem.name
+    index memories cast(List) List.nth ptr.load Mem.name
     take current_name in
 
     // Return True if current Mem's name matches memory_name parameter
@@ -291,10 +291,10 @@ end
 function get_constant name:str constants:List[Constant] -> Constant :
   // Iterate over each Constant
   0 take index in
-  while index constants cast_list List.len < do
+  while index constants cast(List) List.len < do
 
     // Get current Constant
-    index constants cast_list List.nth Constant.load
+    index constants cast(List) List.nth Constant.load
     take constant in
 
     // Return current Constant if its name matches the name parameter
@@ -502,7 +502,7 @@ end
 // Params: Array[Variable], str
 // Return: Variable
 function Array.get_variable Array[Variable] str -> Variable :
-  cast_array dup Array.len
+  cast(Array) dup Array.len
   0
   take
     index
@@ -536,12 +536,12 @@ end
 // Params: List[Variable], str
 // Return: Variable
 function List.get_variable List[Variable] str -> Variable :
-  cast_list List.get_array cast(Array[Variable]) Array.get_variable
+  cast(List) List.get_array cast(Array[Variable]) Array.get_variable
 end
 
 // Test if List contains Variable with certain name
 // Params: List[Variable], str
 // Return: bool
 function List.contains_variable List[Variable] str -> bool :
-  cast_list List.get_array cast(Array[Variable]) Array.contains_variable
+  cast(List) List.get_array cast(Array[Variable]) Array.contains_variable
 end

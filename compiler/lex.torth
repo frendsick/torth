@@ -55,9 +55,9 @@ function get_included_files_from_file code_file:str included_files:List -> List 
     tokens
   in
 
-  while index tokens cast_list List.len < do
+  while index tokens cast(List) List.len < do
     // Get Nth Token
-    index tokens cast_list List.nth ptr.load Token.value
+    index tokens cast(List) List.nth ptr.load Token.value
     take token_value in
 
     // Parse the file name for the include
@@ -411,7 +411,7 @@ function append_word_to_tokens
 
   // Append the Token to list
   location type value Token.init
-  tokens cast_list List.append
+  tokens cast(List) List.append
 end
 
 // Calculate position for Token based on it's position from the start of the file
@@ -468,8 +468,8 @@ function get_constants tokens:List[Token] -> List[Constant] :
     constants
   in
 
-  while index tokens cast_list List.len < do
-    index tokens cast_list List.nth ptr.load
+  while index tokens cast(List) List.len < do
+    index tokens cast(List) List.nth ptr.load
     dup   Token.value
     swap  Token.location
     take location token_value in
@@ -510,7 +510,7 @@ function get_constants tokens:List[Token] -> List[Constant] :
     index 1 + index = // index++
   done
 
-  if tokens cast_list List.len 0 > do
+  if tokens cast(List) List.len 0 > do
     constants tokens add_enums_to_constants
   endif
   constants
@@ -526,7 +526,7 @@ end
 function add_enums_to_constants tokens:List[Token] constants:List[Constant] :
   get_enum_part_delimiters
   "" str.copy
-  tokens cast_list List.first Token.load Token.location
+  tokens cast(List) List.first Token.load Token.location
   0
   0
   0
@@ -541,10 +541,10 @@ function add_enums_to_constants tokens:List[Token] constants:List[Constant] :
     ENUM_PART_DELIMITERS
   in
 
-  while index tokens cast_list List.len < do
+  while index tokens cast(List) List.len < do
 
     // Get the current Token's value
-    index tokens cast_list List.nth ptr.load
+    index tokens cast(List) List.nth ptr.load
     dup  Token.value
     swap Token.location
 
@@ -568,7 +568,7 @@ function add_enums_to_constants tokens:List[Token] constants:List[Constant] :
         Constant.init
 
         // Append the current Enum to the list of Constants
-        constants cast_list List.append
+        constants cast(List) List.append
         index 1 + index =
 
         // Reset variables
@@ -612,7 +612,7 @@ function add_enums_to_constants tokens:List[Token] constants:List[Constant] :
       Constant.init
 
       // Append the current Enum item to constants
-      constants cast_list List.append
+      constants cast(List) List.append
       enum_size 1 + enum_size =
     endif
     index 1 + index = // index++
@@ -657,8 +657,8 @@ function get_memories tokens:List[Token] constants:List[Constant] -> List[Mem] :
     memories
   in
 
-  while index tokens cast_list List.len < do
-    index tokens cast_list List.nth ptr.load
+  while index tokens cast(List) List.len < do
+    index tokens cast(List) List.nth ptr.load
     dup   Token.value
     swap  Token.location
     take location token_value in
@@ -718,7 +718,7 @@ end
 // Check for redefinition of a Constant object
 function get_constants_name constants:List[Constant] token_value:str -> str :
   // Overwriting another Constant is not allowed
-  if token_value constants cast_list List.contains_str do
+  if token_value constants cast(List) List.contains_str do
     "Constant '" token_value str.cat
     "' already exists. Constant name should be unique.\n" str.cat
     "CONSTANT_REDEFINITION" CompilerError
@@ -734,7 +734,7 @@ end
 //    memory_name: str
 function get_memory_name token_value:str memories:List[Mem] -> str :
   // Overwriting another Mem is not allowed
-  if token_value memories cast_list List.contains_str do
+  if token_value memories cast(List) List.contains_str do
     "Mem '" token_value str.cat
     "' already exists. Mem name should be unique.\n" str.cat
     "MEMORY_REDEFINITION" CompilerError
@@ -757,9 +757,9 @@ function get_functions
   List.init cast(List[Func])
   0
   take index functions in
-  while index tokens cast_list List.len < do
+  while index tokens cast(List) List.len < do
     // Get current word
-    index tokens cast_list List.nth ptr.load
+    index tokens cast(List) List.nth ptr.load
     Token.value str.copy str.upper
     take token_upper in
     
@@ -810,16 +810,16 @@ function parse_function
     FUNCTION_PART_DELIMITERS
   in
 
-  if token_index tokens cast_list List.len >= do
+  if token_index tokens cast(List) List.len >= do
     "Program cannot end with '"
-    tokens cast_list List.last Token.load
+    tokens cast(List) List.last Token.load
     Token.value str.cat
     "' token"   str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
   // Set Func.name
-  token_index tokens cast_list List.nth ptr.load Token.value
+  token_index tokens cast(List) List.nth ptr.load Token.value
   take function_name in
   token_index 1 + token_index =
 
@@ -831,9 +831,9 @@ function parse_function
     function_name =
   endif
 
-  while token_index tokens cast_list List.len < do
+  while token_index tokens cast(List) List.len < do
     // Get current Token
-    token_index tokens cast_list List.nth Token.load
+    token_index tokens cast(List) List.nth Token.load
     dup Token.value
     take token_value token in
 
@@ -923,8 +923,8 @@ function parse_function
 
         // Find the constant from list of Constants
         0 take constant_index in
-        while constant_index constants cast_list List.len < do
-          constant_index constants cast_list List.nth ptr.load
+        while constant_index constants cast(List) List.len < do
+          constant_index constants cast(List) List.nth ptr.load
           take constant in
 
           if constant Constant.name token_value streq do
@@ -971,9 +971,9 @@ function parse_classes
   memories:List[Mem]
 :
   0 take index in
-  while index tokens cast_list List.len < do
+  while index tokens cast(List) List.len < do
     // Get current word
-    index tokens cast_list List.nth ptr.load
+    index tokens cast(List) List.nth ptr.load
     Token.value str.copy str.upper
     take token_upper in
 
@@ -995,23 +995,23 @@ function parse_class
   constants:List[Constant]
   memories:List[Mem]
 :
-  if token_index tokens cast_list List.len >= do
+  if token_index tokens cast(List) List.len >= do
     "Class cannot end with '"
-    tokens cast_list List.last Token.load
+    tokens cast(List) List.last Token.load
     Token.value str.cat
     "' token"   str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
   // Get Class name
-  token_index tokens cast_list List.nth ptr.load Token.value
+  token_index tokens cast(List) List.nth ptr.load Token.value
   take class_name in
   token_index 1 + token_index =
 
   0 take attribute_count in
-  while token_index tokens cast_list List.len < do
+  while token_index tokens cast(List) List.len < do
     // Get current word
-    token_index tokens cast_list List.nth Token.load
+    token_index tokens cast(List) List.nth Token.load
     dup Token.value
     take token_value token in
 
@@ -1022,11 +1022,11 @@ function parse_class
       take class_method in
 
       // Add method to list of functions
-      class_method functions cast_list List.append
+      class_method functions cast(List) List.append
 
       // Go over the method's END keyword
-      while token_index tokens cast_list List.len < do
-        token_index tokens cast_list List.nth ptr.load
+      while token_index tokens cast(List) List.len < do
+        token_index tokens cast(List) List.nth ptr.load
         if Token.value str.copy str.upper "END" streq do
           break
         endif
@@ -1037,7 +1037,7 @@ function parse_class
     elif token_value str.copy str.upper "ENDCLASS" streq do
       // Add function called <class_name>.size
       token attribute_count class_name get_object_size_function
-      functions cast_list List.append
+      functions cast(List) List.append
       return
 
     // Parse class attributes
@@ -1096,11 +1096,11 @@ function parse_class_attribute
 
   // Add getter to Func list
   True token attribute_offset attribute_type attribute_name class_name
-  generate_attribution_function functions cast_list List.append
+  generate_attribution_function functions cast(List) List.append
 
   // Add setter to Func list
   False token attribute_offset attribute_type attribute_name class_name
-  generate_attribution_function functions cast_list List.append
+  generate_attribution_function functions cast(List) List.append
 end
 
 function get_object_size_function
@@ -1218,13 +1218,13 @@ end
 // Parse Variables for Funcs
 // Params: List[Func], List[Mem]
 function parse_variables_for_functions functions:List[Func] memories:List[Mem] :
-  functions cast_list List.len
+  functions cast(List) List.len
   0
   take index functions.len in
 
   // Parse Variables for each Func
   while index functions.len < do
-    index functions cast_list List.nth Func.load
+    index functions cast(List) List.nth Func.load
     memories swap parse_function_variables
     index 1 + index = // index++
   done
@@ -1247,8 +1247,8 @@ function parse_function_variables func:Func memories:List[Mem] :
     tokens
   in
 
-  while index tokens cast_list List.len < do
-    index tokens cast_list List.nth Token.load
+  while index tokens cast(List) List.len < do
+    index tokens cast(List) List.nth Token.load
     dup Token.value
     take
       token_value
@@ -1315,7 +1315,7 @@ function add_variable_to_list
 
   // Append the variable to the list of function's variables
   token_type token_value Variable.init
-  variables cast_list List.append
+  variables cast(List) List.append
 
   // Add the Variable to the list of memories
   function_name "_" str.cat
@@ -1326,7 +1326,7 @@ function add_variable_to_list
     ptr.size // Mem.bytes
     memory_name
     Mem.init
-    memories cast_list List.append
+    memories cast(List) List.append
   endif
 end
 
@@ -1335,13 +1335,13 @@ end
 //    functions:List
 // Return bool
 function main_function_in_function_list functions:List[Func] -> bool :
-  functions cast_list List.len
+  functions cast(List) List.len
   0
   take index functions.len in
 
   // Iterate over Func List
   while index functions.len < do
-    index functions cast_list List.nth ptr.load Func.name
+    index functions cast(List) List.nth ptr.load Func.name
     take function_name in
 
     // Return True if MAIN function is found
