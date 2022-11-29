@@ -50,7 +50,6 @@ ENUM OpType.len 1 :
   OpType.PUSH_INT
   OpType.PUSH_PTR
   OpType.PUSH_STR
-  OpType.PUSH_UINT8
   OpType.RETURN
   OpType.TAKE
   OpType.WHILE

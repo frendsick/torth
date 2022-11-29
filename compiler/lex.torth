@@ -255,13 +255,6 @@ function get_token_type token_value:str -> str :
     &&
   do
   "str" return
-  // uint8 => u69
-  elif
-    token_value cast(ptr) char.load 'u' ==
-    token_value 1 str.char_at char.is_numeric
-    &&
-  do
-    "uint8" return
   endif
   "word"
 end

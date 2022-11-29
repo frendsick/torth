@@ -2,7 +2,9 @@
 
 Torth language is statically typed. Each value pushed to the stack has a type associated with it. Typing tries to ensure that the user only performs operations that are appropriate to the values of specific types.
 
-The language supports the following types:
+## Built-in types
+
+The language supports the following built-in types:
 
 - [BOOL](#bool---boolean)
 - [CHAR](#char---character)
@@ -34,17 +36,14 @@ function main -> :
 end
 ```
 
-## INT, UINT8 - Integer
+## INT - Integer
 
 64-bit integers are defined by just using the decimal or hexadecimal value. Hexadecimal integers are prepended with '0x'.
 
-8-bit unsigned integers are defined by prepending a number between 0-255 with the letter 'u'. Example: u42.
-
 ```pascal
   420       // 64-bit decimal
-  0x420     // 64-bit hexadecimal
-  u139      // uint8
-  - + print // 420 + 0x420 - 139 = 1337
+  0x420     // 64-bit hexadecimal => 1056
+  + print   // 420 + 0x420 = 1476
 ```
 
 ## PTR - Pointer

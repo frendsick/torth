@@ -97,8 +97,6 @@ function get_tokens_op_type
     OpType.PUSH_INT return
   elif token_type "str"       streq  do
     OpType.PUSH_STR return
-  elif token_type "uint8"     streq  do
-    OpType.PUSH_UINT8 return
   elif token_upper "ASSIGN"   streq  do
     OpType.ASSIGN_BIND return
   elif token_upper "BREAK"    streq  do
