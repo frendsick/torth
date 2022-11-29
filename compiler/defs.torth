@@ -1,29 +1,5 @@
 include "std"
 
-// Keywords
-ENUM Keyword.len 1 :
-  Keyword.BOOL
-  Keyword.BREAK
-  Keyword.CHAR
-  Keyword.CONST
-  Keyword.CONTINUE
-  Keyword.DO
-  Keyword.DONE
-  Keyword.ELIF
-  Keyword.ELSE
-  Keyword.END
-  Keyword.ENDIF
-  Keyword.ENUM
-  Keyword.FUNCTION
-  Keyword.IF
-  Keyword.INT
-  Keyword.MEMORY
-  Keyword.PTR
-  Keyword.STR
-  Keyword.UINT8
-  Keyword.WHILE
-END
-
 // OpType
 ENUM OpType.len 1 :
   OpType.ASSIGN_BIND
