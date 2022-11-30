@@ -845,14 +845,7 @@ end
 // => 30 is 3rd element without the popped 3
 function get_nth_asm -> str :
   "  pop rax\n"
-  "  sub rax, 1\n"                                      str.cat
-  "  mov rbx, 8\n"                                      str.cat
-  "  mul rbx\n"                                         str.cat
-  "  add rsp, rax ; Stack pointer to the Nth element\n" str.cat
-  "  pop rbx      ; Get Nth element to rax\n"           str.cat
-  "  add rax, 8\n"                                      str.cat
-  "  sub rsp, rax ; Return stack pointer\n"             str.cat
-  "  push rbx\n"                                        str.cat
+  "  push QWORD [(rax-1)*8+rsp]\n" str.cat
 end
 
 // OR performs bitwise-OR operation to two integers
