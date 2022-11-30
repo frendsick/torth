@@ -78,7 +78,7 @@ Perform bitwise AND for two [integer](definitions.md#integer-types) values.
 
 1. Pop two [integers](definitions.md#integer-types) from the stack
 2. Perform bitwise AND operation to the popped values
-3. Push the result of the bitwise operation as [INT](types.md#int-uint8---integer)
+3. Push the result of the bitwise operation as [INT](types.md#int---integer)
 
 ## ARGC
 
@@ -125,7 +125,7 @@ There are four different STORE intrinsic variants:
 - LOAD_DWORD (32-bit)
 - LOAD_QWORD (64-bit)
 
-For example, to load a value of type [INT](types.md#int-uint8---integer) (64-bit) from a memory location to the stack you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also expricitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [builtin type](types.md), for example `int.load`.
+For example, to load a value of type [INT](types.md#int---integer) (64-bit) from a memory location to the stack you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also expricitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [builtin type](types.md), for example `int.load`.
 
 ## NTH
 
@@ -142,7 +142,7 @@ Perform bitwise OR for two [integer](definitions.md#integer-types) values.
 
 1. Pop two [integers](definitions.md#integer-types) from the stack
 2. Perform bitwise OR operation to the popped values
-3. Push the result of the bitwise operation as [INT](types.md#int-uint8---integer)
+3. Push the result of the bitwise operation as [INT](types.md#int---integer)
 
 ## OVER
 
@@ -172,7 +172,7 @@ There are four different STORE intrinsic variants:
 - STORE_DWORD (32-bit)
 - STORE_QWORD (64-bit)
 
-For example, to store [INT](types.md#int-uint8---integer) (64-bit) to a memory location you should use the STORE_QWORD intrinsic. Also, it is preferred to use the _type.store_ functions from the [std-library](../lib/std.torth) which also check if the value in the stack which is to be stored is of the correct [type](types.md). There is a typed store function for every [builtin type](types.md), for example `int.store`.
+For example, to store [INT](types.md#int---integer) (64-bit) to a memory location you should use the STORE_QWORD intrinsic. Also, it is preferred to use the _type.store_ functions from the [std-library](../lib/std.torth) which also check if the value in the stack which is to be stored is of the correct [type](types.md). There is a typed store function for every [builtin type](types.md), for example `int.store`.
 
 ## SWAP
 

@@ -8,10 +8,9 @@ The language supports the following built-in types:
 
 - [BOOL](#bool---boolean)
 - [CHAR](#char---character)
-- [INT](#int-uint8---integer)
+- [INT](#int---integer)
 - [PTR](#ptr---pointer)
 - [STR](#str---string)
-- [UINT8](#int-uint8---integer)
 
 ## BOOL - Boolean
 

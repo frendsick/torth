@@ -18,10 +18,9 @@ The following types count as integer-like types whenever an intrinsic requires t
 
 - [BOOL](types.md#bool---boolean)
 - [CHAR](types.md#char---character)
-- [INT](types.md#int-uint8---integer)
-- [UINT8](types.md#int-uint8---integer)
+- [INT](types.md#int---integer)
 
-**Note**: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast another type to integer-like type by using the type as token. For example, if you want to cast a value to [INT](types.md#int-uint8---integer), use `int` keyword.
+**Note**: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast another type to integer-like type by using the type as token. For example, if you want to cast a value to [INT](types.md#int---integer), cast it with `cast(int)`.
 
 See also: [Casting](keywords.md#casting)
 

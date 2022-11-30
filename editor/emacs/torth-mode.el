@@ -6,7 +6,7 @@
       (let* (
              ;; define several category of keywords
 	         (x-keywords '("assign" "break" "do" "done" "elif" "else" "endif" "if" "include" "while"))
-	         (x-types '("any" "bool" "char" "int" "ptr" "str" "uint8"))
+	         (x-types '("any" "bool" "char" "int" "ptr" "str"))
              (x-functions '("class" "const" "end" "endclass" "enum" "function" "in" "memory" "method" "peek" "return" "take"))
 
 	         ;; generate regex string for each category of keywords
