@@ -854,11 +854,7 @@ end
 // Params: None
 // Return: Assembly
 function get_over_asm -> str :
-  "  pop rax\n"
-  "  pop rbx\n"  str.cat
-  "  push rbx\n" str.cat
-  "  push rax\n" str.cat
-  "  push rbx\n" str.cat
+  "  push QWORD [rsp+8]\n"
 end
 
 // Pop two integers from the stack and push the sum of the two values
