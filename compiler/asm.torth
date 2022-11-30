@@ -900,9 +900,7 @@ end
 // Return: Assembly
 function get_shl_asm -> str :
   "  pop rcx\n"
-  "  pop rbx\n"     str.cat
-  "  shl rbx, cl\n" str.cat
-  "  push rbx\n"    str.cat
+  "  shl qword [rsp], cl\n" str.cat
 end
 
 // SHR Intrinsic shifts the bits of the second argument to the right
@@ -911,9 +909,7 @@ end
 // Return: Assembly
 function get_shr_asm -> str :
   "  pop rcx\n"
-  "  pop rbx\n"     str.cat
-  "  shr rbx, cl\n" str.cat
-  "  push rbx\n"    str.cat
+  "  shr qword [rsp], cl\n" str.cat
 end
 
 // Params: store_variant, Token
