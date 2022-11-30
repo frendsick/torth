@@ -23,15 +23,15 @@ Characters are defined with single quotes. They are pushed to stack as the integ
 ```pascal
 include "std"
 memory char_array str.size end
-function main -> :
+function main :
   // char char_array[] = "abc";
-  'a'   char_array        store_char
-  'b'   char_array 1 ptr+ store_char
-  'c'   char_array 2 ptr+ store_char
-  NULL  char_array 3 ptr+ store_int
+  'a'   char_array        char.store
+  'b'   char_array 1 ptr+ char.store
+  'c'   char_array 2 ptr+ char.store
+  NULL  char_array 3 ptr+ int.store
 
   // puts(char_array);
-  char_array puts "\n" puts
+  char_array cast(str) puts "\n" puts
 end
 ```
 
