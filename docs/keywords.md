@@ -27,20 +27,7 @@ BREAK is unconditional jump to the operation after [DONE](#done) of the current 
 
 ## CAST
 
-CAST keyword is used to cast any type to another. It enables using a checking of a value which has a different type than a [function](#function) signature expects. The keyword does not generate any assembly code and thus does not affect the effectiveness of the resulting binary.
-
-### Examples
-
-```pascal
-function main :
-  // Cast character 'a' to integer representation 97
-  // and call print_integer function with it being its parameter.
-  // Function call would not be possible without casting because it requires an integer.
-  'a' cast(int) print_integer
-end
-
-function print_integer int : print end
-```
+CAST keyword is used to cast any type to another. The keyword does not generate any assembly code and thus does not affect the effectiveness of the resulting binary.
 
 ## CONST
 

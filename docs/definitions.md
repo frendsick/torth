@@ -22,7 +22,7 @@ The following types count as integer-like types whenever an intrinsic requires t
 
 **Note**: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast another type to integer-like type by using the type as token. For example, if you want to cast a value to [INT](types.md#int---integer), cast it with `cast(int)`.
 
-See also: [Casting](keywords.md#casting)
+See also: [Casting](types.md#casting)
 
 ## Pointer types
 
@@ -33,7 +33,7 @@ The following types count as pointer-like types whenever an intrinsic requires t
 
 Note: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast an pointer-like type to another pointer-like type by using the type as token. Also, you can cast some integer-like types to [PTR](types.md#ptr---pointer). For example, if you want to cast a value to PTR, use `ptr` keyword.
 
-See also: [Casting](keywords.md#casting)
+See also: [Casting](types.md#casting)
 
 ## PATH
 
