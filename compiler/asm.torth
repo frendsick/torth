@@ -661,11 +661,9 @@ end
 // Params: operand
 // Return: Assembly
 function get_arithmetic_asm operand:str -> str :
-  "  pop rbx\n"
-  "  pop rax\n  " str.cat
-  operand         str.cat
-  " rax, rbx\n"   str.cat
-  "  push rax\n"  str.cat
+  "  pop rax\n  "
+  operand           str.cat
+  " [rsp], rax\n  " str.cat
 end
 
 // Generate assembly code for different comparison Intrinsics, like EQ and GE.
