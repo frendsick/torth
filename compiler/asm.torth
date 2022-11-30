@@ -730,9 +730,7 @@ end
 // Params: None
 // Return: Assembly
 function get_dup_asm -> str :
-  "  pop rax\n"
-  "  push rax\n" str.cat
-  "  push rax\n" str.cat
+  "  push QWORD [rsp]\n"
 end
 
 // ENVP pushes the environment pointer to the stack
