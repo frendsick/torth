@@ -3,623 +3,472 @@
 // https://docs.python.org/3/library/argparse.html
 include "std"
 
-// Class Argparser
-enum Argparser.size 8 :
-  Argparser.description // str
-  Argparser.cmd_args    // List[str]
-  Argparser.parser_args // List[ParserArgument]
-end
-
-// Class ParserArgument
-enum ParserArgument.size 8 :
-  ParserArgument.name       // str
-  ParserArgument.help       // str
-  ParserArgument.metavar    // str
-  ParserArgument.required   // bool
-  ParserArgument.positional // bool
-  ParserArgument.flag       // bool
-end
-
-// Parse command line arguments from ARGV to Argparser.cmd_args
-// Params
-//    parser: Argparser
-// Return None
-function Argparser.parse_args parser:Argparser :
-  parser Argparser.get_parser_args
-  parser Argparser.get_cmd_args
-  0
-  take
-    index
-    cmd_args
-    parser_args
-  in
-
-  // Parse all command line arguments to Argparser.cmd_args
-  while index ARGC < do
-    index get_argument cast(ptr)
-
-    // Break if all arguments are checked
-    if dup cast(int) NULL == do
-      break
-    endif
-
-    // Append current command line argument to Argparser.cmd_args
-    cmd_args List.append
-    index 1 + index =
-  done
-
-  // Only print help page if -h or --help argument is present
-  if
-    "-h"      cmd_args List.contains_str
-    "--help"  cmd_args List.contains_str
-    ||
-  do
-    parser Argparser.print_help
-    0 exit
-  endif
-end
-
-// Get the value of argument with certain name from Argparser
-// Params
-//    parser: Argparser
-//    argument_name: str
-// Return
-//    argument_value: str
-function Argparser.get_argument parser:Argparser argument_name:str -> str :
-  // Option arguments start with -
-  if argument_name "-" str.startswith do
-    argument_name parser Argparser.get_option_argument
-    return
-  endif
-  argument_name parser Argparser.get_positional_argument
-end
-
-// Get the value of positional argument with certain name
-// Params
-//    parser: Argparser
-//    argument_name: str
-// Return
-//    argument_value: str
-function Argparser.get_positional_argument parser:Argparser argument_name:str -> str :
-  // Get the position of the certain argument
-  argument_name parser Argparser.get_argument_position_by_name
-  parser Argparser.get_cmd_args
-  dup List.len
-  0
-  1
-  take
-    index
-    current_position
-    cmd_args.len
-    cmd_args
-    argument_position
-  in
-
-  while index cmd_args.len < do
-    index cmd_args List.nth str.load
-    take cmd_arg in
-
-    // Go over option arguments
-    if cmd_arg "--" str.startswith do
-      index 2 + index =
-      continue
-    endif
-    if cmd_arg "-" str.startswith do
-      index 1 + index =
-      continue
-    endif
-
-    // Return the command line argument if it is the correct position
-    if current_position argument_position == do
-      index cmd_args List.nth str.load
-      return
-    endif
-    current_position 1 + current_position =
-    index 1 + index =
-  done
-
-  // The value for the positional argument was not found
-  // Raise error if the positional argument is required
-  argument_name parser Argparser.get_argument_by_name
-  if ParserArgument.is_required not do
-    NULL cast(str) return
-  endif drop
-  "[ERROR] Could not find required positional argument '" eputs
-  argument_name eputs
-  "'\n" eputs
-  1 exit ""
-end
-
-// Get the value of option argument with certain name
-// Return NULLPTR if non-required option is not found
-// Raise error if required option is not found
-// Return 1 or 0 based on if a flag argument is present
-// Params
-//    parser: Argparser
-//    argument_name: str
-// Return
-//    argument_value: str
-function Argparser.get_option_argument parser:Argparser argument_name:str -> str :
-  parser Argparser.get_cmd_args
-  dup List.len
-  False
-  1
-  take
-    index
-    found
-    arguments.len
-    arguments
-  in
-
-  while index arguments.len < do
-    index arguments List.nth str.load
-    take argument_value in
-
-    // Return the current command line argument
-    // if the last one was the argument_name
-    if found do
-      argument_value return
-    endif
-
-    // If the current command line argument is the argument's name
-    // the following will be it's value.
-    // Example: --file file.txt
-    if argument_value argument_name streq do
-      argument_name parser Argparser.get_argument_by_name
-      if ParserArgument.is_flag do
-        // TODO: Find a better way to return truthy value when flag is present
-        1 cast(str) return
-      endif drop
-      True found =
-    endif
-    index 1 + index =
-  done
-
-  // The value for the option argument was not found
-  // Raise error if the option is required
-  argument_name parser Argparser.get_argument_by_name
-  if ParserArgument.is_required not do
-    NULL cast(str) return
-  endif drop
-  "[ERROR] Could not find required option argument '" eputs
-  argument_name eputs
-  "'\n" eputs
-  1 exit ""
-end
-
-// Print help page from the Argparser object
-// Params
-//    parser: Argparser
-// Return None
-function Argparser.print_help parser:Argparser :
-  parser Argparser.get_parser_args
-  parser Argparser.get_cmd_args
-  take cmd_args parser_args in
-
-  parser_args cmd_args Argparser.print_help_usage
-  parser Argparser.print_description
-
-  // Print positional arguments
-  "Positional arguments:\n" puts
-  parser_args Argparser.print_positional_arguments
-
-  // Print option arguments
-  "\nOptions:\n" puts
-  parser_args Argparser.print_option_arguments
-end
-
-// Print usage row in the help of the program (-h|--help)
-// Params
-//    cmd_args: List[ParserArgument]
-//    parser_args: List[ParserArgument]
-// Return None
-function Argparser.print_help_usage cmd_args:List parser_args:List :
-  // Usage: ./executable.bin --required-arg METAVAR [--not-required METAVAR] positional_argument
-  "Usage: " puts
-  cmd_args List.first str.load puts " " puts
-  parser_args cmd_args Argparser.print_options_inline
-  parser_args cmd_args Argparser.print_positional_inline
-  "\n\n" puts
-end
-
-// Print program description in the help of the program (-h|--help)
-// Params
-//    parser: Argparser
-// Return None
-function Argparser.print_description Argparser :
-  Argparser.get_description puts
-  "\n\n" puts
-end
-
-// Print positional arguments in the help of the program (-h|--help)
-// Params
-//    parser_args: List[ParserArgument]
-// Return None
 const ARG_HELP_INDENT 22 end
-function Argparser.print_positional_arguments parser_args:List :
-  parser_args List.len
-  0
-  take index args_amount in
-  while index args_amount < do
-    index parser_args List.nth ParserArgument.load
-    take argument in
+class Argparser
+  description:str
+  cmd_args:List
+  parser_args:List
 
-    // Do not print option arguments
-    if argument ParserArgument.is_positional not do
-      index 1 + index =
-      continue
-    endif
+  // Initialize Argparser object
+  method init description:str -> Argparser :
+    // Allocate memory for Argparser object
+    Argparser.size malloc cast(Argparser)
+    take parser in
 
-    // Print the positional argument
-    "  " puts
-    argument ParserArgument.get_name
-    ARG_HELP_INDENT over str.len -
-    take spaces argument_name in
-    argument_name puts
+    description parser Argparser->description
+    List.init   parser Argparser->parser_args
+    List.init   parser Argparser->cmd_args
+    False "" "Show this help message and exit" "-h" parser Argparser.add_argument
+    parser
+  end
 
-    // Print argument's help to another line if it's name is long
-    if spaces 0 <= do
-      "\n" puts
-      ARG_HELP_INDENT 2 + spaces =
-    endif
-
-    // Indent the argument's help with spaces
-    while spaces 0 > do
-      " " puts
-      spaces 1 - spaces =
-    done
-
-    // Print the argument's help
-    argument ParserArgument.get_help puts
-    "\n" puts
-    index 1 + index =
-  done
-end
-
-// Test if certain command line flag is present
-// Params
-//    parser: Argparser
-//    flag: str
-// Return
-//    present: bool
-function Argparser.flag_present Argparser str -> bool :
-  Argparser.get_argument cast(bool) // Returns 1 or 0
-end
-
-// Print option arguments in the help of the program (-h|--help)
-// Params
-//    parser_args: List[ParserArgument]
-// Return None
-const ARG_HELP_INDENT 22 end
-function Argparser.print_option_arguments parser_args:List :
-  parser_args List.len
-  0
-  take index args_amount in
-  while index args_amount < do
-    index parser_args List.nth ParserArgument.load
-    take argument in
-
-    // Only print option arguments that are not flags
-    if argument ParserArgument.is_positional do
-      index 1 + index =
-      continue
-    endif
-
-    // Print the option argument
-    "  " puts
-    argument ParserArgument.get_name
-    argument ParserArgument.get_metavar
-    argument ParserArgument.is_flag
+  // Parse command line arguments from ARGV to Argparser.cmd_args
+  method parse_args parser:Argparser :
+    parser Argparser.parser_args
+    parser Argparser.cmd_args
+    0
     take
-      flag
-      metavar
-      argument_name
+      index
+      cmd_args
+      parser_args
     in
 
-    argument_name str.len
-    if flag not do
-      1 + metavar str.len +
-    endif
-    ARG_HELP_INDENT swap -
-    take spaces in
-    argument_name puts
+    // Parse all command line arguments to Argparser.cmd_args
+    while index ARGC < do
+      index get_argument cast(ptr)
 
-    if flag not do
-      " " puts
-      metavar puts
-    endif
+      // Break if all arguments are checked
+      if dup cast(int) NULL == do
+        break
+      endif
 
-    // Print argument's help to another line if it's name is long
-    if spaces 0 <= do
-      "\n" puts
-      ARG_HELP_INDENT 2 + spaces =
-    endif
-
-    // Indent the argument's help with spaces
-    while spaces 0 > do
-      " " puts
-      spaces 1 - spaces =
+      // Append current command line argument to Argparser.cmd_args
+      cmd_args List.append
+      index 1 + index =
     done
 
-    // Print the argument's help
-    argument ParserArgument.get_help puts
-    "\n" puts
-    index 1 + index =
-  done
-end
+    // Only print help page if -h or --help argument is present
+    if
+      "-h"      cmd_args List.contains_str
+      "--help"  cmd_args List.contains_str
+      ||
+    do
+      parser Argparser.print_help
+      0 exit
+    endif
+  end
 
-// Print the option arguments in one line separated by spaces
-// Params
-//    cmd_args: List[ParserArgument]
-//    parser_args: List[ParserArgument]
-// Return None
-function Argparser.print_options_inline cmd_args:List parser_args:List :
-  parser_args List.len
-  0
-  take index args_amount in
-  while index args_amount < do
-    index parser_args List.nth ParserArgument.load
+  // Get the value of argument with certain name from Argparser
+  method get_argument parser:Argparser argument_name:str -> str :
+    // Option arguments start with -
+    if argument_name "-" str.startswith do
+      argument_name parser Argparser.get_option_argument
+      return
+    endif
+    argument_name parser Argparser.get_positional_argument
+  end
+
+  // Get the value of positional argument with certain name
+  method get_positional_argument parser:Argparser argument_name:str -> str :
+    // Get the position of the certain argument
+    argument_name parser Argparser.get_argument_position_by_name
+    parser Argparser.cmd_args
+    dup List.len
+    0
+    1
+    take
+      index
+      current_position
+      cmd_args.len
+      cmd_args
+      argument_position
+    in
+
+    while index cmd_args.len < do
+      index cmd_args List.nth str.load
+      take cmd_arg in
+
+      // Go over option arguments
+      if cmd_arg "--" str.startswith do
+        index 2 + index =
+        continue
+      endif
+      if cmd_arg "-" str.startswith do
+        index 1 + index =
+        continue
+      endif
+
+      // Return the command line argument if it is the correct position
+      if current_position argument_position == do
+        index cmd_args List.nth str.load
+        return
+      endif
+      current_position 1 + current_position =
+      index 1 + index =
+    done
+
+    // The value for the positional argument was not found
+    // Raise error if the positional argument is required
+    argument_name parser Argparser.get_argument_by_name
+    if ParserArgument.required not do
+      NULL cast(str) return
+    endif drop
+    "[ERROR] Could not find required positional argument '" eputs
+    argument_name eputs
+    "'\n" eputs
+    1 exit ""
+  end
+
+  // Get the value of option argument with certain name
+  // Return NULLPTR if non-required option is not found
+  // Raise error if required option is not found
+  // Return 1 or 0 based on if a flag argument is present
+  method get_option_argument parser:Argparser argument_name:str -> str :
+    parser Argparser.cmd_args
+    dup List.len
+    False
+    1
+    take
+      index
+      found
+      arguments.len
+      arguments
+    in
+
+    while index arguments.len < do
+      index arguments List.nth str.load
+      take argument_value in
+
+      // Return the current command line argument
+      // if the last one was the argument_name
+      if found do
+        argument_value return
+      endif
+
+      // If the current command line argument is the argument's name
+      // the following will be it's value.
+      // Example: --file file.txt
+      if argument_value argument_name streq do
+        argument_name parser Argparser.get_argument_by_name
+        if ParserArgument.flag do
+          // TODO: Find a better way to return truthy value when flag is present
+          1 cast(str) return
+        endif drop
+        True found =
+      endif
+      index 1 + index =
+    done
+
+    // The value for the option argument was not found
+    // Raise error if the option is required
+    argument_name parser Argparser.get_argument_by_name
+    if ParserArgument.required not do
+      NULL cast(str) return
+    endif drop
+    "[ERROR] Could not find required option argument '" eputs
+    argument_name eputs
+    "'\n" eputs
+    1 exit ""
+  end
+
+  // Print help page from the Argparser object
+  method print_help parser:Argparser :
+    parser Argparser.parser_args
+    parser Argparser.cmd_args
+    take cmd_args parser_args in
+
+    parser_args cmd_args Argparser.print_help_usage
+    parser Argparser.print_description
+
+    // Print positional arguments
+    "Positional arguments:\n" puts
+    parser_args Argparser.print_positional_arguments
+
+    // Print option arguments
+    "\nOptions:\n" puts
+    parser_args Argparser.print_option_arguments
+  end
+
+  // Print usage row in the help of the program (-h|--help)
+  method print_help_usage cmd_args:List parser_args:List :
+    // Usage: ./executable.bin --required-arg METAVAR [--not-required METAVAR] positional_argument
+    "Usage: " puts
+    cmd_args List.first str.load puts " " puts
+    parser_args cmd_args Argparser.print_options_inline
+    parser_args cmd_args Argparser.print_positional_inline
+    "\n\n" puts
+  end
+
+  // Print program description in the help of the program (-h|--help)
+  method print_description Argparser :
+    Argparser.description puts
+    "\n\n" puts
+  end
+
+  // Print positional arguments in the help of the program (-h|--help)
+  method print_positional_arguments parser_args:List :
+    parser_args List.len
+    0
+    take index args_amount in
+    while index args_amount < do
+      index parser_args List.nth ParserArgument.load
+      take argument in
+
+      // Do not print option arguments
+      if argument ParserArgument.positional not do
+        index 1 + index =
+        continue
+      endif
+
+      // Print the positional argument
+      "  " puts
+      argument ParserArgument.name
+      ARG_HELP_INDENT over str.len -
+      take spaces argument_name in
+      argument_name puts
+
+      // Print argument's help to another line if it's name is long
+      if spaces 0 <= do
+        "\n" puts
+        ARG_HELP_INDENT 2 + spaces =
+      endif
+
+      // Indent the argument's help with spaces
+      while spaces 0 > do
+        " " puts
+        spaces 1 - spaces =
+      done
+
+      // Print the argument's help
+      argument ParserArgument.help puts
+      "\n" puts
+      index 1 + index =
+    done
+  end
+
+  // Test if certain command line flag is present
+  method flag_present Argparser str -> bool :
+    Argparser.get_argument cast(bool) // Returns 1 or 0
+  end
+
+  // Print option arguments in the help of the program (-h|--help)
+  method print_option_arguments parser_args:List :
+    parser_args List.len
+    0
+    take index args_amount in
+    while index args_amount < do
+      index parser_args List.nth ParserArgument.load
+      take argument in
+
+      // Only print option arguments that are not flags
+      if argument ParserArgument.positional do
+        index 1 + index =
+        continue
+      endif
+
+      // Print the option argument
+      "  " puts
+      argument ParserArgument.name
+      argument ParserArgument.metavar
+      argument ParserArgument.flag
+      take
+        flag
+        metavar
+        argument_name
+      in
+
+      argument_name str.len
+      if flag not do
+        1 + metavar str.len +
+      endif
+      ARG_HELP_INDENT swap -
+      take spaces in
+      argument_name puts
+
+      if flag not do
+        " " puts
+        metavar puts
+      endif
+
+      // Print argument's help to another line if it's name is long
+      if spaces 0 <= do
+        "\n" puts
+        ARG_HELP_INDENT 2 + spaces =
+      endif
+
+      // Indent the argument's help with spaces
+      while spaces 0 > do
+        " " puts
+        spaces 1 - spaces =
+      done
+
+      // Print the argument's help
+      argument ParserArgument.help puts
+      "\n" puts
+      index 1 + index =
+    done
+  end
+
+  // Print the option arguments in one line separated by spaces
+  method print_options_inline cmd_args:List parser_args:List :
+    parser_args List.len
+    0
+    take index args_amount in
+    while index args_amount < do
+      index parser_args List.nth ParserArgument.load
+      take argument in
+
+      // Do not print positional arguments
+      if argument ParserArgument.positional do
+        index 1 + index =
+        continue
+      endif
+
+      // Put not required arguments inside square brackets []
+      if argument ParserArgument.required not do "[" puts endif
+      argument ParserArgument.name puts
+
+      // Only print metavar for non-flag arguments
+      if argument ParserArgument.flag not do
+        " " puts argument ParserArgument.metavar puts
+      endif
+
+      if argument ParserArgument.required not do "]" puts endif
+      " " puts
+      index 1 + index =
+    done
+  end
+
+  // Print the positional arguments in one line separated by spaces
+  method print_positional_inline cmd_args:List parser_args:List :
+    parser_args List.len
+    0
+    take index args_amount in
+    while index args_amount < do
+      index parser_args List.nth ParserArgument.load
+      take argument in
+
+      // Do not print option arguments
+      if argument ParserArgument.positional not do
+        index 1 + index =
+        continue
+      endif
+
+      // Print the positional argument
+      argument ParserArgument.name puts " " puts
+      index 1 + index =
+    done
+  end
+
+  // Add argument to Argparser
+  // Params
+  //    parser: Argparser
+  //    name: str
+  //    help: str
+  //    metavar: str
+  //    required: bool
+  // Return None
+  method add_argument Argparser str str str bool :
+    Argparser.parser_args
+    take parser_args in
+    ParserArgument.init parser_args List.append
+  end
+
+  // Get the ParserArgument object of argument with certain name
+  method get_argument_by_name parser:Argparser name:str -> ParserArgument :
+    parser Argparser.parser_args
+    dup List.len
+    0
+    take
+      index
+      parser_args.len
+      parser_args
+    in
+
+    while index parser_args.len < do
+      index parser_args List.nth ParserArgument.load
+      take argument in
+
+      if name argument ParserArgument.name streq do
+        argument return
+      endif
+      index 1 + index =
+    done
+    "[ERROR] Unknown argument '" eputs
+    name eputs
+    "'\n" eputs
+    1 exit
+    NULL cast(ParserArgument)
+  end
+
+  // Get the zero-based position of the positional argument
+  method get_argument_position_by_name parser:Argparser name:str -> int :
+    parser Argparser.parser_args
+    dup List.len
+    0
+    0
+    take
+      index
+      position
+      parser_args.len
+      parser_args
+    in
+    while index parser_args.len < do
+      index parser_args List.nth ParserArgument.load ParserArgument.name
+      take current_name in
+      if current_name name streq do
+        position return
+      endif
+      if current_name "--" str.startswith do
+        index 2 + index =
+        continue
+      endif
+      if current_name "-" str.startswith do
+        index 1 + index =
+        continue
+      endif
+      position 1 + position =
+      index 1 + index =
+    done
+    "[ERROR] Unknown argument '" eputs
+    name eputs
+    "'\n" eputs
+    1 exit NULL
+  end
+endclass // Argparser
+
+class ParserArgument
+  name:str
+  help:str
+  metavar:str
+  required:bool
+  positional:bool
+  flag:bool
+
+  // Initialize ParserArgument object
+  method init name:str help:str metavar:str required:bool -> ParserArgument :
+    // Allocate memory for ParserArgument
+    ParserArgument.size malloc cast(ParserArgument)
     take argument in
 
-    // Do not print positional arguments
-    if argument ParserArgument.is_positional do
-      index 1 + index =
-      continue
+    if name "--" str.startswith do
+      False argument ParserArgument->positional
+      False argument ParserArgument->flag
+    elif name "-" str.startswith do
+      False argument ParserArgument->positional
+      True  argument ParserArgument->flag
+    else
+      True  argument ParserArgument->positional
+      False argument ParserArgument->flag
     endif
+    name      argument ParserArgument->name
+    help      argument ParserArgument->help
+    metavar   argument ParserArgument->metavar
+    required  argument ParserArgument->required
+    argument
+  end
 
-    // Put not required arguments inside square brackets []
-    if argument ParserArgument.is_required not do "[" puts endif
-    argument ParserArgument.get_name puts
-
-    // Only print metavar for non-flag arguments
-    if argument ParserArgument.is_flag not do
-      " " puts argument ParserArgument.get_metavar puts
-    endif
-
-    if argument ParserArgument.is_required not do "]" puts endif
-    " " puts
-    index 1 + index =
-  done
-end
-
-// Print the positional arguments in one line separated by spaces
-// Params
-//    cmd_args: List[ParserArgument]
-//    parser_args: List[ParserArgument]
-// Return None
-function Argparser.print_positional_inline cmd_args:List parser_args:List :
-  parser_args List.len
-  0
-  take index args_amount in
-  while index args_amount < do
-    index parser_args List.nth ParserArgument.load
-    take argument in
-
-    // Do not print option arguments
-    if argument ParserArgument.is_positional not do
-      index 1 + index =
-      continue
-    endif
-
-    // Print the positional argument
-    argument ParserArgument.get_name puts " " puts
-    index 1 + index =
-  done
-end
-
-// Initialize Argparser object
-// Params
-//    description: str
-// Return
-//    parser: Argparser
-function Argparser.init str -> Argparser :
-  // Allocate memory for Argparser object
-  Argparser.size malloc cast(Argparser)
-  peek parser in
-
-  Argparser.set_description
-  List.init parser Argparser.set_parser_args
-  List.init parser Argparser.set_cmd_args
-  False "" "Show this help message and exit" "-h" parser Argparser.add_argument
-  parser
-end
-
-// Argparser getters
-function Argparser.get_description Argparser -> str :
-  cast(ptr) str.load
-end
-
-function Argparser.get_parser_args Argparser -> List :
-  cast(ptr) Argparser.parser_args ptr+ List.load
-end
-
-function Argparser.get_cmd_args Argparser -> List :
-  cast(ptr) Argparser.cmd_args ptr+ List.load
-end
-
-// Argparser setters
-function Argparser.set_description Argparser str :
-  cast(ptr) swap str.copy swap str.store
-end
-
-function Argparser.set_parser_args parser:Argparser parser_args:List :
-  parser_args cast(ptr)
-  parser cast(ptr) Argparser.parser_args ptr+ ptr.store
-end
-
-function Argparser.set_cmd_args parser:Argparser cmd_args:List :
-  cmd_args cast(ptr)
-  parser cast(ptr) Argparser.cmd_args ptr+ ptr.store
-end
-
-// Add argument to Argparser
-// Params
-//    parser: Argparser
-//    name: str
-//    help: str
-//    metavar: str
-//    required: bool
-// Return None
-function Argparser.add_argument Argparser str str str bool :
-  Argparser.get_parser_args
-  take parser_args in
-  ParserArgument.init parser_args List.append
-end
-
-// Get the ParserArgument object of argument with certain name
-// Params
-//    parser: Argparser
-//    name: str
-// Return
-//    argument: ParserArgument
-function Argparser.get_argument_by_name parser:Argparser name:str -> ParserArgument :
-  parser Argparser.get_parser_args
-  dup List.len
-  0
-  take
-    index
-    parser_args.len
-    parser_args
-  in
-
-  while index parser_args.len < do
-    index parser_args List.nth ParserArgument.load
-    take argument in
-
-    if name argument ParserArgument.get_name streq do
-      argument return
-    endif
-    index 1 + index =
-  done
-  "[ERROR] Unknown argument '" eputs
-  name eputs
-  "'\n" eputs
-  1 exit
-  NULL cast(ParserArgument)
-end
-
-// Get the zero-based position of the positional argument
-// Params
-//    parser: Argparser
-//    name: str
-// Return
-//    index: int
-function Argparser.get_argument_position_by_name parser:Argparser name:str -> int :
-  parser Argparser.get_parser_args
-  dup List.len
-  0
-  0
-  take
-    index
-    position
-    parser_args.len
-    parser_args
-  in
-  while index parser_args.len < do
-    index parser_args List.nth ParserArgument.load ParserArgument.get_name
-    take current_name in
-    if current_name name streq do
-      position return
-    endif
-    if current_name "--" str.startswith do
-      index 2 + index =
-      continue
-    endif
-    if current_name "-" str.startswith do
-      index 1 + index =
-      continue
-    endif
-    position 1 + position =
-    index 1 + index =
-  done
-  "[ERROR] Unknown argument '" eputs
-  name eputs
-  "'\n" eputs
-  1 exit NULL
-end
-
-k// Initialize ParserArgument object
-// Params
-//    name: str
-//    help: str
-//    metavar: str
-//    required: bool
-// Return
-//    argument: ParserArgument
-function ParserArgument.init str str str bool -> ParserArgument :
-  // Allocate memory for ParserArgument
-  ParserArgument.size malloc cast(ParserArgument)
-  take argument in
-
-  if dup "--" str.startswith do
-    False argument ParserArgument.set_positional
-    False argument ParserArgument.set_flag
-  elif dup "-" str.startswith do
-    False argument ParserArgument.set_positional
-    True  argument ParserArgument.set_flag
-  else
-    True  argument ParserArgument.set_positional
-    False argument ParserArgument.set_flag
-  endif
-  argument ParserArgument.set_name
-  argument ParserArgument.set_help
-  argument ParserArgument.set_metavar
-  argument ParserArgument.set_required
-  argument
-end
-
-// ParserArgument getters
-function ParserArgument.get_name ParserArgument -> str :
-  cast(ptr) str.load
-end
-
-function ParserArgument.get_help ParserArgument -> str :
-  cast(ptr) ParserArgument.help ptr+ str.load
-end
-
-function ParserArgument.get_metavar ParserArgument -> str :
-  cast(ptr) ParserArgument.metavar ptr+ str.load
-end
-
-function ParserArgument.is_required ParserArgument -> bool :
-  cast(ptr) ParserArgument.required ptr+ bool.load
-end
-
-function ParserArgument.is_positional ParserArgument -> bool :
-  cast(ptr) ParserArgument.positional ptr+ bool.load
-end
-
-function ParserArgument.is_flag ParserArgument -> bool :
-  cast(ptr) ParserArgument.flag ptr+ bool.load
-end
-
-// ParserArgument setters
-function ParserArgument.set_name ParserArgument str :
-  cast(ptr) swap str.copy swap str.store
-end
-
-function ParserArgument.set_help ParserArgument str :
-  swap str.copy swap
-  cast(ptr) ParserArgument.help ptr+ str.store
-end
-
-function ParserArgument.set_metavar ParserArgument str :
-  swap str.copy swap
-  cast(ptr) ParserArgument.metavar ptr+ str.store
-end
-
-function ParserArgument.set_required ParserArgument bool :
-  cast(ptr) ParserArgument.required ptr+ bool.store
-end
-
-function ParserArgument.set_positional ParserArgument bool :
-  cast(ptr) ParserArgument.positional ptr+ bool.store
-end
-
-function ParserArgument.set_flag ParserArgument bool :
-  cast(ptr) ParserArgument.flag ptr+ bool.store
-end
-
-function ParserArgument.load ptr -> ParserArgument :
-  ptr.load cast(ParserArgument)
-end
+  method load ptr -> ParserArgument :
+    ptr.load cast(ParserArgument)
+  end
+endclass // ParserArgument
