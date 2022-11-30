@@ -847,9 +847,7 @@ end
 // Return: Assembly
 function get_or_asm -> str :
   "  pop rax\n"
-  "  pop rbx\n"     str.cat
-  "  or rbx, rax\n" str.cat
-  "  push rbx\n"    str.cat
+  "  or [rsp], rax\n" str.cat
 end
 
 // OVER Intrinsic pushes a copy of the second element of the stack
