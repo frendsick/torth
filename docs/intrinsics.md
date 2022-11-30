@@ -101,9 +101,13 @@ Perform a division operation for two [integers](definitions.md#integer-types) an
 
 Remove the top element from the stack.
 
+`a b -> b`
+
 ## DUP
 
 Duplicate the top element of the stack.
+
+`a b -> a a b`
 
 ## ENVP
 
@@ -148,6 +152,8 @@ Perform bitwise OR for two [integer](definitions.md#integer-types) values.
 
 Push a copy of the second element of the stack.
 
+`a b -> b a b`
+
 ## PRINT
 
 Pop and print an [integer](definitions.md#integer-types) from the stack to the console.
@@ -155,6 +161,8 @@ Pop and print an [integer](definitions.md#integer-types) from the stack to the c
 ## ROT
 
 Rotate the top three items on the stack so that the third element moves to the top and the other two move one spot deeper in the stack.
+
+`a b c -> c a b`
 
 ## STORE
 
@@ -177,6 +185,8 @@ For example, to store [INT](types.md#int---integer) (64-bit) to a memory locatio
 ## SWAP
 
 Swap the top two elements in the stack.
+
+`a b -> b a`
 
 ## SYSCALL
 
