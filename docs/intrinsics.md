@@ -29,6 +29,8 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [PLUS](#Calculations)
 - [PRINT](#PRINT)
 - [ROT](#ROT)
+- [SHL](#bit-shifts)
+- [SHR](#bit-shifts)
 - [STORE_BYTE](#STORE)
 - [STORE_WORD](#STORE)
 - [STORE_DWORD](#STORE)
@@ -71,6 +73,15 @@ Different comparison intrinsics:
 - **LE**: Less than or equal (<=)
 - **LT**: Less than (<)
 - **NE**: Not equal (!=)
+
+## Bit shifts
+
+A bit shift moves each digit in a number's binary representation left or right.
+
+Different bit shift intrinsics:
+
+- **SHL**: Bit shift left (<<)
+- **SHR**: Bit shift right (>>)
 
 ## AND
 
