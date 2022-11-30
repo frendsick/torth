@@ -1,15 +1,19 @@
 include "std"
 class Variable
   name:str
-  type:int
+  type:str
 
-  method init name:str type:int -> ptr :
-    Variable.size malloc
+  method init name:str type:str -> Variable :
+    Variable.size malloc cast(Variable)
     take variable in
 
     // Load the parameters to the allocated memory
     name variable Variable->name
     type variable Variable->type
     variable
+  end
+
+  method load ptr -> Variable :
+    ptr.load cast(Variable)
   end
 endclass

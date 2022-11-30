@@ -1,10 +1,10 @@
 include "std"
 class TypeNode
-  type:int
-  location:ptr
+  type:str
+  location:Location
 
-  method init type:int location:ptr -> ptr :
-    TypeNode.size malloc
+  method init type:str location:Location -> TypeNode :
+    TypeNode.size malloc cast(TypeNode)
     take node in
 
     type      node TypeNode->type

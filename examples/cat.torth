@@ -17,7 +17,7 @@ function cat_files :
     dup get_argument
 
     // get_argument returns NULL if all arguments are handled
-    if dup int NULL == do
+    if dup cast(int) NULL == do
       break
     endif
 

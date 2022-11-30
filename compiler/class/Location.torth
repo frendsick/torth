@@ -4,8 +4,8 @@ class Location
   row:int
   column:int
 
-  method init file:str row:int column:int -> ptr :
-    Location.size malloc
+  method init file:str row:int column:int -> Location :
+    Location.size malloc cast(Location)
     take location in
 
     file    location Location->file
@@ -14,7 +14,7 @@ class Location
     location
   end
 
-  method repr self:ptr -> str :
+  method repr self:Location -> str :
     self Location.file
     ","                       str.cat
     self Location.row itoa    str.cat
@@ -22,7 +22,7 @@ class Location
     self Location.column itoa str.cat
   end
 
-  method print self:ptr :
+  method print self:Location :
     "Location.file      => "        puts
     self Location.file puts "\n"    puts
 

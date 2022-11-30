@@ -2,11 +2,11 @@ include "std"
 class Op
   id:int
   type:int
-  token:ptr
-  func:ptr
+  token:Token
+  func:Func
 
-  method init id:int type:int token:ptr func:ptr -> ptr :
-    Op.size malloc
+  method init id:int type:int token:Token func:Func -> Op :
+    Op.size malloc cast(Op)
     take op in
 
     id    op Op->id
@@ -14,5 +14,9 @@ class Op
     token op Op->token
     func  op Op->func
     op
+  end
+
+  method load ptr -> Op :
+    ptr.load cast(Op)
   end
 endclass

@@ -8,29 +8,29 @@ memory previous_board BOARD_SIZE end  // int previous_board[BOARD_SIZE]
 memory pattern 3 end                  // int pattern[3]
 
 function initialize_rules :
-  rules                        // Pointer to table
-  u0 over        uint8.store   // table[0] == 0  // 111
-  u1 over 1 ptr+ uint8.store   // table[1] == 1  // 110
-  u1 over 2 ptr+ uint8.store   // table[2] == 1  // 101
-  u0 over 3 ptr+ uint8.store   // table[3] == 0  // 100
-  u1 over 4 ptr+ uint8.store   // table[4] == 1  // 011
-  u1 over 5 ptr+ uint8.store   // table[5] == 1  // 010
-  u1 over 6 ptr+ uint8.store   // table[6] == 1  // 001
-  u0 over 7 ptr+ uint8.store   // table[7] == 0  // 000
+  rules                     // Pointer to table
+  0 over        store_byte  // table[0] == 0  // 111
+  1 over 1 ptr+ store_byte  // table[1] == 1  // 110
+  1 over 2 ptr+ store_byte  // table[2] == 1  // 101
+  0 over 3 ptr+ store_byte  // table[3] == 0  // 100
+  1 over 4 ptr+ store_byte  // table[4] == 1  // 011
+  1 over 5 ptr+ store_byte  // table[5] == 1  // 010
+  1 over 6 ptr+ store_byte  // table[6] == 1  // 001
+  0 over 7 ptr+ store_byte  // table[7] == 0  // 000
   drop
 end
 
 function initialize_board :
   current_board
-  u1 over 2 ptr+ uint8.store   // current_board[2] = 1
+  u1 over 2 ptr+ store_byte   // current_board[2] = 1
   drop
 end
 
 // Sync previous_board with current_board
 function sync_boards :
   0 while dup BOARD_SIZE < do
-    current_board over ptr+ uint8.load
-    over previous_board swap ptr+ uint8.store
+    current_board over ptr+ load_byte
+    over previous_board swap ptr+ store_byte
     1 +
   done drop
 end
@@ -40,7 +40,7 @@ function print_iteration :
   0 while dup BOARD_SIZE < do
 
     // if(current_board[j] == 1)
-    if current_board over ptr+ uint8.load 1 == do
+    if current_board over ptr+ load_byte 1 == do
       "*" puts
     else
       " " puts
@@ -52,9 +52,9 @@ end
 
 function get_pattern int -> int :
   previous_board
-  over 1 - over swap ptr+ uint8.load pattern        uint8.store  // pattern[0] = previous_board[j-1]
-  over     over swap ptr+ uint8.load pattern 1 ptr+ uint8.store  // pattern[1] = previous_board[j]
-  over 1 + over swap ptr+ uint8.load pattern 2 ptr+ uint8.store  // pattern[2] = previous_board[j+1]
+  over 1 - over swap ptr+ load_byte pattern        store_byte  // pattern[0] = previous_board[j-1]
+  over     over swap ptr+ load_byte pattern 1 ptr+ store_byte  // pattern[1] = previous_board[j]
+  over 1 + over swap ptr+ load_byte pattern 2 ptr+ store_byte  // pattern[2] = previous_board[j+1]
   drop
 end
 
@@ -68,8 +68,8 @@ function output_board :
 
 function set_board_index int int :
   take rule_index board_index in
-  rules rule_index ptr+ uint8.load
-  current_board board_index ptr+ uint8.store
+  rules rule_index ptr+ load_byte
+  current_board board_index ptr+ store_byte
 end
 
 // Sets the current_board index according to rules

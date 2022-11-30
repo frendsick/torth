@@ -1,80 +1,10 @@
 include "std"
 
-// Keywords
-ENUM Keyword.len 1 :
-  Keyword.BOOL
-  Keyword.BREAK
-  Keyword.CHAR
-  Keyword.CONST
-  Keyword.CONTINUE
-  Keyword.DO
-  Keyword.DONE
-  Keyword.ELIF
-  Keyword.ELSE
-  Keyword.END
-  Keyword.ENDIF
-  Keyword.ENUM
-  Keyword.FUNCTION
-  Keyword.IF
-  Keyword.INT
-  Keyword.MEMORY
-  Keyword.PTR
-  Keyword.STR
-  Keyword.UINT8
-  Keyword.WHILE
-END
-
-// Intrinsics
-ENUM Intrinsic.len 1 :
-  Intrinsic.AND
-  Intrinsic.ARGC
-  Intrinsic.ARGV
-  Intrinsic.DIVMOD
-  Intrinsic.DROP
-  Intrinsic.DUP
-  Intrinsic.ENVP
-  Intrinsic.EQ
-  Intrinsic.GE
-  Intrinsic.GT
-  Intrinsic.LE
-  Intrinsic.LOAD_BYTE
-  Intrinsic.LOAD_WORD
-  Intrinsic.LOAD_DWORD
-  Intrinsic.LOAD_QWORD
-  Intrinsic.LT
-  Intrinsic.MINUS
-  Intrinsic.MUL
-  Intrinsic.NE
-  Intrinsic.NTH
-  Intrinsic.OR
-  Intrinsic.OVER
-  Intrinsic.PLUS
-  Intrinsic.PRINT
-  Intrinsic.ROT
-  Intrinsic.STORE_BYTE
-  Intrinsic.STORE_WORD
-  Intrinsic.STORE_DWORD
-  Intrinsic.STORE_QWORD
-  Intrinsic.SWAP
-  Intrinsic.SYSCALL0
-  Intrinsic.SYSCALL1
-  Intrinsic.SYSCALL2
-  Intrinsic.SYSCALL3
-  Intrinsic.SYSCALL4
-  Intrinsic.SYSCALL5
-  Intrinsic.SYSCALL6
-END
-
 // OpType
 ENUM OpType.len 1 :
   OpType.ASSIGN_BIND
   OpType.BREAK
-  OpType.CAST_BOOL
-  OpType.CAST_CHAR
-  OpType.CAST_INT
-  OpType.CAST_PTR
-  OpType.CAST_STR
-  OpType.CAST_UINT8
+  OpType.CAST
   OpType.CONTINUE
   OpType.DO
   OpType.DONE
@@ -96,23 +26,9 @@ ENUM OpType.len 1 :
   OpType.PUSH_INT
   OpType.PUSH_PTR
   OpType.PUSH_STR
-  OpType.PUSH_UINT8
   OpType.RETURN
   OpType.TAKE
   OpType.WHILE
-END
-
-// TokenType
-ENUM TokenType.len 1 :
-  TokenType.ANY
-  TokenType.BOOL
-  TokenType.CHAR
-  TokenType.INT
-  TokenType.KEYWORD
-  TokenType.PTR
-  TokenType.STR
-  TokenType.UINT8
-  TokenType.WORD
 END
 
 // VarType

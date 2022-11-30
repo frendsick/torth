@@ -2,10 +2,10 @@ include "std"
 class Mem
   name:str
   bytes:int
-  location:ptr
+  location:Location
 
-  method init name:str bytes:int location:ptr -> ptr :
-    Mem.size malloc
+  method init name:str bytes:int location:Location -> Mem :
+    Mem.size malloc cast(Mem)
     take mem in
 
     name      mem Mem->name

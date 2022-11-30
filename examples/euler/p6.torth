@@ -28,7 +28,7 @@ function square_of_sum int -> int :
   sum 2 pow  // Square and return the Sum total
 end
 
-function Main :
+function main :
   100 peek limit in
   square_of_sum
   limit sum_of_squares

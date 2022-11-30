@@ -6,30 +6,28 @@ include "compiler/defs"
 include "compiler/class/Token"
 
 // Generate Program for each Func
-// Params: List[Func], List[Constant], List[Mem]
-// Return: List[Program]
 function get_sub_programs
-  functions:ptr
-  constants:ptr
-  memories:ptr
--> ptr :
+  functions:List[Func]
+  constants:List[Constant]
+  memories:List[Mem]
+-> List[Program] :
 
-  List.init // sub_programs = List[Program]
-  0         // index
+  List.init cast(List[Program])
+  0
   take index sub_programs in
 
   // Iterate over every Func is functions
-  while index functions List.len < do
+  while index functions cast(List) List.len < do
 
     // Get the current Func from the list
-    index functions List.nth ptr.load
+    index functions cast(List) List.nth Func.load
     take func in
 
     // Generate Program from the current Func
-    memories functions constants func generate_program
+    memories constants functions func generate_program
 
     // Append the generated Program to sub_programs
-    sub_programs List.append
+    sub_programs cast(List) List.append
     index 1 + index = // index++
   done
   sub_programs
@@ -39,14 +37,14 @@ end
 // Params: Func, List[Func], List[Constant], List[Mem]
 // Return: Program
 function generate_program
-  func:ptr
-  functions:ptr
-  constants:ptr
-  memories:ptr
--> ptr :
+  func:Func
+  functions:List[Func]
+  constants:List[Constant]
+  memories:List[Mem]
+-> Program :
 
   func Func.tokens
-  List.init
+  List.init cast(Program)
   0
   take
     index
@@ -54,19 +52,18 @@ function generate_program
     tokens
   in
 
-  while index tokens List.len < do
+  while index tokens cast(List) List.len < do
     // Get current Token
-    tokens List.first
-    index ptr.size * ptr+ ptr.load
+    index tokens cast(List) List.nth Token.load
     take token in
 
     // Get the Token's OpType
-    memories functions constants token get_tokens_op_type
+    memories constants functions token get_tokens_op_type
     take op_type in
 
     // Append Op to Program
     func token op_type index Op.init
-    program List.append
+    program cast(List) List.append
     index 1 + index = // index++
   done
   program
@@ -76,10 +73,10 @@ end
 // Params: Token, List[Func], List[Constant], List[Mem]
 // Return: OpType
 function get_tokens_op_type
-  token:ptr
-  functions:ptr
-  constants:ptr
-  memories:ptr
+  token:Token
+  functions:List[Func]
+  constants:List[Constant]
+  memories:List[Mem]
 -> int :
 
   // Initialize variables
@@ -92,24 +89,18 @@ function get_tokens_op_type
     token_type
   in
 
-  if token_type TokenType.BOOL ==    do
+  if token_type "bool"        streq do
     OpType.PUSH_BOOL return
-  elif token_type TokenType.CHAR ==  do
+  elif token_type "char"      streq  do
     OpType.PUSH_CHAR return
-  elif token_type TokenType.INT ==   do
+  elif token_type "int"       streq  do
     OpType.PUSH_INT return
-  elif token_type TokenType.STR ==   do
+  elif token_type "str"       streq  do
     OpType.PUSH_STR return
-  elif token_type TokenType.UINT8 == do
-    OpType.PUSH_UINT8 return
   elif token_upper "ASSIGN"   streq  do
     OpType.ASSIGN_BIND return
-  elif token_upper "BOOL"     streq  do
-    OpType.CAST_BOOL return
   elif token_upper "BREAK"    streq  do
     OpType.BREAK return
-  elif token_upper "CHAR"     streq  do
-    OpType.CAST_CHAR return
   elif token_upper "CONTINUE" streq  do
     OpType.CONTINUE return
   elif token_upper "DO"       streq  do
@@ -128,22 +119,21 @@ function get_tokens_op_type
     OpType.IF return
   elif token_upper "IN"       streq  do
     OpType.IN return
-  elif token_upper "INT"      streq  do
-    OpType.CAST_INT return
   elif token_upper "PEEK"     streq  do
     OpType.PEEK return
-  elif token_upper "PTR"      streq  do
-    OpType.CAST_PTR return
   elif token_upper "RETURN"   streq  do
     OpType.RETURN return
-  elif token_upper "STR"      streq  do
-    OpType.CAST_STR return
   elif token_upper "TAKE"     streq  do
     OpType.TAKE return
-  elif token_upper "UINT8"    streq  do
-    OpType.CAST_UINT8 return
   elif token_upper "WHILE"    streq  do
     OpType.WHILE return
+  elif
+    // CAST(<type>)
+    token_upper "CAST(" str.startswith
+    token_upper ")"     str.endswith
+    &&
+  do
+    OpType.CAST return
   elif token Token.vartype VarType.NONE != do
     token Token.vartype
     take token_vartype in
@@ -210,7 +200,7 @@ function get_tokens_op_type
   token
   "Operation '"
   token Token.value str.cat
-  "' is unknown"        str.cat
+  "' is unknown"    str.cat
   "OP_NOT_FOUND" CompilerErrorWithToken
   NULL 0 exit
 end

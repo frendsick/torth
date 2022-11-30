@@ -2,11 +2,11 @@ include "std"
 include "compiler/defs"
 include "compiler/utils"
 class Signature
-  params:ptr
-  returns:ptr
+  params:List
+  returns:List
 
-  method init param_types:ptr return_types:ptr -> ptr :
-    Signature.size malloc
+  method init param_types:List return_types:List -> Signature :
+    Signature.size malloc cast(Signature)
     take signature in
 
     param_types   signature Signature->params
@@ -14,34 +14,7 @@ class Signature
     signature
   end
 
-  // Get TokenType from certain type in function definition
-  method type_map type:str -> int :
-    type str.copy str.upper
-    take type_upper in
-
-    if type_upper "ANY" streq do
-      TokenType.ANY return
-    elif type_upper "BOOL" streq do
-      TokenType.BOOL return
-    elif type_upper "CHAR" streq do
-      TokenType.CHAR return
-    elif type_upper "INT" streq do
-      TokenType.INT return
-    elif type_upper "PTR" streq do
-      TokenType.PTR return
-    elif type_upper "STR" streq do
-      TokenType.STR return
-    elif type_upper "UINT8" streq do
-      TokenType.UINT8 return
-    else
-      "'" type                   str.cat
-      "' is not valid TokenType" str.cat
-      "FUNCTION_SIGNATURE_ERROR" CompilerError 0 exit
-      NULL
-    endif
-  end
-
-  method repr self:ptr -> str :
+  method repr self:Signature -> str :
     self Signature.returns
     self Signature.params
     ""    str.copy
@@ -65,7 +38,7 @@ class Signature
 
     // Generate repr from Signature.params
     while index params List.len < do
-      index params List.nth int.load TokenType.repr " " str.cat
+      index params List.nth str.load " " str.cat
       params_repr swap str.cat params_repr =
       index 1 + index =
     done
@@ -73,7 +46,7 @@ class Signature
     // Generate repr from Signature.returns
     0 index =
     while index returns List.len < do
-      index returns List.nth int.load TokenType.repr " " str.cat
+      index returns List.nth str.load " " str.cat
       returns_repr swap str.cat returns_repr =
       index 1 + index =
     done
@@ -81,4 +54,3 @@ class Signature
     returns_repr      str.cat
   end
 endclass
-

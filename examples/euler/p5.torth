@@ -4,7 +4,7 @@ include "std"
 // 3 => 9   = 3²
 // 5, 7, 11, 13, 17 and 19 occurs one time
 // Least common multiple is 2⁴ * 3² * 5 * 7 * 11 * 13 * 17 * 19
-function Main :
+function main :
   "Least common multiple for numbers from 1 to 20: " puts
   2 4 pow 3 2 pow * 5 * 7 * 11 * 13 * 17 * 19 * putu "\n" puts // Answer: 232792560
 end

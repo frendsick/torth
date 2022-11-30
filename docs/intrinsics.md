@@ -29,6 +29,8 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [PLUS](#Calculations)
 - [PRINT](#PRINT)
 - [ROT](#ROT)
+- [SHL](#bit-shifts)
+- [SHR](#bit-shifts)
 - [STORE_BYTE](#STORE)
 - [STORE_WORD](#STORE)
 - [STORE_DWORD](#STORE)
@@ -72,13 +74,22 @@ Different comparison intrinsics:
 - **LT**: Less than (<)
 - **NE**: Not equal (!=)
 
+## Bit shifts
+
+A bit shift moves each digit in a number's binary representation left or right.
+
+Different bit shift intrinsics:
+
+- **SHL**: Bit shift left (<<)
+- **SHR**: Bit shift right (>>)
+
 ## AND
 
 Perform bitwise AND for two [integer](definitions.md#integer-types) values.
 
 1. Pop two [integers](definitions.md#integer-types) from the stack
 2. Perform bitwise AND operation to the popped values
-3. Push the result of the bitwise operation as [INT](types.md#int-uint8---integer)
+3. Push the result of the bitwise operation as [INT](types.md#int---integer)
 
 ## ARGC
 
@@ -101,9 +112,13 @@ Perform a division operation for two [integers](definitions.md#integer-types) an
 
 Remove the top element from the stack.
 
+`a b -> b`
+
 ## DUP
 
 Duplicate the top element of the stack.
+
+`a b -> a a b`
 
 ## ENVP
 
@@ -125,7 +140,7 @@ There are four different STORE intrinsic variants:
 - LOAD_DWORD (32-bit)
 - LOAD_QWORD (64-bit)
 
-For example, to load a value of type [INT](types.md#int-uint8---integer) (64-bit) from a memory location to the stack you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also expricitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [builtin type](types.md), for example `int.load`.
+For example, to load a value of type [INT](types.md#int---integer) (64-bit) from a memory location to the stack you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also expricitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [built-in type](types.md#built-in-types), for example `int.load`.
 
 ## NTH
 
@@ -142,11 +157,13 @@ Perform bitwise OR for two [integer](definitions.md#integer-types) values.
 
 1. Pop two [integers](definitions.md#integer-types) from the stack
 2. Perform bitwise OR operation to the popped values
-3. Push the result of the bitwise operation as [INT](types.md#int-uint8---integer)
+3. Push the result of the bitwise operation as [INT](types.md#int---integer)
 
 ## OVER
 
 Push a copy of the second element of the stack.
+
+`a b -> b a b`
 
 ## PRINT
 
@@ -155,6 +172,8 @@ Pop and print an [integer](definitions.md#integer-types) from the stack to the c
 ## ROT
 
 Rotate the top three items on the stack so that the third element moves to the top and the other two move one spot deeper in the stack.
+
+`a b c -> c a b`
 
 ## STORE
 
@@ -172,11 +191,13 @@ There are four different STORE intrinsic variants:
 - STORE_DWORD (32-bit)
 - STORE_QWORD (64-bit)
 
-For example, to store [INT](types.md#int-uint8---integer) (64-bit) to a memory location you should use the STORE_QWORD intrinsic. Also, it is preferred to use the _type.store_ functions from the [std-library](../lib/std.torth) which also check if the value in the stack which is to be stored is of the correct [type](types.md). There is a typed store function for every [builtin type](types.md), for example `int.store`.
+For example, to store [INT](types.md#int---integer) (64-bit) to a memory location you should use the STORE_QWORD intrinsic. Also, it is preferred to use the _type.store_ functions from the [std-library](../lib/std.torth) which also check if the value in the stack which is to be stored is of the correct [type](types.md). There is a typed store function for every [built-in type](types.md#built-in-types), for example `int.store`.
 
 ## SWAP
 
 Swap the top two elements in the stack.
+
+`a b -> b a`
 
 ## SYSCALL
 

@@ -29,7 +29,7 @@ end
 //    message: str
 //    token: Token
 // Return: NoReturn
-function CompilerErrorWithToken str str ptr :
+function CompilerErrorWithToken str str Token :
   print_error "\n"  eputs
   get_token_info    eputs
   1 exit
@@ -44,8 +44,8 @@ end
 function CompilerErrorWithStack
   error_type:str
   message:str
-  token:ptr
-  type_stack:ptr
+  token:Token
+  type_stack:Node
 :
   message error_type print_error
   "\nCurrent stack state:\n"  eputs

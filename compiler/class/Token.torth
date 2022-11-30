@@ -2,12 +2,12 @@ include "std"
 include "compiler/class/Location"
 class Token
   value:str
-  type:int
+  type:str
   vartype:int
-  location:ptr
+  location:Location
 
-  method init value:str type:int location:ptr -> ptr :
-    Token.size malloc
+  method init value:str type:str location:Location -> Token :
+    Token.size malloc cast(Token)
     take token in
 
     value         token Token->value
@@ -17,7 +17,11 @@ class Token
     token
   end
 
-  method delete self:ptr :
-    Token.size self munmap
+  method load ptr -> Token :
+    ptr.load cast(Token)
+  end
+
+  method delete self:Token :
+    Token.size self cast(ptr) munmap
   end
 endclass

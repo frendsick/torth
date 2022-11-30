@@ -12,10 +12,8 @@ include "compiler/class/Signature"
 include "compiler/class/Variable"
 
 // Parse included files from a code string. Return the list of files.
-// Params: code_file (STR)
-// Return: List[str]
-function get_included_files str -> ptr :
-  ptr List.init
+function get_included_files str -> List :
+  cast(ptr) List.init
   peek included_files in List.append
 
   // Iterate over all of the new included files for this loop iteration
@@ -39,16 +37,16 @@ end
 // Parse included files from a single file. Return the list of files.
 // Params: code_file (STR), included_files (List[str])
 // Return: included_files (List[str])
-function get_included_files_from_file code_file:str included_files:ptr -> ptr :
+function get_included_files_from_file code_file:str included_files:List -> List :
   // Add compiler's directory and the 'lib' directory to INCLUDE_PATHS
   List.init
   take INCLUDE_PATHS in
-  ""      ptr INCLUDE_PATHS List.append
-  "lib/"  ptr INCLUDE_PATHS List.append
+  ""      cast(ptr) INCLUDE_PATHS List.append
+  "lib/"  cast(ptr) INCLUDE_PATHS List.append
 
   // Get the file contents without comments
   INCLUDE_PATHS code_file get_file_name_from_path read_file
-  List.init code_file rot get_tokens_from_code
+  List.init cast(List[Token]) code_file rot get_tokens_from_code
   False
   0
   take
@@ -57,16 +55,16 @@ function get_included_files_from_file code_file:str included_files:ptr -> ptr :
     tokens
   in
 
-  while index tokens List.len < do
+  while index tokens cast(List) List.len < do
     // Get Nth Token
-    index tokens List.nth ptr.load Token.value
+    index tokens cast(List) List.nth ptr.load Token.value
     take token_value in
 
     // Parse the file name for the include
     if parsing_include do
       token_value take file_name in
 
-      if file_name int NULL == do
+      if file_name cast(int) NULL == do
         "INCLUDE keyword used without given file name\n"
         "INCLUDE_ERROR" CompilerError
       endif
@@ -83,7 +81,7 @@ function get_included_files_from_file code_file:str included_files:ptr -> ptr :
       endif
 
       // Save the file name to included_files
-      file_name ptr included_files List.append
+      file_name cast(ptr) included_files List.append
       False parsing_include =
     endif
 
@@ -98,14 +96,14 @@ end
 // Check every directory in PATH and add .torth extension if needed
 // Params: file_name: str, INCLUDE_PATHS: List[str]
 // Return: file_with_path: str
-function get_file_name_from_path file_name:str INCLUDE_PATHS:ptr -> str :
+function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
   // Get the file name without quotes
-  if file_name ptr char.load '"' == do
+  if file_name cast(ptr) char.load '"' == do
     file_name get_string_inside_quotes
     file_name =
   endif
 
-  if file_name int NULL == do
+  if file_name cast(int) NULL == do
     "Cannot include file '"
     file_name str.cat
     "'.\n"      str.cat
@@ -145,12 +143,8 @@ function get_file_name_from_path file_name:str INCLUDE_PATHS:ptr -> str :
 end
 
 // Get Tokens from the code inside included files
-// Params:
-//    included_files: List[str]
-// Return:
-//    tokens: List[Token]
-function get_tokens_from_files included_files:ptr -> ptr :
-  List.init
+function get_tokens_from_files included_files:List -> List[Token] :
+  List.init cast(List[Token])
   0
   take index tokens in
 
@@ -179,8 +173,8 @@ function get_string_inside_quotes str -> str :
   take original in
 
   // Return NULL if the first character is not a double quote
-  if original ptr char.load '"' != do
-    NULLPTR str return
+  if original cast(ptr) char.load '"' != do
+    NULLPTR cast(str) return
   endif
 
   1 while dup original str.len < do
@@ -188,12 +182,12 @@ function get_string_inside_quotes str -> str :
 
     // Return when the other quote is found
     if original over str.char_at '"' == do
-      original ptr over ptr+ NULL char swap char.store
+      original cast(ptr) over ptr+ NULL cast(char) swap char.store
       drop
       original 1 str+ return
     endif
   done drop
-  NULLPTR str
+  NULLPTR cast(str)
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -225,7 +219,7 @@ function get_token_value token_value:str -> str :
 end
 
 const single_quote 39 end
-function get_token_type token_value:str -> int :
+function get_token_type token_value:str -> str :
   // Boolean => True
   if
     token_value str.copy str.upper
@@ -233,63 +227,36 @@ function get_token_type token_value:str -> int :
     swap  "FALSE" streq
     ||
   do
-    TokenType.BOOL return
+    "bool" return
   // Character => 'a'
   elif
     token_value str.len 3 ==
-    token_value ptr char.load single_quote ==
+    token_value cast(ptr) char.load single_quote ==
     token_value 2 str.char_at single_quote ==
     && &&
   do
-    TokenType.CHAR return
+   "char" return
   // Integer => 1337
   elif
     token_value str.is_numeric
   do
-    TokenType.INT return
+    "int" return
   // Hexadecimal => 0x1337
   elif
-    token_value ptr char.load '0' ==
+    token_value cast(ptr) char.load '0' ==
     token_value 1 str.char_at 'x' ==
     &&
   do
-    TokenType.INT return
+    "int" return
   // String => "This is string\n"
   elif
-    token_value ptr char.load                '"' ==
+    token_value cast(ptr) char.load                '"' ==
     token_value dup str.len 1 - str.char_at  '"' ==
     &&
   do
-  TokenType.STR return
-  // uint8 => u69
-  elif
-    token_value ptr char.load 'u' ==
-    token_value 1 str.char_at char.is_numeric
-    &&
-  do
-    TokenType.UINT8 return
+  "str" return
   endif
-  TokenType.WORD
-end
-
-// Get OpType for Token
-// Params: Token
-// Return: OpType
-function get_op_type token:ptr -> int :
-  token Token.type
-  take token_type in
-  if token_type TokenType.BOOL == do
-    OpType.PUSH_BOOL return
-  elif token_type TokenType.CHAR == do
-    OpType.PUSH_CHAR return
-  elif token_type TokenType.INT == do
-    OpType.PUSH_INT return
-  elif token_type TokenType.STR == do
-    OpType.PUSH_STR return
-  elif token_type TokenType.UINT8 == do
-    OpType.PUSH_UINT8 return
-  endif
-  OpType.INTRINSIC
+  "word"
 end
 
 // Funcs are made of the following parts:
@@ -297,13 +264,13 @@ end
 //   2 : Return types
 //   3 : Body
 //  FUNCTION_PART_DELIMITERS: List[str] = ["->", ":", "END"]
-function get_function_part_delimiters -> ptr :
+function get_function_part_delimiters -> List :
   List.init
   take FUNCTION_PART_DELIMITERS in
 
-  "->"        ptr FUNCTION_PART_DELIMITERS List.append
-  ":"         ptr FUNCTION_PART_DELIMITERS List.append
-  "END"       ptr FUNCTION_PART_DELIMITERS List.append
+  "->"        cast(ptr) FUNCTION_PART_DELIMITERS List.append
+  ":"         cast(ptr) FUNCTION_PART_DELIMITERS List.append
+  "END"       cast(ptr) FUNCTION_PART_DELIMITERS List.append
   FUNCTION_PART_DELIMITERS
 end
 
@@ -317,8 +284,8 @@ end
 function get_tokens_from_code
   code:str
   file_name:str
-  tokens:ptr
--> ptr :
+  tokens:List[Token]
+-> List[Token] :
 
   List.init   // newline_indexes
   "" str.copy // String buffer for word
@@ -343,7 +310,7 @@ function get_tokens_from_code
   do
     // Keep track of the indexes of newline characters (LF)
     if current_char LF == do
-      index 1 + ptr newline_indexes List.append
+      index 1 + cast(ptr) newline_indexes List.append
     endif
 
     // Only a newline ends a comment
@@ -422,10 +389,10 @@ end
 // Append a word to a List of Tokens
 function append_word_to_tokens
   word:str
-  tokens:ptr
+  tokens:List[Token]
   file_name:str
   index:int
-  newline_indexes:ptr
+  newline_indexes:List
 :
   // Token.Location
   newline_indexes index word str.len - file_name get_token_location
@@ -437,7 +404,7 @@ function append_word_to_tokens
 
   // Append the Token to list
   location type value Token.init
-  tokens List.append
+  tokens cast(List) List.append
 end
 
 // Calculate position for Token based on it's position from the start of the file
@@ -447,8 +414,8 @@ end
 function get_token_location
   file_name:str
   position:int
-  newline_indexes:ptr
--> ptr :
+  newline_indexes:List
+-> Location :
 
   position 1 0
   take
@@ -480,8 +447,8 @@ end
 //    tokens: List[Token]
 // Return
 //    constants: List[Constant]
-function get_constants tokens:ptr -> ptr :
-  List.init
+function get_constants tokens:List[Token] -> List[Constant] :
+  List.init cast(List[Constant])
   ""  str.copy        // constant_name
   dup str.copy        // constant_value
   False               // defining_constant
@@ -494,8 +461,8 @@ function get_constants tokens:ptr -> ptr :
     constants
   in
 
-  while index tokens List.len < do
-    index tokens List.nth ptr.load
+  while index tokens cast(List) List.len < do
+    index tokens cast(List) List.nth ptr.load
     dup   Token.value
     swap  Token.location
     take location token_value in
@@ -505,7 +472,7 @@ function get_constants tokens:ptr -> ptr :
 
       // Parse Constant name
       if constant_name str.len 0 == do
-        constants token_value get_constants_name
+        token_value constants get_constants_name
         constant_name =
         index 1 + index = // index++
         continue
@@ -519,7 +486,7 @@ function get_constants tokens:ptr -> ptr :
 
         // Generate Constant object
         location constant_value constant_name Constant.init
-        constants List.append
+        constants cast(List) List.append
 
         // Reset variables
         ""    constant_name   =
@@ -535,7 +502,11 @@ function get_constants tokens:ptr -> ptr :
     endif
     index 1 + index = // index++
   done
-  constants tokens add_enums_to_constants
+
+  if tokens cast(List) List.len 0 > do
+    constants tokens add_enums_to_constants
+  endif
+  constants
 end
 
 // Parse and add ENUM block contents to a list of Constants.
@@ -545,10 +516,10 @@ end
 //    constants: List[Constant]
 // Return
 //    constants: List[Constant]
-function add_enums_to_constants tokens:ptr constants:ptr -> ptr :
+function add_enums_to_constants tokens:List[Token] constants:List[Constant] :
   get_enum_part_delimiters
   "" str.copy
-  NULLPTR
+  tokens cast(List) List.first Token.load Token.location
   0
   0
   0
@@ -563,10 +534,10 @@ function add_enums_to_constants tokens:ptr constants:ptr -> ptr :
     ENUM_PART_DELIMITERS
   in
 
-  while index tokens List.len < do
+  while index tokens cast(List) List.len < do
 
     // Get the current Token's value
-    index tokens List.nth ptr.load
+    index tokens cast(List) List.nth ptr.load
     dup  Token.value
     swap Token.location
 
@@ -590,7 +561,7 @@ function add_enums_to_constants tokens:ptr constants:ptr -> ptr :
         Constant.init
 
         // Append the current Enum to the list of Constants
-        constants List.append
+        constants cast(List) List.append
         index 1 + index =
 
         // Reset variables
@@ -634,12 +605,11 @@ function add_enums_to_constants tokens:ptr constants:ptr -> ptr :
       Constant.init
 
       // Append the current Enum item to constants
-      constants List.append
+      constants cast(List) List.append
       enum_size 1 + enum_size =
     endif
     index 1 + index = // index++
   done
-  constants
 end
 
 // Enums are made of four parts:
@@ -649,14 +619,14 @@ end
 //   4 : items
 //  (0 : Not lexing Enum)
 //  ENUM_PART_DELIMITERS: List[str] = ["ENUM", "", "", ":", "END"]
-function get_enum_part_delimiters -> ptr :
+function get_enum_part_delimiters -> List :
   List.init
   take ENUM_PART_DELIMITERS in
-  "ENUM"  ptr ENUM_PART_DELIMITERS List.append
-  ""      ptr ENUM_PART_DELIMITERS List.append
-  ""      ptr ENUM_PART_DELIMITERS List.append
-  ":"     ptr ENUM_PART_DELIMITERS List.append
-  "END"   ptr ENUM_PART_DELIMITERS List.append
+  "ENUM"  cast(ptr) ENUM_PART_DELIMITERS List.append
+  ""      cast(ptr) ENUM_PART_DELIMITERS List.append
+  ""      cast(ptr) ENUM_PART_DELIMITERS List.append
+  ":"     cast(ptr) ENUM_PART_DELIMITERS List.append
+  "END"   cast(ptr) ENUM_PART_DELIMITERS List.append
   ENUM_PART_DELIMITERS
 end
 
@@ -666,8 +636,8 @@ end
 //    constants: List[Constant]
 // Return
 //    memories: List[Mem]
-function get_memories tokens:ptr constants:ptr -> ptr :
-  List.init           // memories
+function get_memories tokens:List[Token] constants:List[Constant] -> List[Mem] :
+  List.init cast(List[Mem])
   "" str.copy         // memory_name
   NULL                // memory_size
   False               // defining_memory
@@ -680,8 +650,8 @@ function get_memories tokens:ptr constants:ptr -> ptr :
     memories
   in
 
-  while index tokens List.len < do
-    index tokens List.nth ptr.load
+  while index tokens cast(List) List.len < do
+    index tokens cast(List) List.nth ptr.load
     dup   Token.value
     swap  Token.location
     take location token_value in
@@ -719,7 +689,7 @@ function get_memories tokens:ptr constants:ptr -> ptr :
 
         // Generate Mem object
         location memory_size memory_name str.copy Mem.init
-        memories List.append
+        memories cast(List) List.append
 
         // Reset variables
         ""    memory_name =
@@ -739,14 +709,9 @@ function get_memories tokens:ptr constants:ptr -> ptr :
 end
 
 // Check for redefinition of a Constant object
-// Params
-//    token_value: str
-//    constants: List[Constant]
-// Return
-//    memory_name: str
-function get_constants_name token_value:str constants:ptr -> str :
-  // Overwriting another Mem is not allowed
-  if token_value constants List.contains_str do
+function get_constants_name constants:List[Constant] token_value:str -> str :
+  // Overwriting another Constant is not allowed
+  if token_value constants cast(List) List.contains_str do
     "Constant '" token_value str.cat
     "' already exists. Constant name should be unique.\n" str.cat
     "CONSTANT_REDEFINITION" CompilerError
@@ -760,9 +725,9 @@ end
 //    memories: List[Mem]
 // Return
 //    memory_name: str
-function get_memory_name token_value:str memories:ptr -> str :
+function get_memory_name token_value:str memories:List[Mem] -> str :
   // Overwriting another Mem is not allowed
-  if token_value memories List.contains_str do
+  if token_value memories cast(List) List.contains_str do
     "Mem '" token_value str.cat
     "' already exists. Mem name should be unique.\n" str.cat
     "MEMORY_REDEFINITION" CompilerError
@@ -778,31 +743,31 @@ end
 // Return
 //    functions: List[Func]
 function get_functions
-  tokens:ptr
-  constants:ptr
-  memories:ptr
--> ptr :
-  List.init // List[Func]
+  tokens:List[Token]
+  constants:List[Constant]
+  memories:List[Mem]
+-> List[Func] :
+  List.init cast(List[Func])
   0
   take index functions in
-  while index tokens List.len < do
+  while index tokens cast(List) List.len < do
     // Get current word
-    index tokens List.nth ptr.load
+    index tokens cast(List) List.nth ptr.load
     Token.value str.copy str.upper
     take token_upper in
     
     if token_upper "FUNCTION" streq do
       index 1 + index =
       "" memories constants index tokens parse_function
-      functions List.append
+      functions cast(List) List.append
     endif
     index 1 + index =
   done
 
-  // Verify that the program has MAIN function (case-insensitive)
+  // Verify that the program has a 'main' function
   if functions main_function_in_function_list not do
     "The program does not have an entry point.\n"
-    "Please add Main function (case-insensitive)." str.cat
+    "Please add 'main' function." str.cat
     "MISSING_MAIN_FUNCTION" CompilerError
   endif
   functions
@@ -816,19 +781,19 @@ end
 //    memories:     List[Mem]
 // Return Func
 function parse_function
-  tokens:ptr
+  tokens:List[Token]
   token_index:int
-  constants:ptr
-  memories:ptr
+  constants:List[Constant]
+  memories:List[Mem]
   class_name:str
--> ptr :
+-> Func :
   // Initialize variables
-  get_function_part_delimiters  // FUNCTION_PART_DELIMITERS
-  List.init                     // function_tokens
-  0                             // current_part
-  List.init                     // return_types
-  List.init                     // param_types
-  List.init                     // variables
+  get_function_part_delimiters    // FUNCTION_PART_DELIMITERS
+  List.init cast(List[Token])     // function_tokens
+  0                               // current_part
+  List.init                       // return_types
+  List.init                       // param_types
+  List.init cast(List[Variable])  // variables
   take
     variables
     param_types
@@ -838,16 +803,16 @@ function parse_function
     FUNCTION_PART_DELIMITERS
   in
 
-  if token_index tokens List.len >= do
+  if token_index tokens cast(List) List.len >= do
     "Program cannot end with '"
-    tokens List.last ptr.load
+    tokens cast(List) List.last Token.load
     Token.value str.cat
-    "' token"       str.cat
+    "' token"   str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
   // Set Func.name
-  token_index tokens List.nth ptr.load Token.value
+  token_index tokens cast(List) List.nth ptr.load Token.value
   take function_name in
   token_index 1 + token_index =
 
@@ -859,9 +824,9 @@ function parse_function
     function_name =
   endif
 
-  while token_index tokens List.len < do
-    // Get current word
-    token_index tokens List.nth ptr.load
+  while token_index tokens cast(List) List.len < do
+    // Get current Token
+    token_index tokens cast(List) List.nth Token.load
     dup Token.value
     take token_value token in
 
@@ -879,17 +844,8 @@ function parse_function
         // Append 0 token as the exit code for MAIN function
         if function_name str.copy str.upper "MAIN" streq do
           token Token.location
-          TokenType.INT "0" Token.init
-          function_tokens List.append
-        endif
-
-        // Do not allow empty functions
-        if function_tokens List.len 0 == do
-          token
-          "Func '" function_name                        str.cat
-          "' does not have any tokens\n"                str.cat
-          "Creation of empty functions is not allowed"  str.cat
-          "EMPTY_FUNCTION" CompilerErrorWithToken
+          "int" "0" Token.init
+          function_tokens cast(List) List.append
         endif
 
         // return Func(function_name, signature, function_tokens, variables)
@@ -917,9 +873,8 @@ function parse_function
 
       // Parse parameter's TokenType
       token_value param_colon 1 + str+
-      Signature.type_map
       take param_type in
-      param_type ptr param_types List.append
+      param_type cast(ptr) param_types List.append
 
       // Handle named parameters
       if param_colon -1 != do
@@ -940,12 +895,12 @@ function parse_function
 
         // Append parameter to Func's Tokens
         token Token.location
-        TokenType.WORD
+        "word"
         param_name str.copy
         Token.init
         take param_token in
         VarType.TAKE param_token Token->vartype
-        param_token function_tokens List.append
+        param_token function_tokens cast(List) List.append
 
         // Add parameter to the list of Variables
         memories variables function_name param_token add_variable_to_list
@@ -953,8 +908,7 @@ function parse_function
 
     elif current_part 1 == do
       // Append word to return_types if valid TokenType
-      token_value Signature.type_map ptr
-      return_types List.append
+      token_value cast(ptr) return_types List.append
 
     elif current_part 2 == do
       // Use Constant's value if a Constant exists named as the Token's value
@@ -962,14 +916,14 @@ function parse_function
 
         // Find the constant from list of Constants
         0 take constant_index in
-        while constant_index constants List.len < do
-          constant_index constants List.nth ptr.load
+        while constant_index constants cast(List) List.len < do
+          constant_index constants cast(List) List.nth ptr.load
           take constant in
 
           if constant Constant.name token_value streq do
             constant Constant.value str.copy
             token Token->value
-            TokenType.INT token Token->type
+            "int" token Token->type
             break
           endif
           constant_index 1 + constant_index =
@@ -977,7 +931,7 @@ function parse_function
       endif
 
       // Append the current Token to the list of tokens
-      token function_tokens List.append
+      token function_tokens cast(List) List.append
 
     else
       "Unknown error - Function parsing failed"
@@ -992,7 +946,7 @@ function parse_function
   function_name               str.cat
   "'\nUnexpected end of file" str.cat
   "SYNTAX_ERROR" CompilerErrorWithToken
-  NULLPTR
+  NULL cast(Func)
 end
 
 // Parse Classes from code
@@ -1004,15 +958,15 @@ end
 // Return
 //    functions: List[Func]
 function parse_classes
-  tokens:ptr
-  functions:ptr
-  constants:ptr
-  memories:ptr
+  tokens:List[Token]
+  functions:List[Func]
+  constants:List[Constant]
+  memories:List[Mem]
 :
   0 take index in
-  while index tokens List.len < do
+  while index tokens cast(List) List.len < do
     // Get current word
-    index tokens List.nth ptr.load
+    index tokens cast(List) List.nth ptr.load
     Token.value str.copy str.upper
     take token_upper in
 
@@ -1028,29 +982,29 @@ function parse_classes
 end
 
 function parse_class
-  tokens:ptr
+  tokens:List[Token]
   token_index:int
-  functions:ptr
-  constants:ptr
-  memories:ptr
+  functions:List[Func]
+  constants:List[Constant]
+  memories:List[Mem]
 :
-  if token_index tokens List.len >= do
+  if token_index tokens cast(List) List.len >= do
     "Class cannot end with '"
-    tokens List.last ptr.load
+    tokens cast(List) List.last Token.load
     Token.value str.cat
-    "' token"       str.cat
+    "' token"   str.cat
     "SYNTAX_ERROR" CompilerError
   endif
 
   // Get Class name
-  token_index tokens List.nth ptr.load Token.value
+  token_index tokens cast(List) List.nth ptr.load Token.value
   take class_name in
   token_index 1 + token_index =
 
   0 take attribute_count in
-  while token_index tokens List.len < do
+  while token_index tokens cast(List) List.len < do
     // Get current word
-    token_index tokens List.nth ptr.load
+    token_index tokens cast(List) List.nth Token.load
     dup Token.value
     take token_value token in
 
@@ -1061,11 +1015,11 @@ function parse_class
       take class_method in
 
       // Add method to list of functions
-      class_method functions List.append
+      class_method functions cast(List) List.append
 
       // Go over the method's END keyword
-      while token_index tokens List.len < do
-        token_index tokens List.nth ptr.load
+      while token_index tokens cast(List) List.len < do
+        token_index tokens cast(List) List.nth ptr.load
         if Token.value str.copy str.upper "END" streq do
           break
         endif
@@ -1076,7 +1030,7 @@ function parse_class
     elif token_value str.copy str.upper "ENDCLASS" streq do
       // Add function called <class_name>.size
       token attribute_count class_name get_object_size_function
-      functions List.append
+      functions cast(List) List.append
       return
 
     // Parse class attributes
@@ -1098,8 +1052,8 @@ end
 function parse_class_attribute
   class_name:str
   attribute_count:int
-  token:ptr
-  functions:ptr
+  token:Token
+  functions:List[Func]
 :
   // Split token by colon to attribute's name and TokenType
   // Example => attribute_name:int
@@ -1122,7 +1076,6 @@ function parse_class_attribute
 
   // Parse attribute's TokenType
   token_value attribute_colon 1 + str+
-  Signature.type_map
   take attribute_type in
 
   // Parse attribute's name
@@ -1136,20 +1089,20 @@ function parse_class_attribute
 
   // Add getter to Func list
   True token attribute_offset attribute_type attribute_name class_name
-  generate_attribution_functions functions List.append
+  generate_attribution_function functions cast(List) List.append
 
   // Add setter to Func list
   False token attribute_offset attribute_type attribute_name class_name
-  generate_attribution_functions functions List.append
+  generate_attribution_function functions cast(List) List.append
 end
 
 function get_object_size_function
   class_name:str
   attribute_count:int
-  endclass_token:ptr
--> ptr :
+  endclass_token:Token
+-> Func :
   class_name ".size" str.cat  // function_name
-  List.init                   // tokens
+  List.init cast(List[Token]) // tokens
   List.init                   // return_types
   attribute_count ptr.size *  // class_size
   take
@@ -1160,25 +1113,25 @@ function get_object_size_function
   in
 
   // Insert integer Token containing class_size to Token list
-  endclass_token Token.location TokenType.INT class_size itoa Token.init
-  tokens List.append
+  endclass_token Token.location "int" class_size itoa Token.init
+  tokens cast(List) List.append
 
   // Signature: None -> INT
-  TokenType.INT ptr return_types List.append
+  "int" cast(ptr) return_types List.append
   return_types List.init Signature.init
   take signature in
 
-  List.init tokens signature function_name Func.init
+  List.init cast(List[Variable]) tokens signature function_name Func.init
 end
 
-function generate_attribution_functions
+function generate_attribution_function
   class_name:str
   attribute_name:str
-  attribute_type:int
+  attribute_type:str
   attribute_offset:int
-  attribute_token:ptr
+  attribute_token:Token
   is_getter:bool // Getter => True, Setter => False
--> ptr :
+-> Func :
   // Func.name => Class.attribute OR Class->attribute
   class_name
   if is_getter
@@ -1192,8 +1145,8 @@ function generate_attribution_functions
   List.init
   List.init
   take param_types return_types in
-  TokenType.PTR  ptr param_types List.append
-  attribute_type ptr
+  "any"           cast(ptr) param_types List.append
+  attribute_type  cast(ptr)
   // Insert attribute_type to either parameter or return types
   // depending on if the function is getter or setter
   if is_getter
@@ -1208,21 +1161,21 @@ function generate_attribution_functions
   take tokens in
 
   // Create Func and append it to list of Funcs
-  List.init tokens signature function_name Func.init
+  List.init cast(List[Variable]) tokens signature function_name Func.init
 end
 
 function get_attribute_function_tokens
   class_name:str
   attribute_name:str
-  attribute_type:int
+  attribute_type:str
   attribute_offset:int
-  attribute_token:ptr
+  attribute_token:Token
   is_getter:bool // Getter => True, Setter => False
--> ptr :
+-> List[Token] :
   attribute_offset itoa
-  " swap int + ptr " str.cat
+  " swap cast(int) + cast(ptr) " str.cat
   if is_getter
-  do   "LOAD_QWORD "  str.cat attribute_type TokenType.repr str.cat
+  do   "LOAD_QWORD "  str.cat
   else "STORE_QWORD " str.cat
   endif
   List.init
@@ -1235,8 +1188,8 @@ function get_attribute_function_tokens
     code
   in
 
-  tokens file_name code get_tokens_from_code
-  List.init
+  tokens cast(List[Token]) file_name code get_tokens_from_code
+  List.init cast(List[Token])
   0
   take
     index
@@ -1249,7 +1202,7 @@ function get_attribute_function_tokens
 
     // Fix the Location to correspond with the attribute's Token
     location token Token->location
-    token function_tokens List.append
+    token function_tokens cast(List) List.append
     index 1 + index =
   done
   function_tokens
@@ -1257,14 +1210,14 @@ end
 
 // Parse Variables for Funcs
 // Params: List[Func], List[Mem]
-function parse_variables_for_functions functions:ptr memories:ptr :
-  functions List.len
+function parse_variables_for_functions functions:List[Func] memories:List[Mem] :
+  functions cast(List) List.len
   0
   take index functions.len in
 
   // Parse Variables for each Func
   while index functions.len < do
-    index functions List.nth ptr.load
+    index functions cast(List) List.nth Func.load
     memories swap parse_function_variables
     index 1 + index = // index++
   done
@@ -1273,7 +1226,7 @@ end
 // Parse Variables in Func
 // Params: Func, List[Mem]
 // Return: None
-function parse_function_variables func:ptr memories:ptr :
+function parse_function_variables func:Func memories:List[Mem] :
   func Func.tokens
   func Func.variables
   False
@@ -1287,8 +1240,8 @@ function parse_function_variables func:ptr memories:ptr :
     tokens
   in
 
-  while index tokens List.len < do
-    index tokens List.nth ptr.load
+  while index tokens cast(List) List.len < do
+    index tokens cast(List) List.nth Token.load
     dup Token.value
     take
       token_value
@@ -1344,19 +1297,18 @@ end
 //    variables: List[Variable]
 //    memories: List[Mem]
 function add_variable_to_list
-  token:ptr
+  token:Token
   function_name:str
-  variables:ptr
-  memories:ptr
+  variables:List[Variable]
+  memories:List[Mem]
 :
-
   token Token.type
   token Token.value
   take token_value token_type in
 
   // Append the variable to the list of function's variables
   token_type token_value Variable.init
-  variables List.append
+  variables cast(List) List.append
 
   // Add the Variable to the list of memories
   function_name "_" str.cat
@@ -1367,27 +1319,26 @@ function add_variable_to_list
     ptr.size // Mem.bytes
     memory_name
     Mem.init
-    memories List.append
+    memories cast(List) List.append
   endif
 end
 
-// Verify if MAIN function is defined (case-insensitive)
+// Verify if 'main' function is defined (case-sensitive)
 // Params
-//    functions:ptr
+//    functions:List
 // Return bool
-function main_function_in_function_list functions:ptr -> bool :
-  functions List.len
+function main_function_in_function_list functions:List[Func] -> bool :
+  functions cast(List) List.len
   0
   take index functions.len in
 
   // Iterate over Func List
   while index functions.len < do
-    index functions List.nth ptr.load
-    Func.name str.copy str.upper
+    index functions cast(List) List.nth ptr.load Func.name
     take function_name in
 
     // Return True if MAIN function is found
-    if function_name "MAIN" streq do
+    if function_name "main" streq do
       True return
     endif
     index 1 + index =

@@ -2,9 +2,8 @@
 
 This is the documentation for different keywords available in the Torth language.
 
-- [BOOL](#Casting)
 - [BREAK](#BREAK)
-- [CHAR](#Casting)
+- [CAST](#CAST)
 - [CONST](#CONST)
 - [CONTINUE](#CONTINUE)
 - [DO](#DO)
@@ -16,31 +15,19 @@ This is the documentation for different keywords available in the Torth language
 - [FUNCTION](#FUNCTION)
 - [IF](#IF)
 - [INCLUDE](#INCLUDE)
-- [INT](#Casting)
 - [MEMORY](#MEMORY)
-- [PTR](#Casting)
 - [RETURN](#RETURN)
-- [STR](#Casting)
-- [UINT8](#Casting)
 - [WHILE](#WHILE)
-
-## Casting
-
-The supported [types](types.md) can be used as keywords to cast a topmost value in the stack to the keyword's type. For example, if you want to cast a value to INT, just use `int` keyword.
-
-There are some limitations on what type of values can be cast to another:
-
-- Only [integer-like](definitions.md#integer-types) types can be cast to [BOOL](types.md#bool---boolean)
-- Only [integer-like](definitions.md#integer-types) types can be cast to [CHAR](types.md#char---character)
-  - Exeption: [BOOL](types.md#bool---boolean) type cannot be cast to [CHAR](types.md#char---character)
-- [BOOL](types.md#bool---boolean) and [CHAR](types.md#char---character) types cannot be cast to [PTR](types.md#ptr---pointer)
-- [Integer-like](definitions.md#integer-types) types cannot be cast to [STR](types.md#str---string)
 
 ## BREAK
 
 BREAK is unconditional jump to the operation after [DONE](#done) of the current loop.
 
 - [How to use BREAK?](control_flow.md#break-statement)
+
+## CAST
+
+CAST keyword is used to cast any type to another. The keyword does not generate any assembly code and thus does not affect the effectiveness of the resulting binary.
 
 ## CONST
 
@@ -168,7 +155,7 @@ end
 
 Functions are defined using FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as token. When called, the function's name is replaced with the contents of the function (**function_body** in the [Function syntax](#function-syntax) section) during compilation. Defined functions are case sensitive tokens unlike most other keywords in Torth.
 
-The **MAIN** function (case insensitive) is mandatory in every Torth program. It is the function from which the execution starts. MAIN function cannot take any parameters and it either returns nothing or one [INT](types.md#int-uint8---integer) which will become the return value of the program. The default return value is 0 (success) if nothing is returned.
+The **main** function (case sensitive) is mandatory in every Torth program. It is the function from which the execution starts. The main function cannot take any parameters and it either returns nothing or one [INT](types.md#int---integer) which will become the return value of the program. The default return value is 0 (success) if nothing is returned.
 
 Functions do not take parameters but instead use the current stack. The required topmost items in the stack before and after the function execution are defined in the function declaration (**argument_types** and **return_types** in the following [Function syntax](#function-syntax) section). Compiler verifies at compile time if the topmost types in the stack would match with the function signature before and after its execution. If there is more items in the return types than argument types then the compiler will assume that there should be more elements in the stack after the execution than before calling the function and vice versa.
 

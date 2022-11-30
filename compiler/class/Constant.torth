@@ -2,15 +2,19 @@ include "std"
 class Constant
   name:str
   value:str
-  location:ptr
+  location:Location
 
-  method init name:str value:str location:ptr -> ptr :
-    Constant.size malloc
+  method init name:str value:str location:Location -> Constant :
+    Constant.size malloc cast(Constant)
     take constant in
 
     name      constant Constant->name
     value     constant Constant->value
     location  constant Constant->location
     constant
+  end
+
+  method load ptr -> Constant :
+    ptr.load cast(Constant)
   end
 endclass

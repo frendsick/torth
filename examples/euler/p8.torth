@@ -27,7 +27,7 @@ end
 function get_current_series str int int -> str :
   take series series.len index in
   series str.copy index str+ // series_start
-  NULL char over series.len str+ ptr char.store
+  NULL cast(char) over series.len str+ cast(ptr) char.store
   str.copy  // Return current series
 end
 

@@ -5,12 +5,17 @@ include "compiler/class/Token"
 include "compiler/class/Variable"
 class Func
   name:str
-  signature:ptr
-  tokens:ptr
-  variables:ptr
+  signature:Signature
+  tokens:List[Token]
+  variables:List[Variable]
 
-  method init name:str signature:ptr tokens:ptr variables:ptr -> ptr :
-    Func.size malloc
+  method init
+    name:str
+    signature:Signature
+    tokens:List[Token]
+    variables:List[Variable]
+  -> Func :
+    Func.size malloc cast(Func)
     take func in
 
     name      func Func->name
@@ -20,7 +25,11 @@ class Func
     func
   end
 
-  method print self:ptr :
+  method load ptr -> Func :
+    ptr.load cast(Func)
+  end
+
+  method print self:Func :
     "Func.name      => "      puts
     self Func.name puts "\n"  puts
 
@@ -29,9 +38,9 @@ class Func
     Signature.repr puts "\n"  puts
 
     "Func.tokens    => "      puts
-    self Func.tokens
-    dup List.len  // tokens.len
-    0             // index
+    self Func.tokens cast(List)
+    dup cast(List) List.len  // tokens.len
+    0
     take
       index
       tokens.len
@@ -40,7 +49,7 @@ class Func
 
     while index tokens.len < do
       // Get the current Token
-      index tokens List.nth ptr.load
+      index tokens List.nth Token.load
 
       // Print Token's value in single quotes
       "'"         puts

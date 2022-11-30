@@ -1,4 +1,5 @@
 include "std"
+include "typing"
 include "compiler/utils"
 include "compiler/class/Func"
 include "compiler/class/Location"
@@ -9,7 +10,7 @@ include "compiler/class/Token"
 // Generate the beginning of the assembly file
 // Params: file_name, List[Mem]
 // Return: Assembly
-function initialize_asm_file file_name:str memories:ptr :
+function initialize_asm_file file_name:str memories:List[Mem] :
   "compiler/templates/start.asm" read_file
   memories get_memory_definitions_asm       str.cat
   "compiler/templates/print.asm" read_file  str.cat
@@ -17,16 +18,16 @@ function initialize_asm_file file_name:str memories:ptr :
 end
 
 // Generate assembly code from Mem definitions
-function get_memory_definitions_asm memories:ptr -> str :
+function get_memory_definitions_asm memories:List[Mem] -> str :
   "" str.copy
   0
   take index assembly_code in
 
   // Iterate over each Mem and generate assembly code for it
-  while index memories List.len < do
+  while index memories cast(List) List.len < do
 
     // Get the Mem's name and size
-    index memories List.nth ptr.load
+    index memories cast(List) List.nth ptr.load
     dup   Mem.name
     swap  Mem.bytes
     take memory_size memory_name in
@@ -47,7 +48,7 @@ end
 // Get Assembly for certain Op
 // Params: Pointer to Op (PTR), Program
 // Return: Assembly
-function get_op_asm op:ptr program:ptr -> str :
+function get_op_asm op:Op program:Program -> str :
   // Save Op and Token.value in Binding
   op Op.token Token.value
   op Op.type
@@ -55,12 +56,7 @@ function get_op_asm op:ptr program:ptr -> str :
 
   // Get assembly for the correct OpType
   if
-    op_type OpType.CAST_BOOL ==
-    op_type OpType.CAST_CHAR ==   ||
-    op_type OpType.CAST_INT ==    ||
-    op_type OpType.CAST_PTR ==    ||
-    op_type OpType.CAST_STR ==    ||
-    op_type OpType.CAST_UINT8 ==  ||
+    op_type OpType.CAST ==
     op_type OpType.IF ==          ||
     op_type OpType.IN ==          ||
     op_type OpType.TAKE ==        ||
@@ -120,9 +116,6 @@ function get_op_asm op:ptr program:ptr -> str :
   elif op_type OpType.PUSH_STR == do
     op get_push_str_asm
     return
-  elif op_type OpType.PUSH_UINT8 == do
-    token_value 1 str+ get_push_int_asm
-    return
   elif op_type OpType.RETURN == do
     op Op.func Func.name get_return_asm
     return
@@ -142,9 +135,9 @@ end
 // Get assembly code for certain Intrinsic
 // Params: Token
 // Return: Assembly
-function get_intrinsic_asm ptr -> str :
-  dup Token.value str.copy str.upper
-  take intrinsic token in
+function get_intrinsic_asm token:Token -> str :
+  token Token.value str.copy str.upper
+  take intrinsic in
   if intrinsic "AND" streq do
     get_and_asm return
   elif intrinsic "ARGC" streq do
@@ -209,7 +202,7 @@ end
 // Get Assembly comment for Op
 // Params: Pointer to Op (PTR)
 // Return: Comment string (STR)
-function get_op_comment_asm op:ptr -> str :
+function get_op_comment_asm op:Op -> str :
   op Op.type OpType.repr
   op Op.token Token.value
   take token_value op_type_str in
@@ -248,9 +241,9 @@ end
 // Assign a value to Variable
 // Params: Op, Program
 // Return: Assembly
-function get_assign_bind_asm op:ptr program:ptr -> str :
+function get_assign_bind_asm op:Op program:Program -> str :
   // memory_name = program[op.id - 1].token.value
-  op Op.id 1 - program List.nth ptr.load
+  op Op.id 1 - program cast(List) List.nth Op.load
   Op.token Token.value
 
   // variable = f"{op.func.name}_{memory_name}"
@@ -269,7 +262,7 @@ end
 // BREAK is an unconditional jump to operand after current loop's DONE
 // Params: Op, Program
 // Return: Assembly
-function get_break_asm op:ptr program:ptr -> str :
+function get_break_asm op:Op program:Program -> str :
   program op get_parent_while
   program swap get_done_op_for_while
   Op.id
@@ -285,7 +278,7 @@ end
 // CONTINUE is an unconditional jump to current loop's WHILE
 // Params: Op, Program
 // Return: Assembly
-function get_continue_asm op:ptr program:ptr -> str :
+function get_continue_asm op:Op program:Program -> str :
   program op get_parent_while
   Op.id
   op Op.func Func.name
@@ -298,7 +291,7 @@ function get_continue_asm op:ptr program:ptr -> str :
 end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
-function get_parent_op_type_do op:ptr program:ptr -> int :
+function get_parent_op_type_do op:Op program:Program -> int :
   op Op.id 1 - // index = op.id - 1
   0
   take parent_count index in
@@ -307,7 +300,7 @@ function get_parent_op_type_do op:ptr program:ptr -> int :
   while index -1 > do
 
     // Get the current Op's OpType
-    index program List.nth ptr.load Op.type
+    index program cast(List) List.nth ptr.load Op.type
     take op_type in
 
     if
@@ -340,7 +333,7 @@ end
 // DO is conditional jump to operand after ELIF, ELSE, END or ENDIF
 // Params: Op, Program
 // Return: Assembly
-function get_do_asm op:ptr program:ptr -> str :
+function get_do_asm op:Op program:Program -> str :
   program op get_parent_op_type_do
   op Op.id 1 + // index = op.id + 1
   0
@@ -350,9 +343,9 @@ function get_do_asm op:ptr program:ptr -> str :
     parent_op_type
   in
 
-  while index program List.len < do
+  while index program cast(List) List.len < do
     // Get the current operand's OpType
-    index program List.nth ptr.load Op.type
+    index program cast(List) List.nth ptr.load Op.type
     take op_type in
 
     // Keep count on the nested IFs or WHILEs depending on the parent Op
@@ -405,9 +398,9 @@ function get_do_asm op:ptr program:ptr -> str :
     do
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
       op Op.func Func.name
-      "_"                                                 str.cat
-      index program List.nth ptr.load Op.type OpType.repr str.cat
-      index itoa                                          str.cat
+      "_"                                                             str.cat
+      index program cast(List) List.nth ptr.load Op.type OpType.repr  str.cat
+      index itoa                                                      str.cat
       generate_do_asm return
     endif
 
@@ -446,7 +439,7 @@ end
 // DONE is an unconditional jump to current loop's WHILE
 // Params: Op, Program
 // Return: Assembly
-function get_done_asm op:ptr program:ptr -> str :
+function get_done_asm op:Op program:Program -> str :
   // Get the parent WHILE Op
   program op get_parent_while
   take parent_while in
@@ -475,7 +468,7 @@ end
 // ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to
 // Params: Op, Program
 // Return: Assembly
-function get_elif_asm op:ptr program:ptr -> str :
+function get_elif_asm op:Op program:Program -> str :
   // Get the related ENDIF Op
   program op get_related_endif
   take related_endif in
@@ -504,7 +497,7 @@ end
 // ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to
 // Params: Op, Program
 // Return: Assembly
-function get_else_asm op:ptr program:ptr -> str :
+function get_else_asm op:Op program:Program -> str :
   // Get the related ENDIF Op
   program op get_related_endif
   take related_endif in
@@ -533,7 +526,7 @@ end
 // ENDIF is just a keyword for DO, ELIF or ELSE to jump to
 // Params: Op
 // Return: Assembly
-function get_endif_asm op:ptr -> str :
+function get_endif_asm op:Op -> str :
   op Op.func Func.name
   "_ENDIF"      str.cat
   op Op.id itoa str.cat
@@ -560,7 +553,7 @@ end
 // Generate Assembly for OpType.PEEK_BIND
 // Params: Op
 // Return: Assembly
-function get_peek_bind_asm op:ptr -> str :
+function get_peek_bind_asm op:Op -> str :
   "  mov rax, [r15]\n"
   "  mov ["               str.cat
   op get_variable_memory  str.cat
@@ -571,7 +564,7 @@ end
 // Generate Assembly for OpType.POP_BIND
 // Params: Op
 // Return: Assembly
-function get_pop_bind_asm op:ptr -> str :
+function get_pop_bind_asm op:Op -> str :
   "  pop qword ["
   op get_variable_memory  str.cat
   "]\n"                   str.cat
@@ -580,7 +573,7 @@ end
 // Generate Assembly for OpType.POP_BIND
 // Params: Op
 // Return: Assembly
-function get_push_bind_asm op:ptr -> str :
+function get_push_bind_asm op:Op -> str :
   "  push qword ["
   op get_variable_memory  str.cat
   "]\n"                   str.cat
@@ -600,7 +593,7 @@ end
 // Params: Op.token.value[1] ('a' => a)
 // Return: Assembly
 function get_push_char_asm char -> str :
-  int itoa
+  cast(int) itoa
   "  mov rax, " swap  str.cat
   "\n  push rax\n"    str.cat
 end
@@ -624,7 +617,7 @@ end
 // Generate Assembly for OpType.PUSH_STR
 // Params: Op
 // Return: Assembly
-function get_push_str_asm op:ptr -> str :
+function get_push_str_asm op:Op -> str :
   // Initialize variables
   op Op.id itoa
   op Op.func Func.name
@@ -653,7 +646,7 @@ end
 // Generate Assembly for OpType.WHILE
 // Params: Op
 // Return: Assembly
-function get_while_asm op:ptr -> str :
+function get_while_asm op:Op -> str :
   op Op.id itoa
   op Op.func Func.name
   take function_name op_id in
@@ -797,7 +790,7 @@ end
 
 // Params: load_variant, Token
 // Return: Assembly
-function get_load_asm str ptr -> str :
+function get_load_asm str Token -> str :
   str.copy str.upper
   take load_variant token in
 
@@ -934,7 +927,7 @@ end
 
 // Params: store_variant, Token
 // Return: Assembly
-function get_store_asm str ptr -> str :
+function get_store_asm str Token -> str :
   str.copy str.upper
   take store_variant token in
 
@@ -1003,17 +996,17 @@ function get_syscall_asm str -> str :
   "  push rax ; return code\n"                  str.cat
 end
 
-function get_syscall_argument_registers -> ptr :
+function get_syscall_argument_registers -> List :
   List.init
   take registers in
 
   // Add Syscall argument registers in the correct order
-  "rdi" ptr registers List.append
-  "rsi" ptr registers List.append
-  "rdx" ptr registers List.append
-  "r10" ptr registers List.append
-  "r8"  ptr registers List.append
-  "r9"  ptr registers List.append
+  "rdi" cast(ptr) registers List.append
+  "rsi" cast(ptr) registers List.append
+  "rdx" cast(ptr) registers List.append
+  "r10" cast(ptr) registers List.append
+  "r8"  cast(ptr) registers List.append
+  "r9"  cast(ptr) registers List.append
   registers
 end
 
@@ -1029,10 +1022,10 @@ end
 // Return: None
 function generate_assembly_file
   file_name:str
-  sub_programs:ptr
-  memories:ptr
+  sub_programs:List[Program]
+  memories:List[Mem]
 :
-  sub_programs List.len
+  sub_programs cast(List) List.len
   "section .data\n" str.copy
   0
   take
@@ -1048,8 +1041,7 @@ function generate_assembly_file
   while index sub_programs.len < do
 
     // Get the current Program
-    sub_programs List.first
-    index ptr.size * ptr+ ptr.load
+    index sub_programs cast(List) List.nth ptr.load cast(Program)
     take program in
 
     // Get assembly code for the current Program
@@ -1068,13 +1060,13 @@ function generate_assembly_file
 end
 
 // Get Assembly code to be added to .data section from Program's string variables
-function get_string_variables_for_data_section program:ptr -> str :
+function get_string_variables_for_data_section program:Program -> str :
   "" str.copy
   0
   take index assembly_code in
-  while index program List.len < do
+  while index program cast(List) List.len < do
     // Get current Op
-    index program List.nth ptr.load
+    index program cast(List) List.nth Op.load
     take op in
 
     // Add only strings to the assembly
@@ -1111,11 +1103,11 @@ function get_string_variables_for_data_section program:ptr -> str :
 end
 
 function format_escape_sequences_for_nasm string:str -> str :
-  9  char char.to_string
-  10 char char.to_string
-  13 char char.to_string
-  27 char char.to_string
-  34 char char.to_string
+  9  cast(char) char.to_string
+  10 cast(char) char.to_string
+  13 cast(char) char.to_string
+  27 cast(char) char.to_string
+  34 cast(char) char.to_string
   take
     DoubleQuote
     Escape
@@ -1179,14 +1171,14 @@ function get_function_end_asm function_name:str -> str :
   "  ret\n\n"                                                             str.cat
 end
 
-function append_programs_assembly_code file_name:str program:ptr :
-  program List.len
+function append_programs_assembly_code file_name:str program:Program :
+  program cast(List) List.len
   0
   take index program.len in
 
   // Get the Func's name to be added to the assembly code
   // Exception: MAIN Func should be named '_start'
-  program List.first ptr.load Op.func Func.name
+  program cast(List) List.first ptr.load Op.func Func.name
   take function_name in
 
   // Write Func's start assembly to file
@@ -1196,8 +1188,7 @@ function append_programs_assembly_code file_name:str program:ptr :
   while index program.len < do
 
     // Get the current Op
-    program List.first
-    index ptr.size * ptr+ ptr.load
+    index program cast(List) List.nth Op.load
     take op in
 
     // Generate comment for Op
@@ -1217,13 +1208,13 @@ end
 // Returns the current IF block's ENDIF Op
 // Params: Op, Program
 // Return: Op
-function get_related_endif op:ptr program:ptr -> ptr :
+function get_related_endif op:Op program:Program -> Op :
   op Op.id 1 + // index = op.id + 1
   0 // if_count => Keep count of the nested IF blocks
   take if_count index in
 
-  while index program List.len < do
-    index program List.nth ptr.load
+  while index program cast(List) List.len < do
+    index program cast(List) List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 
@@ -1247,19 +1238,20 @@ function get_related_endif op:ptr program:ptr -> ptr :
   op Op.token
   "Corresponding ENDIF keyword was not found.\n"
   op Op.token Token.value str.copy str.upper
-  "AMBIGUOUS_" swap str.cat CompilerErrorWithToken NULLPTR
+  "AMBIGUOUS_" swap str.cat CompilerErrorWithToken
+  NULL cast(Op)
 end
 
 // Returns the current WHILE block's DONE Op
 // Params: Op, Program
 // Return: Op
-function get_parent_while op:ptr program:ptr -> ptr :
+function get_parent_while op:Op program:Program -> Op :
   op Op.id 1 - // index = op.id - 1
   0 // done_count => Keep count of the nested WHILE blocks
   take done_count index in
 
   while index -1 > do
-    index program List.nth ptr.load
+    index program cast(List) List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 
@@ -1284,22 +1276,23 @@ function get_parent_while op:ptr program:ptr -> ptr :
   "Parent WHILE keyword was not found.\n"
   op Op.token Token.value str.copy str.upper
   "AMBIGUOUS_" swap str.cat
-  CompilerErrorWithToken NULLPTR
+  CompilerErrorWithToken
+  NULL cast(Op)
 end
 
 // Returns the END Operand for the current WHILE block
 // Params: Op, Program
 // Return: Op
-function get_done_op_for_while op:ptr program:ptr -> ptr :
+function get_done_op_for_while op:Op program:Program -> Op :
   op Op.id
   0
   take while_count index in
 
   // Iterate over each Op of the Program starting from the parameter Op
-  while index program List.len < do
+  while index program cast(List) List.len < do
 
     // Get the current Operands OpType
-    index program List.nth ptr.load
+    index program cast(List) List.nth Op.load
     dup Op.type
     take current_op_type current_op in
 
@@ -1323,15 +1316,16 @@ function get_done_op_for_while op:ptr program:ptr -> ptr :
   op Op.token
   "END keyword was not found for the current WHILE loop.\n"
   op Op.token Token.value str.copy str.upper
-  "AMBIGUOUS_" swap str.cat CompilerErrorWithToken NULLPTR
+  "AMBIGUOUS_" swap str.cat CompilerErrorWithToken
+  NULL cast(Op)
 end
 
 // Get memory name for assembly used by a variable
 // Params: Op
 // Return: variable
-function get_variable_memory op:ptr -> str :
+function get_variable_memory op:Op -> str :
   // variable = f"{op.func.name}_{memory_name}"
-  op Op.token     Token.value
+  op Op.token Token.value
   op Op.func  Func.name
   "_" str.cat swap str.cat
 end

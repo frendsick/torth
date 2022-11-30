@@ -105,6 +105,6 @@ function request.path str -> str :
   // Insert NULL byte to the end of path
   " HTTP/1.1" path str.find
   path swap str+
-  ptr NULL char swap char.store
+  cast(ptr) NULL cast(char) swap char.store
   path
 end
