@@ -686,9 +686,7 @@ end
 // Return: Assembly
 function get_and_asm -> str :
   "  pop rax\n"
-  "  pop rbx\n"       str.cat
-  "  and rbx, rax\n"  str.cat
-  "  push rbx\n"      str.cat
+  "  and [rsp], rax\n" str.cat
 end
 
 // ARGC pushes the argument count to the stack
