@@ -1141,6 +1141,24 @@ function get_nth_from_return_stack_asm N:int -> str :
   endif
 end
 
+// Push the value of the Nth value from the return stack to the data stack
+function set_nth_from_return_stack_asm N:int -> str :
+  if N 0 < do
+    "Cannot set value with negative index from the return stack"
+    "ValueError" CompilerError
+  endif
+
+  "  pop rbx\n"
+  if N 0 > do
+    "  mov rax, r14\n"      str.cat
+    "  sub rax, "           str.cat
+    N 8 * itoa              str.cat
+    "\n  mov [rax], rbx\n"  str.cat
+  else
+    "  mov [r14], rbx\n"    str.cat
+  endif
+end
+
 // Return the beginning of the assembly code of each Program
 // Params: Func's name
 // Return: Assembly code
