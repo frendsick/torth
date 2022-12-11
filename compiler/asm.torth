@@ -1124,6 +1124,23 @@ function pop_n_from_return_stack_asm N:int -> str :
   "\n"        str.cat
 end
 
+// Push the value of the Nth value from the return stack to the data stack
+function get_nth_from_return_stack_asm N:int -> str :
+  if N 0 < do
+    "Cannot get value with negative index from the return stack"
+    "ValueError" CompilerError
+  endif
+
+  if N 0 > do
+    "  mov rax, r14\n"
+    "  sub rax, "             str.cat
+    N 8 * itoa                str.cat
+    "\n  push QWORD [rax]\n"  str.cat
+  else
+    "push QWORD [r14]\n"
+  endif
+end
+
 // Return the beginning of the assembly code of each Program
 // Params: Func's name
 // Return: Assembly code
