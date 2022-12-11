@@ -1107,6 +1107,12 @@ function format_escape_sequences_for_nasm string:str -> str :
   Escape string str.replace_all
 end
 
+// Pop a value from the data stack and push it to the return stack
+function push_to_return_stack_asm -> str :
+  "  add QWORD r14, 8\n"
+  "  pop QWORD [r14]\n" str.cat
+end
+
 // Return the beginning of the assembly code of each Program
 // Params: Func's name
 // Return: Assembly code
