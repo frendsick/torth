@@ -1113,6 +1113,17 @@ function push_to_return_stack_asm -> str :
   "  pop QWORD [r14]\n" str.cat
 end
 
+// Pop N values from the return stack
+function pop_n_from_return_stack_asm N:int -> str :
+  if N 0 < do
+    "Cannot pop negative amount of values from the return stack"
+    "ValueError" CompilerError
+  endif
+  "  sub QWORD r14, "
+  N 8 * itoa  str.cat
+  "\n"        str.cat
+end
+
 // Return the beginning of the assembly code of each Program
 // Params: Func's name
 // Return: Assembly code
