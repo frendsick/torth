@@ -188,6 +188,23 @@ function get_op_from_location location:Location program:Program -> Op :
   NULL cast(Op)
 end
 
+// Get the 0-based index of a variable from a Variable List
+// Return -1 if the variable is not found
+function get_variable_index variable_name:str variables:List[Variable] -> int :
+  variables cast(List) List.len
+  0
+  take index variables.len in
+  while index variables.len < do
+    index variables cast(List) List.nth Variable.load Variable.name
+    take current_variable in
+    if variable_name current_variable streq do
+      index return
+    endif
+    index 1 + index =
+  done
+  -1 // Not found
+end
+
 // Check if a Constant with a certain name exists
 // Params: constant_name, List[Constant]
 // Return: bool
