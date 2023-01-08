@@ -7,7 +7,7 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [AND](#AND)
 - [ARGC](#ARGC)
 - [ARGV](#ARGV)
-- [DIVMOD](#DIVMOD)
+- [DIV](#Calculations)
 - [DROP](#DROP)
 - [DUP](#DUP)
 - [ENVP](#ENVP)
@@ -21,6 +21,7 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [LOAD_QWORD](#LOAD)
 - [LT](#Comparisons)
 - [MINUS](#Calculations)
+- [MOD](#Calculations)
 - [MUL](#Calculations)
 - [NE](#Comparisons)
 - [NTH](#NTH)
@@ -57,6 +58,8 @@ Different calculation intrinsics:
 - PLUS (+)
 - MINUS (-)
 - MUL (\*)
+- DIV (/)
+- MOD (%)
 
 ## Comparisons
 
@@ -98,15 +101,6 @@ Push the command line argument count to the stack.
 ## ARGV
 
 Push the pointer to the command line argument array to the stack.
-
-## DIVMOD
-
-Perform a division operation for two [integers](definitions.md#integer-types) and push both the remainder and the quotient to the stack.
-
-1. Pop two [integers](definitions.md#integer-types) from the stack
-2. Perform a division operation to the popped values
-3. Push remainder
-4. Push quotient
 
 ## DROP
 
