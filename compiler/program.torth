@@ -171,7 +171,7 @@ function get_tokens_op_type
     token_upper "AND"         streq
     token_upper "ARGC"        streq ||
     token_upper "ARGV"        streq ||
-    token_upper "DIVMOD"      streq ||
+    token_upper "DIV"         streq ||
     token_upper "DROP"        streq ||
     token_upper "DUP"         streq ||
     token_upper "ENVP"        streq ||
@@ -183,6 +183,7 @@ function get_tokens_op_type
     token_upper "LOAD_" str.startswith ||
     token_upper "LT"          streq ||
     token_upper "MINUS"       streq ||
+    token_upper "MOD"         streq ||
     token_upper "MUL"         streq ||
     token_upper "NE"          streq ||
     token_upper "NTH"         streq ||

@@ -196,6 +196,8 @@ end
 function get_token_value token_value:str -> str :
   if   token_value "="  streq do
     "ASSIGN" return
+  elif token_value "/" streq do
+    "DIV" return
   elif token_value "==" streq do
     "EQ" return
   elif token_value ">=" streq do
@@ -208,6 +210,8 @@ function get_token_value token_value:str -> str :
     "LT" return
   elif token_value "-"  streq do
     "MINUS" return
+  elif token_value "%"  streq do
+    "MOD" return
   elif token_value "*"  streq do
     "MUL" return
   elif token_value "!=" streq do

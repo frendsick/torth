@@ -144,8 +144,8 @@ function get_intrinsic_asm token:Token -> str :
     get_argc_asm return
   elif intrinsic "ARGV" streq do
     get_argv_asm return
-  elif intrinsic "DIVMOD" streq do
-    get_divmod_asm return
+  elif intrinsic "DIV" streq do
+    get_div_asm return
   elif intrinsic "DROP" streq do
     get_drop_asm return
   elif intrinsic "DUP" streq do
@@ -166,6 +166,8 @@ function get_intrinsic_asm token:Token -> str :
     token intrinsic get_load_asm
   elif intrinsic "MINUS" streq do
     get_minus_asm return
+  elif intrinsic "MOD" streq do
+    get_mod_asm return
   elif intrinsic "MUL" streq do
     get_mul_asm return
   elif intrinsic "NE" streq do
@@ -710,15 +712,14 @@ function get_argv_asm -> str :
   "  push rax\n"    str.cat
 end
 
-// DIVMOD pops two integers from the stack and pushes their remainder and quotient
+// DIV pops two integers from the stack and pushes their quotient
 // Params: None
 // Return: Assembly
-function get_divmod_asm -> str :
+function get_div_asm -> str :
   "  xor edx, edx ; Do not use floating point arithmetic\n"
   "  pop rbx\n"               str.cat
   "  pop rax\n"               str.cat
   "  div rbx\n"               str.cat
-  "  push rdx ; Remainder\n"  str.cat
   "  push rax ; Quotient\n"   str.cat
 end
 
@@ -816,6 +817,17 @@ end
 // Pop two integers from the stack and decrement the second value from the top one
 function get_minus_asm -> str :
   "sub" get_arithmetic_asm
+end
+
+// MOD pops two integers from the stack and pushes their remainder
+// Params: None
+// Return: Assembly
+function get_mod_asm -> str :
+  "  xor edx, edx ; Do not use floating point arithmetic\n"
+  "  pop rbx\n"               str.cat
+  "  pop rax\n"               str.cat
+  "  div rbx\n"               str.cat
+  "  push rdx ; Remainder\n"  str.cat
 end
 
 // Pop two integers from the stack and push the product of the two values

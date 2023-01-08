@@ -272,8 +272,6 @@ function type_check_intrinsic
     type_stack token type_check_push_int return
   elif intrinsic "ARGV" streq do
     type_stack token type_check_push_ptr return
-  elif intrinsic "DIVMOD" streq do
-    type_stack token type_check_divmod return
   elif intrinsic "DROP" streq do
     type_stack token type_check_drop return
   elif intrinsic "DUP" streq do
@@ -307,7 +305,9 @@ function type_check_intrinsic
   do
     type_stack token type_check_bitshift return
   elif
-    intrinsic "MINUS" streq
+    intrinsic "DIV"   streq
+    intrinsic "MINUS" streq ||
+    intrinsic "MOD"   streq ||
     intrinsic "MUL"   streq ||
     intrinsic "PLUS"  streq ||
   do
@@ -962,13 +962,13 @@ function type_check_return
   if_block_return_stack
 end
 
-// DIVMOD pops two items from the stack and divides second from the top one.
-// Then push the remainder and the quotient of the two values.
+// DIV pops two items from the stack and divides second from the top one.
+// Then push the quotient of the two values.
 // Params
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
 // Return None
-function type_check_divmod token:Token type_stack:Node :
+function type_check_div token:Token type_stack:Node :
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
 
@@ -1003,7 +1003,6 @@ function type_check_divmod token:Token type_stack:Node :
   // Push the remainder and the quotient to the stack
   token Token.location
   take location in
-  location "int" TypeNode.init cast(ptr) type_stack LinkedList.push
   location "int" TypeNode.init cast(ptr) type_stack LinkedList.push
 end
 
@@ -1437,7 +1436,7 @@ function type_check_bitshift token:Token type_stack:Node :
   type_stack LinkedList.push
 end
 
-// Type check calculation intrinsics MINUS, MUL, and PLUS
+// Type check calculation intrinsics DIV, MINUS, MOD, MUL, and PLUS
 // Params
 //    token: Token
 //    type_stack: LinkedList[TypeNode]

@@ -36,10 +36,6 @@ const mode_600 0x180 end
 
 // Extra intrinsics
 function NULLPTR            -> ptr  : NULL cast(ptr)                          end
-function div      int int   -> int  : divmod swap drop                        end
-function mod      int int   -> int  : divmod drop                             end
-function /        int int   -> int  : div                                     end
-function %        int int   -> int  : mod                                     end
 function ^        int int   -> int  : pow                                     end
 function not      bool      -> bool : True !=                                 end
 function |        int int   -> int  : or                                      end
