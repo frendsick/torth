@@ -1,3 +1,5 @@
+use crate::data_types::ChunkSize;
+
 pub enum Intrinsic {
     Calculation(Calculation),
     Comparison(Comparison),
@@ -35,12 +37,3 @@ pub enum Comparison {
     LT,
     NE,
 }
-
-pub enum ChunkSize {
-    Byte,
-    Word,
-    Dword,
-    Qword,
-}
-
-
