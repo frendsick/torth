@@ -1,5 +1,6 @@
 output
 test
+torth
 __pycache__/
 *.asm
 *.bin
