@@ -113,7 +113,13 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r"^shl"             => TokenType::Intrinsic(Intrinsic::Shl),
     r"^shr"             => TokenType::Intrinsic(Intrinsic::Shr),
     r"^swap"            => TokenType::Intrinsic(Intrinsic::Swap),
-    r"^syscall[0-6]"    => TokenType::Intrinsic(Intrinsic::Syscall),
+    r"^syscall0"        => TokenType::Intrinsic(Intrinsic::Syscall(0)),
+    r"^syscall1"        => TokenType::Intrinsic(Intrinsic::Syscall(1)),
+    r"^syscall2"        => TokenType::Intrinsic(Intrinsic::Syscall(2)),
+    r"^syscall3"        => TokenType::Intrinsic(Intrinsic::Syscall(3)),
+    r"^syscall4"        => TokenType::Intrinsic(Intrinsic::Syscall(4)),
+    r"^syscall5"        => TokenType::Intrinsic(Intrinsic::Syscall(5)),
+    r"^syscall6"        => TokenType::Intrinsic(Intrinsic::Syscall(6)),
 
     // Delimiters
     r"^\("              => TokenType::Delimiter(Delimiter::OpenCurly),

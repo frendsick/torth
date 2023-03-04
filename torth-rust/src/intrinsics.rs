@@ -18,7 +18,7 @@ pub enum Intrinsic {
     Shl,
     Shr,
     Swap,
-    Syscall,
+    Syscall(u8),
 }
 
 #[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
