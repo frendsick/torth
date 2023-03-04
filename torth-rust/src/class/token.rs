@@ -17,10 +17,18 @@ pub enum TokenType {
     Assignment,
     Calculation(Calculation),
     Comparison(Comparison),
+    Delimiter,
     Identifier,
     Literal(DataType),
     Keyword,
+    Symbol(Symbol),
     None,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Symbol {
+    Colon,
+    EqualSign,
 }
 
 pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
@@ -45,6 +53,12 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r"^return"          => TokenType::Keyword,
     r"^while"           => TokenType::Keyword,
 
+    // Delimiters
+    r"^\("              => TokenType::Delimiter,
+    r"^\)"              => TokenType::Delimiter,
+    r"^\."              => TokenType::Delimiter,
+    r"^->"              => TokenType::Delimiter,
+
     // Comparison Operators
     r"^=="              => TokenType::Comparison(Comparison::EQ),
     r"^>="              => TokenType::Comparison(Comparison::GE),
@@ -58,8 +72,11 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r"^-"               => TokenType::Calculation(Calculation::Subtraction),
     r"^/"               => TokenType::Calculation(Calculation::Division),
     r"^\*"              => TokenType::Calculation(Calculation::Multiplication),
-    r"^="               => TokenType::Assignment,
+
+    // Symbols
+    r"^:"               => TokenType::Symbol(Symbol::Colon),
+    r"^="               => TokenType::Symbol(Symbol::EqualSign),
 
     // Identifier - Named value representing some value or other entity
-    r"^[a-zA-Z_$][a-zA-Z_$0-9]+"  => TokenType::Identifier,
+    r"^[a-zA-Z_$][a-zA-Z_$0-9]*"             => TokenType::Identifier,
 );
