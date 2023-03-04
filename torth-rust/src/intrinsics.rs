@@ -2,21 +2,23 @@ use strum_macros::{EnumCount, EnumIter};
 
 use crate::data_types::ChunkSize;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
 pub enum Intrinsic {
-    Load(ChunkSize),
-    Store(ChunkSize),
     And,
     Argc,
     Argv,
     Drop,
     Dup,
     Envp,
+    Load(ChunkSize),
+    Nth,
     Over,
+    Or,
     Print,
     Rot,
     Shl,
     Shr,
+    Store(ChunkSize),
     Swap,
     Syscall(u8),
 }
