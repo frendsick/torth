@@ -22,12 +22,16 @@ pub fn tokenize_code_file(file: &str) -> Vec<Token> {
     return tokens;
 }
 
-fn get_next_token(code: &str, code_file: &str, cursor: &mut usize, row: &mut usize, column: &mut usize) -> Option<Token> {
+fn get_next_token(
+    code: &str,
+    code_file: &str,
+    cursor: &mut usize,
+    row: &mut usize,
+    column: &mut usize,
+) -> Option<Token> {
     if *cursor >= code.len() {
         return None;
     }
-
-    dbg!(&code, &cursor);
 
     // Test if the remaining code matches with any Token regex
     let unparsed_code: &str = code.split_at(*cursor).1;
@@ -85,4 +89,30 @@ pub fn get_token_type(token: &str) -> TokenType {
         }
     }
     panic!("Did not get TokenType for '{}'", token);
+}
+
+#[cfg(test)]
+mod tests {
+    use strum::{EnumCount, IntoEnumIterator};
+
+    use super::*;
+    use crate::data_types::DataType;
+
+    const TEST_FOLDER: &str = "tests";
+
+    #[test]
+    fn lex_literals() {
+        let test_file: String = format!("{TEST_FOLDER}/literals.torth");
+        let tokens: Vec<Token> = tokenize_code_file(&test_file);
+        // Are all DataTypes taken into account in the test file
+        assert_eq!(tokens.len(), DataType::COUNT);
+        // Are tokens lexed correctly as literal with certain type
+        for (i, data_type) in DataType::iter().enumerate() {
+            // Pointer literals do not exist
+            if data_type == DataType::Pointer {
+                continue;
+            }
+            assert_eq!(tokens[i].typ, TokenType::Literal(data_type))
+        }
+    }
 }

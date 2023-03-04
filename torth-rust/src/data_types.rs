@@ -1,4 +1,6 @@
-#[derive(Debug, Clone, PartialEq)]
+use strum_macros::{EnumCount, EnumIter};
+
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
 pub enum DataType {
     Boolean,
     Character,
@@ -7,10 +9,11 @@ pub enum DataType {
     String,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub enum ChunkSize {
     Byte,
     Word,
     Dword,
+    #[default]
     Qword,
 }
