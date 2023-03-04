@@ -10,7 +10,7 @@ use super::location::Location;
 pub struct Token {
     pub value: String,
     pub typ: TokenType,
-    pub location: Option<Location>,
+    pub location: Location,
 }
 
 #[derive(Debug, Clone, PartialEq)]

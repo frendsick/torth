@@ -8,17 +8,17 @@ pub fn tokenize_code_file(file: &str) -> Vec<Token> {
         .expect("Failed to read the file")
         .as_str()
         .to_string();
-    tokenize_code(&code, Some(file))
+    tokenize_code(&code, Some(file.to_string()))
 }
 
-pub fn tokenize_code(code: &str, code_file: Option<&str>) -> Vec<Token> {
+pub fn tokenize_code(code: &str, code_file: Option<String>) -> Vec<Token> {
     let mut tokens: Vec<Token> = vec![];
     let mut row: usize = 1;
     let mut column: usize = 1;
     let mut cursor: usize = 0;
     loop {
         let token: Option<Token> =
-            get_next_token(&code, code_file, &mut cursor, &mut row, &mut column);
+            get_next_token(&code, code_file.clone(), &mut cursor, &mut row, &mut column);
         if token.is_none() {
             break;
         }
@@ -29,7 +29,7 @@ pub fn tokenize_code(code: &str, code_file: Option<&str>) -> Vec<Token> {
 
 fn get_next_token(
     code: &str,
-    code_file: Option<&str>,
+    code_file: Option<String>,
     cursor: &mut usize,
     row: &mut usize,
     column: &mut usize,
@@ -71,14 +71,10 @@ fn get_next_token(
             if token_type == &TokenType::None {
                 return get_next_token(code, code_file, cursor, row, column);
             }
-            let mut location: Option<Location> = None;
-            if let Some(file) = code_file {
-                location = Some(Location::new(file.to_string(), *row, *column));
-            }
             return Some(Token {
                 value: match_str.to_string(),
                 typ: get_token_type(match_str),
-                location: location,
+                location: Location::new(token_row, token_column, code_file),
             });
         }
     }
@@ -213,5 +209,17 @@ mod tests {
         for (i, symbol) in Symbol::iter().enumerate() {
             assert_eq!(TokenType::Symbol(symbol), tokens[i].typ)
         }
+    }
+
+    #[test]
+    fn lex_arithmetic_program() {
+        let code: &str = "34 35 + print";
+        let tokens: Vec<Token> = tokenize_code(code, None);
+        assert_eq!(tokens.len(), 4);
+        assert_eq!(tokens[0].value, "34");
+        assert_eq!(tokens[1].typ, TokenType::Literal(DataType::Integer(ChunkSize::Qword)));
+        assert_eq!(tokens[2].typ, TokenType::Calculation(Calculation::Addition));
+        assert_eq!(tokens[3].typ, TokenType::Intrinsic(Intrinsic::Print));
+
     }
 }

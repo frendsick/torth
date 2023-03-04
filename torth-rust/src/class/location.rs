@@ -1,16 +1,16 @@
 #[derive(Debug, Clone)]
 pub struct Location {
-    pub file: String,
     pub row: usize,
     pub column: usize,
+    pub file: Option<String>,
 }
 
 impl Location {
-    pub fn new(file: String, row: usize, column: usize) -> Self {
+    pub fn new(row: usize, column: usize, file: Option<String>) -> Self {
         Self {
-            file,
             row,
             column,
+            file,
         }
     }
 }
