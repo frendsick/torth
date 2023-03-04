@@ -15,6 +15,8 @@ pub struct Token {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum TokenType {
+    Calculation(Calculation),
+    Comparison(Comparison),
     Delimiter(Delimiter),
     Identifier,
     Intrinsic(Intrinsic),
@@ -120,18 +122,18 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r"^->"              => TokenType::Delimiter(Delimiter::Arrow),
 
     // Comparison Operators
-    r"^=="              => TokenType::Intrinsic(Intrinsic::Comparison(Comparison::EQ)),
-    r"^>="              => TokenType::Intrinsic(Intrinsic::Comparison(Comparison::GE)),
-    r"^>"               => TokenType::Intrinsic(Intrinsic::Comparison(Comparison::GT)),
-    r"^<="              => TokenType::Intrinsic(Intrinsic::Comparison(Comparison::LE)),
-    r"^<"               => TokenType::Intrinsic(Intrinsic::Comparison(Comparison::LT)),
-    r"^!="              => TokenType::Intrinsic(Intrinsic::Comparison(Comparison::NE)),
+    r"^=="              => TokenType::Comparison(Comparison::EQ),
+    r"^>="              => TokenType::Comparison(Comparison::GE),
+    r"^>"               => TokenType::Comparison(Comparison::GT),
+    r"^<="              => TokenType::Comparison(Comparison::LE),
+    r"^<"               => TokenType::Comparison(Comparison::LT),
+    r"^!="              => TokenType::Comparison(Comparison::NE),
 
     // Calculation Operators
-    r"^\+"              => TokenType::Intrinsic(Intrinsic::Calculation(Calculation::Addition)),
-    r"^-"               => TokenType::Intrinsic(Intrinsic::Calculation(Calculation::Subtraction)),
-    r"^/"               => TokenType::Intrinsic(Intrinsic::Calculation(Calculation::Division)),
-    r"^\*"              => TokenType::Intrinsic(Intrinsic::Calculation(Calculation::Multiplication)),
+    r"^\+"              => TokenType::Calculation(Calculation::Addition),
+    r"^-"               => TokenType::Calculation(Calculation::Subtraction),
+    r"^/"               => TokenType::Calculation(Calculation::Division),
+    r"^\*"              => TokenType::Calculation(Calculation::Multiplication),
 
     // Symbols
     r"^:"               => TokenType::Symbol(Symbol::Colon),

@@ -146,7 +146,7 @@ mod tests {
         // Are tokens lexed correctly as certain calculation operations
         for (i, operation) in Calculation::iter().enumerate() {
             assert_eq!(
-                TokenType::Intrinsic(Intrinsic::Calculation(operation)),
+                TokenType::Calculation(operation),
                 tokens[i].typ
             )
         }
@@ -161,7 +161,7 @@ mod tests {
         // Are tokens lexed correctly as certain comparison operations
         for (i, operation) in Comparison::iter().enumerate() {
             assert_eq!(
-                TokenType::Intrinsic(Intrinsic::Comparison(operation)),
+                TokenType::Comparison(operation),
                 tokens[i].typ
             )
         }

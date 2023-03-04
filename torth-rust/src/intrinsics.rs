@@ -4,8 +4,6 @@ use crate::data_types::ChunkSize;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Intrinsic {
-    Calculation(Calculation),
-    Comparison(Comparison),
     Load(ChunkSize),
     Store(ChunkSize),
     And,
