@@ -1,3 +1,5 @@
+use strum_macros::{EnumCount, EnumIter};
+
 use crate::data_types::ChunkSize;
 
 #[derive(Debug, Clone)]
@@ -29,7 +31,7 @@ pub enum Operator {
     Comparison(Comparison),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
 pub enum Calculation {
     Addition,
     Division,

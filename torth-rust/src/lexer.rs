@@ -96,7 +96,7 @@ mod tests {
     use strum::{EnumCount, IntoEnumIterator};
 
     use super::*;
-    use crate::{data_types::DataType, class::token::Delimiter};
+    use crate::{data_types::DataType, class::token::Delimiter, intrinsics::{Calculation, Operator}};
 
     const TEST_FOLDER: &str = "tests";
 
@@ -122,6 +122,17 @@ mod tests {
     fn lex_comments() {
         let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_comments.torth"));
         assert!(tokens.is_empty())
+    }
+
+    #[test]
+    fn lex_calculations() {
+        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_calculations.torth"));
+        // Are all Calculation operators taken into account in the test file
+        assert_eq!(tokens.len(), Calculation::COUNT);
+        // Are tokens lexed correctly as certain calculation operations
+        for (i, operation) in Calculation::iter().enumerate() {
+            assert_eq!(TokenType::Operator(Operator::Calculation(operation)), tokens[i].typ)
+        }
     }
 
     #[test]
