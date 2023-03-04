@@ -108,13 +108,19 @@ mod tests {
 
     #[test]
     fn lex_empty_file() {
-        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/empty.torth"));
+        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_empty.torth"));
+        assert!(tokens.is_empty())
+    }
+
+    #[test]
+    fn lex_file_with_whitespace() {
+        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_whitespace.torth"));
         assert!(tokens.is_empty())
     }
 
     #[test]
     fn lex_literals() {
-        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/literals.torth"));
+        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_literals.torth"));
         // Are all DataTypes taken into account in the test file
         assert_eq!(tokens.len(), DataType::COUNT);
         // Are tokens lexed correctly as literal with certain type
