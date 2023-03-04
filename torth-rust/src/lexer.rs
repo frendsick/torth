@@ -101,6 +101,12 @@ mod tests {
     const TEST_FOLDER: &str = "tests";
 
     #[test]
+    #[should_panic(expected = "Failed to read the file")]
+    fn lex_nonexistent_file() {
+        tokenize_code_file("nonexistent.torth");
+    }
+
+    #[test]
     fn lex_literals() {
         let test_file: String = format!("{TEST_FOLDER}/literals.torth");
         let tokens: Vec<Token> = tokenize_code_file(&test_file);
