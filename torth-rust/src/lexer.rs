@@ -113,8 +113,14 @@ mod tests {
     }
 
     #[test]
-    fn lex_file_with_whitespace() {
+    fn lex_whitespace() {
         let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_whitespace.torth"));
+        assert!(tokens.is_empty())
+    }
+
+    #[test]
+    fn lex_comments() {
+        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_comments.torth"));
         assert!(tokens.is_empty())
     }
 
