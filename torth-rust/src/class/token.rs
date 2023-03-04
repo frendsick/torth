@@ -1,14 +1,14 @@
 use super::location::Location;
 
 #[derive(Debug, Clone)]
-pub enum TokenType {
-    KEYWORD,
-    WORD,
+pub struct Token<'a> {
+    pub value: &'a str,
+    pub typ: TokenType,
+    pub location: Location<'a>,
 }
 
 #[derive(Debug, Clone)]
-pub struct Token<'a> {
-    value: &'a str,
-    typ: TokenType,
-    location: Location<'a>,
+pub enum TokenType {
+    KEYWORD,
+    WORD,
 }
