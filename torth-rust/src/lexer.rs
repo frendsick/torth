@@ -107,8 +107,8 @@ mod tests {
     use super::*;
     use crate::{
         class::token::{Delimiter, Keyword, Symbol},
-        data_types::DataType,
-        intrinsics::{Calculation, Comparison, Operator},
+        data_types::{DataType, ChunkSize},
+        intrinsics::{Calculation, Comparison, Intrinsic},
     };
 
     const TEST_FOLDER: &str = "tests";
@@ -146,7 +146,7 @@ mod tests {
         // Are tokens lexed correctly as certain calculation operations
         for (i, operation) in Calculation::iter().enumerate() {
             assert_eq!(
-                TokenType::Operator(Operator::Calculation(operation)),
+                TokenType::Intrinsic(Intrinsic::Calculation(operation)),
                 tokens[i].typ
             )
         }
@@ -161,7 +161,7 @@ mod tests {
         // Are tokens lexed correctly as certain comparison operations
         for (i, operation) in Comparison::iter().enumerate() {
             assert_eq!(
-                TokenType::Operator(Operator::Comparison(operation)),
+                TokenType::Intrinsic(Intrinsic::Comparison(operation)),
                 tokens[i].typ
             )
         }
