@@ -129,7 +129,21 @@ mod tests {
             if data_type == DataType::Pointer {
                 continue;
             }
-            assert_eq!(tokens[i].typ, TokenType::Literal(data_type))
+            assert_eq!(TokenType::Literal(data_type), tokens[i].typ)
+        }
+    }
+
+    #[test]
+    fn lex_keywords() {
+        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_keywords.torth"));
+        for token in tokens {
+            assert_eq!(
+                TokenType::Keyword,
+                token.typ,
+                "Token '{}' was lexed as {:?}",
+                token.value,
+                token.typ
+            );
         }
     }
 }
