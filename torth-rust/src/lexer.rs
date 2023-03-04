@@ -190,7 +190,7 @@ mod tests {
                         i += 1;
                     }
                 }
-                Intrinsic::Store(chunk_size) => {
+                Intrinsic::Store(_) => {
                     for chunk_size in ChunkSize::iter() {
                         assert_eq!(TokenType::Intrinsic(Intrinsic::Store(chunk_size)), tokens[i].typ);
                         i += 1;
