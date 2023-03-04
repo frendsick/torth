@@ -18,7 +18,7 @@ pub enum TokenType {
     Delimiter(Delimiter),
     Identifier,
     Literal(DataType),
-    Keyword,
+    Keyword(Keyword),
     Operator(Operator),
     Symbol(Symbol),
     None,
@@ -38,6 +38,26 @@ pub enum Symbol {
     EqualSign,
 }
 
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
+pub enum Keyword {
+    Break,
+    Cast,
+    Const,
+    Continue,
+    Do,
+    Done,
+    Elif,
+    Else,
+    Endif,
+    Enum,
+    Function,
+    If,
+    Include,
+    Memory,
+    Return,
+    While,
+}
+
 pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r"^\s+"             => TokenType::None,
 
@@ -53,22 +73,22 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r#"^"[^"]*""#       => TokenType::Literal(DataType::String),
 
     // Keywords
-    r"^break"           => TokenType::Keyword,
-    r"^cast"            => TokenType::Keyword,
-    r"^const"           => TokenType::Keyword,
-    r"^continue"        => TokenType::Keyword,
-    r"^done"            => TokenType::Keyword,
-    r"^do"              => TokenType::Keyword,
-    r"^elif"            => TokenType::Keyword,
-    r"^else"            => TokenType::Keyword,
-    r"^endif"           => TokenType::Keyword,
-    r"^enum"            => TokenType::Keyword,
-    r"^function"        => TokenType::Keyword,
-    r"^if"              => TokenType::Keyword,
-    r"^include"         => TokenType::Keyword,
-    r"^memory"          => TokenType::Keyword,
-    r"^return"          => TokenType::Keyword,
-    r"^while"           => TokenType::Keyword,
+    r"^break"           => TokenType::Keyword(Keyword::Break),
+    r"^cast"            => TokenType::Keyword(Keyword::Cast),
+    r"^const"           => TokenType::Keyword(Keyword::Const),
+    r"^continue"        => TokenType::Keyword(Keyword::Continue),
+    r"^done"            => TokenType::Keyword(Keyword::Done),
+    r"^do"              => TokenType::Keyword(Keyword::Do),
+    r"^elif"            => TokenType::Keyword(Keyword::Elif),
+    r"^else"            => TokenType::Keyword(Keyword::Else),
+    r"^endif"           => TokenType::Keyword(Keyword::Endif),
+    r"^enum"            => TokenType::Keyword(Keyword::Enum),
+    r"^function"        => TokenType::Keyword(Keyword::Function),
+    r"^if"              => TokenType::Keyword(Keyword::If),
+    r"^include"         => TokenType::Keyword(Keyword::Include),
+    r"^memory"          => TokenType::Keyword(Keyword::Memory),
+    r"^return"          => TokenType::Keyword(Keyword::Return),
+    r"^while"           => TokenType::Keyword(Keyword::While),
 
     // Delimiters
     r"^\("              => TokenType::Delimiter(Delimiter::OpenCurly),

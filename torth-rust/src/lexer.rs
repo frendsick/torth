@@ -96,7 +96,11 @@ mod tests {
     use strum::{EnumCount, IntoEnumIterator};
 
     use super::*;
-    use crate::{data_types::DataType, class::token::{Delimiter, Symbol}, intrinsics::{Calculation, Operator, Comparison}};
+    use crate::{
+        class::token::{Delimiter, Keyword, Symbol},
+        data_types::DataType,
+        intrinsics::{Calculation, Comparison, Operator},
+    };
 
     const TEST_FOLDER: &str = "tests";
 
@@ -126,23 +130,31 @@ mod tests {
 
     #[test]
     fn lex_calculations() {
-        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_calculations.torth"));
-        // Are all Calculation operators taken into account in the test file
+        let tokens: Vec<Token> =
+            tokenize_code_file(&format!("{TEST_FOLDER}/lex_calculations.torth"));
+        // Are all calculation operators taken into account in the test file
         assert_eq!(tokens.len(), Calculation::COUNT);
         // Are tokens lexed correctly as certain calculation operations
         for (i, operation) in Calculation::iter().enumerate() {
-            assert_eq!(TokenType::Operator(Operator::Calculation(operation)), tokens[i].typ)
+            assert_eq!(
+                TokenType::Operator(Operator::Calculation(operation)),
+                tokens[i].typ
+            )
         }
     }
 
     #[test]
     fn lex_comparisons() {
-        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_comparisons.torth"));
-        // Are all Calculation operators taken into account in the test file
+        let tokens: Vec<Token> =
+            tokenize_code_file(&format!("{TEST_FOLDER}/lex_comparisons.torth"));
+        // Are all comparison operators taken into account in the test file
         assert_eq!(tokens.len(), Comparison::COUNT);
-        // Are tokens lexed correctly as certain calculation operations
+        // Are tokens lexed correctly as certain comparison operations
         for (i, operation) in Comparison::iter().enumerate() {
-            assert_eq!(TokenType::Operator(Operator::Comparison(operation)), tokens[i].typ)
+            assert_eq!(
+                TokenType::Operator(Operator::Comparison(operation)),
+                tokens[i].typ
+            )
         }
     }
 
@@ -175,24 +187,20 @@ mod tests {
     #[test]
     fn lex_keywords() {
         let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_keywords.torth"));
-        assert!(!tokens.is_empty());
-        for token in tokens {
-            assert_eq!(
-                TokenType::Keyword,
-                token.typ,
-                "Token '{}' was lexed as {:?}",
-                token.value,
-                token.typ
-            );
+        // Are all keyword operators taken into account in the test file
+        assert_eq!(tokens.len(), Keyword::COUNT);
+        // Are tokens lexed correctly as certain keywords
+        for (i, keyword) in Keyword::iter().enumerate() {
+            assert_eq!(TokenType::Keyword(keyword), tokens[i].typ)
         }
     }
 
     #[test]
     fn lex_symbols() {
         let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_symbols.torth"));
-        // Are all Calculation operators taken into account in the test file
+        // Are all symbols taken into account in the test file
         assert_eq!(tokens.len(), Symbol::COUNT);
-        // Are tokens lexed correctly as certain calculation operations
+        // Are tokens lexed correctly as certain symbols
         for (i, symbol) in Symbol::iter().enumerate() {
             assert_eq!(TokenType::Symbol(symbol), tokens[i].typ)
         }
