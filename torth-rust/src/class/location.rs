@@ -1,12 +1,12 @@
 #[derive(Debug, Clone)]
-pub struct Location<'a> {
-    pub file: &'a str,
+pub struct Location {
+    pub file: String,
     pub row: usize,
     pub column: usize,
 }
 
-impl<'a> Location<'a> {
-    pub fn new(file: &'a str, row: usize, column: usize) -> Self {
+impl Location {
+    pub fn new(file: String, row: usize, column: usize) -> Self {
         Self {
             file,
             row,

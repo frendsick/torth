@@ -1,11 +1,13 @@
+#[derive(Debug, Clone, PartialEq)]
 pub enum DataType {
-    BOOL,
-    CHAR,
-    INT(ChunkSize),
-    PTR,
-    STR,
+    Boolean,
+    Character,
+    Integer(ChunkSize),
+    Pointer,
+    String,
 }
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum ChunkSize {
     Byte,
     Word,

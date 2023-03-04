@@ -1,5 +1,6 @@
 use crate::data_types::ChunkSize;
 
+#[derive(Debug, Clone)]
 pub enum Intrinsic {
     Calculation(Calculation),
     Comparison(Comparison),
@@ -22,6 +23,7 @@ pub enum Intrinsic {
     SWAP,
 }
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum Calculation {
     Addition,
     Division,
@@ -29,6 +31,7 @@ pub enum Calculation {
     Subtraction,
 }
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum Comparison {
     EQ,
     GE,

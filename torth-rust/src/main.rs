@@ -1,5 +1,5 @@
 use crate::class::token::Token;
-use crate::lexer::tokenize_code;
+use crate::lexer::Parser;
 
 mod class;
 mod data_types;
@@ -9,10 +9,9 @@ mod lexer;
 fn main() -> Result<(), std::io::Error>{
     // TODO: Parse command line arguments
     // TODO: Get code file name from command line arguments
-    const code_file: &str = "test.torth";
-    let code: String = std::fs::read_to_string(code_file)?;
-    // TODO: Perform lexical analysis
-    let tokens: Vec<Token> = tokenize_code(&code, code_file);
+    const CODE_FILE: &str = "test.torth";
+    let mut parser = Parser::init(&CODE_FILE);
+    let tokens: Vec<Token> = parser.parse();
     dbg!(&tokens);
     // TODO: Type check the program
     // TODO: Generate Assembly
