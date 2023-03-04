@@ -8,12 +8,17 @@ pub fn tokenize_code_file(file: &str) -> Vec<Token> {
         .expect("Failed to read the file")
         .as_str()
         .to_string();
+    tokenize_code(&code, Some(file))
+}
+
+pub fn tokenize_code(code: &str, code_file: Option<&str>) -> Vec<Token> {
     let mut tokens: Vec<Token> = vec![];
     let mut row: usize = 1;
     let mut column: usize = 1;
     let mut cursor: usize = 0;
     loop {
-        let token: Option<Token> = get_next_token(&code, file, &mut cursor, &mut row, &mut column);
+        let token: Option<Token> =
+            get_next_token(&code, code_file, &mut cursor, &mut row, &mut column);
         if token.is_none() {
             break;
         }
@@ -24,7 +29,7 @@ pub fn tokenize_code_file(file: &str) -> Vec<Token> {
 
 fn get_next_token(
     code: &str,
-    code_file: &str,
+    code_file: Option<&str>,
     cursor: &mut usize,
     row: &mut usize,
     column: &mut usize,
@@ -66,10 +71,14 @@ fn get_next_token(
             if token_type == &TokenType::None {
                 return get_next_token(code, code_file, cursor, row, column);
             }
+            let mut location: Option<Location> = None;
+            if let Some(file) = code_file {
+                location = Some(Location::new(file.to_string(), *row, *column));
+            }
             return Some(Token {
                 value: match_str.to_string(),
                 typ: get_token_type(match_str),
-                location: Location::new(code_file.to_string(), token_row, token_column),
+                location: location,
             });
         }
     }
