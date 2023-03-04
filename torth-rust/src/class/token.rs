@@ -14,7 +14,6 @@ pub struct Token {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum TokenType {
-    Assignment,
     Calculation(Calculation),
     Comparison(Comparison),
     Delimiter,
@@ -39,6 +38,8 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r"^/\*[\s\S]*?\*/"  => TokenType::None, // Multi-line comment
 
     // Literals
+    r"(?i)^true"        => TokenType::Literal(DataType::Boolean),
+    r"(?i)^false"       => TokenType::Literal(DataType::Boolean),
     r"^'[^']'"          => TokenType::Literal(DataType::Character),
     r"^\d+"             => TokenType::Literal(DataType::Integer(ChunkSize::Qword)),
     r#"^"[^"]*""#       => TokenType::Literal(DataType::String),
