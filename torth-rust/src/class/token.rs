@@ -32,7 +32,7 @@ pub enum Delimiter {
     CloseCurly,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
 pub enum Symbol {
     Colon,
     EqualSign,
