@@ -1,27 +1,29 @@
+use strum_macros::{EnumCount, EnumIter};
+
 use crate::data_types::ChunkSize;
 
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
 pub enum Intrinsic {
-    Calculation(Calculation),
-    Comparison(Comparison),
+    And,
+    Argc,
+    Argv,
+    Drop,
+    Dup,
+    Envp,
     Load(ChunkSize),
+    Nth,
+    Over,
+    Or,
+    Print,
+    Rot,
+    Shl,
+    Shr,
     Store(ChunkSize),
-    Syscall(u8), // Syscalls have 0-6 parameters
-    AND,
-    DIV,
-    DROP,
-    DUP,
-    MINUS,
-    MOD,
-    MUL,
-    OVER,
-    PLUS,
-    PRINT,
-    ROT,
-    SHL,
-    SHR,
-    SWAP,
+    Swap,
+    Syscall(u8),
 }
 
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
 pub enum Calculation {
     Addition,
     Division,
@@ -29,6 +31,7 @@ pub enum Calculation {
     Subtraction,
 }
 
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
 pub enum Comparison {
     EQ,
     GE,

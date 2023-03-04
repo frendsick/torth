@@ -5,5 +5,5 @@ use super::token::Token;
 pub struct Function<'a> {
     name: &'a str,
     signature: Signature,
-    tokens: Vec<Token<'a>>,
+    tokens: Vec<Token>,
 }

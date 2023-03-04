@@ -3,6 +3,9 @@ name = "torth-rust"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+lazy_static = "1.4.0"
+phf = { version = "0.11.1", features = ["macros"] }
+regex = "1.7.1"
+strum = "0.24.1"
+strum_macros = "0.24.3"

@@ -7,7 +7,7 @@ use super::token::Token;
 pub struct Op<'a> {
     id: usize,
     typ: OpType,
-    token: Token<'a>,
+    token: Token,
     function: Function<'a>,
 }
 
