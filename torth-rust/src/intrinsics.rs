@@ -24,6 +24,12 @@ pub enum Intrinsic {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum Operator {
+    Calculation(Calculation),
+    Comparison(Comparison),
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum Calculation {
     Addition,
     Division,

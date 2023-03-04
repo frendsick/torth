@@ -2,7 +2,7 @@ use phf::phf_ordered_map;
 use strum_macros::{EnumCount, EnumIter};
 
 use crate::data_types::{ChunkSize, DataType};
-use crate::intrinsics::{Calculation, Comparison};
+use crate::intrinsics::{Calculation, Comparison, Operator};
 
 use super::location::Location;
 
@@ -15,8 +15,8 @@ pub struct Token {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum TokenType {
-    Calculation(Calculation),
-    Comparison(Comparison),
+    Calculation(Operator),
+    Comparison(Operator),
     Delimiter(Delimiter),
     Identifier,
     Literal(DataType),
@@ -78,18 +78,18 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r"^->"              => TokenType::Delimiter(Delimiter::Arrow),
 
     // Comparison Operators
-    r"^=="              => TokenType::Comparison(Comparison::EQ),
-    r"^>="              => TokenType::Comparison(Comparison::GE),
-    r"^>"               => TokenType::Comparison(Comparison::GT),
-    r"^<="              => TokenType::Comparison(Comparison::LE),
-    r"^<"               => TokenType::Comparison(Comparison::LT),
-    r"^!="              => TokenType::Comparison(Comparison::NE),
+    r"^=="              => TokenType::Comparison(Operator::Comparison(Comparison::EQ)),
+    r"^>="              => TokenType::Comparison(Operator::Comparison(Comparison::GE)),
+    r"^>"               => TokenType::Comparison(Operator::Comparison(Comparison::GT)),
+    r"^<="              => TokenType::Comparison(Operator::Comparison(Comparison::LE)),
+    r"^<"               => TokenType::Comparison(Operator::Comparison(Comparison::LT)),
+    r"^!="              => TokenType::Comparison(Operator::Comparison(Comparison::NE)),
 
     // Calculation Operators
-    r"^\+"              => TokenType::Calculation(Calculation::Addition),
-    r"^-"               => TokenType::Calculation(Calculation::Subtraction),
-    r"^/"               => TokenType::Calculation(Calculation::Division),
-    r"^\*"              => TokenType::Calculation(Calculation::Multiplication),
+    r"^\+"              => TokenType::Calculation(Operator::Calculation(Calculation::Addition)),
+    r"^-"               => TokenType::Calculation(Operator::Calculation(Calculation::Subtraction)),
+    r"^/"               => TokenType::Calculation(Operator::Calculation(Calculation::Division)),
+    r"^\*"              => TokenType::Calculation(Operator::Calculation(Calculation::Multiplication)),
 
     // Symbols
     r"^:"               => TokenType::Symbol(Symbol::Colon),
