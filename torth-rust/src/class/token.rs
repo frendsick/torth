@@ -46,11 +46,19 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
 
     // Keywords
     r"^break"           => TokenType::Keyword,
+    r"^cast"            => TokenType::Keyword,
+    r"^const"           => TokenType::Keyword,
     r"^continue"        => TokenType::Keyword,
+    r"^done"            => TokenType::Keyword,
+    r"^do"              => TokenType::Keyword,
     r"^elif"            => TokenType::Keyword,
     r"^else"            => TokenType::Keyword,
+    r"^endif"           => TokenType::Keyword,
+    r"^enum"            => TokenType::Keyword,
     r"^function"        => TokenType::Keyword,
     r"^if"              => TokenType::Keyword,
+    r"^include"         => TokenType::Keyword,
+    r"^memory"          => TokenType::Keyword,
     r"^return"          => TokenType::Keyword,
     r"^while"           => TokenType::Keyword,
 
