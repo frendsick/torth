@@ -1,4 +1,5 @@
 use phf::phf_ordered_map;
+use strum_macros::{EnumCount, EnumIter};
 
 use crate::data_types::{ChunkSize, DataType};
 use crate::intrinsics::{Calculation, Comparison};
@@ -16,12 +17,20 @@ pub struct Token {
 pub enum TokenType {
     Calculation(Calculation),
     Comparison(Comparison),
-    Delimiter,
+    Delimiter(Delimiter),
     Identifier,
     Literal(DataType),
     Keyword,
     Symbol(Symbol),
     None,
+}
+
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
+pub enum Delimiter {
+    Arrow,
+    Point,
+    OpenCurly,
+    CloseCurly,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -63,10 +72,10 @@ pub const TOKEN_REGEXES: phf::OrderedMap<&str, TokenType> = phf_ordered_map!(
     r"^while"           => TokenType::Keyword,
 
     // Delimiters
-    r"^\("              => TokenType::Delimiter,
-    r"^\)"              => TokenType::Delimiter,
-    r"^\."              => TokenType::Delimiter,
-    r"^->"              => TokenType::Delimiter,
+    r"^\("              => TokenType::Delimiter(Delimiter::OpenCurly),
+    r"^\)"              => TokenType::Delimiter(Delimiter::CloseCurly),
+    r"^\."              => TokenType::Delimiter(Delimiter::Point),
+    r"^->"              => TokenType::Delimiter(Delimiter::Arrow),
 
     // Comparison Operators
     r"^=="              => TokenType::Comparison(Comparison::EQ),

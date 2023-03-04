@@ -96,7 +96,7 @@ mod tests {
     use strum::{EnumCount, IntoEnumIterator};
 
     use super::*;
-    use crate::data_types::DataType;
+    use crate::{data_types::DataType, class::token::Delimiter};
 
     const TEST_FOLDER: &str = "tests";
 
@@ -125,6 +125,17 @@ mod tests {
     }
 
     #[test]
+    fn lex_delimiters() {
+        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_delimiters.torth"));
+        // Are all Delimiters taken into account in the test file
+        assert_eq!(tokens.len(), Delimiter::COUNT);
+        // Are tokens lexed correctly as certain delimiters
+        for (i, delimiter) in Delimiter::iter().enumerate() {
+            assert_eq!(TokenType::Delimiter(delimiter), tokens[i].typ)
+        }
+    }
+
+    #[test]
     fn lex_literals() {
         let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_literals.torth"));
         // Are all DataTypes taken into account in the test file
@@ -142,6 +153,7 @@ mod tests {
     #[test]
     fn lex_keywords() {
         let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_keywords.torth"));
+        assert!(!tokens.is_empty());
         for token in tokens {
             assert_eq!(
                 TokenType::Keyword,
