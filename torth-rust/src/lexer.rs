@@ -213,7 +213,7 @@ mod tests {
 
     #[test]
     fn lex_arithmetic_program() {
-        let code: &str = "\n  34 35 + print";
+        let code: &str = "\n  34 \n\n\n \n  35 +  print";
         let tokens: Vec<Token> = tokenize_code(code, None);
         assert_eq!(tokens.len(), 4);
         assert_eq!(tokens[0].value, "34");
@@ -221,5 +221,6 @@ mod tests {
         assert_eq!(tokens[1].typ, TokenType::Literal(DataType::Integer(ChunkSize::Qword)));
         assert_eq!(tokens[2].typ, TokenType::Calculation(Calculation::Addition));
         assert_eq!(tokens[3].typ, TokenType::Intrinsic(Intrinsic::Print));
+        assert_eq!(tokens[3].location, Location::new(6, 9, None));
     }
 }
