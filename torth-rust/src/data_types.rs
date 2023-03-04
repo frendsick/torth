@@ -9,7 +9,7 @@ pub enum DataType {
     String,
 }
 
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Default, EnumCount, EnumIter)]
 pub enum ChunkSize {
     Byte,
     Word,

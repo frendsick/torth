@@ -175,6 +175,39 @@ mod tests {
     }
 
     #[test]
+    fn lex_intrinsics() {
+        let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_intrinsics.torth"));
+        // Are all DataTypes taken into account in the test file
+        const SYSCALL_COUNT: usize = 7;
+        assert_eq!(tokens.len(), Intrinsic::COUNT + ChunkSize::COUNT * 2 + SYSCALL_COUNT - 3);
+        let mut i: usize = 0;
+        // Are tokens lexed correctly as certain intrinsic
+        for intrinsic in Intrinsic::iter() {
+            match intrinsic {
+                Intrinsic::Load(_) => {
+                    for chunk_size in ChunkSize::iter() {
+                        assert_eq!(TokenType::Intrinsic(Intrinsic::Load(chunk_size)), tokens[i].typ);
+                        i += 1;
+                    }
+                }
+                Intrinsic::Store(chunk_size) => {
+                    for chunk_size in ChunkSize::iter() {
+                        assert_eq!(TokenType::Intrinsic(Intrinsic::Store(chunk_size)), tokens[i].typ);
+                        i += 1;
+                    }
+                }
+                Intrinsic::Syscall(_) => {
+                    for (arg_count, _) in [..SYSCALL_COUNT].iter().enumerate() {
+                        assert_eq!(TokenType::Intrinsic(Intrinsic::Syscall(arg_count as u8)), tokens[i].typ);
+                        i += 1;
+                    }
+                }
+                _ => { i += 1 }
+            }
+        }
+    }
+
+    #[test]
     fn lex_literals() {
         let tokens: Vec<Token> = tokenize_code_file(&format!("{TEST_FOLDER}/lex_literals.torth"));
         // Are all DataTypes taken into account in the test file
