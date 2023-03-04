@@ -39,7 +39,7 @@ pub enum Calculation {
     Subtraction,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, EnumCount, EnumIter)]
 pub enum Comparison {
     EQ,
     GE,
