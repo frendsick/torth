@@ -1,13 +1,19 @@
-use crate::class::token::Token;
-use crate::lexer::tokenize_code_file;
+use clap::Parser;
+
+use class::token::Token;
+use lexer::tokenize_code_file;
+use cli::TorthArgs;
 
 mod class;
+mod cli;
 mod data_types;
 mod intrinsics;
 mod lexer;
 
 fn main() {
     // TODO: Parse command line arguments
+    let args = TorthArgs::parse();
+    dbg!(&args);
     // TODO: Get code file name from command line arguments
     const CODE_FILE: &str = "test.torth";
     // let mut parser = Parser::init(&CODE_FILE);
