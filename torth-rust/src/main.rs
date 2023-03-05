@@ -2,7 +2,7 @@ use clap::Parser;
 
 use class::token::Token;
 use lexer::tokenize_code_file;
-use cli::TorthArgs;
+use cli::{CliAction, TorthArgs};
 
 mod class;
 mod cli;
@@ -11,13 +11,18 @@ mod intrinsics;
 mod lexer;
 
 fn main() {
-    // TODO: Parse command line arguments
-    let args = TorthArgs::parse();
-    dbg!(&args);
-    // TODO: Get code file name from command line arguments
-    const CODE_FILE: &str = "test.torth";
-    // let mut parser = Parser::init(&CODE_FILE);
-    let tokens: Vec<Token> = tokenize_code_file(CODE_FILE);
+    cli_action(TorthArgs::parse());
+}
+
+fn cli_action(args: TorthArgs) {
+    match args.action {
+        // ./torth-rust compile <TORTH_FILE>
+        CliAction::Compile(target) => compile_torth_file(target.torth_file, target.out),
+    }
+}
+
+fn compile_torth_file(torth_file: String, _out_file: Option<String>) {
+    let tokens: Vec<Token> = tokenize_code_file(&torth_file);
     dbg!(&tokens);
     // TODO: Type check the program
     // TODO: Generate Assembly

@@ -1,18 +1,17 @@
 use clap::{Args, Parser, Subcommand};
 
+/// Torth compiler
 #[derive(Debug, Parser)]
-#[clap(author, version, about)]
+#[command(author, version, about)]
 pub struct TorthArgs {
     #[command(subcommand)]
-    pub action: Action,
+    pub action: CliAction,
 }
 
 #[derive(Debug, Subcommand)]
-pub enum Action {
+pub enum CliAction {
     /// Compile a Torth program
     Compile(CompilationTarget),
-    /// Compile and run a Torth program
-    Run(CompilationTarget),
 }
 
 #[derive(Debug, Args)]
