@@ -360,7 +360,7 @@ class List
 
     list List.capacity  // Capacity of the list
     list List.array     // Pointer to array
-    dup Array.len           // Length of the array
+    dup Array.len       // Length of the array
 
     // Store values from the stack to variables
     take
