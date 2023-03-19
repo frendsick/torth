@@ -551,12 +551,12 @@ end
 // Params: List[Variable], str
 // Return: Variable
 function List.get_variable List[Variable] str -> Variable :
-  cast(List) List.get_array cast(Array[Variable]) Array.get_variable
+  cast(List) List.array cast(Array[Variable]) Array.get_variable
 end
 
 // Test if List contains Variable with certain name
 // Params: List[Variable], str
 // Return: bool
 function List.contains_variable List[Variable] str -> bool :
-  cast(List) List.get_array cast(Array[Variable]) Array.contains_variable
+  cast(List) List.array cast(Array[Variable]) Array.contains_variable
 end
