@@ -518,44 +518,6 @@ function LinkedList.init -> Node :
   cast(Node)
 end
 
-enum Node.size 8 :
-  Node.data // PTR
-  Node.next // PTR
-  Node.prev // PTR
-end
-
-function Node.get_data Node -> ptr :
-  cast(ptr) ptr.load
-end
-
-function Node.get_next Node -> Node :
-  cast(ptr) Node.next ptr+ Node.load
-end
-
-function Node.get_prev Node -> Node :
-  cast(ptr) Node.prev ptr+ Node.load
-end
-
-function Node.set_data Node ptr :
-  cast(ptr) ptr.store
-end
-
-function Node.set_next Node ptr :
-  cast(ptr) Node.next ptr+ ptr.store
-end
-
-function Node.set_prev Node ptr :
-  cast(ptr) Node.prev ptr+ ptr.store
-end
-
-function Node.load ptr -> Node :
-  ptr.load cast(Node)
-end
-
-function Node.store ptr Node :
-  swap cast(ptr) swap ptr.store
-end
-
 // Push Node to LinkedList
 // Params
 //    head_ptr: Node
@@ -574,15 +536,15 @@ function LinkedList.push Node ptr :
   in
 
   // Store data to new Node
-  new_data new_node Node.set_data
+  new_data new_node Node->data
 
   // Make the old head new Node's next and previous as NULL
-  head_node cast(ptr) new_node Node.set_next
-  NULL      cast(ptr) new_node Node.set_prev
+  head_node new_node Node->next
+  NULL cast(Node) new_node Node->prev
 
   // Set the old head's prev to point to new Node
   if head_node cast(int) NULL != do
-    new_node cast(ptr) head_node Node.set_prev
+    new_node head_node Node->prev
   endif
 
   // Insert the new Node to head_ptr
@@ -605,11 +567,11 @@ function LinkedList.pop Node -> ptr :
   endif
 
   // Get the old head data
-  head Node.get_data
+  head Node.data
   take popped_data in
 
   // Unlink the old head
-  head Node.get_next head_ptr cast(ptr) Node.store
+  head Node.next head_ptr cast(ptr) Node.store
 
   // Deallocate the old head
   Node.size head cast(ptr) munmap
@@ -629,7 +591,7 @@ function LinkedList.len Node -> int :
 
   while current cast(int) NULL != do
     count 1 + count =
-    current Node.get_next
+    current Node.next
     current =
   done
   count
@@ -642,3 +604,17 @@ end
 function LinkedList.is_empty Node -> bool :
   cast(ptr) int.load 0 ==
 end
+
+class Node
+  data:ptr
+  next:Node
+  prev:Node
+
+  method load ptr -> Node :
+    ptr.load cast(Node)
+  end
+
+  method store ptr Node :
+    swap cast(ptr) swap ptr.store
+  end
+endclass // Node
