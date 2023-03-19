@@ -25,14 +25,6 @@ class Array
     cast(Array) // Return Array
   end
 
-  method load ptr -> Array :
-    ptr.load cast(Array)
-  end
-
-  method store ptr Array :
-    swap cast(ptr) swap ptr.store
-  end
-
   // Free the allocated memory for a certain array
   // Params: array (PTR)
   // Return: None
@@ -348,14 +340,6 @@ class List
     list
   end
 
-  method load ptr -> List :
-    ptr.load cast(List)
-  end
-
-  method store ptr List :
-    swap cast(ptr) swap ptr.store
-  end
-
   // Free the allocated memory for a certain list
   method delete List :
     dup List.array
@@ -376,7 +360,7 @@ class List
 
     list List.capacity  // Capacity of the list
     list List.array     // Pointer to array
-    dup Array.len           // Length of the array
+    dup Array.len       // Length of the array
 
     // Store values from the stack to variables
     take
