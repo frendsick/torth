@@ -91,7 +91,7 @@ class Array
 
     // Exit with error if Nth element does not exist
     if
-      N len >
+      N len >=
       N 0 <
       ||
     do
