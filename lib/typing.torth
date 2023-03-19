@@ -25,14 +25,6 @@ class Array
     cast(Array) // Return Array
   end
 
-  method load ptr -> Array :
-    ptr.load cast(Array)
-  end
-
-  method store ptr Array :
-    swap cast(ptr) swap ptr.store
-  end
-
   // Free the allocated memory for a certain array
   // Params: array (PTR)
   // Return: None
@@ -346,14 +338,6 @@ class List
     array             list List->array
     ITERABLE_CAPACITY list List->capacity
     list
-  end
-
-  method load ptr -> List :
-    ptr.load cast(List)
-  end
-
-  method store ptr List :
-    swap cast(ptr) swap ptr.store
   end
 
   // Free the allocated memory for a certain list
