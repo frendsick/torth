@@ -15,306 +15,302 @@ const ITERABLE_CAPACITY 128 end
 // Include space for one extra integer (list length)
 // Params: size (INT)
 // Return: array (PTR)
-function Array.init int -> Array :
-  // Allocate memory for the array
-  ptr.size * int.size + malloc
+class Array
+  method init int -> Array :
+    // Allocate memory for the array
+    ptr.size * int.size + malloc
 
-  // Set the size to 0
-  0 over int.store
-  cast(Array) // Return Array
-end
+    // Set the size to 0
+    0 over int.store
+    cast(Array) // Return Array
+  end
 
-function Array.load ptr -> Array :
-  ptr.load cast(Array)
-end
+  method load ptr -> Array :
+    ptr.load cast(Array)
+  end
 
-function Array.store ptr Array :
-  swap cast(ptr) swap ptr.store
-end
+  method store ptr Array :
+    swap cast(ptr) swap ptr.store
+  end
 
-// Free the allocated memory for a certain array
-// Params: array (PTR)
-// Return: None
-function Array.delete Array :
-  take array in
-  array Array.size
-  array cast(ptr) munmap
-end
+  // Free the allocated memory for a certain array
+  // Params: array (PTR)
+  // Return: None
+  method delete Array :
+    take array in
+    array Array.len int.size * int.size +
+    array cast(ptr) munmap
+  end
 
-// Get the length of an array (number of elements)
-// Params: array (PTR)
-// Return: len (INT)
-function Array.len Array -> int :
-  // The length is stored at the array pointer
-  cast(ptr) int.load
-end
+  // Get the length of an array (number of elements)
+  // Params: array (PTR)
+  // Return: len (INT)
+  method len Array -> int :
+    // The length is stored at the array pointer
+    cast(ptr) int.load
+  end
 
-// Get array's allocated memory size in bytes
-// Params: array (PTR)
-// Return: size (INT)
-function Array.size Array -> int :
-  Array.len int.size * int.size +
-end
+  // Empty the array by setting the length value to 0
+  // Params: array (PTR)
+  // Return: None
+  method empty Array :
+    0 swap cast(ptr) int.store
+  end
 
-// Empty the array by setting the length value to 0
-// Params: array (PTR)
-// Return: None
-function Array.empty Array :
-  0 swap cast(ptr) int.store
-end
+  // Copy the array to new memory location
+  // Params: array (PTR)
+  // Return: new_array (PTR)
+  method copy Array -> Array :
+    // Initialize variables
+    dup Array.len ptr.size * int.size +
+    dup Array.init
+    take
+      new_array
+      memory_size
+      old_array
+    in
 
-// Copy the array to new memory location
-// Params: array (PTR)
-// Return: new_array (PTR)
-function Array.copy Array -> Array :
-  // Initialize variables
-  dup Array.len ptr.size * int.size +
-  dup Array.init
-  take
+    // Copy the old memory to the new location
+    memory_size old_array cast(ptr) new_array cast(ptr) memcpy
     new_array
-    memory_size
-    old_array
-  in
+  end
 
-  // Copy the old memory to the new location
-  memory_size old_array cast(ptr) new_array cast(ptr) memcpy
-  new_array
-end
+  // Get pointer to the first element of the array
+  // Params: array (PTR)
+  // Return: array[0] (PTR)
+  method first Array -> ptr :
+    cast(ptr) int.size ptr+
+  end
 
-// Get pointer to the first element of the array
-// Params: array (PTR)
-// Return: array[0] (PTR)
-function Array.first Array -> ptr :
-  cast(ptr) int.size ptr+
-end
+  // Get pointer to the Nth element of the array
+  // Params: array (PTR), N (INT)
+  // Return: array[N] (PTR)
+  method nth Array int -> ptr :
+    dup Array.len
+    take len array N in
 
-// Get pointer to the Nth element of the array
-// Params: array (PTR), N (INT)
-// Return: array[N] (PTR)
-function Array.nth Array int -> ptr :
-  dup Array.len
-  take len array N in
-
-  // Exit with error if Nth element does not exist
-  if
-    N len >
-    N 0 <
-    ||
-  do
-    "[ERROR] Cannot get " eputs
-    N   eputi ". value from the array with " eputs
-    len eputi " items\n" eputs
-    0 exit NULL cast(ptr)
-    return
-  endif
-
-  // Return pointer to the Nth element from the array
-  array cast(ptr) N ptr.size * int.size + ptr+
-end
-
-// Append value pointer to an array
-// Params: array (PTR), value (ANY)
-// Return: list (PTR)
-function Array.append Array any :
-  dup Array.len
-  take
-    len
-    array
-    value
-  in
-
-  // Add the value to the end of the Array
-  array cast(ptr) int.size ptr+
-  ptr.size len * ptr+
-  value swap
-  ptr.store
-
-  // Increment the Array's length by one
-  len 1 + array cast(ptr) int.store
-end
-
-// Remove an item from the certain index of the Array
-// Params: array, index
-// Return: None
-function Array.pop Array int :
-  dup Array.len
-  take
-    len
-    array
-    index
-  in
-
-  // Report error and exit if the index cannot be popped
-  if
-    index len >=
-    index 0 <
-    ||
-  do
-    "Cannot pop index " eputs
-    index eputi
-    " from array of length " eputs
-    len eputi "\n" eputs
-    1 exit
-  endif
-
-  while index len 1 - < do
-    // array[index] = array[index+1]
-    index 1 + array Array.nth ptr.load
-    index array Array.nth ptr.store
-    index 1 + index =
-  done
-
-  // Decrement the Array.len
-  len 1 - array cast(ptr) int.store
-end
-
-// Test if array contains an integer
-// Params: Array[int], int
-// Return: bool
-function Array.contains_int Array int -> bool :
-  dup Array.len
-  0
-  take
-    index
-    len
-    array
-    integer
-  in
-
-  while index len < do
-    index array Array.nth int.load
-    take array_int in
-
-    // Return True if the current integer matches with the parameter
-    if integer array_int == do
-      True return
-    endif
-    index 1 + index =
-  done
-  False
-end
-
-// Test if array contains a string
-// Params: Array[str], str
-// Return: bool
-function Array.contains_str Array str -> bool :
-  dup Array.len
-  0
-  take
-    index
-    len
-    array
-    string
-  in
-
-  while index len < do
-    index array Array.nth str.load
-    take array_string in
-
-    // Return True if the current string matches with the parameter
-    if string array_string streq do
-      True return
-    endif
-    index 1 + index =
-  done
-  False
-end
-
-// Test if two Arrays have equal integer-like items in them
-// Params: Array[int], Array[int]
-// Return: bool
-function Array.equals Array Array -> bool :
-  dup   Array.len
-  over  Array.len
-  0
-  take
-    index
-    array2.len
-    array1.len
-    array1
-    array2
-  in
-
-  // Arrays of different length cannot be equal
-  if array1.len array2.len != do
-    False return
-  endif
-
-  // Iterate over every item in arrays and check if they are equal
-  while index array1.len < do
+    // Exit with error if Nth element does not exist
     if
-      index array1 Array.nth int.load
-      index array2 Array.nth int.load
-      !=
+      N len >
+      N 0 <
+      ||
     do
+      "[ERROR] Cannot get " eputs
+      N   eputi ". value from the array with " eputs
+      len eputi " items\n" eputs
+      0 exit NULL cast(ptr)
+      return
+    endif
+
+    // Return pointer to the Nth element from the array
+    array cast(ptr) N ptr.size * int.size + ptr+
+  end
+
+  // Append value pointer to an array
+  // Params: array (PTR), value (ANY)
+  // Return: list (PTR)
+  method append Array any :
+    dup Array.len
+    take
+      len
+      array
+      value
+    in
+
+    // Add the value to the end of the Array
+    array cast(ptr) int.size ptr+
+    ptr.size len * ptr+
+    value swap
+    ptr.store
+
+    // Increment the Array's length by one
+    len 1 + array cast(ptr) int.store
+  end
+
+  // Remove an item from the certain index of the Array
+  // Params: array, index
+  // Return: None
+  method pop Array int :
+    dup Array.len
+    take
+      len
+      array
+      index
+    in
+
+    // Report error and exit if the index cannot be popped
+    if
+      index len >=
+      index 0 <
+      ||
+    do
+      "Cannot pop index " eputs
+      index eputi
+      " from array of length " eputs
+      len eputi "\n" eputs
+      1 exit
+    endif
+
+    while index len 1 - < do
+      // array[index] = array[index+1]
+      index 1 + array Array.nth ptr.load
+      index array Array.nth ptr.store
+      index 1 + index =
+    done
+
+    // Decrement the Array.len
+    len 1 - array cast(ptr) int.store
+  end
+
+  // Test if array contains an integer
+  // Params: Array[int], int
+  // Return: bool
+  method contains_int Array int -> bool :
+    dup Array.len
+    0
+    take
+      index
+      len
+      array
+      integer
+    in
+
+    while index len < do
+      index array Array.nth int.load
+      take array_int in
+
+      // Return True if the current integer matches with the parameter
+      if integer array_int == do
+        True return
+      endif
+      index 1 + index =
+    done
+    False
+  end
+
+  // Test if array contains a string
+  // Params: Array[str], str
+  // Return: bool
+  method contains_str Array str -> bool :
+    dup Array.len
+    0
+    take
+      index
+      len
+      array
+      string
+    in
+
+    while index len < do
+      index array Array.nth str.load
+      take array_string in
+
+      // Return True if the current string matches with the parameter
+      if string array_string streq do
+        True return
+      endif
+      index 1 + index =
+    done
+    False
+  end
+
+  // Test if two Arrays have equal integer-like items in them
+  // Params: Array[int], Array[int]
+  // Return: bool
+  method equals Array Array -> bool :
+    dup   Array.len
+    over  Array.len
+    0
+    take
+      index
+      array2.len
+      array1.len
+      array1
+      array2
+    in
+
+    // Arrays of different length cannot be equal
+    if array1.len array2.len != do
       False return
     endif
-    index 1 + index =
-  done
-  True
-end
 
-// Test if two Arrays have equal strings in them
-// Params: Array[str], Array[str]
-// Return: bool
-function Array.streq Array Array -> bool :
-  dup   Array.len
-  over  Array.len
-  0
-  take
-    index
-    array2.len
-    array1.len
-    array1
-    array2
-  in
+    // Iterate over every item in arrays and check if they are equal
+    while index array1.len < do
+      if
+        index array1 Array.nth int.load
+        index array2 Array.nth int.load
+        !=
+      do
+        False return
+      endif
+      index 1 + index =
+    done
+    True
+  end
 
-  // Arrays of different length cannot be equal
-  if array1.len array2.len != do
-    False return
-  endif
+  // Test if two Arrays have equal strings in them
+  // Params: Array[str], Array[str]
+  // Return: bool
+  method streq Array Array -> bool :
+    dup   Array.len
+    over  Array.len
+    0
+    take
+      index
+      array2.len
+      array1.len
+      array1
+      array2
+    in
 
-  // Iterate over every item in arrays and check if the strings are equal
-  while index array1.len < do
-    if
-      index array1 Array.nth str.load
-      index array2 Array.nth str.load
-      streq not
-    do
+    // Arrays of different length cannot be equal
+    if array1.len array2.len != do
       False return
     endif
-    index 1 + index =
-  done
-  True
-end
 
-// Print array of integer-like values
-// Params: array (PTR)
-// Return: None
-function Array.print Array :
-  dup cast(ptr) int.load
-  take len array in
-  0 while dup len < do
-    array Array.first
-    over ptr.size *
-    ptr+ int.load print " " puts
-    1 +
-  done drop
-end
+    // Iterate over every item in arrays and check if the strings are equal
+    while index array1.len < do
+      if
+        index array1 Array.nth str.load
+        index array2 Array.nth str.load
+        streq not
+      do
+        False return
+      endif
+      index 1 + index =
+    done
+    True
+  end
 
-// Print array of strings
-// Params: array (PTR)
-// Return: None
-function Array.puts Array :
-  dup cast(ptr) int.load
-  take len array in
-  0 while dup len < do
-    array Array.first
-    over ptr.size *
-    ptr+ str.load puts
-    1 +
-  done drop
-end
+  // Print array of integer-like values
+  // Params: array (PTR)
+  // Return: None
+  method print Array :
+    dup cast(ptr) int.load
+    take len array in
+    0 while dup len < do
+      array Array.first
+      over ptr.size *
+      ptr+ int.load print " " puts
+      1 +
+    done drop
+  end
+
+  // Print array of strings
+  // Params: array (PTR)
+  // Return: None
+  method puts Array :
+    dup cast(ptr) int.load
+    take len array in
+    0 while dup len < do
+      array Array.first
+      over ptr.size *
+      ptr+ str.load puts
+      1 +
+    done drop
+  end
+endclass // Array
+
 
 // === List ===
 // README:
@@ -420,7 +416,8 @@ function List.append List any :
 
     // Copy the old array to new_array
     // dest (PTR), src (PTR), len (INT)
-    array Array.size array cast(ptr) new_array cast(ptr) memcpy
+    array Array.len int.size * int.size +
+    array cast(ptr) new_array cast(ptr) memcpy
 
     // Update new array length
     len new_array cast(ptr) int.store
