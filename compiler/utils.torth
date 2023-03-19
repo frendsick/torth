@@ -344,15 +344,15 @@ function TypeStack.copy type_stack:Node -> Node :
   endif
 
   // Traverse the TypeStack to the first Node
-  while node Node.get_next cast(int) NULL != do
-    node Node.get_next node =
+  while node Node.next cast(int) NULL != do
+    node Node.next node =
     stack_depth 1 + stack_depth =
   done
 
   // Fill the copy TypeStack with the contents of the original
   while stack_depth 0 >= do
     // Generate new TypeNode from the original stack
-    node Node.get_data
+    node Node.data
     take type_node in
     type_node TypeNode.location
     type_node TypeNode.type
@@ -360,7 +360,7 @@ function TypeStack.copy type_stack:Node -> Node :
     type_stack_copy LinkedList.push
 
     // Get the next item in the stack
-    node Node.get_prev node =
+    node Node.prev node =
     stack_depth 1 - stack_depth =
   done
   type_stack_copy
@@ -387,14 +387,14 @@ function TypeStack.get_types type_stack:Node -> List :
   endif
 
   // Traverse the TypeStack to the first Node
-  while node Node.get_next cast(int) NULL != do
-    node Node.get_next node =
+  while node Node.next cast(int) NULL != do
+    node Node.next node =
     stack_depth 1 + stack_depth =
   done
 
   // Fill List with the TokenTypes inside TypeStack
   while stack_depth 0 >= do
-    node Node.get_data
+    node Node.data
     TypeNode.type cast(ptr) token_types List.append
     stack_depth 1 - stack_depth =
   done
@@ -551,12 +551,12 @@ end
 // Params: List[Variable], str
 // Return: Variable
 function List.get_variable List[Variable] str -> Variable :
-  cast(List) List.get_array cast(Array[Variable]) Array.get_variable
+  cast(List) List.array cast(Array[Variable]) Array.get_variable
 end
 
 // Test if List contains Variable with certain name
 // Params: List[Variable], str
 // Return: bool
 function List.contains_variable List[Variable] str -> bool :
-  cast(List) List.get_array cast(Array[Variable]) Array.contains_variable
+  cast(List) List.array cast(Array[Variable]) Array.contains_variable
 end
