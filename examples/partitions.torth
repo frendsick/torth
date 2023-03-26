@@ -1,0 +1,13 @@
+// https://www.youtube.com/watch?v=ngCos392W4w
+function count_partitions n:int m:int -> int :
+    if n 0 == do 1 return endif
+    if m 0 == n 0 < or cast(bool) do 0 return endif
+
+    // count_partitions(n - m, m) + count_partitions(n, m - 1)
+    m n m - count_partitions
+    m 1 - n count_partitions +
+end
+
+function main :
+    4 9 count_partitions print
+end
