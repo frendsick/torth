@@ -605,6 +605,13 @@ endclass // Node
 
 const HASH_PRIME 2069 end // Used by the dictionary's hash function
 class Dict
+    slots:Array // Array[LinkedList]
+
+    method init -> Dict :
+        Dict.size malloc cast(Dict)
+        HASH_PRIME Array.init over Dict->slots
+    end
+
     // https://www.hackerearth.com/practice/data-structures/hash-tables/basics-of-hash-tables/tutorial/
     method hash key:str -> int :
         0 0 take index hash in
