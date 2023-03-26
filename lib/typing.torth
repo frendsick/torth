@@ -624,3 +624,17 @@ class Dict
         hash HASH_PRIME mod
     end
 endclass // Dict
+
+class DictItem
+    key:str
+    value:ptr
+
+    method init key:str value:ptr -> DictItem :
+        DictItem.size malloc cast(DictItem)
+        take item in
+
+        key item DictItem->key
+        value item DictItem->value
+        item
+    end
+endclass // DictItem
