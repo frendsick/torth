@@ -4,15 +4,23 @@ class Op
   type:int
   token:Token
   func:Func
+  variable_count:int
 
-  method init id:int type:int token:Token func:Func -> Op :
+  method init
+    id:int
+    type:int
+    token:Token
+    func:Func
+    variable_count:int
+  -> Op :
     Op.size malloc cast(Op)
     take op in
 
-    id    op Op->id
-    type  op Op->type
-    token op Op->token
-    func  op Op->func
+    id              op Op->id
+    type            op Op->type
+    token           op Op->token
+    func            op Op->func
+    variable_count  op Op->variable_count
     op
   end
 

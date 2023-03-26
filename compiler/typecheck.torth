@@ -228,7 +228,7 @@ function type_check_op
     // IF block's stack is determined by the previous sections in the block
     if_block_return_stacks cast(List) List.last Node.load
     take if_block_return_stack in
-    if if_block_return_stack Node.get_data cast(int) NULL == do
+    if if_block_return_stack Node.data cast(int) NULL == do
       if_block_original_stacks cast(List) List.last Node.load TypeStack.copy
       if_block_return_stack =
     endif
@@ -418,8 +418,8 @@ function equal_stacks type_stack1:Node type_stack2:Node -> bool :
     &&
   do
     // Return early if the current types do not match
-    type_node1 Node.get_data TypeNode.type
-    type_node2 Node.get_data TypeNode.type
+    type_node1 Node.data TypeNode.type
+    type_node2 Node.data TypeNode.type
     take type1 type2 in
 
     if
@@ -430,8 +430,8 @@ function equal_stacks type_stack1:Node type_stack2:Node -> bool :
       False return
     endif
 
-    type_node1 Node.get_next type_node1 =
-    type_node2 Node.get_next type_node2 =
+    type_node1 Node.next type_node1 =
+    type_node2 Node.next type_node2 =
   done
 
   // Stacks are equal if both TypeStacks are empty after the loop
@@ -624,7 +624,7 @@ function type_check_elif
   if_block_return_stack:Node
 :
   // Save the state of the stack after the first part of the IF block
-  if if_block_return_stack Node.get_data cast(int) NULL == do
+  if if_block_return_stack Node.data cast(int) NULL == do
     type_stack TypeStack.copy cast(ptr) Node.load
     if_block_return_stack     cast(ptr) Node.store
   endif
@@ -647,7 +647,7 @@ function type_check_else
   if_block_original_stack:Node
 :
   // Save the state of the stack after the first part of the IF block
-  if if_block_return_stack Node.get_data cast(int) NULL == do
+  if if_block_return_stack Node.data cast(int) NULL == do
     type_stack TypeStack.copy cast(ptr) Node.load
     if_block_return_stack     cast(ptr) Node.store
   endif
@@ -682,7 +682,7 @@ function type_check_endif
   take if_block_return_stack in
 
   // Save the state of the stack after the first part of the IF block
-  if if_block_return_stack Node.get_data cast(int) NULL == do
+  if if_block_return_stack Node.data cast(int) NULL == do
     type_stack TypeStack.copy cast(ptr) Node.load
     if_block_return_stack     cast(ptr) Node.store
   endif
@@ -713,7 +713,7 @@ function type_check_endif
   endif
 
   // Make the IF block's return stack the new stack for the program
-  if if_block_return_stack Node.get_data cast(int) NULL != do
+  if if_block_return_stack Node.data cast(int) NULL != do
     if_block_return_stack branched_stacks List.last cast(ptr) Node.store
   endif
 
@@ -759,7 +759,7 @@ function type_check_function_call
 
   // Pop param types
   while index param_types.len < do
-    if type_stack Node.get_data cast(int) NULL == do
+    if type_stack Node.data cast(int) NULL == do
       temp_stack token
       "Not enough parameters for '"
       function_name             str.cat
