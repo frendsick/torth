@@ -5,13 +5,13 @@ For now, the language only works with Linux using x86_64 architecture. Windows-u
 ## How does Torth work?
 
 - Compiler [torth.torth](../torth.torth) generates Assembly from the Torth code
-- Assembly is compiled with NASM into object file
+- Assembly is compiled with NASM into an object file
 - Object file is linked to a statically linked 64-bit ELF-executable with LD
 - The resulting executable does not have any external dependencies
 
 ## Install requirements
 
-The following requirements can probably be installed via your distro's package manager, for example [APT](https://manpages.ubuntu.com/manpages/xenial/man8/apt.8.html) for Ubuntu and Debian.
+The following requirements can probably be installed via your distro's package manager, for example, [APT](https://manpages.ubuntu.com/manpages/xenial/man8/apt.8.html) for Ubuntu and Debian.
 
 - NASM
 - LD (**binutils** package in APT)
@@ -19,10 +19,10 @@ The following requirements can probably be installed via your distro's package m
 
 ## Compile the compiler
 
-The Torth compiler does not ship with the repository. Instead, you have to compile the compiler from its [Assembly version](../bootstrap/torth.asm).
+The Torth compiler does not ship with the repository. Instead, you must compile it from its [Assembly version](../bootstrap/torth.asm).
 
-1. Clone the [Torth](https://github.com/CyberPaddy/torth) repository from Github
-1. Compile the Assembly source code with NASM using `make` command
+1. Clone the [Torth](https://github.com/CyberPaddy/torth) repository from GitHub
+1. Compile the Assembly source code with NASM using the `make` command
 
 ```sh
 $ git clone https://github.com/CyberPaddy/torth.git
@@ -53,7 +53,7 @@ Hello, World!
 
 Coding in any language could be pretty painful without syntax highlighting for the particular editor you are using. Torth currently only supports syntax highlighting for [VIM](syntax_highlighting.md#vim) and [VSCode](syntax_highlighting.md#visual-studio-code). There is also a really barebones and outdated [torth-mode](./../editor/emacs/torth-mode.el) for Emacs.
 
-If you want a support for a particular editor, please create a [feature request issue](https://github.com/CyberPaddy/torth/issues/new/choose). Contributions are also appreciated so feel free to create syntax highlighting configuration to an editor to the [editor](../editor/) folder and hit me with a pull request!
+If you want support for a particular editor, please create a [feature request issue](https://github.com/CyberPaddy/torth/issues/new/choose). Contributions are also appreciated, so feel free to create a syntax highlighting configuration to an editor to the [editor](../editor/) folder and hit me with a pull request!
 
 ## Check examples
 
