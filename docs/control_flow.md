@@ -4,7 +4,7 @@ Control flow statements alter the execution of the program.
 
 ## RETURN Keyword
 
-With [RETURN](keywords.md#return) keyword you can return from a [function](keywords.md#function). The stack state should match with the [function](keywords.md#function)'s return types at the moment of usage.
+With the [RETURN](keywords.md#return) keyword, you can return from a [function](keywords.md#function). The stack state should match with the [function](keywords.md#function)'s return types at the moment of usage.
 
 See also:
 
@@ -12,9 +12,9 @@ See also:
 
 ## IF blocks
 
-The IF block is used for conditional execution. IF block starts with [IF](keywords.md#if) keyword and ends with [ENDIF](keywords.md#endif) keyword. The block can also contain zero or more [ELIF](keywords.md#elif) sections and an optional [ELSE](keywords.md#else) section.
+The IF block is used for conditional execution. IF block starts with the [IF](keywords.md#if) keyword and ends with the [ENDIF](keywords.md#endif) keyword. The block can also contain zero or more [ELIF](keywords.md#elif) sections and an optional [ELSE](keywords.md#else) section.
 
-IF block runs only the first section which matches the section's condition. If all section conditions are false, the [ELSE](keywords.md#else) section, if present, is executed. A [boolean value](types.md#bool---boolean) is required for the condition check done by [DO-keyword](keywords.md#do). [Comparison operators](intrinsics.md#comparisons) can be used to get a boolean value from the comparison between two [integer values](definitions.md#integer-types). For comparing the equality of two strings you can use the **stdeq** function from [std-library](./../lib/std.torth).
+IF block runs only the first section, which matches the section's condition. If all section conditions are false, the [ELSE](keywords.md#else) section, if present, is executed. A [boolean value](types.md#bool---boolean) is required for the condition check done by [DO-keyword](keywords.md#do). [Comparison operators](intrinsics.md#comparisons) can be used to get a boolean value from the comparison between two [integer values](definitions.md#integer-types). For comparing the equality of two strings, you can use the **streq** function from [std-library](./../lib/std.torth).
 
 ### Syntax
 
@@ -48,7 +48,7 @@ ENDIF
 
 ## WHILE loops
 
-The WHILE loop executes as long as a condition remains true. A [boolean value](types.md#bool---boolean) is required for the condition check done by [DO-keyword](keywords.md#do). [Comparison operators](intrinsics.md#comparisons) can be used to get a boolean value from the comparison between two [integer values](definitions.md#integer-types). For comparing the equality of two strings you can use the **stdeq** function from [std-library](./../lib/std.torth).
+The WHILE loop executes as long as a condition remains true. A [boolean value](types.md#bool---boolean) is required for the condition check done by [DO-keyword](keywords.md#do). [Comparison operators](intrinsics.md#comparisons) can be used to get a boolean value from the comparison between two [integer values](definitions.md#integer-types). For comparing the equality of two strings, you can use the **streq** function from [std-library](./../lib/std.torth).
 
 ### Syntax
 
