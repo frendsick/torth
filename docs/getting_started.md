@@ -1,6 +1,6 @@
 # Getting Started
 
-For now, the language only works with Linux using x86_64 architecture. Windows-users can use the language with [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install).
+For now, the language only works with Linux using x86_64 architecture. Windows users can use the language with [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install).
 
 ## How does Torth work?
 
@@ -57,7 +57,7 @@ If you want support for a particular editor, please create a [feature request is
 
 ## Check examples
 
-The [examples](../examples/) folder contains some example programs that show how the language can be used. For example, there are [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as implementations of some [Project Euler problems](../examples/euler/). The [torth.torth](./../torth.torth) compiler itself is also written in Torth so it could also be used as an example.
+The [examples](../examples/) folder contains some example programs that show how the language can be used. For example, there are [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as implementations of some [Project Euler problems](../examples/euler/). The [torth.torth](./../torth.torth) compiler itself is also written in Torth, so it could also be used as an example.
 
 ## Read documentation
 
