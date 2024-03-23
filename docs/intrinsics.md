@@ -1,6 +1,6 @@
 # Intrinsics
 
-Intrinsics are built-in functions that generate static assembly output. The key difference between a [keyword](keywords.md) and an intrinsic is that the behavior of a keyword is dependent on other words in the program whereas an intrinsic will always generate the same assembly output regardless of the context in which it is used.
+Intrinsics are built-in functions that generate static assembly output. The key difference between a [keyword](keywords.md) and an intrinsic is that the behavior of a keyword is dependent on other words in the program, whereas an intrinsic will always generate the same assembly output regardless of the context in which it is used.
 
 ## List of Intrinsics
 
@@ -127,14 +127,14 @@ Load a value from a memory location pointer by a [PTR](types.md#ptr---pointer). 
 
 ### LOAD Variants
 
-There are four different STORE intrinsic variants:
+There are four different LOAD intrinsic variants:
 
 - LOAD_BYTE (8-bit)
 - LOAD_WORD (16-bit)
 - LOAD_DWORD (32-bit)
 - LOAD_QWORD (64-bit)
 
-For example, to load a value of type [INT](types.md#int---integer) (64-bit) from a memory location to the stack you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also expricitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [built-in type](types.md#built-in-types), for example `int.load`.
+For example, to load a value of type [INT](types.md#int---integer) (64-bit) from a memory location to the stack, you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also explicitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [built-in type](types.md#built-in-types), for example `int.load`.
 
 ## NTH
 
@@ -142,7 +142,7 @@ Pop one [integer](definitions.md#integer-types) from the stack as N. Then, push 
 
 ```
 30 20 10
-3 NTH print // Output: 30 (30 is 3rd element without the popped 3).
+3 NTH print // Output: 30 (30 is the 3rd element without the popped 3).
 ```
 
 ## OR
@@ -165,16 +165,16 @@ Pop and print an [integer](definitions.md#integer-types) from the stack to the c
 
 ## ROT
 
-Rotate the top three items on the stack so that the third element moves to the top and the other two move one spot deeper in the stack.
+Rotate the top three items on the stack so that the third element moves to the top and the other two moves one spot deeper in the stack.
 
 `a b c -> c a b`
 
 ## STORE
 
-Store a value to a memory location pointer by a [PTR](types.md#ptr---pointer). STORE-intrinsics pop two values from the stack. The second item of the stack is stored to the memory address pointed by the first.
+A [PTR](types.md#ptr---pointer) stores a value to a memory location pointer. STORE-intrinsics pops two values from the stack. The second item of the stack is stored in the memory address pointed by the first.
 
 - The top element should be of type [PTR](types.md#ptr---pointer)
-- The second element is stored to the address pointed by the pointer
+- The second element is stored at the address pointed by the pointer
 
 ### STORE Variants
 
@@ -185,7 +185,7 @@ There are four different STORE intrinsic variants:
 - STORE_DWORD (32-bit)
 - STORE_QWORD (64-bit)
 
-For example, to store [INT](types.md#int---integer) (64-bit) to a memory location you should use the STORE_QWORD intrinsic. Also, it is preferred to use the _type.store_ functions from the [std-library](../lib/std.torth) which also check if the value in the stack which is to be stored is of the correct [type](types.md). There is a typed store function for every [built-in type](types.md#built-in-types), for example `int.store`.
+For example, to store [INT](types.md#int---integer) (64-bit) to a memory location, you should use the STORE_QWORD intrinsic. Also, it is preferred to use the _type.store_ functions from the [std-library](../lib/std.torth), which also checks if the value in the stack that is to be stored is of the correct [type](types.md). There is a typed store function for every [built-in type](types.md#built-in-types), for example `int.store`.
 
 ## SWAP
 
@@ -195,9 +195,9 @@ Swap the top two elements in the stack.
 
 ## SYSCALL
 
-SYSCALL-intrinsic variants call a Linux syscall. Syscalls require different amount of arguments from 0 to 6. Different variants are named SYSCALL0 - SYSCALL6 by the amount of arguments. The first argument should be an [integer](definitions.md#integer-types).
+SYSCALL-intrinsic variants call a Linux syscall. Syscalls require different amounts of arguments from 0 to 6. Different variants are named SYSCALL0 - SYSCALL6 by the amount of arguments. The first argument should be an [integer](definitions.md#integer-types).
 
 1. Pop the top element and the required number of arguments from the stack
-2. Call the syscall which match the first popped element
+2. Call the syscall which matches the first popped element
 
 The different syscall constants can be found from lib/sys.torth. Naming convention (case sensitive): SYS\_<syscall>. For example, **SYS_write**.
