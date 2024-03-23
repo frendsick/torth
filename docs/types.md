@@ -17,9 +17,9 @@ The language supports the following built-in types:
 
 The 'any' type can be used to indicate that a value can be of any type.
 
-**Note**: Please use 'any' type cautiously because the compilers type checker cannot check for errors if it is used. The 'any' type should only be used in situations when the function should work for any types in the stack. For example, 'any' type could be used in a [function](./keywords.md#function) which only modifies the stack state and does not touch on the underlying data.
+**Note**: Please use the 'any' type cautiously because the compiler's type checker cannot check for errors if it is used. The 'any' type should only be used in situations when the function should work for any type in the stack. For example, the 'any' type could be used in a [function](./keywords.md#function) that only modifies the stack state and does not touch the underlying data.
 
-**Note**: Type checker does not know the true type of a value after it has been returned by a function returning 'any'. You could work around that by [casting](#casting) the value to certain type after it has been returned from the function to ensure the correctness of your program.
+**Note**: The type checker does not know the true type of a value after it has been returned by a function returning 'any'. You could work around that by [casting](#casting) the value to a certain type after it has been returned from the function to ensure the correctness of your program.
 
 #### Examples
 
@@ -46,7 +46,7 @@ Boolean values are True and False. The boolean words are case insensitive.
 
 ### char - Character
 
-Characters are defined with single quotes. They are pushed to stack as the integer representation of the character. Thus, character can be cast to any integer type. To print the characted it should be stored to a named [memory](keywords.md#memory) location like in the examble below.
+Characters are defined with single quotes. They are pushed to stack as the integer representation of the character. Thus, a character can be cast to any integer type. To print the character, it should be stored in a named [memory](keywords.md#memory) location, like in the example below.
 
 ```pascal
 include "std"
@@ -75,11 +75,11 @@ end
 
 ### ptr - Pointer
 
-Pointers are pointing to a location in the memory. Memories can be defined with the [MEMORY](./keywords.md#MEMORY)-keyword. [Strings](#STR---String) are also pointers to the null-terminated string buffer. Value can be stored to a pointer's location with STORE intrinsics and the dereferenced value can be pushed to the stack with LOAD intrinsics.
+Pointers point to a location in memory. Memories can be defined with the [MEMORY](./keywords.md#MEMORY) keyword. [Strings](#STR---String) are also pointers to the null-terminated string buffer. Value can be stored to a pointer's location with STORE intrinsics, and the dereferenced value can be pushed to the stack with LOAD intrinsics.
 
 ### str - String
 
-Strings are defined with double quotes. Defined string adds a null-terminated string buffer to .data section of the executable. The string can be used and modified with the same techniques as [pointers](#ptr---pointer). See Examples from [MEMORY documentation](./keywords.md#MEMORY).
+Strings are defined with double quotes. A defined string adds a null-terminated string buffer to the `.data` section of the executable. The string can be used and modified with the same techniques as [pointers](#ptr---pointer). See Examples from [MEMORY documentation](./keywords.md#MEMORY).
 
 #### Escape sequence characters
 
@@ -97,7 +97,7 @@ You can cast any type to another by using the [CAST](./keywords.md#cast) keyword
 
 ### Examples
 
-Cast a character to integer to print it with [print](intrinsics.md#print) intrinsic.
+Cast a character to an integer to print it with [print](intrinsics.md#print) intrinsic.
 
 ```pascal
 function main :
@@ -110,7 +110,7 @@ end
 function print_integer int : print end
 ```
 
-Cast a string to Dog and then to Cat and then meow. For whatever reason...
+Cast a string to `Dog` and then to `Cat` and then meow. For whatever reason...
 
 ```pascal
 include "std" // Imports 'puts' function
