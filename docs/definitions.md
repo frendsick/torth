@@ -1,6 +1,6 @@
 # Definitions
 
-Definitions for consepts and keywords used in the documentation.
+Definitions for concepts and keywords used in the documentation.
 
 ## Reverse Polish Notation
 
@@ -20,7 +20,7 @@ The following types count as integer-like types whenever an intrinsic requires t
 - [CHAR](types.md#char---character)
 - [INT](types.md#int---integer)
 
-**Note**: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast another type to integer-like type by using the type as token. For example, if you want to cast a value to [INT](types.md#int---integer), cast it with `cast(int)`.
+**Note**: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitly cast another type to an integer-like type by using the type as a token. For example, if you want to cast a value to [INT](types.md#int---integer), cast it with `cast(int)`.
 
 See also: [Casting](types.md#casting)
 
@@ -31,13 +31,13 @@ The following types count as pointer-like types whenever an intrinsic requires t
 - [PTR](types.md#ptr---pointer)
 - [STR](types.md#str---string)
 
-Note: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitely cast an pointer-like type to another pointer-like type by using the type as token. Also, you can cast some integer-like types to [PTR](types.md#ptr---pointer). For example, if you want to cast a value to PTR, use `ptr` keyword.
+Note: Function parameter and return values MUST be exactly the types that the function signature implies. You can always explicitly cast a pointer-like type to another pointer-like type by using the type as a token. Also, you can cast some integer-like types to [PTR](types.md#ptr---pointer). For example, if you want to cast a value to PTR, use the `ptr` keyword.
 
 See also: [Casting](types.md#casting)
 
 ## PATH
 
-PATH defines relative directories compared to the compiler file [torth.torth](../torth.torth) from which additional files can be included to the code with [INCLUDE](keywords.md#include) keyword. The files at the same directory as the compiler will always take precedence over any files from PATH.
+PATH defines relative directories compared to the compiler file [torth.torth](../torth.torth), from which additional files can be included in the code with the [INCLUDE](keywords.md#include) keyword. The files in the same directory as the compiler will always take precedence over any files from PATH.
 
 Default directories in PATH:
 
@@ -47,4 +47,4 @@ PATH = [
 ]
 ```
 
-Currently it is not possible to add folders to PATH with command line arguments with the self-hosted compiler. There still is a *--path* command line argument in the original [Python compiler implementation](https://github.com/CyberPaddy/torth/tree/python-compiler).
+It is not yet possible to add folders to PATH with command line arguments.
