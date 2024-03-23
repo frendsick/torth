@@ -21,13 +21,13 @@ This is the documentation for different keywords available in the Torth language
 
 ## BREAK
 
-BREAK is unconditional jump to the operation after [DONE](#done) of the current loop.
+BREAK is an unconditional jump to the operation after [DONE](#done) of the current loop.
 
 - [How to use BREAK?](control_flow.md#break-statement)
 
 ## CAST
 
-CAST keyword is used to cast any type to another. The keyword does not generate any assembly code and thus does not affect the effectiveness of the resulting binary.
+The CAST keyword is used to cast any type to another. The keyword does not generate any assembly code and thus does not affect the effectiveness of the resulting binary.
 
 ## CONST
 
@@ -59,15 +59,15 @@ end  // Expected output: 13371337
 
 ## CONTINUE
 
-CONTINUE is unconditional jump to the current loop's [WHILE](#while).
+CONTINUE is an unconditional jump to the current loop's [WHILE](#while).
 
 - [How to use CONTINUE?](control_flow.md#continue-statement)
 
 ## DO
 
-DO is a conditional jump to the operation after next [ELIF](#elif), [ELSE](#else), [ENDIF](#endif) or [DONE](#done).
+DO is a conditional jump to the operation after the next [ELIF](#elif), [ELSE](#else), [ENDIF](#endif), or [DONE](#done).
 
-The conditional jump will occur if the condition does not match because if it does the block of code should be executed.
+The conditional jump will occur if the condition does not match because if it does, the block of code should be executed.
 
 With [IF](#if) and [ELIF](#elif) statements, DO is a conditional jump to the operation after the next [ELIF](#elif), [ELSE](#else) or [ENDIF](#endif) keywords.
 
@@ -80,7 +80,7 @@ See also:
 
 ## DONE
 
-DONE is an unconditional jump to [WHILE](#while) keyword. The loop's condition is always evaluated by the [DO](#do) keyword after [WHILE](#while) which is also a conditional jump to the operation after the DONE keyword.
+DONE is an unconditional jump to the [WHILE](#while) keyword. The loop's condition is always evaluated by the [DO](#do) keyword after [WHILE](#while), which is also a conditional jump to the operation after the DONE keyword.
 
 See also:
 
@@ -88,9 +88,9 @@ See also:
 
 ## ELIF
 
-ELIF is an unconditional jump to the operation after [ENDIF](#endif). It's also a keyword for [DO](#do) to coditionally jump over.
+ELIF unconditionally jumps to the operation after [ENDIF](#endif). It's also a keyword for [DO](#do) to conditionally jump over.
 
-ELIF is a unconditional jump to the operation after [ENDIF](#endif) because the keyword is only reached if the previous [IF](#if) or ELIF block's condition was true. [DO](#do) keyword is a conditional jump to the operation after ELIF if the condition is false.
+ELIF is an unconditional jump to the operation after [ENDIF](#endif) because the keyword is only reached if the previous [IF](#if) or ELIF block's condition is true. [DO](#do) keyword is a conditional jump to the operation after ELIF if the condition is false.
 
 See also:
 
@@ -98,9 +98,9 @@ See also:
 
 ## ELSE
 
-ELSE is an unconditional jump to the operation after [ENDIF](#endif). It's also a keyword for [DO](#do) to coditionally jump over.
+ELSE unconditionally jumps to the operation after [ENDIF](#endif). It's also a keyword for [DO](#do) to conditionally jump over.
 
-ELSE is a unconditional jump to the operation after [ENDIF](#endif) because the keyword is only reached if the previous [IF](#if) or [ELIF](#elif) block's condition was true. [DO](#do) keyword is a conditional jump to the operation after ELSE if the condition is false.
+ELSE is an unconditional jump to the operation after [ENDIF](#endif) because the keyword is only reached if the previous [IF](#if) or [ELIF](#elif) block's condition was true. [DO](#do) keyword is a conditional jump to the operation after ELSE if the condition is false.
 
 See also:
 
@@ -116,7 +116,7 @@ See also:
 
 ## ENUM
 
-Enumerations in Torth enable generating named running integer values with certain positive offset between each integer. Names defined inside ENUM block can be used as tokens in the code just like [constants](#CONST). The ENUM block's name will also be a constant with the value of `offset * items_count`.
+Enumerations in Torth enable generating named running integer values with a certain positive offset between each integer. Names defined inside the ENUM block can be used as tokens in the code, just like [constants](#CONST). The ENUM block's name will also be a constant with the value of `offset * items_count`.
 
 See also:
 
@@ -153,13 +153,13 @@ end
 
 ## FUNCTION
 
-Functions are defined using FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as token. When called, the function's name is replaced with the contents of the function (**function_body** in the [Function syntax](#function-syntax) section) during compilation. Defined functions are case sensitive tokens unlike most other keywords in Torth.
+Functions are defined using the FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as a token. When called, the function's name is replaced with the contents of the function (**function_body** in the [Function syntax](#function-syntax) section) during compilation. Defined functions are case-sensitive tokens, unlike most other keywords in Torth.
 
-The **main** function (case sensitive) is mandatory in every Torth program. It is the function from which the execution starts. The main function cannot take any parameters and it either returns nothing or one [INT](types.md#int---integer) which will become the return value of the program. The default return value is 0 (success) if nothing is returned.
+The **main** function (case-sensitive) is mandatory in every Torth program. It is the function from which the execution starts. The main function cannot take any parameters, and it either returns nothing or one [INT](types.md#int---integer), which will become the program's return value. The default return value is 0 (success) if nothing is returned.
 
-Functions do not take parameters but instead use the current stack. The required topmost items in the stack before and after the function execution are defined in the function declaration (**argument_types** and **return_types** in the following [Function syntax](#function-syntax) section). Compiler verifies at compile time if the topmost types in the stack would match with the function signature before and after its execution. If there is more items in the return types than argument types then the compiler will assume that there should be more elements in the stack after the execution than before calling the function and vice versa.
+Functions do not take parameters but instead use the current stack. The required topmost items in the stack before and after the function execution are defined in the function declaration (**argument_types** and **return_types** in the following [Function syntax](#function-syntax) section). The compiler verifies at compile time if the topmost types in the stack match with the function signature before and after its execution. If there are more items in the return types than argument types, then the compiler will assume that there should be more elements in the stack after the execution than before calling the function and vice versa.
 
-If the function does not return anything it can be declared without the `->` token (See [Function syntax](#function-syntax)).
+If the function does not return anything, it can be declared without the `->` token (See [Function syntax](#function-syntax)).
 
 ### Function syntax
 
@@ -221,13 +221,13 @@ end
 
 ## IF
 
-IF is just a keyword which starts an [IF block](control_flow.md#if-blocks). IF-block ends to [ENDIF](#ENDIF).
+IF is just a keyword that starts an [IF block](control_flow.md#if-blocks). IF-block ends to [ENDIF](#ENDIF).
 
 ## INCLUDE
 
-With INCLUDE keyword you can include code from another files. The INCLUDE statement consists of the keyword INCLUDE and the file to be imported in double quotes ("). The file name should be either its absolute file path or the relative path compared to the compiler file [torth.py](../torth.py). The file can also refer to a relative path from compiler file with any of the entries in [PATH](definitions.md#path) as the parent directory.
+With the INCLUDE keyword, you can include code from another file. The INCLUDE statement consists of the keyword INCLUDE and the file to be imported in double quotes ("). The file name should be either its absolute file path or the relative path compared to the compiler file [torth.torth](../torth.torth). The file can also refer to a relative path from the compiler file with any of the entries in [PATH](definitions.md#path) as the parent directory.
 
-Note: A file will only be included once even if it is included by multiple different included files. Thus, it is safe and preferrable to include every needed file in each of the different files.
+Note: A file will only be included once, even if it is included by multiple different included files. Thus, it is safe and preferable to include every needed file in each of the different files.
 
 ### Syntax
 
@@ -256,7 +256,7 @@ INCLUDE "path/to/torth/lib/std.torth"
 
 ## MEMORY
 
-Named memory locations with certain size can be defined with MEMORY keyword. These are named pointers to a read-write section .bss in the executable. A pointer to a memory can then be pushed to the stack by using the memory's name as a token. Values can then be stored to the memory location with STORE intrinsics and values are loaded from memory to the stack with LOAD intrinsics.
+The MEMORY keyword can define named memory locations with a certain size. These are named pointers to a read-write section .bss in the executable. A pointer to a memory can then be pushed to the stack by using the memory's name as a token. Values can then be stored in the memory location with STORE intrinsics, and values are loaded from memory to the stack with LOAD intrinsics.
 
 ### Syntax
 
@@ -289,6 +289,6 @@ Return from current [FUNCTION](#function).
 
 ## WHILE
 
-WHILE is a keyword for [DONE](#done) to jump to.
+WHILE is a keyword to jump to for [DONE](#done).
 
 [How to use WHILE Loops?](control_flow.md#while-loops)
