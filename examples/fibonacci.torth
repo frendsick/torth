@@ -1,9 +1,21 @@
-function main :
-  20 Fib print // Answer: 6765
+include "std"
+function Fib int -> int :
+  0   // Previous
+  1   // Current
+  take current previous limit in
+
+  1   // Counter
+  WHILE dup limit < DO
+    current                   // Temp     = Current
+    dup previous + current =  // Current  = Previous + Current
+    previous =                // Previous = Temp
+    1 +                       // Counter++
+  DONE drop
+  previous
 end
 
-function Fib int -> int :
-  if dup 1 <= do return endif
-  dup   1 - Fib
-  swap  2 - Fib +
+function main :
+  20  // Limit
+  "The " puts dup putu ". fibonacci number is: " puts
+  Fib putu "\n" puts  // Answer: 4181
 end
