@@ -686,16 +686,18 @@ end
 // Remove a suffix if it exists. Otherwise return the original string.
 // Params: string (STR), suffix (STR)
 // Return: None
-function str.removesuffix string:str suffix:str :
+function str.removesuffix string:str suffix:str -> str :
   suffix str.len
   string str.len
   take string.len suffix.len in
 
-  // Clear the suffix if it exists
+  // Return a new string without the matching suffix
   if string suffix str.endswith do
+    string str.copy string =
     string cast(ptr) string.len suffix.len -
     ptr+ cast(str) str.empty
   endif
+  string
 end
 
 // Tests if two strings are equal

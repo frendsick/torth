@@ -151,7 +151,7 @@ function get_output_file_name input_file:str args:Argparser -> str :
   take file_name in
 
   if file_name cast(int) NULL == do
-    input_file ".torth" over str.removesuffix return
+    ".torth" input_file str.removesuffix return
   endif
   file_name
 end
