@@ -14,6 +14,55 @@ class Signature
     signature
   end
 
+  method from_repr repr:str -> Signature :
+    List.init
+    List.init
+    "" str.copy
+    0
+    take
+      index
+      buffer
+      param_types
+      return_types
+    in
+
+    while repr "->" str.startswith not do
+      repr 0 str.char_at
+      take current_char in
+
+      if current_char char.is_whitespace do
+        buffer param_types List.append
+        "" str.copy buffer =
+      else
+        current_char buffer str.append
+      endif
+
+      repr 1 str+ repr =
+    done
+
+    "-> " repr str.removeprefix repr =
+
+    while repr index str.char_at NULL != do
+      repr index str.char_at
+      take current_char in
+
+      if current_char char.is_whitespace do
+        buffer return_types List.append
+        "" str.copy buffer =
+      else
+        current_char buffer str.append
+      endif
+
+      index 1 + index =
+    done
+
+    if buffer "" streq not do
+      buffer return_types List.append
+    endif
+
+    return_types param_types Signature.init
+  end
+
   method repr self:Signature -> str :
     self Signature.returns
     dup List.len

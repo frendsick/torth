@@ -870,6 +870,31 @@ function parse_function
         continue
       endif
 
+      // Handle function pointer parameters
+      // Example => fn[str int -> bool]
+      if token_value "fn[" str.startswith do
+        while token_index tokens cast(List) List.len < do
+          // Get next token in the function pointer signature
+          token_index 1 + token_index =
+          token_index tokens cast(List) List.nth Token.load Token.value
+          take signature_token_value in
+
+          token_value
+          " " str.cat
+          signature_token_value str.cat
+          token_value =
+
+          if signature_token_value "]" str.endswith do
+            token_value cast(ptr) param_types List.append
+            token_index 1 + token_index =
+            break
+          endif
+        done
+
+        continue
+      endif
+
+
       // Split token by colon to name and TokenType
       // Example => parameter_name:int
       ":" token_value str.find
