@@ -107,6 +107,9 @@ function get_op_asm op:Op program:Program -> str :
   elif op_type OpType.PUSH_CHAR == do
     token_value 1 str.char_at get_push_char_asm
     return
+  elif op_type OpType.PUSH_FN == do
+    "&" token_value str.removesuffix get_push_fn_asm
+    return
   elif op_type OpType.PUSH_INT == do
     token_value get_push_int_asm
     return
@@ -152,6 +155,8 @@ function get_intrinsic_asm token:Token -> str :
     get_dup_asm return
   elif intrinsic "ENVP" streq do
     get_envp_asm return
+  elif intrinsic "EXEC" streq do
+    get_exec_asm return
   elif intrinsic "EQ" streq do
     get_eq_asm return
   elif intrinsic "GE" streq do
@@ -600,6 +605,15 @@ function get_push_char_asm char -> str :
   "\n  push rax\n"    str.cat
 end
 
+// Generate Assembly for OpType.PUSH_FN
+// Params: Op.token.value
+// Return: Assembly
+function get_push_fn_asm function_name:str -> str :
+  "  mov rax, "
+  function_name get_valid_label_for_nasm    str.cat
+  "\n  push rax\n"                          str.cat
+end
+
 // Generate Assembly for OpType.PUSH_INT
 // Params: Op.token.value
 // Return: Assembly
@@ -741,6 +755,14 @@ function get_envp_asm -> str :
   "  mov rax, [args_ptr]\n"
   "  add rax, 24\n" str.cat
   "  push rax\n"    str.cat
+end
+
+// EXEC pops and executes function pointer from the stack
+// Params: None
+// Return: Assembly
+function get_exec_asm -> str :
+  "  pop rax\n"
+  "  call QWORD rax\n" str.cat
 end
 
 // EQ takes two elements from the stack and checks if they are equal.

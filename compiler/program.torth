@@ -164,6 +164,8 @@ function get_tokens_op_type
     OpType.PUSH_INT return
   elif functions token_value function_exists do
     OpType.FUNCTION_CALL return
+  elif functions "&" token_value str.removesuffix function_exists do
+    OpType.PUSH_FN return
   elif memories token_value memory_exists do
     OpType.PUSH_PTR return
   // Intrinsics
@@ -175,6 +177,7 @@ function get_tokens_op_type
     token_upper "DROP"        streq ||
     token_upper "DUP"         streq ||
     token_upper "ENVP"        streq ||
+    token_upper "EXEC"        streq ||
     token_upper "EQ"          streq ||
     token_upper "GE"          streq ||
     token_upper "GT"          streq ||
