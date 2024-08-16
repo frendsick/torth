@@ -683,6 +683,16 @@ function str.endswith suffix:str string:str -> bool :
   True
 end
 
+// Remove a prefix if it exists. Otherwise return the original string.
+// Params: string (STR), prefix (STR)
+// Return: None
+function str.removeprefix string:str prefix:str -> str :
+  if string prefix str.startswith do
+    string prefix str.len str+ string =
+  endif
+  string
+end
+
 // Remove a suffix if it exists. Otherwise return the original string.
 // Params: string (STR), suffix (STR)
 // Return: None
