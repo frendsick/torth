@@ -1122,7 +1122,7 @@ function type_check_exec token:Token type_stack:Node :
     if type_stack TypeStack.get_types List.len 0 == do
       temp_stack token
       "Stack does not match with the function pointer signature\n\n"
-      "Expected: "              str.cat
+      "Signature: "             str.cat
       signature Signature.repr  str.cat
       "VALUE_ERROR" CompilerErrorWithStack
     endif
@@ -1134,7 +1134,7 @@ function type_check_exec token:Token type_stack:Node :
     if popped_type expected_type streq not do
       temp_stack token
       "Stack does not match with the function pointer signature\n\n"
-      "Expected: "              str.cat
+      "Signature: "             str.cat
       signature Signature.repr  str.cat
       "VALUE_ERROR" CompilerErrorWithStack
     endif
