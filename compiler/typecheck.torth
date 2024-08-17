@@ -1109,20 +1109,17 @@ function type_check_exec token:Token type_stack:Node :
   in
 
   // Pop all function parameters from stack
-  param_types List.len
-  dup 1 -
-  take index param_types.len in
-  while index 0 >= do
+  0 take index in
+  while index param_types List.len < do
     index param_types List.nth str.load
-    take param_type_repr in
+    take expected_type in
 
-    if param_type_repr "None" streq do
+    if expected_type "None" streq do
       break
     endif
 
-    // The stack should contain values
+    // The stack should contain values before pop
     if type_stack TypeStack.get_types List.len 0 == do
-      "Param type: " puts param_type_repr puts "\n" puts
       temp_stack token
       "Stack does not match with the function pointer signature\n\n"
       "Expected: "              str.cat
@@ -1130,12 +1127,19 @@ function type_check_exec token:Token type_stack:Node :
       "VALUE_ERROR" CompilerErrorWithStack
     endif
 
-    type_stack LinkedList.pop
-    take type in
+    type_stack LinkedList.pop TypeNode.type
+    take popped_type in
 
-    // TODO: Check that the popped type matches with the signature
+    // The popped type should match the function signature
+    if popped_type expected_type streq not do
+      temp_stack token
+      "Stack does not match with the function pointer signature\n\n"
+      "Expected: "              str.cat
+      signature Signature.repr  str.cat
+      "VALUE_ERROR" CompilerErrorWithStack
+    endif
 
-    index 1 - index =
+    index 1 + index =
   done
 
   0 index =
