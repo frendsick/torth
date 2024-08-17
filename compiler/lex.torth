@@ -894,7 +894,6 @@ function parse_function
         continue
       endif
 
-
       // Split token by colon to name and TokenType
       // Example => parameter_name:int
       ":" token_value str.find
@@ -920,7 +919,35 @@ function parse_function
         // Parse parameter's name
         token_value str.copy
         dup param_colon str+ str.empty
-        take param_name in
+        token_value str.copy param_colon str+ 1 str+
+        take
+          param_type
+          param_name
+        in
+
+        // Handle function pointer parameters
+        // Example => fn[str int -> bool]
+        if param_type "fn[" str.startswith do
+          // Remove the possibly wrong parameter type
+          param_types List.len 1 - param_types List.pop
+
+          while token_index tokens cast(List) List.len < do
+            // Get next token in the function pointer signature
+            token_index 1 + token_index =
+            token_index tokens cast(List) List.nth Token.load Token.value
+            take signature_token_value in
+
+            param_type
+            " " str.cat
+            signature_token_value str.cat
+            param_type =
+
+            if signature_token_value "]" str.endswith do
+              param_type cast(ptr) param_types List.append
+              break
+            endif
+          done
+        endif
 
         // Append parameter to Func's Tokens
         token Token.location
