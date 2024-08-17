@@ -1144,7 +1144,6 @@ function type_check_exec token:Token type_stack:Node :
 
   0 index =
   while index return_types List.len < do
-    index puti
     index return_types List.nth str.load
     take return_type in
 
