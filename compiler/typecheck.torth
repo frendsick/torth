@@ -1147,6 +1147,10 @@ function type_check_exec token:Token type_stack:Node :
     index return_types List.nth str.load
     take return_type in
 
+    if return_type "None" streq do
+      break
+    endif
+
     token Token.location return_type TypeNode.init cast(ptr)
     type_stack LinkedList.push
 
