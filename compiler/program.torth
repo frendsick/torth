@@ -127,9 +127,24 @@ function remove_unused_memories
   memories cast(List) List.len 1 -
   take index in
   while index 0 >= do
-    index memories cast(List) List.nth ptr.load
-    take mem in
-    // Mem.name puts "\n" puts
+    index memories cast(List) List.nth ptr.load Mem.name str.copy
+    take mem_name in
+
+    // Parse related function from the Mem
+    // f"{function_name}##{mem_name}"
+    "##" mem_name str.find
+    take sep_index in
+
+    mem_name sep_index str+ str.empty
+    mem_name
+    take function_name in
+
+    functions function_name get_function_by_name
+    take func in
+
+    if func Func.is_used not do
+      index memories cast(List) List.pop
+    endif
 
     index 1 - index =
   done
