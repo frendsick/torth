@@ -121,7 +121,7 @@ Push the environment pointer to the stack.
 
 ## EXEC
 
-Pop and execute a function pointer from the stack.
+Pop and execute a [function pointer](types#fn---function-pointer) from the stack.
 
 ## LOAD
 
