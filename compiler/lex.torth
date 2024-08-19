@@ -933,8 +933,15 @@ function parse_function
       endif
 
     elif current_part 1 == do
-      // Append word to return_types if valid TokenType
-      token_value cast(ptr) return_types List.append
+      // Handle function pointer return types
+      // Example => fn[str int -> bool]
+      if token_value "fn[" str.startswith do
+        token_index tokens return_types token_value parse_fn_ptr_in_signature
+        token_index =
+      else
+        // Append word to return_types TokenType
+        token_value cast(ptr) return_types List.append
+      endif
 
     elif current_part 2 == do
       // Use Constant's value if a Constant exists named as the Token's value
