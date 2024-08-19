@@ -8,6 +8,7 @@ class Func
   signature:Signature
   tokens:List[Token]
   variables:List[Variable]
+  is_used:bool
 
   method init
     name:str
@@ -22,6 +23,7 @@ class Func
     signature func Func->signature
     tokens    func Func->tokens
     variables func Func->variables
+    FALSE     func Func->is_used
     func
   end
 

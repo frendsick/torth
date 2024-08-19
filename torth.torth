@@ -32,8 +32,8 @@ function main :
   tokens get_constants
   take constants in
 
-  // Parse Memories
-  constants tokens get_memories
+  // Initialize Memories
+  List.init cast(List[Mem])
   take memories in
 
   // Parse Functions
@@ -46,6 +46,10 @@ function main :
   // Get the intermediate representation (Program) of each Function
   memories constants functions get_sub_programs
   take sub_programs in
+
+  // Remove unused memories
+  functions memories remove_unused_memories
+  memories =
 
   // Type check the Program
   args "Type checking the program" verbose_output
