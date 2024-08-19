@@ -997,6 +997,25 @@ function parse_fn_ptr_in_signature
   tokens:List[Token]
   token_index:int
 -> int :
+  // Parse empty function pointer signature
+  if type_acc "fn[]" streq do
+    "fn[None -> None]" cast(ptr) types List.append
+    token_index return
+  endif
+
+  // Parse function with only one parameter
+  if type_acc "]" str.endswith do
+    " -> None]" "]" type_acc str.replace
+    cast(ptr) types List.append
+    token_index return
+  endif
+
+  // Append explicit None type as parameter for function with only return type
+  if type_acc "->" str.endswith do
+    "None ->" "->" type_acc str.replace
+    type_acc =
+  endif
+
   while token_index tokens cast(List) List.len < do
     // Get next token in the function pointer signature
     token_index 1 + token_index =
