@@ -13,22 +13,44 @@ function get_sub_programs
 -> List[Program] :
 
   List.init cast(List[Program])
-  0
-  take index sub_programs in
+  List.init
+  take
+    parsed_functions
+    sub_programs
+  in
 
-  // Iterate over every Func is functions
-  while index functions cast(List) List.len < do
+  // Parse and update used functions until all used functions are parsed
+  TRUE take functions_left in
+  while functions_left do
+    FALSE functions_left =
 
-    // Get the current Func from the list
-    index functions cast(List) List.nth Func.load
-    take func in
+    // Parse all used functions
+    0 take index in
+    while index functions cast(List) List.len < do
 
-    // Generate Program from the current Func
-    memories constants functions func generate_program
+      // Get the current Func from the list
+      index functions cast(List) List.nth Func.load
+      take func in
 
-    // Append the generated Program to sub_programs
-    sub_programs cast(List) List.append
-    index 1 + index = // index++
+      // Parse used function that is not already parsed
+      if
+        func Func.is_used
+        func Func.name parsed_functions List.contains_str not
+        &&
+      do
+        // Generate Program from the current Func
+        memories constants functions func generate_program
+
+        // Append the generated Program to sub_programs
+        sub_programs cast(List) List.append
+
+        // Mark the function as parsed
+        func Func.name parsed_functions List.append
+        TRUE functions_left =
+      endif
+
+      index 1 + index = // index++
+    done
   done
 
   // Remove unused sub_programs
