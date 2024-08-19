@@ -253,9 +253,9 @@ function get_assign_bind_asm op:Op program:Program -> str :
   op Op.id 1 - program cast(List) List.nth Op.load
   Op.token Token.value
 
-  // variable = f"{op.func.name}_{memory_name}"
+  // variable = f"{op.func.name}##{memory_name}"
   op Op.func Func.name
-  "_" str.cat swap str.cat
+  "##" str.cat swap str.cat
   take variable in
 
   // Generate assembly
@@ -1332,10 +1332,10 @@ end
 // Params: Op
 // Return: variable
 function get_variable_memory op:Op -> str :
-  // variable = f"{op.func.name}_{memory_name}"
+  // variable = f"{op.func.name}##{memory_name}"
   op Op.token Token.value
   op Op.func  Func.name
-  "_" str.cat swap str.cat
+  "##" str.cat swap str.cat
 end
 
 // Generate valid NASM label for Func
