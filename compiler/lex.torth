@@ -857,7 +857,14 @@ function parse_function
         function_tokens
         return_types param_types Signature.init
         function_name Func.init
-        return
+        take func in
+
+        // Set MAIN function as used
+        if func Func.name str.copy str.upper "MAIN" streq do
+            TRUE func Func->is_used
+        endif
+
+        func return
       endif
 
     elif current_part 0 == do

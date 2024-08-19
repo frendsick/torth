@@ -30,6 +30,25 @@ function get_sub_programs
     sub_programs cast(List) List.append
     index 1 + index = // index++
   done
+
+  // Remove unused sub_programs
+  sub_programs cast(List) List.len 1 -
+  take index in
+
+  while index 0 >= do
+
+    // Get current sub program from the list
+    index sub_programs cast(List) List.nth ptr.load cast(List)
+    take program in
+
+    // Remove the sub program if it is not used
+    if program List.first ptr.load Op.func Func.is_used not do
+        index sub_programs cast(List) List.pop
+    endif
+
+    index 1 - index =
+  done
+
   sub_programs
 end
 
@@ -163,6 +182,10 @@ function get_tokens_op_type
   elif constants token_value constant_exists do
     OpType.PUSH_INT return
   elif functions token_value function_exists do
+    // Mark function as used
+    functions token_value get_function_by_name
+    TRUE swap Func->is_used
+
     OpType.FUNCTION_CALL return
   elif functions "&" token_value str.removesuffix function_exists do
     OpType.PUSH_FN return
