@@ -77,8 +77,7 @@ function add_one int -> int :
     1 +
 end
 
-function increment number:int -> int :
-    number      // Push `number` parameter's value
+function increment int -> int :
     add_one&    // Push pointer to `add_one` function
     exec        // Execute the function pointer
 end
