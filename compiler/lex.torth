@@ -873,24 +873,8 @@ function parse_function
       // Handle function pointer parameters
       // Example => fn[str int -> bool]
       if token_value "fn[" str.startswith do
-        while token_index tokens cast(List) List.len < do
-          // Get next token in the function pointer signature
-          token_index 1 + token_index =
-          token_index tokens cast(List) List.nth Token.load Token.value
-          take signature_token_value in
-
-          token_value
-          " " str.cat
-          signature_token_value str.cat
-          token_value =
-
-          if signature_token_value "]" str.endswith do
-            token_value cast(ptr) param_types List.append
-            token_index 1 + token_index =
-            break
-          endif
-        done
-
+        token_index tokens param_types token_value parse_fn_ptr_in_signature
+        token_index =
         continue
       endif
 
@@ -931,22 +915,8 @@ function parse_function
           // Remove the possibly wrong parameter type
           param_types List.len 1 - param_types List.pop
 
-          while token_index tokens cast(List) List.len < do
-            // Get next token in the function pointer signature
-            token_index 1 + token_index =
-            token_index tokens cast(List) List.nth Token.load Token.value
-            take signature_token_value in
-
-            param_type
-            " " str.cat
-            signature_token_value str.cat
-            param_type =
-
-            if signature_token_value "]" str.endswith do
-              param_type cast(ptr) param_types List.append
-              break
-            endif
-          done
+          token_index tokens param_types param_type parse_fn_ptr_in_signature
+          token_index =
         endif
 
         // Append parameter to Func's Tokens
@@ -1003,6 +973,43 @@ function parse_function
   "'\nUnexpected end of file" str.cat
   "SYNTAX_ERROR" CompilerErrorWithToken
   NULL cast(Func)
+end
+
+// Parse function pointer as parameter or return type
+// and push it to the list or types
+// Params
+//      type_acc:       str
+//      types:          List[str]
+//      tokens:         List[token]
+//      token_index:    int
+// Return
+//      token_index: int
+function parse_fn_ptr_in_signature
+  type_acc:str
+  types:List
+  tokens:List[Token]
+  token_index:int
+-> int :
+  while token_index tokens cast(List) List.len < do
+    // Get next token in the function pointer signature
+    token_index 1 + token_index =
+    token_index tokens cast(List) List.nth Token.load Token.value
+    take signature_token_value in
+
+    // Separate types in the signature by commas
+    type_acc
+    " " str.cat
+    signature_token_value str.cat
+    type_acc =
+
+    // Break when parsing is finished
+    if signature_token_value "]" str.endswith do
+      type_acc cast(ptr) types List.append
+      break
+    endif
+  done
+
+  token_index
 end
 
 // Parse Classes from code
