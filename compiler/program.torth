@@ -120,6 +120,23 @@ function generate_program
   program
 end
 
+function remove_unused_memories
+  memories:List[Mem]
+  functions:List[Func]
+-> List[Mem] :
+  memories cast(List) List.len 1 -
+  take index in
+  while index 0 >= do
+    index memories cast(List) List.nth ptr.load
+    take mem in
+    // Mem.name puts "\n" puts
+
+    index 1 - index =
+  done
+
+  memories
+end
+
 // Get OpType for Token
 // Params: Token, List[Func], List[Constant], List[Mem]
 // Return: OpType

@@ -32,8 +32,8 @@ function main :
   tokens get_constants
   take constants in
 
-  // Parse Memories
-  constants tokens get_memories
+  // Initialize Memories
+  List.init cast(List[Mem])
   take memories in
 
   // Parse Functions
