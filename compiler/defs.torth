@@ -23,6 +23,7 @@ ENUM OpType.len 1 :
   OpType.PUSH_BIND
   OpType.PUSH_BOOL
   OpType.PUSH_CHAR
+  OpType.PUSH_FN
   OpType.PUSH_INT
   OpType.PUSH_PTR
   OpType.PUSH_STR

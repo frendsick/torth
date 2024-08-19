@@ -11,6 +11,7 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [DROP](#DROP)
 - [DUP](#DUP)
 - [ENVP](#ENVP)
+- [EXEC](#EXEC)
 - [EQ](#Comparisons)
 - [GE](#Comparisons)
 - [GT](#Comparisons)
@@ -117,6 +118,10 @@ Duplicate the top element of the stack.
 ## ENVP
 
 Push the environment pointer to the stack.
+
+## EXEC
+
+Pop and execute a [function pointer](types#fn---function-pointer) from the stack.
 
 ## LOAD
 

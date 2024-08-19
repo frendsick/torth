@@ -14,9 +14,60 @@ class Signature
     signature
   end
 
+  method from_repr repr:str -> Signature :
+    List.init
+    List.init
+    "" str.copy
+    0
+    take
+      index
+      buffer
+      param_types
+      return_types
+    in
+
+    while repr "->" str.startswith not do
+      repr 0 str.char_at
+      take current_char in
+
+      if current_char char.is_whitespace do
+        buffer param_types List.append
+        "" str.copy buffer =
+      else
+        current_char buffer str.append
+      endif
+
+      repr 1 str+ repr =
+    done
+
+    "-> " repr str.removeprefix repr =
+
+    while repr index str.char_at NULL != do
+      repr index str.char_at
+      take current_char in
+
+      if current_char char.is_whitespace do
+        buffer return_types List.append
+        "" str.copy buffer =
+      else
+        current_char buffer str.append
+      endif
+
+      index 1 + index =
+    done
+
+    if buffer "" streq not do
+      buffer return_types List.append
+    endif
+
+    return_types param_types Signature.init
+  end
+
   method repr self:Signature -> str :
     self Signature.returns
+    dup List.len
     self Signature.params
+    dup List.len
     ""    str.copy
     dup   str.copy
     0
@@ -24,33 +75,41 @@ class Signature
       index
       params_repr
       returns_repr
+      params_len
       params
+      returns_len
       returns
     in
 
     // Set empty Signature parts as None
-    if params List.len 0 == do
-      "None " params_repr =
+    if params_len 0 == do
+      "None" params_repr =
     endif
-    if returns List.len 0 == do
+    if returns_len 0 == do
       "None" returns_repr =
     endif
 
     // Generate repr from Signature.params
-    while index params List.len < do
-      index params List.nth str.load " " str.cat
+    while index params_len < do
+      index params List.nth str.load
+      if index params_len 1 - < do
+        " " str.cat
+      endif
       params_repr swap str.cat params_repr =
       index 1 + index =
     done
 
     // Generate repr from Signature.returns
     0 index =
-    while index returns List.len < do
-      index returns List.nth str.load " " str.cat
+    while index returns_len < do
+      index returns List.nth str.load
+      if index returns_len 1 - < do
+        " " str.cat
+      endif
       returns_repr swap str.cat returns_repr =
       index 1 + index =
     done
-    params_repr "-> " str.cat
-    returns_repr      str.cat
+    params_repr " -> "  str.cat
+    returns_repr        str.cat
   end
 endclass

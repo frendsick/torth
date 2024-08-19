@@ -214,6 +214,9 @@ function type_check_op
   elif op_type OpType.PUSH_CHAR == do
     type_stack token type_check_push_char
     type_check_info return
+  elif op_type OpType.PUSH_FN == do
+    functions type_stack token type_check_push_fn
+    type_check_info return
   elif op_type OpType.PUSH_INT == do
     type_stack token type_check_push_int
     type_check_info return
@@ -278,6 +281,8 @@ function type_check_intrinsic
     type_stack token type_check_dup return
   elif intrinsic "ENVP" streq do
     type_stack token type_check_push_ptr return
+  elif intrinsic "EXEC" streq do
+    type_stack token type_check_exec return
   elif intrinsic "LOAD_" str.startswith do
     type_stack token type_check_load return
   elif intrinsic "NTH" streq do
@@ -800,6 +805,27 @@ function type_check_function_call
   done
 end
 
+// Push a function pointer to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_fn token:Token type_stack:Node functions:List[Func] :
+  "&" token Token.value str.removesuffix
+  take function_name in
+
+  functions function_name get_function_by_name Func.signature
+  take signature in
+
+  "fn["
+  signature Signature.repr  str.cat
+  "]"                       str.cat
+  take type in
+
+  token Token.location type TypeNode.init cast(ptr)
+  type_stack LinkedList.push
+end
+
 // Copy the Nth item from the stack to a Variable
 // Params
 //    token: Token
@@ -1044,6 +1070,100 @@ function type_check_dup token:Token type_stack:Node :
   // Push the popped value twice
   type type_stack LinkedList.push
   type type_stack LinkedList.push
+end
+
+// Execute a function pointer
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_exec token:Token type_stack:Node :
+  // Pop function pointer from the stack
+  type_stack TypeStack.copy
+  type_stack LinkedList.pop
+  take type temp_stack in
+
+  // Stack is empty
+  if type cast(int) -1 == do
+    temp_stack token
+    "Cannot execute function pointer from empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  if type TypeNode.type "fn[" str.startswith not do
+    temp_stack token
+    "EXEC intrinsic requires function pointer\n"
+    "Example: fn[str int -> bool]\n\n"  str.cat
+    "Popped type: "                     str.cat
+    type TypeNode.type                  str.cat
+    "VALUE_ERROR" CompilerErrorWithStack
+  endif
+
+  type TypeNode.type parse_signature_from_fn_ptr
+  dup Signature.params
+  over Signature.returns
+  take
+    return_types
+    param_types
+    signature
+  in
+
+  // Pop all function parameters from stack
+  0 take index in
+  while index param_types List.len < do
+    index param_types List.nth str.load
+    take expected_type in
+
+    if expected_type "None" streq do
+      break
+    endif
+
+    // The stack should contain values before pop
+    if type_stack TypeStack.get_types List.len 0 == do
+      temp_stack token
+      "Stack does not match with the function pointer signature\n\n"
+      "Signature: "             str.cat
+      signature Signature.repr  str.cat
+      "VALUE_ERROR" CompilerErrorWithStack
+    endif
+
+    type_stack LinkedList.pop TypeNode.type
+    take popped_type in
+
+    // The popped type should match the function signature
+    if popped_type expected_type streq not do
+      temp_stack token
+      "Stack does not match with the function pointer signature\n\n"
+      "Signature: "             str.cat
+      signature Signature.repr  str.cat
+      "VALUE_ERROR" CompilerErrorWithStack
+    endif
+
+    index 1 + index =
+  done
+
+  0 index =
+  while index return_types List.len < do
+    index return_types List.nth str.load
+    take return_type in
+
+    if return_type "None" streq do
+      break
+    endif
+
+    token Token.location return_type TypeNode.init cast(ptr)
+    type_stack LinkedList.push
+
+    index 1 + index =
+  done
+end
+
+function parse_signature_from_fn_ptr fn_ptr:str -> Signature :
+  "fn[" fn_ptr str.removeprefix
+  "]" swap str.removesuffix
+  take signature_repr in
+
+  signature_repr Signature.from_repr
 end
 
 // LOAD variants load certain type of value from where a pointer is pointing to.

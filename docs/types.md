@@ -9,6 +9,7 @@ The language supports the following built-in types:
 - [any](#any)
 - [bool](#bool---boolean)
 - [char](#char---character)
+- [fn](#fn---function-pointer)
 - [int](#int---integer)
 - [ptr](#ptr---pointer)
 - [str](#str---string)
@@ -60,6 +61,29 @@ function main :
 
   // puts(char_array);
   char_array cast(str) puts "\n" puts
+end
+```
+
+### fn - Function pointer
+
+Function pointer is a memory address where a function is located.
+
+Function pointer to a Torth function can be pushed to the stack by appending _&_ (ampersand) character to a function name. For example, to create function pointer to the `add_one` function, use the token `add_one&`.
+
+You can execute the function pointed by the pointer using the [EXEC](intrinsics#EXEC) intrinsic.
+
+```pascal
+function add_one int -> int :
+    1 +
+end
+
+function increment int -> int :
+    add_one&    // Push pointer to `add_one` function
+    exec        // Execute the function pointer
+end
+
+function main :
+    41 increment_number print   // Prints: 42
 end
 ```
 
