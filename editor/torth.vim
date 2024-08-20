@@ -1,10 +1,20 @@
 " Vim syntax file
 " Language: Torth
 
-" Usage Instructions
-" Put this file in .vim/syntax/torth.vim
-" and add in your .vimrc file the next line:
+" === VIM ===
+" Put this file in ~/.vim/syntax/torth.vim
+" and add in your ~/.vimrc file the next line:
 " autocmd BufRead,BufNewFile *.torth set filetype=torth
+
+" === NEOVIM ===
+" Put this file in $VIMRUNTIME/syntax/torth.vim (default: /usr/share/nvim/runtime/syntax/torth.vim)
+" and add in your ~/.config/nvim/init.lua file the following lines:
+"
+" vim.filetype.add {
+"     extension = {
+"         torth = "torth",
+"     },
+" }
 
 if exists("b:current_syntax")
   finish
