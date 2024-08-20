@@ -44,7 +44,7 @@ syntax region torthUint   start=/\su\d/ skip=/\d/ end=/\s/
 syntax keyword torthNull  NULL
 
 " Type names the compiler recognizes
-syntax keyword torthTypeNames any bool char int ptr str
+syntax keyword torthTypeNames any bool char fn none int ptr str
 
 " Set highlights
 highlight default link torthTodos Todo
