@@ -135,6 +135,12 @@ function remove_unused_memories
     "##" mem_name str.find
     take sep_index in
 
+    // The memory is not a variable
+    if sep_index -1 == do
+      index 1 - index =
+      continue
+    endif
+
     mem_name sep_index str+ str.empty
     mem_name
     take function_name in

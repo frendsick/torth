@@ -15,6 +15,7 @@ This is the documentation for different keywords available in the Torth language
 - [FUNCTION](#FUNCTION)
 - [IF](#IF)
 - [INCLUDE](#INCLUDE)
+- [MEMORY](#MEMORY)
 - [RETURN](#RETURN)
 - [WHILE](#WHILE)
 
@@ -251,6 +252,33 @@ INCLUDE "std.torth"
 INCLUDE "lib/std"
 INCLUDE "lib/std.torth"
 INCLUDE "path/to/torth/lib/std.torth"
+```
+
+## MEMORY
+
+The MEMORY keyword can define named memory locations with a certain size. These are named pointers to a read-write section .bss in the executable. A pointer to a memory can then be pushed to the stack by using the memory's name as a token. Values can then be stored in the memory location with STORE intrinsics, and values are loaded from memory to the stack with LOAD intrinsics.
+
+### Syntax
+
+```pascal
+// Memory declaration should be in one line
+MEMORY <name> <size> END
+```
+
+### Examples
+
+```pascal
+include "std"
+memory leet int.size end  // int.size = 8
+memory feet ptr.size end  // ptr.size = 8
+function main -> :
+  1337 leet int.store
+  leet int.load print "\n" puts // Output: 1337
+
+  "pinky\n" feet str.store
+  'k' feet ptr.load char.store
+  feet str.load puts            // Output: kinky
+end
 ```
 
 ## RETURN

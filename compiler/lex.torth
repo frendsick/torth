@@ -634,6 +634,84 @@ function get_enum_part_delimiters -> List :
   ENUM_PART_DELIMITERS
 end
 
+// Parse Memories from code
+// Params
+//    tokens: List[Token]
+//    constants: List[Constant]
+// Return
+//    memories: List[Mem]
+function get_memories tokens:List[Token] constants:List[Constant] -> List[Mem] :
+  List.init cast(List[Mem])
+  "" str.copy         // memory_name
+  NULL                // memory_size
+  False               // defining_memory
+  0                   // index
+  take
+    index
+    defining_memory
+    memory_size
+    memory_name
+    memories
+  in
+
+  while index tokens cast(List) List.len < do
+    index tokens cast(List) List.nth ptr.load
+    dup   Token.value
+    swap  Token.location
+    take location token_value in
+
+    // Parse Mem only when inside Mem block
+    if defining_memory do
+
+      // Parse Mem name
+      if memory_name str.len 0 == do
+        memories token_value get_memory_name
+        memory_name =
+
+        index 1 + index = // index++
+        continue
+      endif
+
+      // Append the current Mem to memories
+      if memory_size 0 == do
+
+        // Use the token_value as memory_size if it is numeric
+        if token_value str.is_numeric do
+          token_value atoi memory_size =
+        else
+          // Test if Constant exists
+          if constants token_value constant_exists do
+            constants token_value get_constant
+            Constant.value atoi
+            memory_size =
+          else
+            "The memory size should be an integer. Got: "
+            token_value str.cat
+            "VALUE_ERROR" CompilerError
+          endif
+        endif
+
+        // Generate Mem object
+        location memory_size memory_name str.copy Mem.init
+        memories cast(List) List.append
+
+        // Reset variables
+        ""    memory_name =
+        NULL  memory_size =
+        False defining_memory =
+        index 1 + index = // index++
+        continue
+      endif
+    endif
+
+    if token_value str.copy str.upper "MEMORY" streq do
+      True defining_memory =
+    endif
+    index 1 + index = // index++
+  done
+  memories
+end
+
 // Check for redefinition of a Constant object
 function get_constants_name constants:List[Constant] token_value:str -> str :
   // Overwriting another Constant is not allowed
@@ -641,6 +719,22 @@ function get_constants_name constants:List[Constant] token_value:str -> str :
     "Constant '" token_value str.cat
     "' already exists. Constant name should be unique.\n" str.cat
     "CONSTANT_REDEFINITION" CompilerError
+  endif
+  token_value
+end
+
+// Check for redefinition of a Mem object
+// Params
+//    token_value: str
+//    memories: List[Mem]
+// Return
+//    memory_name: str
+function get_memory_name token_value:str memories:List[Mem] -> str :
+  // Overwriting another Mem is not allowed
+  if token_value memories cast(List) List.contains_str do
+    "Mem '" token_value str.cat
+    "' already exists. Mem name should be unique.\n" str.cat
+    "MEMORY_REDEFINITION" CompilerError
   endif
   token_value
 end
