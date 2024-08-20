@@ -134,8 +134,12 @@ section .bss
   get_constants##tokens: RESB 8
   add_enums_to_constants##tokens: RESB 8
   add_enums_to_constants##constants: RESB 8
+  get_memories##tokens: RESB 8
+  get_memories##constants: RESB 8
   get_constants_name##constants: RESB 8
   get_constants_name##token_value: RESB 8
+  get_memory_name##token_value: RESB 8
+  get_memory_name##memories: RESB 8
   get_functions##tokens: RESB 8
   get_functions##constants: RESB 8
   get_functions##memories: RESB 8
@@ -332,6 +336,8 @@ section .bss
   get_function_by_name##functions: RESB 8
   memory_exists##memory_name: RESB 8
   memory_exists##memories: RESB 8
+  get_constant##name: RESB 8
+  get_constant##constants: RESB 8
   TypeStack.copy##type_stack: RESB 8
   TypeStack.get_types##type_stack: RESB 8
   TypeStack.repr##type_stack: RESB 8
@@ -593,6 +599,13 @@ section .bss
   add_enums_to_constants##location: RESB 8
   add_enums_to_constants##token_value: RESB 8
   get_enum_part_delimiters##ENUM_PART_DELIMITERS: RESB 8
+  get_memories##index: RESB 8
+  get_memories##defining_memory: RESB 8
+  get_memories##memory_size: RESB 8
+  get_memories##memory_name: RESB 8
+  get_memories##memories: RESB 8
+  get_memories##location: RESB 8
+  get_memories##token_value: RESB 8
   get_functions##index: RESB 8
   get_functions##functions: RESB 8
   get_functions##token_upper: RESB 8
@@ -827,6 +840,8 @@ section .bss
   get_function_by_name##func: RESB 8
   memory_exists##index: RESB 8
   memory_exists##current_name: RESB 8
+  get_constant##index: RESB 8
+  get_constant##constant: RESB 8
   TypeStack.copy##stack_depth: RESB 8
   TypeStack.copy##type_stack_copy: RESB 8
   TypeStack.copy##node: RESB 8
@@ -1046,9 +1061,12 @@ _start:
 ;; [main] POP_BIND | File: torth.torth, Row: 33, Column: 8
   pop QWORD [main##constants]
 ;; [main] IN | File: torth.torth, Row: 33, Column: 18
-;; [main] Call List.init | File: torth.torth, Row: 36, Column: 3
-  call TGlzdC5pbml0
-;; [main] CAST | File: torth.torth, Row: 36, Column: 13
+;; [main] PUSH_BIND | File: torth.torth, Row: 36, Column: 3
+  push QWORD [main##constants]
+;; [main] PUSH_BIND | File: torth.torth, Row: 36, Column: 13
+  push QWORD [main##tokens]
+;; [main] Call get_memories | File: torth.torth, Row: 36, Column: 20
+  call Z2V0X21lbW9yaWVz
 ;; [main] TAKE | File: torth.torth, Row: 37, Column: 3
 ;; [main] POP_BIND | File: torth.torth, Row: 37, Column: 8
   pop QWORD [main##memories]
@@ -1102,7 +1120,7 @@ _start:
 ;; [main] PUSH_BIND | File: torth.torth, Row: 55, Column: 3
   push QWORD [main##args]
 ;; [main] PUSH_STR | File: torth.torth, Row: 55, Column: 8
-  mov rsi, main_s62 ; Pointer to string
+  mov rsi, main_s63 ; Pointer to string
   push rsi
 ;; [main] Call verbose_output | File: torth.torth, Row: 55, Column: 36
   call dmVyYm9zZV9vdXRwdXQ_
@@ -1115,7 +1133,7 @@ _start:
 ;; [main] PUSH_BIND | File: torth.torth, Row: 59, Column: 3
   push QWORD [main##args]
 ;; [main] PUSH_STR | File: torth.torth, Row: 59, Column: 8
-  mov rsi, main_s68 ; Pointer to string
+  mov rsi, main_s69 ; Pointer to string
   push rsi
 ;; [main] Call verbose_output | File: torth.torth, Row: 59, Column: 35
   call dmVyYm9zZV9vdXRwdXQ_
@@ -1136,7 +1154,7 @@ _start:
 ;; [main] PUSH_BIND | File: torth.torth, Row: 62, Column: 25
   push QWORD [main##out_file]
 ;; [main] PUSH_STR | File: torth.torth, Row: 62, Column: 34
-  mov rsi, main_s79 ; Pointer to string
+  mov rsi, main_s80 ; Pointer to string
   push rsi
 ;; [main] Call str.cat | File: torth.torth, Row: 62, Column: 41
   call c3RyLmNhdA__
@@ -1145,7 +1163,7 @@ _start:
 ;; [main] PUSH_BIND | File: torth.torth, Row: 65, Column: 3
   push QWORD [main##args]
 ;; [main] PUSH_STR | File: torth.torth, Row: 65, Column: 8
-  mov rsi, main_s83 ; Pointer to string
+  mov rsi, main_s84 ; Pointer to string
   push rsi
 ;; [main] Call verbose_output | File: torth.torth, Row: 65, Column: 34
   call dmVyYm9zZV9vdXRwdXQ_
@@ -1155,7 +1173,7 @@ _start:
   call Y29tcGlsZV9leGVjdXRhYmxl
 ;; [main] IF | File: torth.torth, Row: 70, Column: 3
 ;; [main] PUSH_STR | File: torth.torth, Row: 70, Column: 6
-  mov rsi, main_s88 ; Pointer to string
+  mov rsi, main_s89 ; Pointer to string
   push rsi
 ;; [main] PUSH_BIND | File: torth.torth, Row: 70, Column: 11
   push QWORD [main##args]
@@ -1166,11 +1184,11 @@ _start:
 ;; [main] DO | File: torth.torth, Row: 70, Column: 43
   pop rax
   test rax, rax
-  jz main_ENDIF98
+  jz main_ENDIF99
 ;; [main] PUSH_BIND | File: torth.torth, Row: 71, Column: 5
   push QWORD [main##args]
 ;; [main] PUSH_STR | File: torth.torth, Row: 71, Column: 10
-  mov rsi, main_s94 ; Pointer to string
+  mov rsi, main_s95 ; Pointer to string
   push rsi
 ;; [main] Call verbose_output | File: torth.torth, Row: 71, Column: 56
   call dmVyYm9zZV9vdXRwdXQ_
@@ -1179,10 +1197,10 @@ _start:
 ;; [main] Call remove_compilation_files | File: torth.torth, Row: 72, Column: 14
   call cmVtb3ZlX2NvbXBpbGF0aW9uX2ZpbGVz
 ;; [main] ENDIF | File: torth.torth, Row: 73, Column: 3
-main_ENDIF98:
+main_ENDIF99:
 ;; [main] IF | File: torth.torth, Row: 76, Column: 3
 ;; [main] PUSH_STR | File: torth.torth, Row: 76, Column: 6
-  mov rsi, main_s100 ; Pointer to string
+  mov rsi, main_s101 ; Pointer to string
   push rsi
 ;; [main] PUSH_BIND | File: torth.torth, Row: 76, Column: 11
   push QWORD [main##args]
@@ -1191,11 +1209,11 @@ main_ENDIF98:
 ;; [main] DO | File: torth.torth, Row: 76, Column: 39
   pop rax
   test rax, rax
-  jz main_ENDIF109
+  jz main_ENDIF110
 ;; [main] PUSH_BIND | File: torth.torth, Row: 77, Column: 5
   push QWORD [main##args]
 ;; [main] PUSH_STR | File: torth.torth, Row: 77, Column: 10
-  mov rsi, main_s105 ; Pointer to string
+  mov rsi, main_s106 ; Pointer to string
   push rsi
 ;; [main] Call verbose_output | File: torth.torth, Row: 77, Column: 32
   call dmVyYm9zZV9vdXRwdXQ_
@@ -1204,7 +1222,7 @@ main_ENDIF98:
 ;; [main] Call run_program | File: torth.torth, Row: 78, Column: 14
   call cnVuX3Byb2dyYW0_
 ;; [main] ENDIF | File: torth.torth, Row: 79, Column: 3
-main_ENDIF109:
+main_ENDIF110:
 ;; [main] PUSH_INT | File: torth.torth, Row: 80, Column: 1
   mov rax, 0
   push rax
@@ -4326,48 +4344,432 @@ Z2V0X2VudW1fcGFydF9kZWxpbWl0ZXJz:
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
+Z2V0X21lbW9yaWVz:
+;; [get_memories] Save the return address to return_stack
+  add QWORD r14, 8    ; Increment return stack pointer
+  pop QWORD [r14]     ; Pop from stack to return stack
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 643, Column: 23
+  pop QWORD [get_memories##tokens]
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 643, Column: 42
+  pop QWORD [get_memories##constants]
+;; [get_memories] Call List.init | File: compiler/lex.torth, Row: 644, Column: 3
+  call TGlzdC5pbml0
+;; [get_memories] CAST | File: compiler/lex.torth, Row: 644, Column: 13
+;; [get_memories] PUSH_STR | File: compiler/lex.torth, Row: 645, Column: 3
+  mov rsi, get_memories_s4 ; Pointer to string
+  push rsi
+;; [get_memories] Call str.copy | File: compiler/lex.torth, Row: 645, Column: 6
+  call c3RyLmNvcHk_
+;; [get_memories] PUSH_INT | File: compiler/lex.torth, Row: 646, Column: 3
+  mov rax, 0
+  push rax
+;; [get_memories] PUSH_BOOL | File: compiler/lex.torth, Row: 647, Column: 3
+  mov rax, 0
+  push rax
+;; [get_memories] PUSH_INT | File: compiler/lex.torth, Row: 648, Column: 3
+  mov rax, 0
+  push rax
+;; [get_memories] TAKE | File: compiler/lex.torth, Row: 649, Column: 3
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 650, Column: 5
+  pop QWORD [get_memories##index]
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 651, Column: 5
+  pop QWORD [get_memories##defining_memory]
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 652, Column: 5
+  pop QWORD [get_memories##memory_size]
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 653, Column: 5
+  pop QWORD [get_memories##memory_name]
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 654, Column: 5
+  pop QWORD [get_memories##memories]
+;; [get_memories] IN | File: compiler/lex.torth, Row: 655, Column: 3
+;; [get_memories] WHILE | File: compiler/lex.torth, Row: 657, Column: 3
+get_memories_WHILE16:
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 657, Column: 9
+  push QWORD [get_memories##index]
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 657, Column: 15
+  push QWORD [get_memories##tokens]
+;; [get_memories] CAST | File: compiler/lex.torth, Row: 657, Column: 22
+;; [get_memories] Call List.len | File: compiler/lex.torth, Row: 657, Column: 33
+  call TGlzdC5sZW4_
+;; [get_memories] INTRINSIC LT | File: compiler/lex.torth, Row: 657, Column: 42
+  pop rax
+  pop rbx
+  mov rcx, 0
+  mov rdx, 1
+  cmp rbx, rax
+  cmovl rcx, rdx
+  push rcx
+;; [get_memories] DO | File: compiler/lex.torth, Row: 657, Column: 44
+  pop rax
+  test rax, rax
+  jz get_memories_DONE132
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 658, Column: 5
+  push QWORD [get_memories##index]
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 658, Column: 11
+  push QWORD [get_memories##tokens]
+;; [get_memories] CAST | File: compiler/lex.torth, Row: 658, Column: 18
+;; [get_memories] Call List.nth | File: compiler/lex.torth, Row: 658, Column: 29
+  call TGlzdC5udGg_
+;; [get_memories] Call ptr.load | File: compiler/lex.torth, Row: 658, Column: 38
+  call cHRyLmxvYWQ_
+;; [get_memories] INTRINSIC dup | File: compiler/lex.torth, Row: 659, Column: 5
+  push QWORD [rsp]
+;; [get_memories] Call Token.value | File: compiler/lex.torth, Row: 659, Column: 11
+  call VG9rZW4udmFsdWU_
+;; [get_memories] INTRINSIC swap | File: compiler/lex.torth, Row: 660, Column: 5
+  pop rax
+  pop rbx
+  push rax
+  push rbx
+;; [get_memories] Call Token.location | File: compiler/lex.torth, Row: 660, Column: 11
+  call VG9rZW4ubG9jYXRpb24_
+;; [get_memories] TAKE | File: compiler/lex.torth, Row: 661, Column: 5
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 661, Column: 10
+  pop QWORD [get_memories##location]
+;; [get_memories] POP_BIND | File: compiler/lex.torth, Row: 661, Column: 19
+  pop QWORD [get_memories##token_value]
+;; [get_memories] IN | File: compiler/lex.torth, Row: 661, Column: 31
+;; [get_memories] IF | File: compiler/lex.torth, Row: 664, Column: 5
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 664, Column: 8
+  push QWORD [get_memories##defining_memory]
+;; [get_memories] DO | File: compiler/lex.torth, Row: 664, Column: 24
+  pop rax
+  test rax, rax
+  jz get_memories_ENDIF115
+;; [get_memories] IF | File: compiler/lex.torth, Row: 667, Column: 7
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 667, Column: 10
+  push QWORD [get_memories##memory_name]
+;; [get_memories] Call str.len | File: compiler/lex.torth, Row: 667, Column: 22
+  call c3RyLmxlbg__
+;; [get_memories] PUSH_INT | File: compiler/lex.torth, Row: 667, Column: 30
+  mov rax, 0
+  push rax
+;; [get_memories] INTRINSIC EQ | File: compiler/lex.torth, Row: 667, Column: 32
+  pop rax
+  pop rbx
+  mov rcx, 0
+  mov rdx, 1
+  cmp rbx, rax
+  cmove rcx, rdx
+  push rcx
+;; [get_memories] DO | File: compiler/lex.torth, Row: 667, Column: 35
+  pop rax
+  test rax, rax
+  jz get_memories_ENDIF56
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 668, Column: 9
+  push QWORD [get_memories##memories]
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 668, Column: 18
+  push QWORD [get_memories##token_value]
+;; [get_memories] Call get_memory_name | File: compiler/lex.torth, Row: 668, Column: 30
+  call Z2V0X21lbW9yeV9uYW1l
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 669, Column: 9
+  push QWORD [get_memories##memory_name]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 669, Column: 21
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##memory_name], rbx
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 671, Column: 9
+  push QWORD [get_memories##index]
+;; [get_memories] PUSH_INT | File: compiler/lex.torth, Row: 671, Column: 15
+  mov rax, 1
+  push rax
+;; [get_memories] INTRINSIC PLUS | File: compiler/lex.torth, Row: 671, Column: 17
+  pop rax
+  add [rsp], rax
+  ;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 671, Column: 19
+  push QWORD [get_memories##index]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 671, Column: 25
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##index], rbx
+;; [get_memories] CONTINUE | File: compiler/lex.torth, Row: 672, Column: 9
+  jmp get_memories_WHILE16;; [get_memories] ENDIF | File: compiler/lex.torth, Row: 673, Column: 7
+get_memories_ENDIF56:
+;; [get_memories] IF | File: compiler/lex.torth, Row: 676, Column: 7
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 676, Column: 10
+  push QWORD [get_memories##memory_size]
+;; [get_memories] PUSH_INT | File: compiler/lex.torth, Row: 676, Column: 22
+  mov rax, 0
+  push rax
+;; [get_memories] INTRINSIC EQ | File: compiler/lex.torth, Row: 676, Column: 24
+  pop rax
+  pop rbx
+  mov rcx, 0
+  mov rdx, 1
+  cmp rbx, rax
+  cmove rcx, rdx
+  push rcx
+;; [get_memories] DO | File: compiler/lex.torth, Row: 676, Column: 27
+  pop rax
+  test rax, rax
+  jz get_memories_ENDIF114
+;; [get_memories] IF | File: compiler/lex.torth, Row: 679, Column: 9
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 679, Column: 12
+  push QWORD [get_memories##token_value]
+;; [get_memories] Call str.is_numeric | File: compiler/lex.torth, Row: 679, Column: 24
+  call c3RyLmlzX251bWVyaWM_
+;; [get_memories] DO | File: compiler/lex.torth, Row: 679, Column: 39
+  pop rax
+  test rax, rax
+  jz get_memories_ELSE70
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 680, Column: 11
+  push QWORD [get_memories##token_value]
+;; [get_memories] Call atoi | File: compiler/lex.torth, Row: 680, Column: 23
+  call YXRvaQ__
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 680, Column: 28
+  push QWORD [get_memories##memory_size]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 680, Column: 40
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##memory_size], rbx
+;; [get_memories] ELSE | File: compiler/lex.torth, Row: 681, Column: 9
+  jmp get_memories_ENDIF90
+get_memories_ELSE70:
+;; [get_memories] IF | File: compiler/lex.torth, Row: 683, Column: 11
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 683, Column: 14
+  push QWORD [get_memories##constants]
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 683, Column: 24
+  push QWORD [get_memories##token_value]
+;; [get_memories] Call constant_exists | File: compiler/lex.torth, Row: 683, Column: 36
+  call Y29uc3RhbnRfZXhpc3Rz
+;; [get_memories] DO | File: compiler/lex.torth, Row: 683, Column: 52
+  pop rax
+  test rax, rax
+  jz get_memories_ELSE83
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 684, Column: 13
+  push QWORD [get_memories##constants]
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 684, Column: 23
+  push QWORD [get_memories##token_value]
+;; [get_memories] Call get_constant | File: compiler/lex.torth, Row: 684, Column: 35
+  call Z2V0X2NvbnN0YW50
+;; [get_memories] Call Constant.value | File: compiler/lex.torth, Row: 685, Column: 13
+  call Q29uc3RhbnQudmFsdWU_
+;; [get_memories] Call atoi | File: compiler/lex.torth, Row: 685, Column: 28
+  call YXRvaQ__
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 686, Column: 13
+  push QWORD [get_memories##memory_size]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 686, Column: 25
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##memory_size], rbx
+;; [get_memories] ELSE | File: compiler/lex.torth, Row: 687, Column: 11
+  jmp get_memories_ENDIF89
+get_memories_ELSE83:
+;; [get_memories] PUSH_STR | File: compiler/lex.torth, Row: 688, Column: 13
+  mov rsi, get_memories_s84 ; Pointer to string
+  push rsi
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 689, Column: 13
+  push QWORD [get_memories##token_value]
+;; [get_memories] Call str.cat | File: compiler/lex.torth, Row: 689, Column: 25
+  call c3RyLmNhdA__
+;; [get_memories] PUSH_STR | File: compiler/lex.torth, Row: 690, Column: 13
+  mov rsi, get_memories_s87 ; Pointer to string
+  push rsi
+;; [get_memories] Call CompilerError | File: compiler/lex.torth, Row: 690, Column: 27
+  call Q29tcGlsZXJFcnJvcg__
+;; [get_memories] ENDIF | File: compiler/lex.torth, Row: 691, Column: 11
+get_memories_ENDIF89:
+;; [get_memories] ENDIF | File: compiler/lex.torth, Row: 692, Column: 9
+get_memories_ENDIF90:
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 695, Column: 9
+  push QWORD [get_memories##location]
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 695, Column: 18
+  push QWORD [get_memories##memory_size]
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 695, Column: 30
+  push QWORD [get_memories##memory_name]
+;; [get_memories] Call str.copy | File: compiler/lex.torth, Row: 695, Column: 42
+  call c3RyLmNvcHk_
+;; [get_memories] Call Mem.init | File: compiler/lex.torth, Row: 695, Column: 51
+  call TWVtLmluaXQ_
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 696, Column: 9
+  push QWORD [get_memories##memories]
+;; [get_memories] CAST | File: compiler/lex.torth, Row: 696, Column: 18
+;; [get_memories] Call List.append | File: compiler/lex.torth, Row: 696, Column: 29
+  call TGlzdC5hcHBlbmQ_
+;; [get_memories] PUSH_STR | File: compiler/lex.torth, Row: 699, Column: 9
+  mov rsi, get_memories_s99 ; Pointer to string
+  push rsi
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 699, Column: 15
+  push QWORD [get_memories##memory_name]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 699, Column: 27
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##memory_name], rbx
+;; [get_memories] PUSH_INT | File: compiler/lex.torth, Row: 700, Column: 9
+  mov rax, 0
+  push rax
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 700, Column: 15
+  push QWORD [get_memories##memory_size]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 700, Column: 27
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##memory_size], rbx
+;; [get_memories] PUSH_BOOL | File: compiler/lex.torth, Row: 701, Column: 9
+  mov rax, 0
+  push rax
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 701, Column: 15
+  push QWORD [get_memories##defining_memory]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 701, Column: 31
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##defining_memory], rbx
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 702, Column: 9
+  push QWORD [get_memories##index]
+;; [get_memories] PUSH_INT | File: compiler/lex.torth, Row: 702, Column: 15
+  mov rax, 1
+  push rax
+;; [get_memories] INTRINSIC PLUS | File: compiler/lex.torth, Row: 702, Column: 17
+  pop rax
+  add [rsp], rax
+  ;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 702, Column: 19
+  push QWORD [get_memories##index]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 702, Column: 25
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##index], rbx
+;; [get_memories] CONTINUE | File: compiler/lex.torth, Row: 703, Column: 9
+  jmp get_memories_WHILE16;; [get_memories] ENDIF | File: compiler/lex.torth, Row: 704, Column: 7
+get_memories_ENDIF114:
+;; [get_memories] ENDIF | File: compiler/lex.torth, Row: 705, Column: 5
+get_memories_ENDIF115:
+;; [get_memories] IF | File: compiler/lex.torth, Row: 707, Column: 5
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 707, Column: 8
+  push QWORD [get_memories##token_value]
+;; [get_memories] Call str.copy | File: compiler/lex.torth, Row: 707, Column: 20
+  call c3RyLmNvcHk_
+;; [get_memories] Call str.upper | File: compiler/lex.torth, Row: 707, Column: 29
+  call c3RyLnVwcGVy
+;; [get_memories] PUSH_STR | File: compiler/lex.torth, Row: 707, Column: 39
+  mov rsi, get_memories_s120 ; Pointer to string
+  push rsi
+;; [get_memories] Call streq | File: compiler/lex.torth, Row: 707, Column: 48
+  call c3RyZXE_
+;; [get_memories] DO | File: compiler/lex.torth, Row: 707, Column: 54
+  pop rax
+  test rax, rax
+  jz get_memories_ENDIF126
+;; [get_memories] PUSH_BOOL | File: compiler/lex.torth, Row: 708, Column: 7
+  mov rax, 1
+  push rax
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 708, Column: 12
+  push QWORD [get_memories##defining_memory]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 708, Column: 28
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##defining_memory], rbx
+;; [get_memories] ENDIF | File: compiler/lex.torth, Row: 709, Column: 5
+get_memories_ENDIF126:
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 710, Column: 5
+  push QWORD [get_memories##index]
+;; [get_memories] PUSH_INT | File: compiler/lex.torth, Row: 710, Column: 11
+  mov rax, 1
+  push rax
+;; [get_memories] INTRINSIC PLUS | File: compiler/lex.torth, Row: 710, Column: 13
+  pop rax
+  add [rsp], rax
+  ;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 710, Column: 15
+  push QWORD [get_memories##index]
+;; [get_memories] ASSIGN_BIND | File: compiler/lex.torth, Row: 710, Column: 21
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_memories##index], rbx
+;; [get_memories] DONE | File: compiler/lex.torth, Row: 711, Column: 3
+  jmp get_memories_WHILE16
+get_memories_DONE132:
+;; [get_memories] PUSH_BIND | File: compiler/lex.torth, Row: 712, Column: 3
+  push QWORD [get_memories##memories]
+;; [get_memories] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
 Z2V0X2NvbnN0YW50c19uYW1l:
 ;; [get_constants_name] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [get_constants_name] POP_BIND | File: compiler/lex.torth, Row: 638, Column: 29
+;; [get_constants_name] POP_BIND | File: compiler/lex.torth, Row: 716, Column: 29
   pop QWORD [get_constants_name##constants]
-;; [get_constants_name] POP_BIND | File: compiler/lex.torth, Row: 638, Column: 54
+;; [get_constants_name] POP_BIND | File: compiler/lex.torth, Row: 716, Column: 54
   pop QWORD [get_constants_name##token_value]
-;; [get_constants_name] IF | File: compiler/lex.torth, Row: 640, Column: 3
-;; [get_constants_name] PUSH_BIND | File: compiler/lex.torth, Row: 640, Column: 6
+;; [get_constants_name] IF | File: compiler/lex.torth, Row: 718, Column: 3
+;; [get_constants_name] PUSH_BIND | File: compiler/lex.torth, Row: 718, Column: 6
   push QWORD [get_constants_name##token_value]
-;; [get_constants_name] PUSH_BIND | File: compiler/lex.torth, Row: 640, Column: 18
+;; [get_constants_name] PUSH_BIND | File: compiler/lex.torth, Row: 718, Column: 18
   push QWORD [get_constants_name##constants]
-;; [get_constants_name] CAST | File: compiler/lex.torth, Row: 640, Column: 28
-;; [get_constants_name] Call List.contains_str | File: compiler/lex.torth, Row: 640, Column: 39
+;; [get_constants_name] CAST | File: compiler/lex.torth, Row: 718, Column: 28
+;; [get_constants_name] Call List.contains_str | File: compiler/lex.torth, Row: 718, Column: 39
   call TGlzdC5jb250YWluc19zdHI_
-;; [get_constants_name] DO | File: compiler/lex.torth, Row: 640, Column: 57
+;; [get_constants_name] DO | File: compiler/lex.torth, Row: 718, Column: 57
   pop rax
   test rax, rax
   jz get_constants_name_ENDIF15
-;; [get_constants_name] PUSH_STR | File: compiler/lex.torth, Row: 641, Column: 5
+;; [get_constants_name] PUSH_STR | File: compiler/lex.torth, Row: 719, Column: 5
   mov rsi, get_constants_name_s8 ; Pointer to string
   push rsi
-;; [get_constants_name] PUSH_BIND | File: compiler/lex.torth, Row: 641, Column: 18
+;; [get_constants_name] PUSH_BIND | File: compiler/lex.torth, Row: 719, Column: 18
   push QWORD [get_constants_name##token_value]
-;; [get_constants_name] Call str.cat | File: compiler/lex.torth, Row: 641, Column: 30
+;; [get_constants_name] Call str.cat | File: compiler/lex.torth, Row: 719, Column: 30
   call c3RyLmNhdA__
-;; [get_constants_name] PUSH_STR | File: compiler/lex.torth, Row: 642, Column: 5
+;; [get_constants_name] PUSH_STR | File: compiler/lex.torth, Row: 720, Column: 5
   mov rsi, get_constants_name_s11 ; Pointer to string
   push rsi
-;; [get_constants_name] Call str.cat | File: compiler/lex.torth, Row: 642, Column: 59
+;; [get_constants_name] Call str.cat | File: compiler/lex.torth, Row: 720, Column: 59
   call c3RyLmNhdA__
-;; [get_constants_name] PUSH_STR | File: compiler/lex.torth, Row: 643, Column: 5
+;; [get_constants_name] PUSH_STR | File: compiler/lex.torth, Row: 721, Column: 5
   mov rsi, get_constants_name_s13 ; Pointer to string
   push rsi
-;; [get_constants_name] Call CompilerError | File: compiler/lex.torth, Row: 643, Column: 29
+;; [get_constants_name] Call CompilerError | File: compiler/lex.torth, Row: 721, Column: 29
   call Q29tcGlsZXJFcnJvcg__
-;; [get_constants_name] ENDIF | File: compiler/lex.torth, Row: 644, Column: 3
+;; [get_constants_name] ENDIF | File: compiler/lex.torth, Row: 722, Column: 3
 get_constants_name_ENDIF15:
-;; [get_constants_name] PUSH_BIND | File: compiler/lex.torth, Row: 645, Column: 3
+;; [get_constants_name] PUSH_BIND | File: compiler/lex.torth, Row: 723, Column: 3
   push QWORD [get_constants_name##token_value]
 ;; [get_constants_name] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
+Z2V0X21lbW9yeV9uYW1l:
+;; [get_memory_name] Save the return address to return_stack
+  add QWORD r14, 8    ; Increment return stack pointer
+  pop QWORD [r14]     ; Pop from stack to return stack
+;; [get_memory_name] POP_BIND | File: compiler/lex.torth, Row: 732, Column: 26
+  pop QWORD [get_memory_name##token_value]
+;; [get_memory_name] POP_BIND | File: compiler/lex.torth, Row: 732, Column: 42
+  pop QWORD [get_memory_name##memories]
+;; [get_memory_name] IF | File: compiler/lex.torth, Row: 734, Column: 3
+;; [get_memory_name] PUSH_BIND | File: compiler/lex.torth, Row: 734, Column: 6
+  push QWORD [get_memory_name##token_value]
+;; [get_memory_name] PUSH_BIND | File: compiler/lex.torth, Row: 734, Column: 18
+  push QWORD [get_memory_name##memories]
+;; [get_memory_name] CAST | File: compiler/lex.torth, Row: 734, Column: 27
+;; [get_memory_name] Call List.contains_str | File: compiler/lex.torth, Row: 734, Column: 38
+  call TGlzdC5jb250YWluc19zdHI_
+;; [get_memory_name] DO | File: compiler/lex.torth, Row: 734, Column: 56
+  pop rax
+  test rax, rax
+  jz get_memory_name_ENDIF15
+;; [get_memory_name] PUSH_STR | File: compiler/lex.torth, Row: 735, Column: 5
+  mov rsi, get_memory_name_s8 ; Pointer to string
+  push rsi
+;; [get_memory_name] PUSH_BIND | File: compiler/lex.torth, Row: 735, Column: 13
+  push QWORD [get_memory_name##token_value]
+;; [get_memory_name] Call str.cat | File: compiler/lex.torth, Row: 735, Column: 25
+  call c3RyLmNhdA__
+;; [get_memory_name] PUSH_STR | File: compiler/lex.torth, Row: 736, Column: 5
+  mov rsi, get_memory_name_s11 ; Pointer to string
+  push rsi
+;; [get_memory_name] Call str.cat | File: compiler/lex.torth, Row: 736, Column: 54
+  call c3RyLmNhdA__
+;; [get_memory_name] PUSH_STR | File: compiler/lex.torth, Row: 737, Column: 5
+  mov rsi, get_memory_name_s13 ; Pointer to string
+  push rsi
+;; [get_memory_name] Call CompilerError | File: compiler/lex.torth, Row: 737, Column: 27
+  call Q29tcGlsZXJFcnJvcg__
+;; [get_memory_name] ENDIF | File: compiler/lex.torth, Row: 738, Column: 3
+get_memory_name_ENDIF15:
+;; [get_memory_name] PUSH_BIND | File: compiler/lex.torth, Row: 739, Column: 3
+  push QWORD [get_memory_name##token_value]
+;; [get_memory_name] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
@@ -4376,34 +4778,34 @@ Z2V0X2Z1bmN0aW9ucw__:
 ;; [get_functions] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 656, Column: 3
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 750, Column: 3
   pop QWORD [get_functions##tokens]
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 657, Column: 3
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 751, Column: 3
   pop QWORD [get_functions##constants]
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 658, Column: 3
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 752, Column: 3
   pop QWORD [get_functions##memories]
-;; [get_functions] Call List.init | File: compiler/lex.torth, Row: 660, Column: 3
+;; [get_functions] Call List.init | File: compiler/lex.torth, Row: 754, Column: 3
   call TGlzdC5pbml0
-;; [get_functions] CAST | File: compiler/lex.torth, Row: 660, Column: 13
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 661, Column: 3
+;; [get_functions] CAST | File: compiler/lex.torth, Row: 754, Column: 13
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 755, Column: 3
   mov rax, 0
   push rax
-;; [get_functions] TAKE | File: compiler/lex.torth, Row: 662, Column: 3
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 662, Column: 8
+;; [get_functions] TAKE | File: compiler/lex.torth, Row: 756, Column: 3
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 756, Column: 8
   pop QWORD [get_functions##index]
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 662, Column: 14
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 756, Column: 14
   pop QWORD [get_functions##functions]
-;; [get_functions] IN | File: compiler/lex.torth, Row: 662, Column: 24
-;; [get_functions] WHILE | File: compiler/lex.torth, Row: 663, Column: 3
+;; [get_functions] IN | File: compiler/lex.torth, Row: 756, Column: 24
+;; [get_functions] WHILE | File: compiler/lex.torth, Row: 757, Column: 3
 get_functions_WHILE10:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 663, Column: 9
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 757, Column: 9
   push QWORD [get_functions##index]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 663, Column: 15
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 757, Column: 15
   push QWORD [get_functions##tokens]
-;; [get_functions] CAST | File: compiler/lex.torth, Row: 663, Column: 22
-;; [get_functions] Call List.len | File: compiler/lex.torth, Row: 663, Column: 33
+;; [get_functions] CAST | File: compiler/lex.torth, Row: 757, Column: 22
+;; [get_functions] Call List.len | File: compiler/lex.torth, Row: 757, Column: 33
   call TGlzdC5sZW4_
-;; [get_functions] INTRINSIC LT | File: compiler/lex.torth, Row: 663, Column: 42
+;; [get_functions] INTRINSIC LT | File: compiler/lex.torth, Row: 757, Column: 42
   pop rax
   pop rbx
   mov rcx, 0
@@ -4411,119 +4813,119 @@ get_functions_WHILE10:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [get_functions] DO | File: compiler/lex.torth, Row: 663, Column: 44
+;; [get_functions] DO | File: compiler/lex.torth, Row: 757, Column: 44
   pop rax
   test rax, rax
   jz get_functions_DONE53
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 665, Column: 5
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 759, Column: 5
   push QWORD [get_functions##index]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 665, Column: 11
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 759, Column: 11
   push QWORD [get_functions##tokens]
-;; [get_functions] CAST | File: compiler/lex.torth, Row: 665, Column: 18
-;; [get_functions] Call List.nth | File: compiler/lex.torth, Row: 665, Column: 29
+;; [get_functions] CAST | File: compiler/lex.torth, Row: 759, Column: 18
+;; [get_functions] Call List.nth | File: compiler/lex.torth, Row: 759, Column: 29
   call TGlzdC5udGg_
-;; [get_functions] Call ptr.load | File: compiler/lex.torth, Row: 665, Column: 38
+;; [get_functions] Call ptr.load | File: compiler/lex.torth, Row: 759, Column: 38
   call cHRyLmxvYWQ_
-;; [get_functions] Call Token.value | File: compiler/lex.torth, Row: 666, Column: 5
+;; [get_functions] Call Token.value | File: compiler/lex.torth, Row: 760, Column: 5
   call VG9rZW4udmFsdWU_
-;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 666, Column: 17
+;; [get_functions] Call str.copy | File: compiler/lex.torth, Row: 760, Column: 17
   call c3RyLmNvcHk_
-;; [get_functions] Call str.upper | File: compiler/lex.torth, Row: 666, Column: 26
+;; [get_functions] Call str.upper | File: compiler/lex.torth, Row: 760, Column: 26
   call c3RyLnVwcGVy
-;; [get_functions] TAKE | File: compiler/lex.torth, Row: 667, Column: 5
-;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 667, Column: 10
+;; [get_functions] TAKE | File: compiler/lex.torth, Row: 761, Column: 5
+;; [get_functions] POP_BIND | File: compiler/lex.torth, Row: 761, Column: 10
   pop QWORD [get_functions##token_upper]
-;; [get_functions] IN | File: compiler/lex.torth, Row: 667, Column: 22
-;; [get_functions] IF | File: compiler/lex.torth, Row: 669, Column: 5
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 669, Column: 8
+;; [get_functions] IN | File: compiler/lex.torth, Row: 761, Column: 22
+;; [get_functions] IF | File: compiler/lex.torth, Row: 763, Column: 5
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 763, Column: 8
   push QWORD [get_functions##token_upper]
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 669, Column: 20
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 763, Column: 20
   mov rsi, get_functions_s30 ; Pointer to string
   push rsi
-;; [get_functions] Call streq | File: compiler/lex.torth, Row: 669, Column: 31
+;; [get_functions] Call streq | File: compiler/lex.torth, Row: 763, Column: 31
   call c3RyZXE_
-;; [get_functions] DO | File: compiler/lex.torth, Row: 669, Column: 37
+;; [get_functions] DO | File: compiler/lex.torth, Row: 763, Column: 37
   pop rax
   test rax, rax
   jz get_functions_ENDIF47
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 670, Column: 7
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 764, Column: 7
   push QWORD [get_functions##index]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 670, Column: 13
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 764, Column: 13
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 670, Column: 15
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 764, Column: 15
   pop rax
   add [rsp], rax
-  ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 670, Column: 17
+  ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 764, Column: 17
   push QWORD [get_functions##index]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 670, Column: 23
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 764, Column: 23
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions##index], rbx
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 671, Column: 7
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 765, Column: 7
   mov rsi, get_functions_s38 ; Pointer to string
   push rsi
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 671, Column: 10
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 765, Column: 10
   push QWORD [get_functions##memories]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 671, Column: 19
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 765, Column: 19
   push QWORD [get_functions##constants]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 671, Column: 29
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 765, Column: 29
   push QWORD [get_functions##index]
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 671, Column: 35
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 765, Column: 35
   push QWORD [get_functions##tokens]
-;; [get_functions] Call parse_function | File: compiler/lex.torth, Row: 671, Column: 42
+;; [get_functions] Call parse_function | File: compiler/lex.torth, Row: 765, Column: 42
   call cGFyc2VfZnVuY3Rpb24_
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 672, Column: 7
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 766, Column: 7
   push QWORD [get_functions##functions]
-;; [get_functions] CAST | File: compiler/lex.torth, Row: 672, Column: 17
-;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 672, Column: 28
+;; [get_functions] CAST | File: compiler/lex.torth, Row: 766, Column: 17
+;; [get_functions] Call List.append | File: compiler/lex.torth, Row: 766, Column: 28
   call TGlzdC5hcHBlbmQ_
-;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 673, Column: 5
+;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 767, Column: 5
 get_functions_ENDIF47:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 674, Column: 5
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 768, Column: 5
   push QWORD [get_functions##index]
-;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 674, Column: 11
+;; [get_functions] PUSH_INT | File: compiler/lex.torth, Row: 768, Column: 11
   mov rax, 1
   push rax
-;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 674, Column: 13
+;; [get_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 768, Column: 13
   pop rax
   add [rsp], rax
-  ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 674, Column: 15
+  ;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 768, Column: 15
   push QWORD [get_functions##index]
-;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 674, Column: 21
+;; [get_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 768, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_functions##index], rbx
-;; [get_functions] DONE | File: compiler/lex.torth, Row: 675, Column: 3
+;; [get_functions] DONE | File: compiler/lex.torth, Row: 769, Column: 3
   jmp get_functions_WHILE10
 get_functions_DONE53:
-;; [get_functions] IF | File: compiler/lex.torth, Row: 678, Column: 3
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 678, Column: 6
+;; [get_functions] IF | File: compiler/lex.torth, Row: 772, Column: 3
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 772, Column: 6
   push QWORD [get_functions##functions]
-;; [get_functions] Call main_function_in_function_list | File: compiler/lex.torth, Row: 678, Column: 16
+;; [get_functions] Call main_function_in_function_list | File: compiler/lex.torth, Row: 772, Column: 16
   call bWFpbl9mdW5jdGlvbl9pbl9mdW5jdGlvbl9saXN0
-;; [get_functions] Call not | File: compiler/lex.torth, Row: 678, Column: 47
+;; [get_functions] Call not | File: compiler/lex.torth, Row: 772, Column: 47
   call bm90
-;; [get_functions] DO | File: compiler/lex.torth, Row: 678, Column: 51
+;; [get_functions] DO | File: compiler/lex.torth, Row: 772, Column: 51
   pop rax
   test rax, rax
   jz get_functions_ENDIF64
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 679, Column: 5
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 773, Column: 5
   mov rsi, get_functions_s59 ; Pointer to string
   push rsi
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 680, Column: 5
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 774, Column: 5
   mov rsi, get_functions_s60 ; Pointer to string
   push rsi
-;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 680, Column: 35
+;; [get_functions] Call str.cat | File: compiler/lex.torth, Row: 774, Column: 35
   call c3RyLmNhdA__
-;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 681, Column: 5
+;; [get_functions] PUSH_STR | File: compiler/lex.torth, Row: 775, Column: 5
   mov rsi, get_functions_s62 ; Pointer to string
   push rsi
-;; [get_functions] Call CompilerError | File: compiler/lex.torth, Row: 681, Column: 29
+;; [get_functions] Call CompilerError | File: compiler/lex.torth, Row: 775, Column: 29
   call Q29tcGlsZXJFcnJvcg__
-;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 682, Column: 3
+;; [get_functions] ENDIF | File: compiler/lex.torth, Row: 776, Column: 3
 get_functions_ENDIF64:
-;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 683, Column: 3
+;; [get_functions] PUSH_BIND | File: compiler/lex.torth, Row: 777, Column: 3
   push QWORD [get_functions##functions]
 ;; [get_functions] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -4534,54 +4936,54 @@ cGFyc2VfZnVuY3Rpb24_:
 ;; [parse_function] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 694, Column: 3
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 788, Column: 3
   pop QWORD [parse_function##tokens]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 695, Column: 3
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 789, Column: 3
   pop QWORD [parse_function##token_index]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 696, Column: 3
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 790, Column: 3
   pop QWORD [parse_function##constants]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 697, Column: 3
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 791, Column: 3
   pop QWORD [parse_function##memories]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 698, Column: 3
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 792, Column: 3
   pop QWORD [parse_function##class_name]
-;; [parse_function] Call get_function_part_delimiters | File: compiler/lex.torth, Row: 701, Column: 3
+;; [parse_function] Call get_function_part_delimiters | File: compiler/lex.torth, Row: 795, Column: 3
   call Z2V0X2Z1bmN0aW9uX3BhcnRfZGVsaW1pdGVycw__
-;; [parse_function] Call List.init | File: compiler/lex.torth, Row: 702, Column: 3
+;; [parse_function] Call List.init | File: compiler/lex.torth, Row: 796, Column: 3
   call TGlzdC5pbml0
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 702, Column: 13
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 703, Column: 3
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 796, Column: 13
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 797, Column: 3
   mov rax, 0
   push rax
-;; [parse_function] Call List.init | File: compiler/lex.torth, Row: 704, Column: 3
+;; [parse_function] Call List.init | File: compiler/lex.torth, Row: 798, Column: 3
   call TGlzdC5pbml0
-;; [parse_function] Call List.init | File: compiler/lex.torth, Row: 705, Column: 3
+;; [parse_function] Call List.init | File: compiler/lex.torth, Row: 799, Column: 3
   call TGlzdC5pbml0
-;; [parse_function] Call List.init | File: compiler/lex.torth, Row: 706, Column: 3
+;; [parse_function] Call List.init | File: compiler/lex.torth, Row: 800, Column: 3
   call TGlzdC5pbml0
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 706, Column: 13
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 707, Column: 3
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 708, Column: 5
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 800, Column: 13
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 801, Column: 3
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 802, Column: 5
   pop QWORD [parse_function##variables]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 709, Column: 5
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 803, Column: 5
   pop QWORD [parse_function##param_types]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 710, Column: 5
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 804, Column: 5
   pop QWORD [parse_function##return_types]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 711, Column: 5
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 805, Column: 5
   pop QWORD [parse_function##current_part]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 712, Column: 5
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 806, Column: 5
   pop QWORD [parse_function##function_tokens]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 713, Column: 5
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 807, Column: 5
   pop QWORD [parse_function##FUNCTION_PART_DELIMITERS]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 714, Column: 3
-;; [parse_function] IF | File: compiler/lex.torth, Row: 716, Column: 3
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 716, Column: 6
+;; [parse_function] IN | File: compiler/lex.torth, Row: 808, Column: 3
+;; [parse_function] IF | File: compiler/lex.torth, Row: 810, Column: 3
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 810, Column: 6
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 716, Column: 18
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 810, Column: 18
   push QWORD [parse_function##tokens]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 716, Column: 25
-;; [parse_function] Call List.len | File: compiler/lex.torth, Row: 716, Column: 36
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 810, Column: 25
+;; [parse_function] Call List.len | File: compiler/lex.torth, Row: 810, Column: 36
   call TGlzdC5sZW4_
-;; [parse_function] INTRINSIC GE | File: compiler/lex.torth, Row: 716, Column: 45
+;; [parse_function] INTRINSIC GE | File: compiler/lex.torth, Row: 810, Column: 45
   pop rax
   pop rbx
   mov rcx, 0
@@ -4589,108 +4991,108 @@ cGFyc2VfZnVuY3Rpb24_:
   cmp rbx, rax
   cmovge rcx, rdx
   push rcx
-;; [parse_function] DO | File: compiler/lex.torth, Row: 716, Column: 48
+;; [parse_function] DO | File: compiler/lex.torth, Row: 810, Column: 48
   pop rax
   test rax, rax
   jz parse_function_ENDIF39
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 717, Column: 5
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 811, Column: 5
   mov rsi, parse_function_s28 ; Pointer to string
   push rsi
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 718, Column: 5
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 812, Column: 5
   push QWORD [parse_function##tokens]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 718, Column: 12
-;; [parse_function] Call List.last | File: compiler/lex.torth, Row: 718, Column: 23
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 812, Column: 12
+;; [parse_function] Call List.last | File: compiler/lex.torth, Row: 812, Column: 23
   call TGlzdC5sYXN0
-;; [parse_function] Call Token.load | File: compiler/lex.torth, Row: 718, Column: 33
+;; [parse_function] Call Token.load | File: compiler/lex.torth, Row: 812, Column: 33
   call VG9rZW4ubG9hZA__
-;; [parse_function] Call Token.value | File: compiler/lex.torth, Row: 719, Column: 5
+;; [parse_function] Call Token.value | File: compiler/lex.torth, Row: 813, Column: 5
   call VG9rZW4udmFsdWU_
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 719, Column: 17
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 813, Column: 17
   call c3RyLmNhdA__
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 720, Column: 5
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 814, Column: 5
   mov rsi, parse_function_s35 ; Pointer to string
   push rsi
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 720, Column: 17
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 814, Column: 17
   call c3RyLmNhdA__
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 721, Column: 5
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 815, Column: 5
   mov rsi, parse_function_s37 ; Pointer to string
   push rsi
-;; [parse_function] Call CompilerError | File: compiler/lex.torth, Row: 721, Column: 20
+;; [parse_function] Call CompilerError | File: compiler/lex.torth, Row: 815, Column: 20
   call Q29tcGlsZXJFcnJvcg__
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 722, Column: 3
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 816, Column: 3
 parse_function_ENDIF39:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 725, Column: 3
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 819, Column: 3
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 725, Column: 15
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 819, Column: 15
   push QWORD [parse_function##tokens]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 725, Column: 22
-;; [parse_function] Call List.nth | File: compiler/lex.torth, Row: 725, Column: 33
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 819, Column: 22
+;; [parse_function] Call List.nth | File: compiler/lex.torth, Row: 819, Column: 33
   call TGlzdC5udGg_
-;; [parse_function] Call ptr.load | File: compiler/lex.torth, Row: 725, Column: 42
+;; [parse_function] Call ptr.load | File: compiler/lex.torth, Row: 819, Column: 42
   call cHRyLmxvYWQ_
-;; [parse_function] Call Token.value | File: compiler/lex.torth, Row: 725, Column: 51
+;; [parse_function] Call Token.value | File: compiler/lex.torth, Row: 819, Column: 51
   call VG9rZW4udmFsdWU_
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 726, Column: 3
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 726, Column: 8
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 820, Column: 3
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 820, Column: 8
   pop QWORD [parse_function##function_name]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 726, Column: 22
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 727, Column: 3
+;; [parse_function] IN | File: compiler/lex.torth, Row: 820, Column: 22
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 821, Column: 3
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 727, Column: 15
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 821, Column: 15
   mov rax, 1
   push rax
-;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 727, Column: 17
+;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 821, Column: 17
   pop rax
   add [rsp], rax
-  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 727, Column: 19
+  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 821, Column: 19
   push QWORD [parse_function##token_index]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 727, Column: 31
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 821, Column: 31
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##token_index], rbx
-;; [parse_function] IF | File: compiler/lex.torth, Row: 731, Column: 3
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 731, Column: 6
+;; [parse_function] IF | File: compiler/lex.torth, Row: 825, Column: 3
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 825, Column: 6
   push QWORD [parse_function##class_name]
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 731, Column: 17
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 825, Column: 17
   mov rsi, parse_function_s56 ; Pointer to string
   push rsi
-;; [parse_function] Call streq | File: compiler/lex.torth, Row: 731, Column: 20
+;; [parse_function] Call streq | File: compiler/lex.torth, Row: 825, Column: 20
   call c3RyZXE_
-;; [parse_function] Call not | File: compiler/lex.torth, Row: 731, Column: 26
+;; [parse_function] Call not | File: compiler/lex.torth, Row: 825, Column: 26
   call bm90
-;; [parse_function] DO | File: compiler/lex.torth, Row: 731, Column: 30
+;; [parse_function] DO | File: compiler/lex.torth, Row: 825, Column: 30
   pop rax
   test rax, rax
   jz parse_function_ENDIF67
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 732, Column: 5
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 826, Column: 5
   push QWORD [parse_function##class_name]
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 732, Column: 16
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 826, Column: 16
   mov rsi, parse_function_s61 ; Pointer to string
   push rsi
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 732, Column: 21
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 826, Column: 21
   call c3RyLmNhdA__
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 733, Column: 5
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 827, Column: 5
   push QWORD [parse_function##function_name]
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 733, Column: 21
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 827, Column: 21
   call c3RyLmNhdA__
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 734, Column: 5
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 828, Column: 5
   push QWORD [parse_function##function_name]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 734, Column: 19
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 828, Column: 19
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##function_name], rbx
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 735, Column: 3
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 829, Column: 3
 parse_function_ENDIF67:
-;; [parse_function] WHILE | File: compiler/lex.torth, Row: 737, Column: 3
+;; [parse_function] WHILE | File: compiler/lex.torth, Row: 831, Column: 3
 parse_function_WHILE68:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 737, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 831, Column: 9
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 737, Column: 21
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 831, Column: 21
   push QWORD [parse_function##tokens]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 737, Column: 28
-;; [parse_function] Call List.len | File: compiler/lex.torth, Row: 737, Column: 39
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 831, Column: 28
+;; [parse_function] Call List.len | File: compiler/lex.torth, Row: 831, Column: 39
   call TGlzdC5sZW4_
-;; [parse_function] INTRINSIC LT | File: compiler/lex.torth, Row: 737, Column: 48
+;; [parse_function] INTRINSIC LT | File: compiler/lex.torth, Row: 831, Column: 48
   pop rax
   pop rbx
   mov rcx, 0
@@ -4698,179 +5100,179 @@ parse_function_WHILE68:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_function] DO | File: compiler/lex.torth, Row: 737, Column: 50
+;; [parse_function] DO | File: compiler/lex.torth, Row: 831, Column: 50
   pop rax
   test rax, rax
   jz parse_function_DONE374
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 739, Column: 5
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 833, Column: 5
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 739, Column: 17
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 833, Column: 17
   push QWORD [parse_function##tokens]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 739, Column: 24
-;; [parse_function] Call List.nth | File: compiler/lex.torth, Row: 739, Column: 35
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 833, Column: 24
+;; [parse_function] Call List.nth | File: compiler/lex.torth, Row: 833, Column: 35
   call TGlzdC5udGg_
-;; [parse_function] Call Token.load | File: compiler/lex.torth, Row: 739, Column: 44
+;; [parse_function] Call Token.load | File: compiler/lex.torth, Row: 833, Column: 44
   call VG9rZW4ubG9hZA__
-;; [parse_function] INTRINSIC dup | File: compiler/lex.torth, Row: 740, Column: 5
+;; [parse_function] INTRINSIC dup | File: compiler/lex.torth, Row: 834, Column: 5
   push QWORD [rsp]
-;; [parse_function] Call Token.value | File: compiler/lex.torth, Row: 740, Column: 9
+;; [parse_function] Call Token.value | File: compiler/lex.torth, Row: 834, Column: 9
   call VG9rZW4udmFsdWU_
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 741, Column: 5
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 741, Column: 10
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 835, Column: 5
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 835, Column: 10
   pop QWORD [parse_function##token_value]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 741, Column: 22
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 835, Column: 22
   pop QWORD [parse_function##token]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 741, Column: 28
-;; [parse_function] IF | File: compiler/lex.torth, Row: 743, Column: 5
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 744, Column: 7
+;; [parse_function] IN | File: compiler/lex.torth, Row: 835, Column: 28
+;; [parse_function] IF | File: compiler/lex.torth, Row: 837, Column: 5
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 838, Column: 7
   push QWORD [parse_function##token_value]
-;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 744, Column: 19
+;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 838, Column: 19
   call c3RyLmNvcHk_
-;; [parse_function] Call str.upper | File: compiler/lex.torth, Row: 744, Column: 28
+;; [parse_function] Call str.upper | File: compiler/lex.torth, Row: 838, Column: 28
   call c3RyLnVwcGVy
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 745, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 839, Column: 7
   push QWORD [parse_function##current_part]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 745, Column: 20
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 839, Column: 20
   push QWORD [parse_function##FUNCTION_PART_DELIMITERS]
-;; [parse_function] Call List.nth | File: compiler/lex.torth, Row: 745, Column: 45
+;; [parse_function] Call List.nth | File: compiler/lex.torth, Row: 839, Column: 45
   call TGlzdC5udGg_
-;; [parse_function] Call str.load | File: compiler/lex.torth, Row: 745, Column: 54
+;; [parse_function] Call str.load | File: compiler/lex.torth, Row: 839, Column: 54
   call c3RyLmxvYWQ_
-;; [parse_function] Call streq | File: compiler/lex.torth, Row: 746, Column: 7
+;; [parse_function] Call streq | File: compiler/lex.torth, Row: 840, Column: 7
   call c3RyZXE_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 747, Column: 5
+;; [parse_function] DO | File: compiler/lex.torth, Row: 841, Column: 5
   pop rax
   test rax, rax
   jz parse_function_ELIF149
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 748, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 842, Column: 7
   push QWORD [parse_function##current_part]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 748, Column: 20
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 842, Column: 20
   mov rax, 1
   push rax
-;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 748, Column: 22
+;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 842, Column: 22
   pop rax
   add [rsp], rax
-  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 749, Column: 7
+  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 843, Column: 7
   push QWORD [parse_function##current_part]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 749, Column: 20
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 843, Column: 20
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##current_part], rbx
-;; [parse_function] IF | File: compiler/lex.torth, Row: 752, Column: 7
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 752, Column: 10
+;; [parse_function] IF | File: compiler/lex.torth, Row: 846, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 846, Column: 10
   push QWORD [parse_function##token_value]
-;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 752, Column: 22
+;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 846, Column: 22
   call c3RyLmNvcHk_
-;; [parse_function] Call str.upper | File: compiler/lex.torth, Row: 752, Column: 31
+;; [parse_function] Call str.upper | File: compiler/lex.torth, Row: 846, Column: 31
   call c3RyLnVwcGVy
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 752, Column: 41
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 846, Column: 41
   mov rsi, parse_function_s105 ; Pointer to string
   push rsi
-;; [parse_function] Call streq | File: compiler/lex.torth, Row: 752, Column: 47
+;; [parse_function] Call streq | File: compiler/lex.torth, Row: 846, Column: 47
   call c3RyZXE_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 752, Column: 53
+;; [parse_function] DO | File: compiler/lex.torth, Row: 846, Column: 53
   pop rax
   test rax, rax
   jz parse_function_ENDIF148
-;; [parse_function] IF | File: compiler/lex.torth, Row: 755, Column: 9
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 755, Column: 12
+;; [parse_function] IF | File: compiler/lex.torth, Row: 849, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 849, Column: 12
   push QWORD [parse_function##function_name]
-;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 755, Column: 26
+;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 849, Column: 26
   call c3RyLmNvcHk_
-;; [parse_function] Call str.upper | File: compiler/lex.torth, Row: 755, Column: 35
+;; [parse_function] Call str.upper | File: compiler/lex.torth, Row: 849, Column: 35
   call c3RyLnVwcGVy
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 755, Column: 45
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 849, Column: 45
   mov rsi, parse_function_s112 ; Pointer to string
   push rsi
-;; [parse_function] Call streq | File: compiler/lex.torth, Row: 755, Column: 52
+;; [parse_function] Call streq | File: compiler/lex.torth, Row: 849, Column: 52
   call c3RyZXE_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 755, Column: 58
+;; [parse_function] DO | File: compiler/lex.torth, Row: 849, Column: 58
   pop rax
   test rax, rax
   jz parse_function_ENDIF123
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 756, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 850, Column: 11
   push QWORD [parse_function##token]
-;; [parse_function] Call Token.location | File: compiler/lex.torth, Row: 756, Column: 17
+;; [parse_function] Call Token.location | File: compiler/lex.torth, Row: 850, Column: 17
   call VG9rZW4ubG9jYXRpb24_
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 757, Column: 11
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 851, Column: 11
   mov rsi, parse_function_s117 ; Pointer to string
   push rsi
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 757, Column: 17
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 851, Column: 17
   mov rsi, parse_function_s118 ; Pointer to string
   push rsi
-;; [parse_function] Call Token.init | File: compiler/lex.torth, Row: 757, Column: 21
+;; [parse_function] Call Token.init | File: compiler/lex.torth, Row: 851, Column: 21
   call VG9rZW4uaW5pdA__
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 758, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 852, Column: 11
   push QWORD [parse_function##function_tokens]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 758, Column: 27
-;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 758, Column: 38
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 852, Column: 27
+;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 852, Column: 38
   call TGlzdC5hcHBlbmQ_
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 759, Column: 9
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 853, Column: 9
 parse_function_ENDIF123:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 762, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 856, Column: 9
   push QWORD [parse_function##variables]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 763, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 857, Column: 9
   push QWORD [parse_function##function_tokens]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 764, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 858, Column: 9
   push QWORD [parse_function##return_types]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 764, Column: 22
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 858, Column: 22
   push QWORD [parse_function##param_types]
-;; [parse_function] Call Signature.init | File: compiler/lex.torth, Row: 764, Column: 34
+;; [parse_function] Call Signature.init | File: compiler/lex.torth, Row: 858, Column: 34
   call U2lnbmF0dXJlLmluaXQ_
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 765, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 859, Column: 9
   push QWORD [parse_function##function_name]
-;; [parse_function] Call Func.init | File: compiler/lex.torth, Row: 765, Column: 23
+;; [parse_function] Call Func.init | File: compiler/lex.torth, Row: 859, Column: 23
   call RnVuYy5pbml0
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 766, Column: 9
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 766, Column: 14
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 860, Column: 9
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 860, Column: 14
   pop QWORD [parse_function##func]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 766, Column: 19
-;; [parse_function] IF | File: compiler/lex.torth, Row: 769, Column: 9
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 769, Column: 12
+;; [parse_function] IN | File: compiler/lex.torth, Row: 860, Column: 19
+;; [parse_function] IF | File: compiler/lex.torth, Row: 863, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 863, Column: 12
   push QWORD [parse_function##func]
-;; [parse_function] Call Func.name | File: compiler/lex.torth, Row: 769, Column: 17
+;; [parse_function] Call Func.name | File: compiler/lex.torth, Row: 863, Column: 17
   call RnVuYy5uYW1l
-;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 769, Column: 27
+;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 863, Column: 27
   call c3RyLmNvcHk_
-;; [parse_function] Call str.upper | File: compiler/lex.torth, Row: 769, Column: 36
+;; [parse_function] Call str.upper | File: compiler/lex.torth, Row: 863, Column: 36
   call c3RyLnVwcGVy
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 769, Column: 46
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 863, Column: 46
   mov rsi, parse_function_s139 ; Pointer to string
   push rsi
-;; [parse_function] Call streq | File: compiler/lex.torth, Row: 769, Column: 53
+;; [parse_function] Call streq | File: compiler/lex.torth, Row: 863, Column: 53
   call c3RyZXE_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 769, Column: 59
+;; [parse_function] DO | File: compiler/lex.torth, Row: 863, Column: 59
   pop rax
   test rax, rax
   jz parse_function_ENDIF145
-;; [parse_function] PUSH_BOOL | File: compiler/lex.torth, Row: 770, Column: 13
+;; [parse_function] PUSH_BOOL | File: compiler/lex.torth, Row: 864, Column: 13
   mov rax, 1
   push rax
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 770, Column: 18
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 864, Column: 18
   push QWORD [parse_function##func]
-;; [parse_function] Call Func->is_used | File: compiler/lex.torth, Row: 770, Column: 23
+;; [parse_function] Call Func->is_used | File: compiler/lex.torth, Row: 864, Column: 23
   call RnVuYy0@aXNfdXNlZA__
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 771, Column: 9
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 865, Column: 9
 parse_function_ENDIF145:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 773, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 867, Column: 9
   push QWORD [parse_function##func]
-;; [parse_function] RETURN | File: compiler/lex.torth, Row: 773, Column: 14
+;; [parse_function] RETURN | File: compiler/lex.torth, Row: 867, Column: 14
 ;; [parse_function] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 774, Column: 7
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 868, Column: 7
 parse_function_ENDIF148:
-;; [parse_function] ELIF | File: compiler/lex.torth, Row: 776, Column: 5
+;; [parse_function] ELIF | File: compiler/lex.torth, Row: 870, Column: 5
   jmp parse_function_ENDIF368
 parse_function_ELIF149:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 776, Column: 10
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 870, Column: 10
   push QWORD [parse_function##current_part]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 776, Column: 23
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 870, Column: 23
   mov rax, 0
   push rax
-;; [parse_function] INTRINSIC EQ | File: compiler/lex.torth, Row: 776, Column: 25
+;; [parse_function] INTRINSIC EQ | File: compiler/lex.torth, Row: 870, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -4878,129 +5280,129 @@ parse_function_ELIF149:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [parse_function] DO | File: compiler/lex.torth, Row: 776, Column: 28
+;; [parse_function] DO | File: compiler/lex.torth, Row: 870, Column: 28
   pop rax
   test rax, rax
   jz parse_function_ELIF285
-;; [parse_function] IF | File: compiler/lex.torth, Row: 779, Column: 7
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 779, Column: 10
+;; [parse_function] IF | File: compiler/lex.torth, Row: 873, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 873, Column: 10
   push QWORD [parse_function##token_value]
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 779, Column: 22
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 873, Column: 22
   mov rsi, parse_function_s156 ; Pointer to string
   push rsi
-;; [parse_function] Call streq | File: compiler/lex.torth, Row: 779, Column: 26
+;; [parse_function] Call streq | File: compiler/lex.torth, Row: 873, Column: 26
   call c3RyZXE_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 779, Column: 32
+;; [parse_function] DO | File: compiler/lex.torth, Row: 873, Column: 32
   pop rax
   test rax, rax
   jz parse_function_ENDIF172
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 780, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 874, Column: 9
   push QWORD [parse_function##current_part]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 780, Column: 22
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 874, Column: 22
   mov rax, 2
   push rax
-;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 780, Column: 24
+;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 874, Column: 24
   pop rax
   add [rsp], rax
-  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 780, Column: 26
+  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 874, Column: 26
   push QWORD [parse_function##current_part]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 780, Column: 39
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 874, Column: 39
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##current_part], rbx
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 781, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 875, Column: 9
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 781, Column: 21
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 875, Column: 21
   mov rax, 1
   push rax
-;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 781, Column: 23
+;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 875, Column: 23
   pop rax
   add [rsp], rax
-  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 781, Column: 25
+  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 875, Column: 25
   push QWORD [parse_function##token_index]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 781, Column: 37
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 875, Column: 37
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##token_index], rbx
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 782, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 876, Column: 9
   push QWORD [parse_function##token_value]
-;; [parse_function] Call str.delete | File: compiler/lex.torth, Row: 782, Column: 21
+;; [parse_function] Call str.delete | File: compiler/lex.torth, Row: 876, Column: 21
   call c3RyLmRlbGV0ZQ__
-;; [parse_function] CONTINUE | File: compiler/lex.torth, Row: 783, Column: 9
-  jmp parse_function_WHILE68;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 784, Column: 7
+;; [parse_function] CONTINUE | File: compiler/lex.torth, Row: 877, Column: 9
+  jmp parse_function_WHILE68;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 878, Column: 7
 parse_function_ENDIF172:
-;; [parse_function] IF | File: compiler/lex.torth, Row: 788, Column: 7
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 788, Column: 10
+;; [parse_function] IF | File: compiler/lex.torth, Row: 882, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 882, Column: 10
   push QWORD [parse_function##token_value]
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 788, Column: 22
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 882, Column: 22
   mov rsi, parse_function_s175 ; Pointer to string
   push rsi
-;; [parse_function] Call str.startswith | File: compiler/lex.torth, Row: 788, Column: 28
+;; [parse_function] Call str.startswith | File: compiler/lex.torth, Row: 882, Column: 28
   call c3RyLnN0YXJ0c3dpdGg_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 788, Column: 43
+;; [parse_function] DO | File: compiler/lex.torth, Row: 882, Column: 43
   pop rax
   test rax, rax
   jz parse_function_ENDIF186
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 789, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 883, Column: 9
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 789, Column: 21
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 883, Column: 21
   push QWORD [parse_function##tokens]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 789, Column: 28
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 883, Column: 28
   push QWORD [parse_function##param_types]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 789, Column: 40
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 883, Column: 40
   push QWORD [parse_function##token_value]
-;; [parse_function] Call parse_fn_ptr_in_signature | File: compiler/lex.torth, Row: 789, Column: 52
+;; [parse_function] Call parse_fn_ptr_in_signature | File: compiler/lex.torth, Row: 883, Column: 52
   call cGFyc2VfZm5fcHRyX2luX3NpZ25hdHVyZQ__
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 790, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 884, Column: 9
   push QWORD [parse_function##token_index]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 790, Column: 21
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 884, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##token_index], rbx
-;; [parse_function] CONTINUE | File: compiler/lex.torth, Row: 791, Column: 9
-  jmp parse_function_WHILE68;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 792, Column: 7
+;; [parse_function] CONTINUE | File: compiler/lex.torth, Row: 885, Column: 9
+  jmp parse_function_WHILE68;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 886, Column: 7
 parse_function_ENDIF186:
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 796, Column: 7
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 890, Column: 7
   mov rsi, parse_function_s187 ; Pointer to string
   push rsi
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 796, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 890, Column: 11
   push QWORD [parse_function##token_value]
-;; [parse_function] Call str.find | File: compiler/lex.torth, Row: 796, Column: 23
+;; [parse_function] Call str.find | File: compiler/lex.torth, Row: 890, Column: 23
   call c3RyLmZpbmQ_
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 797, Column: 7
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 797, Column: 12
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 891, Column: 7
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 891, Column: 12
   pop QWORD [parse_function##param_colon]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 797, Column: 24
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 800, Column: 7
+;; [parse_function] IN | File: compiler/lex.torth, Row: 891, Column: 24
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 894, Column: 7
   push QWORD [parse_function##token_value]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 800, Column: 19
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 894, Column: 19
   push QWORD [parse_function##param_colon]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 800, Column: 31
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 894, Column: 31
   mov rax, 1
   push rax
-;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 800, Column: 33
+;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 894, Column: 33
   pop rax
   add [rsp], rax
-  ;; [parse_function] Call str+ | File: compiler/lex.torth, Row: 800, Column: 35
+  ;; [parse_function] Call str+ | File: compiler/lex.torth, Row: 894, Column: 35
   call c3RyKw__
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 801, Column: 7
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 801, Column: 12
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 895, Column: 7
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 895, Column: 12
   pop QWORD [parse_function##param_type]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 801, Column: 23
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 802, Column: 7
+;; [parse_function] IN | File: compiler/lex.torth, Row: 895, Column: 23
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 896, Column: 7
   push QWORD [parse_function##param_type]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 802, Column: 18
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 802, Column: 28
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 896, Column: 18
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 896, Column: 28
   push QWORD [parse_function##param_types]
-;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 802, Column: 40
+;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 896, Column: 40
   call TGlzdC5hcHBlbmQ_
-;; [parse_function] IF | File: compiler/lex.torth, Row: 805, Column: 7
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 805, Column: 10
+;; [parse_function] IF | File: compiler/lex.torth, Row: 899, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 899, Column: 10
   push QWORD [parse_function##param_colon]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 805, Column: 22
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 899, Column: 22
   mov rax, -1
   push rax
-;; [parse_function] INTRINSIC NE | File: compiler/lex.torth, Row: 805, Column: 25
+;; [parse_function] INTRINSIC NE | File: compiler/lex.torth, Row: 899, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -5008,17 +5410,17 @@ parse_function_ENDIF186:
   cmp rbx, rax
   cmovne rcx, rdx
   push rcx
-;; [parse_function] DO | File: compiler/lex.torth, Row: 805, Column: 28
+;; [parse_function] DO | File: compiler/lex.torth, Row: 899, Column: 28
   pop rax
   test rax, rax
   jz parse_function_ENDIF284
-;; [parse_function] IF | File: compiler/lex.torth, Row: 807, Column: 9
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 807, Column: 12
+;; [parse_function] IF | File: compiler/lex.torth, Row: 901, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 901, Column: 12
   push QWORD [parse_function##param_colon]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 807, Column: 24
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 901, Column: 24
   mov rax, 0
   push rax
-;; [parse_function] INTRINSIC EQ | File: compiler/lex.torth, Row: 807, Column: 26
+;; [parse_function] INTRINSIC EQ | File: compiler/lex.torth, Row: 901, Column: 26
   pop rax
   pop rbx
   mov rcx, 0
@@ -5026,167 +5428,167 @@ parse_function_ENDIF186:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [parse_function] DO | File: compiler/lex.torth, Row: 807, Column: 29
+;; [parse_function] DO | File: compiler/lex.torth, Row: 901, Column: 29
   pop rax
   test rax, rax
   jz parse_function_ENDIF227
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 808, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 902, Column: 11
   push QWORD [parse_function##token]
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 809, Column: 11
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 903, Column: 11
   mov rsi, parse_function_s216 ; Pointer to string
   push rsi
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 809, Column: 20
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 903, Column: 20
   push QWORD [parse_function##function_name]
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 809, Column: 55
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 903, Column: 55
   call c3RyLmNhdA__
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 810, Column: 11
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 904, Column: 11
   mov rsi, parse_function_s219 ; Pointer to string
   push rsi
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 810, Column: 55
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 904, Column: 55
   call c3RyLmNhdA__
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 811, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 905, Column: 11
   push QWORD [parse_function##token_value]
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 811, Column: 55
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 905, Column: 55
   call c3RyLmNhdA__
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 812, Column: 11
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 906, Column: 11
   mov rsi, parse_function_s223 ; Pointer to string
   push rsi
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 812, Column: 55
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 906, Column: 55
   call c3RyLmNhdA__
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 813, Column: 11
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 907, Column: 11
   mov rsi, parse_function_s225 ; Pointer to string
   push rsi
-;; [parse_function] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 813, Column: 26
+;; [parse_function] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 907, Column: 26
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 814, Column: 9
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 908, Column: 9
 parse_function_ENDIF227:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 817, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 911, Column: 9
   push QWORD [parse_function##token_value]
-;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 817, Column: 21
+;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 911, Column: 21
   call c3RyLmNvcHk_
-;; [parse_function] INTRINSIC dup | File: compiler/lex.torth, Row: 818, Column: 9
+;; [parse_function] INTRINSIC dup | File: compiler/lex.torth, Row: 912, Column: 9
   push QWORD [rsp]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 818, Column: 13
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 912, Column: 13
   push QWORD [parse_function##param_colon]
-;; [parse_function] Call str+ | File: compiler/lex.torth, Row: 818, Column: 25
+;; [parse_function] Call str+ | File: compiler/lex.torth, Row: 912, Column: 25
   call c3RyKw__
-;; [parse_function] Call str.empty | File: compiler/lex.torth, Row: 818, Column: 30
+;; [parse_function] Call str.empty | File: compiler/lex.torth, Row: 912, Column: 30
   call c3RyLmVtcHR5
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 819, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 913, Column: 9
   push QWORD [parse_function##token_value]
-;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 819, Column: 21
+;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 913, Column: 21
   call c3RyLmNvcHk_
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 819, Column: 30
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 913, Column: 30
   push QWORD [parse_function##param_colon]
-;; [parse_function] Call str+ | File: compiler/lex.torth, Row: 819, Column: 42
+;; [parse_function] Call str+ | File: compiler/lex.torth, Row: 913, Column: 42
   call c3RyKw__
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 819, Column: 47
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 913, Column: 47
   mov rax, 1
   push rax
-;; [parse_function] Call str+ | File: compiler/lex.torth, Row: 819, Column: 49
+;; [parse_function] Call str+ | File: compiler/lex.torth, Row: 913, Column: 49
   call c3RyKw__
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 820, Column: 9
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 821, Column: 11
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 914, Column: 9
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 915, Column: 11
   pop QWORD [parse_function##param_type]
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 822, Column: 11
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 916, Column: 11
   pop QWORD [parse_function##param_name]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 823, Column: 9
-;; [parse_function] IF | File: compiler/lex.torth, Row: 827, Column: 9
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 827, Column: 12
+;; [parse_function] IN | File: compiler/lex.torth, Row: 917, Column: 9
+;; [parse_function] IF | File: compiler/lex.torth, Row: 921, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 921, Column: 12
   push QWORD [parse_function##param_type]
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 827, Column: 23
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 921, Column: 23
   mov rsi, parse_function_s246 ; Pointer to string
   push rsi
-;; [parse_function] Call str.startswith | File: compiler/lex.torth, Row: 827, Column: 29
+;; [parse_function] Call str.startswith | File: compiler/lex.torth, Row: 921, Column: 29
   call c3RyLnN0YXJ0c3dpdGg_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 827, Column: 44
+;; [parse_function] DO | File: compiler/lex.torth, Row: 921, Column: 44
   pop rax
   test rax, rax
   jz parse_function_ENDIF262
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 829, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 923, Column: 11
   push QWORD [parse_function##param_types]
-;; [parse_function] Call List.len | File: compiler/lex.torth, Row: 829, Column: 23
+;; [parse_function] Call List.len | File: compiler/lex.torth, Row: 923, Column: 23
   call TGlzdC5sZW4_
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 829, Column: 32
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 923, Column: 32
   mov rax, 1
   push rax
-;; [parse_function] INTRINSIC MINUS | File: compiler/lex.torth, Row: 829, Column: 34
+;; [parse_function] INTRINSIC MINUS | File: compiler/lex.torth, Row: 923, Column: 34
   pop rax
   sub [rsp], rax
-  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 829, Column: 36
+  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 923, Column: 36
   push QWORD [parse_function##param_types]
-;; [parse_function] Call List.pop | File: compiler/lex.torth, Row: 829, Column: 48
+;; [parse_function] Call List.pop | File: compiler/lex.torth, Row: 923, Column: 48
   call TGlzdC5wb3A_
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 831, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 925, Column: 11
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 831, Column: 23
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 925, Column: 23
   push QWORD [parse_function##tokens]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 831, Column: 30
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 925, Column: 30
   push QWORD [parse_function##param_types]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 831, Column: 42
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 925, Column: 42
   push QWORD [parse_function##param_type]
-;; [parse_function] Call parse_fn_ptr_in_signature | File: compiler/lex.torth, Row: 831, Column: 53
+;; [parse_function] Call parse_fn_ptr_in_signature | File: compiler/lex.torth, Row: 925, Column: 53
   call cGFyc2VfZm5fcHRyX2luX3NpZ25hdHVyZQ__
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 832, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 926, Column: 11
   push QWORD [parse_function##token_index]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 832, Column: 23
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 926, Column: 23
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##token_index], rbx
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 833, Column: 9
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 927, Column: 9
 parse_function_ENDIF262:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 836, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 930, Column: 9
   push QWORD [parse_function##token]
-;; [parse_function] Call Token.location | File: compiler/lex.torth, Row: 836, Column: 15
+;; [parse_function] Call Token.location | File: compiler/lex.torth, Row: 930, Column: 15
   call VG9rZW4ubG9jYXRpb24_
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 837, Column: 9
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 931, Column: 9
   mov rsi, parse_function_s265 ; Pointer to string
   push rsi
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 838, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 932, Column: 9
   push QWORD [parse_function##param_name]
-;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 838, Column: 20
+;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 932, Column: 20
   call c3RyLmNvcHk_
-;; [parse_function] Call Token.init | File: compiler/lex.torth, Row: 839, Column: 9
+;; [parse_function] Call Token.init | File: compiler/lex.torth, Row: 933, Column: 9
   call VG9rZW4uaW5pdA__
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 840, Column: 9
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 840, Column: 14
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 934, Column: 9
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 934, Column: 14
   pop QWORD [parse_function##param_token]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 840, Column: 26
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 841, Column: 9
+;; [parse_function] IN | File: compiler/lex.torth, Row: 934, Column: 26
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 935, Column: 9
   mov rax, 3
   push rax
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 841, Column: 22
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 935, Column: 22
   push QWORD [parse_function##param_token]
-;; [parse_function] Call Token->vartype | File: compiler/lex.torth, Row: 841, Column: 34
+;; [parse_function] Call Token->vartype | File: compiler/lex.torth, Row: 935, Column: 34
   call VG9rZW4tPnZhcnR5cGU_
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 842, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 936, Column: 9
   push QWORD [parse_function##param_token]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 842, Column: 21
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 936, Column: 21
   push QWORD [parse_function##function_tokens]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 842, Column: 37
-;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 842, Column: 48
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 936, Column: 37
+;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 936, Column: 48
   call TGlzdC5hcHBlbmQ_
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 845, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 939, Column: 9
   push QWORD [parse_function##memories]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 845, Column: 18
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 939, Column: 18
   push QWORD [parse_function##variables]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 845, Column: 28
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 939, Column: 28
   push QWORD [parse_function##function_name]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 845, Column: 42
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 939, Column: 42
   push QWORD [parse_function##param_token]
-;; [parse_function] Call add_variable_to_list | File: compiler/lex.torth, Row: 845, Column: 54
+;; [parse_function] Call add_variable_to_list | File: compiler/lex.torth, Row: 939, Column: 54
   call YWRkX3ZhcmlhYmxlX3RvX2xpc3Q_
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 846, Column: 7
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 940, Column: 7
 parse_function_ENDIF284:
-;; [parse_function] ELIF | File: compiler/lex.torth, Row: 848, Column: 5
+;; [parse_function] ELIF | File: compiler/lex.torth, Row: 942, Column: 5
   jmp parse_function_ENDIF368
 parse_function_ELIF285:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 848, Column: 10
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 942, Column: 10
   push QWORD [parse_function##current_part]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 848, Column: 23
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 942, Column: 23
   mov rax, 1
   push rax
-;; [parse_function] INTRINSIC EQ | File: compiler/lex.torth, Row: 848, Column: 25
+;; [parse_function] INTRINSIC EQ | File: compiler/lex.torth, Row: 942, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -5194,59 +5596,59 @@ parse_function_ELIF285:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [parse_function] DO | File: compiler/lex.torth, Row: 848, Column: 28
+;; [parse_function] DO | File: compiler/lex.torth, Row: 942, Column: 28
   pop rax
   test rax, rax
   jz parse_function_ELIF308
-;; [parse_function] IF | File: compiler/lex.torth, Row: 851, Column: 7
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 851, Column: 10
+;; [parse_function] IF | File: compiler/lex.torth, Row: 945, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 945, Column: 10
   push QWORD [parse_function##token_value]
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 851, Column: 22
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 945, Column: 22
   mov rsi, parse_function_s292 ; Pointer to string
   push rsi
-;; [parse_function] Call str.startswith | File: compiler/lex.torth, Row: 851, Column: 28
+;; [parse_function] Call str.startswith | File: compiler/lex.torth, Row: 945, Column: 28
   call c3RyLnN0YXJ0c3dpdGg_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 851, Column: 43
+;; [parse_function] DO | File: compiler/lex.torth, Row: 945, Column: 43
   pop rax
   test rax, rax
   jz parse_function_ELSE302
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 852, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 946, Column: 9
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 852, Column: 21
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 946, Column: 21
   push QWORD [parse_function##tokens]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 852, Column: 28
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 946, Column: 28
   push QWORD [parse_function##return_types]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 852, Column: 41
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 946, Column: 41
   push QWORD [parse_function##token_value]
-;; [parse_function] Call parse_fn_ptr_in_signature | File: compiler/lex.torth, Row: 852, Column: 53
+;; [parse_function] Call parse_fn_ptr_in_signature | File: compiler/lex.torth, Row: 946, Column: 53
   call cGFyc2VfZm5fcHRyX2luX3NpZ25hdHVyZQ__
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 853, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 947, Column: 9
   push QWORD [parse_function##token_index]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 853, Column: 21
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 947, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##token_index], rbx
-;; [parse_function] ELSE | File: compiler/lex.torth, Row: 854, Column: 7
+;; [parse_function] ELSE | File: compiler/lex.torth, Row: 948, Column: 7
   jmp parse_function_ENDIF307
 parse_function_ELSE302:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 856, Column: 9
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 950, Column: 9
   push QWORD [parse_function##token_value]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 856, Column: 21
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 856, Column: 31
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 950, Column: 21
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 950, Column: 31
   push QWORD [parse_function##return_types]
-;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 856, Column: 44
+;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 950, Column: 44
   call TGlzdC5hcHBlbmQ_
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 857, Column: 7
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 951, Column: 7
 parse_function_ENDIF307:
-;; [parse_function] ELIF | File: compiler/lex.torth, Row: 859, Column: 5
+;; [parse_function] ELIF | File: compiler/lex.torth, Row: 953, Column: 5
   jmp parse_function_ENDIF368
 parse_function_ELIF308:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 859, Column: 10
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 953, Column: 10
   push QWORD [parse_function##current_part]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 859, Column: 23
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 953, Column: 23
   mov rax, 2
   push rax
-;; [parse_function] INTRINSIC EQ | File: compiler/lex.torth, Row: 859, Column: 25
+;; [parse_function] INTRINSIC EQ | File: compiler/lex.torth, Row: 953, Column: 25
   pop rax
   pop rbx
   mov rcx, 0
@@ -5254,38 +5656,38 @@ parse_function_ELIF308:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [parse_function] DO | File: compiler/lex.torth, Row: 859, Column: 28
+;; [parse_function] DO | File: compiler/lex.torth, Row: 953, Column: 28
   pop rax
   test rax, rax
   jz parse_function_ELSE364
-;; [parse_function] IF | File: compiler/lex.torth, Row: 861, Column: 7
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 861, Column: 10
+;; [parse_function] IF | File: compiler/lex.torth, Row: 955, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 955, Column: 10
   push QWORD [parse_function##constants]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 861, Column: 20
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 955, Column: 20
   push QWORD [parse_function##token_value]
-;; [parse_function] Call constant_exists | File: compiler/lex.torth, Row: 861, Column: 32
+;; [parse_function] Call constant_exists | File: compiler/lex.torth, Row: 955, Column: 32
   call Y29uc3RhbnRfZXhpc3Rz
-;; [parse_function] DO | File: compiler/lex.torth, Row: 861, Column: 48
+;; [parse_function] DO | File: compiler/lex.torth, Row: 955, Column: 48
   pop rax
   test rax, rax
   jz parse_function_ENDIF359
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 864, Column: 9
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 958, Column: 9
   mov rax, 0
   push rax
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 864, Column: 11
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 864, Column: 16
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 958, Column: 11
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 958, Column: 16
   pop QWORD [parse_function##constant_index]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 864, Column: 31
-;; [parse_function] WHILE | File: compiler/lex.torth, Row: 865, Column: 9
+;; [parse_function] IN | File: compiler/lex.torth, Row: 958, Column: 31
+;; [parse_function] WHILE | File: compiler/lex.torth, Row: 959, Column: 9
 parse_function_WHILE322:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 865, Column: 15
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 959, Column: 15
   push QWORD [parse_function##constant_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 865, Column: 30
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 959, Column: 30
   push QWORD [parse_function##constants]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 865, Column: 40
-;; [parse_function] Call List.len | File: compiler/lex.torth, Row: 865, Column: 51
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 959, Column: 40
+;; [parse_function] Call List.len | File: compiler/lex.torth, Row: 959, Column: 51
   call TGlzdC5sZW4_
-;; [parse_function] INTRINSIC LT | File: compiler/lex.torth, Row: 865, Column: 60
+;; [parse_function] INTRINSIC LT | File: compiler/lex.torth, Row: 959, Column: 60
   pop rax
   pop rbx
   mov rcx, 0
@@ -5293,135 +5695,135 @@ parse_function_WHILE322:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_function] DO | File: compiler/lex.torth, Row: 865, Column: 62
+;; [parse_function] DO | File: compiler/lex.torth, Row: 959, Column: 62
   pop rax
   test rax, rax
   jz parse_function_DONE358
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 866, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 960, Column: 11
   push QWORD [parse_function##constant_index]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 866, Column: 26
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 960, Column: 26
   push QWORD [parse_function##constants]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 866, Column: 36
-;; [parse_function] Call List.nth | File: compiler/lex.torth, Row: 866, Column: 47
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 960, Column: 36
+;; [parse_function] Call List.nth | File: compiler/lex.torth, Row: 960, Column: 47
   call TGlzdC5udGg_
-;; [parse_function] Call ptr.load | File: compiler/lex.torth, Row: 866, Column: 56
+;; [parse_function] Call ptr.load | File: compiler/lex.torth, Row: 960, Column: 56
   call cHRyLmxvYWQ_
-;; [parse_function] TAKE | File: compiler/lex.torth, Row: 867, Column: 11
-;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 867, Column: 16
+;; [parse_function] TAKE | File: compiler/lex.torth, Row: 961, Column: 11
+;; [parse_function] POP_BIND | File: compiler/lex.torth, Row: 961, Column: 16
   pop QWORD [parse_function##constant]
-;; [parse_function] IN | File: compiler/lex.torth, Row: 867, Column: 25
-;; [parse_function] IF | File: compiler/lex.torth, Row: 869, Column: 11
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 869, Column: 14
+;; [parse_function] IN | File: compiler/lex.torth, Row: 961, Column: 25
+;; [parse_function] IF | File: compiler/lex.torth, Row: 963, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 963, Column: 14
   push QWORD [parse_function##constant]
-;; [parse_function] Call Constant.name | File: compiler/lex.torth, Row: 869, Column: 23
+;; [parse_function] Call Constant.name | File: compiler/lex.torth, Row: 963, Column: 23
   call Q29uc3RhbnQubmFtZQ__
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 869, Column: 37
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 963, Column: 37
   push QWORD [parse_function##token_value]
-;; [parse_function] Call streq | File: compiler/lex.torth, Row: 869, Column: 49
+;; [parse_function] Call streq | File: compiler/lex.torth, Row: 963, Column: 49
   call c3RyZXE_
-;; [parse_function] DO | File: compiler/lex.torth, Row: 869, Column: 55
+;; [parse_function] DO | File: compiler/lex.torth, Row: 963, Column: 55
   pop rax
   test rax, rax
   jz parse_function_ENDIF352
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 870, Column: 13
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 964, Column: 13
   push QWORD [parse_function##constant]
-;; [parse_function] Call Constant.value | File: compiler/lex.torth, Row: 870, Column: 22
+;; [parse_function] Call Constant.value | File: compiler/lex.torth, Row: 964, Column: 22
   call Q29uc3RhbnQudmFsdWU_
-;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 870, Column: 37
+;; [parse_function] Call str.copy | File: compiler/lex.torth, Row: 964, Column: 37
   call c3RyLmNvcHk_
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 871, Column: 13
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 965, Column: 13
   push QWORD [parse_function##token]
-;; [parse_function] Call Token->value | File: compiler/lex.torth, Row: 871, Column: 19
+;; [parse_function] Call Token->value | File: compiler/lex.torth, Row: 965, Column: 19
   call VG9rZW4tPnZhbHVl
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 872, Column: 13
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 966, Column: 13
   mov rsi, parse_function_s348 ; Pointer to string
   push rsi
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 872, Column: 19
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 966, Column: 19
   push QWORD [parse_function##token]
-;; [parse_function] Call Token->type | File: compiler/lex.torth, Row: 872, Column: 25
+;; [parse_function] Call Token->type | File: compiler/lex.torth, Row: 966, Column: 25
   call VG9rZW4tPnR5cGU_
-;; [parse_function] BREAK | File: compiler/lex.torth, Row: 873, Column: 13
-  jmp parse_function_DONE358;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 874, Column: 11
+;; [parse_function] BREAK | File: compiler/lex.torth, Row: 967, Column: 13
+  jmp parse_function_DONE358;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 968, Column: 11
 parse_function_ENDIF352:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 875, Column: 11
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 969, Column: 11
   push QWORD [parse_function##constant_index]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 875, Column: 26
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 969, Column: 26
   mov rax, 1
   push rax
-;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 875, Column: 28
+;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 969, Column: 28
   pop rax
   add [rsp], rax
-  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 875, Column: 30
+  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 969, Column: 30
   push QWORD [parse_function##constant_index]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 875, Column: 45
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 969, Column: 45
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##constant_index], rbx
-;; [parse_function] DONE | File: compiler/lex.torth, Row: 876, Column: 9
+;; [parse_function] DONE | File: compiler/lex.torth, Row: 970, Column: 9
   jmp parse_function_WHILE322
 parse_function_DONE358:
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 877, Column: 7
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 971, Column: 7
 parse_function_ENDIF359:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 880, Column: 7
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 974, Column: 7
   push QWORD [parse_function##token]
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 880, Column: 13
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 974, Column: 13
   push QWORD [parse_function##function_tokens]
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 880, Column: 29
-;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 880, Column: 40
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 974, Column: 29
+;; [parse_function] Call List.append | File: compiler/lex.torth, Row: 974, Column: 40
   call TGlzdC5hcHBlbmQ_
-;; [parse_function] ELSE | File: compiler/lex.torth, Row: 882, Column: 5
+;; [parse_function] ELSE | File: compiler/lex.torth, Row: 976, Column: 5
   jmp parse_function_ENDIF368
 parse_function_ELSE364:
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 883, Column: 7
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 977, Column: 7
   mov rsi, parse_function_s365 ; Pointer to string
   push rsi
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 884, Column: 7
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 978, Column: 7
   mov rsi, parse_function_s366 ; Pointer to string
   push rsi
-;; [parse_function] Call CompilerError | File: compiler/lex.torth, Row: 884, Column: 25
+;; [parse_function] Call CompilerError | File: compiler/lex.torth, Row: 978, Column: 25
   call Q29tcGlsZXJFcnJvcg__
-;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 885, Column: 5
+;; [parse_function] ENDIF | File: compiler/lex.torth, Row: 979, Column: 5
 parse_function_ENDIF368:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 886, Column: 5
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 980, Column: 5
   push QWORD [parse_function##token_index]
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 886, Column: 17
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 980, Column: 17
   mov rax, 1
   push rax
-;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 886, Column: 19
+;; [parse_function] INTRINSIC PLUS | File: compiler/lex.torth, Row: 980, Column: 19
   pop rax
   add [rsp], rax
-  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 886, Column: 21
+  ;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 980, Column: 21
   push QWORD [parse_function##token_index]
-;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 886, Column: 33
+;; [parse_function] ASSIGN_BIND | File: compiler/lex.torth, Row: 980, Column: 33
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function##token_index], rbx
-;; [parse_function] DONE | File: compiler/lex.torth, Row: 887, Column: 3
+;; [parse_function] DONE | File: compiler/lex.torth, Row: 981, Column: 3
   jmp parse_function_WHILE68
 parse_function_DONE374:
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 890, Column: 3
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 984, Column: 3
   push QWORD [parse_function##token]
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 891, Column: 3
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 985, Column: 3
   mov rsi, parse_function_s376 ; Pointer to string
   push rsi
-;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 892, Column: 3
+;; [parse_function] PUSH_BIND | File: compiler/lex.torth, Row: 986, Column: 3
   push QWORD [parse_function##function_name]
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 892, Column: 31
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 986, Column: 31
   call c3RyLmNhdA__
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 893, Column: 3
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 987, Column: 3
   mov rsi, parse_function_s379 ; Pointer to string
   push rsi
-;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 893, Column: 31
+;; [parse_function] Call str.cat | File: compiler/lex.torth, Row: 987, Column: 31
   call c3RyLmNhdA__
-;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 894, Column: 3
+;; [parse_function] PUSH_STR | File: compiler/lex.torth, Row: 988, Column: 3
   mov rsi, parse_function_s381 ; Pointer to string
   push rsi
-;; [parse_function] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 894, Column: 18
+;; [parse_function] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 988, Column: 18
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 895, Column: 3
+;; [parse_function] PUSH_INT | File: compiler/lex.torth, Row: 989, Column: 3
   mov rax, 0
   push rax
-;; [parse_function] CAST | File: compiler/lex.torth, Row: 895, Column: 8
+;; [parse_function] CAST | File: compiler/lex.torth, Row: 989, Column: 8
 ;; [parse_function] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -5431,121 +5833,121 @@ cGFyc2VfZm5fcHRyX2luX3NpZ25hdHVyZQ__:
 ;; [parse_fn_ptr_in_signature] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 908, Column: 3
+;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 1002, Column: 3
   pop QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 909, Column: 3
+;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 1003, Column: 3
   pop QWORD [parse_fn_ptr_in_signature##types]
-;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 910, Column: 3
+;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 1004, Column: 3
   pop QWORD [parse_fn_ptr_in_signature##tokens]
-;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 911, Column: 3
+;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 1005, Column: 3
   pop QWORD [parse_fn_ptr_in_signature##token_index]
-;; [parse_fn_ptr_in_signature] IF | File: compiler/lex.torth, Row: 914, Column: 3
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 914, Column: 6
+;; [parse_fn_ptr_in_signature] IF | File: compiler/lex.torth, Row: 1008, Column: 3
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1008, Column: 6
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 914, Column: 15
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1008, Column: 15
   mov rsi, parse_fn_ptr_in_signature_s6 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] Call streq | File: compiler/lex.torth, Row: 914, Column: 22
+;; [parse_fn_ptr_in_signature] Call streq | File: compiler/lex.torth, Row: 1008, Column: 22
   call c3RyZXE_
-;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 914, Column: 28
+;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 1008, Column: 28
   pop rax
   test rax, rax
   jz parse_fn_ptr_in_signature_ENDIF15
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 915, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1009, Column: 5
   mov rsi, parse_fn_ptr_in_signature_s9 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 915, Column: 24
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 915, Column: 34
+;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 1009, Column: 24
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1009, Column: 34
   push QWORD [parse_fn_ptr_in_signature##types]
-;; [parse_fn_ptr_in_signature] Call List.append | File: compiler/lex.torth, Row: 915, Column: 40
+;; [parse_fn_ptr_in_signature] Call List.append | File: compiler/lex.torth, Row: 1009, Column: 40
   call TGlzdC5hcHBlbmQ_
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 916, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1010, Column: 5
   push QWORD [parse_fn_ptr_in_signature##token_index]
-;; [parse_fn_ptr_in_signature] RETURN | File: compiler/lex.torth, Row: 916, Column: 17
+;; [parse_fn_ptr_in_signature] RETURN | File: compiler/lex.torth, Row: 1010, Column: 17
 ;; [parse_fn_ptr_in_signature] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [parse_fn_ptr_in_signature] ENDIF | File: compiler/lex.torth, Row: 917, Column: 3
+;; [parse_fn_ptr_in_signature] ENDIF | File: compiler/lex.torth, Row: 1011, Column: 3
 parse_fn_ptr_in_signature_ENDIF15:
-;; [parse_fn_ptr_in_signature] IF | File: compiler/lex.torth, Row: 920, Column: 3
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 920, Column: 6
+;; [parse_fn_ptr_in_signature] IF | File: compiler/lex.torth, Row: 1014, Column: 3
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1014, Column: 6
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 920, Column: 15
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1014, Column: 15
   mov rsi, parse_fn_ptr_in_signature_s18 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] Call str.endswith | File: compiler/lex.torth, Row: 920, Column: 19
+;; [parse_fn_ptr_in_signature] Call str.endswith | File: compiler/lex.torth, Row: 1014, Column: 19
   call c3RyLmVuZHN3aXRo
-;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 920, Column: 32
+;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 1014, Column: 32
   pop rax
   test rax, rax
   jz parse_fn_ptr_in_signature_ENDIF30
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 921, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1015, Column: 5
   mov rsi, parse_fn_ptr_in_signature_s21 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 921, Column: 17
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1015, Column: 17
   mov rsi, parse_fn_ptr_in_signature_s22 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 921, Column: 21
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1015, Column: 21
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] Call str.replace | File: compiler/lex.torth, Row: 921, Column: 30
+;; [parse_fn_ptr_in_signature] Call str.replace | File: compiler/lex.torth, Row: 1015, Column: 30
   call c3RyLnJlcGxhY2U_
-;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 922, Column: 5
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 922, Column: 15
+;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 1016, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1016, Column: 15
   push QWORD [parse_fn_ptr_in_signature##types]
-;; [parse_fn_ptr_in_signature] Call List.append | File: compiler/lex.torth, Row: 922, Column: 21
+;; [parse_fn_ptr_in_signature] Call List.append | File: compiler/lex.torth, Row: 1016, Column: 21
   call TGlzdC5hcHBlbmQ_
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 923, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1017, Column: 5
   push QWORD [parse_fn_ptr_in_signature##token_index]
-;; [parse_fn_ptr_in_signature] RETURN | File: compiler/lex.torth, Row: 923, Column: 17
+;; [parse_fn_ptr_in_signature] RETURN | File: compiler/lex.torth, Row: 1017, Column: 17
 ;; [parse_fn_ptr_in_signature] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [parse_fn_ptr_in_signature] ENDIF | File: compiler/lex.torth, Row: 924, Column: 3
+;; [parse_fn_ptr_in_signature] ENDIF | File: compiler/lex.torth, Row: 1018, Column: 3
 parse_fn_ptr_in_signature_ENDIF30:
-;; [parse_fn_ptr_in_signature] IF | File: compiler/lex.torth, Row: 927, Column: 3
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 927, Column: 6
+;; [parse_fn_ptr_in_signature] IF | File: compiler/lex.torth, Row: 1021, Column: 3
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1021, Column: 6
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 927, Column: 15
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1021, Column: 15
   mov rsi, parse_fn_ptr_in_signature_s33 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] Call str.endswith | File: compiler/lex.torth, Row: 927, Column: 20
+;; [parse_fn_ptr_in_signature] Call str.endswith | File: compiler/lex.torth, Row: 1021, Column: 20
   call c3RyLmVuZHN3aXRo
-;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 927, Column: 33
+;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 1021, Column: 33
   pop rax
   test rax, rax
   jz parse_fn_ptr_in_signature_ENDIF42
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 928, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1022, Column: 5
   mov rsi, parse_fn_ptr_in_signature_s36 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 928, Column: 15
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1022, Column: 15
   mov rsi, parse_fn_ptr_in_signature_s37 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 928, Column: 20
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1022, Column: 20
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] Call str.replace | File: compiler/lex.torth, Row: 928, Column: 29
+;; [parse_fn_ptr_in_signature] Call str.replace | File: compiler/lex.torth, Row: 1022, Column: 29
   call c3RyLnJlcGxhY2U_
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 929, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1023, Column: 5
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] ASSIGN_BIND | File: compiler/lex.torth, Row: 929, Column: 14
+;; [parse_fn_ptr_in_signature] ASSIGN_BIND | File: compiler/lex.torth, Row: 1023, Column: 14
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_fn_ptr_in_signature##type_acc], rbx
-;; [parse_fn_ptr_in_signature] ENDIF | File: compiler/lex.torth, Row: 930, Column: 3
+;; [parse_fn_ptr_in_signature] ENDIF | File: compiler/lex.torth, Row: 1024, Column: 3
 parse_fn_ptr_in_signature_ENDIF42:
-;; [parse_fn_ptr_in_signature] WHILE | File: compiler/lex.torth, Row: 932, Column: 3
+;; [parse_fn_ptr_in_signature] WHILE | File: compiler/lex.torth, Row: 1026, Column: 3
 parse_fn_ptr_in_signature_WHILE43:
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 932, Column: 9
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1026, Column: 9
   push QWORD [parse_fn_ptr_in_signature##token_index]
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 932, Column: 21
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1026, Column: 21
   push QWORD [parse_fn_ptr_in_signature##tokens]
-;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 932, Column: 28
-;; [parse_fn_ptr_in_signature] Call List.len | File: compiler/lex.torth, Row: 932, Column: 39
+;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 1026, Column: 28
+;; [parse_fn_ptr_in_signature] Call List.len | File: compiler/lex.torth, Row: 1026, Column: 39
   call TGlzdC5sZW4_
-;; [parse_fn_ptr_in_signature] INTRINSIC LT | File: compiler/lex.torth, Row: 932, Column: 48
+;; [parse_fn_ptr_in_signature] INTRINSIC LT | File: compiler/lex.torth, Row: 1026, Column: 48
   pop rax
   pop rbx
   mov rcx, 0
@@ -5553,82 +5955,82 @@ parse_fn_ptr_in_signature_WHILE43:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 932, Column: 50
+;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 1026, Column: 50
   pop rax
   test rax, rax
   jz parse_fn_ptr_in_signature_DONE82
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 934, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1028, Column: 5
   push QWORD [parse_fn_ptr_in_signature##token_index]
-;; [parse_fn_ptr_in_signature] PUSH_INT | File: compiler/lex.torth, Row: 934, Column: 17
+;; [parse_fn_ptr_in_signature] PUSH_INT | File: compiler/lex.torth, Row: 1028, Column: 17
   mov rax, 1
   push rax
-;; [parse_fn_ptr_in_signature] INTRINSIC PLUS | File: compiler/lex.torth, Row: 934, Column: 19
+;; [parse_fn_ptr_in_signature] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1028, Column: 19
   pop rax
   add [rsp], rax
-  ;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 934, Column: 21
+  ;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1028, Column: 21
   push QWORD [parse_fn_ptr_in_signature##token_index]
-;; [parse_fn_ptr_in_signature] ASSIGN_BIND | File: compiler/lex.torth, Row: 934, Column: 33
+;; [parse_fn_ptr_in_signature] ASSIGN_BIND | File: compiler/lex.torth, Row: 1028, Column: 33
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_fn_ptr_in_signature##token_index], rbx
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 935, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1029, Column: 5
   push QWORD [parse_fn_ptr_in_signature##token_index]
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 935, Column: 17
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1029, Column: 17
   push QWORD [parse_fn_ptr_in_signature##tokens]
-;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 935, Column: 24
-;; [parse_fn_ptr_in_signature] Call List.nth | File: compiler/lex.torth, Row: 935, Column: 35
+;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 1029, Column: 24
+;; [parse_fn_ptr_in_signature] Call List.nth | File: compiler/lex.torth, Row: 1029, Column: 35
   call TGlzdC5udGg_
-;; [parse_fn_ptr_in_signature] Call Token.load | File: compiler/lex.torth, Row: 935, Column: 44
+;; [parse_fn_ptr_in_signature] Call Token.load | File: compiler/lex.torth, Row: 1029, Column: 44
   call VG9rZW4ubG9hZA__
-;; [parse_fn_ptr_in_signature] Call Token.value | File: compiler/lex.torth, Row: 935, Column: 55
+;; [parse_fn_ptr_in_signature] Call Token.value | File: compiler/lex.torth, Row: 1029, Column: 55
   call VG9rZW4udmFsdWU_
-;; [parse_fn_ptr_in_signature] TAKE | File: compiler/lex.torth, Row: 936, Column: 5
-;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 936, Column: 10
+;; [parse_fn_ptr_in_signature] TAKE | File: compiler/lex.torth, Row: 1030, Column: 5
+;; [parse_fn_ptr_in_signature] POP_BIND | File: compiler/lex.torth, Row: 1030, Column: 10
   pop QWORD [parse_fn_ptr_in_signature##signature_token_value]
-;; [parse_fn_ptr_in_signature] IN | File: compiler/lex.torth, Row: 936, Column: 32
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 939, Column: 5
+;; [parse_fn_ptr_in_signature] IN | File: compiler/lex.torth, Row: 1030, Column: 32
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1033, Column: 5
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 940, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1034, Column: 5
   mov rsi, parse_fn_ptr_in_signature_s65 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] Call str.cat | File: compiler/lex.torth, Row: 940, Column: 9
+;; [parse_fn_ptr_in_signature] Call str.cat | File: compiler/lex.torth, Row: 1034, Column: 9
   call c3RyLmNhdA__
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 941, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1035, Column: 5
   push QWORD [parse_fn_ptr_in_signature##signature_token_value]
-;; [parse_fn_ptr_in_signature] Call str.cat | File: compiler/lex.torth, Row: 941, Column: 27
+;; [parse_fn_ptr_in_signature] Call str.cat | File: compiler/lex.torth, Row: 1035, Column: 27
   call c3RyLmNhdA__
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 942, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1036, Column: 5
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] ASSIGN_BIND | File: compiler/lex.torth, Row: 942, Column: 14
+;; [parse_fn_ptr_in_signature] ASSIGN_BIND | File: compiler/lex.torth, Row: 1036, Column: 14
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_fn_ptr_in_signature##type_acc], rbx
-;; [parse_fn_ptr_in_signature] IF | File: compiler/lex.torth, Row: 945, Column: 5
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 945, Column: 8
+;; [parse_fn_ptr_in_signature] IF | File: compiler/lex.torth, Row: 1039, Column: 5
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1039, Column: 8
   push QWORD [parse_fn_ptr_in_signature##signature_token_value]
-;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 945, Column: 30
+;; [parse_fn_ptr_in_signature] PUSH_STR | File: compiler/lex.torth, Row: 1039, Column: 30
   mov rsi, parse_fn_ptr_in_signature_s73 ; Pointer to string
   push rsi
-;; [parse_fn_ptr_in_signature] Call str.endswith | File: compiler/lex.torth, Row: 945, Column: 34
+;; [parse_fn_ptr_in_signature] Call str.endswith | File: compiler/lex.torth, Row: 1039, Column: 34
   call c3RyLmVuZHN3aXRo
-;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 945, Column: 47
+;; [parse_fn_ptr_in_signature] DO | File: compiler/lex.torth, Row: 1039, Column: 47
   pop rax
   test rax, rax
   jz parse_fn_ptr_in_signature_ENDIF81
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 946, Column: 7
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1040, Column: 7
   push QWORD [parse_fn_ptr_in_signature##type_acc]
-;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 946, Column: 16
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 946, Column: 26
+;; [parse_fn_ptr_in_signature] CAST | File: compiler/lex.torth, Row: 1040, Column: 16
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1040, Column: 26
   push QWORD [parse_fn_ptr_in_signature##types]
-;; [parse_fn_ptr_in_signature] Call List.append | File: compiler/lex.torth, Row: 946, Column: 32
+;; [parse_fn_ptr_in_signature] Call List.append | File: compiler/lex.torth, Row: 1040, Column: 32
   call TGlzdC5hcHBlbmQ_
-;; [parse_fn_ptr_in_signature] BREAK | File: compiler/lex.torth, Row: 947, Column: 7
-  jmp parse_fn_ptr_in_signature_DONE82;; [parse_fn_ptr_in_signature] ENDIF | File: compiler/lex.torth, Row: 948, Column: 5
+;; [parse_fn_ptr_in_signature] BREAK | File: compiler/lex.torth, Row: 1041, Column: 7
+  jmp parse_fn_ptr_in_signature_DONE82;; [parse_fn_ptr_in_signature] ENDIF | File: compiler/lex.torth, Row: 1042, Column: 5
 parse_fn_ptr_in_signature_ENDIF81:
-;; [parse_fn_ptr_in_signature] DONE | File: compiler/lex.torth, Row: 949, Column: 3
+;; [parse_fn_ptr_in_signature] DONE | File: compiler/lex.torth, Row: 1043, Column: 3
   jmp parse_fn_ptr_in_signature_WHILE43
 parse_fn_ptr_in_signature_DONE82:
-;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 951, Column: 3
+;; [parse_fn_ptr_in_signature] PUSH_BIND | File: compiler/lex.torth, Row: 1045, Column: 3
   push QWORD [parse_fn_ptr_in_signature##token_index]
 ;; [parse_fn_ptr_in_signature] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -5639,31 +6041,31 @@ cGFyc2VfY2xhc3Nlcw__:
 ;; [parse_classes] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 963, Column: 3
+;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 1057, Column: 3
   pop QWORD [parse_classes##tokens]
-;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 964, Column: 3
+;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 1058, Column: 3
   pop QWORD [parse_classes##functions]
-;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 965, Column: 3
+;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 1059, Column: 3
   pop QWORD [parse_classes##constants]
-;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 966, Column: 3
+;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 1060, Column: 3
   pop QWORD [parse_classes##memories]
-;; [parse_classes] PUSH_INT | File: compiler/lex.torth, Row: 968, Column: 3
+;; [parse_classes] PUSH_INT | File: compiler/lex.torth, Row: 1062, Column: 3
   mov rax, 0
   push rax
-;; [parse_classes] TAKE | File: compiler/lex.torth, Row: 968, Column: 5
-;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 968, Column: 10
+;; [parse_classes] TAKE | File: compiler/lex.torth, Row: 1062, Column: 5
+;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 1062, Column: 10
   pop QWORD [parse_classes##index]
-;; [parse_classes] IN | File: compiler/lex.torth, Row: 968, Column: 16
-;; [parse_classes] WHILE | File: compiler/lex.torth, Row: 969, Column: 3
+;; [parse_classes] IN | File: compiler/lex.torth, Row: 1062, Column: 16
+;; [parse_classes] WHILE | File: compiler/lex.torth, Row: 1063, Column: 3
 parse_classes_WHILE8:
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 969, Column: 9
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1063, Column: 9
   push QWORD [parse_classes##index]
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 969, Column: 15
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1063, Column: 15
   push QWORD [parse_classes##tokens]
-;; [parse_classes] CAST | File: compiler/lex.torth, Row: 969, Column: 22
-;; [parse_classes] Call List.len | File: compiler/lex.torth, Row: 969, Column: 33
+;; [parse_classes] CAST | File: compiler/lex.torth, Row: 1063, Column: 22
+;; [parse_classes] Call List.len | File: compiler/lex.torth, Row: 1063, Column: 33
   call TGlzdC5sZW4_
-;; [parse_classes] INTRINSIC LT | File: compiler/lex.torth, Row: 969, Column: 42
+;; [parse_classes] INTRINSIC LT | File: compiler/lex.torth, Row: 1063, Column: 42
   pop rax
   pop rbx
   mov rcx, 0
@@ -5671,95 +6073,95 @@ parse_classes_WHILE8:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_classes] DO | File: compiler/lex.torth, Row: 969, Column: 44
+;; [parse_classes] DO | File: compiler/lex.torth, Row: 1063, Column: 44
   pop rax
   test rax, rax
   jz parse_classes_DONE50
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 971, Column: 5
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1065, Column: 5
   push QWORD [parse_classes##index]
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 971, Column: 11
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1065, Column: 11
   push QWORD [parse_classes##tokens]
-;; [parse_classes] CAST | File: compiler/lex.torth, Row: 971, Column: 18
-;; [parse_classes] Call List.nth | File: compiler/lex.torth, Row: 971, Column: 29
+;; [parse_classes] CAST | File: compiler/lex.torth, Row: 1065, Column: 18
+;; [parse_classes] Call List.nth | File: compiler/lex.torth, Row: 1065, Column: 29
   call TGlzdC5udGg_
-;; [parse_classes] Call ptr.load | File: compiler/lex.torth, Row: 971, Column: 38
+;; [parse_classes] Call ptr.load | File: compiler/lex.torth, Row: 1065, Column: 38
   call cHRyLmxvYWQ_
-;; [parse_classes] Call Token.value | File: compiler/lex.torth, Row: 972, Column: 5
+;; [parse_classes] Call Token.value | File: compiler/lex.torth, Row: 1066, Column: 5
   call VG9rZW4udmFsdWU_
-;; [parse_classes] Call str.copy | File: compiler/lex.torth, Row: 972, Column: 17
+;; [parse_classes] Call str.copy | File: compiler/lex.torth, Row: 1066, Column: 17
   call c3RyLmNvcHk_
-;; [parse_classes] Call str.upper | File: compiler/lex.torth, Row: 972, Column: 26
+;; [parse_classes] Call str.upper | File: compiler/lex.torth, Row: 1066, Column: 26
   call c3RyLnVwcGVy
-;; [parse_classes] TAKE | File: compiler/lex.torth, Row: 973, Column: 5
-;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 973, Column: 10
+;; [parse_classes] TAKE | File: compiler/lex.torth, Row: 1067, Column: 5
+;; [parse_classes] POP_BIND | File: compiler/lex.torth, Row: 1067, Column: 10
   pop QWORD [parse_classes##token_upper]
-;; [parse_classes] IN | File: compiler/lex.torth, Row: 973, Column: 22
-;; [parse_classes] IF | File: compiler/lex.torth, Row: 975, Column: 5
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 975, Column: 8
+;; [parse_classes] IN | File: compiler/lex.torth, Row: 1067, Column: 22
+;; [parse_classes] IF | File: compiler/lex.torth, Row: 1069, Column: 5
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1069, Column: 8
   push QWORD [parse_classes##token_upper]
-;; [parse_classes] Call str.copy | File: compiler/lex.torth, Row: 975, Column: 20
+;; [parse_classes] Call str.copy | File: compiler/lex.torth, Row: 1069, Column: 20
   call c3RyLmNvcHk_
-;; [parse_classes] Call str.upper | File: compiler/lex.torth, Row: 975, Column: 29
+;; [parse_classes] Call str.upper | File: compiler/lex.torth, Row: 1069, Column: 29
   call c3RyLnVwcGVy
-;; [parse_classes] PUSH_STR | File: compiler/lex.torth, Row: 975, Column: 39
+;; [parse_classes] PUSH_STR | File: compiler/lex.torth, Row: 1069, Column: 39
   mov rsi, parse_classes_s30 ; Pointer to string
   push rsi
-;; [parse_classes] Call streq | File: compiler/lex.torth, Row: 975, Column: 47
+;; [parse_classes] Call streq | File: compiler/lex.torth, Row: 1069, Column: 47
   call c3RyZXE_
-;; [parse_classes] DO | File: compiler/lex.torth, Row: 975, Column: 53
+;; [parse_classes] DO | File: compiler/lex.torth, Row: 1069, Column: 53
   pop rax
   test rax, rax
   jz parse_classes_ENDIF44
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 976, Column: 7
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1070, Column: 7
   push QWORD [parse_classes##index]
-;; [parse_classes] PUSH_INT | File: compiler/lex.torth, Row: 976, Column: 13
+;; [parse_classes] PUSH_INT | File: compiler/lex.torth, Row: 1070, Column: 13
   mov rax, 1
   push rax
-;; [parse_classes] INTRINSIC PLUS | File: compiler/lex.torth, Row: 976, Column: 15
+;; [parse_classes] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1070, Column: 15
   pop rax
   add [rsp], rax
-  ;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 976, Column: 17
+  ;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1070, Column: 17
   push QWORD [parse_classes##index]
-;; [parse_classes] ASSIGN_BIND | File: compiler/lex.torth, Row: 976, Column: 23
+;; [parse_classes] ASSIGN_BIND | File: compiler/lex.torth, Row: 1070, Column: 23
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_classes##index], rbx
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 977, Column: 7
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1071, Column: 7
   push QWORD [parse_classes##memories]
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 977, Column: 16
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1071, Column: 16
   push QWORD [parse_classes##constants]
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 977, Column: 26
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1071, Column: 26
   push QWORD [parse_classes##functions]
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 977, Column: 36
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1071, Column: 36
   push QWORD [parse_classes##index]
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 977, Column: 42
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1071, Column: 42
   push QWORD [parse_classes##tokens]
-;; [parse_classes] Call parse_class | File: compiler/lex.torth, Row: 977, Column: 49
+;; [parse_classes] Call parse_class | File: compiler/lex.torth, Row: 1071, Column: 49
   call cGFyc2VfY2xhc3M_
-;; [parse_classes] ENDIF | File: compiler/lex.torth, Row: 978, Column: 5
+;; [parse_classes] ENDIF | File: compiler/lex.torth, Row: 1072, Column: 5
 parse_classes_ENDIF44:
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 979, Column: 5
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1073, Column: 5
   push QWORD [parse_classes##index]
-;; [parse_classes] PUSH_INT | File: compiler/lex.torth, Row: 979, Column: 11
+;; [parse_classes] PUSH_INT | File: compiler/lex.torth, Row: 1073, Column: 11
   mov rax, 1
   push rax
-;; [parse_classes] INTRINSIC PLUS | File: compiler/lex.torth, Row: 979, Column: 13
+;; [parse_classes] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1073, Column: 13
   pop rax
   add [rsp], rax
-  ;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 979, Column: 15
+  ;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1073, Column: 15
   push QWORD [parse_classes##index]
-;; [parse_classes] ASSIGN_BIND | File: compiler/lex.torth, Row: 979, Column: 21
+;; [parse_classes] ASSIGN_BIND | File: compiler/lex.torth, Row: 1073, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_classes##index], rbx
-;; [parse_classes] DONE | File: compiler/lex.torth, Row: 980, Column: 3
+;; [parse_classes] DONE | File: compiler/lex.torth, Row: 1074, Column: 3
   jmp parse_classes_WHILE8
 parse_classes_DONE50:
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 983, Column: 3
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1077, Column: 3
   push QWORD [parse_classes##memories]
-;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 983, Column: 12
+;; [parse_classes] PUSH_BIND | File: compiler/lex.torth, Row: 1077, Column: 12
   push QWORD [parse_classes##functions]
-;; [parse_classes] Call parse_variables_for_functions | File: compiler/lex.torth, Row: 983, Column: 22
+;; [parse_classes] Call parse_variables_for_functions | File: compiler/lex.torth, Row: 1077, Column: 22
   call cGFyc2VfdmFyaWFibGVzX2Zvcl9mdW5jdGlvbnM_
 ;; [parse_classes] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -5770,25 +6172,25 @@ cGFyc2VfY2xhc3M_:
 ;; [parse_class] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 987, Column: 3
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1081, Column: 3
   pop QWORD [parse_class##tokens]
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 988, Column: 3
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1082, Column: 3
   pop QWORD [parse_class##token_index]
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 989, Column: 3
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1083, Column: 3
   pop QWORD [parse_class##functions]
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 990, Column: 3
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1084, Column: 3
   pop QWORD [parse_class##constants]
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 991, Column: 3
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1085, Column: 3
   pop QWORD [parse_class##memories]
-;; [parse_class] IF | File: compiler/lex.torth, Row: 993, Column: 3
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 993, Column: 6
+;; [parse_class] IF | File: compiler/lex.torth, Row: 1087, Column: 3
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1087, Column: 6
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 993, Column: 18
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1087, Column: 18
   push QWORD [parse_class##tokens]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 993, Column: 25
-;; [parse_class] Call List.len | File: compiler/lex.torth, Row: 993, Column: 36
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1087, Column: 25
+;; [parse_class] Call List.len | File: compiler/lex.torth, Row: 1087, Column: 36
   call TGlzdC5sZW4_
-;; [parse_class] INTRINSIC GE | File: compiler/lex.torth, Row: 993, Column: 45
+;; [parse_class] INTRINSIC GE | File: compiler/lex.torth, Row: 1087, Column: 45
   pop rax
   pop rbx
   mov rcx, 0
@@ -5796,82 +6198,82 @@ cGFyc2VfY2xhc3M_:
   cmp rbx, rax
   cmovge rcx, rdx
   push rcx
-;; [parse_class] DO | File: compiler/lex.torth, Row: 993, Column: 48
+;; [parse_class] DO | File: compiler/lex.torth, Row: 1087, Column: 48
   pop rax
   test rax, rax
   jz parse_class_ENDIF23
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 994, Column: 5
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1088, Column: 5
   mov rsi, parse_class_s12 ; Pointer to string
   push rsi
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 995, Column: 5
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1089, Column: 5
   push QWORD [parse_class##tokens]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 995, Column: 12
-;; [parse_class] Call List.last | File: compiler/lex.torth, Row: 995, Column: 23
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1089, Column: 12
+;; [parse_class] Call List.last | File: compiler/lex.torth, Row: 1089, Column: 23
   call TGlzdC5sYXN0
-;; [parse_class] Call Token.load | File: compiler/lex.torth, Row: 995, Column: 33
+;; [parse_class] Call Token.load | File: compiler/lex.torth, Row: 1089, Column: 33
   call VG9rZW4ubG9hZA__
-;; [parse_class] Call Token.value | File: compiler/lex.torth, Row: 996, Column: 5
+;; [parse_class] Call Token.value | File: compiler/lex.torth, Row: 1090, Column: 5
   call VG9rZW4udmFsdWU_
-;; [parse_class] Call str.cat | File: compiler/lex.torth, Row: 996, Column: 17
+;; [parse_class] Call str.cat | File: compiler/lex.torth, Row: 1090, Column: 17
   call c3RyLmNhdA__
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 997, Column: 5
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1091, Column: 5
   mov rsi, parse_class_s19 ; Pointer to string
   push rsi
-;; [parse_class] Call str.cat | File: compiler/lex.torth, Row: 997, Column: 17
+;; [parse_class] Call str.cat | File: compiler/lex.torth, Row: 1091, Column: 17
   call c3RyLmNhdA__
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 998, Column: 5
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1092, Column: 5
   mov rsi, parse_class_s21 ; Pointer to string
   push rsi
-;; [parse_class] Call CompilerError | File: compiler/lex.torth, Row: 998, Column: 20
+;; [parse_class] Call CompilerError | File: compiler/lex.torth, Row: 1092, Column: 20
   call Q29tcGlsZXJFcnJvcg__
-;; [parse_class] ENDIF | File: compiler/lex.torth, Row: 999, Column: 3
+;; [parse_class] ENDIF | File: compiler/lex.torth, Row: 1093, Column: 3
 parse_class_ENDIF23:
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1002, Column: 3
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1096, Column: 3
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1002, Column: 15
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1096, Column: 15
   push QWORD [parse_class##tokens]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 1002, Column: 22
-;; [parse_class] Call List.nth | File: compiler/lex.torth, Row: 1002, Column: 33
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1096, Column: 22
+;; [parse_class] Call List.nth | File: compiler/lex.torth, Row: 1096, Column: 33
   call TGlzdC5udGg_
-;; [parse_class] Call ptr.load | File: compiler/lex.torth, Row: 1002, Column: 42
+;; [parse_class] Call ptr.load | File: compiler/lex.torth, Row: 1096, Column: 42
   call cHRyLmxvYWQ_
-;; [parse_class] Call Token.value | File: compiler/lex.torth, Row: 1002, Column: 51
+;; [parse_class] Call Token.value | File: compiler/lex.torth, Row: 1096, Column: 51
   call VG9rZW4udmFsdWU_
-;; [parse_class] TAKE | File: compiler/lex.torth, Row: 1003, Column: 3
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1003, Column: 8
+;; [parse_class] TAKE | File: compiler/lex.torth, Row: 1097, Column: 3
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1097, Column: 8
   pop QWORD [parse_class##class_name]
-;; [parse_class] IN | File: compiler/lex.torth, Row: 1003, Column: 19
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1004, Column: 3
+;; [parse_class] IN | File: compiler/lex.torth, Row: 1097, Column: 19
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1098, Column: 3
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1004, Column: 15
+;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1098, Column: 15
   mov rax, 1
   push rax
-;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1004, Column: 17
+;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1098, Column: 17
   pop rax
   add [rsp], rax
-  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1004, Column: 19
+  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1098, Column: 19
   push QWORD [parse_class##token_index]
-;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1004, Column: 31
+;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1098, Column: 31
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_class##token_index], rbx
-;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1006, Column: 3
+;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1100, Column: 3
   mov rax, 0
   push rax
-;; [parse_class] TAKE | File: compiler/lex.torth, Row: 1006, Column: 5
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1006, Column: 10
+;; [parse_class] TAKE | File: compiler/lex.torth, Row: 1100, Column: 5
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1100, Column: 10
   pop QWORD [parse_class##attribute_count]
-;; [parse_class] IN | File: compiler/lex.torth, Row: 1006, Column: 26
-;; [parse_class] WHILE | File: compiler/lex.torth, Row: 1007, Column: 3
+;; [parse_class] IN | File: compiler/lex.torth, Row: 1100, Column: 26
+;; [parse_class] WHILE | File: compiler/lex.torth, Row: 1101, Column: 3
 parse_class_WHILE42:
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1007, Column: 9
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1101, Column: 9
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1007, Column: 21
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1101, Column: 21
   push QWORD [parse_class##tokens]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 1007, Column: 28
-;; [parse_class] Call List.len | File: compiler/lex.torth, Row: 1007, Column: 39
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1101, Column: 28
+;; [parse_class] Call List.len | File: compiler/lex.torth, Row: 1101, Column: 39
   call TGlzdC5sZW4_
-;; [parse_class] INTRINSIC LT | File: compiler/lex.torth, Row: 1007, Column: 48
+;; [parse_class] INTRINSIC LT | File: compiler/lex.torth, Row: 1101, Column: 48
   pop rax
   pop rbx
   mov rcx, 0
@@ -5879,92 +6281,92 @@ parse_class_WHILE42:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_class] DO | File: compiler/lex.torth, Row: 1007, Column: 50
+;; [parse_class] DO | File: compiler/lex.torth, Row: 1101, Column: 50
   pop rax
   test rax, rax
   jz parse_class_DONE144
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1009, Column: 5
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1103, Column: 5
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1009, Column: 17
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1103, Column: 17
   push QWORD [parse_class##tokens]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 1009, Column: 24
-;; [parse_class] Call List.nth | File: compiler/lex.torth, Row: 1009, Column: 35
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1103, Column: 24
+;; [parse_class] Call List.nth | File: compiler/lex.torth, Row: 1103, Column: 35
   call TGlzdC5udGg_
-;; [parse_class] Call Token.load | File: compiler/lex.torth, Row: 1009, Column: 44
+;; [parse_class] Call Token.load | File: compiler/lex.torth, Row: 1103, Column: 44
   call VG9rZW4ubG9hZA__
-;; [parse_class] INTRINSIC dup | File: compiler/lex.torth, Row: 1010, Column: 5
+;; [parse_class] INTRINSIC dup | File: compiler/lex.torth, Row: 1104, Column: 5
   push QWORD [rsp]
-;; [parse_class] Call Token.value | File: compiler/lex.torth, Row: 1010, Column: 9
+;; [parse_class] Call Token.value | File: compiler/lex.torth, Row: 1104, Column: 9
   call VG9rZW4udmFsdWU_
-;; [parse_class] TAKE | File: compiler/lex.torth, Row: 1011, Column: 5
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1011, Column: 10
+;; [parse_class] TAKE | File: compiler/lex.torth, Row: 1105, Column: 5
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1105, Column: 10
   pop QWORD [parse_class##token_value]
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1011, Column: 22
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1105, Column: 22
   pop QWORD [parse_class##token]
-;; [parse_class] IN | File: compiler/lex.torth, Row: 1011, Column: 28
-;; [parse_class] IF | File: compiler/lex.torth, Row: 1013, Column: 5
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1013, Column: 8
+;; [parse_class] IN | File: compiler/lex.torth, Row: 1105, Column: 28
+;; [parse_class] IF | File: compiler/lex.torth, Row: 1107, Column: 5
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1107, Column: 8
   push QWORD [parse_class##token_value]
-;; [parse_class] Call str.copy | File: compiler/lex.torth, Row: 1013, Column: 20
+;; [parse_class] Call str.copy | File: compiler/lex.torth, Row: 1107, Column: 20
   call c3RyLmNvcHk_
-;; [parse_class] Call str.upper | File: compiler/lex.torth, Row: 1013, Column: 29
+;; [parse_class] Call str.upper | File: compiler/lex.torth, Row: 1107, Column: 29
   call c3RyLnVwcGVy
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1013, Column: 39
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1107, Column: 39
   mov rsi, parse_class_s64 ; Pointer to string
   push rsi
-;; [parse_class] Call streq | File: compiler/lex.torth, Row: 1013, Column: 48
+;; [parse_class] Call streq | File: compiler/lex.torth, Row: 1107, Column: 48
   call c3RyZXE_
-;; [parse_class] DO | File: compiler/lex.torth, Row: 1013, Column: 54
+;; [parse_class] DO | File: compiler/lex.torth, Row: 1107, Column: 54
   pop rax
   test rax, rax
   jz parse_class_ELIF112
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1015, Column: 7
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1109, Column: 7
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1015, Column: 19
+;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1109, Column: 19
   mov rax, 1
   push rax
-;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1015, Column: 21
+;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1109, Column: 21
   pop rax
   add [rsp], rax
-  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1015, Column: 23
+  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1109, Column: 23
   push QWORD [parse_class##token_index]
-;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1015, Column: 35
+;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1109, Column: 35
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_class##token_index], rbx
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1016, Column: 7
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1110, Column: 7
   push QWORD [parse_class##class_name]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1016, Column: 18
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1110, Column: 18
   push QWORD [parse_class##memories]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1016, Column: 27
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1110, Column: 27
   push QWORD [parse_class##constants]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1016, Column: 37
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1110, Column: 37
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1016, Column: 49
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1110, Column: 49
   push QWORD [parse_class##tokens]
-;; [parse_class] Call parse_function | File: compiler/lex.torth, Row: 1016, Column: 56
+;; [parse_class] Call parse_function | File: compiler/lex.torth, Row: 1110, Column: 56
   call cGFyc2VfZnVuY3Rpb24_
-;; [parse_class] TAKE | File: compiler/lex.torth, Row: 1017, Column: 7
-;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1017, Column: 12
+;; [parse_class] TAKE | File: compiler/lex.torth, Row: 1111, Column: 7
+;; [parse_class] POP_BIND | File: compiler/lex.torth, Row: 1111, Column: 12
   pop QWORD [parse_class##class_method]
-;; [parse_class] IN | File: compiler/lex.torth, Row: 1017, Column: 25
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1020, Column: 7
+;; [parse_class] IN | File: compiler/lex.torth, Row: 1111, Column: 25
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1114, Column: 7
   push QWORD [parse_class##class_method]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1020, Column: 20
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1114, Column: 20
   push QWORD [parse_class##functions]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 1020, Column: 30
-;; [parse_class] Call List.append | File: compiler/lex.torth, Row: 1020, Column: 41
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1114, Column: 30
+;; [parse_class] Call List.append | File: compiler/lex.torth, Row: 1114, Column: 41
   call TGlzdC5hcHBlbmQ_
-;; [parse_class] WHILE | File: compiler/lex.torth, Row: 1023, Column: 7
+;; [parse_class] WHILE | File: compiler/lex.torth, Row: 1117, Column: 7
 parse_class_WHILE85:
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1023, Column: 13
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1117, Column: 13
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1023, Column: 25
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1117, Column: 25
   push QWORD [parse_class##tokens]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 1023, Column: 32
-;; [parse_class] Call List.len | File: compiler/lex.torth, Row: 1023, Column: 43
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1117, Column: 32
+;; [parse_class] Call List.len | File: compiler/lex.torth, Row: 1117, Column: 43
   call TGlzdC5sZW4_
-;; [parse_class] INTRINSIC LT | File: compiler/lex.torth, Row: 1023, Column: 52
+;; [parse_class] INTRINSIC LT | File: compiler/lex.torth, Row: 1117, Column: 52
   pop rax
   pop rbx
   mov rcx, 0
@@ -5972,156 +6374,156 @@ parse_class_WHILE85:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_class] DO | File: compiler/lex.torth, Row: 1023, Column: 54
+;; [parse_class] DO | File: compiler/lex.torth, Row: 1117, Column: 54
   pop rax
   test rax, rax
   jz parse_class_DONE111
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1024, Column: 9
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1118, Column: 9
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1024, Column: 21
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1118, Column: 21
   push QWORD [parse_class##tokens]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 1024, Column: 28
-;; [parse_class] Call List.nth | File: compiler/lex.torth, Row: 1024, Column: 39
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1118, Column: 28
+;; [parse_class] Call List.nth | File: compiler/lex.torth, Row: 1118, Column: 39
   call TGlzdC5udGg_
-;; [parse_class] Call ptr.load | File: compiler/lex.torth, Row: 1024, Column: 48
+;; [parse_class] Call ptr.load | File: compiler/lex.torth, Row: 1118, Column: 48
   call cHRyLmxvYWQ_
-;; [parse_class] IF | File: compiler/lex.torth, Row: 1025, Column: 9
-;; [parse_class] Call Token.value | File: compiler/lex.torth, Row: 1025, Column: 12
+;; [parse_class] IF | File: compiler/lex.torth, Row: 1119, Column: 9
+;; [parse_class] Call Token.value | File: compiler/lex.torth, Row: 1119, Column: 12
   call VG9rZW4udmFsdWU_
-;; [parse_class] Call str.copy | File: compiler/lex.torth, Row: 1025, Column: 24
+;; [parse_class] Call str.copy | File: compiler/lex.torth, Row: 1119, Column: 24
   call c3RyLmNvcHk_
-;; [parse_class] Call str.upper | File: compiler/lex.torth, Row: 1025, Column: 33
+;; [parse_class] Call str.upper | File: compiler/lex.torth, Row: 1119, Column: 33
   call c3RyLnVwcGVy
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1025, Column: 43
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1119, Column: 43
   mov rsi, parse_class_s101 ; Pointer to string
   push rsi
-;; [parse_class] Call streq | File: compiler/lex.torth, Row: 1025, Column: 49
+;; [parse_class] Call streq | File: compiler/lex.torth, Row: 1119, Column: 49
   call c3RyZXE_
-;; [parse_class] DO | File: compiler/lex.torth, Row: 1025, Column: 55
+;; [parse_class] DO | File: compiler/lex.torth, Row: 1119, Column: 55
   pop rax
   test rax, rax
   jz parse_class_ENDIF105
-;; [parse_class] BREAK | File: compiler/lex.torth, Row: 1026, Column: 11
-  jmp parse_class_DONE111;; [parse_class] ENDIF | File: compiler/lex.torth, Row: 1027, Column: 9
+;; [parse_class] BREAK | File: compiler/lex.torth, Row: 1120, Column: 11
+  jmp parse_class_DONE111;; [parse_class] ENDIF | File: compiler/lex.torth, Row: 1121, Column: 9
 parse_class_ENDIF105:
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1028, Column: 9
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1122, Column: 9
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1028, Column: 21
+;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1122, Column: 21
   mov rax, 1
   push rax
-;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1028, Column: 23
+;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1122, Column: 23
   pop rax
   add [rsp], rax
-  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1028, Column: 25
+  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1122, Column: 25
   push QWORD [parse_class##token_index]
-;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1028, Column: 37
+;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1122, Column: 37
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_class##token_index], rbx
-;; [parse_class] DONE | File: compiler/lex.torth, Row: 1029, Column: 7
+;; [parse_class] DONE | File: compiler/lex.torth, Row: 1123, Column: 7
   jmp parse_class_WHILE85
 parse_class_DONE111:
-;; [parse_class] ELIF | File: compiler/lex.torth, Row: 1032, Column: 5
+;; [parse_class] ELIF | File: compiler/lex.torth, Row: 1126, Column: 5
   jmp parse_class_ENDIF138
 parse_class_ELIF112:
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1032, Column: 10
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1126, Column: 10
   push QWORD [parse_class##token_value]
-;; [parse_class] Call str.copy | File: compiler/lex.torth, Row: 1032, Column: 22
+;; [parse_class] Call str.copy | File: compiler/lex.torth, Row: 1126, Column: 22
   call c3RyLmNvcHk_
-;; [parse_class] Call str.upper | File: compiler/lex.torth, Row: 1032, Column: 31
+;; [parse_class] Call str.upper | File: compiler/lex.torth, Row: 1126, Column: 31
   call c3RyLnVwcGVy
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1032, Column: 41
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1126, Column: 41
   mov rsi, parse_class_s116 ; Pointer to string
   push rsi
-;; [parse_class] Call streq | File: compiler/lex.torth, Row: 1032, Column: 52
+;; [parse_class] Call streq | File: compiler/lex.torth, Row: 1126, Column: 52
   call c3RyZXE_
-;; [parse_class] DO | File: compiler/lex.torth, Row: 1032, Column: 58
+;; [parse_class] DO | File: compiler/lex.torth, Row: 1126, Column: 58
   pop rax
   test rax, rax
   jz parse_class_ELSE127
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1034, Column: 7
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1128, Column: 7
   push QWORD [parse_class##token]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1034, Column: 13
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1128, Column: 13
   push QWORD [parse_class##attribute_count]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1034, Column: 29
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1128, Column: 29
   push QWORD [parse_class##class_name]
-;; [parse_class] Call get_object_size_function | File: compiler/lex.torth, Row: 1034, Column: 40
+;; [parse_class] Call get_object_size_function | File: compiler/lex.torth, Row: 1128, Column: 40
   call Z2V0X29iamVjdF9zaXplX2Z1bmN0aW9u
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1035, Column: 7
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1129, Column: 7
   push QWORD [parse_class##functions]
-;; [parse_class] CAST | File: compiler/lex.torth, Row: 1035, Column: 17
-;; [parse_class] Call List.append | File: compiler/lex.torth, Row: 1035, Column: 28
+;; [parse_class] CAST | File: compiler/lex.torth, Row: 1129, Column: 17
+;; [parse_class] Call List.append | File: compiler/lex.torth, Row: 1129, Column: 28
   call TGlzdC5hcHBlbmQ_
-;; [parse_class] RETURN | File: compiler/lex.torth, Row: 1036, Column: 7
+;; [parse_class] RETURN | File: compiler/lex.torth, Row: 1130, Column: 7
 ;; [parse_class] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [parse_class] ELSE | File: compiler/lex.torth, Row: 1039, Column: 5
+;; [parse_class] ELSE | File: compiler/lex.torth, Row: 1133, Column: 5
   jmp parse_class_ENDIF138
 parse_class_ELSE127:
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1040, Column: 7
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1134, Column: 7
   push QWORD [parse_class##functions]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1040, Column: 17
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1134, Column: 17
   push QWORD [parse_class##token]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1040, Column: 23
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1134, Column: 23
   push QWORD [parse_class##attribute_count]
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1040, Column: 39
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1134, Column: 39
   push QWORD [parse_class##class_name]
-;; [parse_class] Call parse_class_attribute | File: compiler/lex.torth, Row: 1040, Column: 50
+;; [parse_class] Call parse_class_attribute | File: compiler/lex.torth, Row: 1134, Column: 50
   call cGFyc2VfY2xhc3NfYXR0cmlidXRl
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1041, Column: 7
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1135, Column: 7
   push QWORD [parse_class##attribute_count]
-;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1041, Column: 23
+;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1135, Column: 23
   mov rax, 1
   push rax
-;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1041, Column: 25
+;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1135, Column: 25
   pop rax
   add [rsp], rax
-  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1041, Column: 27
+  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1135, Column: 27
   push QWORD [parse_class##attribute_count]
-;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1041, Column: 43
+;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1135, Column: 43
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_class##attribute_count], rbx
-;; [parse_class] ENDIF | File: compiler/lex.torth, Row: 1042, Column: 5
+;; [parse_class] ENDIF | File: compiler/lex.torth, Row: 1136, Column: 5
 parse_class_ENDIF138:
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1043, Column: 5
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1137, Column: 5
   push QWORD [parse_class##token_index]
-;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1043, Column: 17
+;; [parse_class] PUSH_INT | File: compiler/lex.torth, Row: 1137, Column: 17
   mov rax, 1
   push rax
-;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1043, Column: 19
+;; [parse_class] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1137, Column: 19
   pop rax
   add [rsp], rax
-  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1043, Column: 21
+  ;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1137, Column: 21
   push QWORD [parse_class##token_index]
-;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1043, Column: 33
+;; [parse_class] ASSIGN_BIND | File: compiler/lex.torth, Row: 1137, Column: 33
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_class##token_index], rbx
-;; [parse_class] DONE | File: compiler/lex.torth, Row: 1044, Column: 3
+;; [parse_class] DONE | File: compiler/lex.torth, Row: 1138, Column: 3
   jmp parse_class_WHILE42
 parse_class_DONE144:
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1047, Column: 3
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1141, Column: 3
   push QWORD [parse_class##token]
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1048, Column: 3
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1142, Column: 3
   mov rsi, parse_class_s146 ; Pointer to string
   push rsi
-;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1049, Column: 3
+;; [parse_class] PUSH_BIND | File: compiler/lex.torth, Row: 1143, Column: 3
   push QWORD [parse_class##class_name]
-;; [parse_class] Call str.cat | File: compiler/lex.torth, Row: 1049, Column: 31
+;; [parse_class] Call str.cat | File: compiler/lex.torth, Row: 1143, Column: 31
   call c3RyLmNhdA__
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1050, Column: 3
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1144, Column: 3
   mov rsi, parse_class_s149 ; Pointer to string
   push rsi
-;; [parse_class] Call str.cat | File: compiler/lex.torth, Row: 1050, Column: 31
+;; [parse_class] Call str.cat | File: compiler/lex.torth, Row: 1144, Column: 31
   call c3RyLmNhdA__
-;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1051, Column: 3
+;; [parse_class] PUSH_STR | File: compiler/lex.torth, Row: 1145, Column: 3
   mov rsi, parse_class_s151 ; Pointer to string
   push rsi
-;; [parse_class] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 1051, Column: 18
+;; [parse_class] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 1145, Column: 18
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
 ;; [parse_class] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -6132,38 +6534,38 @@ cGFyc2VfY2xhc3NfYXR0cmlidXRl:
 ;; [parse_class_attribute] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1055, Column: 3
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1149, Column: 3
   pop QWORD [parse_class_attribute##class_name]
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1056, Column: 3
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1150, Column: 3
   pop QWORD [parse_class_attribute##attribute_count]
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1057, Column: 3
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1151, Column: 3
   pop QWORD [parse_class_attribute##token]
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1058, Column: 3
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1152, Column: 3
   pop QWORD [parse_class_attribute##functions]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1062, Column: 3
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1156, Column: 3
   push QWORD [parse_class_attribute##token]
-;; [parse_class_attribute] Call Token.value | File: compiler/lex.torth, Row: 1062, Column: 9
+;; [parse_class_attribute] Call Token.value | File: compiler/lex.torth, Row: 1156, Column: 9
   call VG9rZW4udmFsdWU_
-;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1063, Column: 3
+;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1157, Column: 3
   mov rsi, parse_class_attribute_s6 ; Pointer to string
   push rsi
-;; [parse_class_attribute] INTRINSIC over | File: compiler/lex.torth, Row: 1063, Column: 7
+;; [parse_class_attribute] INTRINSIC over | File: compiler/lex.torth, Row: 1157, Column: 7
   push QWORD [rsp+8]
-;; [parse_class_attribute] Call str.find | File: compiler/lex.torth, Row: 1063, Column: 12
+;; [parse_class_attribute] Call str.find | File: compiler/lex.torth, Row: 1157, Column: 12
   call c3RyLmZpbmQ_
-;; [parse_class_attribute] TAKE | File: compiler/lex.torth, Row: 1064, Column: 3
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1064, Column: 8
+;; [parse_class_attribute] TAKE | File: compiler/lex.torth, Row: 1158, Column: 3
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1158, Column: 8
   pop QWORD [parse_class_attribute##attribute_colon]
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1064, Column: 24
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1158, Column: 24
   pop QWORD [parse_class_attribute##token_value]
-;; [parse_class_attribute] IN | File: compiler/lex.torth, Row: 1064, Column: 36
-;; [parse_class_attribute] IF | File: compiler/lex.torth, Row: 1067, Column: 3
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1068, Column: 5
+;; [parse_class_attribute] IN | File: compiler/lex.torth, Row: 1158, Column: 36
+;; [parse_class_attribute] IF | File: compiler/lex.torth, Row: 1161, Column: 3
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1162, Column: 5
   push QWORD [parse_class_attribute##attribute_colon]
-;; [parse_class_attribute] PUSH_INT | File: compiler/lex.torth, Row: 1068, Column: 21
+;; [parse_class_attribute] PUSH_INT | File: compiler/lex.torth, Row: 1162, Column: 21
   mov rax, -1
   push rax
-;; [parse_class_attribute] INTRINSIC EQ | File: compiler/lex.torth, Row: 1068, Column: 24
+;; [parse_class_attribute] INTRINSIC EQ | File: compiler/lex.torth, Row: 1162, Column: 24
   pop rax
   pop rbx
   mov rcx, 0
@@ -6171,12 +6573,12 @@ cGFyc2VfY2xhc3NfYXR0cmlidXRl:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1069, Column: 5
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1163, Column: 5
   push QWORD [parse_class_attribute##attribute_colon]
-;; [parse_class_attribute] PUSH_INT | File: compiler/lex.torth, Row: 1069, Column: 21
+;; [parse_class_attribute] PUSH_INT | File: compiler/lex.torth, Row: 1163, Column: 21
   mov rax, 0
   push rax
-;; [parse_class_attribute] INTRINSIC EQ | File: compiler/lex.torth, Row: 1069, Column: 24
+;; [parse_class_attribute] INTRINSIC EQ | File: compiler/lex.torth, Row: 1163, Column: 24
   pop rax
   pop rbx
   mov rcx, 0
@@ -6184,123 +6586,123 @@ cGFyc2VfY2xhc3NfYXR0cmlidXRl:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [parse_class_attribute] Call || | File: compiler/lex.torth, Row: 1070, Column: 5
+;; [parse_class_attribute] Call || | File: compiler/lex.torth, Row: 1164, Column: 5
   call fHw_
-;; [parse_class_attribute] DO | File: compiler/lex.torth, Row: 1071, Column: 3
+;; [parse_class_attribute] DO | File: compiler/lex.torth, Row: 1165, Column: 3
   pop rax
   test rax, rax
   jz parse_class_attribute_ENDIF32
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1072, Column: 5
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1166, Column: 5
   push QWORD [parse_class_attribute##token]
-;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1073, Column: 5
+;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1167, Column: 5
   mov rsi, parse_class_attribute_s23 ; Pointer to string
   push rsi
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1073, Column: 36
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1167, Column: 36
   push QWORD [parse_class_attribute##token_value]
-;; [parse_class_attribute] Call str.cat | File: compiler/lex.torth, Row: 1073, Column: 75
+;; [parse_class_attribute] Call str.cat | File: compiler/lex.torth, Row: 1167, Column: 75
   call c3RyLmNhdA__
-;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1074, Column: 5
+;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1168, Column: 5
   mov rsi, parse_class_attribute_s26 ; Pointer to string
   push rsi
-;; [parse_class_attribute] Call str.cat | File: compiler/lex.torth, Row: 1074, Column: 75
+;; [parse_class_attribute] Call str.cat | File: compiler/lex.torth, Row: 1168, Column: 75
   call c3RyLmNhdA__
-;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1075, Column: 5
+;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1169, Column: 5
   mov rsi, parse_class_attribute_s28 ; Pointer to string
   push rsi
-;; [parse_class_attribute] Call str.cat | File: compiler/lex.torth, Row: 1075, Column: 75
+;; [parse_class_attribute] Call str.cat | File: compiler/lex.torth, Row: 1169, Column: 75
   call c3RyLmNhdA__
-;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1076, Column: 5
+;; [parse_class_attribute] PUSH_STR | File: compiler/lex.torth, Row: 1170, Column: 5
   mov rsi, parse_class_attribute_s30 ; Pointer to string
   push rsi
-;; [parse_class_attribute] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 1076, Column: 20
+;; [parse_class_attribute] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 1170, Column: 20
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [parse_class_attribute] ENDIF | File: compiler/lex.torth, Row: 1077, Column: 3
+;; [parse_class_attribute] ENDIF | File: compiler/lex.torth, Row: 1171, Column: 3
 parse_class_attribute_ENDIF32:
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1080, Column: 3
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1174, Column: 3
   push QWORD [parse_class_attribute##token_value]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1080, Column: 15
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1174, Column: 15
   push QWORD [parse_class_attribute##attribute_colon]
-;; [parse_class_attribute] PUSH_INT | File: compiler/lex.torth, Row: 1080, Column: 31
+;; [parse_class_attribute] PUSH_INT | File: compiler/lex.torth, Row: 1174, Column: 31
   mov rax, 1
   push rax
-;; [parse_class_attribute] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1080, Column: 33
+;; [parse_class_attribute] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1174, Column: 33
   pop rax
   add [rsp], rax
-  ;; [parse_class_attribute] Call str+ | File: compiler/lex.torth, Row: 1080, Column: 35
+  ;; [parse_class_attribute] Call str+ | File: compiler/lex.torth, Row: 1174, Column: 35
   call c3RyKw__
-;; [parse_class_attribute] TAKE | File: compiler/lex.torth, Row: 1081, Column: 3
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1081, Column: 8
+;; [parse_class_attribute] TAKE | File: compiler/lex.torth, Row: 1175, Column: 3
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1175, Column: 8
   pop QWORD [parse_class_attribute##attribute_type]
-;; [parse_class_attribute] IN | File: compiler/lex.torth, Row: 1081, Column: 23
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1084, Column: 3
+;; [parse_class_attribute] IN | File: compiler/lex.torth, Row: 1175, Column: 23
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1178, Column: 3
   push QWORD [parse_class_attribute##token_value]
-;; [parse_class_attribute] Call str.copy | File: compiler/lex.torth, Row: 1084, Column: 15
+;; [parse_class_attribute] Call str.copy | File: compiler/lex.torth, Row: 1178, Column: 15
   call c3RyLmNvcHk_
-;; [parse_class_attribute] INTRINSIC dup | File: compiler/lex.torth, Row: 1085, Column: 3
+;; [parse_class_attribute] INTRINSIC dup | File: compiler/lex.torth, Row: 1179, Column: 3
   push QWORD [rsp]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1085, Column: 7
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1179, Column: 7
   push QWORD [parse_class_attribute##attribute_colon]
-;; [parse_class_attribute] Call str+ | File: compiler/lex.torth, Row: 1085, Column: 23
+;; [parse_class_attribute] Call str+ | File: compiler/lex.torth, Row: 1179, Column: 23
   call c3RyKw__
-;; [parse_class_attribute] Call str.empty | File: compiler/lex.torth, Row: 1085, Column: 28
+;; [parse_class_attribute] Call str.empty | File: compiler/lex.torth, Row: 1179, Column: 28
   call c3RyLmVtcHR5
-;; [parse_class_attribute] TAKE | File: compiler/lex.torth, Row: 1086, Column: 3
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1086, Column: 8
+;; [parse_class_attribute] TAKE | File: compiler/lex.torth, Row: 1180, Column: 3
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1180, Column: 8
   pop QWORD [parse_class_attribute##attribute_name]
-;; [parse_class_attribute] IN | File: compiler/lex.torth, Row: 1086, Column: 23
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1089, Column: 3
+;; [parse_class_attribute] IN | File: compiler/lex.torth, Row: 1180, Column: 23
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1183, Column: 3
   push QWORD [parse_class_attribute##attribute_count]
-;; [parse_class_attribute] PUSH_INT | File: compiler/lex.torth, Row: 1089, Column: 19
+;; [parse_class_attribute] PUSH_INT | File: compiler/lex.torth, Row: 1183, Column: 19
   mov rax, 8
   push rax
-;; [parse_class_attribute] INTRINSIC MUL | File: compiler/lex.torth, Row: 1089, Column: 28
+;; [parse_class_attribute] INTRINSIC MUL | File: compiler/lex.torth, Row: 1183, Column: 28
   pop rax
   pop rbx
   mul rbx
   push rax  ; Product
-;; [parse_class_attribute] TAKE | File: compiler/lex.torth, Row: 1090, Column: 3
-;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1090, Column: 8
+;; [parse_class_attribute] TAKE | File: compiler/lex.torth, Row: 1184, Column: 3
+;; [parse_class_attribute] POP_BIND | File: compiler/lex.torth, Row: 1184, Column: 8
   pop QWORD [parse_class_attribute##attribute_offset]
-;; [parse_class_attribute] IN | File: compiler/lex.torth, Row: 1090, Column: 25
-;; [parse_class_attribute] PUSH_BOOL | File: compiler/lex.torth, Row: 1093, Column: 3
+;; [parse_class_attribute] IN | File: compiler/lex.torth, Row: 1184, Column: 25
+;; [parse_class_attribute] PUSH_BOOL | File: compiler/lex.torth, Row: 1187, Column: 3
   mov rax, 1
   push rax
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1093, Column: 8
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1187, Column: 8
   push QWORD [parse_class_attribute##token]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1093, Column: 14
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1187, Column: 14
   push QWORD [parse_class_attribute##attribute_offset]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1093, Column: 31
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1187, Column: 31
   push QWORD [parse_class_attribute##attribute_type]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1093, Column: 46
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1187, Column: 46
   push QWORD [parse_class_attribute##attribute_name]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1093, Column: 61
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1187, Column: 61
   push QWORD [parse_class_attribute##class_name]
-;; [parse_class_attribute] Call generate_attribution_function | File: compiler/lex.torth, Row: 1094, Column: 3
+;; [parse_class_attribute] Call generate_attribution_function | File: compiler/lex.torth, Row: 1188, Column: 3
   call Z2VuZXJhdGVfYXR0cmlidXRpb25fZnVuY3Rpb24_
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1094, Column: 33
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1188, Column: 33
   push QWORD [parse_class_attribute##functions]
-;; [parse_class_attribute] CAST | File: compiler/lex.torth, Row: 1094, Column: 43
-;; [parse_class_attribute] Call List.append | File: compiler/lex.torth, Row: 1094, Column: 54
+;; [parse_class_attribute] CAST | File: compiler/lex.torth, Row: 1188, Column: 43
+;; [parse_class_attribute] Call List.append | File: compiler/lex.torth, Row: 1188, Column: 54
   call TGlzdC5hcHBlbmQ_
-;; [parse_class_attribute] PUSH_BOOL | File: compiler/lex.torth, Row: 1097, Column: 3
+;; [parse_class_attribute] PUSH_BOOL | File: compiler/lex.torth, Row: 1191, Column: 3
   mov rax, 0
   push rax
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1097, Column: 9
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1191, Column: 9
   push QWORD [parse_class_attribute##token]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1097, Column: 15
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1191, Column: 15
   push QWORD [parse_class_attribute##attribute_offset]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1097, Column: 32
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1191, Column: 32
   push QWORD [parse_class_attribute##attribute_type]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1097, Column: 47
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1191, Column: 47
   push QWORD [parse_class_attribute##attribute_name]
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1097, Column: 62
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1191, Column: 62
   push QWORD [parse_class_attribute##class_name]
-;; [parse_class_attribute] Call generate_attribution_function | File: compiler/lex.torth, Row: 1098, Column: 3
+;; [parse_class_attribute] Call generate_attribution_function | File: compiler/lex.torth, Row: 1192, Column: 3
   call Z2VuZXJhdGVfYXR0cmlidXRpb25fZnVuY3Rpb24_
-;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1098, Column: 33
+;; [parse_class_attribute] PUSH_BIND | File: compiler/lex.torth, Row: 1192, Column: 33
   push QWORD [parse_class_attribute##functions]
-;; [parse_class_attribute] CAST | File: compiler/lex.torth, Row: 1098, Column: 43
-;; [parse_class_attribute] Call List.append | File: compiler/lex.torth, Row: 1098, Column: 54
+;; [parse_class_attribute] CAST | File: compiler/lex.torth, Row: 1192, Column: 43
+;; [parse_class_attribute] Call List.append | File: compiler/lex.torth, Row: 1192, Column: 54
   call TGlzdC5hcHBlbmQ_
 ;; [parse_class_attribute] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -6311,90 +6713,90 @@ Z2V0X29iamVjdF9zaXplX2Z1bmN0aW9u:
 ;; [get_object_size_function] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1102, Column: 3
+;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1196, Column: 3
   pop QWORD [get_object_size_function##class_name]
-;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1103, Column: 3
+;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1197, Column: 3
   pop QWORD [get_object_size_function##attribute_count]
-;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1104, Column: 3
+;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1198, Column: 3
   pop QWORD [get_object_size_function##endclass_token]
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1106, Column: 3
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1200, Column: 3
   push QWORD [get_object_size_function##class_name]
-;; [get_object_size_function] PUSH_STR | File: compiler/lex.torth, Row: 1106, Column: 14
+;; [get_object_size_function] PUSH_STR | File: compiler/lex.torth, Row: 1200, Column: 14
   mov rsi, get_object_size_function_s4 ; Pointer to string
   push rsi
-;; [get_object_size_function] Call str.cat | File: compiler/lex.torth, Row: 1106, Column: 22
+;; [get_object_size_function] Call str.cat | File: compiler/lex.torth, Row: 1200, Column: 22
   call c3RyLmNhdA__
-;; [get_object_size_function] Call List.init | File: compiler/lex.torth, Row: 1107, Column: 3
+;; [get_object_size_function] Call List.init | File: compiler/lex.torth, Row: 1201, Column: 3
   call TGlzdC5pbml0
-;; [get_object_size_function] CAST | File: compiler/lex.torth, Row: 1107, Column: 13
-;; [get_object_size_function] Call List.init | File: compiler/lex.torth, Row: 1108, Column: 3
+;; [get_object_size_function] CAST | File: compiler/lex.torth, Row: 1201, Column: 13
+;; [get_object_size_function] Call List.init | File: compiler/lex.torth, Row: 1202, Column: 3
   call TGlzdC5pbml0
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1109, Column: 3
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1203, Column: 3
   push QWORD [get_object_size_function##attribute_count]
-;; [get_object_size_function] PUSH_INT | File: compiler/lex.torth, Row: 1109, Column: 19
+;; [get_object_size_function] PUSH_INT | File: compiler/lex.torth, Row: 1203, Column: 19
   mov rax, 8
   push rax
-;; [get_object_size_function] INTRINSIC MUL | File: compiler/lex.torth, Row: 1109, Column: 28
+;; [get_object_size_function] INTRINSIC MUL | File: compiler/lex.torth, Row: 1203, Column: 28
   pop rax
   pop rbx
   mul rbx
   push rax  ; Product
-;; [get_object_size_function] TAKE | File: compiler/lex.torth, Row: 1110, Column: 3
-;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1111, Column: 5
+;; [get_object_size_function] TAKE | File: compiler/lex.torth, Row: 1204, Column: 3
+;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1205, Column: 5
   pop QWORD [get_object_size_function##class_size]
-;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1112, Column: 5
+;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1206, Column: 5
   pop QWORD [get_object_size_function##return_types]
-;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1113, Column: 5
+;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1207, Column: 5
   pop QWORD [get_object_size_function##tokens]
-;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1114, Column: 5
+;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1208, Column: 5
   pop QWORD [get_object_size_function##function_name]
-;; [get_object_size_function] IN | File: compiler/lex.torth, Row: 1115, Column: 3
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1118, Column: 3
+;; [get_object_size_function] IN | File: compiler/lex.torth, Row: 1209, Column: 3
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1212, Column: 3
   push QWORD [get_object_size_function##endclass_token]
-;; [get_object_size_function] Call Token.location | File: compiler/lex.torth, Row: 1118, Column: 18
+;; [get_object_size_function] Call Token.location | File: compiler/lex.torth, Row: 1212, Column: 18
   call VG9rZW4ubG9jYXRpb24_
-;; [get_object_size_function] PUSH_STR | File: compiler/lex.torth, Row: 1118, Column: 33
+;; [get_object_size_function] PUSH_STR | File: compiler/lex.torth, Row: 1212, Column: 33
   mov rsi, get_object_size_function_s20 ; Pointer to string
   push rsi
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1118, Column: 39
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1212, Column: 39
   push QWORD [get_object_size_function##class_size]
-;; [get_object_size_function] Call itoa | File: compiler/lex.torth, Row: 1118, Column: 50
+;; [get_object_size_function] Call itoa | File: compiler/lex.torth, Row: 1212, Column: 50
   call aXRvYQ__
-;; [get_object_size_function] Call Token.init | File: compiler/lex.torth, Row: 1118, Column: 55
+;; [get_object_size_function] Call Token.init | File: compiler/lex.torth, Row: 1212, Column: 55
   call VG9rZW4uaW5pdA__
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1119, Column: 3
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1213, Column: 3
   push QWORD [get_object_size_function##tokens]
-;; [get_object_size_function] CAST | File: compiler/lex.torth, Row: 1119, Column: 10
-;; [get_object_size_function] Call List.append | File: compiler/lex.torth, Row: 1119, Column: 21
+;; [get_object_size_function] CAST | File: compiler/lex.torth, Row: 1213, Column: 10
+;; [get_object_size_function] Call List.append | File: compiler/lex.torth, Row: 1213, Column: 21
   call TGlzdC5hcHBlbmQ_
-;; [get_object_size_function] PUSH_STR | File: compiler/lex.torth, Row: 1122, Column: 3
+;; [get_object_size_function] PUSH_STR | File: compiler/lex.torth, Row: 1216, Column: 3
   mov rsi, get_object_size_function_s27 ; Pointer to string
   push rsi
-;; [get_object_size_function] CAST | File: compiler/lex.torth, Row: 1122, Column: 9
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1122, Column: 19
+;; [get_object_size_function] CAST | File: compiler/lex.torth, Row: 1216, Column: 9
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1216, Column: 19
   push QWORD [get_object_size_function##return_types]
-;; [get_object_size_function] Call List.append | File: compiler/lex.torth, Row: 1122, Column: 32
+;; [get_object_size_function] Call List.append | File: compiler/lex.torth, Row: 1216, Column: 32
   call TGlzdC5hcHBlbmQ_
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1123, Column: 3
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1217, Column: 3
   push QWORD [get_object_size_function##return_types]
-;; [get_object_size_function] Call List.init | File: compiler/lex.torth, Row: 1123, Column: 16
+;; [get_object_size_function] Call List.init | File: compiler/lex.torth, Row: 1217, Column: 16
   call TGlzdC5pbml0
-;; [get_object_size_function] Call Signature.init | File: compiler/lex.torth, Row: 1123, Column: 26
+;; [get_object_size_function] Call Signature.init | File: compiler/lex.torth, Row: 1217, Column: 26
   call U2lnbmF0dXJlLmluaXQ_
-;; [get_object_size_function] TAKE | File: compiler/lex.torth, Row: 1124, Column: 3
-;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1124, Column: 8
+;; [get_object_size_function] TAKE | File: compiler/lex.torth, Row: 1218, Column: 3
+;; [get_object_size_function] POP_BIND | File: compiler/lex.torth, Row: 1218, Column: 8
   pop QWORD [get_object_size_function##signature]
-;; [get_object_size_function] IN | File: compiler/lex.torth, Row: 1124, Column: 18
-;; [get_object_size_function] Call List.init | File: compiler/lex.torth, Row: 1126, Column: 3
+;; [get_object_size_function] IN | File: compiler/lex.torth, Row: 1218, Column: 18
+;; [get_object_size_function] Call List.init | File: compiler/lex.torth, Row: 1220, Column: 3
   call TGlzdC5pbml0
-;; [get_object_size_function] CAST | File: compiler/lex.torth, Row: 1126, Column: 13
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1126, Column: 34
+;; [get_object_size_function] CAST | File: compiler/lex.torth, Row: 1220, Column: 13
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1220, Column: 34
   push QWORD [get_object_size_function##tokens]
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1126, Column: 41
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1220, Column: 41
   push QWORD [get_object_size_function##signature]
-;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1126, Column: 51
+;; [get_object_size_function] PUSH_BIND | File: compiler/lex.torth, Row: 1220, Column: 51
   push QWORD [get_object_size_function##function_name]
-;; [get_object_size_function] Call Func.init | File: compiler/lex.torth, Row: 1126, Column: 65
+;; [get_object_size_function] Call Func.init | File: compiler/lex.torth, Row: 1220, Column: 65
   call RnVuYy5pbml0
 ;; [get_object_size_function] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -6405,125 +6807,125 @@ Z2VuZXJhdGVfYXR0cmlidXRpb25fZnVuY3Rpb24_:
 ;; [generate_attribution_function] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1130, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1224, Column: 3
   pop QWORD [generate_attribution_function##class_name]
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1131, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1225, Column: 3
   pop QWORD [generate_attribution_function##attribute_name]
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1132, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1226, Column: 3
   pop QWORD [generate_attribution_function##attribute_type]
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1133, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1227, Column: 3
   pop QWORD [generate_attribution_function##attribute_offset]
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1134, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1228, Column: 3
   pop QWORD [generate_attribution_function##attribute_token]
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1135, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1229, Column: 3
   pop QWORD [generate_attribution_function##is_getter]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1138, Column: 3
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1232, Column: 3
   push QWORD [generate_attribution_function##class_name]
-;; [generate_attribution_function] IF | File: compiler/lex.torth, Row: 1139, Column: 3
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1139, Column: 6
+;; [generate_attribution_function] IF | File: compiler/lex.torth, Row: 1233, Column: 3
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1233, Column: 6
   push QWORD [generate_attribution_function##is_getter]
-;; [generate_attribution_function] DO | File: compiler/lex.torth, Row: 1140, Column: 3
+;; [generate_attribution_function] DO | File: compiler/lex.torth, Row: 1234, Column: 3
   pop rax
   test rax, rax
   jz generate_attribution_function_ELSE11
-;; [generate_attribution_function] PUSH_STR | File: compiler/lex.torth, Row: 1140, Column: 8
+;; [generate_attribution_function] PUSH_STR | File: compiler/lex.torth, Row: 1234, Column: 8
   mov rsi, generate_attribution_function_s10 ; Pointer to string
   push rsi
-;; [generate_attribution_function] ELSE | File: compiler/lex.torth, Row: 1141, Column: 3
+;; [generate_attribution_function] ELSE | File: compiler/lex.torth, Row: 1235, Column: 3
   jmp generate_attribution_function_ENDIF13
 generate_attribution_function_ELSE11:
-;; [generate_attribution_function] PUSH_STR | File: compiler/lex.torth, Row: 1141, Column: 8
+;; [generate_attribution_function] PUSH_STR | File: compiler/lex.torth, Row: 1235, Column: 8
   mov rsi, generate_attribution_function_s12 ; Pointer to string
   push rsi
-;; [generate_attribution_function] ENDIF | File: compiler/lex.torth, Row: 1142, Column: 3
+;; [generate_attribution_function] ENDIF | File: compiler/lex.torth, Row: 1236, Column: 3
 generate_attribution_function_ENDIF13:
-;; [generate_attribution_function] Call str.cat | File: compiler/lex.torth, Row: 1142, Column: 19
+;; [generate_attribution_function] Call str.cat | File: compiler/lex.torth, Row: 1236, Column: 19
   call c3RyLmNhdA__
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1143, Column: 3
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1237, Column: 3
   push QWORD [generate_attribution_function##attribute_name]
-;; [generate_attribution_function] Call str.cat | File: compiler/lex.torth, Row: 1143, Column: 19
+;; [generate_attribution_function] Call str.cat | File: compiler/lex.torth, Row: 1237, Column: 19
   call c3RyLmNhdA__
-;; [generate_attribution_function] TAKE | File: compiler/lex.torth, Row: 1144, Column: 3
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1144, Column: 8
+;; [generate_attribution_function] TAKE | File: compiler/lex.torth, Row: 1238, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1238, Column: 8
   pop QWORD [generate_attribution_function##function_name]
-;; [generate_attribution_function] IN | File: compiler/lex.torth, Row: 1144, Column: 22
-;; [generate_attribution_function] Call List.init | File: compiler/lex.torth, Row: 1147, Column: 3
+;; [generate_attribution_function] IN | File: compiler/lex.torth, Row: 1238, Column: 22
+;; [generate_attribution_function] Call List.init | File: compiler/lex.torth, Row: 1241, Column: 3
   call TGlzdC5pbml0
-;; [generate_attribution_function] Call List.init | File: compiler/lex.torth, Row: 1148, Column: 3
+;; [generate_attribution_function] Call List.init | File: compiler/lex.torth, Row: 1242, Column: 3
   call TGlzdC5pbml0
-;; [generate_attribution_function] TAKE | File: compiler/lex.torth, Row: 1149, Column: 3
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1149, Column: 8
+;; [generate_attribution_function] TAKE | File: compiler/lex.torth, Row: 1243, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1243, Column: 8
   pop QWORD [generate_attribution_function##param_types]
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1149, Column: 20
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1243, Column: 20
   pop QWORD [generate_attribution_function##return_types]
-;; [generate_attribution_function] IN | File: compiler/lex.torth, Row: 1149, Column: 33
-;; [generate_attribution_function] PUSH_STR | File: compiler/lex.torth, Row: 1150, Column: 3
+;; [generate_attribution_function] IN | File: compiler/lex.torth, Row: 1243, Column: 33
+;; [generate_attribution_function] PUSH_STR | File: compiler/lex.torth, Row: 1244, Column: 3
   mov rsi, generate_attribution_function_s26 ; Pointer to string
   push rsi
-;; [generate_attribution_function] CAST | File: compiler/lex.torth, Row: 1150, Column: 19
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1150, Column: 29
+;; [generate_attribution_function] CAST | File: compiler/lex.torth, Row: 1244, Column: 19
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1244, Column: 29
   push QWORD [generate_attribution_function##param_types]
-;; [generate_attribution_function] Call List.append | File: compiler/lex.torth, Row: 1150, Column: 41
+;; [generate_attribution_function] Call List.append | File: compiler/lex.torth, Row: 1244, Column: 41
   call TGlzdC5hcHBlbmQ_
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1151, Column: 3
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1245, Column: 3
   push QWORD [generate_attribution_function##attribute_type]
-;; [generate_attribution_function] CAST | File: compiler/lex.torth, Row: 1151, Column: 19
-;; [generate_attribution_function] IF | File: compiler/lex.torth, Row: 1154, Column: 3
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1154, Column: 6
+;; [generate_attribution_function] CAST | File: compiler/lex.torth, Row: 1245, Column: 19
+;; [generate_attribution_function] IF | File: compiler/lex.torth, Row: 1248, Column: 3
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1248, Column: 6
   push QWORD [generate_attribution_function##is_getter]
-;; [generate_attribution_function] DO | File: compiler/lex.torth, Row: 1155, Column: 3
+;; [generate_attribution_function] DO | File: compiler/lex.torth, Row: 1249, Column: 3
   pop rax
   test rax, rax
   jz generate_attribution_function_ELSE36
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1155, Column: 8
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1249, Column: 8
   push QWORD [generate_attribution_function##return_types]
-;; [generate_attribution_function] ELSE | File: compiler/lex.torth, Row: 1156, Column: 3
+;; [generate_attribution_function] ELSE | File: compiler/lex.torth, Row: 1250, Column: 3
   jmp generate_attribution_function_ENDIF38
 generate_attribution_function_ELSE36:
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1156, Column: 8
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1250, Column: 8
   push QWORD [generate_attribution_function##param_types]
-;; [generate_attribution_function] ENDIF | File: compiler/lex.torth, Row: 1157, Column: 3
+;; [generate_attribution_function] ENDIF | File: compiler/lex.torth, Row: 1251, Column: 3
 generate_attribution_function_ENDIF38:
-;; [generate_attribution_function] Call List.append | File: compiler/lex.torth, Row: 1157, Column: 9
+;; [generate_attribution_function] Call List.append | File: compiler/lex.torth, Row: 1251, Column: 9
   call TGlzdC5hcHBlbmQ_
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1158, Column: 3
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1252, Column: 3
   push QWORD [generate_attribution_function##return_types]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1158, Column: 16
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1252, Column: 16
   push QWORD [generate_attribution_function##param_types]
-;; [generate_attribution_function] Call Signature.init | File: compiler/lex.torth, Row: 1158, Column: 28
+;; [generate_attribution_function] Call Signature.init | File: compiler/lex.torth, Row: 1252, Column: 28
   call U2lnbmF0dXJlLmluaXQ_
-;; [generate_attribution_function] TAKE | File: compiler/lex.torth, Row: 1159, Column: 3
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1159, Column: 8
+;; [generate_attribution_function] TAKE | File: compiler/lex.torth, Row: 1253, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1253, Column: 8
   pop QWORD [generate_attribution_function##signature]
-;; [generate_attribution_function] IN | File: compiler/lex.torth, Row: 1159, Column: 18
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1162, Column: 3
+;; [generate_attribution_function] IN | File: compiler/lex.torth, Row: 1253, Column: 18
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1256, Column: 3
   push QWORD [generate_attribution_function##is_getter]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1162, Column: 13
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1256, Column: 13
   push QWORD [generate_attribution_function##attribute_token]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1162, Column: 29
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1256, Column: 29
   push QWORD [generate_attribution_function##attribute_offset]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1162, Column: 46
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1256, Column: 46
   push QWORD [generate_attribution_function##attribute_type]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1162, Column: 61
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1256, Column: 61
   push QWORD [generate_attribution_function##attribute_name]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1162, Column: 76
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1256, Column: 76
   push QWORD [generate_attribution_function##class_name]
-;; [generate_attribution_function] Call get_attribute_function_tokens | File: compiler/lex.torth, Row: 1162, Column: 87
+;; [generate_attribution_function] Call get_attribute_function_tokens | File: compiler/lex.torth, Row: 1256, Column: 87
   call Z2V0X2F0dHJpYnV0ZV9mdW5jdGlvbl90b2tlbnM_
-;; [generate_attribution_function] TAKE | File: compiler/lex.torth, Row: 1163, Column: 3
-;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1163, Column: 8
+;; [generate_attribution_function] TAKE | File: compiler/lex.torth, Row: 1257, Column: 3
+;; [generate_attribution_function] POP_BIND | File: compiler/lex.torth, Row: 1257, Column: 8
   pop QWORD [generate_attribution_function##tokens]
-;; [generate_attribution_function] IN | File: compiler/lex.torth, Row: 1163, Column: 15
-;; [generate_attribution_function] Call List.init | File: compiler/lex.torth, Row: 1166, Column: 3
+;; [generate_attribution_function] IN | File: compiler/lex.torth, Row: 1257, Column: 15
+;; [generate_attribution_function] Call List.init | File: compiler/lex.torth, Row: 1260, Column: 3
   call TGlzdC5pbml0
-;; [generate_attribution_function] CAST | File: compiler/lex.torth, Row: 1166, Column: 13
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1166, Column: 34
+;; [generate_attribution_function] CAST | File: compiler/lex.torth, Row: 1260, Column: 13
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1260, Column: 34
   push QWORD [generate_attribution_function##tokens]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1166, Column: 41
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1260, Column: 41
   push QWORD [generate_attribution_function##signature]
-;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1166, Column: 51
+;; [generate_attribution_function] PUSH_BIND | File: compiler/lex.torth, Row: 1260, Column: 51
   push QWORD [generate_attribution_function##function_name]
-;; [generate_attribution_function] Call Func.init | File: compiler/lex.torth, Row: 1166, Column: 65
+;; [generate_attribution_function] Call Func.init | File: compiler/lex.torth, Row: 1260, Column: 65
   call RnVuYy5pbml0
 ;; [generate_attribution_function] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -6534,101 +6936,101 @@ Z2V0X2F0dHJpYnV0ZV9mdW5jdGlvbl90b2tlbnM_:
 ;; [get_attribute_function_tokens] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1170, Column: 3
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1264, Column: 3
   pop QWORD [get_attribute_function_tokens##class_name]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1171, Column: 3
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1265, Column: 3
   pop QWORD [get_attribute_function_tokens##attribute_name]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1172, Column: 3
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1266, Column: 3
   pop QWORD [get_attribute_function_tokens##attribute_type]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1173, Column: 3
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1267, Column: 3
   pop QWORD [get_attribute_function_tokens##attribute_offset]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1174, Column: 3
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1268, Column: 3
   pop QWORD [get_attribute_function_tokens##attribute_token]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1175, Column: 3
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1269, Column: 3
   pop QWORD [get_attribute_function_tokens##is_getter]
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1177, Column: 3
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1271, Column: 3
   push QWORD [get_attribute_function_tokens##attribute_offset]
-;; [get_attribute_function_tokens] Call itoa | File: compiler/lex.torth, Row: 1177, Column: 20
+;; [get_attribute_function_tokens] Call itoa | File: compiler/lex.torth, Row: 1271, Column: 20
   call aXRvYQ__
-;; [get_attribute_function_tokens] PUSH_STR | File: compiler/lex.torth, Row: 1178, Column: 3
+;; [get_attribute_function_tokens] PUSH_STR | File: compiler/lex.torth, Row: 1272, Column: 3
   mov rsi, get_attribute_function_tokens_s8 ; Pointer to string
   push rsi
-;; [get_attribute_function_tokens] Call str.cat | File: compiler/lex.torth, Row: 1178, Column: 34
+;; [get_attribute_function_tokens] Call str.cat | File: compiler/lex.torth, Row: 1272, Column: 34
   call c3RyLmNhdA__
-;; [get_attribute_function_tokens] IF | File: compiler/lex.torth, Row: 1179, Column: 3
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1179, Column: 6
+;; [get_attribute_function_tokens] IF | File: compiler/lex.torth, Row: 1273, Column: 3
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1273, Column: 6
   push QWORD [get_attribute_function_tokens##is_getter]
-;; [get_attribute_function_tokens] DO | File: compiler/lex.torth, Row: 1180, Column: 3
+;; [get_attribute_function_tokens] DO | File: compiler/lex.torth, Row: 1274, Column: 3
   pop rax
   test rax, rax
   jz get_attribute_function_tokens_ELSE15
-;; [get_attribute_function_tokens] PUSH_STR | File: compiler/lex.torth, Row: 1180, Column: 8
+;; [get_attribute_function_tokens] PUSH_STR | File: compiler/lex.torth, Row: 1274, Column: 8
   mov rsi, get_attribute_function_tokens_s13 ; Pointer to string
   push rsi
-;; [get_attribute_function_tokens] Call str.cat | File: compiler/lex.torth, Row: 1180, Column: 23
+;; [get_attribute_function_tokens] Call str.cat | File: compiler/lex.torth, Row: 1274, Column: 23
   call c3RyLmNhdA__
-;; [get_attribute_function_tokens] ELSE | File: compiler/lex.torth, Row: 1181, Column: 3
+;; [get_attribute_function_tokens] ELSE | File: compiler/lex.torth, Row: 1275, Column: 3
   jmp get_attribute_function_tokens_ENDIF18
 get_attribute_function_tokens_ELSE15:
-;; [get_attribute_function_tokens] PUSH_STR | File: compiler/lex.torth, Row: 1181, Column: 8
+;; [get_attribute_function_tokens] PUSH_STR | File: compiler/lex.torth, Row: 1275, Column: 8
   mov rsi, get_attribute_function_tokens_s16 ; Pointer to string
   push rsi
-;; [get_attribute_function_tokens] Call str.cat | File: compiler/lex.torth, Row: 1181, Column: 23
+;; [get_attribute_function_tokens] Call str.cat | File: compiler/lex.torth, Row: 1275, Column: 23
   call c3RyLmNhdA__
-;; [get_attribute_function_tokens] ENDIF | File: compiler/lex.torth, Row: 1182, Column: 3
+;; [get_attribute_function_tokens] ENDIF | File: compiler/lex.torth, Row: 1276, Column: 3
 get_attribute_function_tokens_ENDIF18:
-;; [get_attribute_function_tokens] Call List.init | File: compiler/lex.torth, Row: 1183, Column: 3
+;; [get_attribute_function_tokens] Call List.init | File: compiler/lex.torth, Row: 1277, Column: 3
   call TGlzdC5pbml0
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1184, Column: 3
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1278, Column: 3
   push QWORD [get_attribute_function_tokens##attribute_token]
-;; [get_attribute_function_tokens] Call Token.location | File: compiler/lex.torth, Row: 1184, Column: 19
+;; [get_attribute_function_tokens] Call Token.location | File: compiler/lex.torth, Row: 1278, Column: 19
   call VG9rZW4ubG9jYXRpb24_
-;; [get_attribute_function_tokens] INTRINSIC dup | File: compiler/lex.torth, Row: 1185, Column: 3
+;; [get_attribute_function_tokens] INTRINSIC dup | File: compiler/lex.torth, Row: 1279, Column: 3
   push QWORD [rsp]
-;; [get_attribute_function_tokens] Call Location.file | File: compiler/lex.torth, Row: 1185, Column: 7
+;; [get_attribute_function_tokens] Call Location.file | File: compiler/lex.torth, Row: 1279, Column: 7
   call TG9jYXRpb24uZmlsZQ__
-;; [get_attribute_function_tokens] TAKE | File: compiler/lex.torth, Row: 1186, Column: 3
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1187, Column: 5
+;; [get_attribute_function_tokens] TAKE | File: compiler/lex.torth, Row: 1280, Column: 3
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1281, Column: 5
   pop QWORD [get_attribute_function_tokens##file_name]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1188, Column: 5
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1282, Column: 5
   pop QWORD [get_attribute_function_tokens##location]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1189, Column: 5
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1283, Column: 5
   pop QWORD [get_attribute_function_tokens##tokens]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1190, Column: 5
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1284, Column: 5
   pop QWORD [get_attribute_function_tokens##code]
-;; [get_attribute_function_tokens] IN | File: compiler/lex.torth, Row: 1191, Column: 3
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1193, Column: 3
+;; [get_attribute_function_tokens] IN | File: compiler/lex.torth, Row: 1285, Column: 3
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1287, Column: 3
   push QWORD [get_attribute_function_tokens##tokens]
-;; [get_attribute_function_tokens] CAST | File: compiler/lex.torth, Row: 1193, Column: 10
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1193, Column: 28
+;; [get_attribute_function_tokens] CAST | File: compiler/lex.torth, Row: 1287, Column: 10
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1287, Column: 28
   push QWORD [get_attribute_function_tokens##file_name]
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1193, Column: 38
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1287, Column: 38
   push QWORD [get_attribute_function_tokens##code]
-;; [get_attribute_function_tokens] Call get_tokens_from_code | File: compiler/lex.torth, Row: 1193, Column: 43
+;; [get_attribute_function_tokens] Call get_tokens_from_code | File: compiler/lex.torth, Row: 1287, Column: 43
   call Z2V0X3Rva2Vuc19mcm9tX2NvZGU_
-;; [get_attribute_function_tokens] Call List.init | File: compiler/lex.torth, Row: 1194, Column: 3
+;; [get_attribute_function_tokens] Call List.init | File: compiler/lex.torth, Row: 1288, Column: 3
   call TGlzdC5pbml0
-;; [get_attribute_function_tokens] CAST | File: compiler/lex.torth, Row: 1194, Column: 13
-;; [get_attribute_function_tokens] PUSH_INT | File: compiler/lex.torth, Row: 1195, Column: 3
+;; [get_attribute_function_tokens] CAST | File: compiler/lex.torth, Row: 1288, Column: 13
+;; [get_attribute_function_tokens] PUSH_INT | File: compiler/lex.torth, Row: 1289, Column: 3
   mov rax, 0
   push rax
-;; [get_attribute_function_tokens] TAKE | File: compiler/lex.torth, Row: 1196, Column: 3
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1197, Column: 5
+;; [get_attribute_function_tokens] TAKE | File: compiler/lex.torth, Row: 1290, Column: 3
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1291, Column: 5
   pop QWORD [get_attribute_function_tokens##index]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1198, Column: 5
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1292, Column: 5
   pop QWORD [get_attribute_function_tokens##function_tokens]
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1199, Column: 5
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1293, Column: 5
   pop QWORD [get_attribute_function_tokens##tokens]
-;; [get_attribute_function_tokens] IN | File: compiler/lex.torth, Row: 1200, Column: 3
-;; [get_attribute_function_tokens] WHILE | File: compiler/lex.torth, Row: 1201, Column: 3
+;; [get_attribute_function_tokens] IN | File: compiler/lex.torth, Row: 1294, Column: 3
+;; [get_attribute_function_tokens] WHILE | File: compiler/lex.torth, Row: 1295, Column: 3
 get_attribute_function_tokens_WHILE43:
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1201, Column: 9
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1295, Column: 9
   push QWORD [get_attribute_function_tokens##index]
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1201, Column: 15
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1295, Column: 15
   push QWORD [get_attribute_function_tokens##tokens]
-;; [get_attribute_function_tokens] Call List.len | File: compiler/lex.torth, Row: 1201, Column: 22
+;; [get_attribute_function_tokens] Call List.len | File: compiler/lex.torth, Row: 1295, Column: 22
   call TGlzdC5sZW4_
-;; [get_attribute_function_tokens] INTRINSIC LT | File: compiler/lex.torth, Row: 1201, Column: 31
+;; [get_attribute_function_tokens] INTRINSIC LT | File: compiler/lex.torth, Row: 1295, Column: 31
   pop rax
   pop rbx
   mov rcx, 0
@@ -6636,53 +7038,53 @@ get_attribute_function_tokens_WHILE43:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [get_attribute_function_tokens] DO | File: compiler/lex.torth, Row: 1201, Column: 33
+;; [get_attribute_function_tokens] DO | File: compiler/lex.torth, Row: 1295, Column: 33
   pop rax
   test rax, rax
   jz get_attribute_function_tokens_DONE68
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1202, Column: 5
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1296, Column: 5
   push QWORD [get_attribute_function_tokens##index]
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1202, Column: 11
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1296, Column: 11
   push QWORD [get_attribute_function_tokens##tokens]
-;; [get_attribute_function_tokens] Call List.nth | File: compiler/lex.torth, Row: 1202, Column: 18
+;; [get_attribute_function_tokens] Call List.nth | File: compiler/lex.torth, Row: 1296, Column: 18
   call TGlzdC5udGg_
-;; [get_attribute_function_tokens] Call ptr.load | File: compiler/lex.torth, Row: 1202, Column: 27
+;; [get_attribute_function_tokens] Call ptr.load | File: compiler/lex.torth, Row: 1296, Column: 27
   call cHRyLmxvYWQ_
-;; [get_attribute_function_tokens] TAKE | File: compiler/lex.torth, Row: 1203, Column: 5
-;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1203, Column: 10
+;; [get_attribute_function_tokens] TAKE | File: compiler/lex.torth, Row: 1297, Column: 5
+;; [get_attribute_function_tokens] POP_BIND | File: compiler/lex.torth, Row: 1297, Column: 10
   pop QWORD [get_attribute_function_tokens##token]
-;; [get_attribute_function_tokens] IN | File: compiler/lex.torth, Row: 1203, Column: 16
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1206, Column: 5
+;; [get_attribute_function_tokens] IN | File: compiler/lex.torth, Row: 1297, Column: 16
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1300, Column: 5
   push QWORD [get_attribute_function_tokens##location]
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1206, Column: 14
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1300, Column: 14
   push QWORD [get_attribute_function_tokens##token]
-;; [get_attribute_function_tokens] Call Token->location | File: compiler/lex.torth, Row: 1206, Column: 20
+;; [get_attribute_function_tokens] Call Token->location | File: compiler/lex.torth, Row: 1300, Column: 20
   call VG9rZW4tPmxvY2F0aW9u
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1207, Column: 5
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1301, Column: 5
   push QWORD [get_attribute_function_tokens##token]
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1207, Column: 11
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1301, Column: 11
   push QWORD [get_attribute_function_tokens##function_tokens]
-;; [get_attribute_function_tokens] CAST | File: compiler/lex.torth, Row: 1207, Column: 27
-;; [get_attribute_function_tokens] Call List.append | File: compiler/lex.torth, Row: 1207, Column: 38
+;; [get_attribute_function_tokens] CAST | File: compiler/lex.torth, Row: 1301, Column: 27
+;; [get_attribute_function_tokens] Call List.append | File: compiler/lex.torth, Row: 1301, Column: 38
   call TGlzdC5hcHBlbmQ_
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1208, Column: 5
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1302, Column: 5
   push QWORD [get_attribute_function_tokens##index]
-;; [get_attribute_function_tokens] PUSH_INT | File: compiler/lex.torth, Row: 1208, Column: 11
+;; [get_attribute_function_tokens] PUSH_INT | File: compiler/lex.torth, Row: 1302, Column: 11
   mov rax, 1
   push rax
-;; [get_attribute_function_tokens] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1208, Column: 13
+;; [get_attribute_function_tokens] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1302, Column: 13
   pop rax
   add [rsp], rax
-  ;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1208, Column: 15
+  ;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1302, Column: 15
   push QWORD [get_attribute_function_tokens##index]
-;; [get_attribute_function_tokens] ASSIGN_BIND | File: compiler/lex.torth, Row: 1208, Column: 21
+;; [get_attribute_function_tokens] ASSIGN_BIND | File: compiler/lex.torth, Row: 1302, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [get_attribute_function_tokens##index], rbx
-;; [get_attribute_function_tokens] DONE | File: compiler/lex.torth, Row: 1209, Column: 3
+;; [get_attribute_function_tokens] DONE | File: compiler/lex.torth, Row: 1303, Column: 3
   jmp get_attribute_function_tokens_WHILE43
 get_attribute_function_tokens_DONE68:
-;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1210, Column: 3
+;; [get_attribute_function_tokens] PUSH_BIND | File: compiler/lex.torth, Row: 1304, Column: 3
   push QWORD [get_attribute_function_tokens##function_tokens]
 ;; [get_attribute_function_tokens] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -6693,31 +7095,31 @@ cGFyc2VfdmFyaWFibGVzX2Zvcl9mdW5jdGlvbnM_:
 ;; [parse_variables_for_functions] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 1215, Column: 40
+;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 1309, Column: 40
   pop QWORD [parse_variables_for_functions##functions]
-;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 1215, Column: 61
+;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 1309, Column: 61
   pop QWORD [parse_variables_for_functions##memories]
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1216, Column: 3
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1310, Column: 3
   push QWORD [parse_variables_for_functions##functions]
-;; [parse_variables_for_functions] CAST | File: compiler/lex.torth, Row: 1216, Column: 13
-;; [parse_variables_for_functions] Call List.len | File: compiler/lex.torth, Row: 1216, Column: 24
+;; [parse_variables_for_functions] CAST | File: compiler/lex.torth, Row: 1310, Column: 13
+;; [parse_variables_for_functions] Call List.len | File: compiler/lex.torth, Row: 1310, Column: 24
   call TGlzdC5sZW4_
-;; [parse_variables_for_functions] PUSH_INT | File: compiler/lex.torth, Row: 1217, Column: 3
+;; [parse_variables_for_functions] PUSH_INT | File: compiler/lex.torth, Row: 1311, Column: 3
   mov rax, 0
   push rax
-;; [parse_variables_for_functions] TAKE | File: compiler/lex.torth, Row: 1218, Column: 3
-;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 1218, Column: 8
+;; [parse_variables_for_functions] TAKE | File: compiler/lex.torth, Row: 1312, Column: 3
+;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 1312, Column: 8
   pop QWORD [parse_variables_for_functions##index]
-;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 1218, Column: 14
+;; [parse_variables_for_functions] POP_BIND | File: compiler/lex.torth, Row: 1312, Column: 14
   pop QWORD [parse_variables_for_functions##functions.len]
-;; [parse_variables_for_functions] IN | File: compiler/lex.torth, Row: 1218, Column: 28
-;; [parse_variables_for_functions] WHILE | File: compiler/lex.torth, Row: 1221, Column: 3
+;; [parse_variables_for_functions] IN | File: compiler/lex.torth, Row: 1312, Column: 28
+;; [parse_variables_for_functions] WHILE | File: compiler/lex.torth, Row: 1315, Column: 3
 parse_variables_for_functions_WHILE10:
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1221, Column: 9
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1315, Column: 9
   push QWORD [parse_variables_for_functions##index]
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1221, Column: 15
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1315, Column: 15
   push QWORD [parse_variables_for_functions##functions.len]
-;; [parse_variables_for_functions] INTRINSIC LT | File: compiler/lex.torth, Row: 1221, Column: 29
+;; [parse_variables_for_functions] INTRINSIC LT | File: compiler/lex.torth, Row: 1315, Column: 29
   pop rax
   pop rbx
   mov rcx, 0
@@ -6725,43 +7127,43 @@ parse_variables_for_functions_WHILE10:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_variables_for_functions] DO | File: compiler/lex.torth, Row: 1221, Column: 31
+;; [parse_variables_for_functions] DO | File: compiler/lex.torth, Row: 1315, Column: 31
   pop rax
   test rax, rax
   jz parse_variables_for_functions_DONE28
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1222, Column: 5
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1316, Column: 5
   push QWORD [parse_variables_for_functions##index]
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1222, Column: 11
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1316, Column: 11
   push QWORD [parse_variables_for_functions##functions]
-;; [parse_variables_for_functions] CAST | File: compiler/lex.torth, Row: 1222, Column: 21
-;; [parse_variables_for_functions] Call List.nth | File: compiler/lex.torth, Row: 1222, Column: 32
+;; [parse_variables_for_functions] CAST | File: compiler/lex.torth, Row: 1316, Column: 21
+;; [parse_variables_for_functions] Call List.nth | File: compiler/lex.torth, Row: 1316, Column: 32
   call TGlzdC5udGg_
-;; [parse_variables_for_functions] Call Func.load | File: compiler/lex.torth, Row: 1222, Column: 41
+;; [parse_variables_for_functions] Call Func.load | File: compiler/lex.torth, Row: 1316, Column: 41
   call RnVuYy5sb2Fk
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1223, Column: 5
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1317, Column: 5
   push QWORD [parse_variables_for_functions##memories]
-;; [parse_variables_for_functions] INTRINSIC swap | File: compiler/lex.torth, Row: 1223, Column: 14
+;; [parse_variables_for_functions] INTRINSIC swap | File: compiler/lex.torth, Row: 1317, Column: 14
   pop rax
   pop rbx
   push rax
   push rbx
-;; [parse_variables_for_functions] Call parse_function_variables | File: compiler/lex.torth, Row: 1223, Column: 19
+;; [parse_variables_for_functions] Call parse_function_variables | File: compiler/lex.torth, Row: 1317, Column: 19
   call cGFyc2VfZnVuY3Rpb25fdmFyaWFibGVz
-;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1224, Column: 5
+;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1318, Column: 5
   push QWORD [parse_variables_for_functions##index]
-;; [parse_variables_for_functions] PUSH_INT | File: compiler/lex.torth, Row: 1224, Column: 11
+;; [parse_variables_for_functions] PUSH_INT | File: compiler/lex.torth, Row: 1318, Column: 11
   mov rax, 1
   push rax
-;; [parse_variables_for_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1224, Column: 13
+;; [parse_variables_for_functions] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1318, Column: 13
   pop rax
   add [rsp], rax
-  ;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1224, Column: 15
+  ;; [parse_variables_for_functions] PUSH_BIND | File: compiler/lex.torth, Row: 1318, Column: 15
   push QWORD [parse_variables_for_functions##index]
-;; [parse_variables_for_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 1224, Column: 21
+;; [parse_variables_for_functions] ASSIGN_BIND | File: compiler/lex.torth, Row: 1318, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_variables_for_functions##index], rbx
-;; [parse_variables_for_functions] DONE | File: compiler/lex.torth, Row: 1225, Column: 3
+;; [parse_variables_for_functions] DONE | File: compiler/lex.torth, Row: 1319, Column: 3
   jmp parse_variables_for_functions_WHILE10
 parse_variables_for_functions_DONE28:
 ;; [parse_variables_for_functions] Return to the address found in return_stack
@@ -6773,49 +7175,49 @@ cGFyc2VfZnVuY3Rpb25fdmFyaWFibGVz:
 ;; [parse_function_variables] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1231, Column: 35
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1325, Column: 35
   pop QWORD [parse_function_variables##func]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1231, Column: 45
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1325, Column: 45
   pop QWORD [parse_function_variables##memories]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1232, Column: 3
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1326, Column: 3
   push QWORD [parse_function_variables##func]
-;; [parse_function_variables] Call Func.tokens | File: compiler/lex.torth, Row: 1232, Column: 8
+;; [parse_function_variables] Call Func.tokens | File: compiler/lex.torth, Row: 1326, Column: 8
   call RnVuYy50b2tlbnM_
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1233, Column: 3
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1327, Column: 3
   push QWORD [parse_function_variables##func]
-;; [parse_function_variables] Call Func.variables | File: compiler/lex.torth, Row: 1233, Column: 8
+;; [parse_function_variables] Call Func.variables | File: compiler/lex.torth, Row: 1327, Column: 8
   call RnVuYy52YXJpYWJsZXM_
-;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1234, Column: 3
+;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1328, Column: 3
   mov rax, 0
   push rax
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1235, Column: 3
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1329, Column: 3
   mov rsi, parse_function_variables_s7 ; Pointer to string
   push rsi
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1236, Column: 3
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1330, Column: 3
   mov rax, 0
   push rax
-;; [parse_function_variables] TAKE | File: compiler/lex.torth, Row: 1237, Column: 3
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1238, Column: 5
+;; [parse_function_variables] TAKE | File: compiler/lex.torth, Row: 1331, Column: 3
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1332, Column: 5
   pop QWORD [parse_function_variables##index]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1239, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1333, Column: 5
   pop QWORD [parse_function_variables##bind_variant]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1240, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1334, Column: 5
   pop QWORD [parse_function_variables##parsing_variables]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1241, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1335, Column: 5
   pop QWORD [parse_function_variables##variables]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1242, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1336, Column: 5
   pop QWORD [parse_function_variables##tokens]
-;; [parse_function_variables] IN | File: compiler/lex.torth, Row: 1243, Column: 3
-;; [parse_function_variables] WHILE | File: compiler/lex.torth, Row: 1245, Column: 3
+;; [parse_function_variables] IN | File: compiler/lex.torth, Row: 1337, Column: 3
+;; [parse_function_variables] WHILE | File: compiler/lex.torth, Row: 1339, Column: 3
 parse_function_variables_WHILE16:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1245, Column: 9
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1339, Column: 9
   push QWORD [parse_function_variables##index]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1245, Column: 15
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1339, Column: 15
   push QWORD [parse_function_variables##tokens]
-;; [parse_function_variables] CAST | File: compiler/lex.torth, Row: 1245, Column: 22
-;; [parse_function_variables] Call List.len | File: compiler/lex.torth, Row: 1245, Column: 33
+;; [parse_function_variables] CAST | File: compiler/lex.torth, Row: 1339, Column: 22
+;; [parse_function_variables] Call List.len | File: compiler/lex.torth, Row: 1339, Column: 33
   call TGlzdC5sZW4_
-;; [parse_function_variables] INTRINSIC LT | File: compiler/lex.torth, Row: 1245, Column: 42
+;; [parse_function_variables] INTRINSIC LT | File: compiler/lex.torth, Row: 1339, Column: 42
   pop rax
   pop rbx
   mov rcx, 0
@@ -6823,203 +7225,203 @@ parse_function_variables_WHILE16:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1245, Column: 44
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1339, Column: 44
   pop rax
   test rax, rax
   jz parse_function_variables_DONE125
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1246, Column: 5
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1340, Column: 5
   push QWORD [parse_function_variables##index]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1246, Column: 11
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1340, Column: 11
   push QWORD [parse_function_variables##tokens]
-;; [parse_function_variables] CAST | File: compiler/lex.torth, Row: 1246, Column: 18
-;; [parse_function_variables] Call List.nth | File: compiler/lex.torth, Row: 1246, Column: 29
+;; [parse_function_variables] CAST | File: compiler/lex.torth, Row: 1340, Column: 18
+;; [parse_function_variables] Call List.nth | File: compiler/lex.torth, Row: 1340, Column: 29
   call TGlzdC5udGg_
-;; [parse_function_variables] Call Token.load | File: compiler/lex.torth, Row: 1246, Column: 38
+;; [parse_function_variables] Call Token.load | File: compiler/lex.torth, Row: 1340, Column: 38
   call VG9rZW4ubG9hZA__
-;; [parse_function_variables] INTRINSIC dup | File: compiler/lex.torth, Row: 1247, Column: 5
+;; [parse_function_variables] INTRINSIC dup | File: compiler/lex.torth, Row: 1341, Column: 5
   push QWORD [rsp]
-;; [parse_function_variables] Call Token.value | File: compiler/lex.torth, Row: 1247, Column: 9
+;; [parse_function_variables] Call Token.value | File: compiler/lex.torth, Row: 1341, Column: 9
   call VG9rZW4udmFsdWU_
-;; [parse_function_variables] TAKE | File: compiler/lex.torth, Row: 1248, Column: 5
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1249, Column: 7
+;; [parse_function_variables] TAKE | File: compiler/lex.torth, Row: 1342, Column: 5
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1343, Column: 7
   pop QWORD [parse_function_variables##token_value]
-;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1250, Column: 7
+;; [parse_function_variables] POP_BIND | File: compiler/lex.torth, Row: 1344, Column: 7
   pop QWORD [parse_function_variables##token]
-;; [parse_function_variables] IN | File: compiler/lex.torth, Row: 1251, Column: 5
-;; [parse_function_variables] IF | File: compiler/lex.torth, Row: 1254, Column: 5
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1255, Column: 7
+;; [parse_function_variables] IN | File: compiler/lex.torth, Row: 1345, Column: 5
+;; [parse_function_variables] IF | File: compiler/lex.torth, Row: 1348, Column: 5
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1349, Column: 7
   push QWORD [parse_function_variables##token_value]
-;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1255, Column: 19
+;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1349, Column: 19
   call c3RyLmNvcHk_
-;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1255, Column: 28
+;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1349, Column: 28
   call c3RyLnVwcGVy
-;; [parse_function_variables] INTRINSIC dup | File: compiler/lex.torth, Row: 1256, Column: 7
+;; [parse_function_variables] INTRINSIC dup | File: compiler/lex.torth, Row: 1350, Column: 7
   push QWORD [rsp]
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1256, Column: 12
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1350, Column: 12
   mov rsi, parse_function_variables_s39 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1256, Column: 19
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1350, Column: 19
   call c3RyZXE_
-;; [parse_function_variables] INTRINSIC swap | File: compiler/lex.torth, Row: 1257, Column: 7
+;; [parse_function_variables] INTRINSIC swap | File: compiler/lex.torth, Row: 1351, Column: 7
   pop rax
   pop rbx
   push rax
   push rbx
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1257, Column: 12
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1351, Column: 12
   mov rsi, parse_function_variables_s42 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1257, Column: 19
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1351, Column: 19
   call c3RyZXE_
-;; [parse_function_variables] Call || | File: compiler/lex.torth, Row: 1258, Column: 7
+;; [parse_function_variables] Call || | File: compiler/lex.torth, Row: 1352, Column: 7
   call fHw_
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1259, Column: 5
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1353, Column: 5
   pop rax
   test rax, rax
   jz parse_function_variables_ELIF54
-;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1260, Column: 7
+;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1354, Column: 7
   mov rax, 1
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1260, Column: 12
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1354, Column: 12
   push QWORD [parse_function_variables##parsing_variables]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1260, Column: 30
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1354, Column: 30
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables##parsing_variables], rbx
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1261, Column: 7
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1355, Column: 7
   push QWORD [parse_function_variables##token_value]
-;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1261, Column: 19
+;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1355, Column: 19
   call c3RyLmNvcHk_
-;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1261, Column: 28
+;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1355, Column: 28
   call c3RyLnVwcGVy
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1261, Column: 38
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1355, Column: 38
   push QWORD [parse_function_variables##bind_variant]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1261, Column: 51
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1355, Column: 51
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables##bind_variant], rbx
-;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1264, Column: 5
+;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1358, Column: 5
   jmp parse_function_variables_ENDIF119
 parse_function_variables_ELIF54:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1264, Column: 10
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1358, Column: 10
   push QWORD [parse_function_variables##token_value]
-;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1264, Column: 22
+;; [parse_function_variables] Call str.copy | File: compiler/lex.torth, Row: 1358, Column: 22
   call c3RyLmNvcHk_
-;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1264, Column: 31
+;; [parse_function_variables] Call str.upper | File: compiler/lex.torth, Row: 1358, Column: 31
   call c3RyLnVwcGVy
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1264, Column: 41
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1358, Column: 41
   mov rsi, parse_function_variables_s58 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1264, Column: 46
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1358, Column: 46
   call c3RyZXE_
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1264, Column: 52
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1358, Column: 52
   pop rax
   test rax, rax
   jz parse_function_variables_ELIF64
-;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1265, Column: 7
+;; [parse_function_variables] PUSH_BOOL | File: compiler/lex.torth, Row: 1359, Column: 7
   mov rax, 0
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1265, Column: 13
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1359, Column: 13
   push QWORD [parse_function_variables##parsing_variables]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1265, Column: 31
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1359, Column: 31
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables##parsing_variables], rbx
-;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1268, Column: 5
+;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1362, Column: 5
   jmp parse_function_variables_ENDIF119
 parse_function_variables_ELIF64:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1268, Column: 10
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1362, Column: 10
   push QWORD [parse_function_variables##parsing_variables]
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1268, Column: 28
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1362, Column: 28
   pop rax
   test rax, rax
   jz parse_function_variables_ELIF99
-;; [parse_function_variables] IF | File: compiler/lex.torth, Row: 1269, Column: 7
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1269, Column: 10
+;; [parse_function_variables] IF | File: compiler/lex.torth, Row: 1363, Column: 7
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1363, Column: 10
   push QWORD [parse_function_variables##bind_variant]
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1269, Column: 23
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1363, Column: 23
   mov rsi, parse_function_variables_s69 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1269, Column: 30
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1363, Column: 30
   call c3RyZXE_
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1269, Column: 36
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1363, Column: 36
   pop rax
   test rax, rax
   jz parse_function_variables_ELIF75
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1270, Column: 9
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1364, Column: 9
   mov rax, 1
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1270, Column: 22
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1364, Column: 22
   push QWORD [parse_function_variables##token]
-;; [parse_function_variables] Call Token->vartype | File: compiler/lex.torth, Row: 1270, Column: 28
+;; [parse_function_variables] Call Token->vartype | File: compiler/lex.torth, Row: 1364, Column: 28
   call VG9rZW4tPnZhcnR5cGU_
-;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1271, Column: 7
+;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1365, Column: 7
   jmp parse_function_variables_ENDIF92
 parse_function_variables_ELIF75:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1271, Column: 12
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1365, Column: 12
   push QWORD [parse_function_variables##bind_variant]
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1271, Column: 25
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1365, Column: 25
   mov rsi, parse_function_variables_s77 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1271, Column: 32
+;; [parse_function_variables] Call streq | File: compiler/lex.torth, Row: 1365, Column: 32
   call c3RyZXE_
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1271, Column: 38
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1365, Column: 38
   pop rax
   test rax, rax
   jz parse_function_variables_ELSE83
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1272, Column: 9
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1366, Column: 9
   mov rax, 3
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1272, Column: 22
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1366, Column: 22
   push QWORD [parse_function_variables##token]
-;; [parse_function_variables] Call Token->vartype | File: compiler/lex.torth, Row: 1272, Column: 28
+;; [parse_function_variables] Call Token->vartype | File: compiler/lex.torth, Row: 1366, Column: 28
   call VG9rZW4tPnZhcnR5cGU_
-;; [parse_function_variables] ELSE | File: compiler/lex.torth, Row: 1273, Column: 7
+;; [parse_function_variables] ELSE | File: compiler/lex.torth, Row: 1367, Column: 7
   jmp parse_function_variables_ENDIF92
 parse_function_variables_ELSE83:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1274, Column: 9
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1368, Column: 9
   push QWORD [parse_function_variables##token]
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1275, Column: 9
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1369, Column: 9
   mov rsi, parse_function_variables_s85 ; Pointer to string
   push rsi
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1275, Column: 29
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1369, Column: 29
   push QWORD [parse_function_variables##bind_variant]
-;; [parse_function_variables] Call str.cat | File: compiler/lex.torth, Row: 1275, Column: 42
+;; [parse_function_variables] Call str.cat | File: compiler/lex.torth, Row: 1369, Column: 42
   call c3RyLmNhdA__
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1275, Column: 50
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1369, Column: 50
   mov rsi, parse_function_variables_s88 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call str.cat | File: compiler/lex.torth, Row: 1275, Column: 56
+;; [parse_function_variables] Call str.cat | File: compiler/lex.torth, Row: 1369, Column: 56
   call c3RyLmNhdA__
-;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1276, Column: 9
+;; [parse_function_variables] PUSH_STR | File: compiler/lex.torth, Row: 1370, Column: 9
   mov rsi, parse_function_variables_s90 ; Pointer to string
   push rsi
-;; [parse_function_variables] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 1276, Column: 23
+;; [parse_function_variables] Call CompilerErrorWithToken | File: compiler/lex.torth, Row: 1370, Column: 23
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [parse_function_variables] ENDIF | File: compiler/lex.torth, Row: 1277, Column: 7
+;; [parse_function_variables] ENDIF | File: compiler/lex.torth, Row: 1371, Column: 7
 parse_function_variables_ENDIF92:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1280, Column: 7
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1374, Column: 7
   push QWORD [parse_function_variables##memories]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1280, Column: 16
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1374, Column: 16
   push QWORD [parse_function_variables##variables]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1280, Column: 26
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1374, Column: 26
   push QWORD [parse_function_variables##func]
-;; [parse_function_variables] Call Func.name | File: compiler/lex.torth, Row: 1280, Column: 31
+;; [parse_function_variables] Call Func.name | File: compiler/lex.torth, Row: 1374, Column: 31
   call RnVuYy5uYW1l
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1280, Column: 41
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1374, Column: 41
   push QWORD [parse_function_variables##token]
-;; [parse_function_variables] Call add_variable_to_list | File: compiler/lex.torth, Row: 1280, Column: 47
+;; [parse_function_variables] Call add_variable_to_list | File: compiler/lex.torth, Row: 1374, Column: 47
   call YWRkX3ZhcmlhYmxlX3RvX2xpc3Q_
-;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1283, Column: 5
+;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1377, Column: 5
   jmp parse_function_variables_ENDIF119
 parse_function_variables_ELIF99:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1283, Column: 10
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1377, Column: 10
   push QWORD [parse_function_variables##token]
-;; [parse_function_variables] Call Token.vartype | File: compiler/lex.torth, Row: 1283, Column: 16
+;; [parse_function_variables] Call Token.vartype | File: compiler/lex.torth, Row: 1377, Column: 16
   call VG9rZW4udmFydHlwZQ__
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1283, Column: 30
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1377, Column: 30
   mov rax, 0
   push rax
-;; [parse_function_variables] INTRINSIC NE | File: compiler/lex.torth, Row: 1283, Column: 32
+;; [parse_function_variables] INTRINSIC NE | File: compiler/lex.torth, Row: 1377, Column: 32
   pop rax
   pop rbx
   mov rcx, 0
@@ -7027,62 +7429,62 @@ parse_function_variables_ELIF99:
   cmp rbx, rax
   cmovne rcx, rdx
   push rcx
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1283, Column: 35
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1377, Column: 35
   pop rax
   test rax, rax
   jz parse_function_variables_ELIF111
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1284, Column: 7
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1378, Column: 7
   push QWORD [parse_function_variables##index]
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1284, Column: 13
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1378, Column: 13
   mov rax, 1
   push rax
-;; [parse_function_variables] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1284, Column: 15
+;; [parse_function_variables] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1378, Column: 15
   pop rax
   add [rsp], rax
-  ;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1284, Column: 17
+  ;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1378, Column: 17
   push QWORD [parse_function_variables##index]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1284, Column: 23
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1378, Column: 23
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables##index], rbx
-;; [parse_function_variables] CONTINUE | File: compiler/lex.torth, Row: 1285, Column: 7
-  jmp parse_function_variables_WHILE16;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1288, Column: 5
+;; [parse_function_variables] CONTINUE | File: compiler/lex.torth, Row: 1379, Column: 7
+  jmp parse_function_variables_WHILE16;; [parse_function_variables] ELIF | File: compiler/lex.torth, Row: 1382, Column: 5
   jmp parse_function_variables_ENDIF119
 parse_function_variables_ELIF111:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1288, Column: 10
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1382, Column: 10
   push QWORD [parse_function_variables##token_value]
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1288, Column: 22
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1382, Column: 22
   push QWORD [parse_function_variables##variables]
-;; [parse_function_variables] Call List.contains_variable | File: compiler/lex.torth, Row: 1288, Column: 32
+;; [parse_function_variables] Call List.contains_variable | File: compiler/lex.torth, Row: 1382, Column: 32
   call TGlzdC5jb250YWluc192YXJpYWJsZQ__
-;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1288, Column: 55
+;; [parse_function_variables] DO | File: compiler/lex.torth, Row: 1382, Column: 55
   pop rax
   test rax, rax
   jz parse_function_variables_ENDIF119
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1289, Column: 7
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1383, Column: 7
   mov rax, 2
   push rax
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1289, Column: 20
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1383, Column: 20
   push QWORD [parse_function_variables##token]
-;; [parse_function_variables] Call Token->vartype | File: compiler/lex.torth, Row: 1289, Column: 26
+;; [parse_function_variables] Call Token->vartype | File: compiler/lex.torth, Row: 1383, Column: 26
   call VG9rZW4tPnZhcnR5cGU_
-;; [parse_function_variables] ENDIF | File: compiler/lex.torth, Row: 1290, Column: 5
+;; [parse_function_variables] ENDIF | File: compiler/lex.torth, Row: 1384, Column: 5
 parse_function_variables_ENDIF119:
-;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1291, Column: 5
+;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1385, Column: 5
   push QWORD [parse_function_variables##index]
-;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1291, Column: 11
+;; [parse_function_variables] PUSH_INT | File: compiler/lex.torth, Row: 1385, Column: 11
   mov rax, 1
   push rax
-;; [parse_function_variables] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1291, Column: 13
+;; [parse_function_variables] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1385, Column: 13
   pop rax
   add [rsp], rax
-  ;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1291, Column: 15
+  ;; [parse_function_variables] PUSH_BIND | File: compiler/lex.torth, Row: 1385, Column: 15
   push QWORD [parse_function_variables##index]
-;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1291, Column: 21
+;; [parse_function_variables] ASSIGN_BIND | File: compiler/lex.torth, Row: 1385, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [parse_function_variables##index], rbx
-;; [parse_function_variables] DONE | File: compiler/lex.torth, Row: 1292, Column: 3
+;; [parse_function_variables] DONE | File: compiler/lex.torth, Row: 1386, Column: 3
   jmp parse_function_variables_WHILE16
 parse_function_variables_DONE125:
 ;; [parse_function_variables] Return to the address found in return_stack
@@ -7094,84 +7496,84 @@ YWRkX3ZhcmlhYmxlX3RvX2xpc3Q_:
 ;; [add_variable_to_list] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1302, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1396, Column: 3
   pop QWORD [add_variable_to_list##token]
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1303, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1397, Column: 3
   pop QWORD [add_variable_to_list##function_name]
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1304, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1398, Column: 3
   pop QWORD [add_variable_to_list##variables]
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1305, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1399, Column: 3
   pop QWORD [add_variable_to_list##memories]
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1307, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1401, Column: 3
   push QWORD [add_variable_to_list##token]
-;; [add_variable_to_list] Call Token.type | File: compiler/lex.torth, Row: 1307, Column: 9
+;; [add_variable_to_list] Call Token.type | File: compiler/lex.torth, Row: 1401, Column: 9
   call VG9rZW4udHlwZQ__
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1308, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1402, Column: 3
   push QWORD [add_variable_to_list##token]
-;; [add_variable_to_list] Call Token.value | File: compiler/lex.torth, Row: 1308, Column: 9
+;; [add_variable_to_list] Call Token.value | File: compiler/lex.torth, Row: 1402, Column: 9
   call VG9rZW4udmFsdWU_
-;; [add_variable_to_list] TAKE | File: compiler/lex.torth, Row: 1309, Column: 3
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1309, Column: 8
+;; [add_variable_to_list] TAKE | File: compiler/lex.torth, Row: 1403, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1403, Column: 8
   pop QWORD [add_variable_to_list##token_value]
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1309, Column: 20
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1403, Column: 20
   pop QWORD [add_variable_to_list##token_type]
-;; [add_variable_to_list] IN | File: compiler/lex.torth, Row: 1309, Column: 31
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1312, Column: 3
+;; [add_variable_to_list] IN | File: compiler/lex.torth, Row: 1403, Column: 31
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1406, Column: 3
   push QWORD [add_variable_to_list##token_type]
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1312, Column: 14
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1406, Column: 14
   push QWORD [add_variable_to_list##token_value]
-;; [add_variable_to_list] Call Variable.init | File: compiler/lex.torth, Row: 1312, Column: 26
+;; [add_variable_to_list] Call Variable.init | File: compiler/lex.torth, Row: 1406, Column: 26
   call VmFyaWFibGUuaW5pdA__
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1313, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1407, Column: 3
   push QWORD [add_variable_to_list##variables]
-;; [add_variable_to_list] CAST | File: compiler/lex.torth, Row: 1313, Column: 13
-;; [add_variable_to_list] Call List.append | File: compiler/lex.torth, Row: 1313, Column: 24
+;; [add_variable_to_list] CAST | File: compiler/lex.torth, Row: 1407, Column: 13
+;; [add_variable_to_list] Call List.append | File: compiler/lex.torth, Row: 1407, Column: 24
   call TGlzdC5hcHBlbmQ_
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1317, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1411, Column: 3
   push QWORD [add_variable_to_list##function_name]
-;; [add_variable_to_list] PUSH_STR | File: compiler/lex.torth, Row: 1317, Column: 17
+;; [add_variable_to_list] PUSH_STR | File: compiler/lex.torth, Row: 1411, Column: 17
   mov rsi, add_variable_to_list_s19 ; Pointer to string
   push rsi
-;; [add_variable_to_list] Call str.cat | File: compiler/lex.torth, Row: 1317, Column: 22
+;; [add_variable_to_list] Call str.cat | File: compiler/lex.torth, Row: 1411, Column: 22
   call c3RyLmNhdA__
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1318, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1412, Column: 3
   push QWORD [add_variable_to_list##token_value]
-;; [add_variable_to_list] Call str.cat | File: compiler/lex.torth, Row: 1318, Column: 21
+;; [add_variable_to_list] Call str.cat | File: compiler/lex.torth, Row: 1412, Column: 21
   call c3RyLmNhdA__
-;; [add_variable_to_list] TAKE | File: compiler/lex.torth, Row: 1319, Column: 3
-;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1319, Column: 8
+;; [add_variable_to_list] TAKE | File: compiler/lex.torth, Row: 1413, Column: 3
+;; [add_variable_to_list] POP_BIND | File: compiler/lex.torth, Row: 1413, Column: 8
   pop QWORD [add_variable_to_list##memory_name]
-;; [add_variable_to_list] IN | File: compiler/lex.torth, Row: 1319, Column: 20
-;; [add_variable_to_list] IF | File: compiler/lex.torth, Row: 1321, Column: 3
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1321, Column: 6
+;; [add_variable_to_list] IN | File: compiler/lex.torth, Row: 1413, Column: 20
+;; [add_variable_to_list] IF | File: compiler/lex.torth, Row: 1415, Column: 3
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1415, Column: 6
   push QWORD [add_variable_to_list##memories]
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1321, Column: 15
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1415, Column: 15
   push QWORD [add_variable_to_list##memory_name]
-;; [add_variable_to_list] Call memory_exists | File: compiler/lex.torth, Row: 1321, Column: 27
+;; [add_variable_to_list] Call memory_exists | File: compiler/lex.torth, Row: 1415, Column: 27
   call bWVtb3J5X2V4aXN0cw__
-;; [add_variable_to_list] Call not | File: compiler/lex.torth, Row: 1321, Column: 41
+;; [add_variable_to_list] Call not | File: compiler/lex.torth, Row: 1415, Column: 41
   call bm90
-;; [add_variable_to_list] DO | File: compiler/lex.torth, Row: 1321, Column: 45
+;; [add_variable_to_list] DO | File: compiler/lex.torth, Row: 1415, Column: 45
   pop rax
   test rax, rax
   jz add_variable_to_list_ENDIF40
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1322, Column: 5
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1416, Column: 5
   push QWORD [add_variable_to_list##token]
-;; [add_variable_to_list] Call Token.location | File: compiler/lex.torth, Row: 1322, Column: 11
+;; [add_variable_to_list] Call Token.location | File: compiler/lex.torth, Row: 1416, Column: 11
   call VG9rZW4ubG9jYXRpb24_
-;; [add_variable_to_list] PUSH_INT | File: compiler/lex.torth, Row: 1323, Column: 5
+;; [add_variable_to_list] PUSH_INT | File: compiler/lex.torth, Row: 1417, Column: 5
   mov rax, 8
   push rax
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1324, Column: 5
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1418, Column: 5
   push QWORD [add_variable_to_list##memory_name]
-;; [add_variable_to_list] Call Mem.init | File: compiler/lex.torth, Row: 1325, Column: 5
+;; [add_variable_to_list] Call Mem.init | File: compiler/lex.torth, Row: 1419, Column: 5
   call TWVtLmluaXQ_
-;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1326, Column: 5
+;; [add_variable_to_list] PUSH_BIND | File: compiler/lex.torth, Row: 1420, Column: 5
   push QWORD [add_variable_to_list##memories]
-;; [add_variable_to_list] CAST | File: compiler/lex.torth, Row: 1326, Column: 14
-;; [add_variable_to_list] Call List.append | File: compiler/lex.torth, Row: 1326, Column: 25
+;; [add_variable_to_list] CAST | File: compiler/lex.torth, Row: 1420, Column: 14
+;; [add_variable_to_list] Call List.append | File: compiler/lex.torth, Row: 1420, Column: 25
   call TGlzdC5hcHBlbmQ_
-;; [add_variable_to_list] ENDIF | File: compiler/lex.torth, Row: 1327, Column: 3
+;; [add_variable_to_list] ENDIF | File: compiler/lex.torth, Row: 1421, Column: 3
 add_variable_to_list_ENDIF40:
 ;; [add_variable_to_list] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -7182,29 +7584,29 @@ bWFpbl9mdW5jdGlvbl9pbl9mdW5jdGlvbl9saXN0:
 ;; [main_function_in_function_list] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1334, Column: 41
+;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1428, Column: 41
   pop QWORD [main_function_in_function_list##functions]
-;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1335, Column: 3
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1429, Column: 3
   push QWORD [main_function_in_function_list##functions]
-;; [main_function_in_function_list] CAST | File: compiler/lex.torth, Row: 1335, Column: 13
-;; [main_function_in_function_list] Call List.len | File: compiler/lex.torth, Row: 1335, Column: 24
+;; [main_function_in_function_list] CAST | File: compiler/lex.torth, Row: 1429, Column: 13
+;; [main_function_in_function_list] Call List.len | File: compiler/lex.torth, Row: 1429, Column: 24
   call TGlzdC5sZW4_
-;; [main_function_in_function_list] PUSH_INT | File: compiler/lex.torth, Row: 1336, Column: 3
+;; [main_function_in_function_list] PUSH_INT | File: compiler/lex.torth, Row: 1430, Column: 3
   mov rax, 0
   push rax
-;; [main_function_in_function_list] TAKE | File: compiler/lex.torth, Row: 1337, Column: 3
-;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1337, Column: 8
+;; [main_function_in_function_list] TAKE | File: compiler/lex.torth, Row: 1431, Column: 3
+;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1431, Column: 8
   pop QWORD [main_function_in_function_list##index]
-;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1337, Column: 14
+;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1431, Column: 14
   pop QWORD [main_function_in_function_list##functions.len]
-;; [main_function_in_function_list] IN | File: compiler/lex.torth, Row: 1337, Column: 28
-;; [main_function_in_function_list] WHILE | File: compiler/lex.torth, Row: 1340, Column: 3
+;; [main_function_in_function_list] IN | File: compiler/lex.torth, Row: 1431, Column: 28
+;; [main_function_in_function_list] WHILE | File: compiler/lex.torth, Row: 1434, Column: 3
 main_function_in_function_list_WHILE9:
-;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1340, Column: 9
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1434, Column: 9
   push QWORD [main_function_in_function_list##index]
-;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1340, Column: 15
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1434, Column: 15
   push QWORD [main_function_in_function_list##functions.len]
-;; [main_function_in_function_list] INTRINSIC LT | File: compiler/lex.torth, Row: 1340, Column: 29
+;; [main_function_in_function_list] INTRINSIC LT | File: compiler/lex.torth, Row: 1434, Column: 29
   pop rax
   pop rbx
   mov rcx, 0
@@ -7212,66 +7614,66 @@ main_function_in_function_list_WHILE9:
   cmp rbx, rax
   cmovl rcx, rdx
   push rcx
-;; [main_function_in_function_list] DO | File: compiler/lex.torth, Row: 1340, Column: 31
+;; [main_function_in_function_list] DO | File: compiler/lex.torth, Row: 1434, Column: 31
   pop rax
   test rax, rax
   jz main_function_in_function_list_DONE36
-;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1341, Column: 5
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1435, Column: 5
   push QWORD [main_function_in_function_list##index]
-;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1341, Column: 11
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1435, Column: 11
   push QWORD [main_function_in_function_list##functions]
-;; [main_function_in_function_list] CAST | File: compiler/lex.torth, Row: 1341, Column: 21
-;; [main_function_in_function_list] Call List.nth | File: compiler/lex.torth, Row: 1341, Column: 32
+;; [main_function_in_function_list] CAST | File: compiler/lex.torth, Row: 1435, Column: 21
+;; [main_function_in_function_list] Call List.nth | File: compiler/lex.torth, Row: 1435, Column: 32
   call TGlzdC5udGg_
-;; [main_function_in_function_list] Call ptr.load | File: compiler/lex.torth, Row: 1341, Column: 41
+;; [main_function_in_function_list] Call ptr.load | File: compiler/lex.torth, Row: 1435, Column: 41
   call cHRyLmxvYWQ_
-;; [main_function_in_function_list] Call Func.name | File: compiler/lex.torth, Row: 1341, Column: 50
+;; [main_function_in_function_list] Call Func.name | File: compiler/lex.torth, Row: 1435, Column: 50
   call RnVuYy5uYW1l
-;; [main_function_in_function_list] TAKE | File: compiler/lex.torth, Row: 1342, Column: 5
-;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1342, Column: 10
+;; [main_function_in_function_list] TAKE | File: compiler/lex.torth, Row: 1436, Column: 5
+;; [main_function_in_function_list] POP_BIND | File: compiler/lex.torth, Row: 1436, Column: 10
   pop QWORD [main_function_in_function_list##function_name]
-;; [main_function_in_function_list] IN | File: compiler/lex.torth, Row: 1342, Column: 24
-;; [main_function_in_function_list] IF | File: compiler/lex.torth, Row: 1345, Column: 5
-;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1345, Column: 8
+;; [main_function_in_function_list] IN | File: compiler/lex.torth, Row: 1436, Column: 24
+;; [main_function_in_function_list] IF | File: compiler/lex.torth, Row: 1439, Column: 5
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1439, Column: 8
   push QWORD [main_function_in_function_list##function_name]
-;; [main_function_in_function_list] PUSH_STR | File: compiler/lex.torth, Row: 1345, Column: 22
+;; [main_function_in_function_list] PUSH_STR | File: compiler/lex.torth, Row: 1439, Column: 22
   mov rsi, main_function_in_function_list_s25 ; Pointer to string
   push rsi
-;; [main_function_in_function_list] Call streq | File: compiler/lex.torth, Row: 1345, Column: 29
+;; [main_function_in_function_list] Call streq | File: compiler/lex.torth, Row: 1439, Column: 29
   call c3RyZXE_
-;; [main_function_in_function_list] DO | File: compiler/lex.torth, Row: 1345, Column: 35
+;; [main_function_in_function_list] DO | File: compiler/lex.torth, Row: 1439, Column: 35
   pop rax
   test rax, rax
   jz main_function_in_function_list_ENDIF30
-;; [main_function_in_function_list] PUSH_BOOL | File: compiler/lex.torth, Row: 1346, Column: 7
+;; [main_function_in_function_list] PUSH_BOOL | File: compiler/lex.torth, Row: 1440, Column: 7
   mov rax, 1
   push rax
-;; [main_function_in_function_list] RETURN | File: compiler/lex.torth, Row: 1346, Column: 12
+;; [main_function_in_function_list] RETURN | File: compiler/lex.torth, Row: 1440, Column: 12
 ;; [main_function_in_function_list] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [main_function_in_function_list] ENDIF | File: compiler/lex.torth, Row: 1347, Column: 5
+;; [main_function_in_function_list] ENDIF | File: compiler/lex.torth, Row: 1441, Column: 5
 main_function_in_function_list_ENDIF30:
-;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1348, Column: 5
+;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1442, Column: 5
   push QWORD [main_function_in_function_list##index]
-;; [main_function_in_function_list] PUSH_INT | File: compiler/lex.torth, Row: 1348, Column: 11
+;; [main_function_in_function_list] PUSH_INT | File: compiler/lex.torth, Row: 1442, Column: 11
   mov rax, 1
   push rax
-;; [main_function_in_function_list] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1348, Column: 13
+;; [main_function_in_function_list] INTRINSIC PLUS | File: compiler/lex.torth, Row: 1442, Column: 13
   pop rax
   add [rsp], rax
-  ;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1348, Column: 15
+  ;; [main_function_in_function_list] PUSH_BIND | File: compiler/lex.torth, Row: 1442, Column: 15
   push QWORD [main_function_in_function_list##index]
-;; [main_function_in_function_list] ASSIGN_BIND | File: compiler/lex.torth, Row: 1348, Column: 21
+;; [main_function_in_function_list] ASSIGN_BIND | File: compiler/lex.torth, Row: 1442, Column: 21
   pop rax  ; Old value
   pop rbx  ; New value
   mov [main_function_in_function_list##index], rbx
-;; [main_function_in_function_list] DONE | File: compiler/lex.torth, Row: 1349, Column: 3
+;; [main_function_in_function_list] DONE | File: compiler/lex.torth, Row: 1443, Column: 3
   jmp main_function_in_function_list_WHILE9
 main_function_in_function_list_DONE36:
-;; [main_function_in_function_list] PUSH_BOOL | File: compiler/lex.torth, Row: 1350, Column: 3
+;; [main_function_in_function_list] PUSH_BOOL | File: compiler/lex.torth, Row: 1444, Column: 3
   mov rax, 0
   push rax
 ;; [main_function_in_function_list] Return to the address found in return_stack
@@ -7752,7 +8154,7 @@ remove_unused_memories_WHILE10:
 ;; [remove_unused_memories] DO | File: compiler/program.torth, Row: 129, Column: 20
   pop rax
   test rax, rax
-  jz remove_unused_memories_DONE60
+  jz remove_unused_memories_DONE72
 ;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 130, Column: 5
   push QWORD [remove_unused_memories##index]
 ;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 130, Column: 11
@@ -7781,68 +8183,103 @@ remove_unused_memories_WHILE10:
 ;; [remove_unused_memories] POP_BIND | File: compiler/program.torth, Row: 136, Column: 10
   pop QWORD [remove_unused_memories##sep_index]
 ;; [remove_unused_memories] IN | File: compiler/program.torth, Row: 136, Column: 20
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 138, Column: 5
-  push QWORD [remove_unused_memories##mem_name]
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 138, Column: 14
+;; [remove_unused_memories] IF | File: compiler/program.torth, Row: 139, Column: 5
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 139, Column: 8
   push QWORD [remove_unused_memories##sep_index]
-;; [remove_unused_memories] Call str+ | File: compiler/program.torth, Row: 138, Column: 24
-  call c3RyKw__
-;; [remove_unused_memories] Call str.empty | File: compiler/program.torth, Row: 138, Column: 29
-  call c3RyLmVtcHR5
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 139, Column: 5
-  push QWORD [remove_unused_memories##mem_name]
-;; [remove_unused_memories] TAKE | File: compiler/program.torth, Row: 140, Column: 5
-;; [remove_unused_memories] POP_BIND | File: compiler/program.torth, Row: 140, Column: 10
-  pop QWORD [remove_unused_memories##function_name]
-;; [remove_unused_memories] IN | File: compiler/program.torth, Row: 140, Column: 24
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 142, Column: 5
-  push QWORD [remove_unused_memories##functions]
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 142, Column: 15
-  push QWORD [remove_unused_memories##function_name]
-;; [remove_unused_memories] Call get_function_by_name | File: compiler/program.torth, Row: 142, Column: 29
-  call Z2V0X2Z1bmN0aW9uX2J5X25hbWU_
-;; [remove_unused_memories] TAKE | File: compiler/program.torth, Row: 143, Column: 5
-;; [remove_unused_memories] POP_BIND | File: compiler/program.torth, Row: 143, Column: 10
-  pop QWORD [remove_unused_memories##func]
-;; [remove_unused_memories] IN | File: compiler/program.torth, Row: 143, Column: 15
-;; [remove_unused_memories] IF | File: compiler/program.torth, Row: 145, Column: 5
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 145, Column: 8
-  push QWORD [remove_unused_memories##func]
-;; [remove_unused_memories] Call Func.is_used | File: compiler/program.torth, Row: 145, Column: 13
-  call RnVuYy5pc191c2Vk
-;; [remove_unused_memories] Call not | File: compiler/program.torth, Row: 145, Column: 26
-  call bm90
-;; [remove_unused_memories] DO | File: compiler/program.torth, Row: 145, Column: 30
+;; [remove_unused_memories] PUSH_INT | File: compiler/program.torth, Row: 139, Column: 18
+  mov rax, -1
+  push rax
+;; [remove_unused_memories] INTRINSIC EQ | File: compiler/program.torth, Row: 139, Column: 21
+  pop rax
+  pop rbx
+  mov rcx, 0
+  mov rdx, 1
+  cmp rbx, rax
+  cmove rcx, rdx
+  push rcx
+;; [remove_unused_memories] DO | File: compiler/program.torth, Row: 139, Column: 24
   pop rax
   test rax, rax
-  jz remove_unused_memories_ENDIF54
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 146, Column: 7
+  jz remove_unused_memories_ENDIF42
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 140, Column: 7
   push QWORD [remove_unused_memories##index]
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 146, Column: 13
-  push QWORD [remove_unused_memories##memories]
-;; [remove_unused_memories] CAST | File: compiler/program.torth, Row: 146, Column: 22
-;; [remove_unused_memories] Call List.pop | File: compiler/program.torth, Row: 146, Column: 33
-  call TGlzdC5wb3A_
-;; [remove_unused_memories] ENDIF | File: compiler/program.torth, Row: 147, Column: 5
-remove_unused_memories_ENDIF54:
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 149, Column: 5
-  push QWORD [remove_unused_memories##index]
-;; [remove_unused_memories] PUSH_INT | File: compiler/program.torth, Row: 149, Column: 11
+;; [remove_unused_memories] PUSH_INT | File: compiler/program.torth, Row: 140, Column: 13
   mov rax, 1
   push rax
-;; [remove_unused_memories] INTRINSIC MINUS | File: compiler/program.torth, Row: 149, Column: 13
+;; [remove_unused_memories] INTRINSIC MINUS | File: compiler/program.torth, Row: 140, Column: 15
   pop rax
   sub [rsp], rax
-  ;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 149, Column: 15
+  ;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 140, Column: 17
   push QWORD [remove_unused_memories##index]
-;; [remove_unused_memories] ASSIGN_BIND | File: compiler/program.torth, Row: 149, Column: 21
+;; [remove_unused_memories] ASSIGN_BIND | File: compiler/program.torth, Row: 140, Column: 23
   pop rax  ; Old value
   pop rbx  ; New value
   mov [remove_unused_memories##index], rbx
-;; [remove_unused_memories] DONE | File: compiler/program.torth, Row: 150, Column: 3
+;; [remove_unused_memories] CONTINUE | File: compiler/program.torth, Row: 141, Column: 7
+  jmp remove_unused_memories_WHILE10;; [remove_unused_memories] ENDIF | File: compiler/program.torth, Row: 142, Column: 5
+remove_unused_memories_ENDIF42:
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 144, Column: 5
+  push QWORD [remove_unused_memories##mem_name]
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 144, Column: 14
+  push QWORD [remove_unused_memories##sep_index]
+;; [remove_unused_memories] Call str+ | File: compiler/program.torth, Row: 144, Column: 24
+  call c3RyKw__
+;; [remove_unused_memories] Call str.empty | File: compiler/program.torth, Row: 144, Column: 29
+  call c3RyLmVtcHR5
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 145, Column: 5
+  push QWORD [remove_unused_memories##mem_name]
+;; [remove_unused_memories] TAKE | File: compiler/program.torth, Row: 146, Column: 5
+;; [remove_unused_memories] POP_BIND | File: compiler/program.torth, Row: 146, Column: 10
+  pop QWORD [remove_unused_memories##function_name]
+;; [remove_unused_memories] IN | File: compiler/program.torth, Row: 146, Column: 24
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 148, Column: 5
+  push QWORD [remove_unused_memories##functions]
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 148, Column: 15
+  push QWORD [remove_unused_memories##function_name]
+;; [remove_unused_memories] Call get_function_by_name | File: compiler/program.torth, Row: 148, Column: 29
+  call Z2V0X2Z1bmN0aW9uX2J5X25hbWU_
+;; [remove_unused_memories] TAKE | File: compiler/program.torth, Row: 149, Column: 5
+;; [remove_unused_memories] POP_BIND | File: compiler/program.torth, Row: 149, Column: 10
+  pop QWORD [remove_unused_memories##func]
+;; [remove_unused_memories] IN | File: compiler/program.torth, Row: 149, Column: 15
+;; [remove_unused_memories] IF | File: compiler/program.torth, Row: 151, Column: 5
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 151, Column: 8
+  push QWORD [remove_unused_memories##func]
+;; [remove_unused_memories] Call Func.is_used | File: compiler/program.torth, Row: 151, Column: 13
+  call RnVuYy5pc191c2Vk
+;; [remove_unused_memories] Call not | File: compiler/program.torth, Row: 151, Column: 26
+  call bm90
+;; [remove_unused_memories] DO | File: compiler/program.torth, Row: 151, Column: 30
+  pop rax
+  test rax, rax
+  jz remove_unused_memories_ENDIF66
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 152, Column: 7
+  push QWORD [remove_unused_memories##index]
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 152, Column: 13
+  push QWORD [remove_unused_memories##memories]
+;; [remove_unused_memories] CAST | File: compiler/program.torth, Row: 152, Column: 22
+;; [remove_unused_memories] Call List.pop | File: compiler/program.torth, Row: 152, Column: 33
+  call TGlzdC5wb3A_
+;; [remove_unused_memories] ENDIF | File: compiler/program.torth, Row: 153, Column: 5
+remove_unused_memories_ENDIF66:
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 155, Column: 5
+  push QWORD [remove_unused_memories##index]
+;; [remove_unused_memories] PUSH_INT | File: compiler/program.torth, Row: 155, Column: 11
+  mov rax, 1
+  push rax
+;; [remove_unused_memories] INTRINSIC MINUS | File: compiler/program.torth, Row: 155, Column: 13
+  pop rax
+  sub [rsp], rax
+  ;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 155, Column: 15
+  push QWORD [remove_unused_memories##index]
+;; [remove_unused_memories] ASSIGN_BIND | File: compiler/program.torth, Row: 155, Column: 21
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [remove_unused_memories##index], rbx
+;; [remove_unused_memories] DONE | File: compiler/program.torth, Row: 156, Column: 3
   jmp remove_unused_memories_WHILE10
-remove_unused_memories_DONE60:
-;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 152, Column: 3
+remove_unused_memories_DONE72:
+;; [remove_unused_memories] PUSH_BIND | File: compiler/program.torth, Row: 158, Column: 3
   push QWORD [remove_unused_memories##memories]
 ;; [remove_unused_memories] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -7853,121 +8290,52 @@ Z2V0X3Rva2Vuc19vcF90eXBl:
 ;; [get_tokens_op_type] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
   pop QWORD [r14]     ; Pop from stack to return stack
-;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 159, Column: 3
+;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 165, Column: 3
   pop QWORD [get_tokens_op_type##token]
-;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 160, Column: 3
+;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 166, Column: 3
   pop QWORD [get_tokens_op_type##functions]
-;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 161, Column: 3
+;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 167, Column: 3
   pop QWORD [get_tokens_op_type##constants]
-;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 162, Column: 3
+;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 168, Column: 3
   pop QWORD [get_tokens_op_type##memories]
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 166, Column: 3
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 172, Column: 3
   push QWORD [get_tokens_op_type##token]
-;; [get_tokens_op_type] Call Token.type | File: compiler/program.torth, Row: 166, Column: 9
+;; [get_tokens_op_type] Call Token.type | File: compiler/program.torth, Row: 172, Column: 9
   call VG9rZW4udHlwZQ__
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 167, Column: 3
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 173, Column: 3
   push QWORD [get_tokens_op_type##token]
-;; [get_tokens_op_type] Call Token.value | File: compiler/program.torth, Row: 167, Column: 9
+;; [get_tokens_op_type] Call Token.value | File: compiler/program.torth, Row: 173, Column: 9
   call VG9rZW4udmFsdWU_
-;; [get_tokens_op_type] INTRINSIC dup | File: compiler/program.torth, Row: 168, Column: 3
+;; [get_tokens_op_type] INTRINSIC dup | File: compiler/program.torth, Row: 174, Column: 3
   push QWORD [rsp]
-;; [get_tokens_op_type] Call str.copy | File: compiler/program.torth, Row: 168, Column: 7
+;; [get_tokens_op_type] Call str.copy | File: compiler/program.torth, Row: 174, Column: 7
   call c3RyLmNvcHk_
-;; [get_tokens_op_type] Call str.upper | File: compiler/program.torth, Row: 168, Column: 16
+;; [get_tokens_op_type] Call str.upper | File: compiler/program.torth, Row: 174, Column: 16
   call c3RyLnVwcGVy
-;; [get_tokens_op_type] TAKE | File: compiler/program.torth, Row: 169, Column: 3
-;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 170, Column: 5
+;; [get_tokens_op_type] TAKE | File: compiler/program.torth, Row: 175, Column: 3
+;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 176, Column: 5
   pop QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 171, Column: 5
+;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 177, Column: 5
   pop QWORD [get_tokens_op_type##token_value]
-;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 172, Column: 5
+;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 178, Column: 5
   pop QWORD [get_tokens_op_type##token_type]
-;; [get_tokens_op_type] IN | File: compiler/program.torth, Row: 173, Column: 3
-;; [get_tokens_op_type] IF | File: compiler/program.torth, Row: 175, Column: 3
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 175, Column: 6
+;; [get_tokens_op_type] IN | File: compiler/program.torth, Row: 179, Column: 3
+;; [get_tokens_op_type] IF | File: compiler/program.torth, Row: 181, Column: 3
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 181, Column: 6
   push QWORD [get_tokens_op_type##token_type]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 175, Column: 17
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 181, Column: 17
   mov rsi, get_tokens_op_type_s18 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 175, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 175, Column: 37
-  pop rax
-  test rax, rax
-  jz get_tokens_op_type_ELIF23
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 176, Column: 5
-  mov rax, 19
-  push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 176, Column: 22
-;; [get_tokens_op_type] Return to the address found in return_stack
-  push QWORD [r14]    ; Get function's return address
-  sub QWORD r14, 8    ; Decrement return stack pointer
-  ret
-
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 177, Column: 3
-  jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF23:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 177, Column: 8
-  push QWORD [get_tokens_op_type##token_type]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 177, Column: 19
-  mov rsi, get_tokens_op_type_s25 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 177, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 177, Column: 38
-  pop rax
-  test rax, rax
-  jz get_tokens_op_type_ELIF30
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 178, Column: 5
-  mov rax, 20
-  push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 178, Column: 22
-;; [get_tokens_op_type] Return to the address found in return_stack
-  push QWORD [r14]    ; Get function's return address
-  sub QWORD r14, 8    ; Decrement return stack pointer
-  ret
-
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 179, Column: 3
-  jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF30:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 179, Column: 8
-  push QWORD [get_tokens_op_type##token_type]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 179, Column: 19
-  mov rsi, get_tokens_op_type_s32 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 179, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 179, Column: 38
-  pop rax
-  test rax, rax
-  jz get_tokens_op_type_ELIF37
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 180, Column: 5
-  mov rax, 22
-  push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 180, Column: 21
-;; [get_tokens_op_type] Return to the address found in return_stack
-  push QWORD [r14]    ; Get function's return address
-  sub QWORD r14, 8    ; Decrement return stack pointer
-  ret
-
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 181, Column: 3
-  jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF37:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 181, Column: 8
-  push QWORD [get_tokens_op_type##token_type]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 181, Column: 19
-  mov rsi, get_tokens_op_type_s39 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 181, Column: 31
   call c3RyZXE_
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 181, Column: 38
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 181, Column: 37
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF44
+  jz get_tokens_op_type_ELIF23
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 182, Column: 5
-  mov rax, 24
+  mov rax, 19
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 182, Column: 21
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 182, Column: 22
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -7975,22 +8343,22 @@ get_tokens_op_type_ELIF37:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 183, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF44:
+get_tokens_op_type_ELIF23:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 183, Column: 8
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 183, Column: 20
-  mov rsi, get_tokens_op_type_s46 ; Pointer to string
+  push QWORD [get_tokens_op_type##token_type]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 183, Column: 19
+  mov rsi, get_tokens_op_type_s25 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 183, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 183, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF51
+  jz get_tokens_op_type_ELIF30
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 184, Column: 5
-  mov rax, 0
+  mov rax, 20
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 184, Column: 24
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 184, Column: 22
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -7998,22 +8366,22 @@ get_tokens_op_type_ELIF44:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 185, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF51:
+get_tokens_op_type_ELIF30:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 185, Column: 8
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 185, Column: 20
-  mov rsi, get_tokens_op_type_s53 ; Pointer to string
+  push QWORD [get_tokens_op_type##token_type]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 185, Column: 19
+  mov rsi, get_tokens_op_type_s32 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 185, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 185, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF58
+  jz get_tokens_op_type_ELIF37
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 186, Column: 5
-  mov rax, 1
+  mov rax, 22
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 186, Column: 18
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 186, Column: 21
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8021,20 +8389,20 @@ get_tokens_op_type_ELIF51:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 187, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF58:
+get_tokens_op_type_ELIF37:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 187, Column: 8
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 187, Column: 20
-  mov rsi, get_tokens_op_type_s60 ; Pointer to string
+  push QWORD [get_tokens_op_type##token_type]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 187, Column: 19
+  mov rsi, get_tokens_op_type_s39 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 187, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 187, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF65
+  jz get_tokens_op_type_ELIF44
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 188, Column: 5
-  mov rax, 3
+  mov rax, 24
   push rax
 ;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 188, Column: 21
 ;; [get_tokens_op_type] Return to the address found in return_stack
@@ -8044,22 +8412,22 @@ get_tokens_op_type_ELIF58:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 189, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF65:
+get_tokens_op_type_ELIF44:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 189, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 189, Column: 20
-  mov rsi, get_tokens_op_type_s67 ; Pointer to string
+  mov rsi, get_tokens_op_type_s46 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 189, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 189, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF72
+  jz get_tokens_op_type_ELIF51
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 190, Column: 5
-  mov rax, 4
+  mov rax, 0
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 190, Column: 15
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 190, Column: 24
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8067,22 +8435,22 @@ get_tokens_op_type_ELIF65:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 191, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF72:
+get_tokens_op_type_ELIF51:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 191, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 191, Column: 20
-  mov rsi, get_tokens_op_type_s74 ; Pointer to string
+  mov rsi, get_tokens_op_type_s53 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 191, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 191, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF79
+  jz get_tokens_op_type_ELIF58
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 192, Column: 5
-  mov rax, 5
+  mov rax, 1
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 192, Column: 17
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 192, Column: 18
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8090,22 +8458,22 @@ get_tokens_op_type_ELIF72:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 193, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF79:
+get_tokens_op_type_ELIF58:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 193, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 193, Column: 20
-  mov rsi, get_tokens_op_type_s81 ; Pointer to string
+  mov rsi, get_tokens_op_type_s60 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 193, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 193, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF86
+  jz get_tokens_op_type_ELIF65
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 194, Column: 5
-  mov rax, 6
+  mov rax, 3
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 194, Column: 17
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 194, Column: 21
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8113,22 +8481,22 @@ get_tokens_op_type_ELIF79:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 195, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF86:
+get_tokens_op_type_ELIF65:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 195, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 195, Column: 20
-  mov rsi, get_tokens_op_type_s88 ; Pointer to string
+  mov rsi, get_tokens_op_type_s67 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 195, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 195, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF93
+  jz get_tokens_op_type_ELIF72
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 196, Column: 5
-  mov rax, 7
+  mov rax, 4
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 196, Column: 17
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 196, Column: 15
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8136,22 +8504,22 @@ get_tokens_op_type_ELIF86:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 197, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF93:
+get_tokens_op_type_ELIF72:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 197, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 197, Column: 20
-  mov rsi, get_tokens_op_type_s95 ; Pointer to string
+  mov rsi, get_tokens_op_type_s74 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 197, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 197, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF100
+  jz get_tokens_op_type_ELIF79
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 198, Column: 5
-  mov rax, 8
+  mov rax, 5
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 198, Column: 16
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 198, Column: 17
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8159,22 +8527,22 @@ get_tokens_op_type_ELIF93:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 199, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF100:
+get_tokens_op_type_ELIF79:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 199, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 199, Column: 20
-  mov rsi, get_tokens_op_type_s102 ; Pointer to string
+  mov rsi, get_tokens_op_type_s81 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 199, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 199, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF107
+  jz get_tokens_op_type_ELIF86
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 200, Column: 5
-  mov rax, 9
+  mov rax, 6
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 200, Column: 18
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 200, Column: 17
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8182,22 +8550,22 @@ get_tokens_op_type_ELIF100:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 201, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF107:
+get_tokens_op_type_ELIF86:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 201, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 201, Column: 20
-  mov rsi, get_tokens_op_type_s109 ; Pointer to string
+  mov rsi, get_tokens_op_type_s88 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 201, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 201, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF114
+  jz get_tokens_op_type_ELIF93
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 202, Column: 5
-  mov rax, 12
+  mov rax, 7
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 202, Column: 15
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 202, Column: 17
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8205,22 +8573,22 @@ get_tokens_op_type_ELIF107:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 203, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF114:
+get_tokens_op_type_ELIF93:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 203, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 203, Column: 20
-  mov rsi, get_tokens_op_type_s116 ; Pointer to string
+  mov rsi, get_tokens_op_type_s95 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 203, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 203, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF121
+  jz get_tokens_op_type_ELIF100
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 204, Column: 5
-  mov rax, 13
+  mov rax, 8
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 204, Column: 15
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 204, Column: 16
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8228,22 +8596,22 @@ get_tokens_op_type_ELIF114:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 205, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF121:
+get_tokens_op_type_ELIF100:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 205, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 205, Column: 20
-  mov rsi, get_tokens_op_type_s123 ; Pointer to string
+  mov rsi, get_tokens_op_type_s102 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 205, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 205, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF128
+  jz get_tokens_op_type_ELIF107
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 206, Column: 5
-  mov rax, 15
+  mov rax, 9
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 206, Column: 17
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 206, Column: 18
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8251,22 +8619,22 @@ get_tokens_op_type_ELIF121:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 207, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF128:
+get_tokens_op_type_ELIF107:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 207, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 207, Column: 20
-  mov rsi, get_tokens_op_type_s130 ; Pointer to string
+  mov rsi, get_tokens_op_type_s109 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 207, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 207, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF135
+  jz get_tokens_op_type_ELIF114
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 208, Column: 5
-  mov rax, 25
+  mov rax, 12
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 208, Column: 19
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 208, Column: 15
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8274,22 +8642,22 @@ get_tokens_op_type_ELIF128:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 209, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF135:
+get_tokens_op_type_ELIF114:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 209, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 209, Column: 20
-  mov rsi, get_tokens_op_type_s137 ; Pointer to string
+  mov rsi, get_tokens_op_type_s116 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 209, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 209, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF142
+  jz get_tokens_op_type_ELIF121
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 210, Column: 5
-  mov rax, 26
+  mov rax, 13
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 210, Column: 17
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 210, Column: 15
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8297,22 +8665,22 @@ get_tokens_op_type_ELIF135:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 211, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF142:
+get_tokens_op_type_ELIF121:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 211, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 211, Column: 20
-  mov rsi, get_tokens_op_type_s144 ; Pointer to string
+  mov rsi, get_tokens_op_type_s123 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 211, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 211, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF149
+  jz get_tokens_op_type_ELIF128
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 212, Column: 5
-  mov rax, 27
+  mov rax, 15
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 212, Column: 18
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 212, Column: 17
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8320,47 +8688,116 @@ get_tokens_op_type_ELIF142:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 213, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF149:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 215, Column: 5
+get_tokens_op_type_ELIF128:
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 213, Column: 8
   push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 215, Column: 17
-  mov rsi, get_tokens_op_type_s151 ; Pointer to string
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 213, Column: 20
+  mov rsi, get_tokens_op_type_s130 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 215, Column: 25
-  call c3RyLnN0YXJ0c3dpdGg_
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 216, Column: 5
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 216, Column: 17
-  mov rsi, get_tokens_op_type_s154 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call str.endswith | File: compiler/program.torth, Row: 216, Column: 25
-  call c3RyLmVuZHN3aXRo
-;; [get_tokens_op_type] Call && | File: compiler/program.torth, Row: 217, Column: 5
-  call JiY_
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 218, Column: 3
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 213, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 213, Column: 38
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF160
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 219, Column: 5
-  mov rax, 2
+  jz get_tokens_op_type_ELIF135
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 214, Column: 5
+  mov rax, 25
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 219, Column: 17
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 214, Column: 19
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 220, Column: 3
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 215, Column: 3
+  jmp get_tokens_op_type_ENDIF391
+get_tokens_op_type_ELIF135:
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 215, Column: 8
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 215, Column: 20
+  mov rsi, get_tokens_op_type_s137 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 215, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 215, Column: 38
+  pop rax
+  test rax, rax
+  jz get_tokens_op_type_ELIF142
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 216, Column: 5
+  mov rax, 26
+  push rax
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 216, Column: 17
+;; [get_tokens_op_type] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 217, Column: 3
+  jmp get_tokens_op_type_ENDIF391
+get_tokens_op_type_ELIF142:
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 217, Column: 8
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 217, Column: 20
+  mov rsi, get_tokens_op_type_s144 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 217, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 217, Column: 38
+  pop rax
+  test rax, rax
+  jz get_tokens_op_type_ELIF149
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 218, Column: 5
+  mov rax, 27
+  push rax
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 218, Column: 18
+;; [get_tokens_op_type] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 219, Column: 3
+  jmp get_tokens_op_type_ENDIF391
+get_tokens_op_type_ELIF149:
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 221, Column: 5
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 221, Column: 17
+  mov rsi, get_tokens_op_type_s151 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 221, Column: 25
+  call c3RyLnN0YXJ0c3dpdGg_
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 222, Column: 5
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 222, Column: 17
+  mov rsi, get_tokens_op_type_s154 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call str.endswith | File: compiler/program.torth, Row: 222, Column: 25
+  call c3RyLmVuZHN3aXRo
+;; [get_tokens_op_type] Call && | File: compiler/program.torth, Row: 223, Column: 5
+  call JiY_
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 224, Column: 3
+  pop rax
+  test rax, rax
+  jz get_tokens_op_type_ELIF160
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 225, Column: 5
+  mov rax, 2
+  push rax
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 225, Column: 17
+;; [get_tokens_op_type] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 226, Column: 3
   jmp get_tokens_op_type_ENDIF391
 get_tokens_op_type_ELIF160:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 220, Column: 8
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 226, Column: 8
   push QWORD [get_tokens_op_type##token]
-;; [get_tokens_op_type] Call Token.vartype | File: compiler/program.torth, Row: 220, Column: 14
+;; [get_tokens_op_type] Call Token.vartype | File: compiler/program.torth, Row: 226, Column: 14
   call VG9rZW4udmFydHlwZQ__
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 220, Column: 28
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 226, Column: 28
   mov rax, 0
   push rax
-;; [get_tokens_op_type] INTRINSIC NE | File: compiler/program.torth, Row: 220, Column: 41
+;; [get_tokens_op_type] INTRINSIC NE | File: compiler/program.torth, Row: 226, Column: 41
   pop rax
   pop rbx
   mov rcx, 0
@@ -8368,25 +8805,25 @@ get_tokens_op_type_ELIF160:
   cmp rbx, rax
   cmovne rcx, rdx
   push rcx
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 220, Column: 44
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 226, Column: 44
   pop rax
   test rax, rax
   jz get_tokens_op_type_ELIF200
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 221, Column: 5
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 227, Column: 5
   push QWORD [get_tokens_op_type##token]
-;; [get_tokens_op_type] Call Token.vartype | File: compiler/program.torth, Row: 221, Column: 11
+;; [get_tokens_op_type] Call Token.vartype | File: compiler/program.torth, Row: 227, Column: 11
   call VG9rZW4udmFydHlwZQ__
-;; [get_tokens_op_type] TAKE | File: compiler/program.torth, Row: 222, Column: 5
-;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 222, Column: 10
+;; [get_tokens_op_type] TAKE | File: compiler/program.torth, Row: 228, Column: 5
+;; [get_tokens_op_type] POP_BIND | File: compiler/program.torth, Row: 228, Column: 10
   pop QWORD [get_tokens_op_type##token_vartype]
-;; [get_tokens_op_type] IN | File: compiler/program.torth, Row: 222, Column: 24
-;; [get_tokens_op_type] IF | File: compiler/program.torth, Row: 225, Column: 5
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 225, Column: 8
+;; [get_tokens_op_type] IN | File: compiler/program.torth, Row: 228, Column: 24
+;; [get_tokens_op_type] IF | File: compiler/program.torth, Row: 231, Column: 5
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 231, Column: 8
   push QWORD [get_tokens_op_type##token_vartype]
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 225, Column: 22
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 231, Column: 22
   mov rax, 1
   push rax
-;; [get_tokens_op_type] INTRINSIC EQ | File: compiler/program.torth, Row: 225, Column: 35
+;; [get_tokens_op_type] INTRINSIC EQ | File: compiler/program.torth, Row: 231, Column: 35
   pop rax
   pop rbx
   mov rcx, 0
@@ -8394,28 +8831,28 @@ get_tokens_op_type_ELIF160:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 225, Column: 38
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 231, Column: 38
   pop rax
   test rax, rax
   jz get_tokens_op_type_ELIF178
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 226, Column: 7
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 232, Column: 7
   mov rax, 16
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 226, Column: 24
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 232, Column: 24
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 227, Column: 5
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 233, Column: 5
   jmp get_tokens_op_type_ENDIF192
 get_tokens_op_type_ELIF178:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 227, Column: 10
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 233, Column: 10
   push QWORD [get_tokens_op_type##token_vartype]
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 227, Column: 24
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 233, Column: 24
   mov rax, 2
   push rax
-;; [get_tokens_op_type] INTRINSIC EQ | File: compiler/program.torth, Row: 227, Column: 37
+;; [get_tokens_op_type] INTRINSIC EQ | File: compiler/program.torth, Row: 233, Column: 37
   pop rax
   pop rbx
   mov rcx, 0
@@ -8423,28 +8860,28 @@ get_tokens_op_type_ELIF178:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 227, Column: 40
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 233, Column: 40
   pop rax
   test rax, rax
   jz get_tokens_op_type_ELIF185
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 228, Column: 7
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 234, Column: 7
   mov rax, 18
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 228, Column: 24
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 234, Column: 24
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 229, Column: 5
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 235, Column: 5
   jmp get_tokens_op_type_ENDIF192
 get_tokens_op_type_ELIF185:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 229, Column: 10
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 235, Column: 10
   push QWORD [get_tokens_op_type##token_vartype]
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 229, Column: 24
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 235, Column: 24
   mov rax, 3
   push rax
-;; [get_tokens_op_type] INTRINSIC EQ | File: compiler/program.torth, Row: 229, Column: 37
+;; [get_tokens_op_type] INTRINSIC EQ | File: compiler/program.torth, Row: 235, Column: 37
   pop rax
   pop rbx
   mov rcx, 0
@@ -8452,92 +8889,54 @@ get_tokens_op_type_ELIF185:
   cmp rbx, rax
   cmove rcx, rdx
   push rcx
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 229, Column: 40
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 235, Column: 40
   pop rax
   test rax, rax
   jz get_tokens_op_type_ENDIF192
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 230, Column: 7
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 236, Column: 7
   mov rax, 17
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 230, Column: 23
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 236, Column: 23
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [get_tokens_op_type] ENDIF | File: compiler/program.torth, Row: 231, Column: 5
+;; [get_tokens_op_type] ENDIF | File: compiler/program.torth, Row: 237, Column: 5
 get_tokens_op_type_ENDIF192:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 233, Column: 5
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 239, Column: 5
   push QWORD [get_tokens_op_type##token]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 234, Column: 5
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 240, Column: 5
   mov rsi, get_tokens_op_type_s194 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 234, Column: 25
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 240, Column: 25
   push QWORD [get_tokens_op_type##token_vartype]
-;; [get_tokens_op_type] Call itoa | File: compiler/program.torth, Row: 234, Column: 39
+;; [get_tokens_op_type] Call itoa | File: compiler/program.torth, Row: 240, Column: 39
   call aXRvYQ__
-;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 234, Column: 44
+;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 240, Column: 44
   call c3RyLmNhdA__
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 235, Column: 5
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 241, Column: 5
   mov rsi, get_tokens_op_type_s198 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call CompilerErrorWithToken | File: compiler/program.torth, Row: 235, Column: 19
+;; [get_tokens_op_type] Call CompilerErrorWithToken | File: compiler/program.torth, Row: 241, Column: 19
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 236, Column: 3
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 242, Column: 3
   jmp get_tokens_op_type_ENDIF391
 get_tokens_op_type_ELIF200:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 236, Column: 8
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 242, Column: 8
   push QWORD [get_tokens_op_type##constants]
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 236, Column: 18
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 242, Column: 18
   push QWORD [get_tokens_op_type##token_value]
-;; [get_tokens_op_type] Call constant_exists | File: compiler/program.torth, Row: 236, Column: 30
+;; [get_tokens_op_type] Call constant_exists | File: compiler/program.torth, Row: 242, Column: 30
   call Y29uc3RhbnRfZXhpc3Rz
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 236, Column: 46
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 242, Column: 46
   pop rax
   test rax, rax
   jz get_tokens_op_type_ELIF207
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 237, Column: 5
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 243, Column: 5
   mov rax, 22
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 237, Column: 21
-;; [get_tokens_op_type] Return to the address found in return_stack
-  push QWORD [r14]    ; Get function's return address
-  sub QWORD r14, 8    ; Decrement return stack pointer
-  ret
-
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 238, Column: 3
-  jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF207:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 238, Column: 8
-  push QWORD [get_tokens_op_type##functions]
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 238, Column: 18
-  push QWORD [get_tokens_op_type##token_value]
-;; [get_tokens_op_type] Call function_exists | File: compiler/program.torth, Row: 238, Column: 30
-  call ZnVuY3Rpb25fZXhpc3Rz
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 238, Column: 46
-  pop rax
-  test rax, rax
-  jz get_tokens_op_type_ELIF220
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 240, Column: 5
-  push QWORD [get_tokens_op_type##functions]
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 240, Column: 15
-  push QWORD [get_tokens_op_type##token_value]
-;; [get_tokens_op_type] Call get_function_by_name | File: compiler/program.torth, Row: 240, Column: 27
-  call Z2V0X2Z1bmN0aW9uX2J5X25hbWU_
-;; [get_tokens_op_type] PUSH_BOOL | File: compiler/program.torth, Row: 241, Column: 5
-  mov rax, 1
-  push rax
-;; [get_tokens_op_type] INTRINSIC swap | File: compiler/program.torth, Row: 241, Column: 10
-  pop rax
-  pop rbx
-  push rax
-  push rbx
-;; [get_tokens_op_type] Call Func->is_used | File: compiler/program.torth, Row: 241, Column: 15
-  call RnVuYy0@aXNfdXNlZA__
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 243, Column: 5
-  mov rax, 10
-  push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 243, Column: 26
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 243, Column: 21
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8545,32 +8944,22 @@ get_tokens_op_type_ELIF207:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 244, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF220:
+get_tokens_op_type_ELIF207:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 244, Column: 8
   push QWORD [get_tokens_op_type##functions]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 244, Column: 18
-  mov rsi, get_tokens_op_type_s222 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 244, Column: 22
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 244, Column: 18
   push QWORD [get_tokens_op_type##token_value]
-;; [get_tokens_op_type] Call str.removesuffix | File: compiler/program.torth, Row: 244, Column: 34
-  call c3RyLnJlbW92ZXN1ZmZpeA__
-;; [get_tokens_op_type] Call function_exists | File: compiler/program.torth, Row: 244, Column: 51
+;; [get_tokens_op_type] Call function_exists | File: compiler/program.torth, Row: 244, Column: 30
   call ZnVuY3Rpb25fZXhpc3Rz
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 244, Column: 67
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 244, Column: 46
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF237
+  jz get_tokens_op_type_ELIF220
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 246, Column: 5
   push QWORD [get_tokens_op_type##functions]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 246, Column: 15
-  mov rsi, get_tokens_op_type_s228 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 246, Column: 19
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 246, Column: 15
   push QWORD [get_tokens_op_type##token_value]
-;; [get_tokens_op_type] Call str.removesuffix | File: compiler/program.torth, Row: 246, Column: 31
-  call c3RyLnJlbW92ZXN1ZmZpeA__
-;; [get_tokens_op_type] Call get_function_by_name | File: compiler/program.torth, Row: 246, Column: 48
+;; [get_tokens_op_type] Call get_function_by_name | File: compiler/program.torth, Row: 246, Column: 27
   call Z2V0X2Z1bmN0aW9uX2J5X25hbWU_
 ;; [get_tokens_op_type] PUSH_BOOL | File: compiler/program.torth, Row: 247, Column: 5
   mov rax, 1
@@ -8583,9 +8972,9 @@ get_tokens_op_type_ELIF220:
 ;; [get_tokens_op_type] Call Func->is_used | File: compiler/program.torth, Row: 247, Column: 15
   call RnVuYy0@aXNfdXNlZA__
 ;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 249, Column: 5
-  mov rax, 21
+  mov rax, 10
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 249, Column: 20
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 249, Column: 26
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
@@ -8593,94 +8982,88 @@ get_tokens_op_type_ELIF220:
 
 ;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 250, Column: 3
   jmp get_tokens_op_type_ENDIF391
-get_tokens_op_type_ELIF237:
+get_tokens_op_type_ELIF220:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 250, Column: 8
-  push QWORD [get_tokens_op_type##memories]
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 250, Column: 17
+  push QWORD [get_tokens_op_type##functions]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 250, Column: 18
+  mov rsi, get_tokens_op_type_s222 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 250, Column: 22
   push QWORD [get_tokens_op_type##token_value]
-;; [get_tokens_op_type] Call memory_exists | File: compiler/program.torth, Row: 250, Column: 29
-  call bWVtb3J5X2V4aXN0cw__
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 250, Column: 43
+;; [get_tokens_op_type] Call str.removesuffix | File: compiler/program.torth, Row: 250, Column: 34
+  call c3RyLnJlbW92ZXN1ZmZpeA__
+;; [get_tokens_op_type] Call function_exists | File: compiler/program.torth, Row: 250, Column: 51
+  call ZnVuY3Rpb25fZXhpc3Rz
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 250, Column: 67
   pop rax
   test rax, rax
-  jz get_tokens_op_type_ELIF244
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 251, Column: 5
-  mov rax, 23
+  jz get_tokens_op_type_ELIF237
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 252, Column: 5
+  push QWORD [get_tokens_op_type##functions]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 252, Column: 15
+  mov rsi, get_tokens_op_type_s228 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 252, Column: 19
+  push QWORD [get_tokens_op_type##token_value]
+;; [get_tokens_op_type] Call str.removesuffix | File: compiler/program.torth, Row: 252, Column: 31
+  call c3RyLnJlbW92ZXN1ZmZpeA__
+;; [get_tokens_op_type] Call get_function_by_name | File: compiler/program.torth, Row: 252, Column: 48
+  call Z2V0X2Z1bmN0aW9uX2J5X25hbWU_
+;; [get_tokens_op_type] PUSH_BOOL | File: compiler/program.torth, Row: 253, Column: 5
+  mov rax, 1
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 251, Column: 21
+;; [get_tokens_op_type] INTRINSIC swap | File: compiler/program.torth, Row: 253, Column: 10
+  pop rax
+  pop rbx
+  push rax
+  push rbx
+;; [get_tokens_op_type] Call Func->is_used | File: compiler/program.torth, Row: 253, Column: 15
+  call RnVuYy0@aXNfdXNlZA__
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 255, Column: 5
+  mov rax, 21
+  push rax
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 255, Column: 20
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 253, Column: 3
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 256, Column: 3
+  jmp get_tokens_op_type_ENDIF391
+get_tokens_op_type_ELIF237:
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 256, Column: 8
+  push QWORD [get_tokens_op_type##memories]
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 256, Column: 17
+  push QWORD [get_tokens_op_type##token_value]
+;; [get_tokens_op_type] Call memory_exists | File: compiler/program.torth, Row: 256, Column: 29
+  call bWVtb3J5X2V4aXN0cw__
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 256, Column: 43
+  pop rax
+  test rax, rax
+  jz get_tokens_op_type_ELIF244
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 257, Column: 5
+  mov rax, 23
+  push rax
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 257, Column: 21
+;; [get_tokens_op_type] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
+;; [get_tokens_op_type] ELIF | File: compiler/program.torth, Row: 259, Column: 3
   jmp get_tokens_op_type_ENDIF391
 get_tokens_op_type_ELIF244:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 254, Column: 5
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 254, Column: 17
-  mov rsi, get_tokens_op_type_s246 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 254, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 255, Column: 5
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 255, Column: 17
-  mov rsi, get_tokens_op_type_s249 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 255, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 255, Column: 37
-  call fHw_
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 256, Column: 5
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 256, Column: 17
-  mov rsi, get_tokens_op_type_s253 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 256, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 256, Column: 37
-  call fHw_
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 257, Column: 5
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 257, Column: 17
-  mov rsi, get_tokens_op_type_s257 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 257, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 257, Column: 37
-  call fHw_
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 258, Column: 5
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 258, Column: 17
-  mov rsi, get_tokens_op_type_s261 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 258, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 258, Column: 37
-  call fHw_
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 259, Column: 5
-  push QWORD [get_tokens_op_type##token_upper]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 259, Column: 17
-  mov rsi, get_tokens_op_type_s265 ; Pointer to string
-  push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 259, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 259, Column: 37
-  call fHw_
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 260, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 260, Column: 17
-  mov rsi, get_tokens_op_type_s269 ; Pointer to string
+  mov rsi, get_tokens_op_type_s246 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 260, Column: 31
   call c3RyZXE_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 260, Column: 37
-  call fHw_
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 261, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 261, Column: 17
-  mov rsi, get_tokens_op_type_s273 ; Pointer to string
+  mov rsi, get_tokens_op_type_s249 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 261, Column: 31
   call c3RyZXE_
@@ -8689,7 +9072,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 262, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 262, Column: 17
-  mov rsi, get_tokens_op_type_s277 ; Pointer to string
+  mov rsi, get_tokens_op_type_s253 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 262, Column: 31
   call c3RyZXE_
@@ -8698,7 +9081,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 263, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 263, Column: 17
-  mov rsi, get_tokens_op_type_s281 ; Pointer to string
+  mov rsi, get_tokens_op_type_s257 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 263, Column: 31
   call c3RyZXE_
@@ -8707,7 +9090,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 264, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 264, Column: 17
-  mov rsi, get_tokens_op_type_s285 ; Pointer to string
+  mov rsi, get_tokens_op_type_s261 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 264, Column: 31
   call c3RyZXE_
@@ -8716,7 +9099,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 265, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 265, Column: 17
-  mov rsi, get_tokens_op_type_s289 ; Pointer to string
+  mov rsi, get_tokens_op_type_s265 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 265, Column: 31
   call c3RyZXE_
@@ -8725,7 +9108,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 266, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 266, Column: 17
-  mov rsi, get_tokens_op_type_s293 ; Pointer to string
+  mov rsi, get_tokens_op_type_s269 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 266, Column: 31
   call c3RyZXE_
@@ -8734,16 +9117,16 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 267, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 267, Column: 17
-  mov rsi, get_tokens_op_type_s297 ; Pointer to string
+  mov rsi, get_tokens_op_type_s273 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 267, Column: 25
-  call c3RyLnN0YXJ0c3dpdGg_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 267, Column: 40
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 267, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 267, Column: 37
   call fHw_
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 268, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 268, Column: 17
-  mov rsi, get_tokens_op_type_s301 ; Pointer to string
+  mov rsi, get_tokens_op_type_s277 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 268, Column: 31
   call c3RyZXE_
@@ -8752,7 +9135,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 269, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 269, Column: 17
-  mov rsi, get_tokens_op_type_s305 ; Pointer to string
+  mov rsi, get_tokens_op_type_s281 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 269, Column: 31
   call c3RyZXE_
@@ -8761,7 +9144,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 270, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 270, Column: 17
-  mov rsi, get_tokens_op_type_s309 ; Pointer to string
+  mov rsi, get_tokens_op_type_s285 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 270, Column: 31
   call c3RyZXE_
@@ -8770,7 +9153,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 271, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 271, Column: 17
-  mov rsi, get_tokens_op_type_s313 ; Pointer to string
+  mov rsi, get_tokens_op_type_s289 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 271, Column: 31
   call c3RyZXE_
@@ -8779,7 +9162,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 272, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 272, Column: 17
-  mov rsi, get_tokens_op_type_s317 ; Pointer to string
+  mov rsi, get_tokens_op_type_s293 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 272, Column: 31
   call c3RyZXE_
@@ -8788,16 +9171,16 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 273, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 273, Column: 17
-  mov rsi, get_tokens_op_type_s321 ; Pointer to string
+  mov rsi, get_tokens_op_type_s297 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 273, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 273, Column: 37
+;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 273, Column: 25
+  call c3RyLnN0YXJ0c3dpdGg_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 273, Column: 40
   call fHw_
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 274, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 274, Column: 17
-  mov rsi, get_tokens_op_type_s325 ; Pointer to string
+  mov rsi, get_tokens_op_type_s301 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 274, Column: 31
   call c3RyZXE_
@@ -8806,7 +9189,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 275, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 275, Column: 17
-  mov rsi, get_tokens_op_type_s329 ; Pointer to string
+  mov rsi, get_tokens_op_type_s305 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 275, Column: 31
   call c3RyZXE_
@@ -8815,7 +9198,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 276, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 276, Column: 17
-  mov rsi, get_tokens_op_type_s333 ; Pointer to string
+  mov rsi, get_tokens_op_type_s309 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 276, Column: 31
   call c3RyZXE_
@@ -8824,7 +9207,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 277, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 277, Column: 17
-  mov rsi, get_tokens_op_type_s337 ; Pointer to string
+  mov rsi, get_tokens_op_type_s313 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 277, Column: 31
   call c3RyZXE_
@@ -8833,7 +9216,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 278, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 278, Column: 17
-  mov rsi, get_tokens_op_type_s341 ; Pointer to string
+  mov rsi, get_tokens_op_type_s317 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 278, Column: 31
   call c3RyZXE_
@@ -8842,7 +9225,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 279, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 279, Column: 17
-  mov rsi, get_tokens_op_type_s345 ; Pointer to string
+  mov rsi, get_tokens_op_type_s321 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 279, Column: 31
   call c3RyZXE_
@@ -8851,7 +9234,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 280, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 280, Column: 17
-  mov rsi, get_tokens_op_type_s349 ; Pointer to string
+  mov rsi, get_tokens_op_type_s325 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 280, Column: 31
   call c3RyZXE_
@@ -8860,16 +9243,16 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 281, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 281, Column: 17
-  mov rsi, get_tokens_op_type_s353 ; Pointer to string
+  mov rsi, get_tokens_op_type_s329 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 281, Column: 26
-  call c3RyLnN0YXJ0c3dpdGg_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 281, Column: 41
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 281, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 281, Column: 37
   call fHw_
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 282, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 282, Column: 17
-  mov rsi, get_tokens_op_type_s357 ; Pointer to string
+  mov rsi, get_tokens_op_type_s333 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 282, Column: 31
   call c3RyZXE_
@@ -8878,7 +9261,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 283, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 283, Column: 17
-  mov rsi, get_tokens_op_type_s361 ; Pointer to string
+  mov rsi, get_tokens_op_type_s337 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 283, Column: 31
   call c3RyZXE_
@@ -8887,7 +9270,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 284, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 284, Column: 17
-  mov rsi, get_tokens_op_type_s365 ; Pointer to string
+  mov rsi, get_tokens_op_type_s341 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 284, Column: 31
   call c3RyZXE_
@@ -8896,7 +9279,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 285, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 285, Column: 17
-  mov rsi, get_tokens_op_type_s369 ; Pointer to string
+  mov rsi, get_tokens_op_type_s345 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 285, Column: 31
   call c3RyZXE_
@@ -8905,7 +9288,7 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 286, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 286, Column: 17
-  mov rsi, get_tokens_op_type_s373 ; Pointer to string
+  mov rsi, get_tokens_op_type_s349 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 286, Column: 31
   call c3RyZXE_
@@ -8914,16 +9297,16 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 287, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 287, Column: 17
-  mov rsi, get_tokens_op_type_s377 ; Pointer to string
+  mov rsi, get_tokens_op_type_s353 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 287, Column: 31
-  call c3RyZXE_
-;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 287, Column: 37
+;; [get_tokens_op_type] Call str.startswith | File: compiler/program.torth, Row: 287, Column: 26
+  call c3RyLnN0YXJ0c3dpdGg_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 287, Column: 41
   call fHw_
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 288, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 288, Column: 17
-  mov rsi, get_tokens_op_type_s381 ; Pointer to string
+  mov rsi, get_tokens_op_type_s357 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 288, Column: 31
   call c3RyZXE_
@@ -8932,55 +9315,109 @@ get_tokens_op_type_ELIF244:
 ;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 289, Column: 5
   push QWORD [get_tokens_op_type##token_upper]
 ;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 289, Column: 17
-  mov rsi, get_tokens_op_type_s385 ; Pointer to string
+  mov rsi, get_tokens_op_type_s361 ; Pointer to string
   push rsi
 ;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 289, Column: 31
   call c3RyZXE_
 ;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 289, Column: 37
   call fHw_
-;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 290, Column: 3
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 290, Column: 5
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 290, Column: 17
+  mov rsi, get_tokens_op_type_s365 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 290, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 290, Column: 37
+  call fHw_
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 291, Column: 5
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 291, Column: 17
+  mov rsi, get_tokens_op_type_s369 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 291, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 291, Column: 37
+  call fHw_
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 292, Column: 5
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 292, Column: 17
+  mov rsi, get_tokens_op_type_s373 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 292, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 292, Column: 37
+  call fHw_
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 293, Column: 5
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 293, Column: 17
+  mov rsi, get_tokens_op_type_s377 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 293, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 293, Column: 37
+  call fHw_
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 294, Column: 5
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 294, Column: 17
+  mov rsi, get_tokens_op_type_s381 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 294, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 294, Column: 37
+  call fHw_
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 295, Column: 5
+  push QWORD [get_tokens_op_type##token_upper]
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 295, Column: 17
+  mov rsi, get_tokens_op_type_s385 ; Pointer to string
+  push rsi
+;; [get_tokens_op_type] Call streq | File: compiler/program.torth, Row: 295, Column: 31
+  call c3RyZXE_
+;; [get_tokens_op_type] Call || | File: compiler/program.torth, Row: 295, Column: 37
+  call fHw_
+;; [get_tokens_op_type] DO | File: compiler/program.torth, Row: 296, Column: 3
   pop rax
   test rax, rax
   jz get_tokens_op_type_ENDIF391
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 291, Column: 5
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 297, Column: 5
   mov rax, 14
   push rax
-;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 291, Column: 22
+;; [get_tokens_op_type] RETURN | File: compiler/program.torth, Row: 297, Column: 22
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
-;; [get_tokens_op_type] ENDIF | File: compiler/program.torth, Row: 292, Column: 3
+;; [get_tokens_op_type] ENDIF | File: compiler/program.torth, Row: 298, Column: 3
 get_tokens_op_type_ENDIF391:
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 295, Column: 3
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 301, Column: 3
   push QWORD [get_tokens_op_type##token]
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 296, Column: 3
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 302, Column: 3
   mov rsi, get_tokens_op_type_s393 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 297, Column: 3
+;; [get_tokens_op_type] PUSH_BIND | File: compiler/program.torth, Row: 303, Column: 3
   push QWORD [get_tokens_op_type##token]
-;; [get_tokens_op_type] Call Token.value | File: compiler/program.torth, Row: 297, Column: 9
+;; [get_tokens_op_type] Call Token.value | File: compiler/program.torth, Row: 303, Column: 9
   call VG9rZW4udmFsdWU_
-;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 297, Column: 21
+;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 303, Column: 21
   call c3RyLmNhdA__
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 298, Column: 3
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 304, Column: 3
   mov rsi, get_tokens_op_type_s397 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 298, Column: 21
+;; [get_tokens_op_type] Call str.cat | File: compiler/program.torth, Row: 304, Column: 21
   call c3RyLmNhdA__
-;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 299, Column: 3
+;; [get_tokens_op_type] PUSH_STR | File: compiler/program.torth, Row: 305, Column: 3
   mov rsi, get_tokens_op_type_s399 ; Pointer to string
   push rsi
-;; [get_tokens_op_type] Call CompilerErrorWithToken | File: compiler/program.torth, Row: 299, Column: 18
+;; [get_tokens_op_type] Call CompilerErrorWithToken | File: compiler/program.torth, Row: 305, Column: 18
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 300, Column: 3
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 306, Column: 3
   mov rax, 0
   push rax
-;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 300, Column: 8
+;; [get_tokens_op_type] PUSH_INT | File: compiler/program.torth, Row: 306, Column: 8
   mov rax, 0
   push rax
-;; [get_tokens_op_type] Call exit | File: compiler/program.torth, Row: 300, Column: 10
+;; [get_tokens_op_type] Call exit | File: compiler/program.torth, Row: 306, Column: 10
   call ZXhpdA__
 ;; [get_tokens_op_type] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
@@ -16899,6 +17336,104 @@ memory_exists_DONE35:
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
 
+Z2V0X2NvbnN0YW50:
+;; [get_constant] Save the return address to return_stack
+  add QWORD r14, 8    ; Increment return stack pointer
+  pop QWORD [r14]     ; Pop from stack to return stack
+;; [get_constant] POP_BIND | File: compiler/utils.torth, Row: 308, Column: 23
+  pop QWORD [get_constant##name]
+;; [get_constant] POP_BIND | File: compiler/utils.torth, Row: 308, Column: 32
+  pop QWORD [get_constant##constants]
+;; [get_constant] PUSH_INT | File: compiler/utils.torth, Row: 310, Column: 3
+  mov rax, 0
+  push rax
+;; [get_constant] TAKE | File: compiler/utils.torth, Row: 310, Column: 5
+;; [get_constant] POP_BIND | File: compiler/utils.torth, Row: 310, Column: 10
+  pop QWORD [get_constant##index]
+;; [get_constant] IN | File: compiler/utils.torth, Row: 310, Column: 16
+;; [get_constant] WHILE | File: compiler/utils.torth, Row: 311, Column: 3
+get_constant_WHILE6:
+;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 311, Column: 9
+  push QWORD [get_constant##index]
+;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 311, Column: 15
+  push QWORD [get_constant##constants]
+;; [get_constant] CAST | File: compiler/utils.torth, Row: 311, Column: 25
+;; [get_constant] Call List.len | File: compiler/utils.torth, Row: 311, Column: 36
+  call TGlzdC5sZW4_
+;; [get_constant] INTRINSIC LT | File: compiler/utils.torth, Row: 311, Column: 45
+  pop rax
+  pop rbx
+  mov rcx, 0
+  mov rdx, 1
+  cmp rbx, rax
+  cmovl rcx, rdx
+  push rcx
+;; [get_constant] DO | File: compiler/utils.torth, Row: 311, Column: 47
+  pop rax
+  test rax, rax
+  jz get_constant_DONE35
+;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 314, Column: 5
+  push QWORD [get_constant##index]
+;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 314, Column: 11
+  push QWORD [get_constant##constants]
+;; [get_constant] CAST | File: compiler/utils.torth, Row: 314, Column: 21
+;; [get_constant] Call List.nth | File: compiler/utils.torth, Row: 314, Column: 32
+  call TGlzdC5udGg_
+;; [get_constant] Call Constant.load | File: compiler/utils.torth, Row: 314, Column: 41
+  call Q29uc3RhbnQubG9hZA__
+;; [get_constant] TAKE | File: compiler/utils.torth, Row: 315, Column: 5
+;; [get_constant] POP_BIND | File: compiler/utils.torth, Row: 315, Column: 10
+  pop QWORD [get_constant##constant]
+;; [get_constant] IN | File: compiler/utils.torth, Row: 315, Column: 19
+;; [get_constant] IF | File: compiler/utils.torth, Row: 318, Column: 5
+;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 318, Column: 8
+  push QWORD [get_constant##constant]
+;; [get_constant] Call Constant.name | File: compiler/utils.torth, Row: 318, Column: 17
+  call Q29uc3RhbnQubmFtZQ__
+;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 318, Column: 31
+  push QWORD [get_constant##name]
+;; [get_constant] Call streq | File: compiler/utils.torth, Row: 318, Column: 36
+  call c3RyZXE_
+;; [get_constant] DO | File: compiler/utils.torth, Row: 318, Column: 42
+  pop rax
+  test rax, rax
+  jz get_constant_ENDIF29
+;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 319, Column: 7
+  push QWORD [get_constant##constant]
+;; [get_constant] RETURN | File: compiler/utils.torth, Row: 319, Column: 16
+;; [get_constant] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
+;; [get_constant] ENDIF | File: compiler/utils.torth, Row: 320, Column: 5
+get_constant_ENDIF29:
+;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 321, Column: 5
+  push QWORD [get_constant##index]
+;; [get_constant] PUSH_INT | File: compiler/utils.torth, Row: 321, Column: 11
+  mov rax, 1
+  push rax
+;; [get_constant] INTRINSIC PLUS | File: compiler/utils.torth, Row: 321, Column: 13
+  pop rax
+  add [rsp], rax
+  ;; [get_constant] PUSH_BIND | File: compiler/utils.torth, Row: 321, Column: 15
+  push QWORD [get_constant##index]
+;; [get_constant] ASSIGN_BIND | File: compiler/utils.torth, Row: 321, Column: 21
+  pop rax  ; Old value
+  pop rbx  ; New value
+  mov [get_constant##index], rbx
+;; [get_constant] DONE | File: compiler/utils.torth, Row: 322, Column: 3
+  jmp get_constant_WHILE6
+get_constant_DONE35:
+;; [get_constant] PUSH_INT | File: compiler/utils.torth, Row: 323, Column: 3
+  mov rax, 0
+  push rax
+;; [get_constant] CAST | File: compiler/utils.torth, Row: 323, Column: 8
+;; [get_constant] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
 VHlwZVN0YWNrLmNvcHk_:
 ;; [TypeStack.copy] Save the return address to return_stack
   add QWORD r14, 8    ; Increment return stack pointer
@@ -21632,6 +22167,18 @@ Q29uc3RhbnQuaW5pdA__:
 ;; [Constant.init] PUSH_BIND | File: compiler/class/Constant.torth, Row: 14, Column: 5
   push QWORD [Constant.init##constant]
 ;; [Constant.init] Return to the address found in return_stack
+  push QWORD [r14]    ; Get function's return address
+  sub QWORD r14, 8    ; Decrement return stack pointer
+  ret
+
+Q29uc3RhbnQubG9hZA__:
+;; [Constant.load] Save the return address to return_stack
+  add QWORD r14, 8    ; Increment return stack pointer
+  pop QWORD [r14]     ; Pop from stack to return stack
+;; [Constant.load] Call ptr.load | File: compiler/class/Constant.torth, Row: 18, Column: 5
+  call cHRyLmxvYWQ_
+;; [Constant.load] CAST | File: compiler/class/Constant.torth, Row: 18, Column: 14
+;; [Constant.load] Return to the address found in return_stack
   push QWORD [r14]    ; Get function's return address
   sub QWORD r14, 8    ; Decrement return stack pointer
   ret
@@ -35908,14 +36455,14 @@ pow_DONE38:
 section .data
   main_s10 db "Getting included files",0
   main_s18 db "Parsing code from ",0
-  main_s62 db "Type checking the program",0
-  main_s68 db "Generating Assembly code",0
-  main_s79 db ".asm",0
-  main_s83 db "Compiling Assembly code",0
-  main_s88 db "-s",0
-  main_s94 db "Removing files generated during compilation",0
-  main_s100 db "-r",0
-  main_s105 db "Running the program",0
+  main_s63 db "Type checking the program",0
+  main_s69 db "Generating Assembly code",0
+  main_s80 db ".asm",0
+  main_s84 db "Compiling Assembly code",0
+  main_s89 db "-s",0
+  main_s95 db "Removing files generated during compilation",0
+  main_s101 db "-r",0
+  main_s106 db "Running the program",0
   generate_assembly_file_s6 db "section .data",10,"",0
   get_string_variables_for_data_section_s1 db "",0
   get_string_variables_for_data_section_s55 db "  ",0
@@ -35973,9 +36520,17 @@ section .data
   get_enum_part_delimiters_s12 db "",0
   get_enum_part_delimiters_s16 db ":",0
   get_enum_part_delimiters_s20 db "END",0
+  get_memories_s4 db "",0
+  get_memories_s84 db "The memory size should be an integer. Got: ",0
+  get_memories_s87 db "VALUE_ERROR",0
+  get_memories_s99 db "",0
+  get_memories_s120 db "MEMORY",0
   get_constants_name_s8 db "Constant '",0
   get_constants_name_s11 db "' already exists. Constant name should be unique.",10,"",0
   get_constants_name_s13 db "CONSTANT_REDEFINITION",0
+  get_memory_name_s8 db "Mem '",0
+  get_memory_name_s11 db "' already exists. Mem name should be unique.",10,"",0
+  get_memory_name_s13 db "MEMORY_REDEFINITION",0
   get_functions_s30 db "FUNCTION",0
   get_functions_s38 db "",0
   get_functions_s59 db "The program does not have an entry point.",10,"",0
