@@ -27,7 +27,7 @@ class Signature
     in
 
     while repr "->" str.startswith not do
-      repr 0 str.char_at
+      0 repr str.char_at
       take current_char in
 
       if current_char char.is_whitespace do
@@ -42,8 +42,8 @@ class Signature
 
     "-> " repr str.removeprefix repr =
 
-    while repr index str.char_at NULL != do
-      repr index str.char_at
+    while index repr str.char_at NULL != do
+      index repr str.char_at
       take current_char in
 
       if current_char char.is_whitespace do

@@ -105,7 +105,7 @@ function get_op_asm op:Op program:Program -> str :
     token_value str.upper get_push_bool_asm
     return
   elif op_type OpType.PUSH_CHAR == do
-    token_value 1 str.char_at get_push_char_asm
+    1 token_value str.char_at get_push_char_asm
     return
   elif op_type OpType.PUSH_FN == do
     "&" token_value str.removesuffix get_push_fn_asm
@@ -980,7 +980,7 @@ end
 function get_syscall_asm str -> str :
 
   // Get the Syscall variant's number
-  7 str.char_at '0' -
+  7 swap str.char_at '0' -
 
   // Get argument registers used for syscalls (List[str])
   get_syscall_argument_registers

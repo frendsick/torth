@@ -1423,7 +1423,7 @@ function type_check_syscall token:Token type_stack:Node :
   // The parameter count for the SYSCALL intrinsic is the last character of the Token.value
   // SYSCALL0 --> No parameters
   // SYSCALL6 --> Six parameters
-  dup dup str.len 1 - str.char_at '0' -
+  dup str.len 1 - over str.char_at '0' -
 
   // Pop the syscall number
   type_stack LinkedList.pop

@@ -299,10 +299,10 @@ function atoi string:str -> int :
   take index integer in
 
   // Iterate the string character by character
-  while string index str.char_at NULL != do
+  while index string str.char_at NULL != do
 
     // Get current character
-    string index str.char_at
+    index string str.char_at
 
     // Raise an error if the character is not a number
     if dup char.is_numeric not do
@@ -336,7 +336,7 @@ end
 // Get the length of a string
 // Example: "Test string" -> 11
 function str.len string:str -> int :
-  0 while string over str.char_at NULL != do
+  0 while dup string str.char_at NULL != do
     1 +
   done
 end
@@ -346,7 +346,7 @@ function str.fill string:str pointer:ptr -> str :
   // Loop through every character of the first string
   0 take index in
   while
-    string index str.char_at
+    index string str.char_at
     peek character in
     NULL !=
   do
@@ -540,9 +540,9 @@ end
 function str.append str char : cast(ptr) dup cast(str) str.len ptr+ char.store end
 
 // Get the character at a certain index of a string
-// Params: index, string
+// Params: string, index
 // Return: character_at_index
-function str.char_at int str -> char : swap cast(ptr) swap ptr+ char.load end
+function str.char_at str int -> char : swap str+ cast(ptr) char.load end
 
 // Test if a string is a palindrome (reads the same backward or forward)
 function str.is_palindrome str -> bool : dup str.reverse streq end
@@ -568,7 +568,7 @@ end
 
 // Overwrite a string with NULL-bytes
 function str.empty string:str :
-  0 while string over str.char_at NULL != do
+  0 while dup string str.char_at NULL != do
     string over str+ cast(ptr) NULL cast(char) swap char.store
     1 +
   done drop
@@ -582,7 +582,7 @@ function str.lower string:str -> str :
 
   // Rewrite string with lowercase characters
   while index len < do
-    string index str.char_at char.lower
+    index string str.char_at char.lower
     string cast(ptr) index ptr+ char.store
     index 1 + index = // index++
   done string
@@ -596,7 +596,7 @@ function str.upper string:str -> str :
 
   // Rewrite string with uppercase characters
   while index len < do
-    string index str.char_at char.upper
+    index string str.char_at char.upper
     string cast(ptr) index ptr+ char.store
     index 1 + index = // index++
   done string
@@ -609,7 +609,7 @@ function str.alphanumeric str -> str :
   swap
   0 while over str.len over > do
     // Get the current character
-    over over str.char_at
+    over over swap str.char_at
 
     // Append only alphanumeric characters
     // memory str index str[index]
@@ -641,8 +641,8 @@ function str.startswith prefix:str string:str -> bool :
 
   while index prefix.len < do
     if
-      string index str.char_at
-      prefix index str.char_at
+      index string str.char_at
+      index prefix str.char_at
       !=
     do
       False return
@@ -672,8 +672,8 @@ function str.endswith suffix:str string:str -> bool :
 
   while index suffix.len < do
     if
-      string string.len index - 1 - str.char_at
-      suffix suffix.len index - 1 - str.char_at
+      string.len index - 1 - string str.char_at
+      suffix.len index - 1 - suffix str.char_at
       !=
     do
       False return
@@ -731,8 +731,8 @@ function streq str1:str str2:str -> bool :
     index str1.len <
   do
     if
-      str1 index str.char_at
-      str2 index str.char_at
+      index str1 str.char_at
+      index str2 str.char_at
       !=
     do
       False return
@@ -751,7 +751,7 @@ function str.reverse original:str -> str :
   // Append characters from the parameter string to allocated memory in the reversed order
   while 0 index < do
     index 1 - index =           // index--
-    original index str.char_at  // original[index]
+    index original str.char_at  // original[index]
 
     // Append the current character to the reversed string
     reversed str.append
@@ -788,9 +788,9 @@ function base64.encode string:str -> str :
   while char_index string.len < do
 
     // These three 8-bit (ASCII) characters become one 24-bit number
-    string char_index     str.char_at 16 shl
-    string char_index 1 + str.char_at 8 shl +
-    string char_index 2 + str.char_at +
+    char_index      string str.char_at 16 shl
+    char_index 1 +  string str.char_at 8 shl +
+    char_index 2 +  string str.char_at +
     take 24bit_number in
 
     // This 24-bit number gets separated into four 6-bit numbers
@@ -803,7 +803,7 @@ function base64.encode string:str -> str :
 
     // Those four 6-bit numbers are used as indices into the base64 character list
     0 while dup 4 < do
-      base64_characters over 6bit_list List.nth int.load str.char_at
+      dup 6bit_list List.nth int.load base64_characters str.char_at
       base64_string cast(ptr) base64_index ptr+ char.store
       base64_index 1 + base64_index = // base64_index++
       1 +
@@ -972,7 +972,7 @@ function getenv evar_key:str -> str :
 
     // Return the environment variable when found
     if evar_value evar_key str.startswith do
-      0 while evar_value over str.char_at '=' != do
+      0 while dup evar_value str.char_at '=' != do
         1 +
       done
 

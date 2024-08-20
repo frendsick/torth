@@ -10,7 +10,7 @@ function get_series_product str -> int :
   dup str.len 0 0
   take index product series.len series in
   while index series.len < do
-    series index str.char_at '0' -
+    index series str.char_at '0' -
     if product 0 == do
       dup product =
     else
@@ -43,7 +43,7 @@ function largest_product_in_series int str -> int :
   in
 
   // Iterate over every series and find the one with the largest product
-  while series index series_length + str.char_at NULL != do
+  while index series_length + series str.char_at NULL != do
     index series_length series get_current_series
     get_series_product
 
