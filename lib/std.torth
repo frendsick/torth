@@ -321,9 +321,9 @@ function atoi string:str -> int :
 end
 
 // String functions
-function str+         int str   -> str  : swap cast(int) + cast(ptr) cast(str)  end
-function str.load     ptr       -> str  : LOAD_QWORD cast(str)                  end
-function str.store    ptr str   ->      : STORE_QWORD                           end
+function str+         int str   -> str  : swap cast(int) + cast(str)    end
+function str.load     ptr       -> str  : LOAD_QWORD cast(str)          end
+function str.store    ptr str   ->      : STORE_QWORD                   end
 
 // Copy string to a newly allocated memory location and return the copied string
 function str.copy str -> str :
