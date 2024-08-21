@@ -563,14 +563,14 @@ function get_peek_bind_asm op:Op -> str :
   "  add r15, 8\n" str.cat
 
   // Push the copy of the value to the return stack
-  op save_value_to_return_stack str.cat
+  op set_local_variable str.cat
 end
 
 // Generate Assembly for OpType.POP_BIND
 // Params: Op
 // Return: Assembly
 function get_pop_bind_asm op:Op -> str :
-  op save_value_to_return_stack
+  op set_local_variable
 end
 
 // Generate Assembly for OpType.POP_BIND
@@ -1126,7 +1126,7 @@ function format_escape_sequences_for_nasm string:str -> str :
 end
 
 // Pop a value from the data stack and push it to the return stack
-function save_value_to_return_stack op:Op -> str :
+function set_local_variable op:Op -> str :
   op Op.token Token.value
   take variable_name in
 
@@ -1147,7 +1147,7 @@ function get_nth_from_return_stack_asm N:int -> str :
   "]\n" str.cat
 end
 
-// Push Nth value from the return stack to the data stack
+// Pop a value from data stack and store it to a variable in the return stack
 function set_nth_from_return_stack_asm N:int -> str :
   if N 0 < do
     "Cannot set value with negative index from the return stack"
