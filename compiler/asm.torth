@@ -221,10 +221,13 @@ function get_op_comment_asm op:Op -> str :
   op Op.func Func.name                  str.cat
   "] "                                  str.cat
 
-  if op_type_str "FUNCTION_CALL" streq do
-    "Call "                             str.cat
-    token_value                         str.cat
-  elif op_type_str "INTRINSIC" streq do
+  if
+    op_type_str "FUNCTION_CALL" streq
+    op_type_str "INTRINSIC" streq   ||
+    op_type_str "PUSH_BIND" streq   ||
+    op_type_str "POP_BIND" streq    ||
+    op_type_str "PEEK_BIND" streq   ||
+  do
     op_type_str                         str.cat
     " "                                 str.cat
     token_value                         str.cat
