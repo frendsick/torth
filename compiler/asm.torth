@@ -577,7 +577,7 @@ function get_pop_bind_asm op:Op -> str :
   op set_local_variable
 end
 
-// Generate Assembly for OpType.POP_BIND
+// Generate Assembly for OpType.PUSH_BIND
 // Params: Op
 // Return: Assembly
 function get_push_bind_asm op:Op -> str :
