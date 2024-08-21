@@ -14,6 +14,7 @@ function initialize_asm_file file_name:str memories:List[Mem] :
   "compiler/templates/start.asm" read_file
   memories get_memory_definitions_asm       str.cat
   "compiler/templates/print.asm" read_file  str.cat
+  "\n"                                      str.cat
   mode_644 file_name write_file drop
 end
 
@@ -1127,11 +1128,10 @@ end
 
 // Pop a value from the data stack and push it to the return stack
 function set_local_variable op:Op -> str :
-  op Op.token Token.value
-  take variable_name in
-
   // Get the variable's index in the function's variable list
-  op Op.func Func.variables variable_name get_variable_index
+  op Op.func Func.variables
+  op Op.token Token.value get_variable_index
+
   set_nth_from_return_stack_asm
 end
 
@@ -1143,8 +1143,8 @@ function get_nth_from_return_stack_asm N:int -> str :
   endif
 
   "  push QWORD [r14-"
-  N 8 * 8 + itoa                str.cat
-  "]\n" str.cat
+  N 8 * 8 + itoa        str.cat
+  "]\n"                 str.cat
 end
 
 // Pop a value from data stack and store it to a variable in the return stack
@@ -1155,9 +1155,9 @@ function set_nth_from_return_stack_asm N:int -> str :
   endif
 
   "  pop rbx\n"
-  "  mov [r14-"  str.cat
-  N 8 * 8 + itoa              str.cat
-  "], rbx\n"  str.cat
+  "  mov [r14-"     str.cat
+  N 8 * 8 + itoa    str.cat
+  "], rbx\n"        str.cat
 end
 
 // Return the beginning of the assembly code of each Program
@@ -1175,21 +1175,20 @@ function get_function_start_asm func:Func -> str :
     "  mov [args_ptr], rsp   ; Pointer to argc\n"             str.cat
     "  mov r14, return_stack\n"                               str.cat
     "  add r14, "                                             str.cat
-    variable_count 8 * 8 + itoa                               str.cat
+    variable_count 8 * itoa                                   str.cat
     "\n"                                                      str.cat
     return
   endif
 
-  "\n\n"
-  function_name get_valid_label_for_nasm str.cat
+  function_name get_valid_label_for_nasm
   ":\n;; ["                                                   str.cat
   function_name                                               str.cat
   "] Save the return address to return stack\n"               str.cat
-  "  add r14, " str.cat
-  variable_count 8 * 8 + itoa str.cat
-  " ; " str.cat
-  variable_count itoa str.cat
-  " local variables\n" str.cat
+  "  add r14, "                                               str.cat
+  variable_count 8 * 8 + itoa                                 str.cat
+  " ; "                                                       str.cat
+  variable_count itoa                                         str.cat
+  " local variables\n"                                        str.cat
   "  pop QWORD [r14]     ; Save return address from stack\n"  str.cat
 end
 
@@ -1214,11 +1213,11 @@ function get_function_end_asm func:Func -> str :
   function_name                                               str.cat
   "] Return to the address found in return stack\n"           str.cat
   "  push QWORD [r14]    ; Get function's return address\n"   str.cat
-  "  sub r14, " str.cat
-  variable_count 8 * 8 + itoa str.cat
-  " ; " str.cat
-  variable_count itoa str.cat
-  " local variables\n" str.cat
+  "  sub r14, "                                               str.cat
+  variable_count 8 * 8 + itoa                                 str.cat
+  " ; "                                                       str.cat
+  variable_count itoa                                         str.cat
+  " local variables\n"                                        str.cat
   "  ret\n\n"                                                 str.cat
 end
 
