@@ -688,13 +688,12 @@ end
 // Return: Assembly
 function get_comparison_asm cmov_operand:str -> str :
   "  pop rax\n"
-  "  pop rbx\n"         str.cat
-  "  mov rcx, 0\n"      str.cat
-  "  mov rdx, 1\n"      str.cat
-  "  cmp rbx, rax\n  "  str.cat
-  cmov_operand          str.cat
-  " rcx, rdx\n"         str.cat
-  "  push rcx\n"        str.cat
+  "  mov rcx, 0\n"              str.cat
+  "  mov rdx, 1\n"              str.cat
+  "  cmp QWORD [rsp], rax\n  "  str.cat
+  cmov_operand                  str.cat
+  " rcx, rdx\n"                 str.cat
+  "  mov QWORD [rsp], rcx\n"    str.cat
 end
 
 // AND performs bitwise-AND operation to two integers
