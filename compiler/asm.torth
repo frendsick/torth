@@ -601,8 +601,8 @@ end
 // Return: Assembly
 function get_push_char_asm char -> str :
   cast(int) itoa
-  "  mov rax, " swap  str.cat
-  "\n  push rax\n"    str.cat
+  "  push " swap    str.cat
+  "\n"              str.cat
 end
 
 // Generate Assembly for OpType.PUSH_FN
