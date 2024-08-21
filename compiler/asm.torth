@@ -966,9 +966,8 @@ end
 // Return: Assembly
 function get_swap_asm -> str :
   "  pop rax\n"
-  "  pop rbx\n"   str.cat
-  "  push rax\n"  str.cat
-  "  push rbx\n"  str.cat
+  "  push QWORD [rsp]\n"        str.cat
+  "  mov QWORD [rsp+8], rax\n"  str.cat
 end
 
 // SYSCALL intrinsic variants call a Linux syscall.
