@@ -591,9 +591,9 @@ end
 // Return: Assembly
 function get_push_bool_asm token_value_upper:str -> str :
   if token_value_upper "TRUE" streq
-  do    "  mov rax, 1\n"
-  else  "  mov rax, 0\n"
-  endif "  push rax\n" str.cat
+  do    "  push 1\n"
+  else  "  push 0\n"
+  endif
 end
 
 // Generate Assembly for OpType.PUSH_CHAR
