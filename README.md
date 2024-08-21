@@ -57,6 +57,22 @@ function main :
 end
 ```
 
+### [Fibonacci](./examples/fibonacci.torth)
+
+```pascal
+function Fib number:int -> int :
+  if number 1 <= do
+    number return
+  endif
+  number 1 - Fib
+  number 2 - Fib +
+end
+
+function main :
+  20 Fib print // Prints: 4181
+end
+```
+
 ### [FizzBuzz](./examples/fizzbuzz.torth)
 
 ```pascal
