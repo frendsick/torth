@@ -21,11 +21,11 @@ The following requirements can probably be installed via your distro's package m
 
 The Torth compiler does not ship with the repository. Instead, you must compile it from its [Assembly version](../bootstrap/torth.asm).
 
-1. Clone the [Torth](https://github.com/CyberPaddy/torth) repository from GitHub
+1. Clone the [Torth](https://github.com/frendsick/torth) repository from GitHub
 1. Compile the Assembly source code with NASM using the `make` command
 
 ```sh
-$ git clone https://github.com/CyberPaddy/torth.git
+$ git clone https://github.com/frendsick/torth.git
 $ cd torth/
 $ make
 $ ./torth --help
@@ -53,7 +53,7 @@ Hello, World!
 
 Coding in any language could be pretty painful without syntax highlighting for the particular editor you are using. Torth currently only supports syntax highlighting for [VIM](syntax_highlighting.md#vim) and [VSCode](syntax_highlighting.md#visual-studio-code). There is also a really barebones and outdated [torth-mode](./../editor/emacs/torth-mode.el) for Emacs.
 
-If you want support for a particular editor, please create a [feature request issue](https://github.com/CyberPaddy/torth/issues/new/choose). Contributions are also appreciated, so feel free to create a syntax highlighting configuration to an editor to the [editor](../editor/) folder and hit me with a pull request!
+If you want support for a particular editor, please create a [feature request issue](https://github.com/frendsick/torth/issues/new/choose). Contributions are also appreciated, so feel free to create a syntax highlighting configuration to an editor to the [editor](../editor/) folder and hit me with a pull request!
 
 ## Check examples
 

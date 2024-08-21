@@ -187,7 +187,7 @@ function is_adult str int int -> bool :
 end
 
 function main :
-  42 "CyberPaddy" is_adult
+  42 "frendsick" is_adult
   "Return value: " puts print "\n" puts // Output: 40
 end
 ```
