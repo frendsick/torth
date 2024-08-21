@@ -87,10 +87,8 @@ function generate_program
   func Func.tokens
   List.init cast(Program)
   0
-  0
   take
     index
-    variable_count
     program
     tokens
   in
@@ -104,16 +102,8 @@ function generate_program
     memories constants functions token get_tokens_op_type
     take op_type in
 
-    if
-      op_type OpType.PEEK_BIND ==
-      op_type OpType.POP_BIND  ==
-      ||
-    do
-      variable_count 1 + variable_count =
-    endif
-
     // Append Op to Program
-    variable_count func token op_type index Op.init
+    func token op_type index Op.init
     program cast(List) List.append
     index 1 + index = // index++
   done

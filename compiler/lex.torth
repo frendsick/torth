@@ -936,7 +936,7 @@ function parse_function
         param_token function_tokens cast(List) List.append
 
         // Add parameter to the list of Variables
-        memories variables function_name param_token add_variable_to_list
+        variables function_name param_token add_variable_to_list
       endif
 
     elif current_part 1 == do
@@ -1371,7 +1371,7 @@ function parse_function_variables func:Func memories:List[Mem] :
       endif
 
       // Add Variable to Func's list of Variables
-      memories variables func Func.name token add_variable_to_list
+      variables func Func.name token add_variable_to_list
 
     // Token is a function parameter
     elif token Token.vartype 0 != do
@@ -1396,29 +1396,19 @@ function add_variable_to_list
   token:Token
   function_name:str
   variables:List[Variable]
-  memories:List[Mem]
 :
   token Token.type
   token Token.value
   take token_value token_type in
 
+  // Token is an already defined Variable
+  if token_value variables List.contains_variable do
+    return
+  endif
+
   // Append the variable to the list of function's variables
   token_type token_value Variable.init
   variables cast(List) List.append
-
-  // Add the Variable to the list of memories
-  // variable = f"{function_name}##{token_value}"
-  function_name "##" str.cat
-  token_value       str.cat
-  take memory_name in
-
-  if memories memory_name memory_exists not do
-    token Token.location
-    ptr.size // Mem.bytes
-    memory_name
-    Mem.init
-    memories cast(List) List.append
-  endif
 end
 
 // Verify if 'main' function is defined (case-sensitive)
