@@ -854,9 +854,8 @@ end
 // Return: Assembly
 function get_mul_asm -> str :
   "  pop rax\n"
-  "  pop rbx\n"             str.cat
-  "  mul rbx\n"             str.cat
-  "  push rax  ; Product\n" str.cat
+  "  mul QWORD [rsp]\n"           str.cat
+  "  mov QWORD [rsp], rax ; Product\n" str.cat
 end
 
 // NE takes two items from the stack and checks if they are not equal.
