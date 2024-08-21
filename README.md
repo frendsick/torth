@@ -64,6 +64,8 @@ function Fib number:int -> int :
   if number 1 <= do
     number return
   endif
+
+  // Fib(number-1) + Fib(number-2)
   number 1 - Fib
   number 2 - Fib +
 end
