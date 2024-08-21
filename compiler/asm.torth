@@ -909,11 +909,9 @@ end
 // Return: Assembly
 function get_rot_asm -> str :
   "  pop rax\n"
-  "  pop rbx\n"   str.cat
-  "  pop rcx\n"   str.cat
-  "  push rbx\n"  str.cat
-  "  push rax\n"  str.cat
-  "  push rcx\n"  str.cat
+  "  xchg rax, QWORD [rsp]\n"   str.cat
+  "  xchg rax, QWORD [rsp+8]\n" str.cat
+  "  push rax\n"                str.cat
 end
 
 // SHL Intrinsic shifts the bits of the second argument to the left
