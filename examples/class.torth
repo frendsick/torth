@@ -5,9 +5,9 @@ class Dog
   breed:str
   says:str
 
-  method init name:str breed:str -> ptr :
+  method init name:str breed:str -> Dog :
     // Allocate memory for Dog object
-    Dog.size malloc
+    Dog.size malloc cast(Dog)
     take self in
 
     // Set object attribute values with arrow operator "->"
@@ -19,7 +19,7 @@ class Dog
 
   // Prints "<Dog.breed> <Dog.name> says <Dog.says>" with a newline at the end
   // Takes Dog object as parameter
-  method talk self:ptr :
+  method talk self:Dog :
     // Get object attribute values with dot operator "."
     self Dog.breed  puts
     " "             puts
