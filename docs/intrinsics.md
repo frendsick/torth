@@ -25,7 +25,6 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [MOD](#Calculations)
 - [MUL](#Calculations)
 - [NE](#Comparisons)
-- [NTH](#NTH)
 - [OR](#OR)
 - [OVER](#OVER)
 - [PLUS](#Calculations)
@@ -139,15 +138,6 @@ There are four different LOAD intrinsic variants:
 - LOAD_QWORD (64-bit)
 
 For example, to load a value of type [INT](types.md#int---integer) (64-bit) from a memory location to the stack, you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also explicitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [built-in type](types.md#built-in-types), for example `int.load`.
-
-## NTH
-
-Pop one [integer](definitions.md#integer-types) from the stack as N. Then, push the Nth element from the stack. The "Nth" is counted without the popped integer starting from 1.
-
-```
-30 20 10
-3 NTH // 30 is pushed to the stack (the 3rd element without the popped 3).
-```
 
 ## OR
 

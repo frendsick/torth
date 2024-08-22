@@ -285,8 +285,6 @@ function type_check_intrinsic
     type_stack token type_check_exec return
   elif intrinsic "LOAD_" str.startswith do
     type_stack token type_check_load return
-  elif intrinsic "NTH" streq do
-    program type_stack token type_check_nth return
   elif intrinsic "OVER" streq do
     type_stack token type_check_over return
   elif intrinsic "ROT" streq do
@@ -1194,73 +1192,6 @@ function type_check_load token:Token type_stack:Node :
 
   // Push loaded value which could be of any type
   token Token.location "any" TypeNode.init cast(ptr)
-  type_stack LinkedList.push
-end
-
-// NTH pops one integer from the stack and pushes the Nth element from stack back to stack.
-// Note that the Nth is counted without the popped integer.
-// Example: 30 20 10 3 NTH => Pushes 30 to the stack because 30 is 3rd element without the popped 3.
-// Params
-//    token: Token
-//    type_stack: LinkedList[TypeNode]
-//    program: Program
-// Return None
-function type_check_nth
-  token:Token
-  type_stack:Node
-  program:Program
-:
-  // Pop the value representing N from the stack
-  type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  take type temp_stack in
-
-  // Not enough values in the stack
-  if type cast(int) -1 == do
-    temp_stack token
-    "NTH intrinsic requires an integer"
-    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  elif type TypeNode.type "int" streq not do
-    temp_stack token
-    "NTH intrinsic requires an integer\n\n"
-    "Popped type: "     str.cat
-    type TypeNode.type  str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
-  endif
-
-  // Get the Token representing N
-  program type TypeNode.location get_op_from_location
-  Op.token dup Token.value
-  take n_token_value n_token in
-
-  // Only support integers for N
-  if n_token_value str.is_numeric not do
-    temp_stack token
-    "NTH intrinsic requires an integer as N"
-    "VALUE_ERROR" CompilerErrorWithStack
-  endif
-
-  // Find the Nth item from temp_stack
-  n_token_value atoi
-  0
-  take index N in
-  while index N 1 + < do
-    temp_stack LinkedList.pop
-    take popped in
-    index 1 + index =
-  done
-
-  // Not enough items in the stack
-  if popped cast(int) -1 == do
-    type_stack token
-    "Cannot get "
-    N itoa str.cat
-    ". value from the stack because there are not enough values in the stack" str.cat
-    "NOT_ENOUGH_VALUES_IN_STACK" CompilerErrorWithStack
-  endif
-
-  // Push the Nth item to the real TypeStack
-  token Token.location popped TypeNode.type TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 

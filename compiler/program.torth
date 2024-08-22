@@ -266,7 +266,6 @@ function get_tokens_op_type
     token_upper "MOD"         streq ||
     token_upper "MUL"         streq ||
     token_upper "NE"          streq ||
-    token_upper "NTH"         streq ||
     token_upper "OR"          streq ||
     token_upper "OVER"        streq ||
     token_upper "PLUS"        streq ||
