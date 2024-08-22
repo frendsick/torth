@@ -154,6 +154,25 @@ class Array
         len 1 - array cast(ptr) int.store
     end
 
+    // Store value to the Nth index of an array
+    // Params: Array, any, int
+    // Return: bool
+    method store array:Array value:any index:int -> bool :
+        // Check valid index
+        if
+            index array Array.len >=
+            index 0 <
+            ||
+        do
+            False return
+        endif
+
+        // Store value to the the Nth index of the array
+        array cast(ptr) index ptr.size * ptr+
+        value swap ptr.store
+        True
+    end
+
     // Test if array contains an integer
     // Params: Array[int], int
     // Return: bool
@@ -456,6 +475,13 @@ class List
     // Return: None
     method pop List int :
         List.array Array.pop
+    end
+
+    // Store value to the Nth index of a list
+    // Params: List, value, index
+    // Return: None
+    method store List any int -> bool :
+        List.array Array.store
     end
 
     // Test if two Arrays have equal integer-like items in them
