@@ -272,29 +272,6 @@ function get_function_by_name function_name:str functions:List[Func] -> Func :
   NULL cast(Func)
 end
 
-// Check if a Mem with a certain name exists
-// Params: memory_name, List[Mem]
-// Return: bool
-function memory_exists memory_name:str memories:List[Mem] -> bool :
-  // Iterate over memories and check if a Mem with certain name exists
-  0 take index in
-  while index memories cast(List) List.len < do
-
-    // Get the current Mem
-    index memories cast(List) List.nth ptr.load Mem.name
-    take current_name in
-
-    // Return True if current Mem's name matches memory_name parameter
-    if current_name memory_name streq do
-      True return
-    endif
-    index 1 + index = // index++
-  done
-
-  // Return False if the Mem was not found
-  False
-end
-
 // Get Nth command line argument
 // Params: index
 // Return: *argv[index]
@@ -442,7 +419,7 @@ end
 // Return: str(OpType)
 function OpType.repr int -> str :
   // Assert that every OpType has been taken into account
-  if OpType.len 28 != do
+  if OpType.len 27 != do
     "All OpTypes are not taken into account in OpType.repr method.\n"
     "ASSERTION_ERROR" CompilerError
   endif
@@ -495,8 +472,6 @@ function OpType.repr int -> str :
     "PUSH_FN" return
   elif op_type OpType.PUSH_INT == do
     "PUSH_INT" return
-  elif op_type OpType.PUSH_PTR == do
-    "PUSH_PTR" return
   elif op_type OpType.PUSH_STR == do
     "PUSH_STR" return
   elif op_type OpType.RETURN == do

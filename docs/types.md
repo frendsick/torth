@@ -48,22 +48,7 @@ Boolean values are True and False. The boolean words are case insensitive.
 
 ### char - Character
 
-Characters are defined with single quotes. They are pushed to stack as the integer representation of the character. Thus, a character can be cast to any integer type. To print the character, it should be stored in a named [memory](keywords.md#memory) location, like in the example below.
-
-```pascal
-include "std"
-memory char_array str.size end
-function main :
-  // char char_array[] = "abc";
-  'a'   char_array        char.store
-  'b'   char_array 1 ptr+ char.store
-  'c'   char_array 2 ptr+ char.store
-  NULL  char_array 3 ptr+ int.store
-
-  // puts(char_array);
-  char_array cast(str) puts "\n" puts
-end
-```
+Characters are defined with single quotes. They are pushed to stack as the integer representation of the character. To print the character, it should be stored in a [string](types.md#str).
 
 ### fn - Function pointer
 
@@ -101,11 +86,17 @@ end
 
 ### ptr - Pointer
 
-Pointers point to a location in memory. Memories can be defined with the [MEMORY](./keywords.md#MEMORY) keyword. [Strings](#STR---String) are also pointers to the null-terminated string buffer. Value can be stored to a pointer's location with STORE intrinsics, and the dereferenced value can be pushed to the stack with LOAD intrinsics.
+Pointers point to a location in memory. [Strings](#STR---String) are also pointers to the null-terminated string buffer. Value can be stored to a pointer's location with STORE intrinsics, and the dereferenced value can be pushed to the stack with LOAD intrinsics.
+
+Pointer can only be created by [casting](#casting). See `malloc` function in [std](../lib/std.torth) library, which allocates memory and returns a pointer to the beginning of the allocated memory chunk.
 
 ### str - String
 
-Strings are defined with double quotes. A defined string adds a null-terminated string buffer to the `.data` section of the executable. The string can be used and modified with the same techniques as [pointers](#ptr---pointer). See Examples from [MEMORY documentation](./keywords.md#MEMORY).
+String literals are defined with double quotes. A defined string adds a null-terminated string buffer to the `.data` section of the executable.
+
+A string is like a [pointer](#ptr---pointer) as it points to the address of the beginning of the string data.
+
+**Note**: Modifying the string literals stored in the `.data` section could cause undefined behavior. It is recommended to create a copy of the string with the `str.copy` function from the [std](../lib/std.torth) and modifying the copied data instead of the string literal.
 
 #### Escape sequence characters
 

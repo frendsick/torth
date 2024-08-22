@@ -220,9 +220,6 @@ function type_check_op
   elif op_type OpType.PUSH_INT == do
     type_stack token type_check_push_int
     type_check_info return
-  elif op_type OpType.PUSH_PTR == do
-    type_stack token type_check_push_ptr
-    type_check_info return
   elif op_type OpType.PUSH_STR == do
     type_stack token type_check_push_str
     type_check_info return

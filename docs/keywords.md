@@ -15,7 +15,6 @@ This is the documentation for different keywords available in the Torth language
 - [FUNCTION](#FUNCTION)
 - [IF](#IF)
 - [INCLUDE](#INCLUDE)
-- [MEMORY](#MEMORY)
 - [RETURN](#RETURN)
 - [WHILE](#WHILE)
 
@@ -31,30 +30,15 @@ The CAST keyword is used to cast any type to another. The keyword does not gener
 
 ## CONST
 
-Constants are named integer values that cannot be modified. The constant name can be used in code to push the constant's integer value to the stack. Constants can also be used in [MEMORY](#MEMORY) declarations when defining the size of the memory. However, constants cannot be used in defining other constants at least for now.
+Constants are named integer values that cannot be modified. The constant name can be used in code to push the constant's integer value to the stack.
+
+Constants cannot be used for defining other constants, at least for now.
 
 ### Syntax
 
 ```pascal
 // Constant declarations should be in one line
 CONST <name> <integer> END
-```
-
-### Examples
-
-```pascal
-include "std"
-const ptr.size 8 end
-memory dst ptr.size end
-memory src ptr.size end
-
-function main :
-  1337 src int.store          // Store 1337 to src
-  9001 dst int.store          // Store 9001 to dst
-  src int.load dst int.store  // Copy the value from src to dst
-  src int.load putu           // Print the value 1337 from src
-  dst int.load putu           // Print the value 1337 from dst
-end  // Expected output: 13371337
 ```
 
 ## CONTINUE
@@ -252,33 +236,6 @@ INCLUDE "std.torth"
 INCLUDE "lib/std"
 INCLUDE "lib/std.torth"
 INCLUDE "path/to/torth/lib/std.torth"
-```
-
-## MEMORY
-
-The MEMORY keyword can define named memory locations with a certain size. These are named pointers to a read-write section .bss in the executable. A pointer to a memory can then be pushed to the stack by using the memory's name as a token. Values can then be stored in the memory location with STORE intrinsics, and values are loaded from memory to the stack with LOAD intrinsics.
-
-### Syntax
-
-```pascal
-// Memory declaration should be in one line
-MEMORY <name> <size> END
-```
-
-### Examples
-
-```pascal
-include "std"
-memory leet int.size end  // int.size = 8
-memory feet ptr.size end  // ptr.size = 8
-function main -> :
-  1337 leet int.store
-  leet int.load putu "\n" puts // Output: 1337
-
-  "pinky\n" feet str.store
-  'k' feet ptr.load char.store
-  feet str.load puts            // Output: kinky
-end
 ```
 
 ## RETURN

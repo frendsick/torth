@@ -63,7 +63,7 @@
       "patterns": [
         {
           "name": "storage.type.torth",
-          "match": "\\b(?i)(class|const|end|endclass|enum|function|in|memory|method|peek|take)\\b"
+          "match": "\\b(?i)(class|const|end|endclass|enum|function|in|method|peek|take)\\b"
         },
         {
           "name": "markup.deleted.torth",
@@ -79,7 +79,7 @@
       "patterns": [
         {
           "name": "constant.torth",
-          "match": "\\b(?i)(ARGC|ARGV|DROP|DUP|ENVP|NTH|OVER|PRINT|ROT|SWAP|SYSCALL0|SYSCALL1|SYSCALL2|SYSCALL3|SYSCALL4|SYSCALL5|SYSCALL6)\\b"
+          "match": "\\b(?i)(ARGC|ARGV|DROP|DUP|ENVP|OVER|PRINT|ROT|SWAP|SYSCALL0|SYSCALL1|SYSCALL2|SYSCALL3|SYSCALL4|SYSCALL5|SYSCALL6)\\b"
         }
       ]
     },

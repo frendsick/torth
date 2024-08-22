@@ -7,7 +7,7 @@
              ;; define several category of keywords
 	         (x-keywords '("assign" "break" "do" "done" "elif" "else" "endif" "if" "include" "while"))
 	         (x-types '("any" "bool" "char" "fn" "int" "none" "ptr" "str"))
-             (x-functions '("class" "const" "end" "endclass" "enum" "function" "in" "memory" "method" "peek" "return" "take"))
+             (x-functions '("class" "const" "end" "endclass" "enum" "function" "in" "method" "peek" "return" "take"))
 
 	         ;; generate regex string for each category of keywords
              (x-keywords-regexp (regexp-opt x-keywords 'words))

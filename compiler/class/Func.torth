@@ -1,5 +1,4 @@
 include "std"
-include "compiler/class/Mem"
 include "compiler/class/Signature"
 include "compiler/class/Token"
 include "compiler/class/Variable"

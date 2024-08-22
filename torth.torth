@@ -32,24 +32,16 @@ function main :
   tokens get_constants
   take constants in
 
-  // Parse Memories
-  constants tokens get_memories
-  take memories in
-
   // Parse Functions
-  memories constants tokens get_functions
+  constants tokens get_functions
   take functions in
 
   // Parse classes
-  memories constants functions tokens parse_classes
+  constants functions tokens parse_classes
 
   // Get the intermediate representation (Program) of each Function
-  memories constants functions get_sub_programs
+  constants functions get_sub_programs
   take sub_programs in
-
-  // Remove unused memories
-  functions memories remove_unused_memories
-  memories =
 
   // Type check the Program
   args "Type checking the program" verbose_output
@@ -59,7 +51,7 @@ function main :
   args "Generating Assembly code" verbose_output
   args code_file get_output_file_name
   take out_file in
-  memories sub_programs out_file ".asm" str.cat generate_assembly_file
+  sub_programs out_file ".asm" str.cat generate_assembly_file
 
   // Compile the assembly code file to a Linux x86_64 executable
   args "Compiling Assembly code" verbose_output

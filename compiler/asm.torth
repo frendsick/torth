@@ -3,16 +3,14 @@ include "typing"
 include "compiler/utils"
 include "compiler/class/Func"
 include "compiler/class/Location"
-include "compiler/class/Mem"
 include "compiler/class/Op"
 include "compiler/class/Token"
 
 // Generate the beginning of the assembly file
-// Params: file_name, List[Mem]
+// Params: file_name
 // Return: Assembly
-function initialize_asm_file file_name:str memories:List[Mem] :
+function initialize_asm_file file_name:str :
   get_asm_file_start
-  memories get_memory_definitions_asm   str.cat
   "section .text\n\n"                   str.cat
   mode_644 file_name write_file drop
 end
@@ -26,34 +24,6 @@ function get_asm_file_start -> str :
     "section .bss\n"                    str.cat
     "  args_ptr: resq 1\n"              str.cat
     "  return_stack: resb 1337*64\n"    str.cat
-end
-
-// Generate assembly code from Mem definitions
-function get_memory_definitions_asm memories:List[Mem] -> str :
-  "" str.copy
-  0
-  take index assembly_code in
-
-  // Iterate over each Mem and generate assembly code for it
-  while index memories cast(List) List.len < do
-
-    // Get the Mem's name and size
-    index memories cast(List) List.nth ptr.load
-    dup   Mem.name
-    swap  Mem.bytes
-    take memory_size memory_name in
-
-    // Append current Mem to assembly_code
-    assembly_code
-    "  "              str.cat
-    memory_name       str.cat
-    ": RESB "         str.cat
-    memory_size itoa  str.cat
-    "\n"              str.cat
-    assembly_code =
-    index 1 + index = // index++
-  done
-  assembly_code "\n"  str.cat
 end
 
 // Get Assembly for certain Op
@@ -123,9 +93,6 @@ function get_op_asm op:Op program:Program -> str :
     return
   elif op_type OpType.PUSH_INT == do
     token_value get_push_int_asm
-    return
-  elif op_type OpType.PUSH_PTR == do
-    token_value get_push_ptr_asm
     return
   elif op_type OpType.PUSH_STR == do
     op get_push_str_asm
@@ -628,14 +595,6 @@ function get_push_int_asm integer:str -> str :
   "\n  push rax\n"      str.cat
 end
 
-// Generate Assembly for OpType.PUSH_PTR
-// Params: Op.token.value
-// Return: Assembly
-function get_push_ptr_asm pointer:str -> str :
-  "  mov rax, " pointer str.cat
-  "\n  push rax\n"      str.cat
-end
-
 // Generate Assembly for OpType.PUSH_STR
 // Params: Op
 // Return: Assembly
@@ -1006,12 +965,11 @@ function get_syscall_argument_registers -> List :
 end
 
 // Generate NASM x86_64 assembly file
-// Params: file_name, sub_programs (List[Program]), List[Mem]
+// Params: file_name, sub_programs (List[Program])
 // Return: None
 function generate_assembly_file
   file_name:str
   sub_programs:List[Program]
-  memories:List[Mem]
 :
   sub_programs cast(List) List.len
   "section .data\n" str.copy
@@ -1023,7 +981,7 @@ function generate_assembly_file
   in
 
   // Write the beginning of the assembly to file
-  memories file_name initialize_asm_file
+  file_name initialize_asm_file
 
   // Iterate over each Program in sub_programs
   while index sub_programs.len < do

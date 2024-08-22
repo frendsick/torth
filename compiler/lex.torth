@@ -5,7 +5,6 @@ include "compiler/defs"
 include "compiler/utils"
 include "compiler/class/Constant"
 include "compiler/class/Func"
-include "compiler/class/Mem"
 include "compiler/class/Op"
 include "compiler/class/Token"
 include "compiler/class/Signature"
@@ -634,84 +633,6 @@ function get_enum_part_delimiters -> List :
   ENUM_PART_DELIMITERS
 end
 
-// Parse Memories from code
-// Params
-//    tokens: List[Token]
-//    constants: List[Constant]
-// Return
-//    memories: List[Mem]
-function get_memories tokens:List[Token] constants:List[Constant] -> List[Mem] :
-  List.init cast(List[Mem])
-  "" str.copy         // memory_name
-  NULL                // memory_size
-  False               // defining_memory
-  0                   // index
-  take
-    index
-    defining_memory
-    memory_size
-    memory_name
-    memories
-  in
-
-  while index tokens cast(List) List.len < do
-    index tokens cast(List) List.nth ptr.load
-    dup   Token.value
-    swap  Token.location
-    take location token_value in
-
-    // Parse Mem only when inside Mem block
-    if defining_memory do
-
-      // Parse Mem name
-      if memory_name str.len 0 == do
-        memories token_value get_memory_name
-        memory_name =
-
-        index 1 + index = // index++
-        continue
-      endif
-
-      // Append the current Mem to memories
-      if memory_size 0 == do
-
-        // Use the token_value as memory_size if it is numeric
-        if token_value str.is_numeric do
-          token_value atoi memory_size =
-        else
-          // Test if Constant exists
-          if constants token_value constant_exists do
-            constants token_value get_constant
-            Constant.value atoi
-            memory_size =
-          else
-            "The memory size should be an integer. Got: "
-            token_value str.cat
-            "VALUE_ERROR" CompilerError
-          endif
-        endif
-
-        // Generate Mem object
-        location memory_size memory_name str.copy Mem.init
-        memories cast(List) List.append
-
-        // Reset variables
-        ""    memory_name =
-        NULL  memory_size =
-        False defining_memory =
-        index 1 + index = // index++
-        continue
-      endif
-    endif
-
-    if token_value str.copy str.upper "MEMORY" streq do
-      True defining_memory =
-    endif
-    index 1 + index = // index++
-  done
-  memories
-end
-
 // Check for redefinition of a Constant object
 function get_constants_name constants:List[Constant] token_value:str -> str :
   // Overwriting another Constant is not allowed
@@ -723,33 +644,15 @@ function get_constants_name constants:List[Constant] token_value:str -> str :
   token_value
 end
 
-// Check for redefinition of a Mem object
-// Params
-//    token_value: str
-//    memories: List[Mem]
-// Return
-//    memory_name: str
-function get_memory_name token_value:str memories:List[Mem] -> str :
-  // Overwriting another Mem is not allowed
-  if token_value memories cast(List) List.contains_str do
-    "Mem '" token_value str.cat
-    "' already exists. Mem name should be unique.\n" str.cat
-    "MEMORY_REDEFINITION" CompilerError
-  endif
-  token_value
-end
-
 // Parse Functions from list of Tokens
 // Params
 //    tokens:     List[Token]
 //    constants:  List[Constant]
-//    memories:   List[Mem]
 // Return
 //    functions: List[Func]
 function get_functions
   tokens:List[Token]
   constants:List[Constant]
-  memories:List[Mem]
 -> List[Func] :
   List.init cast(List[Func])
   0
@@ -762,7 +665,7 @@ function get_functions
     
     if token_upper "FUNCTION" streq do
       index 1 + index =
-      "" memories constants index tokens parse_function
+      "" constants index tokens parse_function
       functions cast(List) List.append
     endif
     index 1 + index =
@@ -782,13 +685,11 @@ end
 //    tokens:       List[Token]
 //    token_index:  int
 //    constants:    List[Constant]
-//    memories:     List[Mem]
 // Return Func
 function parse_function
   tokens:List[Token]
   token_index:int
   constants:List[Constant]
-  memories:List[Mem]
   class_name:str
 -> Func :
   // Initialize variables
@@ -1050,14 +951,12 @@ end
 //    tokens:     List[Token]
 //    functions:  List[Func]
 //    constants:  List[Constant]
-//    memories:   List[Mem]
 // Return
 //    functions: List[Func]
 function parse_classes
   tokens:List[Token]
   functions:List[Func]
   constants:List[Constant]
-  memories:List[Mem]
 :
   0 take index in
   while index tokens cast(List) List.len < do
@@ -1068,13 +967,13 @@ function parse_classes
 
     if token_upper str.copy str.upper "CLASS" streq do
       index 1 + index =
-      memories constants functions index tokens parse_class
+      constants functions index tokens parse_class
     endif
     index 1 + index =
   done
 
   // Parse the variables for each function
-  memories functions parse_variables_for_functions
+  functions parse_variables_for_functions
 end
 
 function parse_class
@@ -1082,7 +981,6 @@ function parse_class
   token_index:int
   functions:List[Func]
   constants:List[Constant]
-  memories:List[Mem]
 :
   if token_index tokens cast(List) List.len >= do
     "Class cannot end with '"
@@ -1107,7 +1005,7 @@ function parse_class
     if token_value str.copy str.upper "METHOD" streq do
       // Parse all methods
       token_index 1 + token_index =
-      class_name memories constants token_index tokens parse_function
+      class_name constants token_index tokens parse_function
       take class_method in
 
       // Add method to list of functions
@@ -1305,8 +1203,8 @@ function get_attribute_function_tokens
 end
 
 // Parse Variables for Funcs
-// Params: List[Func], List[Mem]
-function parse_variables_for_functions functions:List[Func] memories:List[Mem] :
+// Params: List[Func]
+function parse_variables_for_functions functions:List[Func] :
   functions cast(List) List.len
   0
   take index functions.len in
@@ -1314,15 +1212,15 @@ function parse_variables_for_functions functions:List[Func] memories:List[Mem] :
   // Parse Variables for each Func
   while index functions.len < do
     index functions cast(List) List.nth Func.load
-    memories swap parse_function_variables
+    parse_function_variables
     index 1 + index = // index++
   done
 end
 
 // Parse Variables in Func
-// Params: Func, List[Mem]
+// Params: Func
 // Return: None
-function parse_function_variables func:Func memories:List[Mem] :
+function parse_function_variables func:Func :
   func Func.tokens
   func Func.variables
   False
@@ -1391,7 +1289,6 @@ end
 //    token: Token
 //    function_name: str
 //    variables: List[Variable]
-//    memories: List[Mem]
 function add_variable_to_list
   token:Token
   function_name:str

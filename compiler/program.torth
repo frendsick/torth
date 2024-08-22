@@ -9,7 +9,6 @@ include "compiler/class/Token"
 function get_sub_programs
   functions:List[Func]
   constants:List[Constant]
-  memories:List[Mem]
 -> List[Program] :
 
   List.init cast(List[Program])
@@ -39,7 +38,7 @@ function get_sub_programs
         &&
       do
         // Generate Program from the current Func
-        memories constants functions func generate_program
+        constants functions func generate_program
 
         // Append the generated Program to sub_programs
         sub_programs cast(List) List.append
@@ -75,13 +74,12 @@ function get_sub_programs
 end
 
 // Generate Program from Func
-// Params: Func, List[Func], List[Constant], List[Mem]
+// Params: Func, List[Func], List[Constant]
 // Return: Program
 function generate_program
   func:Func
   functions:List[Func]
   constants:List[Constant]
-  memories:List[Mem]
 -> Program :
 
   func Func.tokens
@@ -99,7 +97,7 @@ function generate_program
     take token in
 
     // Get the Token's OpType
-    memories constants functions token get_tokens_op_type
+    constants functions token get_tokens_op_type
     take op_type in
 
     // Append Op to Program
@@ -110,52 +108,13 @@ function generate_program
   program
 end
 
-function remove_unused_memories
-  memories:List[Mem]
-  functions:List[Func]
--> List[Mem] :
-  memories cast(List) List.len 1 -
-  take index in
-  while index 0 >= do
-    index memories cast(List) List.nth ptr.load Mem.name str.copy
-    take mem_name in
-
-    // Parse related function from the Mem
-    // f"{function_name}##{mem_name}"
-    "##" mem_name str.find
-    take sep_index in
-
-    // The memory is not a variable
-    if sep_index -1 == do
-      index 1 - index =
-      continue
-    endif
-
-    mem_name sep_index str+ str.empty
-    mem_name
-    take function_name in
-
-    functions function_name get_function_by_name
-    take func in
-
-    if func Func.is_used not do
-      index memories cast(List) List.pop
-    endif
-
-    index 1 - index =
-  done
-
-  memories
-end
-
 // Get OpType for Token
-// Params: Token, List[Func], List[Constant], List[Mem]
+// Params: Token, List[Func], List[Constant]
 // Return: OpType
 function get_tokens_op_type
   token:Token
   functions:List[Func]
   constants:List[Constant]
-  memories:List[Mem]
 -> int :
 
   // Initialize variables
@@ -243,8 +202,6 @@ function get_tokens_op_type
     TRUE swap Func->is_used
 
     OpType.PUSH_FN return
-  elif memories token_value memory_exists do
-    OpType.PUSH_PTR return
   // Intrinsics
   elif
     token_upper "AND"         streq

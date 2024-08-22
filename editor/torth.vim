@@ -27,7 +27,7 @@ syntax keyword torthTodos TODO NOTE
 " Language keywords
 syntax keyword torthKeywords BREAK CONTINUE DO DONE ELIF ELSE END ENDIF IF INCLUDE WHILE
 
-syntax keyword torthFunctionDefs CLASS CONST END ENDCLASS ENUM FUNCTION IN MEMORY METHOD PEEK RETURN TAKE
+syntax keyword torthFunctionDefs CLASS CONST END ENDCLASS ENUM FUNCTION IN METHOD PEEK RETURN TAKE
 
 " Comments
 syntax region torthCommentLine start="//" end="$"   contains=torthTodos
