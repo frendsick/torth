@@ -438,13 +438,11 @@ function str.find string:str substring:str -> int :
 
   while index string.len substring.len - <= do
 
-    // Index was found if the current string starts with the substring
-    if string substring str.startswith do
+    // String starting from the index starts with the substring
+    if string index str+ substring str.startswith do
       index return
     endif
 
-    // Increment string pointer and index
-    string 1 str+ string =
     index 1 + index =
   done
 
