@@ -1,3 +1,5 @@
+include "std"
+
 function Fib number:int -> int :
   if number 1 <= do
     number return
@@ -9,5 +11,5 @@ function Fib number:int -> int :
 end
 
 function main :
-  20 Fib print // Prints: 4181
+  20 Fib putu // Prints: 4181
 end

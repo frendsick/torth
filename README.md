@@ -52,6 +52,7 @@ More examples are found from the [examples](./examples/)-folder.
 
 ```pascal
 include "std"
+
 function main :
     "Hello, World!\n" puts
 end
@@ -60,6 +61,8 @@ end
 ### [Fibonacci](./examples/fibonacci.torth)
 
 ```pascal
+include "std"
+
 function Fib number:int -> int :
   if number 1 <= do
     number return
@@ -71,7 +74,7 @@ function Fib number:int -> int :
 end
 
 function main :
-  20 Fib print // Prints: 4181
+  20 Fib putu // Prints: 4181
 end
 ```
 

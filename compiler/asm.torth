@@ -13,8 +13,7 @@ include "compiler/class/Token"
 function initialize_asm_file file_name:str memories:List[Mem] :
   "compiler/templates/start.asm" read_file
   memories get_memory_definitions_asm       str.cat
-  "compiler/templates/print.asm" read_file  str.cat
-  "\n"                                      str.cat
+  "\nsection .text\n\n"                     str.cat
   mode_644 file_name write_file drop
 end
 
@@ -186,8 +185,6 @@ function get_intrinsic_asm token:Token -> str :
     get_over_asm return
   elif intrinsic "PLUS" streq do
     get_plus_asm return
-  elif intrinsic "PRINT" streq do
-    get_print_asm return
   elif intrinsic "ROT" streq do
     get_rot_asm return
   elif intrinsic "SHL" streq do
@@ -867,7 +864,8 @@ end
 
 // Copies Nth element from the stack to the top of the stack.
 // Note that the Nth is counted without the popped integer.
-// Example: 30 20 10 3 NTH print  // Output: 30
+// Example: 30 20 10 3 NTH => Pushes 30 to the stack because 30 is 3rd element without the popped 3.
+
 // => 30 is 3rd element without the popped 3
 function get_nth_asm -> str :
   "  pop rax\n"
@@ -894,14 +892,6 @@ end
 // Return: Assembly
 function get_plus_asm -> str :
   "add" get_arithmetic_asm
-end
-
-// Pop an integer from the stack and print the value of it to the stdout
-// Params: None
-// Return: Assembly
-function get_print_asm -> str :
-  "  pop rdi\n"
-  "  call print\n"    str.cat
 end
 
 // Rotate the top three elements of the stack so that the third becomes first

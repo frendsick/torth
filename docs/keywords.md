@@ -52,8 +52,8 @@ function main :
   1337 src int.store          // Store 1337 to src
   9001 dst int.store          // Store 9001 to dst
   src int.load dst int.store  // Copy the value from src to dst
-  src int.load print          // Print the value 1337 from src
-  dst int.load print          // Print the value 1337 from dst
+  src int.load putu           // Print the value 1337 from src
+  dst int.load putu           // Print the value 1337 from dst
 end  // Expected output: 13371337
 ```
 
@@ -141,12 +141,12 @@ END
 
 include "std"
 function main :
-  item2 item5 + print     // 1 + 3 = 4
-  item3 item4 + print     // 2 + 0 = 2
+  item2 item5 + putu      // 1 + 3 = 4
+  item3 item4 + putu      // 2 + 0 = 2
   "\n" puts               // Output: 42
 
-  item6 print             // 6
-  offset_by_three print   // 9 (offset * item_count)
+  item6 putu              // 6
+  offset_by_three putu    // 9 (offset * item_count)
   "\n" puts               // Output: 69
 end
 ```
@@ -178,7 +178,7 @@ include "std"
 // Example with name and age as parameters, name is on top of the stack
 // Note: Strings pushes two items to the stack, it's length and pointer to the string buffer
 function is_adult str int int -> bool :
-  print // Prints name
+  puts // Prints name
   if dup 18 > do
     False " you are not an adult"
   else
@@ -188,7 +188,7 @@ end
 
 function main :
   42 "frendsick" is_adult
-  "Return value: " puts print "\n" puts // Output: 40
+  "Return value: " puts putu "\n" puts // Output: 40
 end
 ```
 
@@ -206,7 +206,7 @@ function MultiplyByFour
 end
 
 function main :
-  5 multiply_by_two MultiplyByFour print "\n" puts // Output: 40
+  5 multiply_by_two MultiplyByFour putu "\n" puts // Output: 40
 end
 ```
 
@@ -215,7 +215,7 @@ end
 include "std"
 function main -> int :
   42 dup
-  "This program will return with exit code " puts print "\n" puts
+  "This program will return with exit code " puts putu "\n" puts
 end
 ```
 
@@ -273,7 +273,7 @@ memory leet int.size end  // int.size = 8
 memory feet ptr.size end  // ptr.size = 8
 function main -> :
   1337 leet int.store
-  leet int.load print "\n" puts // Output: 1337
+  leet int.load putu "\n" puts // Output: 1337
 
   "pinky\n" feet str.store
   'k' feet ptr.load char.store

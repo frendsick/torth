@@ -61,7 +61,7 @@ end
 function output_board :
   "Board iteration: " puts
   0 while dup BOARD_SIZE < do
-    current_board over ptr+ char.load print
+    current_board over ptr+ char.load cast(int) putu
     1 +
   done drop "\n" puts
  end

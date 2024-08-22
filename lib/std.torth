@@ -122,7 +122,7 @@ function puts  str : stdout fputs end
 function eputs str : stderr fputs end
 
 // Print an unsigned integer to stdout
-function putu int : print end
+function putu int : itoa puts end
 
 // Print an unsigned integer to stderr
 function eputu int : itoa eputs end

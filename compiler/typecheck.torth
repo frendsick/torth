@@ -289,8 +289,6 @@ function type_check_intrinsic
     program type_stack token type_check_nth return
   elif intrinsic "OVER" streq do
     type_stack token type_check_over return
-  elif intrinsic "PRINT" streq do
-    type_stack token type_check_print return
   elif intrinsic "ROT" streq do
     type_stack token type_check_rot return
   elif intrinsic "STORE_" str.startswith do
@@ -1201,7 +1199,7 @@ end
 
 // NTH pops one integer from the stack and pushes the Nth element from stack back to stack.
 // Note that the Nth is counted without the popped integer.
-// Example: 30 20 10 3 NTH print  // Output: 30 (because 30 is 3rd element without the popped 3).
+// Example: 30 20 10 3 NTH => Pushes 30 to the stack because 30 is 3rd element without the popped 3.
 // Params
 //    token: Token
 //    type_stack: LinkedList[TypeNode]
@@ -1290,32 +1288,6 @@ function type_check_over token:Token type_stack:Node :
   t2 type_stack LinkedList.push
   t1 type_stack LinkedList.push
   t2 type_stack LinkedList.push
-end
-
-// Pop an integer from the stack and print its value to stdout
-// Params
-//    token: Token
-//    type_stack: LinkedList[TypeNode]
-// Return None
-function type_check_print token:Token type_stack:Node :
-  // Pop one item from the stack
-  type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  take type temp_stack in
-
-  // Not enough values in the stack
-  if type cast(int) -1 == do
-    temp_stack token
-    "Cannot print from an empty stack"
-    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  // Wrong token type
-  elif type TypeNode.type INTEGER_TYPES Array.contains_str not do
-    temp_stack token
-    "PRINT intrinsic requires an integer\n\n"
-    "Popped type: "     str.cat
-    type TypeNode.type  str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
-  endif
 end
 
 // ROT Intrinsic rotates the top three elements of the stack so that the third becomes first

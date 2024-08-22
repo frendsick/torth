@@ -270,7 +270,6 @@ function get_tokens_op_type
     token_upper "OR"          streq ||
     token_upper "OVER"        streq ||
     token_upper "PLUS"        streq ||
-    token_upper "PRINT"       streq ||
     token_upper "ROT"         streq ||
     token_upper "SHL"         streq ||
     token_upper "SHR"         streq ||

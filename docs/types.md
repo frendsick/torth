@@ -36,8 +36,9 @@ end
 Print any value as an integer.
 
 ```pascal
+include "std"
 function print_any any :
-  cast(int) print
+  cast(int) puti
 end
 ```
 
@@ -73,6 +74,7 @@ Function pointer to a Torth function can be pushed to the stack by appending _&_
 You can execute the function pointed by the pointer using the [EXEC](intrinsics#EXEC) intrinsic.
 
 ```pascal
+include "std"
 function add_one int -> int :
     1 +
 end
@@ -83,7 +85,7 @@ function increment int -> int :
 end
 
 function main :
-    41 increment_number print   // Prints: 42
+    41 increment_number putu   // Prints: 42
 end
 ```
 
@@ -94,7 +96,7 @@ end
 ```pascal
   420       // 64-bit decimal
   0x420     // 64-bit hexadecimal => 1056
-  + print   // 420 + 0x420 = 1476
+  +         // 420 + 0x420 = 1476
 ```
 
 ### ptr - Pointer
@@ -121,9 +123,10 @@ You can cast any type to another by using the [CAST](./keywords.md#cast) keyword
 
 ### Examples
 
-Cast a character to an integer to print it with [print](intrinsics.md#print) intrinsic.
+Cast a character to an integer and print it.
 
 ```pascal
+include "std"
 function main :
   // Cast character 'a' to integer representation 97
   // and call print_integer function with it being its parameter.
@@ -131,7 +134,7 @@ function main :
   'a' cast(int) print_integer
 end
 
-function print_integer int : print end
+function print_integer int : puti end
 ```
 
 Cast a string to `Dog` and then to `Cat` and then meow. For whatever reason...

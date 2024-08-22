@@ -63,7 +63,7 @@ DONE
 ```pascal
 1                                   //  int i = 1;
 WHILE dup 5 > DO                    //  while(5 > i) {
-  "Row " puts dup print "\n" puts   //    printf("Row %d\n", i);
+  "Row " puts dup putu "\n" puts    //    printf("Row %d\n", i);
   1 +                               //    i++;
 DONE drop                           //  }
 ```
@@ -75,7 +75,7 @@ The [BREAK](keywords.md#break) statement, like in C, breaks out of the innermost
 ```pascal
 1                                   //  int i = 1;
 WHILE dup 10 >= DO                  //  while(10 >= i) {
-  "Row " puts dup print "\n" puts   //    printf("Row %d\n", i);
+  "Row " puts dup putu "\n" puts    //    printf("Row %d\n", i);
   IF dup 4 % 0 == DO                //    if(i % 4 == 0) {
     break                           //      break;
   ENDIF                             //    }
@@ -95,7 +95,7 @@ The [CONTINUE](keywords.md#continue) statement, like in C, continues with the ne
 ```pascal
 1                                   //  int i = 1;
 WHILE dup 10 >= DO                  //  while(10 >= i) {
-  "Row " puts dup print "\n" puts   //    printf("Row %d\n", i);
+  "Row " puts dup putu "\n" puts    //    printf("Row %d\n", i);
   IF dup 4 % 0 == DO                //    if(i % 4 == 0) {
     3 +                             //      i += 3;
     continue                        //      continue;

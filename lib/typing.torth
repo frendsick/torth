@@ -283,7 +283,7 @@ class Array
         0 while dup len < do
             array Array.first
             over ptr.size *
-            ptr+ int.load print " " puts
+            ptr+ int.load puti " " puts
             1 +
         done drop
     end

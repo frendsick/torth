@@ -29,7 +29,6 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 - [OR](#OR)
 - [OVER](#OVER)
 - [PLUS](#Calculations)
-- [PRINT](#PRINT)
 - [ROT](#ROT)
 - [SHL](#bit-shifts)
 - [SHR](#bit-shifts)
@@ -147,7 +146,7 @@ Pop one [integer](definitions.md#integer-types) from the stack as N. Then, push 
 
 ```
 30 20 10
-3 NTH print // Output: 30 (30 is the 3rd element without the popped 3).
+3 NTH // 30 is pushed to the stack (the 3rd element without the popped 3).
 ```
 
 ## OR
@@ -163,10 +162,6 @@ Perform bitwise OR for two [integer](definitions.md#integer-types) values.
 Push a copy of the second element of the stack.
 
 `a b -> b a b`
-
-## PRINT
-
-Pop and print an [integer](definitions.md#integer-types) from the stack to the console.
 
 ## ROT
 
