@@ -603,22 +603,26 @@ function str.upper string:str -> str :
 end
 
 // Strip all non-alphanumeric characters from a string
-function str.alphanumeric str -> str :
-  // Allocate enough memory to hold the whole string
-  dup str.len malloc cast(str)
-  swap
-  0 while over str.len over > do
-    // Get the current character
-    over over swap str.char_at
+function str.alphanumeric string:str -> str :
 
-    // Append only alphanumeric characters
-    // memory str index str[index]
-    if dup char.is_alphanumeric do
-      // Append the current character to the new string
-      dup 5 nth str.append
-    endif drop
-    1 + // index++
-  done drop drop
+  // Allocate enough memory to hold the whole string
+  string str.len
+  dup malloc cast(str)
+  0
+  take index buffer string_len in
+
+  while index string_len < do
+    index string str.char_at
+    take current_char in
+
+    // Append alphanumeric character to the buffer
+    if current_char char.is_alphanumeric do
+      current_char buffer str.append
+    endif
+    index 1 + index =
+  done
+
+  buffer
 end
 
 // Check if a string starts with another string
