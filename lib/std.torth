@@ -35,14 +35,12 @@ const mode_640 0x1a0 end
 const mode_600 0x180 end
 
 // Extra intrinsics
-function NULLPTR            -> ptr  : NULL cast(ptr)                          end
-function ^        int int   -> int  : pow                                     end
-function not      bool      -> bool : True !=                                 end
-function |        int int   -> int  : or                                      end
-function lor      bool bool -> bool : cast(int) swap cast(int) or cast(bool)  end
-function land     bool bool -> bool : cast(int) swap cast(int) and cast(bool) end
-function ||       bool bool -> bool : lor                                     end
-function &&       bool bool -> bool : land                                    end
+function NULLPTR            -> ptr  : NULL cast(ptr)    end
+function ^        int int   -> int  : pow               end
+function not      bool      -> bool : True !=           end
+function |        int int   -> int  : or                end
+function ||       bool bool -> bool : or cast(bool)     end
+function &&       bool bool -> bool : and cast(bool)    end
 
 // Get user input from stdin
 function input -> str :

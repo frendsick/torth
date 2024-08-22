@@ -8,7 +8,7 @@ function get_largest_palindrome_product -> int :
       if
         highest i j * <
         i j * dup int.reverse ==
-        land
+        &&
       do
         i j * highest = // highest = i*j
       endif
