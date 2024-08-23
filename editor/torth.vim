@@ -61,8 +61,8 @@ syntax match torthFunctionName /\v(function\s+)@<=\S+/
 
 " Set highlights
 highlight default link torthTodos Todo
-highlight default link torthIntrinsic Macro
-highlight default link torthBinding Constant
+highlight default link torthIntrinsic Identifier
+highlight default link torthBinding Define
 highlight default link torthConditional Conditional
 highlight default link torthInclude Include
 highlight default link torthRepeat Repeat
