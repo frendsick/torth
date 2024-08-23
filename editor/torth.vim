@@ -42,7 +42,7 @@ syntax match torthCharacter /'\\[nr\"']\|'.'/hs=s+1,he=e-1 contains=torthEscapes
 syntax match torthEscapes display contained /\\[nr\"']/
 
 " Number literals
-syntax region torthNumber start=/\s\d/  skip=/\d/ end=/\s/
+syntax match torthNumber /\v(^|\s)@<=\d+(\s|$)@=/ " Token with just numbers
 syntax keyword torthNull  NULL
 
 " Type names the compiler recognizes
