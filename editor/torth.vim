@@ -56,6 +56,9 @@ syntax keyword torthTypeNames any bool char fn none int ptr str List Array Linke
 " Delimiters
 syntax match torthDelimiter /[:.]/
 
+" Function signature
+syntax match torthFunctionName /\v(function\s+)@<=\S+/
+
 " Set highlights
 highlight default link torthTodos Todo
 highlight default link torthIntrinsic Macro
@@ -63,7 +66,8 @@ highlight default link torthBinding Constant
 highlight default link torthConditional Conditional
 highlight default link torthInclude Include
 highlight default link torthRepeat Repeat
-highlight default link torthFunction Function
+highlight default link torthFunction Macro
+highlight default link torthFunctionName Function
 highlight default link torthCommentLine Comment
 highlight default link torthString String
 highlight default link torthCharacter Character
