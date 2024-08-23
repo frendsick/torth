@@ -24,10 +24,13 @@ syntax case ignore
 set iskeyword=a-z,A-Z,+,-,*,/,=,>,<,!,:
 
 " Keyword tokens
+syntax keyword torthBinding CONST ENUM IN PEEK TAKE
+syntax keyword torthConditional IF ELIF ELSE ENDIF DO
+syntax keyword torthFunction CLASS END ENDCLASS FUNCTION METHOD RETURN
+syntax keyword torthInclude INCLUDE
 syntax keyword torthOperators + - * / = > < == != >= <= -> >> <<
+syntax keyword torthRepeat BREAK CONTINUE DONE WHILE
 syntax keyword torthTodos TODO NOTE
-syntax keyword torthKeywords BREAK CONTINUE DO DONE ELIF ELSE END ENDIF IF INCLUDE WHILE
-syntax keyword torthFunctionDefs CLASS CONST END ENDCLASS ENUM FUNCTION IN METHOD PEEK RETURN TAKE
 
 " Comments
 syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
@@ -54,8 +57,11 @@ syntax match torthDelimiter /[:.]/
 
 " Set highlights
 highlight default link torthTodos Todo
-highlight default link torthKeywords Keyword
-highlight default link torthFunctionDefs Macro
+highlight default link torthBinding Statement
+highlight default link torthConditional Conditional
+highlight default link torthInclude Include
+highlight default link torthRepeat Repeat
+highlight default link torthFunction Function
 highlight default link torthCommentLine Comment
 highlight default link torthString String
 highlight default link torthCharacter Character
