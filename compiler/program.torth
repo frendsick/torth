@@ -215,7 +215,6 @@ function get_tokens_op_type
     token_upper "EQ"          streq ||
     token_upper "GE"          streq ||
     token_upper "GT"          streq ||
-    token_upper "DUP"         streq ||
     token_upper "LE"          streq ||
     token_upper "LOAD_" str.startswith ||
     token_upper "LT"          streq ||
