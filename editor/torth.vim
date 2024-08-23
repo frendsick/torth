@@ -58,6 +58,7 @@ syntax match torthDelimiter /[:.]/
 
 " Function signature
 syntax match torthFunctionName /\v(function\s+)@<=\S+/
+syntax match torthBindingType /\v(\S+:)@<=\w+/ contains=torthDelimiter  " Match `str` from `value:str`
 
 " Set highlights
 highlight default link torthTodos Todo
@@ -68,6 +69,7 @@ highlight default link torthInclude Include
 highlight default link torthRepeat Repeat
 highlight default link torthFunction Macro
 highlight default link torthFunctionName Function
+highlight default link torthBindingType Type
 highlight default link torthCommentLine Comment
 highlight default link torthString String
 highlight default link torthCharacter Character
