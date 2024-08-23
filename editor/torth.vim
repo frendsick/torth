@@ -40,7 +40,6 @@ syntax match torthEscapes display contained "\\[nr\"']"
 
 " Number literals
 syntax region torthNumber start=/\s\d/  skip=/\d/ end=/\s/
-syntax region torthUint   start=/\su\d/ skip=/\d/ end=/\s/
 syntax keyword torthNull  NULL
 
 " Type names the compiler recognizes
@@ -54,9 +53,7 @@ highlight default link torthCommentLine Comment
 highlight default link torthString String
 highlight default link torthNull Number
 highlight default link torthNumber Number
-highlight default link torthUint Number
 highlight default link torthTypeNames Type
-highlight default link torthChar Character
 highlight default link torthEscapes SpecialChar
 
 let b:current_syntax = "torth"
