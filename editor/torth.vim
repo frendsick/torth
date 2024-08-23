@@ -58,8 +58,8 @@ syntax match torthDelimiter /[:.]/
 
 " Set highlights
 highlight default link torthTodos Todo
-highlight default link torthBinding Statement
 highlight default link torthIntrinsic Macro
+highlight default link torthBinding Constant
 highlight default link torthConditional Conditional
 highlight default link torthInclude Include
 highlight default link torthRepeat Repeat
