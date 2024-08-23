@@ -29,7 +29,7 @@ syntax keyword torthConditional IF ELIF ELSE ENDIF DO
 syntax keyword torthFunction CLASS END ENDCLASS FUNCTION METHOD RETURN
 syntax keyword torthInclude INCLUDE
 syntax keyword torthIntrinsic AND ARGC ARGV DIV DROP DUP ENVP EXEC EQ GE GT LE LOAD_BYTE LOAD_WORD LOAD_DWORD LOAD_QWORD LT MINUS MOD MUL NE OR OVER PLUS ROT SHL SHR STORE_BYTE STORE_WORD STORE_DWORD STORE_QWORD SWAP SYSCALL0 SYSCALL1 SYSCALL2 SYSCALL3 SYSCALL4 SYSCALL5 SYSCALL6
-syntax keyword torthOperators + - * / = > < == != >= <= -> >> <<
+syntax keyword torthOperators + - * / = > < == != >= <= >> <<
 syntax keyword torthRepeat BREAK CONTINUE DONE WHILE
 syntax keyword torthTodos TODO NOTE
 
@@ -54,7 +54,7 @@ syntax keyword torthBoolean TRUE FALSE
 syntax keyword torthTypeNames any bool char fn none int ptr str List Array LinkedList
 
 " Delimiters
-syntax match torthDelimiter /[:.]/
+syntax match torthDelimiter /\v([:.]|-\>)/  "; . ->"
 
 " Function
 syntax match torthFunctionName /\v(function\s+)@<=\S+/
