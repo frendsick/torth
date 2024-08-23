@@ -21,13 +21,14 @@ if exists("b:current_syntax")
 endif
 
 syntax case ignore
-set iskeyword=a-z,A-Z,+,-,*,/,=,>,<,!,:
+set iskeyword=a-z,A-Z,+,-,_,*,/,=,>,<,!,:
 
 " Keyword tokens
 syntax keyword torthBinding CONST ENUM IN PEEK TAKE
 syntax keyword torthConditional IF ELIF ELSE ENDIF DO
 syntax keyword torthFunction CLASS END ENDCLASS FUNCTION METHOD RETURN
 syntax keyword torthInclude INCLUDE
+syntax keyword torthIntrinsic AND ARGC ARGV DIV DROP DUP ENVP EXEC EQ GE GT LE LOAD_BYTE LOAD_WORD LOAD_DWORD LOAD_QWORD LT MINUS MOD MUL NE OR OVER PLUS ROT SHL SHR STORE_BYTE STORE_WORD STORE_DWORD STORE_QWORD SWAP SYSCALL0 SYSCALL1 SYSCALL2 SYSCALL3 SYSCALL4 SYSCALL5 SYSCALL6
 syntax keyword torthOperators + - * / = > < == != >= <= -> >> <<
 syntax keyword torthRepeat BREAK CONTINUE DONE WHILE
 syntax keyword torthTodos TODO NOTE
@@ -58,6 +59,7 @@ syntax match torthDelimiter /[:.]/
 " Set highlights
 highlight default link torthTodos Todo
 highlight default link torthBinding Statement
+highlight default link torthIntrinsic Macro
 highlight default link torthConditional Conditional
 highlight default link torthInclude Include
 highlight default link torthRepeat Repeat
