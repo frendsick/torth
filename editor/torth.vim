@@ -49,6 +49,9 @@ syntax keyword torthBoolean TRUE FALSE
 " Type names the compiler recognizes
 syntax keyword torthTypeNames any bool char fn none int ptr str List Array LinkedList
 
+" Delimiters
+syntax match torthDelimiter /[:.]/
+
 " Set highlights
 highlight default link torthTodos Todo
 highlight default link torthKeywords Keyword
@@ -62,5 +65,6 @@ highlight default link torthBoolean Number
 highlight default link torthTypeNames Type
 highlight default link torthEscapes SpecialChar
 highlight default link torthOperators Operator
+highlight default link torthDelimiter Delimiter
 
 let b:current_syntax = "torth"
