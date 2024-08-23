@@ -21,12 +21,13 @@ if exists("b:current_syntax")
 endif
 
 syntax case ignore
-set iskeyword=a-z,A-Z,-,*,_,!,@
-syntax keyword torthTodos TODO NOTE
+set iskeyword=a-z,A-Z,+,-,*,/,=,>,<,!,:
 
-" Language keywords
+" Keyword tokens
+syntax keyword torthTodos TODO NOTE
 syntax keyword torthKeywords BREAK CONTINUE DO DONE ELIF ELSE END ENDIF IF INCLUDE WHILE
 syntax keyword torthFunctionDefs CLASS CONST END ENDCLASS ENUM FUNCTION IN METHOD PEEK RETURN TAKE
+syntax keyword torthOperators + - * / = > < : == != >= <= -> >> <<
 
 " Comments
 syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
@@ -58,5 +59,6 @@ highlight default link torthNull Number
 highlight default link torthNumber Number
 highlight default link torthTypeNames Type
 highlight default link torthEscapes SpecialChar
+highlight default link torthOperators Operator
 
 let b:current_syntax = "torth"
