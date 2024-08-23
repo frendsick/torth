@@ -35,8 +35,11 @@ syntax region torthCommentLine start="//" end="$"   contains=torthTodos
 " String literals
 syntax region torthString start=/\v"/ skip=/\v\\./ end=/\v"/ contains=torthEscapes
 
+" Character literals
+syntax match torthCharacter /'\\[nr\"']\|'.'/hs=s+1,he=e-1 contains=torthEscapes
+
 " Escape literals \n, \r, ....
-syntax match torthEscapes display contained "\\[nr\"']"
+syntax match torthEscapes display contained /\\[nr\"']/
 
 " Number literals
 syntax region torthNumber start=/\s\d/  skip=/\d/ end=/\s/
@@ -51,6 +54,7 @@ highlight default link torthKeywords Keyword
 highlight default link torthFunctionDefs Macro
 highlight default link torthCommentLine Comment
 highlight default link torthString String
+highlight default link torthCharacter Character
 highlight default link torthNull Number
 highlight default link torthNumber Number
 highlight default link torthTypeNames Type
