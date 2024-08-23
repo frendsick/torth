@@ -44,6 +44,7 @@ syntax match torthEscapes display contained /\\[nr\"']/
 " Number literals
 syntax match torthNumber /\v(^|\s)@<=\d+(\s|$)@=/ " Token with just numbers
 syntax keyword torthNull  NULL
+syntax keyword torthBoolean TRUE FALSE
 
 " Type names the compiler recognizes
 syntax keyword torthTypeNames any bool char fn none int ptr str List Array LinkedList
@@ -57,6 +58,7 @@ highlight default link torthString String
 highlight default link torthCharacter Character
 highlight default link torthNull Number
 highlight default link torthNumber Number
+highlight default link torthBoolean Number
 highlight default link torthTypeNames Type
 highlight default link torthEscapes SpecialChar
 highlight default link torthOperators Operator
