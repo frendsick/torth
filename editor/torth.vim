@@ -26,11 +26,10 @@ syntax keyword torthTodos TODO NOTE
 
 " Language keywords
 syntax keyword torthKeywords BREAK CONTINUE DO DONE ELIF ELSE END ENDIF IF INCLUDE WHILE
-
 syntax keyword torthFunctionDefs CLASS CONST END ENDCLASS ENUM FUNCTION IN METHOD PEEK RETURN TAKE
 
 " Comments
-syntax region torthCommentLine start="//" end="$"   contains=torthTodos
+syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
 
 " String literals
 syntax match torthString /".*"/hs=s+1,he=e-1 contains=torthEscapes
