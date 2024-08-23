@@ -24,10 +24,10 @@ syntax case ignore
 set iskeyword=a-z,A-Z,+,-,*,/,=,>,<,!,:
 
 " Keyword tokens
+syntax keyword torthOperators + - * / = > < == != >= <= -> >> <<
 syntax keyword torthTodos TODO NOTE
 syntax keyword torthKeywords BREAK CONTINUE DO DONE ELIF ELSE END ENDIF IF INCLUDE WHILE
 syntax keyword torthFunctionDefs CLASS CONST END ENDCLASS ENUM FUNCTION IN METHOD PEEK RETURN TAKE
-syntax keyword torthOperators + - * / = > < : == != >= <= -> >> <<
 
 " Comments
 syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
