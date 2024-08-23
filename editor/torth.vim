@@ -46,7 +46,7 @@ syntax region torthNumber start=/\s\d/  skip=/\d/ end=/\s/
 syntax keyword torthNull  NULL
 
 " Type names the compiler recognizes
-syntax keyword torthTypeNames any bool char fn none int ptr str
+syntax keyword torthTypeNames any bool char fn none int ptr str List Array LinkedList
 
 " Set highlights
 highlight default link torthTodos Todo
