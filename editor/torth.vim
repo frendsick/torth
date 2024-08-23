@@ -33,7 +33,7 @@ syntax keyword torthFunctionDefs CLASS CONST END ENDCLASS ENUM FUNCTION IN METHO
 syntax region torthCommentLine start="//" end="$"   contains=torthTodos
 
 " String literals
-syntax region torthString start=/\v"/ skip=/\v\\./ end=/\v"/ contains=torthEscapes
+syntax match torthString /".*"/hs=s+1,he=e-1 contains=torthEscapes
 
 " Character literals
 syntax match torthCharacter /'\\[nr\"']\|'.'/hs=s+1,he=e-1 contains=torthEscapes
