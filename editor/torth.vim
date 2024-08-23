@@ -40,7 +40,7 @@ syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
 syntax region torthString start=/\v(^|\s)@<="/ end=/"/ contains=torthEscapes
 
 " Character literals
-syntax match torthCharacter /'\\[nr\"']\|'.'/hs=s+1,he=e-1 contains=torthEscapes
+syntax match torthCharacter /'\\[nr\"']\|'.'/ contains=torthEscapes
 
 " Escape literals \n, \r, ....
 syntax match torthEscapes display contained /\\[nr\"']/
