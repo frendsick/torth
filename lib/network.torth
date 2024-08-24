@@ -7,7 +7,7 @@ const IPPROTO_IP 0 end
 
 // struct sockaddr_in
 const sockaddr_in.size 16 end
-enum sockaddr_in 2 :
+enum sockaddr_in.len 2 :
   sockaddr_in.sin_family
   sockaddr_in.sin_port
   sockaddr_in.sin_addr

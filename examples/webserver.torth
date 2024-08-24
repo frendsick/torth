@@ -2,10 +2,9 @@ include "std"
 include "network"
 
 const CLIENT_BUF_CAP 1024 end
-memory client_buf CLIENT_BUF_CAP end
 
 function print_syntax :
-  "Syntax: ./webserver.bin <tcp_port>\n" puts
+  "Syntax: ./webserver <tcp_port>\n" puts
 end
 
 // Print the help and exit if no arguments were given
@@ -61,6 +60,7 @@ function serve_path int str :
     "<h1>Shutting down the server</h1>\n" conn_fd fputs
     0 exit
   // 404 Not Found
+  // FIXME: Directory path segfaults
   elif path file_exists not do
     "<h1>Path '" path str.cat
     "' not found"     str.cat
@@ -93,11 +93,16 @@ function main :
   sock_fd listen_socket
   "Successfully started listening on port " puts
   port puti "\n" puts
-  
+
+  // Allocate buffer for client
+  CLIENT_BUF_CAP malloc
+  take client_buf in
+
   while True do
     // Wait for connection and accept the connection
     sock_fd accept_connection
     take conn_fd in
+    "Accepted connection\n" puts
 
     // Read from client
     CLIENT_BUF_CAP client_buf cast(str) conn_fd read drop
@@ -107,6 +112,7 @@ function main :
     // Read path from request and prepend it with dot (current directory)
     "." request request.path str.cat
     take path in
+    f"Client requested path: {path}\n" puts
 
     // Send HTTP headers to the client
     path get_http_headers conn_fd fputs
