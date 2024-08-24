@@ -338,7 +338,7 @@ function get_tokens_from_code
     // Double quote starts a string
     if
       current_char '"' ==
-      word "'" streq not  // Double quote is not in character definition
+      word str.len 0 ==
       &&
     do
       True parsing_string =
