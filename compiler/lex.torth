@@ -299,6 +299,8 @@ function get_tokens_from_code
 
   List.init   // newline_indexes
   "" str.copy // String buffer for word
+  False       // fstring_requires_cat
+  False       // parsing_fstring
   False       // parsing_string
   False       // parsing_comment
   10          // Line feed character
@@ -308,6 +310,8 @@ function get_tokens_from_code
     LF
     parsing_comment
     parsing_string
+    parsing_fstring
+    fstring_requires_cat
     word
     newline_indexes
   in
@@ -342,14 +346,97 @@ function get_tokens_from_code
       continue
     endif
 
+    // Parse tokens between f-string curly brackets
+    if parsing_fstring do
+      if current_char '"' == do
+        False parsing_fstring =
+
+        if word '"' char.to_string str.startswith do
+          '"' word str.append word =
+        endif
+
+        newline_indexes index file_name tokens word append_word_to_tokens
+
+        if fstring_requires_cat do
+          newline_indexes index file_name tokens "str.cat" append_word_to_tokens
+        endif
+        False fstring_requires_cat =
+        "" str.copy word =
+        index 1 + index =
+        continue
+      endif
+
+      if current_char '{' == do
+        if word str.len 1 > do
+          '"' word str.append word =
+          newline_indexes index file_name tokens word append_word_to_tokens
+          '"' "" str.copy str.append word =
+
+          if fstring_requires_cat do
+            newline_indexes index file_name tokens "str.cat" append_word_to_tokens
+          endif
+          True fstring_requires_cat =
+        endif
+
+        // Parse the expression between curly brackets
+        index 1 + index =
+        code index str+ str.copy
+        take expr in
+
+        "}" expr str.find
+        take close_curly_index in
+        if
+          close_curly_index -1 ==
+          close_curly_index '"' char.to_string expr str.find >
+          ||
+        do
+          "Unmatched '{' in f-string.\n"
+          "The literal curly brackets are not allowed within f-string definitions." str.cat
+          "Variables can be used within f-strings using curly brackets: {variable}." str.cat
+          "VALUE_ERROR" CompilerError
+        endif
+
+        // The expression ends to the close curly bracket
+        NULL expr close_curly_index str+ cast(ptr) store_byte
+
+        // TODO: Parsing token locations from within f-string expression
+        tokens file_name expr get_tokens_from_code
+        tokens =
+
+        index close_curly_index + 1 + index =
+
+        if fstring_requires_cat do
+          newline_indexes index file_name tokens "str.cat" append_word_to_tokens
+        endif
+        True fstring_requires_cat =
+
+        continue
+      endif
+
+      index 1 + index =
+      current_char word str.append word =
+      continue
+    endif
+
     // Double quote starts a string
     if
-      word "f" streq
-      word str.len 0 ==     ||
-      current_char '"' ==   &&
+      word str.len 0 ==
+      current_char '"' ==
+      &&
     do
       True parsing_string =
       current_char word str.append word =
+      index 1 + index =
+      continue
+    endif
+
+    if
+      word "f" streq
+      current_char '"' ==
+      &&
+    do
+      True parsing_fstring =
+      '"' "" str.copy str.append word =
       index 1 + index =
       continue
     endif
