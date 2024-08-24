@@ -1,33 +1,30 @@
 include "std"
 
 const DIVISORS_CAP 100 end
-memory number_of_divisors int.size end
 
 function get_triangle_number int -> int :
-  dup
-  while dup 0 > do
+  dup while dup 0 > do
     // i-1 i-1 sum
     1 - dup rot + swap
   done drop
 end
 
 function get_number_of_divisors int -> int :
-  NULL number_of_divisors int.store
+  0 take divisors in
   get_triangle_number
   if dup 1 > do
     1 // i
     while over over swap 1 + < do
       // triangle i
       if over over % 0 == do
-        number_of_divisors int.load 1 +
-        number_of_divisors int.store
+        divisors 1 + divisors =
       endif
       1 +
     done drop
   else
-    dup number_of_divisors int.store
+    dup divisors =
   endif drop
-  number_of_divisors int.load
+  divisors
 end
 
 function highly_divisible_triangular_number -> int :
