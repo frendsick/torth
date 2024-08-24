@@ -330,7 +330,7 @@ function get_tokens_from_code
       if current_char '"' == do
         False parsing_string =
       endif
-      current_char word str.append
+      current_char word str.append word =
       index 1 + index =
       continue
     endif
@@ -342,7 +342,7 @@ function get_tokens_from_code
       &&
     do
       True parsing_string =
-      current_char word str.append
+      current_char word str.append word =
       index 1 + index =
       continue
     endif
@@ -367,7 +367,7 @@ function get_tokens_from_code
 
       // Check if the whitespace is inside character definition => ' '
       if word "'" streq do
-        current_char word str.append
+        current_char word str.append word =
         index 1 + index =
         continue
       endif
@@ -377,7 +377,7 @@ function get_tokens_from_code
       "" str.copy word =
     else
       // Append current character to word
-      current_char word str.append
+      current_char word str.append word =
     endif
     index 1 + index = // index++
   done

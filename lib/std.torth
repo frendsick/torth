@@ -204,7 +204,6 @@ function char.to_string character:char -> str :
   "" str.copy
   take string in
   character string str.append
-  string
 end
 
 // Int functions
@@ -275,19 +274,21 @@ function itoa num:int -> str :
     else  '0' +
     endif cast(char)
     string str.append
+    string =
 
     num base / num =  // num = num/base
     1 +               // index++
-  done drop string
+  done drop
 
   // Add '-' character to the end of string for negative number
   // This will be reversed later
   if is_negative do
-    '-' over str.append
+    '-' string str.append
+    string =
   endif
 
   // Reverse for correct processing
-  str.reverse
+  string str.reverse
 end
 
 // Get an integer representation of a string
@@ -533,7 +534,21 @@ end
 // Append a character to the end of a string buffer
 // Params: string, character
 // Return: None
-function str.append str char : cast(ptr) dup cast(str) str.len ptr+ char.store end
+function str.append string:str character:char -> str :
+  string str.len 2 + malloc
+  take buffer in
+
+  // Copy the string to buffer
+  string str.len
+  string cast(ptr)
+  buffer
+  memcpy
+
+  // Add character to the end
+  character buffer string str.len ptr+ char.store
+
+  buffer cast(str)
+end
 
 // Get the character at a certain index of a string
 // Params: string, index
@@ -613,7 +628,7 @@ function str.alphanumeric string:str -> str :
 
     // Append alphanumeric character to the buffer
     if current_char char.is_alphanumeric do
-      current_char buffer str.append
+      current_char buffer str.append buffer =
     endif
     index 1 + index =
   done
@@ -754,7 +769,7 @@ function str.reverse original:str -> str :
     index original str.char_at  // original[index]
 
     // Append the current character to the reversed string
-    reversed str.append
+    reversed str.append reversed =
   done reversed
 end
 

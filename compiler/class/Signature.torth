@@ -34,7 +34,7 @@ class Signature
         buffer param_types List.append
         "" str.copy buffer =
       else
-        current_char buffer str.append
+        current_char buffer str.append buffer =
       endif
 
       repr 1 str+ repr =
@@ -50,7 +50,7 @@ class Signature
         buffer return_types List.append
         "" str.copy buffer =
       else
-        current_char buffer str.append
+        current_char buffer str.append buffer =
       endif
 
       index 1 + index =
