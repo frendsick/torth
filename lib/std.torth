@@ -550,6 +550,25 @@ function str.append string:str character:char -> str :
   buffer cast(str)
 end
 
+// Prepend a character to the start of a string buffer
+// Params: string, character
+// Return: None
+function str.prepend string:str character:char -> str :
+  string str.len 2 + malloc
+  take buffer in
+
+  // Add character to the beginning
+  character buffer char.store
+
+  // Copy rest of the string to the end
+  string str.len
+  string cast(ptr)
+  buffer 1 ptr+
+  memcpy
+
+  buffer cast(str)
+end
+
 // Get the character at a certain index of a string
 // Params: string, index
 // Return: character_at_index
