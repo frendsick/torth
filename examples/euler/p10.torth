@@ -3,15 +3,14 @@
 // Find the sum of all the primes below two million.
 include "std"
 const   MAX_PRIME 2000000   end
-memory  sieve     MAX_PRIME end
 
 // Params: prime, max_prime
 // Return: None
-function mark_multiples_to_sieve int int :
-  dup dup * // prime*prime
-  take curr orig max_prime in
+function mark_multiples_to_sieve sieve:ptr prime:int max_prime:int :
+  prime
+  prime prime *
+  take curr orig in
 
-  // for i in range(prime*prime, MAX_PRIME, prime)
   while curr max_prime < do
     // sieve[i] = True
     sieve curr ptr+ True swap store_byte
@@ -21,16 +20,24 @@ end
 
 // Params: max_prime
 // Return: prime_sum
-function summation_of_primes int -> int :
-  2 3 + dup
-  take index prime_sum max_prime in
+function summation_of_primes max_prime:int -> int :
+  2 3 +
+  dup
+  max_prime malloc
+
+  take
+    sieve
+    index
+    prime_sum
+  in
+
   while index max_prime < do
     // If current number is prime add it to prime_sum
     if sieve index ptr+ load_byte NULL == do
       prime_sum index + prime_sum = // prime_sum += index
-      max_prime index mark_multiples_to_sieve
+      max_prime index sieve mark_multiples_to_sieve
     endif
-    
+
     // All primes except for 2 and 3 are 6n±1
     if index 6 % 1 == do
       index 4 + index =
@@ -42,6 +49,10 @@ function summation_of_primes int -> int :
 end
 
 function main :
-  MAX_PRIME summation_of_primes
-  "The sum of primes below " puts MAX_PRIME putu ": " puts putu "\n" puts
+  MAX_PRIME summation_of_primes itoa
+  MAX_PRIME itoa
+  take max_prime sum_of_primes in
+
+  // sum_of_primes == 142913828922
+  f"The sum of primes below {max_prime}: {sum_of_primes}\n" puts
 end
