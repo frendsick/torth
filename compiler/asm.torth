@@ -251,14 +251,11 @@ end
 function get_break_asm op:Op program:Program -> str :
   program op get_parent_while
   program swap get_done_op_for_while
-  Op.id
+  Op.id itoa
   op Op.func Func.name
   take function_name parent_done.id in
 
-  "  jmp "
-  function_name       str.cat
-  "_DONE"             str.cat
-  parent_done.id itoa str.cat
+  f"  jmp {function_name}_DONE{parent_done.id}"
 end
 
 // CONTINUE is an unconditional jump to current loop's WHILE
@@ -266,14 +263,11 @@ end
 // Return: Assembly
 function get_continue_asm op:Op program:Program -> str :
   program op get_parent_while
-  Op.id
+  Op.id itoa
   op Op.func Func.name
   take function_name parent_while.id in
 
-  "  jmp "
-  function_name         str.cat
-  "_WHILE"              str.cat
-  parent_while.id itoa  str.cat
+  f"  jmp {function_name}_WHILE{parent_while.id}"
 end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
@@ -440,15 +434,8 @@ function get_done_asm op:Op program:Program -> str :
     function_name
   in
 
-  "  jmp "
-  function_name     str.cat
-  "_WHILE"          str.cat
-  parent_while.id   str.cat
-  "\n"              str.cat
-  function_name     str.cat
-  "_DONE"           str.cat
-  op.id             str.cat
-  ":\n"             str.cat
+  f"  jmp {function_name}_WHILE{parent_while.id}\n"
+  f"{function_name}_DONE{op.id}:\n" str.cat
 end
 
 // ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to
@@ -469,15 +456,8 @@ function get_elif_asm op:Op program:Program -> str :
     function_name
   in
 
-  "  jmp "
-  function_name     str.cat
-  "_ENDIF"          str.cat
-  related_endif.id  str.cat
-  "\n"              str.cat
-  function_name     str.cat
-  "_ELIF"           str.cat
-  op.id             str.cat
-  ":\n"             str.cat
+  f"  jmp {function_name}_ENDIF{related_endif.id}\n"
+  f"{function_name}_ELIF{op.id}:\n" str.cat
 end
 
 // ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to
@@ -498,15 +478,8 @@ function get_else_asm op:Op program:Program -> str :
     function_name
   in
 
-  "  jmp "
-  function_name     str.cat
-  "_ENDIF"          str.cat
-  related_endif.id  str.cat
-  "\n"              str.cat
-  function_name     str.cat
-  "_ELSE"           str.cat
-  op.id             str.cat
-  ":\n"             str.cat
+  f"  jmp {function_name}_ENDIF{related_endif.id}\n"
+  f"{function_name}_ELSE{op.id}:\n" str.cat
 end
 
 // ENDIF is just a keyword for DO, ELIF or ELSE to jump to
@@ -514,9 +487,10 @@ end
 // Return: Assembly
 function get_endif_asm op:Op -> str :
   op Op.func Func.name
-  "_ENDIF"      str.cat
-  op Op.id itoa str.cat
-  ":\n"         str.cat
+  op Op.id itoa
+  take op.id function_name in
+
+  f"{function_name}_ENDIF{op.id}:\n"
 end
 
 // Generate assembly for calling a function
@@ -700,10 +674,7 @@ function get_while_asm op:Op -> str :
   op Op.func Func.name
   take function_name op_id in
 
-  function_name
-  "_WHILE"  str.cat
-  op_id     str.cat
-  ":\n"     str.cat
+  f"{function_name}_WHILE{op_id}:\n"
 end
 
 // Return the assembly code for arithmetic Intrinsics (PLUS, MINUS, MUL)
