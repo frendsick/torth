@@ -258,6 +258,13 @@ function get_token_type token_value:str -> str :
     &&
   do
     "str" return
+  // F-string => f"Contains {variable}"
+  elif
+    token_value '"' "f" str.append str.startswith
+    token_value str.len 1 - token_value str.char_at '"' ==
+    &&
+  do
+    "fstr" return
   endif
   "word"
 end
@@ -337,9 +344,9 @@ function get_tokens_from_code
 
     // Double quote starts a string
     if
-      current_char '"' ==
-      word str.len 0 ==
-      &&
+      word "f" streq
+      word str.len 0 ==     ||
+      current_char '"' ==   &&
     do
       True parsing_string =
       current_char word str.append word =
@@ -699,7 +706,9 @@ function parse_function
   List.init                       // return_types
   List.init                       // param_types
   List.init cast(List[Variable])  // variables
+  False
   take
+    is_used
     variables
     param_types
     return_types
@@ -720,6 +729,11 @@ function parse_function
   token_index tokens cast(List) List.nth ptr.load Token.value
   take function_name in
   token_index 1 + token_index =
+
+  // The str.cat function from `std` library is used for f-strings
+  if function_name "str.cat" streq do
+    True is_used =
+  endif
 
   // Class methods are called as <class_name>.<method>
   // Example: Dog.bark
@@ -753,7 +767,8 @@ function parse_function
           function_tokens cast(List) List.append
         endif
 
-        // return Func(function_name, signature, function_tokens, variables)
+        // return Func(function_name, signature, function_tokens, variables, is_used)
+        is_used
         variables
         function_tokens
         return_types param_types Signature.init
@@ -1115,7 +1130,7 @@ function get_object_size_function
   return_types List.init Signature.init
   take signature in
 
-  List.init cast(List[Variable]) tokens signature function_name Func.init
+  False List.init cast(List[Variable]) tokens signature function_name Func.init
 end
 
 function generate_attribution_function
@@ -1155,7 +1170,7 @@ function generate_attribution_function
   take tokens in
 
   // Create Func and append it to list of Funcs
-  List.init cast(List[Variable]) tokens signature function_name Func.init
+  False List.init cast(List[Variable]) tokens signature function_name Func.init
 end
 
 function get_attribute_function_tokens

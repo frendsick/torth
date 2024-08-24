@@ -1,6 +1,7 @@
 include "std"
 include "typing"
 include "compiler/utils"
+include "compiler/class/FStringSection"
 include "compiler/class/Func"
 include "compiler/class/Location"
 include "compiler/class/Op"
@@ -91,6 +92,9 @@ function get_op_asm op:Op program:Program -> str :
     return
   elif op_type OpType.PUSH_FN == do
     "&" token_value str.removesuffix get_push_fn_asm
+    return
+  elif op_type OpType.PUSH_FSTR == do
+    op get_push_fstr_asm
     return
   elif op_type OpType.PUSH_INT == do
     token_value get_push_int_asm
@@ -247,14 +251,11 @@ end
 function get_break_asm op:Op program:Program -> str :
   program op get_parent_while
   program swap get_done_op_for_while
-  Op.id
+  Op.id itoa
   op Op.func Func.name
   take function_name parent_done.id in
 
-  "  jmp "
-  function_name       str.cat
-  "_DONE"             str.cat
-  parent_done.id itoa str.cat
+  f"  jmp {function_name}_DONE{parent_done.id}"
 end
 
 // CONTINUE is an unconditional jump to current loop's WHILE
@@ -262,14 +263,11 @@ end
 // Return: Assembly
 function get_continue_asm op:Op program:Program -> str :
   program op get_parent_while
-  Op.id
+  Op.id itoa
   op Op.func Func.name
   take function_name parent_while.id in
 
-  "  jmp "
-  function_name         str.cat
-  "_WHILE"              str.cat
-  parent_while.id itoa  str.cat
+  f"  jmp {function_name}_WHILE{parent_while.id}"
 end
 
 // Get the parent IF, ELIF or WHILE for the current DO operand
@@ -436,15 +434,8 @@ function get_done_asm op:Op program:Program -> str :
     function_name
   in
 
-  "  jmp "
-  function_name     str.cat
-  "_WHILE"          str.cat
-  parent_while.id   str.cat
-  "\n"              str.cat
-  function_name     str.cat
-  "_DONE"           str.cat
-  op.id             str.cat
-  ":\n"             str.cat
+  f"  jmp {function_name}_WHILE{parent_while.id}\n"
+  f"{function_name}_DONE{op.id}:\n" str.cat
 end
 
 // ELIF is an unconditional jump to ENDIF and a keyword for DO to jump to
@@ -465,15 +456,8 @@ function get_elif_asm op:Op program:Program -> str :
     function_name
   in
 
-  "  jmp "
-  function_name     str.cat
-  "_ENDIF"          str.cat
-  related_endif.id  str.cat
-  "\n"              str.cat
-  function_name     str.cat
-  "_ELIF"           str.cat
-  op.id             str.cat
-  ":\n"             str.cat
+  f"  jmp {function_name}_ENDIF{related_endif.id}\n"
+  f"{function_name}_ELIF{op.id}:\n" str.cat
 end
 
 // ELSE is an unconditional jump to ENDIF and a keyword for DO to jump to
@@ -494,15 +478,8 @@ function get_else_asm op:Op program:Program -> str :
     function_name
   in
 
-  "  jmp "
-  function_name     str.cat
-  "_ENDIF"          str.cat
-  related_endif.id  str.cat
-  "\n"              str.cat
-  function_name     str.cat
-  "_ELSE"           str.cat
-  op.id             str.cat
-  ":\n"             str.cat
+  f"  jmp {function_name}_ENDIF{related_endif.id}\n"
+  f"{function_name}_ELSE{op.id}:\n" str.cat
 end
 
 // ENDIF is just a keyword for DO, ELIF or ELSE to jump to
@@ -510,9 +487,10 @@ end
 // Return: Assembly
 function get_endif_asm op:Op -> str :
   op Op.func Func.name
-  "_ENDIF"      str.cat
-  op Op.id itoa str.cat
-  ":\n"         str.cat
+  op Op.id itoa
+  take op.id function_name in
+
+  f"{function_name}_ENDIF{op.id}:\n"
 end
 
 // Generate assembly for calling a function
@@ -588,6 +566,69 @@ function get_push_fn_asm function_name:str -> str :
   "\n  push rax\n"                          str.cat
 end
 
+// Generate Assembly for OpType.PUSH_FSTR
+// Params: Op
+// Return: Assembly
+function get_push_fstr_asm op:Op -> str :
+  op Op.token
+  dup parse_fstring_sections
+  dup cast(List) List.len
+  op Op.func Func.variables
+  "" str.copy
+  0
+  take
+    index
+    assembly
+    func_variables
+    fstring_sections.len
+    fstring_sections
+    token
+  in
+
+  while index fstring_sections.len < do
+    index fstring_sections cast(List) List.nth FStringSection.load
+    dup  FStringSection.type
+    swap FStringSection.value
+    take
+      section_value
+      section_type
+    in
+
+    // Append the variable to the string buffer
+    if section_type FStringSectionType.VARIABLE == do
+
+      // Generate PUSH_BIND operation for the variable
+      op Op.copy
+      section_value over Op.token Token->value
+      get_push_bind_asm
+      assembly swap str.cat assembly =
+
+    // FStringSectionType.LITERAL
+    else
+      // Literals are stored with the following format in the .data section
+      // <Func.name>_s<Op.id>_l<section_index>
+      "  mov rsi, "
+      op Op.func Func.name      str.cat
+      "_s"                      str.cat
+      op Op.id itoa             str.cat
+      "_l"                      str.cat
+      index itoa                str.cat
+      " ; Pointer to string\n"  str.cat
+      "  push rsi\n"            str.cat
+      assembly swap str.cat assembly =
+    endif
+
+    if index 0 > do
+      "str.cat" get_function_call_asm
+      assembly swap str.cat assembly =
+    endif
+
+    index 1 + index =
+  done
+
+  assembly
+end
+
 // Generate Assembly for OpType.PUSH_INT
 // Params: Op.token.value
 // Return: Assembly
@@ -633,10 +674,7 @@ function get_while_asm op:Op -> str :
   op Op.func Func.name
   take function_name op_id in
 
-  function_name
-  "_WHILE"  str.cat
-  op_id     str.cat
-  ":\n"     str.cat
+  f"{function_name}_WHILE{op_id}:\n"
 end
 
 // Return the assembly code for arithmetic Intrinsics (PLUS, MINUS, MUL)
@@ -1017,7 +1055,11 @@ function get_string_variables_for_data_section program:Program -> str :
     take op in
 
     // Add only strings to the assembly
-    if op Op.type OpType.PUSH_STR != do
+    if
+      op Op.type OpType.PUSH_FSTR !=
+      op Op.type OpType.PUSH_STR !=
+      &&
+    do
       index 1 + index =
       continue
     endif
@@ -1025,25 +1067,72 @@ function get_string_variables_for_data_section program:Program -> str :
     op    Op.id itoa
     op    Op.func Func.name
     op    Op.token
-    dup   Token.value format_escape_sequences_for_nasm
-    swap  Token.location
     take
-      token_location
-      string
+      token
       function_name
       op_id
     in
 
-    "  "
-    function_name str.cat
-    "_s"          str.cat
-    op_id         str.cat
-    " db "        str.cat
-    string        str.cat
-    ",0\n"        str.cat
+    if op Op.type OpType.PUSH_STR == do
+      token Token.value format_escape_sequences_for_nasm
+      token Token.location
+      take location string in
 
-    assembly_code swap str.cat
-    assembly_code =
+      "  "
+      function_name str.cat
+      "_s"          str.cat
+      op_id         str.cat
+      " db "        str.cat
+      string        str.cat
+      ",0\n"        str.cat
+
+      assembly_code swap str.cat
+      assembly_code =
+
+    elif op Op.type OpType.PUSH_FSTR == do
+      token parse_fstring_sections
+      dup cast(List) List.len
+      0
+      take
+        section_index
+        fstring_sections.len
+        fstring_sections
+      in
+
+      while section_index fstring_sections.len < do
+        section_index fstring_sections cast(List) List.nth FStringSection.load
+        dup  FStringSection.type
+        swap FStringSection.value format_escape_sequences_for_nasm
+        take
+          string
+          section_type
+        in
+
+        // Do not create static string for variables inside f-strings
+        if section_type FStringSectionType.VARIABLE == do
+          section_index 1 + section_index =
+          continue
+        endif
+
+        // <Func.name>_s<Op.id>_l<section_index>
+        "  "
+        function_name       str.cat
+        "_s"                str.cat
+        op_id               str.cat
+        "_l"                str.cat
+        section_index itoa  str.cat
+        " db "              str.cat
+        '"' char.to_string  str.cat
+        string              str.cat
+        '"' char.to_string  str.cat
+        ",0\n"              str.cat
+
+        assembly_code swap str.cat
+        assembly_code =
+        section_index 1 + section_index =
+      done
+    endif
+
     index 1 + index =
   done
   assembly_code

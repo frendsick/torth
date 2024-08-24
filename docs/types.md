@@ -98,6 +98,27 @@ A string is like a [pointer](#ptr---pointer) as it points to the address of the 
 
 **Note**: Modifying the string literals stored in the `.data` section could cause undefined behavior. It is recommended to create a copy of the string with the `str.copy` function from the [std](../lib/std.torth) and modifying the copied data instead of the string literal.
 
+#### F-strings
+
+F-strings are strings that can contain any number of variables enclosed by curly brackets `{}`. The variables must be of type `str`.
+
+F-strings use `str.cat` function from [std](../lib/std.torth) library under the hood to concatenate literal and variable sections of the f-string. Thus, f-strings cannot be used without including the [std](../lib/std.torth) library.
+
+F-strings do not support arbitrary expressions, only variables.
+
+Example:
+
+```pascal
+include "std"
+function main :
+  "frendsick" print_name
+end
+
+function print_name name:str :
+  f"Hello, {name}!\n" puts
+end
+```
+
 #### Escape sequence characters
 
 Torth supports the following escape sequence characters inside strings:

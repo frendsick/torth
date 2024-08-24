@@ -131,6 +131,8 @@ function get_tokens_op_type
     OpType.PUSH_BOOL return
   elif token_type "char"      streq  do
     OpType.PUSH_CHAR return
+  elif token_type "fstr"       streq  do
+    OpType.PUSH_FSTR return
   elif token_type "int"       streq  do
     OpType.PUSH_INT return
   elif token_type "str"       streq  do
