@@ -38,6 +38,7 @@ syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
 
 " String literals
 syntax match torthString /\v(^|\s)@<="([^"\\]|\\[nr\"'])*"(\s|$)@=/ contains=torthEscapes
+syntax match torthFString /\v(^|\s)@<=f"([^"\\]|\\[nr\"'])*"(\s|$)@=/hs=s+1 contains=torthEscapes
 
 " Character literals
 syntax match torthCharacter /\v(^|\s)@<='([^\\]|\\[nr\"'])'(\s|$)@=/ contains=torthEscapes
@@ -76,6 +77,7 @@ highlight default link torthTypeMethod Function
 highlight default link torthSetterMethod Function
 highlight default link torthCommentLine Comment
 highlight default link torthString String
+highlight default link torthFString String
 highlight default link torthCharacter Character
 highlight default link torthNull Number
 highlight default link torthNumber Number
