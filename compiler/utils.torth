@@ -355,13 +355,15 @@ function parse_fstring_sections token:Token -> List[FStringSection] :
 
     // Parsing literal
     if current_char '{' == do
-      position FStringSectionType.LITERAL buffer FStringSection.init
-      fstring_sections cast(List) List.append
+      if buffer str.len 0 > do
+        position FStringSectionType.LITERAL buffer FStringSection.init
+        fstring_sections cast(List) List.append
+        "" str.copy buffer =
+      endif
 
       True parsing_variable =
       index position =
       index 1 + index =
-      "" str.copy buffer =
       continue
     endif
 

@@ -14,6 +14,7 @@ class Func
     signature:Signature
     tokens:List[Token]
     variables:List[Variable]
+    is_used:bool
   -> Func :
     Func.size malloc cast(Func)
     take func in
@@ -22,7 +23,7 @@ class Func
     signature func Func->signature
     tokens    func Func->tokens
     variables func Func->variables
-    FALSE     func Func->is_used
+    is_used   func Func->is_used
     func
   end
 

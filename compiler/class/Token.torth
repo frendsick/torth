@@ -24,4 +24,11 @@ class Token
   method delete self:Token :
     Token.size self cast(ptr) munmap
   end
+
+  method copy self:Token -> Token :
+    self Token.location
+    self Token.type
+    self Token.value
+    Token.init
+  end
 endclass
