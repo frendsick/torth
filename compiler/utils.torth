@@ -300,6 +300,76 @@ function get_constant name:str constants:List[Constant] -> Constant :
   NULL cast(Constant) // Constant was not found
 end
 
+// Parse variables from fstring
+function parse_variables_from_fstring op:Op variables:List[Variable] -> List[Variable] :
+  op Op.token
+  dup Token.value
+  dup str.len
+  List.init cast(List[Variable])
+  0
+  take
+    index
+    fstr_variables
+    fstring.len
+    fstring
+    token
+  in
+
+  // Assert the parameter is a fstring
+  if token Token.type "fstr" streq not do
+    token
+    "parse_variables_from_fstring function expects 'fstr' but got '"
+    token Token.type    str.cat
+    "'"                 str.cat
+    "ASSERTION_ERROR" CompilerErrorWithToken
+  endif
+
+
+  while index fstring.len < do
+    "{" fstring index str+ str.find
+    take open_curly_bracket in
+
+    if open_curly_bracket -1 == do
+      break
+    endif
+    index open_curly_bracket + 1 + index =
+
+    "}" fstring index str+ str.find
+    take close_curly_bracket in
+
+    if close_curly_bracket -1 == do
+      break
+    endif
+
+    close_curly_bracket             // len
+    fstring index str+ cast(ptr)    // src
+    close_curly_bracket 1 + malloc  // dst
+    peek dst in
+    memcpy
+
+    dst cast(str)
+    take variable_name in
+
+    variable_name variables List.get_variable
+    take variable in
+
+    if variable cast(int) NULL == do
+      token
+      "Function '"
+      op Op.func Func.name              str.cat
+      "' does not contain variable '"   str.cat
+      variable_name                     str.cat
+      "'"                               str.cat
+      "ASSERTION_ERROR" CompilerErrorWithToken
+    endif
+
+    // Add variable to the list of variables used within f-string
+    variable fstr_variables cast(List) List.append
+  done
+
+  fstr_variables
+end
+
 // Perform a deep copy of the TypeStack
 // Params
 //    type_stack: LinkedList[TypeNode]

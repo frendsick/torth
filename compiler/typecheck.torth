@@ -217,6 +217,9 @@ function type_check_op
   elif op_type OpType.PUSH_FN == do
     functions type_stack token type_check_push_fn
     type_check_info return
+  elif op_type OpType.PUSH_FSTR == do
+    variables type_stack op type_check_push_fstr
+    type_check_info return
   elif op_type OpType.PUSH_INT == do
     type_stack token type_check_push_int
     type_check_info return
@@ -912,6 +915,46 @@ end
 // Return None
 function type_check_push_char token:Token type_stack:Node :
   token Token.location "char" TypeNode.init cast(ptr)
+  type_stack LinkedList.push
+end
+
+// Push a string to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_fstr op:Op type_stack:Node variables:List[Variable] :
+  variables op parse_variables_from_fstring
+  dup cast(List) List.len
+  op Op.token
+  0
+  take
+    index
+    token
+    fstr_variables.len
+    fstr_variables
+  in
+
+  while index fstr_variables.len < do
+    index fstr_variables cast(List) List.nth ptr.load cast(Variable)
+    take variable in
+
+    if variable Variable.type "str" streq not do
+      token
+      "F-string requires all used variables to be of type 'str'.\n"
+      "Variable '"              str.cat
+      variable Variable.name    str.cat
+      "' is of type '"          str.cat
+      variable Variable.type    str.cat
+      "'."                      str.cat
+      "VALUE_ERROR" CompilerErrorWithToken
+    endif
+
+    index 1 + index =
+  done
+
+  // Push the string to the stack
+  token Token.location "str" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
