@@ -258,6 +258,13 @@ function get_token_type token_value:str -> str :
     &&
   do
     "str" return
+  // F-string => f"Contains {variable}"
+  elif
+    token_value '"' "f" str.append str.startswith
+    token_value str.len 1 - token_value str.char_at '"' ==
+    &&
+  do
+    "fstr" return
   endif
   "word"
 end
@@ -337,9 +344,9 @@ function get_tokens_from_code
 
     // Double quote starts a string
     if
-      current_char '"' ==
-      word str.len 0 ==
-      &&
+      word "f" streq
+      word str.len 0 ==     ||
+      current_char '"' ==   &&
     do
       True parsing_string =
       current_char word str.append word =
