@@ -2,15 +2,14 @@
 include "std"
 const   PRIME_LIMIT     10001   end
 const   UPPER_BOUNDARY  114320  end
-memory  sieve UPPER_BOUNDARY    end
 
 // Params: prime, max_prime
 // Return: None
-function mark_multiples_to_sieve int int :
-  dup dup * // prime*prime
-  take curr orig max_prime in
+function mark_multiples_to_sieve sieve:ptr prime:int max_prime:int :
+  prime
+  prime prime *
+  take curr orig in
 
-  // for i in range(prime*prime, MAX_PRIME, prime)
   while curr max_prime < do
     // sieve[i] = True
     sieve curr ptr+ True swap store_byte
@@ -18,13 +17,20 @@ function mark_multiples_to_sieve int int :
   done
 end
 
-function get_nth_prime int -> int :
-  take prime_limit in
+function get_nth_prime prime_limit:int -> int :
   if    prime_limit 1 <= do 0 return
   elif  prime_limit 3 <= do prime_limit 1 - return
   endif
 
-  2 5 take index prime_count in // Primes 2 and 3 are already taken into account
+  2 // prime_count: Primes 2 and 3 are already taken into account
+  5 // index
+  UPPER_BOUNDARY malloc
+  take
+    sieve
+    index
+    prime_count
+  in
+
   while index UPPER_BOUNDARY < do
     // If current number is prime add it to prime_sum
     if sieve index ptr+ load_byte NULL == do
@@ -34,7 +40,7 @@ function get_nth_prime int -> int :
       if prime_count prime_limit == do index return endif
 
       // Mark all multiples of index to sieve
-      UPPER_BOUNDARY index mark_multiples_to_sieve
+      UPPER_BOUNDARY index sieve mark_multiples_to_sieve
     endif
 
     // All primes except for 2 and 3 are 6n±1
@@ -50,6 +56,6 @@ function get_nth_prime int -> int :
 end
 
 function main :
-  PRIME_LIMIT get_nth_prime
+  PRIME_LIMIT get_nth_prime // Answer: 104743
   PRIME_LIMIT putu ". prime is: " puts putu "\n" puts
 end
