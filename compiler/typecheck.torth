@@ -1,5 +1,6 @@
 include "std"
 include "compiler/utils"
+include "compiler/class/FStringSection"
 include "compiler/class/Op"
 include "compiler/class/Token"
 include "compiler/class/TypeCheckInfo"
@@ -918,26 +919,52 @@ function type_check_push_char token:Token type_stack:Node :
   type_stack LinkedList.push
 end
 
-// Push a string to the stack
+// Push a f-string to the stack
 // Params
-//    token: Token
+//    op: Op
 //    type_stack: LinkedList[TypeNode]
+//    variables: List[Variable]
 // Return None
 function type_check_push_fstr op:Op type_stack:Node variables:List[Variable] :
-  variables op parse_variables_from_fstring
-  dup cast(List) List.len
   op Op.token
+  dup parse_fstring_sections
+  dup cast(List) List.len
   0
   take
     index
+    fstring_sections.len
+    fstring_sections
     token
-    fstr_variables.len
-    fstr_variables
   in
 
-  while index fstr_variables.len < do
-    index fstr_variables cast(List) List.nth ptr.load cast(Variable)
+  while index fstring_sections.len < do
+    index fstring_sections cast(List) List.nth FStringSection.load
+    dup  FStringSection.type
+    swap FStringSection.value
+    take
+      section_value
+      section_type
+    in
+
+    // Literals are strings by definition
+    if section_type FStringSectionType.LITERAL == do
+      index 1 + index =
+      continue
+    endif
+
+    // Verify that the variables are of type 'str'
+    section_value variables List.get_variable
     take variable in
+
+    if variable cast(int) NULL == do
+      token
+      "Function '"
+      op Op.func Func.name          str.cat
+      "' does not have variable '"  str.cat
+      section_value                 str.cat
+      "'."                          str.cat
+      "NAME_ERROR" CompilerErrorWithToken
+    endif
 
     if variable Variable.type "str" streq not do
       token

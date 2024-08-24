@@ -4,6 +4,7 @@ include "argparser"
 include "typing"
 include "compiler/defs"
 include "compiler/error"
+include "compiler/class/FStringSection"
 include "compiler/class/Location"
 include "compiler/class/Signature"
 include "compiler/class/Token"
@@ -300,74 +301,92 @@ function get_constant name:str constants:List[Constant] -> Constant :
   NULL cast(Constant) // Constant was not found
 end
 
-// Parse variables from fstring
-function parse_variables_from_fstring op:Op variables:List[Variable] -> List[Variable] :
-  op Op.token
-  dup Token.value
+function parse_fstring_sections token:Token -> List[FStringSection] :
+  token Token.value 2 str+ // Skip `f"` from `f"String {variable}"`
   dup str.len
-  List.init cast(List[Variable])
+  List.init cast(List[FStringSection])
+  False
+  "" str.copy
+  0
   0
   take
     index
-    fstr_variables
+    position
+    buffer
+    parsing_variable
+    fstring_sections
     fstring.len
     fstring
-    token
   in
 
   // Assert the parameter is a fstring
   if token Token.type "fstr" streq not do
     token
-    "parse_variables_from_fstring function expects 'fstr' but got '"
+    "parse_fstring_sections function expects 'fstr' but got '"
     token Token.type    str.cat
     "'"                 str.cat
     "ASSERTION_ERROR" CompilerErrorWithToken
   endif
 
+  while index fstring.len 1 - < do
+    index fstring str.char_at
+    take current_char in
 
-  while index fstring.len < do
-    "{" fstring index str+ str.find
-    take open_curly_bracket in
+    // Parsing variable
+    if parsing_variable do
 
-    if open_curly_bracket -1 == do
-      break
-    endif
-    index open_curly_bracket + 1 + index =
+      // Variable is parsed
+      if current_char '}' == do
+        position FStringSectionType.VARIABLE buffer FStringSection.init
+        fstring_sections cast(List) List.append
 
-    "}" fstring index str+ str.find
-    take close_curly_bracket in
+        False parsing_variable =
+        index 1 + index =
+        index position =
+        "" str.copy buffer =
+        continue
+      endif
 
-    if close_curly_bracket -1 == do
-      break
-    endif
-
-    close_curly_bracket             // len
-    fstring index str+ cast(ptr)    // src
-    close_curly_bracket 1 + malloc  // dst
-    peek dst in
-    memcpy
-
-    dst cast(str)
-    take variable_name in
-
-    variable_name variables List.get_variable
-    take variable in
-
-    if variable cast(int) NULL == do
-      token
-      "Function '"
-      op Op.func Func.name              str.cat
-      "' does not contain variable '"   str.cat
-      variable_name                     str.cat
-      "'"                               str.cat
-      "ASSERTION_ERROR" CompilerErrorWithToken
+      // Still parsing variable
+      current_char buffer str.append buffer =
+      index 1 + index =
+      continue
     endif
 
-    // Add variable to the list of variables used within f-string
-    variable fstr_variables cast(List) List.append
+    // Parsing literal
+    if current_char '{' == do
+      position FStringSectionType.LITERAL buffer FStringSection.init
+      fstring_sections cast(List) List.append
+
+      True parsing_variable =
+      index position =
+      index 1 + index =
+      "" str.copy buffer =
+      continue
+    endif
+
+    // Still parsing literal
+    current_char buffer str.append buffer =
+    index 1 + index =
+    continue
   done
 
-  fstr_variables
+  // We cannot be parsing variable as the variable definition must be closed with '}'
+  if parsing_variable do
+    token
+    "Unmatched '{' in f-string.\n"
+    "The '{' character cannot be used literally within f-string definitions." str.cat
+    "Variables can be used within f-strings using curly brackets: {variable}." str.cat
+    "VALUE_ERROR" CompilerErrorWithToken
+  endif
+
+  // Append the final literal section if buffer is not empty
+  if buffer str.len 0 > do
+    position FStringSectionType.LITERAL buffer FStringSection.init
+    fstring_sections cast(List) List.append
+  endif
+
+  fstring_sections
 end
 
 // Perform a deep copy of the TypeStack
