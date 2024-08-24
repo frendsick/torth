@@ -56,7 +56,7 @@ syntax keyword torthBoolean TRUE FALSE
 syntax keyword torthTypeNames any bool char fn none int ptr str List Array LinkedList
 
 " Delimiters
-syntax match torthDelimiter /\v([:.()]|-\>)/  ": . ( ) ->"
+syntax match torthDelimiter /\v([:.()\[\]]|-\>)/  ": . ( ) [ ] ->"
 
 " Function
 syntax match torthFunctionName /\v(function\s+)@<=\S+/
