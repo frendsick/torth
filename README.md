@@ -20,7 +20,7 @@ Stack based programming language inspired by [Porth](https://gitlab.com/tsoding/
 
 ## Usage
 
-```pascal
+```sh
 $ cat hello.torth
 include "std"
 function main :
