@@ -105,9 +105,7 @@ function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
   endif
 
   if file_name cast(int) NULL == do
-    "Cannot include file '"
-    file_name str.cat
-    "'.\n"      str.cat
+    f"Cannot include file '{file_name}'."
     "INCLUDE_ERROR" CompilerError
   endif
 
@@ -129,7 +127,7 @@ function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
       file_with_path return
     else
       // Check if the file with .torth extension exists
-      file_with_path ".torth" str.cat
+      f"{file_with_path}.torth"
       file_with_path =
       if file_with_path file_exists do
         file_with_path return
@@ -138,8 +136,7 @@ function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
     include_index 1 + include_index =
   done
 
-  "File '" file_name       str.cat
-  "' cannot be included.\n" str.cat
+  f"File '{file_name}' cannot be included."
   "INCLUDE_ERROR" CompilerError ""
 end
 
@@ -687,25 +684,21 @@ function add_enums_to_constants tokens:List[Token] constants:List[Constant] :
 
     elif current_part 2 == do
       if token_value str.is_numeric not do
-        "'" token_value str.cat
-        "' is not a valid offset parameter for ENUM block\n" str.cat
+        f"'{token_value}' is not a valid offset parameter for ENUM block"
         "VALUE_ERROR" CompilerError
       endif
       token_value atoi enum_offset =
       current_part 1 + current_part =
 
     elif current_part 3 == do
-      "Token '" token_value str.cat
-      "' is used in the wrong context when defining '" str.cat
-      enum_name str.cat
-      "' Enum.\nCheck the syntax of the Enum definition.\n" str.cat
+      f"Token '{token_value}' is used in the wrong context when defining '{enum_name}' enum.\n"
+      "Check the syntax of the Enum definition." str.cat
       "VALUE_ERROR" CompilerError
 
     elif current_part 4 == do
       if constants token_value constant_exists do
-        "Constant '" token_value str.cat
-        "' is defined multiple times.\n" str.cat
-        "Constant names should be unique.\n" str.cat
+        f"Constant '{token_value}' is defined multiple times.\n"
+        "Constant names should be unique." str.cat
         "CONST_REDEFINITION" CompilerError
       endif
 
@@ -819,10 +812,10 @@ function parse_function
   in
 
   if token_index tokens cast(List) List.len >= do
-    "Program cannot end with '"
-    tokens cast(List) List.last Token.load
-    Token.value str.cat
-    "' token"   str.cat
+    tokens cast(List) List.last Token.load Token.value
+    take token_value in
+
+    f"Program cannot end with '{token_value}' token"
     "SYNTAX_ERROR" CompilerError
   endif
 
@@ -839,9 +832,7 @@ function parse_function
   // Class methods are called as <class_name>.<method>
   // Example: Dog.bark
   if class_name "" streq not do
-    class_name "."  str.cat
-    function_name   str.cat
-    function_name =
+    f"{class_name}.{function_name}" function_name =
   endif
 
   while token_index tokens cast(List) List.len < do
@@ -917,10 +908,7 @@ function parse_function
         // Empty param_name
         if param_colon 0 == do
           token
-          "Func '" function_name                      str.cat
-          "' has parameter '"                         str.cat
-          token_value                                 str.cat
-          "' which has a colon but the name is empty" str.cat
+          f"Func '{function_name}' has parameter '{token_value}' which has a colon but the name is empty"
           "SYNTAX_ERROR" CompilerErrorWithToken
         endif
 
@@ -999,9 +987,8 @@ function parse_function
 
   // Could not parse Func
   token
-  "Could not parse function '"
-  function_name               str.cat
-  "'\nUnexpected end of file" str.cat
+  f"Could not parse function '{function_name}'\n"
+  "Unexpected end of file" str.cat
   "SYNTAX_ERROR" CompilerErrorWithToken
   NULL cast(Func)
 end
@@ -1046,10 +1033,8 @@ function parse_fn_ptr_in_signature
     token_index tokens cast(List) List.nth Token.load Token.value
     take signature_token_value in
 
-    // Separate types in the signature by commas
-    type_acc
-    " " str.cat
-    signature_token_value str.cat
+    // Separate types in the signature by spaces
+    f"{type_acc} {signature_token_value}"
     type_acc =
 
     // Break when parsing is finished
@@ -1099,10 +1084,10 @@ function parse_class
   constants:List[Constant]
 :
   if token_index tokens cast(List) List.len >= do
-    "Class cannot end with '"
-    tokens cast(List) List.last Token.load
-    Token.value str.cat
-    "' token"   str.cat
+    tokens cast(List) List.last Token.load Token.value
+    take token_value in
+
+    f"Class cannot end with '{token_value}' token"
     "SYNTAX_ERROR" CompilerError
   endif
 
@@ -1153,9 +1138,7 @@ function parse_class
 
   // Could not parse class
   token
-  "Could not parse class '"
-  class_name                  str.cat
-  "'\nUnexpected end of file" str.cat
+  f"Could not parse class '{class_name}': Unexpected end of file"
   "SYNTAX_ERROR" CompilerErrorWithToken
 end
 
@@ -1178,9 +1161,9 @@ function parse_class_attribute
     ||
   do
     token
-    "Invalid instance attribute '" token_value                            str.cat
-    "'.\nThe attribute have a colon to separate its name and TokenType\n" str.cat
-    "Example => attribute_name:int"                                       str.cat
+    f"Invalid instance attribute '{token_value}'.\n"
+    "The attribute have a colon to separate its name and type." str.cat
+    "Example => attribute_name:int" str.cat
     "SYNTAX_ERROR" CompilerErrorWithToken
   endif
 
@@ -1211,7 +1194,7 @@ function get_object_size_function
   attribute_count:int
   endclass_token:Token
 -> Func :
-  class_name ".size" str.cat  // function_name
+  f"{class_name}.size"        // function_name
   List.init cast(List[Token]) // tokens
   List.init                   // return_types
   attribute_count ptr.size *  // class_size
@@ -1282,8 +1265,7 @@ function get_attribute_function_tokens
   attribute_token:Token
   is_getter:bool // Getter => True, Setter => False
 -> List[Token] :
-  attribute_offset itoa
-  " swap cast(int) + cast(ptr) " str.cat
+  f"{attribute_offset itoa} swap cast(int) + cast(ptr) "
   if is_getter
   do   "LOAD_QWORD "  str.cat
   else "STORE_QWORD " str.cat
@@ -1381,7 +1363,7 @@ function parse_function_variables func:Func :
         VarType.TAKE token Token->vartype
       else
         token
-        "Unknown VarType '" bind_variant str.cat "'\n" str.cat
+        f"Unknown VarType '{bind_variant}'"
         "VALUE_ERROR" CompilerErrorWithToken
       endif
 
