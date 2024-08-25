@@ -45,7 +45,9 @@ function get_included_files_from_file code_file:str included_files:List -> List 
 
   // Get the file contents without comments
   INCLUDE_PATHS code_file get_file_name_from_path read_file
-  List.init cast(List[Token]) code_file rot get_tokens_from_code
+  take code in
+
+  List.init 0 List.init cast(List[Token]) code_file code get_tokens_from_code drop
   False
   0
   take
@@ -156,7 +158,7 @@ function get_tokens_from_files included_files:List -> List[Token] :
     take code file_name in
 
     // Parse Tokens from the current file's code
-    tokens file_name code get_tokens_from_code
+    List.init 0 tokens file_name code get_tokens_from_code drop
     tokens =
     index 1 + index = // index++
   done
@@ -295,10 +297,13 @@ function get_tokens_from_code
   code:str
   file_name:str
   tokens:List[Token]
--> List[Token] :
+  char_index:int // The character index from the original file if not parsing code from the beginning of a file
+  newline_indexes:List // Character indexes for newline characters in the original file
+-> List[Token] List :
 
-  List.init   // newline_indexes
   "" str.copy // String buffer for word
+  False       // fstring_requires_cat
+  False       // parsing_fstring
   False       // parsing_string
   False       // parsing_comment
   10          // Line feed character
@@ -308,8 +313,9 @@ function get_tokens_from_code
     LF
     parsing_comment
     parsing_string
+    parsing_fstring
+    fstring_requires_cat
     word
-    newline_indexes
   in
 
   // Iterate over every character in code
@@ -342,14 +348,109 @@ function get_tokens_from_code
       continue
     endif
 
+    // Parse tokens between f-string curly brackets
+    if parsing_fstring do
+      if current_char '"' == do
+        False parsing_fstring =
+
+        if word '"' char.to_string str.startswith do
+          '"' word str.append word =
+        endif
+
+        // Add the 2 double quote characters to the index
+        newline_indexes index char_index + 2 + file_name tokens word append_word_to_tokens
+
+        if fstring_requires_cat do
+          // Add the 7 letters of "str.cat" to the index
+          newline_indexes index char_index + 7 + file_name tokens "str.cat" append_word_to_tokens
+        endif
+        False fstring_requires_cat =
+        "" str.copy word =
+        index 1 + index =
+        continue
+      endif
+
+      if current_char '{' == do
+        if word str.len 1 > do
+          '"' word str.append word =
+          // Add the 2 double quote characters to the index
+          newline_indexes index char_index + 2 + file_name tokens word append_word_to_tokens
+          '"' "" str.copy str.append word =
+
+          if fstring_requires_cat do
+            // Add the 7 letters of "str.cat" to the index
+            newline_indexes index char_index + 7 + file_name tokens "str.cat" append_word_to_tokens
+          endif
+          True fstring_requires_cat =
+        endif
+
+        // Parse the expression between curly brackets
+        index 1 + index =
+        code index str+ str.copy
+        take expr in
+
+        "}" expr str.find
+        take close_curly_index in
+        if
+          close_curly_index -1 ==
+          close_curly_index '"' char.to_string expr str.find >
+          ||
+        do
+          "Unmatched '{' in f-string.\n"
+          "The literal curly brackets or double quotes are not allowed within f-string expressions.\n"  str.cat
+          "Expressions can be used within f-strings using curly brackets: {expr}."                      str.cat
+          "VALUE_ERROR" CompilerError
+        endif
+
+        // Expressions cannot contain inner expressions
+        if close_curly_index "{" expr str.find > do
+          "Illegal character '{' in f-string expression\n"
+          "Recursive f-string expressions are not supported" str.cat
+          "VALUE_ERROR" CompilerError
+        endif
+
+        // The expression ends to the close curly bracket
+        NULL expr close_curly_index str+ cast(ptr) store_byte
+
+        newline_indexes index tokens file_name expr get_tokens_from_code
+        newline_indexes =
+        tokens =
+
+        index close_curly_index + 1 + index =
+
+        if fstring_requires_cat do
+          // Add the 7 letters of "str.cat" to the index
+          newline_indexes index char_index + 7 + file_name tokens "str.cat" append_word_to_tokens
+        endif
+        True fstring_requires_cat =
+
+        continue
+      endif
+
+      index 1 + index =
+      current_char word str.append word =
+      continue
+    endif
+
     // Double quote starts a string
     if
-      word "f" streq
-      word str.len 0 ==     ||
-      current_char '"' ==   &&
+      word str.len 0 ==
+      current_char '"' ==
+      &&
     do
       True parsing_string =
       current_char word str.append word =
+      index 1 + index =
+      continue
+    endif
+
+    if
+      word "f" streq
+      current_char '"' ==
+      &&
+    do
+      True parsing_fstring =
+      '"' "" str.copy str.append word =
       index 1 + index =
       continue
     endif
@@ -380,7 +481,7 @@ function get_tokens_from_code
       endif
 
       // Append found Token to list
-      newline_indexes index file_name tokens word append_word_to_tokens
+      newline_indexes index char_index + file_name tokens word append_word_to_tokens
       "" str.copy word =
     else
       // Append current character to word
@@ -391,9 +492,9 @@ function get_tokens_from_code
 
   // Append the last word if the file ended with a word
   if word str.len 0 > do
-    newline_indexes index file_name tokens word append_word_to_tokens
+    newline_indexes index char_index + file_name tokens word append_word_to_tokens
   endif
-  tokens
+  tokens newline_indexes
 end
 
 // Append a word to a List of Tokens
@@ -1187,7 +1288,7 @@ function get_attribute_function_tokens
   do   "LOAD_QWORD "  str.cat
   else "STORE_QWORD " str.cat
   endif
-  List.init
+  List.init cast(List[Token])
   attribute_token Token.location
   dup Location.file
   take
@@ -1197,7 +1298,8 @@ function get_attribute_function_tokens
     code
   in
 
-  tokens cast(List[Token]) file_name code get_tokens_from_code
+  // TODO: Derive char_index for get_tokens_from_code from Token.location
+  List.init 0 tokens file_name code get_tokens_from_code drop
   List.init cast(List[Token])
   0
   take
@@ -1205,8 +1307,8 @@ function get_attribute_function_tokens
     function_tokens
     tokens
   in
-  while index tokens List.len < do
-    index tokens List.nth ptr.load
+  while index tokens cast(List) List.len < do
+    index tokens cast(List) List.nth ptr.load
     take token in
 
     // Fix the Location to correspond with the attribute's Token

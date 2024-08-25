@@ -24,7 +24,6 @@ ENUM OpType.len 1 :
   OpType.PUSH_BOOL
   OpType.PUSH_CHAR
   OpType.PUSH_FN
-  OpType.PUSH_FSTR
   OpType.PUSH_INT
   OpType.PUSH_STR
   OpType.RETURN

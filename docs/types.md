@@ -100,7 +100,10 @@ A string is like a [pointer](#ptr---pointer) as it points to the address of the 
 
 #### F-strings
 
-F-strings are strings that can contain any number of expressions enclosed by curly brackets `{}`. The expressions can contain arbitrary Torth code, the limitation being the expression must return a `str` in the end.
+F-strings are strings that can contain expressions enclosed by curly brackets `{}`. Expression is piece of Torth code with some limitations:
+
+- Expression must return value of type `str`
+- Expression cannot contain double quotes or inner curly brackets
 
 F-strings use `str.cat` function from [std](../lib/std.torth) library under the hood to concatenate literal and variable sections of the f-string. Thus, f-strings cannot be used without including the [std](../lib/std.torth) library.
 

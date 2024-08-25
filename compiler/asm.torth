@@ -1,7 +1,6 @@
 include "std"
 include "typing"
 include "compiler/utils"
-include "compiler/class/FStringSection"
 include "compiler/class/Func"
 include "compiler/class/Location"
 include "compiler/class/Op"
@@ -92,9 +91,6 @@ function get_op_asm op:Op program:Program -> str :
     return
   elif op_type OpType.PUSH_FN == do
     "&" token_value str.removesuffix get_push_fn_asm
-    return
-  elif op_type OpType.PUSH_FSTR == do
-    op get_push_fstr_asm
     return
   elif op_type OpType.PUSH_INT == do
     token_value get_push_int_asm
@@ -566,69 +562,6 @@ function get_push_fn_asm function_name:str -> str :
   "\n  push rax\n"                          str.cat
 end
 
-// Generate Assembly for OpType.PUSH_FSTR
-// Params: Op
-// Return: Assembly
-function get_push_fstr_asm op:Op -> str :
-  op Op.token
-  dup parse_fstring_sections
-  dup cast(List) List.len
-  op Op.func Func.variables
-  "" str.copy
-  0
-  take
-    index
-    assembly
-    func_variables
-    fstring_sections.len
-    fstring_sections
-    token
-  in
-
-  while index fstring_sections.len < do
-    index fstring_sections cast(List) List.nth FStringSection.load
-    dup  FStringSection.type
-    swap FStringSection.value
-    take
-      section_value
-      section_type
-    in
-
-    // Append the variable to the string buffer
-    if section_type FStringSectionType.VARIABLE == do
-
-      // Generate PUSH_BIND operation for the variable
-      op Op.copy
-      section_value over Op.token Token->value
-      get_push_bind_asm
-      assembly swap str.cat assembly =
-
-    // FStringSectionType.LITERAL
-    else
-      // Literals are stored with the following format in the .data section
-      // <Func.name>_s<Op.id>_l<section_index>
-      "  mov rsi, "
-      op Op.func Func.name      str.cat
-      "_s"                      str.cat
-      op Op.id itoa             str.cat
-      "_l"                      str.cat
-      index itoa                str.cat
-      " ; Pointer to string\n"  str.cat
-      "  push rsi\n"            str.cat
-      assembly swap str.cat assembly =
-    endif
-
-    if index 0 > do
-      "str.cat" get_function_call_asm
-      assembly swap str.cat assembly =
-    endif
-
-    index 1 + index =
-  done
-
-  assembly
-end
-
 // Generate Assembly for OpType.PUSH_INT
 // Params: Op.token.value
 // Return: Assembly
@@ -1055,11 +988,7 @@ function get_string_variables_for_data_section program:Program -> str :
     take op in
 
     // Add only strings to the assembly
-    if
-      op Op.type OpType.PUSH_FSTR !=
-      op Op.type OpType.PUSH_STR !=
-      &&
-    do
+    if op Op.type OpType.PUSH_STR != do
       index 1 + index =
       continue
     endif
@@ -1073,65 +1002,20 @@ function get_string_variables_for_data_section program:Program -> str :
       op_id
     in
 
-    if op Op.type OpType.PUSH_STR == do
-      token Token.value format_escape_sequences_for_nasm
-      token Token.location
-      take location string in
+    token Token.value format_escape_sequences_for_nasm
+    token Token.location
+    take location string in
 
-      "  "
-      function_name str.cat
-      "_s"          str.cat
-      op_id         str.cat
-      " db "        str.cat
-      string        str.cat
-      ",0\n"        str.cat
+    "  "
+    function_name str.cat
+    "_s"          str.cat
+    op_id         str.cat
+    " db "        str.cat
+    string        str.cat
+    ",0\n"        str.cat
 
-      assembly_code swap str.cat
-      assembly_code =
-
-    elif op Op.type OpType.PUSH_FSTR == do
-      token parse_fstring_sections
-      dup cast(List) List.len
-      0
-      take
-        section_index
-        fstring_sections.len
-        fstring_sections
-      in
-
-      while section_index fstring_sections.len < do
-        section_index fstring_sections cast(List) List.nth FStringSection.load
-        dup  FStringSection.type
-        swap FStringSection.value format_escape_sequences_for_nasm
-        take
-          string
-          section_type
-        in
-
-        // Do not create static string for variables inside f-strings
-        if section_type FStringSectionType.VARIABLE == do
-          section_index 1 + section_index =
-          continue
-        endif
-
-        // <Func.name>_s<Op.id>_l<section_index>
-        "  "
-        function_name       str.cat
-        "_s"                str.cat
-        op_id               str.cat
-        "_l"                str.cat
-        section_index itoa  str.cat
-        " db "              str.cat
-        '"' char.to_string  str.cat
-        string              str.cat
-        '"' char.to_string  str.cat
-        ",0\n"              str.cat
-
-        assembly_code swap str.cat
-        assembly_code =
-        section_index 1 + section_index =
-      done
-    endif
+    assembly_code swap str.cat
+    assembly_code =
 
     index 1 + index =
   done

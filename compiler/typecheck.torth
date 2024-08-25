@@ -1,6 +1,5 @@
 include "std"
 include "compiler/utils"
-include "compiler/class/FStringSection"
 include "compiler/class/Op"
 include "compiler/class/Token"
 include "compiler/class/TypeCheckInfo"
@@ -217,9 +216,6 @@ function type_check_op
     type_check_info return
   elif op_type OpType.PUSH_FN == do
     functions type_stack token type_check_push_fn
-    type_check_info return
-  elif op_type OpType.PUSH_FSTR == do
-    variables functions type_stack op type_check_push_fstr
     type_check_info return
   elif op_type OpType.PUSH_INT == do
     type_stack token type_check_push_int
@@ -916,88 +912,6 @@ end
 // Return None
 function type_check_push_char token:Token type_stack:Node :
   token Token.location "char" TypeNode.init cast(ptr)
-  type_stack LinkedList.push
-end
-
-// Push a f-string to the stack
-// Params
-//    op: Op
-//    type_stack: LinkedList[TypeNode]
-//    functions: List[Func]
-//    variables: List[Variable]
-// Return None
-function type_check_push_fstr
-  op:Op
-  type_stack:Node
-  functions:List[Func]
-  variables:List[Variable]
-:
-  op Op.token
-  dup parse_fstring_sections
-  dup cast(List) List.len
-  0
-  take
-    index
-    fstring_sections.len
-    fstring_sections
-    token
-  in
-
-  if functions "str.cat" function_exists not do
-    token
-    "Function 'str.cat' is not defined.\n"
-    "F-strings require 'str.cat' function from 'std' library to work.\n"    str.cat
-    "Try including the 'std' library:\n"                                    str.cat
-    "`include "                                                             str.cat
-    '"' swap str.append "std" str.cat '"' swap str.append "`"               str.cat
-    "NAME_ERROR" CompilerErrorWithToken
-  endif
-
-  while index fstring_sections.len < do
-    index fstring_sections cast(List) List.nth FStringSection.load
-    dup  FStringSection.type
-    swap FStringSection.value
-    take
-      section_value
-      section_type
-    in
-
-    // Literals are strings by definition
-    if section_type FStringSectionType.LITERAL == do
-      index 1 + index =
-      continue
-    endif
-
-    // Verify that the variables are of type 'str'
-    section_value variables List.get_variable
-    take variable in
-
-    if variable cast(int) NULL == do
-      token
-      "Function '"
-      op Op.func Func.name          str.cat
-      "' does not have variable '"  str.cat
-      section_value                 str.cat
-      "'."                          str.cat
-      "NAME_ERROR" CompilerErrorWithToken
-    endif
-
-    if variable Variable.type "str" streq not do
-      token
-      "F-string requires all used variables to be of type 'str'.\n"
-      "Variable '"              str.cat
-      variable Variable.name    str.cat
-      "' is of type '"          str.cat
-      variable Variable.type    str.cat
-      "'."                      str.cat
-      "VALUE_ERROR" CompilerErrorWithToken
-    endif
-
-    index 1 + index =
-  done
-
-  // Push the string to the stack
-  token Token.location "str" TypeNode.init cast(ptr)
   type_stack LinkedList.push
 end
 
