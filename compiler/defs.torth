@@ -1,10 +1,10 @@
 include "std"
 
 // Escaped color codes
-const Color.HEADER "\e[95m" end
-const Color.ERROR "\e[91m" end
+const Color.HEADER  "\e[95m" end
+const Color.ERROR   "\e[91m" end
 const Color.WARNING "\e[93m" end
-const Color.RESET "\e[0m" end
+const Color.RESET   "\e[0m"  end
 
 // OpType
 ENUM OpType.len 1 :
