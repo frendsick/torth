@@ -394,11 +394,9 @@ end
 // Params: jump_destination (STR)
 // Return: Assembly
 function generate_do_asm jump_destination:str -> str :
-  "  pop rax\n"
-  "  test rax, rax\n" str.cat
-  "  jz "             str.cat
-  jump_destination    str.cat
-  "\n"                str.cat
+  f"  pop rax
+  test rax, rax
+  jz {jump_destination}\n"
 end
 
 // DONE is an unconditional jump to current loop's WHILE
@@ -482,9 +480,7 @@ end
 // Params: Func's name
 // Return: Assembly
 function get_function_call_asm function_name:str -> str :
-  "  call "
-  function_name get_valid_label_for_nasm str.cat
-  "\n" str.cat
+  f"  call {function_name get_valid_label_for_nasm}\n"
 end
 
 // Generate Assembly for OpType.PEEK
@@ -500,8 +496,8 @@ end
 // Return: Assembly
 function get_peek_bind_asm op:Op -> str :
   // Push copy of the Nth value from the PEEK block
-  "  push QWORD [r15]\n"
-  "  add r15, 8\n" str.cat
+  "  push QWORD [r15]
+  add r15, 8\n"
 
   // Push the copy of the value to the return stack
   op set_local_variable str.cat
@@ -591,9 +587,8 @@ end
 // Params: operand
 // Return: Assembly
 function get_arithmetic_asm operand:str -> str :
-  "  pop rax\n  "
-  operand           str.cat
-  " [rsp], rax\n  " str.cat
+  f"  pop rax
+  {operand} [rsp], rax\n"
 end
 
 // Generate assembly code for different comparison Intrinsics, like EQ and GE.
@@ -601,50 +596,49 @@ end
 // Params: cmov_operand
 // Return: Assembly
 function get_comparison_asm cmov_operand:str -> str :
-  "  pop rax\n"
-  "  mov rcx, 0\n"              str.cat
-  "  mov rdx, 1\n"              str.cat
-  "  cmp QWORD [rsp], rax\n  "  str.cat
-  cmov_operand                  str.cat
-  " rcx, rdx\n"                 str.cat
-  "  mov QWORD [rsp], rcx\n"    str.cat
+  f"  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  {cmov_operand} rcx, rdx
+  mov QWORD [rsp], rcx\n"
 end
 
 // AND performs bitwise-AND operation to two integers
 // Params: None
 // Return: Assembly
 function get_and_asm -> str :
-  "  pop rax\n"
-  "  and [rsp], rax\n" str.cat
+  "  pop rax
+  and [rsp], rax\n"
 end
 
 // ARGC pushes the argument count to the stack
 // Params: None
 // Return: Assembly
 function get_argc_asm -> str :
-  "  mov rax, [args_ptr]\n"
-  "  mov rax, [rax]\n"  str.cat
-  "  push rax\n"        str.cat
+  "  mov rax, [args_ptr]
+  mov rax, [rax]
+  push rax\n"
 end
 
 // ARGV pushes the pointer to argument array to the stack
 // Params: None
 // Return: Assembly
 function get_argv_asm -> str :
-  "  mov rax, [args_ptr]\n"
-  "  add rax, 8\n"  str.cat
-  "  push rax\n"    str.cat
+  "  mov rax, [args_ptr]
+  add rax, 8
+  push rax\n"
 end
 
 // DIV pops two integers from the stack and pushes their quotient
 // Params: None
 // Return: Assembly
 function get_div_asm -> str :
-  "  xor edx, edx ; Do not use floating point arithmetic\n"
-  "  pop rbx\n"               str.cat
-  "  pop rax\n"               str.cat
-  "  div rbx\n"               str.cat
-  "  push rax ; Quotient\n"   str.cat
+  "  xor edx, edx ; Do not use floating point arithmetic
+  pop rbx
+  pop rax
+  div rbx
+  push rax ; Quotient\n"
 end
 
 // DROP removes one item from the stack
@@ -665,17 +659,17 @@ end
 // Params: None
 // Return: Assembly
 function get_envp_asm -> str :
-  "  mov rax, [args_ptr]\n"
-  "  add rax, 24\n" str.cat
-  "  push rax\n"    str.cat
+  "  mov rax, [args_ptr]
+  add rax, 24
+  push rax\n"
 end
 
 // EXEC pops and executes function pointer from the stack
 // Params: None
 // Return: Assembly
 function get_exec_asm -> str :
-  "  pop rax\n"
-  "  call QWORD rax\n" str.cat
+  "  pop rax
+  call QWORD rax\n"
 end
 
 // EQ takes two elements from the stack and checks if they are equal.
@@ -738,12 +732,10 @@ function get_load_asm str Token -> str :
   take register in
 
   // Generate assembly
-  "  pop rax\n"
-  "  xor rbx, rbx\n"  str.cat
-  "  mov "            str.cat
-  register            str.cat
-  ", [rax]\n"         str.cat
-  "  push rbx\n"      str.cat
+  f"  pop rax
+  xor rbx, rbx
+  mov {register}, [rax]
+  push rbx\n"
 end
 
 // Pop two integers from the stack and decrement the second value from the top one
@@ -755,20 +747,20 @@ end
 // Params: None
 // Return: Assembly
 function get_mod_asm -> str :
-  "  xor edx, edx ; Do not use floating point arithmetic\n"
-  "  pop rbx\n"               str.cat
-  "  pop rax\n"               str.cat
-  "  div rbx\n"               str.cat
-  "  push rdx ; Remainder\n"  str.cat
+  "  xor edx, edx ; Do not use floating point arithmetic
+  pop rbx
+  pop rax
+  div rbx
+  push rdx ; Remainder\n"
 end
 
 // Pop two integers from the stack and push the product of the two values
 // Params: None
 // Return: Assembly
 function get_mul_asm -> str :
-  "  pop rax\n"
-  "  mul QWORD [rsp]\n"           str.cat
-  "  mov QWORD [rsp], rax ; Product\n" str.cat
+  "  pop rax
+  mul QWORD [rsp]
+  mov QWORD [rsp], rax ; Product\n"
 end
 
 // NE takes two items from the stack and checks if they are not equal.
@@ -783,8 +775,8 @@ end
 // Params: None
 // Return: Assembly
 function get_or_asm -> str :
-  "  pop rax\n"
-  "  or [rsp], rax\n" str.cat
+  "  pop rax
+  or [rsp], rax\n"
 end
 
 // OVER Intrinsic pushes a copy of the second element of the stack
@@ -805,10 +797,10 @@ end
 // Params: None
 // Return: Assembly
 function get_rot_asm -> str :
-  "  pop rax\n"
-  "  xchg rax, QWORD [rsp]\n"   str.cat
-  "  xchg rax, QWORD [rsp+8]\n" str.cat
-  "  push rax\n"                str.cat
+  "  pop rax
+  xchg rax, QWORD [rsp]
+  xchg rax, QWORD [rsp+8]
+  push rax\n"
 end
 
 // SHL Intrinsic shifts the bits of the second argument to the left
@@ -816,8 +808,8 @@ end
 // Params: None
 // Return: Assembly
 function get_shl_asm -> str :
-  "  pop rcx\n"
-  "  shl QWORD [rsp], cl\n" str.cat
+  "  pop rcx
+  shl QWORD [rsp], cl\n"
 end
 
 // SHR Intrinsic shifts the bits of the second argument to the right
@@ -825,8 +817,8 @@ end
 // Params: None
 // Return: Assembly
 function get_shr_asm -> str :
-  "  pop rcx\n"
-  "  shr QWORD [rsp], cl\n" str.cat
+  "  pop rcx
+  shr QWORD [rsp], cl\n"
 end
 
 // Params: store_variant, Token
@@ -849,20 +841,18 @@ function get_store_asm str Token -> str :
   take register in
 
   // Generate assembly
-  "  pop rax\n"
-  "  pop rbx\n"   str.cat
-  "  mov [rax], " str.cat
-  register        str.cat
-  "\n"            str.cat
+  f"  pop rax
+  pop rbx
+  mov [rax], {register}\n"
 end
 
 // Swap the top two items in the stack
 // Params: None
 // Return: Assembly
 function get_swap_asm -> str :
-  "  pop rax\n"
-  "  push QWORD [rsp]\n"        str.cat
-  "  mov QWORD [rsp+8], rax\n"  str.cat
+  "  pop rax
+  push QWORD [rsp]
+  mov QWORD [rsp+8], rax\n"
 end
 
 // SYSCALL intrinsic variants call a Linux syscall.
@@ -885,18 +875,17 @@ function get_syscall_asm str -> str :
 
   // Generate assembly code
   "  pop rax ; syscall\n"
+
   while index syscall_args_count < do
-    "  pop "                                    str.cat
-    index argument_registers List.nth str.load  str.cat
-    " ; "                                       str.cat
+    index argument_registers List.nth str.load
+    take argument_register in
 
     index 1 + index = // index++
-    index itoa                                  str.cat
-    ". arg\n"                                   str.cat
+    f"  pop {argument_register} ; {index itoa}. arg\n" str.cat
   done
 
-  "  syscall\n"                                 str.cat
-  "  push rax ; return code\n"                  str.cat
+  "  syscall
+  push rax ; return code\n" str.cat
 end
 
 function get_syscall_argument_registers -> List :
@@ -970,28 +959,17 @@ function get_string_variables_for_data_section program:Program -> str :
       continue
     endif
 
-    op    Op.id itoa
-    op    Op.func Func.name
-    op    Op.token
+    op Op.id itoa
+    op Op.func Func.name
+    op Op.token Token.value format_escape_sequences_for_nasm
     take
-      token
+      string
       function_name
       op_id
     in
 
-    token Token.value format_escape_sequences_for_nasm
-    token Token.location
-    take location string in
-
-    "  "
-    function_name str.cat
-    "_s"          str.cat
-    op_id         str.cat
-    " db "        str.cat
-    string        str.cat
-    ",0\n"        str.cat
-
-    assembly_code swap str.cat
+    assembly_code
+    f"  {function_name}_s{op_id} db {string},0\n" str.cat
     assembly_code =
 
     index 1 + index =
@@ -1043,9 +1021,7 @@ function get_nth_from_return_stack_asm N:int -> str :
     "ValueError" CompilerError
   endif
 
-  "  push QWORD [r14-"
-  N 8 * 8 + itoa        str.cat
-  "]\n"                 str.cat
+  f"  push QWORD [r14-{N 8 * 8 + itoa}]\n"
 end
 
 // Pop a value from data stack and store it to a variable in the return stack
@@ -1055,10 +1031,8 @@ function set_nth_from_return_stack_asm N:int -> str :
     "ValueError" CompilerError
   endif
 
-  "  pop rbx\n"
-  "  mov [r14-"     str.cat
-  N 8 * 8 + itoa    str.cat
-  "], rbx\n"        str.cat
+  f"  pop rbx
+  mov [r14-{N 8 * 8 + itoa}], rbx\n"
 end
 
 // Return the beginning of the assembly code of each Program
@@ -1071,26 +1045,17 @@ function get_function_start_asm func:Func -> str :
 
   // MAIN Func differs from the others
   if function_name str.copy str.upper "MAIN" streq do
-    "global _start\n"
-    "_start:\n"                                               str.cat
-    "  mov [args_ptr], rsp   ; Pointer to argc\n"             str.cat
-    "  mov r14, return_stack\n"                               str.cat
-    "  add r14, "                                             str.cat
-    variable_count 8 * itoa                                   str.cat
-    "\n"                                                      str.cat
-    return
+    f"global _start
+_start:
+  mov [args_ptr], rsp   ; Pointer to argc
+  mov r14, return_stack
+  add r14, {variable_count 8 * itoa}\n" return
   endif
 
-  function_name get_valid_label_for_nasm
-  ":\n;; ["                                                   str.cat
-  function_name                                               str.cat
-  "] Save the return address to return stack\n"               str.cat
-  "  add r14, "                                               str.cat
-  variable_count 8 * 8 + itoa                                 str.cat
-  " ; "                                                       str.cat
-  variable_count itoa                                         str.cat
-  " local variables\n"                                        str.cat
-  "  pop QWORD [r14]     ; Save return address from stack\n"  str.cat
+  f"{function_name get_valid_label_for_nasm}:
+;; [{function_name}] Save the return address to return stack
+  add r14, {variable_count 8 * 8 + itoa} ; {variable_count itoa} local variables
+  pop QWORD [r14] ; Save return address from stack\n"
 end
 
 // Return the end of the assembly code of each Program
@@ -1103,23 +1068,16 @@ function get_function_end_asm func:Func -> str :
 
   // MAIN Func differs from the others
   if function_name str.copy str.upper "MAIN" streq do
-    ";; -- exit syscall\n"
-    "  mov rax, sys_exit\n" str.cat
-    "  pop rdi\n"           str.cat
-    "  syscall\n\n"         str.cat
-    return
+    ";; -- exit syscall
+  mov rax, sys_exit
+  pop rdi
+  syscall\n\n" return
   endif
 
-  ";; ["
-  function_name                                               str.cat
-  "] Return to the address found in return stack\n"           str.cat
-  "  push QWORD [r14]    ; Get function's return address\n"   str.cat
-  "  sub r14, "                                               str.cat
-  variable_count 8 * 8 + itoa                                 str.cat
-  " ; "                                                       str.cat
-  variable_count itoa                                         str.cat
-  " local variables\n"                                        str.cat
-  "  ret\n\n"                                                 str.cat
+  f";; [{function_name}] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, {variable_count 8 * 8 + itoa} ; {variable_count itoa} local variables
+  ret\n\n"
 end
 
 function append_programs_assembly_code file_name:str program:Program :
