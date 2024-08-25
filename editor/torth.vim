@@ -42,10 +42,10 @@ syntax region torthFString start=/\v(^|\s)@<=f"/hs=s+1 end=/"/ contains=torthEsc
 syntax region torthFStringExpression display contained start=/{/ end=/}/
 
 " Character literals
-syntax match torthCharacter /\v(^|\s)@<='([^\\]|\\[nr\"'])'(\s|$)@=/ contains=torthEscapes
+syntax match torthCharacter /\v(^|\s)@<='([^\\]|\\[nrt])'(\s|$)@=/ contains=torthEscapes
 
 " Escape literals \n, \r, ....
-syntax match torthEscapes display contained /\\[nr\"']/
+syntax match torthEscapes display contained /\\[nrt]/
 
 " Number literals
 syntax match torthNumber /\v(^|\s)@<=-?\d+(\s|$)@=/ " Token with just numbers
