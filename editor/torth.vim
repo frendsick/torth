@@ -34,7 +34,7 @@ syntax keyword torthRepeat BREAK CONTINUE DONE WHILE
 syntax keyword torthTodos TODO NOTE
 
 " Comments
-syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
+syntax region torthCommentLine start="\v(^|\s)@<=//" end="$" contains=torthTodos
 
 " String literals
 syntax match torthString /\v(^|\s)@<="([^"\\]|\\[nr\"'])*"(\s|$)@=/ contains=torthEscapes
