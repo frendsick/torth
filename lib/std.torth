@@ -75,7 +75,7 @@ function exit int : SYS_exit syscall1 drop end
 // Print a string to a file descriptor
 // Params: int fd, char *buf
 // Return: None
-function fputs int str : swap dup str.len swap rot write drop end
+function fputs fd:int buf:str : buf str.len buf fd write drop end
 
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
