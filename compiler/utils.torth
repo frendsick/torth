@@ -25,23 +25,6 @@ function parse_command_line_arguments -> Argparser :
   parser
 end
 
-// Get the code_file argument and check if it has .torth extension
-// Params
-//    args: Argparser
-// Return
-//    code_file: str
-function get_code_file_name args:Argparser -> str :
-  "code_file" args Argparser.get_argument
-  take code_file in
-
-  if code_file ".torth" str.endswith not do
-    f"File '{code_file}' has unsupported file extension\n"
-    "Only .torth files are supported" str.cat
-    "UNSUPPORTED_FILE_EXTENSION" CompilerError
-  endif
-  code_file
-end
-
 // Print a message to stdout if -v command line flag is present
 // Params
 //    message: str

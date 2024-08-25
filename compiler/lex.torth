@@ -136,7 +136,7 @@ function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
     include_index 1 + include_index =
   done
 
-  f"File '{file_name}' cannot be included."
+  f"File '{file_name}' does not exist"
   "INCLUDE_ERROR" CompilerError ""
 end
 

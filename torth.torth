@@ -15,7 +15,7 @@ function main :
   take args in
 
   // Get the code file name from command line
-  args get_code_file_name
+  "code_file" args Argparser.get_argument
   take code_file in
 
   // Get a list of included files for the program
