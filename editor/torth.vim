@@ -29,7 +29,7 @@ syntax keyword torthConditional IF ELIF ELSE ENDIF DO
 syntax keyword torthFunction CLASS END ENDCLASS FUNCTION METHOD RETURN
 syntax keyword torthInclude INCLUDE
 syntax keyword torthIntrinsic AND ARGC ARGV DIV DROP DUP ENVP EXEC EQ GE GT LE LOAD_BYTE LOAD_WORD LOAD_DWORD LOAD_QWORD LT MINUS MOD MUL NE OR OVER PLUS ROT SHL SHR STORE_BYTE STORE_WORD STORE_DWORD STORE_QWORD SWAP SYSCALL0 SYSCALL1 SYSCALL2 SYSCALL3 SYSCALL4 SYSCALL5 SYSCALL6
-syntax keyword torthOperators AND OR NOT + - * / = > < == != >= <= >> <<
+syntax keyword torthOperators AND OR NOT == != >= <= >> <<
 syntax keyword torthRepeat BREAK CONTINUE DONE WHILE
 syntax keyword torthTodos TODO NOTE
 
@@ -38,8 +38,8 @@ syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
 
 " String literals
 syntax match torthString /\v(^|\s)@<="([^"\\]|\\[nr\"'])*"(\s|$)@=/ contains=torthEscapes
-syntax match torthFString /\v(^|\s)@<=f"([^"\\]|\\[nr\"'])*"(\s|$)@=/hs=s+1 contains=torthEscapes,torthFStringVariable
-syntax match torthFStringVariable display contained /\v\{[^}]*\}/
+syntax match torthFString /\v(^|\s)@<=f"([^"\\]|\\[nr\"'])*"(\s|$)@=/hs=s+1 contains=torthEscapes,torthFStringExpression
+syntax region torthFStringExpression display contained start=/{/ end=/}/
 
 " Character literals
 syntax match torthCharacter /\v(^|\s)@<='([^\\]|\\[nr\"'])'(\s|$)@=/ contains=torthEscapes
@@ -48,7 +48,8 @@ syntax match torthCharacter /\v(^|\s)@<='([^\\]|\\[nr\"'])'(\s|$)@=/ contains=to
 syntax match torthEscapes display contained /\\[nr\"']/
 
 " Number literals
-syntax match torthNumber /\v(^|\s)@<=\d+(\s|$)@=/ " Token with just numbers
+syntax match torthNumber /\v(^|\s)@<=-?\d+(\s|$)@=/ " Token with just numbers
+syntax match torthHex /\v(^|\s)@<=-?0x\d+(\s|$)@=/ " Token with just numbers
 syntax keyword torthNull  NULL
 syntax keyword torthBoolean TRUE FALSE
 
@@ -56,7 +57,7 @@ syntax keyword torthBoolean TRUE FALSE
 syntax keyword torthTypeNames any bool char fn none int ptr str List Array LinkedList
 
 " Delimiters
-syntax match torthDelimiter /\v([:.()\[\]]|-\>)/  ": . ( ) [ ] ->"
+syntax match torthDelimiter /\v([:.()\[\]]|-\>|\+|\-(\D|$)@=|\*|\/|\=|\>|\<)/  ": . ( ) [ ] -> + - * / = > <"
 
 " Function
 syntax match torthFunctionName /\v(function\s+)@<=\S+/
@@ -82,6 +83,7 @@ highlight default link torthFString String
 highlight default link torthCharacter Character
 highlight default link torthNull Number
 highlight default link torthNumber Number
+highlight default link torthHex Number
 highlight default link torthBoolean Number
 highlight default link torthTypeNames Type
 highlight default link torthEscapes SpecialChar

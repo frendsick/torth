@@ -113,10 +113,15 @@ Example:
 include "std"
 function main :
   "frendsick" print_name
+  34 35 print_nice
 end
 
 function print_name name:str :
   f"Hello, {name}!\n" puts
+end
+
+function print_nice a:int b:int :
+  f"{a b + itoa}, nice"
 end
 ```
 
