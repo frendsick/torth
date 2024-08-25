@@ -187,13 +187,13 @@ end
 function get_op_comment_asm op:Op -> str :
   op Op.type OpType.repr
   op Op.token Token.value
-  take token_value op_type_str in
+  op Op.token Token.location
+  take loc token_value op_type_str in
 
-  // Comment format as Python3 f-string:
-  // f";; [{function_name}] {op_type_str} | File: {file}, Row: {row}, Col: {col}\n"
-  ";; ["
-  op Op.func Func.name                  str.cat
-  "] "                                  str.cat
+  // Comment format as f-string:
+  // f";; [{function_name}] {op_kind} | File: {file}, Row: {row}, Col: {col}\n"
+
+  f";; [{op Op.func Func.name}] "
 
   if
     op_type_str "FUNCTION_CALL" streq
@@ -202,25 +202,13 @@ function get_op_comment_asm op:Op -> str :
     op_type_str "POP_BIND" streq    ||
     op_type_str "PEEK_BIND" streq   ||
   do
-    op_type_str                         str.cat
-    " "                                 str.cat
-    token_value                         str.cat
+    f"{op_type_str} {token_value}" str.cat
   else
-    op_type_str                         str.cat
+    op_type_str str.cat
   endif
 
-  // Add Op.token Location information
-  " | File: "                           str.cat
-  op Op.token Token.location
-  take token_loc in
-
   // Add file, row and column information
-  token_loc Location.file         str.cat
-  ", Row: "                       str.cat
-  token_loc Location.row itoa     str.cat
-  ", Column: "                    str.cat
-  token_loc Location.column itoa  str.cat
-  "\n"                            str.cat
+  f" | File: {loc Location.file}, Row: {loc Location.row itoa}, Column: {loc Location.column itoa}\n" str.cat
 end
 
 // Assign a value to Variable
