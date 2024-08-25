@@ -1,0 +1,43 @@
+// Problem 14: Longest Collatz Sequence
+// n -> n/2 (n is even)
+// n -> 3n + 1 (n is odd)
+// Which starting number, under one million, produces the longest chain?
+include "std"
+
+const MAX_NUMBER 1000000 end
+
+function next n:int -> int :
+    if n 2 % 0 ==
+    do   n 2 /
+    else n 3 * 1 +
+    endif
+end
+
+function collatz_sequence_length n:int -> int :
+    0 while n 1 > do
+        n next n =
+        1 +
+    done
+end
+
+function main :
+    1 1 1
+    take
+        index
+        longest_sequence_length
+        longest_sequence_index
+    in
+
+    while index MAX_NUMBER < do
+        index collatz_sequence_length
+        take sequence_length in
+
+        if sequence_length longest_sequence_length > do
+            index           longest_sequence_index =
+            sequence_length longest_sequence_length =
+        endif
+        index 1 + index =
+    done
+
+    f"Starting number {longest_sequence_index itoa} produces the longest Collatz sequence chain under {MAX_NUMBER itoa}\n" puts
+end
