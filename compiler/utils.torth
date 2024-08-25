@@ -60,16 +60,16 @@ end
 // Params: file_name
 // Return: None
 function run_program str :
-  "EXEC" exec_forked
+  execute_program& exec_forked
 end
 
 // Execute a certain kind of command
-function exec_forked cmd:str file:str :
+function exec_forked func:fn[str] file:str :
   SYS_fork SYSCALL0
 
   // Child: Compile the assembly code with NASM
   if dup 0 == do
-    file cmd exec_command
+    file func exec
   // Parent: Wait for child to exit
   elif dup -1 != do
     NULL NULL NULL -1 SYS_wait4 SYSCALL4 drop
@@ -78,24 +78,6 @@ function exec_forked cmd:str file:str :
     "[ERROR] Could not fork the process\n"
     "FORK_ERROR" CompilerError
   endif drop
-end
-
-// Execute another function with an alias string
-// NASM => compile_with_nasm
-function exec_command cmd:str file:str :
-  if cmd "NASM" streq do
-    file compile_with_nasm
-  elif cmd "LD" streq do
-    file link_with_ld
-  elif cmd "EXEC" streq do
-    file execute_program
-  elif cmd "RM" streq do
-    file remove_file
-  else
-    "Unknown command '" eputs
-    cmd                 eputs
-    "'\n"               eputs
-  endif
 end
 
 // Run executable

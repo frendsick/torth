@@ -6,10 +6,10 @@ include "compiler/utils"
 // Params: out_file (STR)
 function compile_executable out_file:str :
   // Compile assembly code file to an object file with NASM
-  out_file "NASM" exec_forked
+  out_file compile_with_nasm& exec_forked
 
   // Link the object file to an executable with LD
-  out_file "LD" exec_forked
+  out_file link_with_ld& exec_forked
 end
 
 // Compile assembly code file to object file with NASM
@@ -52,8 +52,8 @@ end
 // Return None
 function remove_compilation_files out_file:str :
   // Remove Assembly file
-  out_file ".asm" str.cat "RM" exec_forked
+  f"{out_file}.asm" remove_file& exec_forked
 
   // Remove object file
-  out_file ".o"   str.cat "RM" exec_forked
+  f"{out_file}.o" remove_file& exec_forked
 end
