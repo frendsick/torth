@@ -536,44 +536,32 @@ end
 // Generate Assembly for OpType.PUSH_CHAR
 // Params: Op.token.value[1] ('a' => a)
 // Return: Assembly
-function get_push_char_asm char -> str :
-  cast(int) itoa
-  "  push " swap    str.cat
-  "\n"              str.cat
+function get_push_char_asm character:char -> str :
+  f"  push {character cast(int) itoa}\n"
 end
 
 // Generate Assembly for OpType.PUSH_FN
 // Params: Op.token.value
 // Return: Assembly
 function get_push_fn_asm function_name:str -> str :
-  "  mov rax, "
-  function_name get_valid_label_for_nasm    str.cat
-  "\n  push rax\n"                          str.cat
+  f"  mov rax, {function_name get_valid_label_for_nasm}
+  push rax\n"
 end
 
 // Generate Assembly for OpType.PUSH_INT
 // Params: Op.token.value
 // Return: Assembly
 function get_push_int_asm integer:str -> str :
-  "  mov rax, " integer str.cat
-  "\n  push rax\n"      str.cat
+  f"  mov rax, {integer}
+  push rax\n"
 end
 
 // Generate Assembly for OpType.PUSH_STR
 // Params: Op
 // Return: Assembly
 function get_push_str_asm op:Op -> str :
-  // Initialize variables
-  op Op.id itoa
-  op Op.func Func.name
-  take function_name op_id in
-
-  "  mov rsi, "
-  function_name             str.cat
-  "_s"                      str.cat
-  op_id                     str.cat
-  " ; Pointer to string\n"  str.cat
-  "  push rsi\n"            str.cat
+  f"  mov rsi, {op Op.func Func.name}_s{op Op.id itoa} ; Pointer to string\n
+  push rsi\n"
 end
 
 // Generate Assembly for OpType.RETURN
