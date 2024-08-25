@@ -35,9 +35,8 @@ function get_code_file_name args:Argparser -> str :
   take code_file in
 
   if code_file ".torth" str.endswith not do
-    "File '" code_file                    str.cat
-    "' has unsupported file extension\n"  str.cat
-    "Only .torth files are supported"     str.cat
+    f"File '{code_file}' has unsupported file extension\n"
+    "Only .torth files are supported" str.cat
     "UNSUPPORTED_FILE_EXTENSION" CompilerError
   endif
   code_file
@@ -84,7 +83,7 @@ end
 // Params: file
 // Return: None
 function execute_program file:str :
-  "./" file str.cat
+  f"./{file}"
   str.size malloc
   take argv executable in
 
@@ -94,9 +93,7 @@ end
 
 // Get prettified information for Token
 function get_token_info token:Token -> str :
-  "\e[95mToken\e[0m: "
-  token Token.value                       str.cat
-  "\n"                                    str.cat
+  f"\e[95mToken\e[0m: {token Token.value}\n"
   token Token.location get_location_info  str.cat
 end
 
@@ -113,13 +110,9 @@ function remove_file file_name:str :
 end
 
 function get_location_info location:Location -> str :
-  "\e[95mFile\e[0m: "
-  location Location.file        str.cat
-  "\n\e[95mRow\e[0m: "          str.cat
-  location Location.row itoa    str.cat
-  "\n\e[95mColumn\e[0m: "       str.cat
-  location Location.column itoa str.cat
-  "\n"                          str.cat
+  f"\e[95mFile\e[0m: {location Location.file}
+\e[95mRow\e[0m: {location Location.row itoa}
+\e[95mColumn\e[0m: {location Location.column itoa}\n"
 end
 
 // Get the output file name from command line arguments
@@ -379,14 +372,8 @@ function TypeStack.repr type_stack:Node -> str :
   1
   take index node in
   while node cast(int) -1 != do
-    "[" index
-    itoa                                  str.cat
-    "] "                                  str.cat
-    node TypeNode.type                    str.cat
-    " ("                                  str.cat
-    node TypeNode.location Location.repr  str.cat
-    ")\n"                                 str.cat
-    stack_repr swap                       str.cat
+    f"[{index itoa}] {node TypeNode.type} ({node TypeNode.location Location.repr})\n"
+    stack_repr swap str.cat
     stack_repr =
 
     // Pop the next item from TypeStack
@@ -465,9 +452,7 @@ function OpType.repr int -> str :
   endif
 
   // Report error if the given OpType was not handled
-  "OpType "
-  op_type itoa str.cat
-  " is not taken into account in OpType.repr method.\n" str.cat
+  f"OpType {op_type itoa} is not taken into account in OpType.repr method"
   "ASSERTION_ERROR" CompilerError ""
 end
 
