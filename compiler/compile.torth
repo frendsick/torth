@@ -38,6 +38,7 @@ function link_with_ld out_file:str :
   take argv object_file in
 
   "ld"            cast(ptr) argv List.append
+  "-s"            cast(ptr) argv List.append
   "-melf_x86_64"  cast(ptr) argv List.append
   "-o"            cast(ptr) argv List.append
   out_file        cast(ptr) argv List.append
