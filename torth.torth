@@ -3,7 +3,6 @@ include "std"
 include "argparser"
 include "compiler/asm"
 include "compiler/compile"
-include "compiler/error"
 include "compiler/lex"
 include "compiler/program"
 include "compiler/typecheck"
@@ -24,7 +23,7 @@ function main :
   take included_files in
 
   // Parse diffent code components
-  args "Parsing code from " code_file str.cat verbose_output
+  args f"Parsing code from {code_file}" verbose_output
   included_files get_tokens_from_files
   take tokens in
 
@@ -51,7 +50,7 @@ function main :
   args "Generating Assembly code" verbose_output
   args code_file get_output_file_name
   take out_file in
-  sub_programs out_file ".asm" str.cat generate_assembly_file
+  sub_programs f"{out_file}.asm" generate_assembly_file
 
   // Compile the assembly code file to a Linux x86_64 executable
   args "Compiling Assembly code" verbose_output
@@ -67,6 +66,6 @@ function main :
   // Run the program if -r command line flag is present
   if "-r" args Argparser.flag_present do
     args "Running the program" verbose_output
-    out_file run_program
+    out_file execute_program& exec_forked
   endif
 end

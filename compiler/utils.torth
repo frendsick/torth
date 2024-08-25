@@ -38,13 +38,6 @@ function verbose_output message:str args:Argparser :
   endif
 end
 
-// Run a program
-// Params: file_name
-// Return: None
-function run_program str :
-  execute_program& exec_forked
-end
-
 // Execute a certain kind of command
 function exec_forked func:fn[str] file:str :
   SYS_fork SYSCALL0
