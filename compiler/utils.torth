@@ -32,9 +32,7 @@ end
 // Return None
 function verbose_output message:str args:Argparser :
   if "-v" args Argparser.flag_present do
-    "[\e[95mVERBOSE\e[0m] "  puts
-    message                   puts
-    "\n"                      puts
+    f"[{Color.HEADER}VERBOSE{Color.RESET}] {message}\n" eputs
   endif
 end
 
@@ -69,7 +67,7 @@ end
 
 // Get prettified information for Token
 function get_token_info token:Token -> str :
-  f"\e[95mToken\e[0m: {token Token.value}\n"
+  f"{Color.HEADER}Token{Color.RESET}: {token Token.value}\n"
   token Token.location get_location_info  str.cat
 end
 
@@ -86,9 +84,9 @@ function remove_file file_name:str :
 end
 
 function get_location_info location:Location -> str :
-  f"\e[95mFile\e[0m: {location Location.file}
-\e[95mRow\e[0m: {location Location.row itoa}
-\e[95mColumn\e[0m: {location Location.column itoa}\n"
+  f"{Color.HEADER}File{Color.RESET}: {location Location.file}
+{Color.HEADER}Row{Color.RESET}: {location Location.row itoa}
+{Color.HEADER}Column{Color.RESET}: {location Location.column itoa}\n"
 end
 
 // Get the output file name from command line arguments

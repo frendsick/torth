@@ -1,20 +1,11 @@
 // error.torth - Library of errors used by the self-hosted Torth compiler
 include "std"
+include "compiler/defs"
 include "compiler/utils"
-
-// Escaped color codes
-// 'FAIL'     => '\e[91m'
-// 'HEADER'   => '\e[95m'
-// 'NO COLOR' => '\e[0m'
-// 'WARNING'  => '\e[93m'
 
 // Params: Error type (STR), message (STR)
 function print_error error_type:str message:str :
-  "\e[95mCompiler Error \e[91m" eputs
-  error_type                    eputs
-  "\e[0m:\n"                    eputs
-  message                       eputs
-  "\n"                          eputs
+  f"{Color.HEADER}Compiler Error {Color.ERROR}{error_type}{Color.RESET}:{message}\n" eputs
 end
 
 // Params: Error type (STR), message (STR)
