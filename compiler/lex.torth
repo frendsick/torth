@@ -578,6 +578,13 @@ function get_constants tokens:List[Token] -> List[Constant] :
       if constant_name str.len 0 == do
         token_value constants get_constants_name
         constant_name =
+
+        if constants constant_name constant_exists do
+          f"Constant '{constant_name}' is defined multiple times.\n"
+          "Constant names should be unique." str.cat
+          "CONST_REDEFINITION" CompilerError
+        endif
+
         index 1 + index = // index++
         continue
       endif
