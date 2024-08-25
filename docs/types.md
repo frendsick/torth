@@ -100,11 +100,9 @@ A string is like a [pointer](#ptr---pointer) as it points to the address of the 
 
 #### F-strings
 
-F-strings are strings that can contain any number of variables enclosed by curly brackets `{}`. The variables must be of type `str`.
+F-strings are strings that can contain any number of expressions enclosed by curly brackets `{}`. The expressions can contain arbitrary Torth code, the limitation being the expression must return a `str` in the end.
 
 F-strings use `str.cat` function from [std](../lib/std.torth) library under the hood to concatenate literal and variable sections of the f-string. Thus, f-strings cannot be used without including the [std](../lib/std.torth) library.
-
-F-strings do not support arbitrary expressions, only variables.
 
 Example:
 
@@ -112,10 +110,15 @@ Example:
 include "std"
 function main :
   "frendsick" print_name
+  34 35 print_nice
 end
 
 function print_name name:str :
   f"Hello, {name}!\n" puts
+end
+
+function print_nice a:int b:int :
+  f"{a b + itoa}, nice"
 end
 ```
 
