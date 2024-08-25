@@ -397,8 +397,15 @@ function get_tokens_from_code
           ||
         do
           "Unmatched '{' in f-string.\n"
-          "The literal curly brackets or double quotes are not allowed within f-string definitions.\n"  str.cat
+          "The literal curly brackets or double quotes are not allowed within f-string expressions.\n"  str.cat
           "Expressions can be used within f-strings using curly brackets: {expr}."                      str.cat
+          "VALUE_ERROR" CompilerError
+        endif
+
+        // Expressions cannot contain inner expressions
+        if close_curly_index "{" expr str.find > do
+          "Illegal character '{' in f-string expression\n"
+          "Recursive f-string expressions are not supported" str.cat
           "VALUE_ERROR" CompilerError
         endif
 
