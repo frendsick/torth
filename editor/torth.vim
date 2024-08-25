@@ -39,7 +39,7 @@ syntax region torthCommentLine start="\v(^|\s)//" end="$"   contains=torthTodos
 " String literals
 syntax match torthString /\v(^|\s)@<="([^"\\]|\\[nr\"'])*"(\s|$)@=/ contains=torthEscapes
 syntax match torthFString /\v(^|\s)@<=f"([^"\\]|\\[nr\"'])*"(\s|$)@=/hs=s+1 contains=torthEscapes,torthFStringVariable
-syntax match torthFStringVariable display contained /\v\{[^}]*\}/
+syntax region torthFStringExpression display contained start=/{/ end=/}/
 
 " Character literals
 syntax match torthCharacter /\v(^|\s)@<='([^\\]|\\[nr\"'])'(\s|$)@=/ contains=torthEscapes
