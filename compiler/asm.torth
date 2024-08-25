@@ -16,15 +16,16 @@ function initialize_asm_file file_name:str :
 end
 
 function get_asm_file_start -> str :
-    "default rel\n\n"
+"default rel
 
-    ";; DEFINES\n"                      str.cat
-    "%define sys_exit 60\n\n"           str.cat
+;; DEFINES
+%define sys_exit 60
 
-    "section .bss\n"                    str.cat
-    "  args_ptr: resq 1\n"              str.cat
-    "  return_stack: resb 1337*64\n"    str.cat
-    "\n"                                str.cat
+section .bss
+  args_ptr: resq 1
+  return_stack: resb 1337*64
+
+"
 end
 
 // Get Assembly for certain Op
