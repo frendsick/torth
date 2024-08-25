@@ -596,12 +596,9 @@ function str.is_numeric string:str -> bool :
   string str.len 0 ==
 end
 
-// Overwrite a string with NULL-bytes
+// "Empty" a string by storing NULL byte to the beginning
 function str.empty string:str :
-  0 while dup string str.char_at NULL != do
-    string over str+ cast(ptr) NULL cast(char) swap char.store
-    1 +
-  done drop
+  NULL string store_byte
 end
 
 // Convert string to lowercase letters
