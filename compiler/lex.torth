@@ -956,23 +956,14 @@ function parse_function
       endif
 
     elif current_part 2 == do
+
       // Use Constant's value if a Constant exists named as the Token's value
       if constants token_value constant_exists do
+        constants token_value get_constant Constant.value str.copy
+        take constant_value in
 
-        // Find the constant from list of Constants
-        0 take constant_index in
-        while constant_index constants cast(List) List.len < do
-          constant_index constants cast(List) List.nth ptr.load
-          take constant in
-
-          if constant Constant.name token_value streq do
-            constant Constant.value str.copy
-            token Token->value
-            "int" token Token->type
-            break
-          endif
-          constant_index 1 + constant_index =
-        done
+        constant_value                  token Token->value
+        constant_value get_token_type   token Token->type
       endif
 
       // Append the current Token to the list of tokens
