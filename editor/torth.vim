@@ -49,6 +49,7 @@ syntax match torthEscapes display contained /\\[nr\"']/
 
 " Number literals
 syntax match torthNumber /\v(^|\s)@<=-?\d+(\s|$)@=/ " Token with just numbers
+syntax match torthHex /\v(^|\s)@<=-?0x\d+(\s|$)@=/ " Token with just numbers
 syntax keyword torthNull  NULL
 syntax keyword torthBoolean TRUE FALSE
 
@@ -82,6 +83,7 @@ highlight default link torthFString String
 highlight default link torthCharacter Character
 highlight default link torthNull Number
 highlight default link torthNumber Number
+highlight default link torthHex Number
 highlight default link torthBoolean Number
 highlight default link torthTypeNames Type
 highlight default link torthEscapes SpecialChar
