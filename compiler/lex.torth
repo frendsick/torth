@@ -397,8 +397,8 @@ function get_tokens_from_code
           ||
         do
           "Unmatched '{' in f-string.\n"
-          "The literal curly brackets are not allowed within f-string definitions." str.cat
-          "Variables can be used within f-strings using curly brackets: {variable}." str.cat
+          "The literal curly brackets or double quotes are not allowed within f-string definitions.\n"  str.cat
+          "Expressions can be used within f-strings using curly brackets: {expr}."                      str.cat
           "VALUE_ERROR" CompilerError
         endif
 
