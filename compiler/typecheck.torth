@@ -133,7 +133,7 @@ function type_check_op
   if_block_return_stacks:List[TypeStack]
 -> TypeCheckInfo :
   // Assert that every OpType has been taken into account
-  if OpType.len 27 != do
+  if OpType.len 28 != do
     "All OpTypes are not taken into account in `type_check_op` function.\n"
     "ASSERTION_ERROR" CompilerError
   endif
@@ -241,6 +241,9 @@ function type_check_op
     // Set stack state to the return value of type_check_return
     if_block_return_stack type_stack op type_check_return
     branched_stacks List.last Node.store
+    type_check_info return
+  elif op_type OpType.TYPEOF == do
+    type_stack op type_check_typeof
     type_check_info return
   elif
     token_value str.copy str.upper
@@ -985,6 +988,30 @@ function type_check_return
     "FUNCTION_SIGNATURE_ERROR" CompilerErrorWithStack
   endif
   if_block_return_stack
+end
+
+// Pop item from the stack and push the string representation of its type to the stack.
+// Params
+//    op: Op
+//    type_stack: LinkedList[TypeNode]
+// Return TypeStack
+function type_check_typeof op:Op type_stack:Node :
+  op Op.token
+  type_stack LinkedList.pop
+  take type token in
+
+  // Stack is empty
+  if type cast(int) -1 == do
+    type_stack token
+    "Cannot drop value from empty stack"
+    "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  // Save the popped type to Op
+  type TypeNode.type op Op->stack_typeof
+
+  // Push the string representation of the popped type
+  token Token.location "str" TypeNode.init cast(ptr) type_stack LinkedList.push
 end
 
 // DIV pops two items from the stack and divides second from the top one.
