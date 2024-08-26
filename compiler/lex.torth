@@ -596,10 +596,22 @@ function get_constants tokens:List[Token] -> List[Constant] :
         location constant_value constant_name Constant.init
         constants cast(List) List.append
 
+        // Verify the next token is END
+        if
+          index 1 + tokens cast(List) List.nth Token.load
+          Token.value str.copy str.upper "END" streq
+          not
+        do
+          f"CONST block for '{constant_name}' does not have END token after its value.\n"
+          "Syntax: CONST <name> <value> END" str.cat
+          "SYNTAX_ERROR" CompilerError
+        endif
+
         // Reset variables
         ""    constant_name   =
         ""    constant_value  =
         False defining_constant =
+
         index 1 + index = // index++
         continue
       endif
