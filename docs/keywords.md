@@ -16,6 +16,7 @@ This is the documentation for different keywords available in the Torth language
 - [IF](#IF)
 - [INCLUDE](#INCLUDE)
 - [RETURN](#RETURN)
+- [TYPEOF](#TYPEOF)
 - [WHILE](#WHILE)
 
 ## BREAK
@@ -247,6 +248,12 @@ INCLUDE "path/to/torth/lib/std.torth"
 Return from current [FUNCTION](#function).
 
 [How to use RETURN keyword?](control_flow.md#return-keyword)
+
+## TYPEOF
+
+Pop the topmost item from the stack and push the string representation of its type to the stack as [str](./types.md#str---string).
+
+The type of stack's topmost item is calculated at compile time and the type is saved in the resulting binary as a string literal. If you want to mutate the string, please create a copy from it first using the `str.copy` function from the [std](../lib/std.torth) library. Mutating static string literals could result in undefined behavior.
 
 ## WHILE
 
