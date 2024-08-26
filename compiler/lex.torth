@@ -602,7 +602,7 @@ function get_constants tokens:List[Token] -> List[Constant] :
           Token.value str.copy str.upper "END" streq
           not
         do
-          f"CONST block for '{constant_name}' does not have END token after its value.\n"
+          f"CONST block for '{constant_name}' does not have END token after its value '{constant_value}'.\n"
           "Syntax: CONST <name> <value> END" str.cat
           "SYNTAX_ERROR" CompilerError
         endif
