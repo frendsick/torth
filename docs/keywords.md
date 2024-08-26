@@ -30,15 +30,19 @@ The CAST keyword is used to cast any type to another. The keyword does not gener
 
 ## CONST
 
-Constants are named integer values that cannot be modified. The constant name can be used in code to push the constant's integer value to the stack.
-
-Constants cannot be used for defining other constants, at least for now.
+Constants are named literal values that cannot be modified. The constant name can be used in code to push the constant's value to the stack.
 
 ### Syntax
 
 ```pascal
-// Constant declarations should be in one line
-CONST <name> <integer> END
+CONST <name> <value> END
+```
+
+### Examples
+
+```pascal
+const DATABASE "/dev/null" end
+const MAX_USERS 1337 end
 ```
 
 ## CONTINUE
