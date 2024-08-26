@@ -1,6 +1,5 @@
 // typing.torth - Definitions for non-built in types
 include "std"
-include "compiler/class/TypeNode"
 
 // Constants
 const ITERABLE_CAPACITY 128 end
