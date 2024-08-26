@@ -1018,7 +1018,7 @@ end
 function get_nth_from_return_stack_asm N:int -> str :
   if N 0 < do
     "Cannot get value with negative index from the return stack"
-    "ValueError" CompilerError
+    "VALUE_ERROR" CompilerError
   endif
 
   f"  push QWORD [r14-{N 8 * 8 + itoa}]\n"
@@ -1028,7 +1028,7 @@ end
 function set_nth_from_return_stack_asm N:int -> str :
   if N 0 < do
     "Cannot set value with negative index from the return stack"
-    "ValueError" CompilerError
+    "VALUE_ERROR" CompilerError
   endif
 
   f"  pop rbx
