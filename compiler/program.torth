@@ -188,8 +188,6 @@ function get_tokens_op_type
     token
     "Unknown VarType '" token_vartype itoa str.cat
     "VALUE_ERROR" CompilerErrorWithToken
-  elif constants token_value constant_exists do
-    OpType.PUSH_INT return
   elif functions token_value function_exists do
     // Mark function as used
     functions token_value get_function_by_name
