@@ -131,7 +131,8 @@ function get_op_from_location location:Location program:Program -> Op :
     index 1 + index =
   done
 
-  "Operand could not be found from the given location"
+  "Operation could not be found from location:\n"
+  location Location.repr str.cat
   "OP_NOT_FOUND" CompilerError
   NULL cast(Op)
 end
