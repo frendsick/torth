@@ -363,7 +363,7 @@ end
 function OpType.repr int -> str :
   // Assert that every OpType has been taken into account
   if OpType.len 27 != do
-    "All OpTypes are not taken into account in OpType.repr method.\n"
+    "All OpTypes are not taken into account in `OpType.repr` method.\n"
     "ASSERTION_ERROR" CompilerError
   endif
 
