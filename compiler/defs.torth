@@ -34,6 +34,7 @@ ENUM OpType.len 1 :
   OpType.PUSH_STR
   OpType.RETURN
   OpType.TAKE
+  OpType.TYPEOF
   OpType.WHILE
 END
 

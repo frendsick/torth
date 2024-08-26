@@ -4,6 +4,7 @@ class Op
   type:int
   token:Token
   func:Func
+  stack_typeof:str // Only OpType.TYPEOF: The type of the topmost item in the stack
 
   method init
     id:int
