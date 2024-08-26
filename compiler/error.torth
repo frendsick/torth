@@ -5,7 +5,8 @@ include "compiler/utils"
 
 // Params: Error type (STR), message (STR)
 function print_error error_type:str message:str :
-  f"{Color.HEADER}Compiler Error {Color.ERROR}{error_type}{Color.RESET}:{message}\n" eputs
+  f"{Color.HEADER}Compiler Error {Color.ERROR}{error_type}{Color.RESET}:\n" eputs
+  f"{message}\n" eputs
 end
 
 // Params: Error type (STR), message (STR)
