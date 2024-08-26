@@ -263,7 +263,7 @@ function get_token_type token_value:str -> str :
     token_value str.len 1 - token_value str.char_at '"' ==
     &&
   do
-    "fstr" return
+    "str" return
   endif
   "word"
 end
