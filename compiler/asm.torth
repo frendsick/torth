@@ -274,7 +274,7 @@ function get_parent_op_type_do op:Op program:Program -> int :
   while index -1 > do
 
     // Get the current Op's OpType
-    index program cast(List) List.nth ptr.load Op.type
+    index program cast(List) List.nth Op.load Op.type
     take op_type in
 
     if
@@ -319,7 +319,7 @@ function get_do_asm op:Op program:Program -> str :
 
   while index program cast(List) List.len < do
     // Get the current operand's OpType
-    index program cast(List) List.nth ptr.load Op.type
+    index program cast(List) List.nth Op.load Op.type
     take op_type in
 
     // Keep count on the nested IFs or WHILEs depending on the parent Op
@@ -373,7 +373,7 @@ function get_do_asm op:Op program:Program -> str :
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
       op Op.func Func.name
       "_"                                                             str.cat
-      index program cast(List) List.nth ptr.load Op.type OpType.repr  str.cat
+      index program cast(List) List.nth Op.load Op.type OpType.repr   str.cat
       index itoa                                                      str.cat
       generate_do_asm return
     endif
@@ -1116,7 +1116,7 @@ function append_programs_assembly_code file_name:str program:Program :
 
   // Get the Func's name to be added to the assembly code
   // Exception: MAIN Func should be named '_start'
-  program cast(List) List.first ptr.load Op.func
+  program cast(List) List.first Op.load Op.func
   take func in
 
   // Write Func's start assembly to file

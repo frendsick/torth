@@ -63,7 +63,7 @@ function get_sub_programs
     take program in
 
     // Remove the sub program if it is not used
-    if program List.first ptr.load Op.func Func.is_used not do
+    if program List.first Op.load Op.func Func.is_used not do
         index sub_programs cast(List) List.pop
     endif
 

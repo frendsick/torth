@@ -163,7 +163,7 @@ function constant_exists constant_name:str constants:List[Constant] -> bool :
   while index constants cast(List) List.len < do
 
     // Get the current Constant
-    index constants cast(List) List.nth ptr.load Constant.name
+    index constants cast(List) List.nth Constant.load Constant.name
     take current_name in
 
     // Return True if current Constant's name matches constant_name parameter
@@ -278,7 +278,7 @@ function TypeStack.copy type_stack:Node -> Node :
   // Fill the copy TypeStack with the contents of the original
   while stack_depth 0 >= do
     // Generate new TypeNode from the original stack
-    node Node.data
+    node Node.data cast(TypeNode)
     take type_node in
     type_node TypeNode.location
     type_node TypeNode.type
@@ -320,7 +320,7 @@ function TypeStack.get_types type_stack:Node -> List :
 
   // Fill List with the TokenTypes inside TypeStack
   while stack_depth 0 >= do
-    node Node.data
+    node Node.data cast(TypeNode)
     TypeNode.type cast(ptr) token_types List.append
     stack_depth 1 - stack_depth =
   done
@@ -342,7 +342,7 @@ function TypeStack.repr type_stack:Node -> str :
     "[EMPTY]\n" str.copy return
   endif
 
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   1
   take index node in
   while node cast(int) -1 != do
@@ -351,7 +351,7 @@ function TypeStack.repr type_stack:Node -> str :
     stack_repr =
 
     // Pop the next item from TypeStack
-    type_stack LinkedList.pop node =
+    type_stack LinkedList.pop cast(TypeNode) node =
     index 1 + index =
   done
   stack_repr

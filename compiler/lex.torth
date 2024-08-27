@@ -58,7 +58,7 @@ function get_included_files_from_file code_file:str included_files:List -> List 
 
   while index tokens cast(List) List.len < do
     // Get Nth Token
-    index tokens cast(List) List.nth ptr.load Token.value
+    index tokens cast(List) List.nth Token.load Token.value
     take token_value in
 
     // Parse the file name for the include
@@ -563,7 +563,7 @@ function get_constants tokens:List[Token] -> List[Constant] :
   in
 
   while index tokens cast(List) List.len < do
-    index tokens cast(List) List.nth ptr.load
+    index tokens cast(List) List.nth Token.load
     dup   Token.value
     swap  Token.location
     take location token_value in
@@ -657,7 +657,7 @@ function add_enums_to_constants tokens:List[Token] constants:List[Constant] :
   while index tokens cast(List) List.len < do
 
     // Get the current Token's value
-    index tokens cast(List) List.nth ptr.load
+    index tokens cast(List) List.nth Token.load
     dup  Token.value
     swap Token.location
 
@@ -772,7 +772,7 @@ function get_functions
   take index functions in
   while index tokens cast(List) List.len < do
     // Get current word
-    index tokens cast(List) List.nth ptr.load
+    index tokens cast(List) List.nth Token.load
     Token.value str.copy str.upper
     take token_upper in
 
@@ -832,7 +832,7 @@ function parse_function
   endif
 
   // Set Func.name
-  token_index tokens cast(List) List.nth ptr.load Token.value
+  token_index tokens cast(List) List.nth Token.load Token.value
   take function_name in
   token_index 1 + token_index =
 
@@ -1071,7 +1071,7 @@ function parse_classes
   0 take index in
   while index tokens cast(List) List.len < do
     // Get current word
-    index tokens cast(List) List.nth ptr.load
+    index tokens cast(List) List.nth Token.load
     Token.value str.copy str.upper
     take token_upper in
 
@@ -1101,7 +1101,7 @@ function parse_class
   endif
 
   // Get Class name
-  token_index tokens cast(List) List.nth ptr.load Token.value
+  token_index tokens cast(List) List.nth Token.load Token.value
   take class_name in
   token_index 1 + token_index =
 
@@ -1123,7 +1123,7 @@ function parse_class
 
       // Go over the method's END keyword
       while token_index tokens cast(List) List.len < do
-        token_index tokens cast(List) List.nth ptr.load
+        token_index tokens cast(List) List.nth Token.load
         if Token.value str.copy str.upper "END" streq do
           break
         endif
@@ -1303,7 +1303,7 @@ function get_attribute_function_tokens
     tokens
   in
   while index tokens cast(List) List.len < do
-    index tokens cast(List) List.nth ptr.load
+    index tokens cast(List) List.nth Token.load
     take token in
 
     // Fix the Location to correspond with the attribute's Token
@@ -1431,7 +1431,7 @@ function main_function_in_function_list functions:List[Func] -> bool :
 
   // Iterate over Func List
   while index functions.len < do
-    index functions cast(List) List.nth ptr.load Func.name
+    index functions cast(List) List.nth Func.load Func.name
     take function_name in
 
     // Return True if MAIN function is found

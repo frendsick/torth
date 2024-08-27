@@ -83,7 +83,7 @@ function type_check_sub_program
   endif
 
   // Get first Op's Function
-  program cast(List) List.first ptr.load Op.func
+  program cast(List) List.first Op.load Op.func
   take func in
 
   // Generate initial type stack for sub program
@@ -425,8 +425,8 @@ function equal_stacks type_stack1:Node type_stack2:Node -> bool :
     &&
   do
     // Return early if the current types do not match
-    type_node1 Node.data TypeNode.type
-    type_node2 Node.data TypeNode.type
+    type_node1 Node.data cast(TypeNode) TypeNode.type
+    type_node2 Node.data cast(TypeNode) TypeNode.type
     take type1 type2 in
 
     if
@@ -524,8 +524,8 @@ function type_check_assign_bind
   variables:List[Variable]
 :
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t2 t1 temp_stack in
 
   if t2 cast(int) -1 == do
@@ -534,7 +534,7 @@ function type_check_assign_bind
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   endif
 
-  program t1 TypeNode.location get_op_from_location Op.token
+  program t1 cast(TypeNode) TypeNode.location get_op_from_location Op.token
   take assign_token in
 
   if assign_token Token.vartype VarType.NONE == do
@@ -568,7 +568,7 @@ end
 // Return None
 function type_check_cast token:Token type_stack:Node :
   // Pop the current type
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take type in
   if type cast(int) -1 == do
     type_stack token
@@ -601,7 +601,7 @@ function type_check_do
   branched_stacks:List
 :
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take type temp_stack in
 
   if type cast(int) -1 == do
@@ -778,7 +778,7 @@ function type_check_function_call
 
     // Pop a type from the stack and check if it matches with Func's Signature
     index param_types List.nth str.load
-    type_stack LinkedList.pop TypeNode.type
+    type_stack LinkedList.pop cast(TypeNode) TypeNode.type
     take expected_type popped_type in
 
     if expected_type popped_type matching_token_types not do
@@ -845,7 +845,7 @@ function type_check_peek_bind
   type_stack TypeStack.copy
   0 take index temp_stack in
   while index count < do
-    temp_stack LinkedList.pop
+    temp_stack LinkedList.pop cast(TypeNode)
     take type in
     index 1 + index =
   done
@@ -874,7 +874,7 @@ function type_check_pop_bind
   type_stack:Node
   variables:List[Variable]
 :
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take type in
 
   // Stack is empty
@@ -997,7 +997,7 @@ end
 // Return TypeStack
 function type_check_typeof op:Op type_stack:Node :
   op Op.token
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take type token in
 
   // Stack is empty
@@ -1025,8 +1025,8 @@ function type_check_div token:Token type_stack:Node :
   type_stack TypeStack.copy
 
   // Pop two items from the stack
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take
     t2 t1
     temp_stack
@@ -1065,7 +1065,7 @@ end
 // Return None
 function type_check_drop token:Token type_stack:Node :
   // Pop one item from the stack
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take type in
 
   // Stack is empty
@@ -1083,7 +1083,7 @@ end
 // Return None
 function type_check_dup token:Token type_stack:Node :
   // Pop one item from the stack
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take type in
 
   // Stack is empty
@@ -1094,8 +1094,8 @@ function type_check_dup token:Token type_stack:Node :
   endif
 
   // Push the popped value twice
-  type type_stack LinkedList.push
-  type type_stack LinkedList.push
+  type cast(ptr) type_stack LinkedList.push
+  type cast(ptr) type_stack LinkedList.push
 end
 
 // Execute a function pointer
@@ -1106,7 +1106,7 @@ end
 function type_check_exec token:Token type_stack:Node :
   // Pop function pointer from the stack
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take type temp_stack in
 
   // Stack is empty
@@ -1153,7 +1153,7 @@ function type_check_exec token:Token type_stack:Node :
       "VALUE_ERROR" CompilerErrorWithStack
     endif
 
-    type_stack LinkedList.pop TypeNode.type
+    type_stack LinkedList.pop cast(TypeNode) TypeNode.type
     take popped_type in
 
     // The popped type should match the function signature
@@ -1202,7 +1202,7 @@ end
 function type_check_load token:Token type_stack:Node :
   // Pop one item from the stack
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take type temp_stack in
 
   // Stack is empty
@@ -1234,8 +1234,8 @@ end
 function type_check_over token:Token type_stack:Node :
   // Pop two items from the stack
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t2 t1 temp_stack in
 
   // Not enough values in the stack
@@ -1246,9 +1246,9 @@ function type_check_over token:Token type_stack:Node :
   endif
 
   // Push the values back to the stack in the correct order
-  t2 type_stack LinkedList.push
-  t1 type_stack LinkedList.push
-  t2 type_stack LinkedList.push
+  t2 cast(ptr) type_stack LinkedList.push
+  t1 cast(ptr) type_stack LinkedList.push
+  t2 cast(ptr) type_stack LinkedList.push
 end
 
 // ROT Intrinsic rotates the top three elements of the stack so that the third becomes first
@@ -1260,9 +1260,9 @@ end
 function type_check_rot token:Token type_stack:Node :
   // Pop three items from the stack
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t3 t2 t1 temp_stack in
 
   // Not enough values in the stack
@@ -1273,9 +1273,9 @@ function type_check_rot token:Token type_stack:Node :
   endif
 
   // Push the values back to the stack in the correct order
-  t2 type_stack LinkedList.push
-  t1 type_stack LinkedList.push
-  t3 type_stack LinkedList.push
+  t2 cast(ptr) type_stack LinkedList.push
+  t1 cast(ptr) type_stack LinkedList.push
+  t3 cast(ptr) type_stack LinkedList.push
 end
 
 // STORE variants store a value of certain type to where a pointer is pointing to.
@@ -1288,8 +1288,8 @@ end
 function type_check_store token:Token type_stack:Node :
   // Pop two items from the stack
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t2 t1 temp_stack in
 
   // Generate error message beforehand
@@ -1323,8 +1323,8 @@ end
 function type_check_swap token:Token type_stack:Node :
   // Pop two items from the stack
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t2 t1 temp_stack in
 
   // Not enough values in the stack
@@ -1335,8 +1335,8 @@ function type_check_swap token:Token type_stack:Node :
   endif
 
   // Push the values back to the stack in the correct order
-  t1 type_stack LinkedList.push
-  t2 type_stack LinkedList.push
+  t1 cast(ptr) type_stack LinkedList.push
+  t2 cast(ptr) type_stack LinkedList.push
 end
 
 // SYSCALL intrinsic variants call a Linux syscall.
@@ -1359,7 +1359,7 @@ function type_check_syscall token:Token type_stack:Node :
   dup str.len 1 - over str.char_at '0' -
 
   // Pop the syscall number
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
   take
     type
     parameter_count
@@ -1390,7 +1390,7 @@ function type_check_syscall token:Token type_stack:Node :
   // Pop the syscall parameters
   1 take parameter_index in
   while parameter_index parameter_count <= do
-    type_stack LinkedList.pop
+    type_stack LinkedList.pop cast(TypeNode)
     type =
 
     // There is not enough values in the stack
@@ -1422,8 +1422,8 @@ function type_check_bitwise token:Token type_stack:Node :
   // Pop two items from the stack
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t2 t1 temp_stack token_value in
 
   // Not enough values in the stack
@@ -1461,8 +1461,8 @@ function type_check_bitshift token:Token type_stack:Node :
   // Pop two items from the stack
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t2 t1 temp_stack token_value in
 
   // Not enough values in the stack
@@ -1498,8 +1498,8 @@ function type_check_calculations token:Token type_stack:Node :
   // Pop two items from the stack
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t2 t1 temp_stack token_value in
 
   // Not enough values in the stack
@@ -1537,8 +1537,8 @@ function type_check_comparison token:Token type_stack:Node :
   // Pop two items from the stack
   token Token.value str.copy str.upper
   type_stack TypeStack.copy
-  type_stack LinkedList.pop
-  type_stack LinkedList.pop
+  type_stack LinkedList.pop cast(TypeNode)
+  type_stack LinkedList.pop cast(TypeNode)
   take t2 t1 temp_stack token_value in
 
   // Not enough values in the stack
@@ -1597,7 +1597,7 @@ function get_function_type_stack func:Func -> Node :
   in
 
   // Get the first Token's location for TypeNodes
-  func Func.tokens cast(List) List.first ptr.load Token.location
+  func Func.tokens cast(List) List.first Token.load Token.location
   take location in
 
   // Insert all parameter types to type_stack in the reverse order
