@@ -853,6 +853,12 @@ function parse_function
     dup Token.value
     take token_value token in
 
+    if token_value str.copy str.upper "FUNCTION" streq do
+      token
+      f"Token '{token_value}' is not valid inside a function"
+      "SYNTAX_ERROR" CompilerErrorWithToken
+    endif
+
     if
       token_value str.copy str.upper
       current_part FUNCTION_PART_DELIMITERS List.nth str.load
