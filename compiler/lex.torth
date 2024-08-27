@@ -1247,14 +1247,18 @@ function generate_attribution_function
   List.init
   List.init
   take param_types return_types in
-  "any"           cast(ptr) param_types List.append
-  attribute_type  cast(ptr)
+
+  // Getter or setter requires class instance
+  class_name cast(ptr) param_types List.append
+
   // Insert attribute_type to either parameter or return types
   // depending on if the function is getter or setter
+  attribute_type cast(ptr)
   if is_getter
   do   return_types
   else param_types
   endif List.append
+
   return_types param_types Signature.init
   take signature in
 
