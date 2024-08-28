@@ -117,7 +117,7 @@ function type_check_sub_program
   func type_check_end_of_program
 
   // Deallocate branched stacks
-  node LinkedList.delete
+  TypeNode.size node LinkedList.delete
   branched_stacks List.delete
 end
 
@@ -420,7 +420,7 @@ function correct_return_types func:Func type_stack:Node -> bool :
   type_stack temp_stack equal_stacks
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // Check if two TypeStacks have similar types inside
@@ -575,7 +575,7 @@ function type_check_assign_bind
   endif
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // CAST(<type>) explicitely casts the top element of the stack to <type>
@@ -635,7 +635,7 @@ function type_check_do
   type_stack TypeStack.copy branched_stacks List.append
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // Type check ELIF section of an IF block
@@ -828,7 +828,7 @@ function type_check_function_call
   done
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // Push a function pointer to the stack
@@ -887,7 +887,7 @@ function type_check_peek_bind
   variables cast(List) List.append
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // Pop a value from the stack to a Variable
@@ -1066,10 +1066,6 @@ function type_check_div token:Token type_stack:Node :
     token_value " intrinsic requires two integers" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   // Wrong token type
-  elif
-    t1 TypeNode.type INTEGER_TYPES Array.contains_str not
-    t2 TypeNode.type INTEGER_TYPES Array.contains_str not
-    ||
   do
     temp_stack token
     token_value " intrinsic requires two integers\n\n" str.cat
@@ -1085,7 +1081,7 @@ function type_check_div token:Token type_stack:Node :
   location "int" TypeNode.init cast(ptr) type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // DROP removes one item from the stack
@@ -1214,7 +1210,7 @@ function type_check_exec token:Token type_stack:Node :
   done
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 function parse_signature_from_fn_ptr fn_ptr:str -> Signature :
@@ -1244,13 +1240,6 @@ function type_check_load token:Token type_stack:Node :
     "The stack is empty - PTR required"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   // Wrong token type
-  elif type TypeNode.type POINTER_TYPES Array.contains_str not do
-    temp_stack token
-    dup Token.value str.copy str.upper
-    " requires a pointer\n\n" str.cat
-    "Popped type: "           str.cat
-    type TypeNode.type        str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Push loaded value which could be of any type
@@ -1258,7 +1247,7 @@ function type_check_load token:Token type_stack:Node :
   type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // OVER Intrinsic pushes a copy of the second element of the stack.
@@ -1287,7 +1276,7 @@ function type_check_over token:Token type_stack:Node :
   t2 cast(ptr) type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // ROT Intrinsic rotates the top three elements of the stack so that the third becomes first
@@ -1317,7 +1306,7 @@ function type_check_rot token:Token type_stack:Node :
   t3 cast(ptr) type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // STORE variants store a value of certain type to where a pointer is pointing to.
@@ -1344,19 +1333,10 @@ function type_check_store token:Token type_stack:Node :
     temp_stack token
     required_values_str
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  elif t1 TypeNode.type POINTER_TYPES Array.contains_str not do
-    temp_stack token
-    required_values_str "\n\n"      str.cat
-    "Expected types:\nPTR\nANY\n\n" str.cat
-    "Popped types:\n"               str.cat
-    t1 TypeNode.type                str.cat
-    "\n"                            str.cat
-    t2 TypeNode.type                str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // SWAP Intrinsic swaps two top elements in the stack.
@@ -1384,7 +1364,7 @@ function type_check_swap token:Token type_stack:Node :
   t2 cast(ptr) type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // SYSCALL intrinsic variants call a Linux syscall.
@@ -1425,14 +1405,6 @@ function type_check_syscall token:Token type_stack:Node :
     " in the stack"                     str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   // The first parameter should be the number of the syscall
-  elif type TypeNode.type INTEGER_TYPES Array.contains_str not do
-    temp_stack token
-    "The first argument of " token_value        str.cat
-    " should be the number of the syscall\n\n"  str.cat
-    "Expected type: INT\n"                      str.cat
-    "Popped type: "                             str.cat
-    type TypeNode.type                          str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Pop the syscall parameters
@@ -1461,7 +1433,7 @@ function type_check_syscall token:Token type_stack:Node :
   type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // Type check bitwise operation for two integers
@@ -1483,17 +1455,6 @@ function type_check_bitwise token:Token type_stack:Node :
     token_value " intrinsic requires two integers" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   // Wrong token type
-  elif
-    t1 TypeNode.type INTEGER_TYPES Array.contains_str not
-    t2 TypeNode.type INTEGER_TYPES Array.contains_str not
-    ||
-  do
-    temp_stack token
-    token_value " intrinsic requires two integers\n\n" str.cat
-    "Popped types:\n" str.cat
-    t1 TypeNode.type str.cat "\n" str.cat
-    t2 TypeNode.type str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Push the result to the stack
@@ -1501,7 +1462,7 @@ function type_check_bitwise token:Token type_stack:Node :
   type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // SHL performs bitshift operations to the left SHR to the right.
@@ -1525,17 +1486,6 @@ function type_check_bitshift token:Token type_stack:Node :
     token_value " intrinsic requires two values in the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   // Wrong token type
-  elif
-    t1 TypeNode.type INTEGER_TYPES Array.contains_str not
-    t2 TypeNode.type INTEGER_TYPES Array.contains_str not
-    ||
-  do
-    temp_stack token
-    token_value " intrinsic requires two integers\n\n" str.cat
-    "Popped types:\n" str.cat
-    t1 TypeNode.type str.cat "\n" str.cat
-    t2 TypeNode.type str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Push the result to the stack
@@ -1543,7 +1493,7 @@ function type_check_bitshift token:Token type_stack:Node :
   type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // Type check calculation intrinsics DIV, MINUS, MOD, MUL, and PLUS
@@ -1565,17 +1515,6 @@ function type_check_calculations token:Token type_stack:Node :
     token_value " requires two values on the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   // Wrong token type
-  elif
-    t1 TypeNode.type INTEGER_TYPES Array.contains_str not
-    t2 TypeNode.type INTEGER_TYPES Array.contains_str not
-    ||
-  do
-    temp_stack token
-    token_value " intrinsic requires two integers\n\n" str.cat
-    "Popped types:\n" str.cat
-    t1 TypeNode.type str.cat "\n" str.cat
-    t2 TypeNode.type str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Push the result to the stack
@@ -1583,7 +1522,7 @@ function type_check_calculations token:Token type_stack:Node :
   type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // Type check comparison intrinsics like EQ or GE.
@@ -1607,17 +1546,6 @@ function type_check_comparison token:Token type_stack:Node :
     token_value " requires two values on the stack" str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   // Wrong token type
-  elif
-    t1 TypeNode.type INTEGER_TYPES Array.contains_str not
-    t2 TypeNode.type INTEGER_TYPES Array.contains_str not
-    ||
-  do
-    temp_stack token
-    token_value " intrinsic requires two integers\n\n" str.cat
-    "Popped types:\n" str.cat
-    t1 TypeNode.type str.cat "\n" str.cat
-    t2 TypeNode.type str.cat
-    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Push the result to the stack
@@ -1625,7 +1553,7 @@ function type_check_comparison token:Token type_stack:Node :
   type_stack LinkedList.push
 
   // Clean memory from the temporary stack
-  temp_stack LinkedList.delete
+  TypeNode.size temp_stack LinkedList.delete
 end
 
 // Get a list of tokens that do not require type checking

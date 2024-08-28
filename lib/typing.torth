@@ -583,7 +583,7 @@ function LinkedList.pop Node -> ptr :
     head Node.next head_ptr cast(ptr) Node.store
 
     // Deallocate the old head
-    head Node.delete
+    Node.size head cast(ptr) munmap
 
     // Return the popped data
     popped_data
@@ -614,15 +614,15 @@ function LinkedList.is_empty Node -> bool :
     cast(ptr) int.load 0 ==
 end
 
-function LinkedList.delete linked_list:Node :
-  linked_list cast(ptr) Node.load
-  take node in
-
-  while node cast(int) NULL != do
-    node Node.next
-    node Node.delete
+function LinkedList.delete linked_list:Node data_size:int :
+    linked_list cast(ptr) Node.load
     take node in
-  done
+
+    while node cast(int) NULL != do
+        node Node.next
+        data_size node Node.delete
+        take node in
+    done
 end
 
 class Node
@@ -638,7 +638,9 @@ class Node
         swap cast(ptr) swap ptr.store
     end
 
-    method delete node:Node :
+    method delete node:Node data_size:int :
+        // Deallocate the Node with its data
+        data_size node Node.data munmap
         Node.size node cast(ptr) munmap
     end
 endclass // Node
