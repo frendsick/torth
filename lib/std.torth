@@ -589,17 +589,35 @@ end
 // Params: string, character
 // Return: None
 function str.prepend string:str character:char -> str :
-  string str.len 2 + malloc
-  take buffer in
+  // Test if the character fits in the current memory page
+  // String literals cannot be appended so them always require allocation
+  string str.len
+  dup PAGE_SIZE % PAGE_SIZE 2 - >
+  string str.is_static ||
+  take requires_allocation string.len in
+
+  if requires_allocation do
+    // Allocate memory for the buffer
+    string.len 2 + malloc
+    take buffer in
+  else
+    string cast(ptr)
+    take buffer in
+  endif
 
   // Add character to the beginning
   character buffer char.store
 
   // Copy rest of the string to the end
-  string str.len
+  string.len
   string cast(ptr)
   buffer 1 ptr+
   memcpy
+
+  // Deallocate the original string if new memory was allocated
+  if requires_allocation do
+    string str.delete
+  endif
 
   buffer cast(str)
 end
