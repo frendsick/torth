@@ -327,7 +327,7 @@ function str.store    ptr str   ->      : STORE_QWORD                   end
 // Copy string to a newly allocated memory location and return the copied string
 function str.copy str -> str :
   // Allocate memory which can store the string
-  dup str.len malloc
+  dup str.len 1 + malloc
   swap // str
   str.fill
 end
