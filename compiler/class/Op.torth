@@ -25,13 +25,4 @@ class Op
   method load ptr -> Op :
     ptr.load cast(Op)
   end
-
-  // Deep copies Op and the Token
-  method copy self:Op -> Op :
-    self Op.func
-    self Op.token Token.copy
-    self Op.type
-    self Op.id
-    Op.init
-  end
 endclass
