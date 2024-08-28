@@ -113,7 +113,12 @@ function type_check_sub_program
 
   // Verify that the TypeStack state matches with the Func's Signature
   branched_stacks List.last Node.load
+  peek node in
   func type_check_end_of_program
+
+  // Deallocate branched stacks
+  node LinkedList.delete
+  branched_stacks List.delete
 end
 
 // Type check the current Op in the Program
