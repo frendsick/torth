@@ -327,7 +327,7 @@ function str.store    ptr str   ->      : STORE_QWORD                   end
 // Copy string to a newly allocated memory location and return the copied string
 function str.copy str -> str :
   // Allocate memory which can store the string
-  dup str.len malloc
+  dup str.len 1 + malloc
   swap // str
   str.fill
 end
@@ -407,10 +407,10 @@ function str.escape string:str -> str :
   in
 
   // Save escape sequences to variables
-  Tab     backslash "t" str.cat string  str.replace_all
-  LF      backslash "n" str.cat rot     str.replace_all
-  CR      backslash "r" str.cat rot     str.replace_all
-  Escape  backslash "e" str.cat rot     str.replace_all
+  Tab     backslash str.copy "t" str.cat string  str.replace_all
+  LF      backslash str.copy "n" str.cat rot     str.replace_all
+  CR      backslash str.copy "r" str.cat rot     str.replace_all
+  Escape  backslash str.copy "e" str.cat rot     str.replace_all
 end
 
 // Get the index of the first character of a substring from a string
@@ -474,7 +474,7 @@ function str.replace
   string index substring str.len + str+
   take string_end in
 
-  string
+  string str.copy
   replacement str.cat
   string_end  str.cat
 end
@@ -507,6 +507,8 @@ function str.replace_all
 end
 
 // Concatenate two strings into a new memory location
+// Note: Deallocates `str1` if it is not a string literal
+// => If the value of `str1` is still needed after `str.cat`, please copy it with `str.copy` before calling `str.cat`
 // Params: str2, str1
 // Return: concat(str1+str2)
 function str.cat str2:str str1:str -> str :
@@ -523,11 +525,16 @@ function str.cat str2:str str1:str -> str :
   // Append str2 to final_string
   final_str dup str.len str+ cast(ptr)
   str2 str.fill drop
+
+  // Deallocate `str1` if it is not a string literal
+  str1 str.delete
+
   final_str
 end
 
-// Free the parameter string's memory
+// Deallocate string's memory if it is not a string literal
 function str.delete string:str :
+  if string cast(int) KERNEL_SPACE_PTR < do return endif
   string str.len 1 + string cast(ptr) munmap
 end
 

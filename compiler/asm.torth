@@ -371,7 +371,7 @@ function get_do_asm op:Op program:Program -> str :
       &&
     do
       // jump_destination = f"{op.func.name}_{program[index].type}_{index}"
-      op Op.func Func.name
+      op Op.func Func.name str.copy
       "_"                                                             str.cat
       index program cast(List) List.nth Op.load Op.type OpType.repr   str.cat
       index itoa                                                      str.cat
@@ -1021,17 +1021,19 @@ function format_escape_sequences_for_nasm string:str -> str :
   endif
 
   // Replace escape sequences with valid assembly for NASM
-  DoubleQuote ",9," str.cat DoubleQuote str.cat
+  DoubleQuote str.copy ",9," str.cat DoubleQuote str.cat
   Tab string str.replace_all string =
 
-  DoubleQuote ",10," str.cat DoubleQuote str.cat
+  DoubleQuote str.copy ",10," str.cat DoubleQuote str.cat
   LF string str.replace_all string =
 
-  DoubleQuote ",13," str.cat DoubleQuote str.cat
+  DoubleQuote str.copy ",13," str.cat DoubleQuote str.cat
   CR string str.replace_all string =
 
-  DoubleQuote ",27," str.cat DoubleQuote str.cat
+  DoubleQuote str.copy ",27," str.cat DoubleQuote str.cat
   Escape string str.replace_all
+
+  DoubleQuote str.delete
 end
 
 // Pop a value from the data stack and push it to the return stack

@@ -91,7 +91,7 @@ class Signature
 
     // Generate repr from Signature.params
     while index params_len < do
-      index params List.nth str.load
+      index params List.nth str.load str.copy
       if index params_len 1 - < do
         " " str.cat
       endif
@@ -102,7 +102,7 @@ class Signature
     // Generate repr from Signature.returns
     0 index =
     while index returns_len < do
-      index returns List.nth str.load
+      index returns List.nth str.load str.copy
       if index returns_len 1 - < do
         " " str.cat
       endif

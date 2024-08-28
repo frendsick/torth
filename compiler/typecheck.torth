@@ -471,7 +471,7 @@ function type_check_end_of_branch
     take token_value in
 
     type_stack token
-    token_value " token found outside "                     str.cat
+    f"{token_value} token found outside "
     if token_value "DONE" streq do "WHILE" else "IF" endif  str.cat
     " block"                                                str.cat
     "SYNTAX_ERROR" CompilerErrorWithStack
