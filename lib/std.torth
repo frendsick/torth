@@ -534,7 +534,7 @@ end
 
 // Deallocate string's memory if it is not a string literal
 function str.delete string:str :
-  if string cast(int) KERNEL_SPACE_PTR < do return endif
+  if string str.is_static do return endif
   string str.len 1 + string cast(ptr) munmap
 end
 
@@ -544,12 +544,8 @@ end
 function str.append string:str character:char -> str :
   // Test if the character fits in the current memory page
   // String literals cannot be appended so them always require allocation
-  string str.len PAGE_SIZE %
-  PAGE_SIZE 1 - <
-  string cast(int) KERNEL_SPACE_PTR <
-  take is_string_literal fits_page in
-
-  is_string_literal fits_page not ||
+  string str.len PAGE_SIZE % PAGE_SIZE 2 - >
+  string str.is_static ||
   take requires_allocation in
 
   // Allocate memory for the string if needed
@@ -605,6 +601,9 @@ function str.char_at str int -> char : swap str+ cast(ptr) char.load end
 
 // Test if a string is a palindrome (reads the same backward or forward)
 function str.is_palindrome str -> bool : dup str.reverse streq end
+
+// Test if a string is static string aka. string literal
+function str.is_static str -> bool : cast(int) KERNEL_SPACE_PTR < end
 
 // Test if string only contains numeric characters
 function str.is_numeric string:str -> bool :
