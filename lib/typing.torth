@@ -583,7 +583,7 @@ function LinkedList.pop Node -> ptr :
     head Node.next head_ptr cast(ptr) Node.store
 
     // Deallocate the old head
-    Node.size head cast(ptr) munmap
+    head Node.delete
 
     // Return the popped data
     popped_data
