@@ -614,6 +614,17 @@ function LinkedList.is_empty Node -> bool :
     cast(ptr) int.load 0 ==
 end
 
+function LinkedList.delete linked_list:Node :
+  linked_list cast(ptr) Node.load
+  take node in
+
+  while node cast(int) NULL != do
+    node Node.next
+    node Node.delete
+    take node in
+  done
+end
+
 class Node
     data:ptr
     next:Node
@@ -625,5 +636,9 @@ class Node
 
     method store ptr Node :
         swap cast(ptr) swap ptr.store
+    end
+
+    method delete node:Node :
+        Node.size node cast(ptr) munmap
     end
 endclass // Node
