@@ -958,6 +958,7 @@ function generate_assembly_file
 
   // Append .data section to the assembly file
   data_section_asm file_name append_file
+  data_section_asm str.delete
 end
 
 // Get Assembly code to be added to .data section from Program's string variables
@@ -1135,7 +1136,9 @@ function append_programs_assembly_code file_name:str program:Program :
     op get_op_comment_asm file_name append_file
 
     // Concatenate Op's Assembly to op_asm
-    program op get_op_asm file_name append_file
+    program op get_op_asm
+    peek op_asm in file_name append_file
+    op_asm str.delete
 
     // Append the current Op's assembly to file
     index 1 + index =
