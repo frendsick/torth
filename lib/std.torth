@@ -477,6 +477,9 @@ function str.replace
   string str.copy
   replacement str.cat
   string_end  str.cat
+
+  // Deallocate unused strings
+  string_end  str.delete
 end
 
 // Replace all occurrences of substring with another string.
