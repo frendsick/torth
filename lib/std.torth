@@ -506,30 +506,40 @@ function str.replace_all
   new_string
 end
 
-// Concatenate two strings into a new memory location
-// Note: Deallocates `str1` if it is not a string literal
-// => If the value of `str1` is still needed after `str.cat`, please copy it with `str.copy` before calling `str.cat`
+// Concatenate two strings. Uses existing memory page if it can store both strings.
+// Note: If the value of `str1` is still needed after `str.cat`, please copy it with `str.copy` before calling `str.cat`
 // Params: str2, str1
 // Return: concat(str1+str2)
 function str.cat str2:str str1:str -> str :
-  // Allocate memory to hold both strings
   str1 str.len
-  str2 str.len
-  1 + // NULL byte
-  + malloc
+  str1 str.len
+  take str1.len str2.len in
 
-  // Fill the beginning of the allocated memory with str1
-  str1 str.fill
-  take final_str in
+  str1.len 1 + PAGE_SIZE %
+  str2.len   + PAGE_SIZE >
+  str1 str.is_static ||
+  take requires_allocation in
 
-  // Append str2 to final_string
-  final_str dup str.len str+ cast(ptr)
+  if requires_allocation do
+    // Allocate memory to hold both string
+    str1.len str2.len + 1 + malloc
+
+    // Fill the beginning of the allocated memory with str1
+    str1 str.fill   take result in
+  else
+    str1            take result in
+  endif
+
+  // Append `str2` to `str1`
+  result str1.len str+ cast(ptr)
   str2 str.fill drop
 
-  // Deallocate `str1` if it is not a string literal
-  str1 str.delete
+  // Deallocate `str1` new memory was allocated
+  if requires_allocation do
+    str1 str.delete
+  endif
 
-  final_str
+  result
 end
 
 // Deallocate string's memory if it is not a string literal
