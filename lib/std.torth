@@ -571,6 +571,11 @@ function str.append string:str character:char -> str :
   // Add character to the end
   character buffer string str.len ptr+ char.store
 
+  // Deallocate the original string if new memory was allocated
+  if requires_allocation do
+    string str.delete
+  endif
+
   buffer cast(str)
 end
 
