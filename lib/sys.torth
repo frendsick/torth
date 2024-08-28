@@ -2,6 +2,7 @@
 // https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#x86_64-64_bit
 
 const KERNEL_SPACE_PTR 0xc0000000 end
+const PAGE_SIZE 4096 end
 
 const SYS_read 0 end
 const SYS_write 1 end

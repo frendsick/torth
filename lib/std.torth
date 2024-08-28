@@ -542,14 +542,31 @@ end
 // Params: string, character
 // Return: None
 function str.append string:str character:char -> str :
-  string str.len 2 + malloc
-  take buffer in
+  // Test if the character fits in the current memory page
+  // String literals cannot be appended so them always require allocation
+  string str.len PAGE_SIZE %
+  PAGE_SIZE 1 - <
+  string cast(int) KERNEL_SPACE_PTR <
+  take is_string_literal fits_page in
 
-  // Copy the string to buffer
-  string str.len
-  string cast(ptr)
-  buffer
-  memcpy
+  is_string_literal fits_page not ||
+  take requires_allocation in
+
+  // Allocate memory for the string if needed
+  if requires_allocation do
+    // Allocate memory for the buffer
+    string str.len 2 + malloc
+    take buffer in
+
+    // Copy the string to buffer
+    string str.len
+    string cast(ptr)
+    buffer
+    memcpy
+  else
+    string cast(ptr)
+    take buffer in
+  endif
 
   // Add character to the end
   character buffer string str.len ptr+ char.store
@@ -894,10 +911,6 @@ function read_file path:str -> str :
   take read_bytes in
 
   // Find the size of excess memory to the closest memory page after buf
-  // => Memory page size is 4KB
-  4096 take PAGE_SIZE in
-
-  // Get the byte offset from the end of buffer to the next memory page
   PAGE_SIZE read_bytes PAGE_SIZE % -
   take offset in
 
