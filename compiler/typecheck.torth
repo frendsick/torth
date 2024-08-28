@@ -105,6 +105,12 @@ function type_check_sub_program
     index 1 + index =
   done
 
+  if branched_stacks List.len 1 != do
+    f"Something went wrong while type checking the '{func Func.name}' function\n"
+    "This is most likely a bug in the compiler type checking logic" str.cat
+    "ASSERTION_ERROR" CompilerError
+  endif
+
   // Verify that the TypeStack state matches with the Func's Signature
   branched_stacks List.last Node.load
   func type_check_end_of_program
