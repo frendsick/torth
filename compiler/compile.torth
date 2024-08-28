@@ -14,8 +14,8 @@ end
 
 // Compile assembly code file to object file with NASM
 function compile_with_nasm out_file:str :
-  out_file ".o"   str.cat
-  out_file ".asm" str.cat
+  out_file str.copy ".o"   str.cat
+  out_file str.copy ".asm" str.cat
   List.init // Allocate memory for arguments
   take
     argv
@@ -33,12 +33,11 @@ end
 
 // Link object file with LD
 function link_with_ld out_file:str :
-  out_file ".o" str.cat
+  out_file str.copy ".o" str.cat
   List.init // Allocate memory for arguments
   take argv object_file in
 
   "ld"            cast(ptr) argv List.append
-  "-s"            cast(ptr) argv List.append
   "-melf_x86_64"  cast(ptr) argv List.append
   "-o"            cast(ptr) argv List.append
   out_file        cast(ptr) argv List.append

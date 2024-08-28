@@ -407,10 +407,10 @@ function str.escape string:str -> str :
   in
 
   // Save escape sequences to variables
-  Tab     backslash "t" str.cat string  str.replace_all
-  LF      backslash "n" str.cat rot     str.replace_all
-  CR      backslash "r" str.cat rot     str.replace_all
-  Escape  backslash "e" str.cat rot     str.replace_all
+  Tab     backslash str.copy "t" str.cat string  str.replace_all
+  LF      backslash str.copy "n" str.cat rot     str.replace_all
+  CR      backslash str.copy "r" str.cat rot     str.replace_all
+  Escape  backslash str.copy "e" str.cat rot     str.replace_all
 end
 
 // Get the index of the first character of a substring from a string
@@ -474,7 +474,7 @@ function str.replace
   string index substring str.len + str+
   take string_end in
 
-  string
+  string str.copy
   replacement str.cat
   string_end  str.cat
 end

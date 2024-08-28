@@ -15,11 +15,7 @@ class Location
   end
 
   method repr self:Location -> str :
-    self Location.file
-    ","                       str.cat
-    self Location.row itoa    str.cat
-    ","                       str.cat
-    self Location.column itoa str.cat
+    f"{self Location.file},{self Location.row itoa},{self Location.column itoa}"
   end
 
   method print self:Location :

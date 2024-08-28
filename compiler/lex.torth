@@ -121,7 +121,7 @@ function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
     take path_dir in
 
     // Append file_name to path_dir and check if it exists
-    path_dir file_name str.cat
+    path_dir str.copy file_name str.cat
     take file_with_path in
     if file_with_path file_exists do
       file_with_path return
@@ -411,6 +411,9 @@ function get_tokens_from_code
         if fstring_requires_cat do
           // Add the 7 letters of "str.cat" to the index
           newline_indexes index char_index + 7 + file_name tokens "str.cat" append_word_to_tokens
+        else
+          // Copy the value if the expression is the first thing in the f-string
+          newline_indexes index char_index + 8 + file_name tokens "str.copy" append_word_to_tokens
         endif
         True fstring_requires_cat =
 
@@ -1235,7 +1238,7 @@ function generate_attribution_function
   is_getter:bool // Getter => True, Setter => False
 -> Func :
   // Func.name => Class.attribute OR Class->attribute
-  class_name
+  class_name str.copy
   if is_getter
   do   "."
   else "->"
