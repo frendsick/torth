@@ -407,6 +407,9 @@ function correct_return_types func:Func type_stack:Node -> bool :
     index 1 + index =
   done
   type_stack temp_stack equal_stacks
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // Check if two TypeStacks have similar types inside
@@ -559,6 +562,9 @@ function type_check_assign_bind
     variable_type             str.cat
     "VALUE_ERROR" CompilerErrorWithStack
   endif
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // CAST(<type>) explicitely casts the top element of the stack to <type>
@@ -614,7 +620,11 @@ function type_check_do
     type TypeNode.type str.cat
     "VALUE_ERROR" CompilerErrorWithStack
   endif
+
   type_stack TypeStack.copy branched_stacks List.append
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // Type check ELIF section of an IF block
@@ -805,6 +815,9 @@ function type_check_function_call
     type_stack LinkedList.push
     index 1 + index =
   done
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // Push a function pointer to the stack
@@ -861,6 +874,9 @@ function type_check_peek_bind
   // Save the popped type to the Variable
   type TypeNode.type token Token.value Variable.init
   variables cast(List) List.append
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // Pop a value from the stack to a Variable
@@ -1056,6 +1072,9 @@ function type_check_div token:Token type_stack:Node :
   token Token.location
   take location in
   location "int" TypeNode.init cast(ptr) type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // DROP removes one item from the stack
@@ -1182,6 +1201,9 @@ function type_check_exec token:Token type_stack:Node :
 
     index 1 + index =
   done
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 function parse_signature_from_fn_ptr fn_ptr:str -> Signature :
@@ -1223,6 +1245,9 @@ function type_check_load token:Token type_stack:Node :
   // Push loaded value which could be of any type
   token Token.location "any" TypeNode.init cast(ptr)
   type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // OVER Intrinsic pushes a copy of the second element of the stack.
@@ -1249,6 +1274,9 @@ function type_check_over token:Token type_stack:Node :
   t2 cast(ptr) type_stack LinkedList.push
   t1 cast(ptr) type_stack LinkedList.push
   t2 cast(ptr) type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // ROT Intrinsic rotates the top three elements of the stack so that the third becomes first
@@ -1276,6 +1304,9 @@ function type_check_rot token:Token type_stack:Node :
   t2 cast(ptr) type_stack LinkedList.push
   t1 cast(ptr) type_stack LinkedList.push
   t3 cast(ptr) type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // STORE variants store a value of certain type to where a pointer is pointing to.
@@ -1312,6 +1343,9 @@ function type_check_store token:Token type_stack:Node :
     t2 TypeNode.type                str.cat
     "VALUE_ERROR" CompilerErrorWithStack
   endif
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // SWAP Intrinsic swaps two top elements in the stack.
@@ -1337,6 +1371,9 @@ function type_check_swap token:Token type_stack:Node :
   // Push the values back to the stack in the correct order
   t1 cast(ptr) type_stack LinkedList.push
   t2 cast(ptr) type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // SYSCALL intrinsic variants call a Linux syscall.
@@ -1411,6 +1448,9 @@ function type_check_syscall token:Token type_stack:Node :
   // Push syscall return code to the stack
   token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // Type check bitwise operation for two integers
@@ -1448,6 +1488,9 @@ function type_check_bitwise token:Token type_stack:Node :
   // Push the result to the stack
   token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // SHL performs bitshift operations to the left SHR to the right.
@@ -1487,6 +1530,9 @@ function type_check_bitshift token:Token type_stack:Node :
   // Push the result to the stack
   token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // Type check calculation intrinsics DIV, MINUS, MOD, MUL, and PLUS
@@ -1524,6 +1570,9 @@ function type_check_calculations token:Token type_stack:Node :
   // Push the result to the stack
   token Token.location "int" TypeNode.init cast(ptr)
   type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // Type check comparison intrinsics like EQ or GE.
@@ -1563,6 +1612,9 @@ function type_check_comparison token:Token type_stack:Node :
   // Push the result to the stack
   token Token.location "bool" TypeNode.init cast(ptr)
   type_stack LinkedList.push
+
+  // Clean memory from the temporary stack
+  temp_stack LinkedList.delete
 end
 
 // Get a list of tokens that do not require type checking
