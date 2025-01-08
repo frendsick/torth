@@ -418,115 +418,187 @@ str.fill_DONE26:
 
 c3RyLmNhdA__:
 ;; [str.cat] Save the return address to return stack
-  add r14, 32 ; 3 local variables
+  add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.cat] POP_BIND str2 | File: lib/std.torth, Row: 512, Column: 18
+;; [str.cat] POP_BIND str2 | File: lib/std.torth, Row: 516, Column: 18
   pop rbx
   mov [r14-8], rbx
-;; [str.cat] POP_BIND str1 | File: lib/std.torth, Row: 512, Column: 27
+;; [str.cat] POP_BIND str1 | File: lib/std.torth, Row: 516, Column: 27
   pop rbx
   mov [r14-16], rbx
-;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 514, Column: 3
+;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 517, Column: 3
   push QWORD [r14-16]
-;; [str.cat] FUNCTION_CALL str.len | File: lib/std.torth, Row: 514, Column: 8
+;; [str.cat] FUNCTION_CALL str.len | File: lib/std.torth, Row: 517, Column: 8
   call c3RyLmxlbg__
-;; [str.cat] PUSH_BIND str2 | File: lib/std.torth, Row: 515, Column: 3
-  push QWORD [r14-8]
-;; [str.cat] FUNCTION_CALL str.len | File: lib/std.torth, Row: 515, Column: 8
-  call c3RyLmxlbg__
-;; [str.cat] PUSH_INT | File: lib/std.torth, Row: 516, Column: 3
-  mov rax, 1
-  push rax
-;; [str.cat] INTRINSIC PLUS | File: lib/std.torth, Row: 516, Column: 5
-  pop rax
-  add [rsp], rax
-;; [str.cat] INTRINSIC PLUS | File: lib/std.torth, Row: 517, Column: 3
-  pop rax
-  add [rsp], rax
-;; [str.cat] FUNCTION_CALL malloc | File: lib/std.torth, Row: 517, Column: 5
-  call bWFsbG9j
-;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 520, Column: 3
+;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 518, Column: 3
   push QWORD [r14-16]
-;; [str.cat] FUNCTION_CALL str.fill | File: lib/std.torth, Row: 520, Column: 8
-  call c3RyLmZpbGw_
-;; [str.cat] TAKE | File: lib/std.torth, Row: 521, Column: 3
-;; [str.cat] POP_BIND final_str | File: lib/std.torth, Row: 521, Column: 8
+;; [str.cat] FUNCTION_CALL str.len | File: lib/std.torth, Row: 518, Column: 8
+  call c3RyLmxlbg__
+;; [str.cat] TAKE | File: lib/std.torth, Row: 519, Column: 3
+;; [str.cat] POP_BIND str1.len | File: lib/std.torth, Row: 519, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [str.cat] IN | File: lib/std.torth, Row: 521, Column: 18
-;; [str.cat] PUSH_BIND final_str | File: lib/std.torth, Row: 524, Column: 3
+;; [str.cat] POP_BIND str2.len | File: lib/std.torth, Row: 519, Column: 17
+  pop rbx
+  mov [r14-32], rbx
+;; [str.cat] IN | File: lib/std.torth, Row: 519, Column: 26
+;; [str.cat] PUSH_BIND str1.len | File: lib/std.torth, Row: 521, Column: 3
   push QWORD [r14-24]
-;; [str.cat] INTRINSIC dup | File: lib/std.torth, Row: 524, Column: 13
-  push QWORD [rsp]
-;; [str.cat] FUNCTION_CALL str.len | File: lib/std.torth, Row: 524, Column: 17
-  call c3RyLmxlbg__
-;; [str.cat] FUNCTION_CALL str+ | File: lib/std.torth, Row: 524, Column: 25
-  call c3RyKw__
-;; [str.cat] CAST | File: lib/std.torth, Row: 524, Column: 30
-;; [str.cat] PUSH_BIND str2 | File: lib/std.torth, Row: 525, Column: 3
-  push QWORD [r14-8]
-;; [str.cat] FUNCTION_CALL str.fill | File: lib/std.torth, Row: 525, Column: 8
-  call c3RyLmZpbGw_
-;; [str.cat] INTRINSIC drop | File: lib/std.torth, Row: 525, Column: 17
-  add rsp, 8
-;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 528, Column: 3
+;; [str.cat] PUSH_INT | File: lib/std.torth, Row: 521, Column: 12
+  mov rax, 1
+  push rax
+;; [str.cat] INTRINSIC PLUS | File: lib/std.torth, Row: 521, Column: 14
+  pop rax
+  add [rsp], rax
+;; [str.cat] PUSH_INT | File: lib/std.torth, Row: 521, Column: 16
+  mov rax, 4096
+  push rax
+;; [str.cat] INTRINSIC MOD | File: lib/std.torth, Row: 521, Column: 26
+  xor edx, edx ; Do not use floating point arithmetic
+  pop rbx
+  pop rax
+  div rbx
+  push rdx ; Remainder
+;; [str.cat] PUSH_BIND str2.len | File: lib/std.torth, Row: 522, Column: 3
+  push QWORD [r14-32]
+;; [str.cat] INTRINSIC PLUS | File: lib/std.torth, Row: 522, Column: 14
+  pop rax
+  add [rsp], rax
+;; [str.cat] PUSH_INT | File: lib/std.torth, Row: 522, Column: 16
+  mov rax, 4096
+  push rax
+;; [str.cat] INTRINSIC GT | File: lib/std.torth, Row: 522, Column: 26
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmovg rcx, rdx
+  mov QWORD [rsp], rcx
+;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 523, Column: 3
   push QWORD [r14-16]
-;; [str.cat] FUNCTION_CALL str.delete | File: lib/std.torth, Row: 528, Column: 8
-  call c3RyLmRlbGV0ZQ__
-;; [str.cat] PUSH_BIND final_str | File: lib/std.torth, Row: 530, Column: 3
+;; [str.cat] FUNCTION_CALL str.is_static | File: lib/std.torth, Row: 523, Column: 8
+  call c3RyLmlzX3N0YXRpYw__
+;; [str.cat] FUNCTION_CALL || | File: lib/std.torth, Row: 523, Column: 22
+  call fHw_
+;; [str.cat] TAKE | File: lib/std.torth, Row: 524, Column: 3
+;; [str.cat] POP_BIND requires_allocation | File: lib/std.torth, Row: 524, Column: 8
+  pop rbx
+  mov [r14-40], rbx
+;; [str.cat] IN | File: lib/std.torth, Row: 524, Column: 28
+;; [str.cat] IF | File: lib/std.torth, Row: 526, Column: 3
+;; [str.cat] PUSH_BIND requires_allocation | File: lib/std.torth, Row: 526, Column: 6
+  push QWORD [r14-40]
+;; [str.cat] DO | File: lib/std.torth, Row: 526, Column: 26
+  pop rax
+  test rax, rax
+  jz str.cat_ELSE39
+;; [str.cat] PUSH_BIND str1.len | File: lib/std.torth, Row: 528, Column: 5
   push QWORD [r14-24]
+;; [str.cat] PUSH_BIND str2.len | File: lib/std.torth, Row: 528, Column: 14
+  push QWORD [r14-32]
+;; [str.cat] INTRINSIC PLUS | File: lib/std.torth, Row: 528, Column: 23
+  pop rax
+  add [rsp], rax
+;; [str.cat] PUSH_INT | File: lib/std.torth, Row: 528, Column: 25
+  mov rax, 1
+  push rax
+;; [str.cat] INTRINSIC PLUS | File: lib/std.torth, Row: 528, Column: 27
+  pop rax
+  add [rsp], rax
+;; [str.cat] FUNCTION_CALL malloc | File: lib/std.torth, Row: 528, Column: 29
+  call bWFsbG9j
+;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 531, Column: 5
+  push QWORD [r14-16]
+;; [str.cat] FUNCTION_CALL str.fill | File: lib/std.torth, Row: 531, Column: 10
+  call c3RyLmZpbGw_
+;; [str.cat] TAKE | File: lib/std.torth, Row: 531, Column: 21
+;; [str.cat] POP_BIND result | File: lib/std.torth, Row: 531, Column: 26
+  pop rbx
+  mov [r14-48], rbx
+;; [str.cat] IN | File: lib/std.torth, Row: 531, Column: 33
+;; [str.cat] ELSE | File: lib/std.torth, Row: 532, Column: 3
+  jmp str.cat_ENDIF44
+str.cat_ELSE39:
+;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 533, Column: 5
+  push QWORD [r14-16]
+;; [str.cat] TAKE | File: lib/std.torth, Row: 533, Column: 21
+;; [str.cat] POP_BIND result | File: lib/std.torth, Row: 533, Column: 26
+  pop rbx
+  mov [r14-48], rbx
+;; [str.cat] IN | File: lib/std.torth, Row: 533, Column: 33
+;; [str.cat] ENDIF | File: lib/std.torth, Row: 534, Column: 3
+str.cat_ENDIF44:
+;; [str.cat] PUSH_BIND result | File: lib/std.torth, Row: 537, Column: 3
+  push QWORD [r14-48]
+;; [str.cat] PUSH_BIND str1.len | File: lib/std.torth, Row: 537, Column: 10
+  push QWORD [r14-24]
+;; [str.cat] FUNCTION_CALL str+ | File: lib/std.torth, Row: 537, Column: 19
+  call c3RyKw__
+;; [str.cat] CAST | File: lib/std.torth, Row: 537, Column: 24
+;; [str.cat] PUSH_BIND str2 | File: lib/std.torth, Row: 538, Column: 3
+  push QWORD [r14-8]
+;; [str.cat] FUNCTION_CALL str.fill | File: lib/std.torth, Row: 538, Column: 8
+  call c3RyLmZpbGw_
+;; [str.cat] INTRINSIC drop | File: lib/std.torth, Row: 538, Column: 17
+  add rsp, 8
+;; [str.cat] IF | File: lib/std.torth, Row: 541, Column: 3
+;; [str.cat] PUSH_BIND requires_allocation | File: lib/std.torth, Row: 541, Column: 6
+  push QWORD [r14-40]
+;; [str.cat] DO | File: lib/std.torth, Row: 541, Column: 26
+  pop rax
+  test rax, rax
+  jz str.cat_ENDIF57
+;; [str.cat] PUSH_BIND str1 | File: lib/std.torth, Row: 542, Column: 5
+  push QWORD [r14-16]
+;; [str.cat] FUNCTION_CALL str.delete | File: lib/std.torth, Row: 542, Column: 10
+  call c3RyLmRlbGV0ZQ__
+;; [str.cat] ENDIF | File: lib/std.torth, Row: 543, Column: 3
+str.cat_ENDIF57:
+;; [str.cat] PUSH_BIND result | File: lib/std.torth, Row: 545, Column: 3
+  push QWORD [r14-48]
 ;; [str.cat] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
-  sub r14, 32 ; 3 local variables
+  sub r14, 56 ; 6 local variables
   ret
 
 c3RyLmRlbGV0ZQ__:
 ;; [str.delete] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.delete] POP_BIND string | File: lib/std.torth, Row: 534, Column: 21
+;; [str.delete] POP_BIND string | File: lib/std.torth, Row: 549, Column: 21
   pop rbx
   mov [r14-8], rbx
-;; [str.delete] IF | File: lib/std.torth, Row: 535, Column: 3
-;; [str.delete] PUSH_BIND string | File: lib/std.torth, Row: 535, Column: 6
+;; [str.delete] IF | File: lib/std.torth, Row: 550, Column: 3
+;; [str.delete] PUSH_BIND string | File: lib/std.torth, Row: 550, Column: 6
   push QWORD [r14-8]
-;; [str.delete] CAST | File: lib/std.torth, Row: 535, Column: 13
-;; [str.delete] PUSH_INT | File: lib/std.torth, Row: 535, Column: 23
-  mov rax, 0xc0000000
-  push rax
-;; [str.delete] INTRINSIC LT | File: lib/std.torth, Row: 535, Column: 40
-  pop rax
-  mov rcx, 0
-  mov rdx, 1
-  cmp QWORD [rsp], rax
-  cmovl rcx, rdx
-  mov QWORD [rsp], rcx
-;; [str.delete] DO | File: lib/std.torth, Row: 535, Column: 42
+;; [str.delete] FUNCTION_CALL str.is_static | File: lib/std.torth, Row: 550, Column: 13
+  call c3RyLmlzX3N0YXRpYw__
+;; [str.delete] DO | File: lib/std.torth, Row: 550, Column: 27
   pop rax
   test rax, rax
-  jz str.delete_ENDIF8
-;; [str.delete] RETURN | File: lib/std.torth, Row: 535, Column: 45
+  jz str.delete_ENDIF6
+;; [str.delete] RETURN | File: lib/std.torth, Row: 550, Column: 30
 ;; [str.delete] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 16 ; 1 local variables
   ret
 
-;; [str.delete] ENDIF | File: lib/std.torth, Row: 535, Column: 52
-str.delete_ENDIF8:
-;; [str.delete] PUSH_BIND string | File: lib/std.torth, Row: 536, Column: 3
+;; [str.delete] ENDIF | File: lib/std.torth, Row: 550, Column: 37
+str.delete_ENDIF6:
+;; [str.delete] PUSH_BIND string | File: lib/std.torth, Row: 551, Column: 3
   push QWORD [r14-8]
-;; [str.delete] FUNCTION_CALL str.len | File: lib/std.torth, Row: 536, Column: 10
+;; [str.delete] FUNCTION_CALL str.len | File: lib/std.torth, Row: 551, Column: 10
   call c3RyLmxlbg__
-;; [str.delete] PUSH_INT | File: lib/std.torth, Row: 536, Column: 18
+;; [str.delete] PUSH_INT | File: lib/std.torth, Row: 551, Column: 18
   mov rax, 1
   push rax
-;; [str.delete] INTRINSIC PLUS | File: lib/std.torth, Row: 536, Column: 20
+;; [str.delete] INTRINSIC PLUS | File: lib/std.torth, Row: 551, Column: 20
   pop rax
   add [rsp], rax
-;; [str.delete] PUSH_BIND string | File: lib/std.torth, Row: 536, Column: 22
+;; [str.delete] PUSH_BIND string | File: lib/std.torth, Row: 551, Column: 22
   push QWORD [r14-8]
-;; [str.delete] CAST | File: lib/std.torth, Row: 536, Column: 29
-;; [str.delete] FUNCTION_CALL munmap | File: lib/std.torth, Row: 536, Column: 39
+;; [str.delete] CAST | File: lib/std.torth, Row: 551, Column: 29
+;; [str.delete] FUNCTION_CALL munmap | File: lib/std.torth, Row: 551, Column: 39
   call bXVubWFw
 ;; [str.delete] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -537,16 +609,36 @@ c3RyLmNoYXJfYXQ_:
 ;; [str.char_at] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.char_at] INTRINSIC swap | File: lib/std.torth, Row: 580, Column: 40
+;; [str.char_at] INTRINSIC swap | File: lib/std.torth, Row: 631, Column: 40
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [str.char_at] FUNCTION_CALL str+ | File: lib/std.torth, Row: 580, Column: 45
+;; [str.char_at] FUNCTION_CALL str+ | File: lib/std.torth, Row: 631, Column: 45
   call c3RyKw__
-;; [str.char_at] CAST | File: lib/std.torth, Row: 580, Column: 50
-;; [str.char_at] FUNCTION_CALL char.load | File: lib/std.torth, Row: 580, Column: 60
+;; [str.char_at] CAST | File: lib/std.torth, Row: 631, Column: 50
+;; [str.char_at] FUNCTION_CALL char.load | File: lib/std.torth, Row: 631, Column: 60
   call Y2hhci5sb2Fk
 ;; [str.char_at] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 8 ; 0 local variables
+  ret
+
+c3RyLmlzX3N0YXRpYw__:
+;; [str.is_static] Save the return address to return stack
+  add r14, 8 ; 0 local variables
+  pop QWORD [r14] ; Save return address from stack
+;; [str.is_static] CAST | File: lib/std.torth, Row: 637, Column: 38
+;; [str.is_static] PUSH_INT | File: lib/std.torth, Row: 637, Column: 48
+  mov rax, 0xc0000000
+  push rax
+;; [str.is_static] INTRINSIC LT | File: lib/std.torth, Row: 637, Column: 65
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmovl rcx, rdx
+  mov QWORD [rsp], rcx
+;; [str.is_static] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 8 ; 0 local variables
   ret
@@ -669,6 +761,10 @@ generate_assembly_file_DONE44:
   push QWORD [r14-8]
 ;; [generate_assembly_file] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 960, Column: 30
   call YXBwZW5kX2ZpbGU_
+;; [generate_assembly_file] PUSH_BIND data_section_asm | File: compiler/asm.torth, Row: 961, Column: 3
+  push QWORD [r14-32]
+;; [generate_assembly_file] FUNCTION_CALL str.delete | File: compiler/asm.torth, Row: 961, Column: 20
+  call c3RyLmRlbGV0ZQ__
 ;; [generate_assembly_file] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -678,81 +774,67 @@ Z2V0X3N0cmluZ192YXJpYWJsZXNfZm9yX2RhdGFfc2VjdGlvbg__:
 ;; [get_string_variables_for_data_section] Save the return address to return stack
   add r14, 64 ; 7 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_string_variables_for_data_section] POP_BIND program | File: compiler/asm.torth, Row: 964, Column: 48
+;; [get_string_variables_for_data_section] POP_BIND program | File: compiler/asm.torth, Row: 965, Column: 48
   pop rbx
   mov [r14-8], rbx
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 965, Column: 3
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 966, Column: 3
   mov rsi, get_string_variables_for_data_section_s1 ; Pointer to string
 
   push rsi
-;; [get_string_variables_for_data_section] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 965, Column: 6
+;; [get_string_variables_for_data_section] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 966, Column: 6
   call c3RyLmNvcHk_
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 966, Column: 3
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 967, Column: 3
   mov rax, 0
   push rax
-;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 967, Column: 3
-;; [get_string_variables_for_data_section] POP_BIND index | File: compiler/asm.torth, Row: 967, Column: 8
+;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 968, Column: 3
+;; [get_string_variables_for_data_section] POP_BIND index | File: compiler/asm.torth, Row: 968, Column: 8
   pop rbx
   mov [r14-16], rbx
-;; [get_string_variables_for_data_section] POP_BIND assembly_code | File: compiler/asm.torth, Row: 967, Column: 14
+;; [get_string_variables_for_data_section] POP_BIND assembly_code | File: compiler/asm.torth, Row: 968, Column: 14
   pop rbx
   mov [r14-24], rbx
-;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 967, Column: 28
-;; [get_string_variables_for_data_section] WHILE | File: compiler/asm.torth, Row: 968, Column: 3
+;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 968, Column: 28
+;; [get_string_variables_for_data_section] WHILE | File: compiler/asm.torth, Row: 969, Column: 3
 get_string_variables_for_data_section_WHILE8:
-;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 968, Column: 9
+;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 969, Column: 9
   push QWORD [r14-16]
-;; [get_string_variables_for_data_section] PUSH_BIND program | File: compiler/asm.torth, Row: 968, Column: 15
+;; [get_string_variables_for_data_section] PUSH_BIND program | File: compiler/asm.torth, Row: 969, Column: 15
   push QWORD [r14-8]
-;; [get_string_variables_for_data_section] CAST | File: compiler/asm.torth, Row: 968, Column: 23
-;; [get_string_variables_for_data_section] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 968, Column: 34
+;; [get_string_variables_for_data_section] CAST | File: compiler/asm.torth, Row: 969, Column: 23
+;; [get_string_variables_for_data_section] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 969, Column: 34
   call TGlzdC5sZW4_
-;; [get_string_variables_for_data_section] INTRINSIC LT | File: compiler/asm.torth, Row: 968, Column: 43
+;; [get_string_variables_for_data_section] INTRINSIC LT | File: compiler/asm.torth, Row: 969, Column: 43
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 968, Column: 45
+;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 969, Column: 45
   pop rax
   test rax, rax
   jz get_string_variables_for_data_section_DONE99
-;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 970, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 971, Column: 5
   push QWORD [r14-16]
-;; [get_string_variables_for_data_section] PUSH_BIND program | File: compiler/asm.torth, Row: 970, Column: 11
+;; [get_string_variables_for_data_section] PUSH_BIND program | File: compiler/asm.torth, Row: 971, Column: 11
   push QWORD [r14-8]
-;; [get_string_variables_for_data_section] CAST | File: compiler/asm.torth, Row: 970, Column: 19
-;; [get_string_variables_for_data_section] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 970, Column: 30
+;; [get_string_variables_for_data_section] CAST | File: compiler/asm.torth, Row: 971, Column: 19
+;; [get_string_variables_for_data_section] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 971, Column: 30
   call TGlzdC5udGg_
-;; [get_string_variables_for_data_section] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 970, Column: 39
+;; [get_string_variables_for_data_section] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 971, Column: 39
   call T3AubG9hZA__
-;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 971, Column: 5
-;; [get_string_variables_for_data_section] POP_BIND op | File: compiler/asm.torth, Row: 971, Column: 10
+;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 972, Column: 5
+;; [get_string_variables_for_data_section] POP_BIND op | File: compiler/asm.torth, Row: 972, Column: 10
   pop rbx
   mov [r14-32], rbx
-;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 971, Column: 13
-;; [get_string_variables_for_data_section] IF | File: compiler/asm.torth, Row: 974, Column: 5
-;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 975, Column: 7
-  push QWORD [r14-32]
-;; [get_string_variables_for_data_section] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 975, Column: 10
-  call T3AudHlwZQ__
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 975, Column: 18
-  mov rax, 23
-  push rax
-;; [get_string_variables_for_data_section] INTRINSIC NE | File: compiler/asm.torth, Row: 975, Column: 34
-  pop rax
-  mov rcx, 0
-  mov rdx, 1
-  cmp QWORD [rsp], rax
-  cmovne rcx, rdx
-  mov QWORD [rsp], rcx
+;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 972, Column: 13
+;; [get_string_variables_for_data_section] IF | File: compiler/asm.torth, Row: 975, Column: 5
 ;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 976, Column: 7
   push QWORD [r14-32]
 ;; [get_string_variables_for_data_section] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 976, Column: 10
   call T3AudHlwZQ__
 ;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 976, Column: 18
-  mov rax, 26
+  mov rax, 23
   push rax
 ;; [get_string_variables_for_data_section] INTRINSIC NE | File: compiler/asm.torth, Row: 976, Column: 34
   pop rax
@@ -761,177 +843,191 @@ get_string_variables_for_data_section_WHILE8:
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_string_variables_for_data_section] FUNCTION_CALL && | File: compiler/asm.torth, Row: 977, Column: 7
+;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 977, Column: 7
+  push QWORD [r14-32]
+;; [get_string_variables_for_data_section] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 977, Column: 10
+  call T3AudHlwZQ__
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 977, Column: 18
+  mov rax, 26
+  push rax
+;; [get_string_variables_for_data_section] INTRINSIC NE | File: compiler/asm.torth, Row: 977, Column: 34
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmovne rcx, rdx
+  mov QWORD [rsp], rcx
+;; [get_string_variables_for_data_section] FUNCTION_CALL && | File: compiler/asm.torth, Row: 978, Column: 7
   call JiY_
-;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 978, Column: 5
+;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 979, Column: 5
   pop rax
   test rax, rax
   jz get_string_variables_for_data_section_ENDIF40
-;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 979, Column: 7
+;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 980, Column: 7
   push QWORD [r14-16]
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 979, Column: 13
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 980, Column: 13
   mov rax, 1
   push rax
-;; [get_string_variables_for_data_section] INTRINSIC PLUS | File: compiler/asm.torth, Row: 979, Column: 15
+;; [get_string_variables_for_data_section] INTRINSIC PLUS | File: compiler/asm.torth, Row: 980, Column: 15
   pop rax
   add [rsp], rax
-;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 979, Column: 17
+;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 980, Column: 17
   push QWORD [r14-16]
-;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 979, Column: 23
+;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 980, Column: 23
   add rsp, 8
   pop rbx
   mov [r14-16], rbx
-;; [get_string_variables_for_data_section] CONTINUE | File: compiler/asm.torth, Row: 980, Column: 7
-  jmp get_string_variables_for_data_section_WHILE8;; [get_string_variables_for_data_section] ENDIF | File: compiler/asm.torth, Row: 981, Column: 5
+;; [get_string_variables_for_data_section] CONTINUE | File: compiler/asm.torth, Row: 981, Column: 7
+  jmp get_string_variables_for_data_section_WHILE8;; [get_string_variables_for_data_section] ENDIF | File: compiler/asm.torth, Row: 982, Column: 5
 get_string_variables_for_data_section_ENDIF40:
-;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 983, Column: 5
-  push QWORD [r14-32]
-;; [get_string_variables_for_data_section] FUNCTION_CALL Op.id | File: compiler/asm.torth, Row: 983, Column: 8
-  call T3AuaWQ_
-;; [get_string_variables_for_data_section] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 983, Column: 14
-  call aXRvYQ__
 ;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 984, Column: 5
   push QWORD [r14-32]
-;; [get_string_variables_for_data_section] FUNCTION_CALL Op.func | File: compiler/asm.torth, Row: 984, Column: 8
+;; [get_string_variables_for_data_section] FUNCTION_CALL Op.id | File: compiler/asm.torth, Row: 984, Column: 8
+  call T3AuaWQ_
+;; [get_string_variables_for_data_section] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 984, Column: 14
+  call aXRvYQ__
+;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 985, Column: 5
+  push QWORD [r14-32]
+;; [get_string_variables_for_data_section] FUNCTION_CALL Op.func | File: compiler/asm.torth, Row: 985, Column: 8
   call T3AuZnVuYw__
-;; [get_string_variables_for_data_section] FUNCTION_CALL Func.name | File: compiler/asm.torth, Row: 984, Column: 16
+;; [get_string_variables_for_data_section] FUNCTION_CALL Func.name | File: compiler/asm.torth, Row: 985, Column: 16
   call RnVuYy5uYW1l
-;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 985, Column: 5
-;; [get_string_variables_for_data_section] POP_BIND function_name | File: compiler/asm.torth, Row: 985, Column: 10
+;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 986, Column: 5
+;; [get_string_variables_for_data_section] POP_BIND function_name | File: compiler/asm.torth, Row: 986, Column: 10
   pop rbx
   mov [r14-40], rbx
-;; [get_string_variables_for_data_section] POP_BIND op_id | File: compiler/asm.torth, Row: 985, Column: 24
+;; [get_string_variables_for_data_section] POP_BIND op_id | File: compiler/asm.torth, Row: 986, Column: 24
   pop rbx
   mov [r14-48], rbx
-;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 985, Column: 30
-;; [get_string_variables_for_data_section] IF | File: compiler/asm.torth, Row: 987, Column: 5
-;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 987, Column: 8
+;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 986, Column: 30
+;; [get_string_variables_for_data_section] IF | File: compiler/asm.torth, Row: 988, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 988, Column: 8
   push QWORD [r14-32]
-;; [get_string_variables_for_data_section] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 987, Column: 11
+;; [get_string_variables_for_data_section] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 988, Column: 11
   call T3AudHlwZQ__
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 987, Column: 19
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 988, Column: 19
   mov rax, 23
   push rax
-;; [get_string_variables_for_data_section] INTRINSIC EQ | File: compiler/asm.torth, Row: 987, Column: 35
+;; [get_string_variables_for_data_section] INTRINSIC EQ | File: compiler/asm.torth, Row: 988, Column: 35
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 987, Column: 38
+;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 988, Column: 38
   pop rax
   test rax, rax
   jz get_string_variables_for_data_section_ELIF64
-;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 988, Column: 9
+;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 989, Column: 9
   push QWORD [r14-32]
-;; [get_string_variables_for_data_section] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 988, Column: 12
+;; [get_string_variables_for_data_section] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 989, Column: 12
   call T3AudG9rZW4_
-;; [get_string_variables_for_data_section] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 988, Column: 21
+;; [get_string_variables_for_data_section] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 989, Column: 21
   call VG9rZW4udmFsdWU_
-;; [get_string_variables_for_data_section] FUNCTION_CALL format_escape_sequences_for_nasm | File: compiler/asm.torth, Row: 988, Column: 33
+;; [get_string_variables_for_data_section] FUNCTION_CALL format_escape_sequences_for_nasm | File: compiler/asm.torth, Row: 989, Column: 33
   call Zm9ybWF0X2VzY2FwZV9zZXF1ZW5jZXNfZm9yX25hc20_
-;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 989, Column: 9
-;; [get_string_variables_for_data_section] POP_BIND string | File: compiler/asm.torth, Row: 989, Column: 14
+;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 990, Column: 9
+;; [get_string_variables_for_data_section] POP_BIND string | File: compiler/asm.torth, Row: 990, Column: 14
   pop rbx
   mov [r14-56], rbx
-;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 989, Column: 21
-;; [get_string_variables_for_data_section] ELIF | File: compiler/asm.torth, Row: 990, Column: 5
+;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 990, Column: 21
+;; [get_string_variables_for_data_section] ELIF | File: compiler/asm.torth, Row: 991, Column: 5
   jmp get_string_variables_for_data_section_ENDIF76
 get_string_variables_for_data_section_ELIF64:
-;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 990, Column: 10
+;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 991, Column: 10
   push QWORD [r14-32]
-;; [get_string_variables_for_data_section] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 990, Column: 13
+;; [get_string_variables_for_data_section] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 991, Column: 13
   call T3AudHlwZQ__
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 990, Column: 21
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 991, Column: 21
   mov rax, 26
   push rax
-;; [get_string_variables_for_data_section] INTRINSIC EQ | File: compiler/asm.torth, Row: 990, Column: 35
+;; [get_string_variables_for_data_section] INTRINSIC EQ | File: compiler/asm.torth, Row: 991, Column: 35
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 990, Column: 38
+;; [get_string_variables_for_data_section] DO | File: compiler/asm.torth, Row: 991, Column: 38
   pop rax
   test rax, rax
   jz get_string_variables_for_data_section_ENDIF76
-;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 991, Column: 9
+;; [get_string_variables_for_data_section] PUSH_BIND op | File: compiler/asm.torth, Row: 992, Column: 9
   push QWORD [r14-32]
-;; [get_string_variables_for_data_section] FUNCTION_CALL Op.stack_typeof | File: compiler/asm.torth, Row: 991, Column: 12
+;; [get_string_variables_for_data_section] FUNCTION_CALL Op.stack_typeof | File: compiler/asm.torth, Row: 992, Column: 12
   call T3Auc3RhY2tfdHlwZW9m
-;; [get_string_variables_for_data_section] FUNCTION_CALL format_escape_sequences_for_nasm | File: compiler/asm.torth, Row: 991, Column: 28
+;; [get_string_variables_for_data_section] FUNCTION_CALL format_escape_sequences_for_nasm | File: compiler/asm.torth, Row: 992, Column: 28
   call Zm9ybWF0X2VzY2FwZV9zZXF1ZW5jZXNfZm9yX25hc20_
-;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 992, Column: 9
-;; [get_string_variables_for_data_section] POP_BIND string | File: compiler/asm.torth, Row: 992, Column: 14
+;; [get_string_variables_for_data_section] TAKE | File: compiler/asm.torth, Row: 993, Column: 9
+;; [get_string_variables_for_data_section] POP_BIND string | File: compiler/asm.torth, Row: 993, Column: 14
   pop rbx
   mov [r14-56], rbx
-;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 992, Column: 21
-;; [get_string_variables_for_data_section] ENDIF | File: compiler/asm.torth, Row: 993, Column: 5
+;; [get_string_variables_for_data_section] IN | File: compiler/asm.torth, Row: 993, Column: 21
+;; [get_string_variables_for_data_section] ENDIF | File: compiler/asm.torth, Row: 994, Column: 5
 get_string_variables_for_data_section_ENDIF76:
-;; [get_string_variables_for_data_section] PUSH_BIND assembly_code | File: compiler/asm.torth, Row: 995, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND assembly_code | File: compiler/asm.torth, Row: 996, Column: 5
   push QWORD [r14-24]
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 996, Column: 7
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 997, Column: 7
   mov rsi, get_string_variables_for_data_section_s78 ; Pointer to string
 
   push rsi
-;; [get_string_variables_for_data_section] PUSH_BIND function_name | File: compiler/asm.torth, Row: 996, Column: 10
+;; [get_string_variables_for_data_section] PUSH_BIND function_name | File: compiler/asm.torth, Row: 997, Column: 10
   push QWORD [r14-40]
-;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 996, Column: 24
+;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 997, Column: 24
   call c3RyLmNhdA__
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 996, Column: 24
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 997, Column: 24
   mov rsi, get_string_variables_for_data_section_s81 ; Pointer to string
 
   push rsi
-;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 996, Column: 26
+;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 997, Column: 26
   call c3RyLmNhdA__
-;; [get_string_variables_for_data_section] PUSH_BIND op_id | File: compiler/asm.torth, Row: 996, Column: 27
+;; [get_string_variables_for_data_section] PUSH_BIND op_id | File: compiler/asm.torth, Row: 997, Column: 27
   push QWORD [r14-48]
-;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 996, Column: 33
+;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 997, Column: 33
   call c3RyLmNhdA__
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 996, Column: 33
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 997, Column: 33
   mov rsi, get_string_variables_for_data_section_s85 ; Pointer to string
 
   push rsi
-;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 996, Column: 37
+;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 997, Column: 37
   call c3RyLmNhdA__
-;; [get_string_variables_for_data_section] PUSH_BIND string | File: compiler/asm.torth, Row: 996, Column: 38
+;; [get_string_variables_for_data_section] PUSH_BIND string | File: compiler/asm.torth, Row: 997, Column: 38
   push QWORD [r14-56]
-;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 996, Column: 45
+;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 997, Column: 45
   call c3RyLmNhdA__
-;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 996, Column: 45
+;; [get_string_variables_for_data_section] PUSH_STR | File: compiler/asm.torth, Row: 997, Column: 45
   mov rsi, get_string_variables_for_data_section_s89 ; Pointer to string
 
   push rsi
-;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 996, Column: 49
+;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 997, Column: 49
   call c3RyLmNhdA__
-;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 996, Column: 51
+;; [get_string_variables_for_data_section] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 997, Column: 51
   call c3RyLmNhdA__
-;; [get_string_variables_for_data_section] PUSH_BIND assembly_code | File: compiler/asm.torth, Row: 997, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND assembly_code | File: compiler/asm.torth, Row: 998, Column: 5
   push QWORD [r14-24]
-;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 997, Column: 19
+;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 998, Column: 19
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 999, Column: 5
+;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 1000, Column: 5
   push QWORD [r14-16]
-;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 999, Column: 11
+;; [get_string_variables_for_data_section] PUSH_INT | File: compiler/asm.torth, Row: 1000, Column: 11
   mov rax, 1
   push rax
-;; [get_string_variables_for_data_section] INTRINSIC PLUS | File: compiler/asm.torth, Row: 999, Column: 13
+;; [get_string_variables_for_data_section] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1000, Column: 13
   pop rax
   add [rsp], rax
-;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 999, Column: 15
+;; [get_string_variables_for_data_section] PUSH_BIND index | File: compiler/asm.torth, Row: 1000, Column: 15
   push QWORD [r14-16]
-;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 999, Column: 21
+;; [get_string_variables_for_data_section] ASSIGN_BIND | File: compiler/asm.torth, Row: 1000, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-16], rbx
-;; [get_string_variables_for_data_section] DONE | File: compiler/asm.torth, Row: 1000, Column: 3
+;; [get_string_variables_for_data_section] DONE | File: compiler/asm.torth, Row: 1001, Column: 3
   jmp get_string_variables_for_data_section_WHILE8
 get_string_variables_for_data_section_DONE99:
-;; [get_string_variables_for_data_section] PUSH_BIND assembly_code | File: compiler/asm.torth, Row: 1001, Column: 3
+;; [get_string_variables_for_data_section] PUSH_BIND assembly_code | File: compiler/asm.torth, Row: 1002, Column: 3
   push QWORD [r14-24]
 ;; [get_string_variables_for_data_section] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -942,196 +1038,196 @@ Zm9ybWF0X2VzY2FwZV9zZXF1ZW5jZXNfZm9yX25hc20_:
 ;; [format_escape_sequences_for_nasm] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [format_escape_sequences_for_nasm] POP_BIND string | File: compiler/asm.torth, Row: 1004, Column: 43
+;; [format_escape_sequences_for_nasm] POP_BIND string | File: compiler/asm.torth, Row: 1005, Column: 43
   pop rbx
   mov [r14-8], rbx
-;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1005, Column: 3
-  mov rax, 9
-  push rax
-;; [format_escape_sequences_for_nasm] CAST | File: compiler/asm.torth, Row: 1005, Column: 6
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL char.to_string | File: compiler/asm.torth, Row: 1005, Column: 17
-  call Y2hhci50b19zdHJpbmc_
 ;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1006, Column: 3
-  mov rax, 10
+  mov rax, 9
   push rax
 ;; [format_escape_sequences_for_nasm] CAST | File: compiler/asm.torth, Row: 1006, Column: 6
 ;; [format_escape_sequences_for_nasm] FUNCTION_CALL char.to_string | File: compiler/asm.torth, Row: 1006, Column: 17
   call Y2hhci50b19zdHJpbmc_
 ;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1007, Column: 3
-  mov rax, 13
+  mov rax, 10
   push rax
 ;; [format_escape_sequences_for_nasm] CAST | File: compiler/asm.torth, Row: 1007, Column: 6
 ;; [format_escape_sequences_for_nasm] FUNCTION_CALL char.to_string | File: compiler/asm.torth, Row: 1007, Column: 17
   call Y2hhci50b19zdHJpbmc_
 ;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1008, Column: 3
-  mov rax, 27
+  mov rax, 13
   push rax
 ;; [format_escape_sequences_for_nasm] CAST | File: compiler/asm.torth, Row: 1008, Column: 6
 ;; [format_escape_sequences_for_nasm] FUNCTION_CALL char.to_string | File: compiler/asm.torth, Row: 1008, Column: 17
   call Y2hhci50b19zdHJpbmc_
 ;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1009, Column: 3
-  mov rax, 34
+  mov rax, 27
   push rax
 ;; [format_escape_sequences_for_nasm] CAST | File: compiler/asm.torth, Row: 1009, Column: 6
 ;; [format_escape_sequences_for_nasm] FUNCTION_CALL char.to_string | File: compiler/asm.torth, Row: 1009, Column: 17
   call Y2hhci50b19zdHJpbmc_
-;; [format_escape_sequences_for_nasm] TAKE | File: compiler/asm.torth, Row: 1010, Column: 3
-;; [format_escape_sequences_for_nasm] POP_BIND DoubleQuote | File: compiler/asm.torth, Row: 1011, Column: 5
+;; [format_escape_sequences_for_nasm] PUSH_INT | File: compiler/asm.torth, Row: 1010, Column: 3
+  mov rax, 34
+  push rax
+;; [format_escape_sequences_for_nasm] CAST | File: compiler/asm.torth, Row: 1010, Column: 6
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL char.to_string | File: compiler/asm.torth, Row: 1010, Column: 17
+  call Y2hhci50b19zdHJpbmc_
+;; [format_escape_sequences_for_nasm] TAKE | File: compiler/asm.torth, Row: 1011, Column: 3
+;; [format_escape_sequences_for_nasm] POP_BIND DoubleQuote | File: compiler/asm.torth, Row: 1012, Column: 5
   pop rbx
   mov [r14-16], rbx
-;; [format_escape_sequences_for_nasm] POP_BIND Escape | File: compiler/asm.torth, Row: 1012, Column: 5
+;; [format_escape_sequences_for_nasm] POP_BIND Escape | File: compiler/asm.torth, Row: 1013, Column: 5
   pop rbx
   mov [r14-24], rbx
-;; [format_escape_sequences_for_nasm] POP_BIND CR | File: compiler/asm.torth, Row: 1013, Column: 5
+;; [format_escape_sequences_for_nasm] POP_BIND CR | File: compiler/asm.torth, Row: 1014, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [format_escape_sequences_for_nasm] POP_BIND LF | File: compiler/asm.torth, Row: 1014, Column: 5
+;; [format_escape_sequences_for_nasm] POP_BIND LF | File: compiler/asm.torth, Row: 1015, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [format_escape_sequences_for_nasm] POP_BIND Tab | File: compiler/asm.torth, Row: 1015, Column: 5
+;; [format_escape_sequences_for_nasm] POP_BIND Tab | File: compiler/asm.torth, Row: 1016, Column: 5
   pop rbx
   mov [r14-48], rbx
-;; [format_escape_sequences_for_nasm] IN | File: compiler/asm.torth, Row: 1016, Column: 3
-;; [format_escape_sequences_for_nasm] IF | File: compiler/asm.torth, Row: 1019, Column: 3
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1019, Column: 6
+;; [format_escape_sequences_for_nasm] IN | File: compiler/asm.torth, Row: 1017, Column: 3
+;; [format_escape_sequences_for_nasm] IF | File: compiler/asm.torth, Row: 1020, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1020, Column: 6
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1019, Column: 13
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1020, Column: 13
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.startswith | File: compiler/asm.torth, Row: 1019, Column: 25
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.startswith | File: compiler/asm.torth, Row: 1020, Column: 25
   call c3RyLnN0YXJ0c3dpdGg_
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL not | File: compiler/asm.torth, Row: 1019, Column: 40
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL not | File: compiler/asm.torth, Row: 1020, Column: 40
   call bm90
-;; [format_escape_sequences_for_nasm] DO | File: compiler/asm.torth, Row: 1019, Column: 44
+;; [format_escape_sequences_for_nasm] DO | File: compiler/asm.torth, Row: 1020, Column: 44
   pop rax
   test rax, rax
   jz format_escape_sequences_for_nasm_ENDIF39
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1020, Column: 8
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1021, Column: 8
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1020, Column: 20
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1021, Column: 20
   call c3RyLmNvcHk_
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1020, Column: 21
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1021, Column: 21
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1020, Column: 28
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1021, Column: 28
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1020, Column: 29
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1021, Column: 29
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1020, Column: 41
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1021, Column: 41
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1020, Column: 41
+;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1021, Column: 41
   mov rsi, format_escape_sequences_for_nasm_s35 ; Pointer to string
 
   push rsi
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1020, Column: 41
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1021, Column: 41
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1020, Column: 43
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1021, Column: 43
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1020, Column: 50
+;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1021, Column: 50
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [format_escape_sequences_for_nasm] ENDIF | File: compiler/asm.torth, Row: 1021, Column: 3
+;; [format_escape_sequences_for_nasm] ENDIF | File: compiler/asm.torth, Row: 1022, Column: 3
 format_escape_sequences_for_nasm_ENDIF39:
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1024, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1025, Column: 3
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1024, Column: 15
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1025, Column: 15
   call c3RyLmNvcHk_
-;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1024, Column: 24
+;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1025, Column: 24
   mov rsi, format_escape_sequences_for_nasm_s42 ; Pointer to string
 
   push rsi
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1024, Column: 30
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1025, Column: 30
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1024, Column: 38
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1025, Column: 38
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1024, Column: 50
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1025, Column: 50
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND Tab | File: compiler/asm.torth, Row: 1025, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND Tab | File: compiler/asm.torth, Row: 1026, Column: 3
   push QWORD [r14-48]
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1025, Column: 7
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1026, Column: 7
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1025, Column: 14
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1026, Column: 14
   call c3RyLnJlcGxhY2VfYWxs
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1025, Column: 30
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1026, Column: 30
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1025, Column: 37
+;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1026, Column: 37
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1027, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1028, Column: 3
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1027, Column: 15
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1028, Column: 15
   call c3RyLmNvcHk_
-;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1027, Column: 24
+;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1028, Column: 24
   mov rsi, format_escape_sequences_for_nasm_s53 ; Pointer to string
 
   push rsi
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1027, Column: 31
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1028, Column: 31
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1027, Column: 39
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1028, Column: 39
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1027, Column: 51
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1028, Column: 51
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND LF | File: compiler/asm.torth, Row: 1028, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND LF | File: compiler/asm.torth, Row: 1029, Column: 3
   push QWORD [r14-40]
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1028, Column: 6
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1029, Column: 6
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1028, Column: 13
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1029, Column: 13
   call c3RyLnJlcGxhY2VfYWxs
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1028, Column: 29
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1029, Column: 29
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1028, Column: 36
+;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1029, Column: 36
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1030, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1031, Column: 3
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1030, Column: 15
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1031, Column: 15
   call c3RyLmNvcHk_
-;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1030, Column: 24
+;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1031, Column: 24
   mov rsi, format_escape_sequences_for_nasm_s64 ; Pointer to string
 
   push rsi
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1030, Column: 31
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1031, Column: 31
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1030, Column: 39
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1031, Column: 39
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1030, Column: 51
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1031, Column: 51
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND CR | File: compiler/asm.torth, Row: 1031, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND CR | File: compiler/asm.torth, Row: 1032, Column: 3
   push QWORD [r14-32]
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1031, Column: 6
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1032, Column: 6
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1031, Column: 13
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1032, Column: 13
   call c3RyLnJlcGxhY2VfYWxs
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1031, Column: 29
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1032, Column: 29
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1031, Column: 36
+;; [format_escape_sequences_for_nasm] ASSIGN_BIND | File: compiler/asm.torth, Row: 1032, Column: 36
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1033, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1034, Column: 3
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1033, Column: 15
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1034, Column: 15
   call c3RyLmNvcHk_
-;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1033, Column: 24
+;; [format_escape_sequences_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1034, Column: 24
   mov rsi, format_escape_sequences_for_nasm_s75 ; Pointer to string
 
   push rsi
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1033, Column: 31
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1034, Column: 31
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1033, Column: 39
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1034, Column: 39
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1033, Column: 51
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1034, Column: 51
   call c3RyLmNhdA__
-;; [format_escape_sequences_for_nasm] PUSH_BIND Escape | File: compiler/asm.torth, Row: 1034, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND Escape | File: compiler/asm.torth, Row: 1035, Column: 3
   push QWORD [r14-24]
-;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1034, Column: 10
+;; [format_escape_sequences_for_nasm] PUSH_BIND string | File: compiler/asm.torth, Row: 1035, Column: 10
   push QWORD [r14-8]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1034, Column: 17
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1035, Column: 17
   call c3RyLnJlcGxhY2VfYWxs
-;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1036, Column: 3
+;; [format_escape_sequences_for_nasm] PUSH_BIND DoubleQuote | File: compiler/asm.torth, Row: 1037, Column: 3
   push QWORD [r14-16]
-;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.delete | File: compiler/asm.torth, Row: 1036, Column: 15
+;; [format_escape_sequences_for_nasm] FUNCTION_CALL str.delete | File: compiler/asm.torth, Row: 1037, Column: 15
   call c3RyLmRlbGV0ZQ__
 ;; [format_escape_sequences_for_nasm] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -1140,129 +1236,141 @@ format_escape_sequences_for_nasm_ENDIF39:
 
 YXBwZW5kX3Byb2dyYW1zX2Fzc2VtYmx5X2NvZGU_:
 ;; [append_programs_assembly_code] Save the return address to return stack
-  add r14, 56 ; 6 local variables
+  add r14, 64 ; 7 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [append_programs_assembly_code] POP_BIND file_name | File: compiler/asm.torth, Row: 1114, Column: 40
+;; [append_programs_assembly_code] POP_BIND file_name | File: compiler/asm.torth, Row: 1115, Column: 40
   pop rbx
   mov [r14-8], rbx
-;; [append_programs_assembly_code] POP_BIND program | File: compiler/asm.torth, Row: 1114, Column: 54
+;; [append_programs_assembly_code] POP_BIND program | File: compiler/asm.torth, Row: 1115, Column: 54
   pop rbx
   mov [r14-16], rbx
-;; [append_programs_assembly_code] PUSH_BIND program | File: compiler/asm.torth, Row: 1115, Column: 3
+;; [append_programs_assembly_code] PUSH_BIND program | File: compiler/asm.torth, Row: 1116, Column: 3
   push QWORD [r14-16]
-;; [append_programs_assembly_code] CAST | File: compiler/asm.torth, Row: 1115, Column: 11
-;; [append_programs_assembly_code] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1115, Column: 22
+;; [append_programs_assembly_code] CAST | File: compiler/asm.torth, Row: 1116, Column: 11
+;; [append_programs_assembly_code] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1116, Column: 22
   call TGlzdC5sZW4_
-;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1116, Column: 3
+;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1117, Column: 3
   mov rax, 0
   push rax
-;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1117, Column: 3
-;; [append_programs_assembly_code] POP_BIND index | File: compiler/asm.torth, Row: 1117, Column: 8
+;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1118, Column: 3
+;; [append_programs_assembly_code] POP_BIND index | File: compiler/asm.torth, Row: 1118, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [append_programs_assembly_code] POP_BIND program.len | File: compiler/asm.torth, Row: 1117, Column: 14
+;; [append_programs_assembly_code] POP_BIND program.len | File: compiler/asm.torth, Row: 1118, Column: 14
   pop rbx
   mov [r14-32], rbx
-;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1117, Column: 26
-;; [append_programs_assembly_code] PUSH_BIND program | File: compiler/asm.torth, Row: 1121, Column: 3
+;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1118, Column: 26
+;; [append_programs_assembly_code] PUSH_BIND program | File: compiler/asm.torth, Row: 1122, Column: 3
   push QWORD [r14-16]
-;; [append_programs_assembly_code] CAST | File: compiler/asm.torth, Row: 1121, Column: 11
-;; [append_programs_assembly_code] FUNCTION_CALL List.first | File: compiler/asm.torth, Row: 1121, Column: 22
+;; [append_programs_assembly_code] CAST | File: compiler/asm.torth, Row: 1122, Column: 11
+;; [append_programs_assembly_code] FUNCTION_CALL List.first | File: compiler/asm.torth, Row: 1122, Column: 22
   call TGlzdC5maXJzdA__
-;; [append_programs_assembly_code] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1121, Column: 33
+;; [append_programs_assembly_code] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1122, Column: 33
   call T3AubG9hZA__
-;; [append_programs_assembly_code] FUNCTION_CALL Op.func | File: compiler/asm.torth, Row: 1121, Column: 41
+;; [append_programs_assembly_code] FUNCTION_CALL Op.func | File: compiler/asm.torth, Row: 1122, Column: 41
   call T3AuZnVuYw__
-;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1122, Column: 3
-;; [append_programs_assembly_code] POP_BIND func | File: compiler/asm.torth, Row: 1122, Column: 8
+;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1123, Column: 3
+;; [append_programs_assembly_code] POP_BIND func | File: compiler/asm.torth, Row: 1123, Column: 8
   pop rbx
   mov [r14-40], rbx
-;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1122, Column: 13
-;; [append_programs_assembly_code] PUSH_BIND func | File: compiler/asm.torth, Row: 1125, Column: 3
+;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1123, Column: 13
+;; [append_programs_assembly_code] PUSH_BIND func | File: compiler/asm.torth, Row: 1126, Column: 3
   push QWORD [r14-40]
-;; [append_programs_assembly_code] FUNCTION_CALL get_function_start_asm | File: compiler/asm.torth, Row: 1125, Column: 8
+;; [append_programs_assembly_code] FUNCTION_CALL get_function_start_asm | File: compiler/asm.torth, Row: 1126, Column: 8
   call Z2V0X2Z1bmN0aW9uX3N0YXJ0X2FzbQ__
-;; [append_programs_assembly_code] PUSH_BIND file_name | File: compiler/asm.torth, Row: 1125, Column: 31
+;; [append_programs_assembly_code] PUSH_BIND file_name | File: compiler/asm.torth, Row: 1126, Column: 31
   push QWORD [r14-8]
-;; [append_programs_assembly_code] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 1125, Column: 41
+;; [append_programs_assembly_code] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 1126, Column: 41
   call YXBwZW5kX2ZpbGU_
-;; [append_programs_assembly_code] WHILE | File: compiler/asm.torth, Row: 1128, Column: 3
+;; [append_programs_assembly_code] WHILE | File: compiler/asm.torth, Row: 1129, Column: 3
 append_programs_assembly_code_WHILE22:
-;; [append_programs_assembly_code] PUSH_BIND index | File: compiler/asm.torth, Row: 1128, Column: 9
+;; [append_programs_assembly_code] PUSH_BIND index | File: compiler/asm.torth, Row: 1129, Column: 9
   push QWORD [r14-24]
-;; [append_programs_assembly_code] PUSH_BIND program.len | File: compiler/asm.torth, Row: 1128, Column: 15
+;; [append_programs_assembly_code] PUSH_BIND program.len | File: compiler/asm.torth, Row: 1129, Column: 15
   push QWORD [r14-32]
-;; [append_programs_assembly_code] INTRINSIC LT | File: compiler/asm.torth, Row: 1128, Column: 27
+;; [append_programs_assembly_code] INTRINSIC LT | File: compiler/asm.torth, Row: 1129, Column: 27
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [append_programs_assembly_code] DO | File: compiler/asm.torth, Row: 1128, Column: 29
+;; [append_programs_assembly_code] DO | File: compiler/asm.torth, Row: 1129, Column: 29
   pop rax
   test rax, rax
-  jz append_programs_assembly_code_DONE49
-;; [append_programs_assembly_code] PUSH_BIND index | File: compiler/asm.torth, Row: 1131, Column: 5
+  jz append_programs_assembly_code_DONE54
+;; [append_programs_assembly_code] PUSH_BIND index | File: compiler/asm.torth, Row: 1132, Column: 5
   push QWORD [r14-24]
-;; [append_programs_assembly_code] PUSH_BIND program | File: compiler/asm.torth, Row: 1131, Column: 11
+;; [append_programs_assembly_code] PUSH_BIND program | File: compiler/asm.torth, Row: 1132, Column: 11
   push QWORD [r14-16]
-;; [append_programs_assembly_code] CAST | File: compiler/asm.torth, Row: 1131, Column: 19
-;; [append_programs_assembly_code] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 1131, Column: 30
+;; [append_programs_assembly_code] CAST | File: compiler/asm.torth, Row: 1132, Column: 19
+;; [append_programs_assembly_code] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 1132, Column: 30
   call TGlzdC5udGg_
-;; [append_programs_assembly_code] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1131, Column: 39
+;; [append_programs_assembly_code] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1132, Column: 39
   call T3AubG9hZA__
-;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1132, Column: 5
-;; [append_programs_assembly_code] POP_BIND op | File: compiler/asm.torth, Row: 1132, Column: 10
+;; [append_programs_assembly_code] TAKE | File: compiler/asm.torth, Row: 1133, Column: 5
+;; [append_programs_assembly_code] POP_BIND op | File: compiler/asm.torth, Row: 1133, Column: 10
   pop rbx
   mov [r14-48], rbx
-;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1132, Column: 13
-;; [append_programs_assembly_code] PUSH_BIND op | File: compiler/asm.torth, Row: 1135, Column: 5
+;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1133, Column: 13
+;; [append_programs_assembly_code] PUSH_BIND op | File: compiler/asm.torth, Row: 1136, Column: 5
   push QWORD [r14-48]
-;; [append_programs_assembly_code] FUNCTION_CALL get_op_comment_asm | File: compiler/asm.torth, Row: 1135, Column: 8
+;; [append_programs_assembly_code] FUNCTION_CALL get_op_comment_asm | File: compiler/asm.torth, Row: 1136, Column: 8
   call Z2V0X29wX2NvbW1lbnRfYXNt
-;; [append_programs_assembly_code] PUSH_BIND file_name | File: compiler/asm.torth, Row: 1135, Column: 27
+;; [append_programs_assembly_code] PUSH_BIND file_name | File: compiler/asm.torth, Row: 1136, Column: 27
   push QWORD [r14-8]
-;; [append_programs_assembly_code] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 1135, Column: 37
+;; [append_programs_assembly_code] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 1136, Column: 37
   call YXBwZW5kX2ZpbGU_
-;; [append_programs_assembly_code] PUSH_BIND program | File: compiler/asm.torth, Row: 1138, Column: 5
+;; [append_programs_assembly_code] PUSH_BIND program | File: compiler/asm.torth, Row: 1139, Column: 5
   push QWORD [r14-16]
-;; [append_programs_assembly_code] PUSH_BIND op | File: compiler/asm.torth, Row: 1138, Column: 13
+;; [append_programs_assembly_code] PUSH_BIND op | File: compiler/asm.torth, Row: 1139, Column: 13
   push QWORD [r14-48]
-;; [append_programs_assembly_code] FUNCTION_CALL get_op_asm | File: compiler/asm.torth, Row: 1138, Column: 16
+;; [append_programs_assembly_code] FUNCTION_CALL get_op_asm | File: compiler/asm.torth, Row: 1139, Column: 16
   call Z2V0X29wX2FzbQ__
-;; [append_programs_assembly_code] PUSH_BIND file_name | File: compiler/asm.torth, Row: 1138, Column: 27
+;; [append_programs_assembly_code] PEEK | File: compiler/asm.torth, Row: 1140, Column: 5
+  mov r15, rsp
+;; [append_programs_assembly_code] PEEK_BIND op_asm | File: compiler/asm.torth, Row: 1140, Column: 10
+  push QWORD [r15]
+  add r15, 8
+  pop rbx
+  mov [r14-56], rbx
+;; [append_programs_assembly_code] IN | File: compiler/asm.torth, Row: 1140, Column: 17
+;; [append_programs_assembly_code] PUSH_BIND file_name | File: compiler/asm.torth, Row: 1140, Column: 20
   push QWORD [r14-8]
-;; [append_programs_assembly_code] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 1138, Column: 37
+;; [append_programs_assembly_code] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 1140, Column: 30
   call YXBwZW5kX2ZpbGU_
-;; [append_programs_assembly_code] PUSH_BIND index | File: compiler/asm.torth, Row: 1141, Column: 5
+;; [append_programs_assembly_code] PUSH_BIND op_asm | File: compiler/asm.torth, Row: 1141, Column: 5
+  push QWORD [r14-56]
+;; [append_programs_assembly_code] FUNCTION_CALL str.delete | File: compiler/asm.torth, Row: 1141, Column: 12
+  call c3RyLmRlbGV0ZQ__
+;; [append_programs_assembly_code] PUSH_BIND index | File: compiler/asm.torth, Row: 1144, Column: 5
   push QWORD [r14-24]
-;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1141, Column: 11
+;; [append_programs_assembly_code] PUSH_INT | File: compiler/asm.torth, Row: 1144, Column: 11
   mov rax, 1
   push rax
-;; [append_programs_assembly_code] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1141, Column: 13
+;; [append_programs_assembly_code] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1144, Column: 13
   pop rax
   add [rsp], rax
-;; [append_programs_assembly_code] PUSH_BIND index | File: compiler/asm.torth, Row: 1141, Column: 15
+;; [append_programs_assembly_code] PUSH_BIND index | File: compiler/asm.torth, Row: 1144, Column: 15
   push QWORD [r14-24]
-;; [append_programs_assembly_code] ASSIGN_BIND | File: compiler/asm.torth, Row: 1141, Column: 21
+;; [append_programs_assembly_code] ASSIGN_BIND | File: compiler/asm.torth, Row: 1144, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [append_programs_assembly_code] DONE | File: compiler/asm.torth, Row: 1142, Column: 3
+;; [append_programs_assembly_code] DONE | File: compiler/asm.torth, Row: 1145, Column: 3
   jmp append_programs_assembly_code_WHILE22
-append_programs_assembly_code_DONE49:
-;; [append_programs_assembly_code] PUSH_BIND func | File: compiler/asm.torth, Row: 1145, Column: 3
+append_programs_assembly_code_DONE54:
+;; [append_programs_assembly_code] PUSH_BIND func | File: compiler/asm.torth, Row: 1148, Column: 3
   push QWORD [r14-40]
-;; [append_programs_assembly_code] FUNCTION_CALL get_function_end_asm | File: compiler/asm.torth, Row: 1145, Column: 8
+;; [append_programs_assembly_code] FUNCTION_CALL get_function_end_asm | File: compiler/asm.torth, Row: 1148, Column: 8
   call Z2V0X2Z1bmN0aW9uX2VuZF9hc20_
-;; [append_programs_assembly_code] PUSH_BIND file_name | File: compiler/asm.torth, Row: 1145, Column: 29
+;; [append_programs_assembly_code] PUSH_BIND file_name | File: compiler/asm.torth, Row: 1148, Column: 29
   push QWORD [r14-8]
-;; [append_programs_assembly_code] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 1145, Column: 39
+;; [append_programs_assembly_code] FUNCTION_CALL append_file | File: compiler/asm.torth, Row: 1148, Column: 39
   call YXBwZW5kX2ZpbGU_
 ;; [append_programs_assembly_code] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
-  sub r14, 56 ; 6 local variables
+  sub r14, 64 ; 7 local variables
   ret
 
 Y29tcGlsZV9leGVjdXRhYmxl:
@@ -1445,33 +1553,42 @@ bGlua193aXRoX2xk:
   push QWORD [r14-16]
 ;; [link_with_ld] FUNCTION_CALL List.append | File: compiler/compile.torth, Row: 42, Column: 34
   call TGlzdC5hcHBlbmQ_
-;; [link_with_ld] PUSH_BIND out_file | File: compiler/compile.torth, Row: 43, Column: 3
-  push QWORD [r14-8]
+;; [link_with_ld] PUSH_STR | File: compiler/compile.torth, Row: 43, Column: 3
+  mov rsi, link_with_ld_s22 ; Pointer to string
+
+  push rsi
 ;; [link_with_ld] CAST | File: compiler/compile.torth, Row: 43, Column: 19
 ;; [link_with_ld] PUSH_BIND argv | File: compiler/compile.torth, Row: 43, Column: 29
   push QWORD [r14-16]
 ;; [link_with_ld] FUNCTION_CALL List.append | File: compiler/compile.torth, Row: 43, Column: 34
   call TGlzdC5hcHBlbmQ_
-;; [link_with_ld] PUSH_BIND object_file | File: compiler/compile.torth, Row: 44, Column: 3
-  push QWORD [r14-24]
+;; [link_with_ld] PUSH_BIND out_file | File: compiler/compile.torth, Row: 44, Column: 3
+  push QWORD [r14-8]
 ;; [link_with_ld] CAST | File: compiler/compile.torth, Row: 44, Column: 19
 ;; [link_with_ld] PUSH_BIND argv | File: compiler/compile.torth, Row: 44, Column: 29
   push QWORD [r14-16]
 ;; [link_with_ld] FUNCTION_CALL List.append | File: compiler/compile.torth, Row: 44, Column: 34
   call TGlzdC5hcHBlbmQ_
-;; [link_with_ld] FUNCTION_CALL NULLPTR | File: compiler/compile.torth, Row: 45, Column: 3
-  call TlVMTFBUUg__
-;; [link_with_ld] PUSH_BIND argv | File: compiler/compile.torth, Row: 45, Column: 11
+;; [link_with_ld] PUSH_BIND object_file | File: compiler/compile.torth, Row: 45, Column: 3
+  push QWORD [r14-24]
+;; [link_with_ld] CAST | File: compiler/compile.torth, Row: 45, Column: 19
+;; [link_with_ld] PUSH_BIND argv | File: compiler/compile.torth, Row: 45, Column: 29
   push QWORD [r14-16]
-;; [link_with_ld] FUNCTION_CALL List.first | File: compiler/compile.torth, Row: 45, Column: 16
+;; [link_with_ld] FUNCTION_CALL List.append | File: compiler/compile.torth, Row: 45, Column: 34
+  call TGlzdC5hcHBlbmQ_
+;; [link_with_ld] FUNCTION_CALL NULLPTR | File: compiler/compile.torth, Row: 46, Column: 3
+  call TlVMTFBUUg__
+;; [link_with_ld] PUSH_BIND argv | File: compiler/compile.torth, Row: 46, Column: 11
+  push QWORD [r14-16]
+;; [link_with_ld] FUNCTION_CALL List.first | File: compiler/compile.torth, Row: 46, Column: 16
   call TGlzdC5maXJzdA__
-;; [link_with_ld] PUSH_STR | File: compiler/compile.torth, Row: 45, Column: 27
-  mov rsi, link_with_ld_s33 ; Pointer to string
+;; [link_with_ld] PUSH_STR | File: compiler/compile.torth, Row: 46, Column: 27
+  mov rsi, link_with_ld_s37 ; Pointer to string
 
   push rsi
-;; [link_with_ld] FUNCTION_CALL execve | File: compiler/compile.torth, Row: 45, Column: 41
+;; [link_with_ld] FUNCTION_CALL execve | File: compiler/compile.torth, Row: 46, Column: 41
   call ZXhlY3Zl
-;; [link_with_ld] INTRINSIC drop | File: compiler/compile.torth, Row: 45, Column: 48
+;; [link_with_ld] INTRINSIC drop | File: compiler/compile.torth, Row: 46, Column: 48
   add rsp, 8
 ;; [link_with_ld] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -1482,38 +1599,38 @@ cmVtb3ZlX2NvbXBpbGF0aW9uX2ZpbGVz:
 ;; [remove_compilation_files] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [remove_compilation_files] POP_BIND out_file | File: compiler/compile.torth, Row: 52, Column: 35
+;; [remove_compilation_files] POP_BIND out_file | File: compiler/compile.torth, Row: 53, Column: 35
   pop rbx
   mov [r14-8], rbx
-;; [remove_compilation_files] PUSH_BIND out_file | File: compiler/compile.torth, Row: 54, Column: 6
+;; [remove_compilation_files] PUSH_BIND out_file | File: compiler/compile.torth, Row: 55, Column: 6
   push QWORD [r14-8]
-;; [remove_compilation_files] FUNCTION_CALL str.copy | File: compiler/compile.torth, Row: 54, Column: 15
+;; [remove_compilation_files] FUNCTION_CALL str.copy | File: compiler/compile.torth, Row: 55, Column: 15
   call c3RyLmNvcHk_
-;; [remove_compilation_files] PUSH_STR | File: compiler/compile.torth, Row: 54, Column: 15
+;; [remove_compilation_files] PUSH_STR | File: compiler/compile.torth, Row: 55, Column: 15
   mov rsi, remove_compilation_files_s3 ; Pointer to string
 
   push rsi
-;; [remove_compilation_files] FUNCTION_CALL str.cat | File: compiler/compile.torth, Row: 54, Column: 19
+;; [remove_compilation_files] FUNCTION_CALL str.cat | File: compiler/compile.torth, Row: 55, Column: 19
   call c3RyLmNhdA__
-;; [remove_compilation_files] PUSH_FN | File: compiler/compile.torth, Row: 54, Column: 21
+;; [remove_compilation_files] PUSH_FN | File: compiler/compile.torth, Row: 55, Column: 21
   mov rax, cmVtb3ZlX2ZpbGU_
   push rax
-;; [remove_compilation_files] FUNCTION_CALL exec_forked | File: compiler/compile.torth, Row: 54, Column: 34
+;; [remove_compilation_files] FUNCTION_CALL exec_forked | File: compiler/compile.torth, Row: 55, Column: 34
   call ZXhlY19mb3JrZWQ_
-;; [remove_compilation_files] PUSH_BIND out_file | File: compiler/compile.torth, Row: 57, Column: 6
+;; [remove_compilation_files] PUSH_BIND out_file | File: compiler/compile.torth, Row: 58, Column: 6
   push QWORD [r14-8]
-;; [remove_compilation_files] FUNCTION_CALL str.copy | File: compiler/compile.torth, Row: 57, Column: 15
+;; [remove_compilation_files] FUNCTION_CALL str.copy | File: compiler/compile.torth, Row: 58, Column: 15
   call c3RyLmNvcHk_
-;; [remove_compilation_files] PUSH_STR | File: compiler/compile.torth, Row: 57, Column: 15
+;; [remove_compilation_files] PUSH_STR | File: compiler/compile.torth, Row: 58, Column: 15
   mov rsi, remove_compilation_files_s9 ; Pointer to string
 
   push rsi
-;; [remove_compilation_files] FUNCTION_CALL str.cat | File: compiler/compile.torth, Row: 57, Column: 17
+;; [remove_compilation_files] FUNCTION_CALL str.cat | File: compiler/compile.torth, Row: 58, Column: 17
   call c3RyLmNhdA__
-;; [remove_compilation_files] PUSH_FN | File: compiler/compile.torth, Row: 57, Column: 19
+;; [remove_compilation_files] PUSH_FN | File: compiler/compile.torth, Row: 58, Column: 19
   mov rax, cmVtb3ZlX2ZpbGU_
   push rax
-;; [remove_compilation_files] FUNCTION_CALL exec_forked | File: compiler/compile.torth, Row: 57, Column: 32
+;; [remove_compilation_files] FUNCTION_CALL exec_forked | File: compiler/compile.torth, Row: 58, Column: 32
   call ZXhlY19mb3JrZWQ_
 ;; [remove_compilation_files] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -9523,7 +9640,7 @@ type_check_application_DONE32:
 
 dHlwZV9jaGVja19zdWJfcHJvZ3JhbQ__:
 ;; [type_check_sub_program] Save the return address to return stack
-  add r14, 96 ; 11 local variables
+  add r14, 104 ; 12 local variables
   pop QWORD [r14] ; Save return address from stack
 ;; [type_check_sub_program] POP_BIND program | File: compiler/typecheck.torth, Row: 63, Column: 3
   pop rbx
@@ -9594,7 +9711,7 @@ dHlwZV9jaGVja19zdWJfcHJvZ3JhbQ__:
 ;; [type_check_sub_program] RETURN | File: compiler/typecheck.torth, Row: 82, Column: 5
 ;; [type_check_sub_program] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
-  sub r14, 96 ; 11 local variables
+  sub r14, 104 ; 12 local variables
   ret
 
 ;; [type_check_sub_program] ENDIF | File: compiler/typecheck.torth, Row: 83, Column: 3
@@ -9712,642 +9829,589 @@ type_check_sub_program_WHILE49:
 ;; [type_check_sub_program] DONE | File: compiler/typecheck.torth, Row: 106, Column: 3
   jmp type_check_sub_program_WHILE49
 type_check_sub_program_DONE80:
-;; [type_check_sub_program] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 109, Column: 3
+;; [type_check_sub_program] IF | File: compiler/typecheck.torth, Row: 108, Column: 3
+;; [type_check_sub_program] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 108, Column: 6
   push QWORD [r14-80]
-;; [type_check_sub_program] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 109, Column: 19
-  call TGlzdC5sYXN0
-;; [type_check_sub_program] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 109, Column: 29
-  call Tm9kZS5sb2Fk
-;; [type_check_sub_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 110, Column: 3
-  push QWORD [r14-64]
-;; [type_check_sub_program] FUNCTION_CALL type_check_end_of_program | File: compiler/typecheck.torth, Row: 110, Column: 8
-  call dHlwZV9jaGVja19lbmRfb2ZfcHJvZ3JhbQ__
-;; [type_check_sub_program] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 96 ; 11 local variables
-  ret
-
-dHlwZV9jaGVja19vcA__:
-;; [type_check_op] Save the return address to return stack
-  add r14, 112 ; 13 local variables
-  pop QWORD [r14] ; Save return address from stack
-;; [type_check_op] POP_BIND op | File: compiler/typecheck.torth, Row: 126, Column: 3
-  pop rbx
-  mov [r14-8], rbx
-;; [type_check_op] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 127, Column: 3
-  pop rbx
-  mov [r14-16], rbx
-;; [type_check_op] POP_BIND program | File: compiler/typecheck.torth, Row: 128, Column: 3
-  pop rbx
-  mov [r14-24], rbx
-;; [type_check_op] POP_BIND functions | File: compiler/typecheck.torth, Row: 129, Column: 3
-  pop rbx
-  mov [r14-32], rbx
-;; [type_check_op] POP_BIND variables | File: compiler/typecheck.torth, Row: 130, Column: 3
-  pop rbx
-  mov [r14-40], rbx
-;; [type_check_op] POP_BIND type_check_info | File: compiler/typecheck.torth, Row: 131, Column: 3
-  pop rbx
-  mov [r14-48], rbx
-;; [type_check_op] POP_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 132, Column: 3
-  pop rbx
-  mov [r14-56], rbx
-;; [type_check_op] POP_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 133, Column: 3
-  pop rbx
-  mov [r14-64], rbx
-;; [type_check_op] IF | File: compiler/typecheck.torth, Row: 136, Column: 3
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 136, Column: 6
-  mov rax, 28
+;; [type_check_sub_program] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 108, Column: 22
+  call TGlzdC5sZW4_
+;; [type_check_sub_program] PUSH_INT | File: compiler/typecheck.torth, Row: 108, Column: 31
+  mov rax, 1
   push rax
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 136, Column: 17
-  mov rax, 28
-  push rax
-;; [type_check_op] INTRINSIC NE | File: compiler/typecheck.torth, Row: 136, Column: 20
+;; [type_check_sub_program] INTRINSIC NE | File: compiler/typecheck.torth, Row: 108, Column: 33
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 136, Column: 23
+;; [type_check_sub_program] DO | File: compiler/typecheck.torth, Row: 108, Column: 36
+  pop rax
+  test rax, rax
+  jz type_check_sub_program_ENDIF97
+;; [type_check_sub_program] PUSH_STR | File: compiler/typecheck.torth, Row: 109, Column: 7
+  mov rsi, type_check_sub_program_s87 ; Pointer to string
+
+  push rsi
+;; [type_check_sub_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 109, Column: 54
+  push QWORD [r14-64]
+;; [type_check_sub_program] FUNCTION_CALL Func.name | File: compiler/typecheck.torth, Row: 109, Column: 59
+  call RnVuYy5uYW1l
+;; [type_check_sub_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 109, Column: 69
+  call c3RyLmNhdA__
+;; [type_check_sub_program] PUSH_STR | File: compiler/typecheck.torth, Row: 109, Column: 69
+  mov rsi, type_check_sub_program_s91 ; Pointer to string
+
+  push rsi
+;; [type_check_sub_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 109, Column: 81
+  call c3RyLmNhdA__
+;; [type_check_sub_program] PUSH_STR | File: compiler/typecheck.torth, Row: 110, Column: 5
+  mov rsi, type_check_sub_program_s93 ; Pointer to string
+
+  push rsi
+;; [type_check_sub_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 110, Column: 69
+  call c3RyLmNhdA__
+;; [type_check_sub_program] PUSH_STR | File: compiler/typecheck.torth, Row: 111, Column: 5
+  mov rsi, type_check_sub_program_s95 ; Pointer to string
+
+  push rsi
+;; [type_check_sub_program] FUNCTION_CALL CompilerError | File: compiler/typecheck.torth, Row: 111, Column: 23
+  call Q29tcGlsZXJFcnJvcg__
+;; [type_check_sub_program] ENDIF | File: compiler/typecheck.torth, Row: 112, Column: 3
+type_check_sub_program_ENDIF97:
+;; [type_check_sub_program] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 115, Column: 3
+  push QWORD [r14-80]
+;; [type_check_sub_program] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 115, Column: 19
+  call TGlzdC5sYXN0
+;; [type_check_sub_program] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 115, Column: 29
+  call Tm9kZS5sb2Fk
+;; [type_check_sub_program] PEEK | File: compiler/typecheck.torth, Row: 116, Column: 3
+  mov r15, rsp
+;; [type_check_sub_program] PEEK_BIND node | File: compiler/typecheck.torth, Row: 116, Column: 8
+  push QWORD [r15]
+  add r15, 8
+  pop rbx
+  mov [r14-96], rbx
+;; [type_check_sub_program] IN | File: compiler/typecheck.torth, Row: 116, Column: 13
+;; [type_check_sub_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 117, Column: 3
+  push QWORD [r14-64]
+;; [type_check_sub_program] FUNCTION_CALL type_check_end_of_program | File: compiler/typecheck.torth, Row: 117, Column: 8
+  call dHlwZV9jaGVja19lbmRfb2ZfcHJvZ3JhbQ__
+;; [type_check_sub_program] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 120, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_sub_program] PUSH_BIND node | File: compiler/typecheck.torth, Row: 120, Column: 17
+  push QWORD [r14-96]
+;; [type_check_sub_program] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 120, Column: 22
+  call TGlua2VkTGlzdC5kZWxldGU_
+;; [type_check_sub_program] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 121, Column: 3
+  push QWORD [r14-80]
+;; [type_check_sub_program] FUNCTION_CALL List.delete | File: compiler/typecheck.torth, Row: 121, Column: 19
+  call TGlzdC5kZWxldGU_
+;; [type_check_sub_program] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 104 ; 12 local variables
+  ret
+
+dHlwZV9jaGVja19vcA__:
+;; [type_check_op] Save the return address to return stack
+  add r14, 112 ; 13 local variables
+  pop QWORD [r14] ; Save return address from stack
+;; [type_check_op] POP_BIND op | File: compiler/typecheck.torth, Row: 137, Column: 3
+  pop rbx
+  mov [r14-8], rbx
+;; [type_check_op] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 138, Column: 3
+  pop rbx
+  mov [r14-16], rbx
+;; [type_check_op] POP_BIND program | File: compiler/typecheck.torth, Row: 139, Column: 3
+  pop rbx
+  mov [r14-24], rbx
+;; [type_check_op] POP_BIND functions | File: compiler/typecheck.torth, Row: 140, Column: 3
+  pop rbx
+  mov [r14-32], rbx
+;; [type_check_op] POP_BIND variables | File: compiler/typecheck.torth, Row: 141, Column: 3
+  pop rbx
+  mov [r14-40], rbx
+;; [type_check_op] POP_BIND type_check_info | File: compiler/typecheck.torth, Row: 142, Column: 3
+  pop rbx
+  mov [r14-48], rbx
+;; [type_check_op] POP_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 143, Column: 3
+  pop rbx
+  mov [r14-56], rbx
+;; [type_check_op] POP_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 144, Column: 3
+  pop rbx
+  mov [r14-64], rbx
+;; [type_check_op] IF | File: compiler/typecheck.torth, Row: 147, Column: 3
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 147, Column: 6
+  mov rax, 28
+  push rax
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 147, Column: 17
+  mov rax, 28
+  push rax
+;; [type_check_op] INTRINSIC NE | File: compiler/typecheck.torth, Row: 147, Column: 20
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmovne rcx, rdx
+  mov QWORD [rsp], rcx
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 147, Column: 23
   pop rax
   test rax, rax
   jz type_check_op_ENDIF16
-;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 137, Column: 5
+;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 148, Column: 5
   mov rsi, type_check_op_s13 ; Pointer to string
 
   push rsi
-;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 138, Column: 5
+;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 149, Column: 5
   mov rsi, type_check_op_s14 ; Pointer to string
 
   push rsi
-;; [type_check_op] FUNCTION_CALL CompilerError | File: compiler/typecheck.torth, Row: 138, Column: 23
+;; [type_check_op] FUNCTION_CALL CompilerError | File: compiler/typecheck.torth, Row: 149, Column: 23
   call Q29tcGlsZXJFcnJvcg__
-;; [type_check_op] ENDIF | File: compiler/typecheck.torth, Row: 139, Column: 3
+;; [type_check_op] ENDIF | File: compiler/typecheck.torth, Row: 150, Column: 3
 type_check_op_ENDIF16:
-;; [type_check_op] PUSH_BIND op | File: compiler/typecheck.torth, Row: 142, Column: 3
+;; [type_check_op] PUSH_BIND op | File: compiler/typecheck.torth, Row: 153, Column: 3
   push QWORD [r14-8]
-;; [type_check_op] FUNCTION_CALL Op.token | File: compiler/typecheck.torth, Row: 142, Column: 7
+;; [type_check_op] FUNCTION_CALL Op.token | File: compiler/typecheck.torth, Row: 153, Column: 7
   call T3AudG9rZW4_
-;; [type_check_op] INTRINSIC dup | File: compiler/typecheck.torth, Row: 143, Column: 3
+;; [type_check_op] INTRINSIC dup | File: compiler/typecheck.torth, Row: 154, Column: 3
   push QWORD [rsp]
-;; [type_check_op] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 143, Column: 7
+;; [type_check_op] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 154, Column: 7
   call VG9rZW4udmFsdWU_
-;; [type_check_op] PUSH_BIND op | File: compiler/typecheck.torth, Row: 144, Column: 3
+;; [type_check_op] PUSH_BIND op | File: compiler/typecheck.torth, Row: 155, Column: 3
   push QWORD [r14-8]
-;; [type_check_op] FUNCTION_CALL Op.type | File: compiler/typecheck.torth, Row: 144, Column: 7
+;; [type_check_op] FUNCTION_CALL Op.type | File: compiler/typecheck.torth, Row: 155, Column: 7
   call T3AudHlwZQ__
-;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 145, Column: 3
+;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 156, Column: 3
   push QWORD [r14-16]
-;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 145, Column: 19
+;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 156, Column: 19
   call TGlzdC5sYXN0
-;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 145, Column: 29
+;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 156, Column: 29
   call Tm9kZS5sb2Fk
-;; [type_check_op] TAKE | File: compiler/typecheck.torth, Row: 146, Column: 3
-;; [type_check_op] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 147, Column: 5
+;; [type_check_op] TAKE | File: compiler/typecheck.torth, Row: 157, Column: 3
+;; [type_check_op] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 158, Column: 5
   pop rbx
   mov [r14-72], rbx
-;; [type_check_op] POP_BIND op_type | File: compiler/typecheck.torth, Row: 148, Column: 5
+;; [type_check_op] POP_BIND op_type | File: compiler/typecheck.torth, Row: 159, Column: 5
   pop rbx
   mov [r14-80], rbx
-;; [type_check_op] POP_BIND token_value | File: compiler/typecheck.torth, Row: 149, Column: 5
+;; [type_check_op] POP_BIND token_value | File: compiler/typecheck.torth, Row: 160, Column: 5
   pop rbx
   mov [r14-88], rbx
-;; [type_check_op] POP_BIND token | File: compiler/typecheck.torth, Row: 150, Column: 5
+;; [type_check_op] POP_BIND token | File: compiler/typecheck.torth, Row: 161, Column: 5
   pop rbx
   mov [r14-96], rbx
-;; [type_check_op] IN | File: compiler/typecheck.torth, Row: 151, Column: 3
-;; [type_check_op] IF | File: compiler/typecheck.torth, Row: 154, Column: 3
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 154, Column: 6
+;; [type_check_op] IN | File: compiler/typecheck.torth, Row: 162, Column: 3
+;; [type_check_op] IF | File: compiler/typecheck.torth, Row: 165, Column: 3
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 165, Column: 6
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 154, Column: 14
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 165, Column: 14
   mov rax, 14
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 154, Column: 31
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 165, Column: 31
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 154, Column: 34
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 165, Column: 34
   pop rax
   test rax, rax
   jz type_check_op_ELIF43
-;; [type_check_op] PUSH_BIND program | File: compiler/typecheck.torth, Row: 155, Column: 5
+;; [type_check_op] PUSH_BIND program | File: compiler/typecheck.torth, Row: 166, Column: 5
   push QWORD [r14-24]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 155, Column: 13
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 166, Column: 13
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 155, Column: 24
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 166, Column: 24
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_intrinsic | File: compiler/typecheck.torth, Row: 155, Column: 30
+;; [type_check_op] FUNCTION_CALL type_check_intrinsic | File: compiler/typecheck.torth, Row: 166, Column: 30
   call dHlwZV9jaGVja19pbnRyaW5zaWM_
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 156, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 167, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 156, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 167, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 157, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 168, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF43:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 157, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 168, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 157, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 168, Column: 16
   mov rax, 0
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 157, Column: 35
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 168, Column: 35
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 157, Column: 38
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 168, Column: 38
   pop rax
   test rax, rax
   jz type_check_op_ELIF55
-;; [type_check_op] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 158, Column: 5
+;; [type_check_op] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 169, Column: 5
   push QWORD [r14-40]
-;; [type_check_op] PUSH_BIND program | File: compiler/typecheck.torth, Row: 158, Column: 15
+;; [type_check_op] PUSH_BIND program | File: compiler/typecheck.torth, Row: 169, Column: 15
   push QWORD [r14-24]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 158, Column: 23
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 169, Column: 23
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 158, Column: 34
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 169, Column: 34
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_assign_bind | File: compiler/typecheck.torth, Row: 158, Column: 40
+;; [type_check_op] FUNCTION_CALL type_check_assign_bind | File: compiler/typecheck.torth, Row: 169, Column: 40
   call dHlwZV9jaGVja19hc3NpZ25fYmluZA__
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 159, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 170, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 159, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 170, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 160, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 171, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF55:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 160, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 171, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 160, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 171, Column: 16
   mov rax, 2
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 160, Column: 28
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 171, Column: 28
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 160, Column: 31
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 171, Column: 31
   pop rax
   test rax, rax
   jz type_check_op_ELIF65
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 161, Column: 5
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 172, Column: 5
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 161, Column: 16
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 172, Column: 16
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_cast | File: compiler/typecheck.torth, Row: 161, Column: 22
+;; [type_check_op] FUNCTION_CALL type_check_cast | File: compiler/typecheck.torth, Row: 172, Column: 22
   call dHlwZV9jaGVja19jYXN0
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 162, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 173, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 162, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 173, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 163, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 174, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF65:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 163, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 174, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 163, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 174, Column: 16
   mov rax, 4
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 163, Column: 26
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 174, Column: 26
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 163, Column: 29
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 174, Column: 29
   pop rax
   test rax, rax
   jz type_check_op_ELIF76
-;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 164, Column: 5
+;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 175, Column: 5
   push QWORD [r14-16]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 164, Column: 21
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 175, Column: 21
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 164, Column: 32
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 175, Column: 32
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_do | File: compiler/typecheck.torth, Row: 164, Column: 38
+;; [type_check_op] FUNCTION_CALL type_check_do | File: compiler/typecheck.torth, Row: 175, Column: 38
   call dHlwZV9jaGVja19kbw__
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 165, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 176, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 165, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 176, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 166, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 177, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF76:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 166, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 177, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 166, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 177, Column: 16
   mov rax, 5
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 166, Column: 28
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 177, Column: 28
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 166, Column: 31
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 177, Column: 31
   pop rax
   test rax, rax
   jz type_check_op_ELIF89
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 167, Column: 5
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 178, Column: 5
   mov rax, 0
   push rax
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 167, Column: 10
-;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 167, Column: 21
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 178, Column: 10
+;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 178, Column: 21
   push QWORD [r14-16]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 167, Column: 37
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 178, Column: 37
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 167, Column: 48
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 178, Column: 48
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_end_of_branch | File: compiler/typecheck.torth, Row: 167, Column: 54
+;; [type_check_op] FUNCTION_CALL type_check_end_of_branch | File: compiler/typecheck.torth, Row: 178, Column: 54
   call dHlwZV9jaGVja19lbmRfb2ZfYnJhbmNo
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 168, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 179, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 168, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 179, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 169, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 180, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF89:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 169, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 180, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 169, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 180, Column: 16
   mov rax, 6
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 169, Column: 28
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 180, Column: 28
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 169, Column: 31
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 180, Column: 31
   pop rax
   test rax, rax
   jz type_check_op_ELIF107
-;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 171, Column: 5
+;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 182, Column: 5
   push 0
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 171, Column: 11
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 182, Column: 11
   push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo->else_present | File: compiler/typecheck.torth, Row: 171, Column: 27
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo->else_present | File: compiler/typecheck.torth, Row: 182, Column: 27
   call VHlwZUNoZWNrSW5mby0@ZWxzZV9wcmVzZW50
-;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 173, Column: 5
+;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 184, Column: 5
   push QWORD [r14-64]
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 173, Column: 28
-;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 173, Column: 39
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 184, Column: 28
+;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 184, Column: 39
   call TGlzdC5sYXN0
-;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 173, Column: 49
+;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 184, Column: 49
   call Tm9kZS5sb2Fk
-;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 174, Column: 5
+;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 185, Column: 5
   push QWORD [r14-16]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 174, Column: 21
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 185, Column: 21
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 174, Column: 32
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 185, Column: 32
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_elif | File: compiler/typecheck.torth, Row: 174, Column: 38
+;; [type_check_op] FUNCTION_CALL type_check_elif | File: compiler/typecheck.torth, Row: 185, Column: 38
   call dHlwZV9jaGVja19lbGlm
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 175, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 186, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 175, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 186, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 176, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 187, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF107:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 176, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 187, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 176, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 187, Column: 16
   mov rax, 7
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 176, Column: 28
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 187, Column: 28
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 176, Column: 31
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 187, Column: 31
   pop rax
   test rax, rax
   jz type_check_op_ELIF129
-;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 178, Column: 5
+;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 189, Column: 5
   push 1
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 178, Column: 10
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 189, Column: 10
   push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo->else_present | File: compiler/typecheck.torth, Row: 178, Column: 26
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo->else_present | File: compiler/typecheck.torth, Row: 189, Column: 26
   call VHlwZUNoZWNrSW5mby0@ZWxzZV9wcmVzZW50
-;; [type_check_op] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 180, Column: 5
+;; [type_check_op] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 191, Column: 5
   push QWORD [r14-56]
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 180, Column: 31
-;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 180, Column: 42
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 191, Column: 31
+;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 191, Column: 42
   call TGlzdC5sYXN0
-;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 180, Column: 52
+;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 191, Column: 52
   call Tm9kZS5sb2Fk
-;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 181, Column: 5
+;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 192, Column: 5
   push QWORD [r14-64]
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 181, Column: 31
-;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 181, Column: 42
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 192, Column: 31
+;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 192, Column: 42
   call TGlzdC5sYXN0
-;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 181, Column: 52
+;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 192, Column: 52
   call Tm9kZS5sb2Fk
-;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 182, Column: 5
+;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 193, Column: 5
   push QWORD [r14-16]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 182, Column: 21
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 193, Column: 21
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 182, Column: 32
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 193, Column: 32
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_else | File: compiler/typecheck.torth, Row: 182, Column: 38
+;; [type_check_op] FUNCTION_CALL type_check_else | File: compiler/typecheck.torth, Row: 193, Column: 38
   call dHlwZV9jaGVja19lbHNl
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 183, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 194, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 183, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 194, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 184, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 195, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF129:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 184, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 195, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 184, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 195, Column: 16
   mov rax, 9
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 184, Column: 29
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 195, Column: 29
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 184, Column: 32
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 195, Column: 32
   pop rax
   test rax, rax
   jz type_check_op_ELIF150
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 186, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 197, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo.else_present | File: compiler/typecheck.torth, Row: 186, Column: 21
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo.else_present | File: compiler/typecheck.torth, Row: 197, Column: 21
   call VHlwZUNoZWNrSW5mby5lbHNlX3ByZXNlbnQ_
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 187, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 198, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo.return_present | File: compiler/typecheck.torth, Row: 187, Column: 21
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo.return_present | File: compiler/typecheck.torth, Row: 198, Column: 21
   call VHlwZUNoZWNrSW5mby5yZXR1cm5fcHJlc2VudA__
-;; [type_check_op] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 187, Column: 50
+;; [type_check_op] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 198, Column: 50
   call fHw_
-;; [type_check_op] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 189, Column: 5
+;; [type_check_op] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 200, Column: 5
   push QWORD [r14-56]
-;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 189, Column: 30
+;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 200, Column: 30
   push QWORD [r14-64]
-;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 190, Column: 5
+;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 201, Column: 5
   push QWORD [r14-16]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 190, Column: 21
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 201, Column: 21
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 190, Column: 32
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 201, Column: 32
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_endif | File: compiler/typecheck.torth, Row: 190, Column: 38
+;; [type_check_op] FUNCTION_CALL type_check_endif | File: compiler/typecheck.torth, Row: 201, Column: 38
   call dHlwZV9jaGVja19lbmRpZg__
-;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 192, Column: 5
+;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 203, Column: 5
   push 0
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 192, Column: 11
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 203, Column: 11
   push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo->else_present | File: compiler/typecheck.torth, Row: 192, Column: 27
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo->else_present | File: compiler/typecheck.torth, Row: 203, Column: 27
   call VHlwZUNoZWNrSW5mby0@ZWxzZV9wcmVzZW50
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 193, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 204, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 193, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 204, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 194, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 205, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF150:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 194, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 205, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 194, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 205, Column: 16
   mov rax, 10
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 194, Column: 37
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 205, Column: 37
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 194, Column: 40
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 205, Column: 40
   pop rax
   test rax, rax
   jz type_check_op_ELIF161
-;; [type_check_op] PUSH_BIND functions | File: compiler/typecheck.torth, Row: 195, Column: 5
+;; [type_check_op] PUSH_BIND functions | File: compiler/typecheck.torth, Row: 206, Column: 5
   push QWORD [r14-32]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 195, Column: 15
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 206, Column: 15
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 195, Column: 26
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 206, Column: 26
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_function_call | File: compiler/typecheck.torth, Row: 195, Column: 32
+;; [type_check_op] FUNCTION_CALL type_check_function_call | File: compiler/typecheck.torth, Row: 206, Column: 32
   call dHlwZV9jaGVja19mdW5jdGlvbl9jYWxs
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 196, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 207, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 196, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 207, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 197, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 208, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF161:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 197, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 208, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 197, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 208, Column: 16
   mov rax, 12
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 197, Column: 26
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 208, Column: 26
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 197, Column: 29
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 208, Column: 29
   pop rax
   test rax, rax
   jz type_check_op_ELIF180
-;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 198, Column: 5
+;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 209, Column: 5
   push 0
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 198, Column: 11
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 209, Column: 11
   push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo->return_present | File: compiler/typecheck.torth, Row: 198, Column: 27
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo->return_present | File: compiler/typecheck.torth, Row: 209, Column: 27
   call VHlwZUNoZWNrSW5mby0@cmV0dXJuX3ByZXNlbnQ_
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 199, Column: 5
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 210, Column: 5
   push QWORD [r14-72]
-;; [type_check_op] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 199, Column: 16
+;; [type_check_op] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 210, Column: 16
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_op] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 200, Column: 5
+;; [type_check_op] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 211, Column: 5
   push QWORD [r14-56]
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 200, Column: 30
-;; [type_check_op] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 200, Column: 41
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 211, Column: 30
+;; [type_check_op] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 211, Column: 41
   call TGlzdC5hcHBlbmQ_
-;; [type_check_op] FUNCTION_CALL LinkedList.init | File: compiler/typecheck.torth, Row: 201, Column: 5
+;; [type_check_op] FUNCTION_CALL LinkedList.init | File: compiler/typecheck.torth, Row: 212, Column: 5
   call TGlua2VkTGlzdC5pbml0
-;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 201, Column: 21
+;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 212, Column: 21
   push QWORD [r14-64]
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 201, Column: 44
-;; [type_check_op] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 201, Column: 55
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 212, Column: 44
+;; [type_check_op] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 212, Column: 55
   call TGlzdC5hcHBlbmQ_
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 202, Column: 5
-  push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 202, Column: 21
-;; [type_check_op] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 112 ; 13 local variables
-  ret
-
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 203, Column: 3
-  jmp type_check_op_ENDIF339
-type_check_op_ELIF180:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 203, Column: 8
-  push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 203, Column: 16
-  mov rax, 13
-  push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 203, Column: 26
-  pop rax
-  mov rcx, 0
-  mov rdx, 1
-  cmp QWORD [rsp], rax
-  cmove rcx, rdx
-  mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 203, Column: 29
-  pop rax
-  test rax, rax
-  jz type_check_op_ELIF190
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 204, Column: 5
-  mov rax, 0
-  push rax
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 204, Column: 7
-  push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo->peek_count | File: compiler/typecheck.torth, Row: 204, Column: 23
-  call VHlwZUNoZWNrSW5mby0@cGVla19jb3VudA__
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 205, Column: 5
-  push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 205, Column: 21
-;; [type_check_op] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 112 ; 13 local variables
-  ret
-
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 206, Column: 3
-  jmp type_check_op_ENDIF339
-type_check_op_ELIF190:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 206, Column: 8
-  push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 206, Column: 16
-  mov rax, 16
-  push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 206, Column: 33
-  pop rax
-  mov rcx, 0
-  mov rdx, 1
-  cmp QWORD [rsp], rax
-  cmove rcx, rdx
-  mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 206, Column: 36
-  pop rax
-  test rax, rax
-  jz type_check_op_ELIF208
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 207, Column: 5
-  push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo.peek_count | File: compiler/typecheck.torth, Row: 207, Column: 21
-  call VHlwZUNoZWNrSW5mby5wZWVrX2NvdW50
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 207, Column: 46
-  mov rax, 1
-  push rax
-;; [type_check_op] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 207, Column: 48
-  pop rax
-  add [rsp], rax
-;; [type_check_op] INTRINSIC dup | File: compiler/typecheck.torth, Row: 208, Column: 5
-  push QWORD [rsp]
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 208, Column: 9
-  push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo->peek_count | File: compiler/typecheck.torth, Row: 208, Column: 25
-  call VHlwZUNoZWNrSW5mby0@cGVla19jb3VudA__
-;; [type_check_op] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 209, Column: 5
-  push QWORD [r14-40]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 209, Column: 15
-  push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 209, Column: 26
-  push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_peek_bind | File: compiler/typecheck.torth, Row: 209, Column: 32
-  call dHlwZV9jaGVja19wZWVrX2JpbmQ_
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 210, Column: 5
-  push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 210, Column: 21
-;; [type_check_op] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 112 ; 13 local variables
-  ret
-
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 211, Column: 3
-  jmp type_check_op_ENDIF339
-type_check_op_ELIF208:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 211, Column: 8
-  push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 211, Column: 16
-  mov rax, 17
-  push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 211, Column: 32
-  pop rax
-  mov rcx, 0
-  mov rdx, 1
-  cmp QWORD [rsp], rax
-  cmove rcx, rdx
-  mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 211, Column: 35
-  pop rax
-  test rax, rax
-  jz type_check_op_ELIF219
-;; [type_check_op] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 212, Column: 5
-  push QWORD [r14-40]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 212, Column: 15
-  push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 212, Column: 26
-  push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_pop_bind | File: compiler/typecheck.torth, Row: 212, Column: 32
-  call dHlwZV9jaGVja19wb3BfYmluZA__
 ;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 213, Column: 5
   push QWORD [r14-48]
 ;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 213, Column: 21
@@ -10358,31 +10422,30 @@ type_check_op_ELIF208:
 
 ;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 214, Column: 3
   jmp type_check_op_ENDIF339
-type_check_op_ELIF219:
+type_check_op_ELIF180:
 ;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 214, Column: 8
   push QWORD [r14-80]
 ;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 214, Column: 16
-  mov rax, 18
+  mov rax, 13
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 214, Column: 33
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 214, Column: 26
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 214, Column: 36
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 214, Column: 29
   pop rax
   test rax, rax
-  jz type_check_op_ELIF230
-;; [type_check_op] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 215, Column: 5
-  push QWORD [r14-40]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 215, Column: 15
-  push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 215, Column: 26
-  push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_push_bind | File: compiler/typecheck.torth, Row: 215, Column: 32
-  call dHlwZV9jaGVja19wdXNoX2JpbmQ_
+  jz type_check_op_ELIF190
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 215, Column: 5
+  mov rax, 0
+  push rax
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 215, Column: 7
+  push QWORD [r14-48]
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo->peek_count | File: compiler/typecheck.torth, Row: 215, Column: 23
+  call VHlwZUNoZWNrSW5mby0@cGVla19jb3VudA__
 ;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 216, Column: 5
   push QWORD [r14-48]
 ;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 216, Column: 21
@@ -10393,11 +10456,11 @@ type_check_op_ELIF219:
 
 ;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 217, Column: 3
   jmp type_check_op_ENDIF339
-type_check_op_ELIF230:
+type_check_op_ELIF190:
 ;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 217, Column: 8
   push QWORD [r14-80]
 ;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 217, Column: 16
-  mov rax, 19
+  mov rax, 16
   push rax
 ;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 217, Column: 33
   pop rax
@@ -10409,339 +10472,460 @@ type_check_op_ELIF230:
 ;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 217, Column: 36
   pop rax
   test rax, rax
-  jz type_check_op_ELIF240
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 218, Column: 5
-  push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 218, Column: 16
-  push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_push_bool | File: compiler/typecheck.torth, Row: 218, Column: 22
-  call dHlwZV9jaGVja19wdXNoX2Jvb2w_
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 219, Column: 5
+  jz type_check_op_ELIF208
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 218, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 219, Column: 21
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo.peek_count | File: compiler/typecheck.torth, Row: 218, Column: 21
+  call VHlwZUNoZWNrSW5mby5wZWVrX2NvdW50
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 218, Column: 46
+  mov rax, 1
+  push rax
+;; [type_check_op] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 218, Column: 48
+  pop rax
+  add [rsp], rax
+;; [type_check_op] INTRINSIC dup | File: compiler/typecheck.torth, Row: 219, Column: 5
+  push QWORD [rsp]
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 219, Column: 9
+  push QWORD [r14-48]
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo->peek_count | File: compiler/typecheck.torth, Row: 219, Column: 25
+  call VHlwZUNoZWNrSW5mby0@cGVla19jb3VudA__
+;; [type_check_op] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 220, Column: 5
+  push QWORD [r14-40]
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 220, Column: 15
+  push QWORD [r14-72]
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 220, Column: 26
+  push QWORD [r14-96]
+;; [type_check_op] FUNCTION_CALL type_check_peek_bind | File: compiler/typecheck.torth, Row: 220, Column: 32
+  call dHlwZV9jaGVja19wZWVrX2JpbmQ_
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 221, Column: 5
+  push QWORD [r14-48]
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 221, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 220, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 222, Column: 3
   jmp type_check_op_ENDIF339
-type_check_op_ELIF240:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 220, Column: 8
+type_check_op_ELIF208:
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 222, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 220, Column: 16
-  mov rax, 20
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 222, Column: 16
+  mov rax, 17
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 220, Column: 33
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 222, Column: 32
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 220, Column: 36
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 222, Column: 35
+  pop rax
+  test rax, rax
+  jz type_check_op_ELIF219
+;; [type_check_op] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 223, Column: 5
+  push QWORD [r14-40]
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 223, Column: 15
+  push QWORD [r14-72]
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 223, Column: 26
+  push QWORD [r14-96]
+;; [type_check_op] FUNCTION_CALL type_check_pop_bind | File: compiler/typecheck.torth, Row: 223, Column: 32
+  call dHlwZV9jaGVja19wb3BfYmluZA__
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 224, Column: 5
+  push QWORD [r14-48]
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 224, Column: 21
+;; [type_check_op] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 112 ; 13 local variables
+  ret
+
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 225, Column: 3
+  jmp type_check_op_ENDIF339
+type_check_op_ELIF219:
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 225, Column: 8
+  push QWORD [r14-80]
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 225, Column: 16
+  mov rax, 18
+  push rax
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 225, Column: 33
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmove rcx, rdx
+  mov QWORD [rsp], rcx
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 225, Column: 36
+  pop rax
+  test rax, rax
+  jz type_check_op_ELIF230
+;; [type_check_op] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 226, Column: 5
+  push QWORD [r14-40]
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 226, Column: 15
+  push QWORD [r14-72]
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 226, Column: 26
+  push QWORD [r14-96]
+;; [type_check_op] FUNCTION_CALL type_check_push_bind | File: compiler/typecheck.torth, Row: 226, Column: 32
+  call dHlwZV9jaGVja19wdXNoX2JpbmQ_
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 227, Column: 5
+  push QWORD [r14-48]
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 227, Column: 21
+;; [type_check_op] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 112 ; 13 local variables
+  ret
+
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 228, Column: 3
+  jmp type_check_op_ENDIF339
+type_check_op_ELIF230:
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 228, Column: 8
+  push QWORD [r14-80]
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 228, Column: 16
+  mov rax, 19
+  push rax
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 228, Column: 33
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmove rcx, rdx
+  mov QWORD [rsp], rcx
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 228, Column: 36
+  pop rax
+  test rax, rax
+  jz type_check_op_ELIF240
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 229, Column: 5
+  push QWORD [r14-72]
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 229, Column: 16
+  push QWORD [r14-96]
+;; [type_check_op] FUNCTION_CALL type_check_push_bool | File: compiler/typecheck.torth, Row: 229, Column: 22
+  call dHlwZV9jaGVja19wdXNoX2Jvb2w_
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 230, Column: 5
+  push QWORD [r14-48]
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 230, Column: 21
+;; [type_check_op] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 112 ; 13 local variables
+  ret
+
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 231, Column: 3
+  jmp type_check_op_ENDIF339
+type_check_op_ELIF240:
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 231, Column: 8
+  push QWORD [r14-80]
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 231, Column: 16
+  mov rax, 20
+  push rax
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 231, Column: 33
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmove rcx, rdx
+  mov QWORD [rsp], rcx
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 231, Column: 36
   pop rax
   test rax, rax
   jz type_check_op_ELIF250
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 221, Column: 5
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 232, Column: 5
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 221, Column: 16
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 232, Column: 16
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_push_char | File: compiler/typecheck.torth, Row: 221, Column: 22
+;; [type_check_op] FUNCTION_CALL type_check_push_char | File: compiler/typecheck.torth, Row: 232, Column: 22
   call dHlwZV9jaGVja19wdXNoX2NoYXI_
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 222, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 233, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 222, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 233, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 223, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 234, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF250:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 223, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 234, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 223, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 234, Column: 16
   mov rax, 21
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 223, Column: 31
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 234, Column: 31
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 223, Column: 34
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 234, Column: 34
   pop rax
   test rax, rax
   jz type_check_op_ELIF261
-;; [type_check_op] PUSH_BIND functions | File: compiler/typecheck.torth, Row: 224, Column: 5
+;; [type_check_op] PUSH_BIND functions | File: compiler/typecheck.torth, Row: 235, Column: 5
   push QWORD [r14-32]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 224, Column: 15
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 235, Column: 15
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 224, Column: 26
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 235, Column: 26
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_push_fn | File: compiler/typecheck.torth, Row: 224, Column: 32
+;; [type_check_op] FUNCTION_CALL type_check_push_fn | File: compiler/typecheck.torth, Row: 235, Column: 32
   call dHlwZV9jaGVja19wdXNoX2Zu
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 225, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 236, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 225, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 236, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 226, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 237, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF261:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 226, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 237, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 226, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 237, Column: 16
   mov rax, 22
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 226, Column: 32
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 237, Column: 32
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 226, Column: 35
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 237, Column: 35
   pop rax
   test rax, rax
   jz type_check_op_ELIF271
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 227, Column: 5
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 238, Column: 5
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 227, Column: 16
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 238, Column: 16
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_push_int | File: compiler/typecheck.torth, Row: 227, Column: 22
+;; [type_check_op] FUNCTION_CALL type_check_push_int | File: compiler/typecheck.torth, Row: 238, Column: 22
   call dHlwZV9jaGVja19wdXNoX2ludA__
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 228, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 239, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 228, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 239, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 229, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 240, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF271:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 229, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 240, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 229, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 240, Column: 16
   mov rax, 23
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 229, Column: 32
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 240, Column: 32
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 229, Column: 35
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 240, Column: 35
   pop rax
   test rax, rax
   jz type_check_op_ELIF281
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 230, Column: 5
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 241, Column: 5
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 230, Column: 16
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 241, Column: 16
   push QWORD [r14-96]
-;; [type_check_op] FUNCTION_CALL type_check_push_str | File: compiler/typecheck.torth, Row: 230, Column: 22
+;; [type_check_op] FUNCTION_CALL type_check_push_str | File: compiler/typecheck.torth, Row: 241, Column: 22
   call dHlwZV9jaGVja19wdXNoX3N0cg__
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 231, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 242, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 231, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 242, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 232, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 243, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF281:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 232, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 243, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 232, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 243, Column: 16
   mov rax, 24
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 232, Column: 30
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 243, Column: 30
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 232, Column: 33
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 243, Column: 33
   pop rax
   test rax, rax
   jz type_check_op_ELIF320
-;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 233, Column: 5
+;; [type_check_op] PUSH_BOOL | File: compiler/typecheck.torth, Row: 244, Column: 5
   push 1
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 233, Column: 10
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 244, Column: 10
   push QWORD [r14-48]
-;; [type_check_op] FUNCTION_CALL TypeCheckInfo->return_present | File: compiler/typecheck.torth, Row: 233, Column: 26
+;; [type_check_op] FUNCTION_CALL TypeCheckInfo->return_present | File: compiler/typecheck.torth, Row: 244, Column: 26
   call VHlwZUNoZWNrSW5mby0@cmV0dXJuX3ByZXNlbnQ_
-;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 235, Column: 5
+;; [type_check_op] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 246, Column: 5
   push QWORD [r14-64]
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 235, Column: 28
-;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 235, Column: 39
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 246, Column: 28
+;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 246, Column: 39
   call TGlzdC5sYXN0
-;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 235, Column: 49
+;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 246, Column: 49
   call Tm9kZS5sb2Fk
-;; [type_check_op] TAKE | File: compiler/typecheck.torth, Row: 236, Column: 5
-;; [type_check_op] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 236, Column: 10
+;; [type_check_op] TAKE | File: compiler/typecheck.torth, Row: 247, Column: 5
+;; [type_check_op] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 247, Column: 10
   pop rbx
   mov [r14-104], rbx
-;; [type_check_op] IN | File: compiler/typecheck.torth, Row: 236, Column: 32
-;; [type_check_op] IF | File: compiler/typecheck.torth, Row: 237, Column: 5
-;; [type_check_op] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 237, Column: 8
+;; [type_check_op] IN | File: compiler/typecheck.torth, Row: 247, Column: 32
+;; [type_check_op] IF | File: compiler/typecheck.torth, Row: 248, Column: 5
+;; [type_check_op] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 248, Column: 8
   push QWORD [r14-104]
-;; [type_check_op] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 237, Column: 30
+;; [type_check_op] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 248, Column: 30
   call Tm9kZS5kYXRh
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 237, Column: 40
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 237, Column: 50
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 248, Column: 40
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 248, Column: 50
   mov rax, 0
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 237, Column: 55
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 248, Column: 55
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 237, Column: 58
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 248, Column: 58
   pop rax
   test rax, rax
   jz type_check_op_ENDIF310
-;; [type_check_op] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 238, Column: 7
+;; [type_check_op] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 249, Column: 7
   push QWORD [r14-56]
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 238, Column: 32
-;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 238, Column: 43
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 249, Column: 32
+;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 249, Column: 43
   call TGlzdC5sYXN0
-;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 238, Column: 53
+;; [type_check_op] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 249, Column: 53
   call Tm9kZS5sb2Fk
-;; [type_check_op] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 238, Column: 63
+;; [type_check_op] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 249, Column: 63
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_op] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 239, Column: 7
+;; [type_check_op] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 250, Column: 7
   push QWORD [r14-104]
-;; [type_check_op] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 239, Column: 29
+;; [type_check_op] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 250, Column: 29
   add rsp, 8
   pop rbx
   mov [r14-104], rbx
-;; [type_check_op] ENDIF | File: compiler/typecheck.torth, Row: 240, Column: 5
+;; [type_check_op] ENDIF | File: compiler/typecheck.torth, Row: 251, Column: 5
 type_check_op_ENDIF310:
-;; [type_check_op] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 242, Column: 5
+;; [type_check_op] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 253, Column: 5
   push QWORD [r14-104]
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 242, Column: 27
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 253, Column: 27
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND op | File: compiler/typecheck.torth, Row: 242, Column: 38
+;; [type_check_op] PUSH_BIND op | File: compiler/typecheck.torth, Row: 253, Column: 38
   push QWORD [r14-8]
-;; [type_check_op] FUNCTION_CALL type_check_return | File: compiler/typecheck.torth, Row: 242, Column: 41
+;; [type_check_op] FUNCTION_CALL type_check_return | File: compiler/typecheck.torth, Row: 253, Column: 41
   call dHlwZV9jaGVja19yZXR1cm4_
-;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 243, Column: 5
+;; [type_check_op] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 254, Column: 5
   push QWORD [r14-16]
-;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 243, Column: 21
+;; [type_check_op] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 254, Column: 21
   call TGlzdC5sYXN0
-;; [type_check_op] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 243, Column: 31
+;; [type_check_op] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 254, Column: 31
   call Tm9kZS5zdG9yZQ__
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 244, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 255, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 244, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 255, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 245, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 256, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF320:
-;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 245, Column: 8
+;; [type_check_op] PUSH_BIND op_type | File: compiler/typecheck.torth, Row: 256, Column: 8
   push QWORD [r14-80]
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 245, Column: 16
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 256, Column: 16
   mov rax, 26
   push rax
-;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 245, Column: 30
+;; [type_check_op] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 256, Column: 30
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 245, Column: 33
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 256, Column: 33
   pop rax
   test rax, rax
   jz type_check_op_ELIF330
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 246, Column: 5
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 257, Column: 5
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND op | File: compiler/typecheck.torth, Row: 246, Column: 16
+;; [type_check_op] PUSH_BIND op | File: compiler/typecheck.torth, Row: 257, Column: 16
   push QWORD [r14-8]
-;; [type_check_op] FUNCTION_CALL type_check_typeof | File: compiler/typecheck.torth, Row: 246, Column: 19
+;; [type_check_op] FUNCTION_CALL type_check_typeof | File: compiler/typecheck.torth, Row: 257, Column: 19
   call dHlwZV9jaGVja190eXBlb2Y_
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 247, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 258, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 247, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 258, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 248, Column: 3
+;; [type_check_op] ELIF | File: compiler/typecheck.torth, Row: 259, Column: 3
   jmp type_check_op_ENDIF339
 type_check_op_ELIF330:
-;; [type_check_op] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 249, Column: 5
+;; [type_check_op] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 260, Column: 5
   push QWORD [r14-88]
-;; [type_check_op] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 249, Column: 17
+;; [type_check_op] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 260, Column: 17
   call c3RyLmNvcHk_
-;; [type_check_op] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 249, Column: 26
+;; [type_check_op] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 260, Column: 26
   call c3RyLnVwcGVy
-;; [type_check_op] FUNCTION_CALL get_not_typed_tokens | File: compiler/typecheck.torth, Row: 250, Column: 5
+;; [type_check_op] FUNCTION_CALL get_not_typed_tokens | File: compiler/typecheck.torth, Row: 261, Column: 5
   call Z2V0X25vdF90eXBlZF90b2tlbnM_
-;; [type_check_op] FUNCTION_CALL List.contains_str | File: compiler/typecheck.torth, Row: 251, Column: 5
+;; [type_check_op] FUNCTION_CALL List.contains_str | File: compiler/typecheck.torth, Row: 262, Column: 5
   call TGlzdC5jb250YWluc19zdHI_
-;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 252, Column: 3
+;; [type_check_op] DO | File: compiler/typecheck.torth, Row: 263, Column: 3
   pop rax
   test rax, rax
   jz type_check_op_ENDIF339
-;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 253, Column: 5
+;; [type_check_op] PUSH_BIND type_check_info | File: compiler/typecheck.torth, Row: 264, Column: 5
   push QWORD [r14-48]
-;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 253, Column: 21
+;; [type_check_op] RETURN | File: compiler/typecheck.torth, Row: 264, Column: 21
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
   ret
 
-;; [type_check_op] ENDIF | File: compiler/typecheck.torth, Row: 254, Column: 3
+;; [type_check_op] ENDIF | File: compiler/typecheck.torth, Row: 265, Column: 3
 type_check_op_ENDIF339:
-;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 257, Column: 3
+;; [type_check_op] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 268, Column: 3
   push QWORD [r14-72]
-;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 257, Column: 14
+;; [type_check_op] PUSH_BIND token | File: compiler/typecheck.torth, Row: 268, Column: 14
   push QWORD [r14-96]
-;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 258, Column: 3
+;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 269, Column: 3
   mov rsi, type_check_op_s342 ; Pointer to string
 
   push rsi
-;; [type_check_op] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 259, Column: 3
+;; [type_check_op] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 270, Column: 3
   push QWORD [r14-88]
-;; [type_check_op] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 259, Column: 33
+;; [type_check_op] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 270, Column: 33
   call c3RyLmNhdA__
-;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 260, Column: 3
+;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 271, Column: 3
   mov rsi, type_check_op_s345 ; Pointer to string
 
   push rsi
-;; [type_check_op] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 260, Column: 33
+;; [type_check_op] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 271, Column: 33
   call c3RyLmNhdA__
-;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 261, Column: 3
+;; [type_check_op] PUSH_STR | File: compiler/typecheck.torth, Row: 272, Column: 3
   mov rsi, type_check_op_s347 ; Pointer to string
 
   push rsi
-;; [type_check_op] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 261, Column: 21
+;; [type_check_op] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 272, Column: 21
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 262, Column: 3
+;; [type_check_op] PUSH_INT | File: compiler/typecheck.torth, Row: 273, Column: 3
   mov rax, 0
   push rax
-;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 262, Column: 8
+;; [type_check_op] CAST | File: compiler/typecheck.torth, Row: 273, Column: 8
 ;; [type_check_op] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 112 ; 13 local variables
@@ -10751,382 +10935,264 @@ dHlwZV9jaGVja19pbnRyaW5zaWM_:
 ;; [type_check_intrinsic] Save the return address to return stack
   add r14, 40 ; 4 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_intrinsic] POP_BIND token | File: compiler/typecheck.torth, Row: 272, Column: 3
+;; [type_check_intrinsic] POP_BIND token | File: compiler/typecheck.torth, Row: 283, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_intrinsic] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 273, Column: 3
+;; [type_check_intrinsic] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 284, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_intrinsic] POP_BIND program | File: compiler/typecheck.torth, Row: 274, Column: 3
+;; [type_check_intrinsic] POP_BIND program | File: compiler/typecheck.torth, Row: 285, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 276, Column: 3
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 287, Column: 3
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 276, Column: 9
+;; [type_check_intrinsic] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 287, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_intrinsic] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 276, Column: 21
+;; [type_check_intrinsic] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 287, Column: 21
   call c3RyLmNvcHk_
-;; [type_check_intrinsic] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 276, Column: 30
+;; [type_check_intrinsic] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 287, Column: 30
   call c3RyLnVwcGVy
-;; [type_check_intrinsic] TAKE | File: compiler/typecheck.torth, Row: 277, Column: 3
-;; [type_check_intrinsic] POP_BIND intrinsic | File: compiler/typecheck.torth, Row: 277, Column: 8
+;; [type_check_intrinsic] TAKE | File: compiler/typecheck.torth, Row: 288, Column: 3
+;; [type_check_intrinsic] POP_BIND intrinsic | File: compiler/typecheck.torth, Row: 288, Column: 8
   pop rbx
   mov [r14-32], rbx
-;; [type_check_intrinsic] IN | File: compiler/typecheck.torth, Row: 277, Column: 18
-;; [type_check_intrinsic] IF | File: compiler/typecheck.torth, Row: 280, Column: 3
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 280, Column: 6
+;; [type_check_intrinsic] IN | File: compiler/typecheck.torth, Row: 288, Column: 18
+;; [type_check_intrinsic] IF | File: compiler/typecheck.torth, Row: 291, Column: 3
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 291, Column: 6
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 280, Column: 16
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 291, Column: 16
   mov rsi, type_check_intrinsic_s12 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 280, Column: 23
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 291, Column: 23
   call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 280, Column: 29
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 291, Column: 29
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF19
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 281, Column: 5
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 292, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 281, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 292, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_push_int | File: compiler/typecheck.torth, Row: 281, Column: 22
+;; [type_check_intrinsic] FUNCTION_CALL type_check_push_int | File: compiler/typecheck.torth, Row: 292, Column: 22
   call dHlwZV9jaGVja19wdXNoX2ludA__
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 281, Column: 42
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 292, Column: 42
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 282, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 293, Column: 3
   jmp type_check_intrinsic_ENDIF198
 type_check_intrinsic_ELIF19:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 282, Column: 8
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 293, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 282, Column: 18
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 293, Column: 18
   mov rsi, type_check_intrinsic_s21 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 282, Column: 25
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 293, Column: 25
   call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 282, Column: 31
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 293, Column: 31
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF28
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 283, Column: 5
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 294, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 283, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 294, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_push_ptr | File: compiler/typecheck.torth, Row: 283, Column: 22
+;; [type_check_intrinsic] FUNCTION_CALL type_check_push_ptr | File: compiler/typecheck.torth, Row: 294, Column: 22
   call dHlwZV9jaGVja19wdXNoX3B0cg__
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 283, Column: 42
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 294, Column: 42
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 284, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 295, Column: 3
   jmp type_check_intrinsic_ENDIF198
 type_check_intrinsic_ELIF28:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 284, Column: 8
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 295, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 284, Column: 18
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 295, Column: 18
   mov rsi, type_check_intrinsic_s30 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 284, Column: 25
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 295, Column: 25
   call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 284, Column: 31
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 295, Column: 31
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF37
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 285, Column: 5
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 296, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 285, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 296, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_drop | File: compiler/typecheck.torth, Row: 285, Column: 22
+;; [type_check_intrinsic] FUNCTION_CALL type_check_drop | File: compiler/typecheck.torth, Row: 296, Column: 22
   call dHlwZV9jaGVja19kcm9w
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 285, Column: 38
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 296, Column: 38
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 286, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 297, Column: 3
   jmp type_check_intrinsic_ENDIF198
 type_check_intrinsic_ELIF37:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 286, Column: 8
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 297, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 286, Column: 18
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 297, Column: 18
   mov rsi, type_check_intrinsic_s39 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 286, Column: 24
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 297, Column: 24
   call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 286, Column: 30
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 297, Column: 30
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF46
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 287, Column: 5
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 298, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 287, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 298, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_dup | File: compiler/typecheck.torth, Row: 287, Column: 22
+;; [type_check_intrinsic] FUNCTION_CALL type_check_dup | File: compiler/typecheck.torth, Row: 298, Column: 22
   call dHlwZV9jaGVja19kdXA_
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 287, Column: 37
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 298, Column: 37
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 288, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 299, Column: 3
   jmp type_check_intrinsic_ENDIF198
 type_check_intrinsic_ELIF46:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 288, Column: 8
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 299, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 288, Column: 18
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 299, Column: 18
   mov rsi, type_check_intrinsic_s48 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 288, Column: 25
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 299, Column: 25
   call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 288, Column: 31
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 299, Column: 31
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF55
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 289, Column: 5
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 300, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 289, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 300, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_push_ptr | File: compiler/typecheck.torth, Row: 289, Column: 22
+;; [type_check_intrinsic] FUNCTION_CALL type_check_push_ptr | File: compiler/typecheck.torth, Row: 300, Column: 22
   call dHlwZV9jaGVja19wdXNoX3B0cg__
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 289, Column: 42
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 300, Column: 42
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 290, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 301, Column: 3
   jmp type_check_intrinsic_ENDIF198
 type_check_intrinsic_ELIF55:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 290, Column: 8
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 301, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 290, Column: 18
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 301, Column: 18
   mov rsi, type_check_intrinsic_s57 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 290, Column: 25
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 301, Column: 25
   call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 290, Column: 31
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 301, Column: 31
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF64
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 291, Column: 5
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 302, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 291, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 302, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_exec | File: compiler/typecheck.torth, Row: 291, Column: 22
+;; [type_check_intrinsic] FUNCTION_CALL type_check_exec | File: compiler/typecheck.torth, Row: 302, Column: 22
   call dHlwZV9jaGVja19leGVj
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 291, Column: 38
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 302, Column: 38
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 292, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 303, Column: 3
   jmp type_check_intrinsic_ENDIF198
 type_check_intrinsic_ELIF64:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 292, Column: 8
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 303, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 292, Column: 18
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 303, Column: 18
   mov rsi, type_check_intrinsic_s66 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL str.startswith | File: compiler/typecheck.torth, Row: 292, Column: 26
+;; [type_check_intrinsic] FUNCTION_CALL str.startswith | File: compiler/typecheck.torth, Row: 303, Column: 26
   call c3RyLnN0YXJ0c3dpdGg_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 292, Column: 41
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 303, Column: 41
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF73
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 293, Column: 5
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 304, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 293, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 304, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_load | File: compiler/typecheck.torth, Row: 293, Column: 22
+;; [type_check_intrinsic] FUNCTION_CALL type_check_load | File: compiler/typecheck.torth, Row: 304, Column: 22
   call dHlwZV9jaGVja19sb2Fk
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 293, Column: 38
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 304, Column: 38
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 294, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 305, Column: 3
   jmp type_check_intrinsic_ENDIF198
 type_check_intrinsic_ELIF73:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 294, Column: 8
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 305, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 294, Column: 18
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 305, Column: 18
   mov rsi, type_check_intrinsic_s75 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 294, Column: 25
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 305, Column: 25
   call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 294, Column: 31
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 305, Column: 31
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF82
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 295, Column: 5
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 306, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 295, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 306, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_over | File: compiler/typecheck.torth, Row: 295, Column: 22
+;; [type_check_intrinsic] FUNCTION_CALL type_check_over | File: compiler/typecheck.torth, Row: 306, Column: 22
   call dHlwZV9jaGVja19vdmVy
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 295, Column: 38
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 306, Column: 38
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 296, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 307, Column: 3
   jmp type_check_intrinsic_ENDIF198
 type_check_intrinsic_ELIF82:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 296, Column: 8
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 307, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 296, Column: 18
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 307, Column: 18
   mov rsi, type_check_intrinsic_s84 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 296, Column: 24
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 307, Column: 24
   call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 296, Column: 30
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 307, Column: 30
   pop rax
   test rax, rax
   jz type_check_intrinsic_ELIF91
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 297, Column: 5
-  push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 297, Column: 16
-  push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_rot | File: compiler/typecheck.torth, Row: 297, Column: 22
-  call dHlwZV9jaGVja19yb3Q_
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 297, Column: 37
-;; [type_check_intrinsic] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 40 ; 4 local variables
-  ret
-
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 298, Column: 3
-  jmp type_check_intrinsic_ENDIF198
-type_check_intrinsic_ELIF91:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 298, Column: 8
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 298, Column: 18
-  mov rsi, type_check_intrinsic_s93 ; Pointer to string
-
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL str.startswith | File: compiler/typecheck.torth, Row: 298, Column: 27
-  call c3RyLnN0YXJ0c3dpdGg_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 298, Column: 42
-  pop rax
-  test rax, rax
-  jz type_check_intrinsic_ELIF100
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 299, Column: 5
-  push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 299, Column: 16
-  push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_store | File: compiler/typecheck.torth, Row: 299, Column: 22
-  call dHlwZV9jaGVja19zdG9yZQ__
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 299, Column: 39
-;; [type_check_intrinsic] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 40 ; 4 local variables
-  ret
-
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 300, Column: 3
-  jmp type_check_intrinsic_ENDIF198
-type_check_intrinsic_ELIF100:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 300, Column: 8
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 300, Column: 18
-  mov rsi, type_check_intrinsic_s102 ; Pointer to string
-
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 300, Column: 25
-  call c3RyZXE_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 300, Column: 31
-  pop rax
-  test rax, rax
-  jz type_check_intrinsic_ELIF109
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 301, Column: 5
-  push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 301, Column: 16
-  push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_swap | File: compiler/typecheck.torth, Row: 301, Column: 22
-  call dHlwZV9jaGVja19zd2Fw
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 301, Column: 38
-;; [type_check_intrinsic] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 40 ; 4 local variables
-  ret
-
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 302, Column: 3
-  jmp type_check_intrinsic_ENDIF198
-type_check_intrinsic_ELIF109:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 302, Column: 8
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 302, Column: 18
-  mov rsi, type_check_intrinsic_s111 ; Pointer to string
-
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL str.startswith | File: compiler/typecheck.torth, Row: 302, Column: 28
-  call c3RyLnN0YXJ0c3dpdGg_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 302, Column: 43
-  pop rax
-  test rax, rax
-  jz type_check_intrinsic_ELIF118
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 303, Column: 5
-  push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 303, Column: 16
-  push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_syscall | File: compiler/typecheck.torth, Row: 303, Column: 22
-  call dHlwZV9jaGVja19zeXNjYWxs
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 303, Column: 41
-;; [type_check_intrinsic] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 40 ; 4 local variables
-  ret
-
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 304, Column: 3
-  jmp type_check_intrinsic_ENDIF198
-type_check_intrinsic_ELIF118:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 305, Column: 5
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 305, Column: 15
-  mov rsi, type_check_intrinsic_s120 ; Pointer to string
-
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 305, Column: 21
-  call c3RyZXE_
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 306, Column: 5
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 306, Column: 15
-  mov rsi, type_check_intrinsic_s123 ; Pointer to string
-
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 306, Column: 21
-  call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 306, Column: 27
-  call fHw_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 307, Column: 3
-  pop rax
-  test rax, rax
-  jz type_check_intrinsic_ELIF131
 ;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 308, Column: 5
   push QWORD [r14-16]
 ;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 308, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_bitwise | File: compiler/typecheck.torth, Row: 308, Column: 22
-  call dHlwZV9jaGVja19iaXR3aXNl
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 308, Column: 41
+;; [type_check_intrinsic] FUNCTION_CALL type_check_rot | File: compiler/typecheck.torth, Row: 308, Column: 22
+  call dHlwZV9jaGVja19yb3Q_
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 308, Column: 37
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
@@ -11134,210 +11200,328 @@ type_check_intrinsic_ELIF118:
 
 ;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 309, Column: 3
   jmp type_check_intrinsic_ENDIF198
-type_check_intrinsic_ELIF131:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 310, Column: 5
+type_check_intrinsic_ELIF91:
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 309, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 310, Column: 15
-  mov rsi, type_check_intrinsic_s133 ; Pointer to string
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 309, Column: 18
+  mov rsi, type_check_intrinsic_s93 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 310, Column: 21
-  call c3RyZXE_
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 311, Column: 5
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 311, Column: 15
-  mov rsi, type_check_intrinsic_s136 ; Pointer to string
-
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 311, Column: 21
-  call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 311, Column: 27
-  call fHw_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 312, Column: 3
+;; [type_check_intrinsic] FUNCTION_CALL str.startswith | File: compiler/typecheck.torth, Row: 309, Column: 27
+  call c3RyLnN0YXJ0c3dpdGg_
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 309, Column: 42
   pop rax
   test rax, rax
-  jz type_check_intrinsic_ELIF144
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 313, Column: 5
+  jz type_check_intrinsic_ELIF100
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 310, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 313, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 310, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_bitshift | File: compiler/typecheck.torth, Row: 313, Column: 22
-  call dHlwZV9jaGVja19iaXRzaGlmdA__
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 313, Column: 42
+;; [type_check_intrinsic] FUNCTION_CALL type_check_store | File: compiler/typecheck.torth, Row: 310, Column: 22
+  call dHlwZV9jaGVja19zdG9yZQ__
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 310, Column: 39
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 314, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 311, Column: 3
   jmp type_check_intrinsic_ENDIF198
-type_check_intrinsic_ELIF144:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 315, Column: 5
+type_check_intrinsic_ELIF100:
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 311, Column: 8
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 315, Column: 15
-  mov rsi, type_check_intrinsic_s146 ; Pointer to string
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 311, Column: 18
+  mov rsi, type_check_intrinsic_s102 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 315, Column: 23
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 311, Column: 25
   call c3RyZXE_
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 311, Column: 31
+  pop rax
+  test rax, rax
+  jz type_check_intrinsic_ELIF109
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 312, Column: 5
+  push QWORD [r14-16]
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 312, Column: 16
+  push QWORD [r14-8]
+;; [type_check_intrinsic] FUNCTION_CALL type_check_swap | File: compiler/typecheck.torth, Row: 312, Column: 22
+  call dHlwZV9jaGVja19zd2Fw
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 312, Column: 38
+;; [type_check_intrinsic] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 40 ; 4 local variables
+  ret
+
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 313, Column: 3
+  jmp type_check_intrinsic_ENDIF198
+type_check_intrinsic_ELIF109:
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 313, Column: 8
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 313, Column: 18
+  mov rsi, type_check_intrinsic_s111 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL str.startswith | File: compiler/typecheck.torth, Row: 313, Column: 28
+  call c3RyLnN0YXJ0c3dpdGg_
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 313, Column: 43
+  pop rax
+  test rax, rax
+  jz type_check_intrinsic_ELIF118
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 314, Column: 5
+  push QWORD [r14-16]
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 314, Column: 16
+  push QWORD [r14-8]
+;; [type_check_intrinsic] FUNCTION_CALL type_check_syscall | File: compiler/typecheck.torth, Row: 314, Column: 22
+  call dHlwZV9jaGVja19zeXNjYWxs
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 314, Column: 41
+;; [type_check_intrinsic] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 40 ; 4 local variables
+  ret
+
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 315, Column: 3
+  jmp type_check_intrinsic_ENDIF198
+type_check_intrinsic_ELIF118:
 ;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 316, Column: 5
   push QWORD [r14-32]
 ;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 316, Column: 15
-  mov rsi, type_check_intrinsic_s149 ; Pointer to string
+  mov rsi, type_check_intrinsic_s120 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 316, Column: 23
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 316, Column: 21
   call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 316, Column: 29
-  call fHw_
 ;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 317, Column: 5
   push QWORD [r14-32]
 ;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 317, Column: 15
-  mov rsi, type_check_intrinsic_s153 ; Pointer to string
+  mov rsi, type_check_intrinsic_s123 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 317, Column: 23
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 317, Column: 21
   call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 317, Column: 29
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 317, Column: 27
   call fHw_
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 318, Column: 5
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 318, Column: 15
-  mov rsi, type_check_intrinsic_s157 ; Pointer to string
-
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 318, Column: 23
-  call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 318, Column: 29
-  call fHw_
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 319, Column: 5
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 319, Column: 15
-  mov rsi, type_check_intrinsic_s161 ; Pointer to string
-
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 319, Column: 23
-  call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 319, Column: 29
-  call fHw_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 320, Column: 3
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 318, Column: 3
   pop rax
   test rax, rax
-  jz type_check_intrinsic_ELIF169
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 321, Column: 5
+  jz type_check_intrinsic_ELIF131
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 319, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 321, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 319, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_calculations | File: compiler/typecheck.torth, Row: 321, Column: 22
-  call dHlwZV9jaGVja19jYWxjdWxhdGlvbnM_
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 321, Column: 46
+;; [type_check_intrinsic] FUNCTION_CALL type_check_bitwise | File: compiler/typecheck.torth, Row: 319, Column: 22
+  call dHlwZV9jaGVja19iaXR3aXNl
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 319, Column: 41
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 322, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 320, Column: 3
   jmp type_check_intrinsic_ENDIF198
-type_check_intrinsic_ELIF169:
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 323, Column: 5
+type_check_intrinsic_ELIF131:
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 321, Column: 5
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 323, Column: 15
-  mov rsi, type_check_intrinsic_s171 ; Pointer to string
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 321, Column: 15
+  mov rsi, type_check_intrinsic_s133 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 323, Column: 21
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 321, Column: 21
   call c3RyZXE_
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 324, Column: 5
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 322, Column: 5
   push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 324, Column: 15
-  mov rsi, type_check_intrinsic_s174 ; Pointer to string
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 322, Column: 15
+  mov rsi, type_check_intrinsic_s136 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 324, Column: 21
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 322, Column: 21
   call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 324, Column: 27
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 322, Column: 27
   call fHw_
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 325, Column: 5
-  push QWORD [r14-32]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 325, Column: 15
-  mov rsi, type_check_intrinsic_s178 ; Pointer to string
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 323, Column: 3
+  pop rax
+  test rax, rax
+  jz type_check_intrinsic_ELIF144
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 324, Column: 5
+  push QWORD [r14-16]
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 324, Column: 16
+  push QWORD [r14-8]
+;; [type_check_intrinsic] FUNCTION_CALL type_check_bitshift | File: compiler/typecheck.torth, Row: 324, Column: 22
+  call dHlwZV9jaGVja19iaXRzaGlmdA__
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 324, Column: 42
+;; [type_check_intrinsic] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 40 ; 4 local variables
+  ret
 
-  push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 325, Column: 21
-  call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 325, Column: 27
-  call fHw_
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 325, Column: 3
+  jmp type_check_intrinsic_ENDIF198
+type_check_intrinsic_ELIF144:
 ;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 326, Column: 5
   push QWORD [r14-32]
 ;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 326, Column: 15
-  mov rsi, type_check_intrinsic_s182 ; Pointer to string
+  mov rsi, type_check_intrinsic_s146 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 326, Column: 21
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 326, Column: 23
   call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 326, Column: 27
-  call fHw_
 ;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 327, Column: 5
   push QWORD [r14-32]
 ;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 327, Column: 15
-  mov rsi, type_check_intrinsic_s186 ; Pointer to string
+  mov rsi, type_check_intrinsic_s149 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 327, Column: 21
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 327, Column: 23
   call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 327, Column: 27
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 327, Column: 29
   call fHw_
 ;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 328, Column: 5
   push QWORD [r14-32]
 ;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 328, Column: 15
-  mov rsi, type_check_intrinsic_s190 ; Pointer to string
+  mov rsi, type_check_intrinsic_s153 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 328, Column: 21
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 328, Column: 23
   call c3RyZXE_
-;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 328, Column: 27
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 328, Column: 29
   call fHw_
-;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 329, Column: 3
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 329, Column: 5
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 329, Column: 15
+  mov rsi, type_check_intrinsic_s157 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 329, Column: 23
+  call c3RyZXE_
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 329, Column: 29
+  call fHw_
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 330, Column: 5
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 330, Column: 15
+  mov rsi, type_check_intrinsic_s161 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 330, Column: 23
+  call c3RyZXE_
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 330, Column: 29
+  call fHw_
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 331, Column: 3
   pop rax
   test rax, rax
-  jz type_check_intrinsic_ENDIF198
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 330, Column: 5
+  jz type_check_intrinsic_ELIF169
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 332, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 330, Column: 16
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 332, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] FUNCTION_CALL type_check_comparison | File: compiler/typecheck.torth, Row: 330, Column: 22
-  call dHlwZV9jaGVja19jb21wYXJpc29u
-;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 330, Column: 44
+;; [type_check_intrinsic] FUNCTION_CALL type_check_calculations | File: compiler/typecheck.torth, Row: 332, Column: 22
+  call dHlwZV9jaGVja19jYWxjdWxhdGlvbnM_
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 332, Column: 46
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
   ret
 
-;; [type_check_intrinsic] ENDIF | File: compiler/typecheck.torth, Row: 331, Column: 3
-type_check_intrinsic_ENDIF198:
-;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 334, Column: 3
+;; [type_check_intrinsic] ELIF | File: compiler/typecheck.torth, Row: 333, Column: 3
+  jmp type_check_intrinsic_ENDIF198
+type_check_intrinsic_ELIF169:
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 334, Column: 5
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 334, Column: 15
+  mov rsi, type_check_intrinsic_s171 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 334, Column: 21
+  call c3RyZXE_
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 335, Column: 5
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 335, Column: 15
+  mov rsi, type_check_intrinsic_s174 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 335, Column: 21
+  call c3RyZXE_
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 335, Column: 27
+  call fHw_
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 336, Column: 5
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 336, Column: 15
+  mov rsi, type_check_intrinsic_s178 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 336, Column: 21
+  call c3RyZXE_
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 336, Column: 27
+  call fHw_
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 337, Column: 5
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 337, Column: 15
+  mov rsi, type_check_intrinsic_s182 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 337, Column: 21
+  call c3RyZXE_
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 337, Column: 27
+  call fHw_
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 338, Column: 5
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 338, Column: 15
+  mov rsi, type_check_intrinsic_s186 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 338, Column: 21
+  call c3RyZXE_
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 338, Column: 27
+  call fHw_
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 339, Column: 5
+  push QWORD [r14-32]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 339, Column: 15
+  mov rsi, type_check_intrinsic_s190 ; Pointer to string
+
+  push rsi
+;; [type_check_intrinsic] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 339, Column: 21
+  call c3RyZXE_
+;; [type_check_intrinsic] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 339, Column: 27
+  call fHw_
+;; [type_check_intrinsic] DO | File: compiler/typecheck.torth, Row: 340, Column: 3
+  pop rax
+  test rax, rax
+  jz type_check_intrinsic_ENDIF198
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 341, Column: 5
   push QWORD [r14-16]
-;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 334, Column: 14
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 341, Column: 16
   push QWORD [r14-8]
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 335, Column: 3
+;; [type_check_intrinsic] FUNCTION_CALL type_check_comparison | File: compiler/typecheck.torth, Row: 341, Column: 22
+  call dHlwZV9jaGVja19jb21wYXJpc29u
+;; [type_check_intrinsic] RETURN | File: compiler/typecheck.torth, Row: 341, Column: 44
+;; [type_check_intrinsic] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 40 ; 4 local variables
+  ret
+
+;; [type_check_intrinsic] ENDIF | File: compiler/typecheck.torth, Row: 342, Column: 3
+type_check_intrinsic_ENDIF198:
+;; [type_check_intrinsic] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 345, Column: 3
+  push QWORD [r14-16]
+;; [type_check_intrinsic] PUSH_BIND token | File: compiler/typecheck.torth, Row: 345, Column: 14
+  push QWORD [r14-8]
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 346, Column: 3
   mov rsi, type_check_intrinsic_s201 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 336, Column: 3
+;; [type_check_intrinsic] PUSH_BIND intrinsic | File: compiler/typecheck.torth, Row: 347, Column: 3
   push QWORD [r14-32]
-;; [type_check_intrinsic] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 336, Column: 13
+;; [type_check_intrinsic] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 347, Column: 13
   call c3RyLmNhdA__
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 337, Column: 3
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 348, Column: 3
   mov rsi, type_check_intrinsic_s204 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 337, Column: 33
+;; [type_check_intrinsic] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 348, Column: 33
   call c3RyLmNhdA__
-;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 338, Column: 3
+;; [type_check_intrinsic] PUSH_STR | File: compiler/typecheck.torth, Row: 349, Column: 3
   mov rsi, type_check_intrinsic_s206 ; Pointer to string
 
   push rsi
-;; [type_check_intrinsic] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 338, Column: 21
+;; [type_check_intrinsic] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 349, Column: 21
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
 ;; [type_check_intrinsic] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -11348,155 +11532,155 @@ dHlwZV9jaGVja19lbmRfb2ZfcHJvZ3JhbQ__:
 ;; [type_check_end_of_program] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_end_of_program] POP_BIND func | File: compiler/typecheck.torth, Row: 346, Column: 36
+;; [type_check_end_of_program] POP_BIND func | File: compiler/typecheck.torth, Row: 357, Column: 36
   pop rbx
   mov [r14-8], rbx
-;; [type_check_end_of_program] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 346, Column: 46
+;; [type_check_end_of_program] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 357, Column: 46
   pop rbx
   mov [r14-16], rbx
-;; [type_check_end_of_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 347, Column: 3
+;; [type_check_end_of_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 358, Column: 3
   push QWORD [r14-8]
-;; [type_check_end_of_program] FUNCTION_CALL Func.name | File: compiler/typecheck.torth, Row: 347, Column: 8
+;; [type_check_end_of_program] FUNCTION_CALL Func.name | File: compiler/typecheck.torth, Row: 358, Column: 8
   call RnVuYy5uYW1l
-;; [type_check_end_of_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 348, Column: 3
+;; [type_check_end_of_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 359, Column: 3
   push QWORD [r14-8]
-;; [type_check_end_of_program] FUNCTION_CALL Func.tokens | File: compiler/typecheck.torth, Row: 348, Column: 8
+;; [type_check_end_of_program] FUNCTION_CALL Func.tokens | File: compiler/typecheck.torth, Row: 359, Column: 8
   call RnVuYy50b2tlbnM_
-;; [type_check_end_of_program] CAST | File: compiler/typecheck.torth, Row: 348, Column: 20
-;; [type_check_end_of_program] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 348, Column: 31
+;; [type_check_end_of_program] CAST | File: compiler/typecheck.torth, Row: 359, Column: 20
+;; [type_check_end_of_program] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 359, Column: 31
   call TGlzdC5sYXN0
-;; [type_check_end_of_program] FUNCTION_CALL Token.load | File: compiler/typecheck.torth, Row: 348, Column: 41
+;; [type_check_end_of_program] FUNCTION_CALL Token.load | File: compiler/typecheck.torth, Row: 359, Column: 41
   call VG9rZW4ubG9hZA__
-;; [type_check_end_of_program] TAKE | File: compiler/typecheck.torth, Row: 349, Column: 3
-;; [type_check_end_of_program] POP_BIND last_token | File: compiler/typecheck.torth, Row: 349, Column: 8
+;; [type_check_end_of_program] TAKE | File: compiler/typecheck.torth, Row: 360, Column: 3
+;; [type_check_end_of_program] POP_BIND last_token | File: compiler/typecheck.torth, Row: 360, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_end_of_program] POP_BIND function_name | File: compiler/typecheck.torth, Row: 349, Column: 19
+;; [type_check_end_of_program] POP_BIND function_name | File: compiler/typecheck.torth, Row: 360, Column: 19
   pop rbx
   mov [r14-32], rbx
-;; [type_check_end_of_program] IN | File: compiler/typecheck.torth, Row: 349, Column: 33
-;; [type_check_end_of_program] IF | File: compiler/typecheck.torth, Row: 352, Column: 3
-;; [type_check_end_of_program] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 352, Column: 6
+;; [type_check_end_of_program] IN | File: compiler/typecheck.torth, Row: 360, Column: 33
+;; [type_check_end_of_program] IF | File: compiler/typecheck.torth, Row: 363, Column: 3
+;; [type_check_end_of_program] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 363, Column: 6
   push QWORD [r14-32]
-;; [type_check_end_of_program] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 352, Column: 20
+;; [type_check_end_of_program] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 363, Column: 20
   call c3RyLmNvcHk_
-;; [type_check_end_of_program] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 352, Column: 29
+;; [type_check_end_of_program] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 363, Column: 29
   call c3RyLnVwcGVy
-;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 352, Column: 39
+;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 363, Column: 39
   mov rsi, type_check_end_of_program_s17 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_program] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 352, Column: 46
+;; [type_check_end_of_program] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 363, Column: 46
   call c3RyZXE_
-;; [type_check_end_of_program] DO | File: compiler/typecheck.torth, Row: 352, Column: 52
+;; [type_check_end_of_program] DO | File: compiler/typecheck.torth, Row: 363, Column: 52
   pop rax
   test rax, rax
   jz type_check_end_of_program_ENDIF41
-;; [type_check_end_of_program] FUNCTION_CALL List.init | File: compiler/typecheck.torth, Row: 353, Column: 5
+;; [type_check_end_of_program] FUNCTION_CALL List.init | File: compiler/typecheck.torth, Row: 364, Column: 5
   call TGlzdC5pbml0
-;; [type_check_end_of_program] TAKE | File: compiler/typecheck.torth, Row: 353, Column: 15
-;; [type_check_end_of_program] POP_BIND return_types | File: compiler/typecheck.torth, Row: 353, Column: 20
+;; [type_check_end_of_program] TAKE | File: compiler/typecheck.torth, Row: 364, Column: 15
+;; [type_check_end_of_program] POP_BIND return_types | File: compiler/typecheck.torth, Row: 364, Column: 20
   pop rbx
   mov [r14-40], rbx
-;; [type_check_end_of_program] IN | File: compiler/typecheck.torth, Row: 353, Column: 33
-;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 354, Column: 5
+;; [type_check_end_of_program] IN | File: compiler/typecheck.torth, Row: 364, Column: 33
+;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 365, Column: 5
   mov rsi, type_check_end_of_program_s24 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_program] CAST | File: compiler/typecheck.torth, Row: 354, Column: 11
-;; [type_check_end_of_program] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 354, Column: 21
+;; [type_check_end_of_program] CAST | File: compiler/typecheck.torth, Row: 365, Column: 11
+;; [type_check_end_of_program] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 365, Column: 21
   push QWORD [r14-40]
-;; [type_check_end_of_program] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 354, Column: 34
+;; [type_check_end_of_program] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 365, Column: 34
   call TGlzdC5hcHBlbmQ_
-;; [type_check_end_of_program] IF | File: compiler/typecheck.torth, Row: 357, Column: 5
-;; [type_check_end_of_program] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 357, Column: 8
+;; [type_check_end_of_program] IF | File: compiler/typecheck.torth, Row: 368, Column: 5
+;; [type_check_end_of_program] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 368, Column: 8
   push QWORD [r14-16]
-;; [type_check_end_of_program] FUNCTION_CALL TypeStack.get_types | File: compiler/typecheck.torth, Row: 357, Column: 19
+;; [type_check_end_of_program] FUNCTION_CALL TypeStack.get_types | File: compiler/typecheck.torth, Row: 368, Column: 19
   call VHlwZVN0YWNrLmdldF90eXBlcw__
-;; [type_check_end_of_program] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 357, Column: 39
+;; [type_check_end_of_program] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 368, Column: 39
   push QWORD [r14-40]
-;; [type_check_end_of_program] FUNCTION_CALL List.streq | File: compiler/typecheck.torth, Row: 357, Column: 52
+;; [type_check_end_of_program] FUNCTION_CALL List.streq | File: compiler/typecheck.torth, Row: 368, Column: 52
   call TGlzdC5zdHJlcQ__
-;; [type_check_end_of_program] DO | File: compiler/typecheck.torth, Row: 357, Column: 63
+;; [type_check_end_of_program] DO | File: compiler/typecheck.torth, Row: 368, Column: 63
   pop rax
   test rax, rax
   jz type_check_end_of_program_ENDIF35
-;; [type_check_end_of_program] RETURN | File: compiler/typecheck.torth, Row: 358, Column: 7
+;; [type_check_end_of_program] RETURN | File: compiler/typecheck.torth, Row: 369, Column: 7
 ;; [type_check_end_of_program] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
   ret
 
-;; [type_check_end_of_program] ENDIF | File: compiler/typecheck.torth, Row: 359, Column: 5
+;; [type_check_end_of_program] ENDIF | File: compiler/typecheck.torth, Row: 370, Column: 5
 type_check_end_of_program_ENDIF35:
-;; [type_check_end_of_program] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 361, Column: 5
+;; [type_check_end_of_program] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 372, Column: 5
   push QWORD [r14-16]
-;; [type_check_end_of_program] PUSH_BIND last_token | File: compiler/typecheck.torth, Row: 361, Column: 16
+;; [type_check_end_of_program] PUSH_BIND last_token | File: compiler/typecheck.torth, Row: 372, Column: 16
   push QWORD [r14-24]
-;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 362, Column: 5
+;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 373, Column: 5
   mov rsi, type_check_end_of_program_s38 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 363, Column: 5
+;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 374, Column: 5
   mov rsi, type_check_end_of_program_s39 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_program] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 363, Column: 32
+;; [type_check_end_of_program] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 374, Column: 32
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_end_of_program] ENDIF | File: compiler/typecheck.torth, Row: 364, Column: 3
+;; [type_check_end_of_program] ENDIF | File: compiler/typecheck.torth, Row: 375, Column: 3
 type_check_end_of_program_ENDIF41:
-;; [type_check_end_of_program] IF | File: compiler/typecheck.torth, Row: 366, Column: 3
-;; [type_check_end_of_program] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 366, Column: 6
+;; [type_check_end_of_program] IF | File: compiler/typecheck.torth, Row: 377, Column: 3
+;; [type_check_end_of_program] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 377, Column: 6
   push QWORD [r14-16]
-;; [type_check_end_of_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 366, Column: 17
+;; [type_check_end_of_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 377, Column: 17
   push QWORD [r14-8]
-;; [type_check_end_of_program] FUNCTION_CALL correct_return_types | File: compiler/typecheck.torth, Row: 366, Column: 22
+;; [type_check_end_of_program] FUNCTION_CALL correct_return_types | File: compiler/typecheck.torth, Row: 377, Column: 22
   call Y29ycmVjdF9yZXR1cm5fdHlwZXM_
-;; [type_check_end_of_program] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 366, Column: 43
+;; [type_check_end_of_program] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 377, Column: 43
   call bm90
-;; [type_check_end_of_program] DO | File: compiler/typecheck.torth, Row: 366, Column: 47
+;; [type_check_end_of_program] DO | File: compiler/typecheck.torth, Row: 377, Column: 47
   pop rax
   test rax, rax
   jz type_check_end_of_program_ENDIF63
-;; [type_check_end_of_program] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 367, Column: 5
+;; [type_check_end_of_program] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 378, Column: 5
   push QWORD [r14-16]
-;; [type_check_end_of_program] PUSH_BIND last_token | File: compiler/typecheck.torth, Row: 367, Column: 16
+;; [type_check_end_of_program] PUSH_BIND last_token | File: compiler/typecheck.torth, Row: 378, Column: 16
   push QWORD [r14-24]
-;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 368, Column: 5
+;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 379, Column: 5
   mov rsi, type_check_end_of_program_s50 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_program] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 369, Column: 5
+;; [type_check_end_of_program] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 380, Column: 5
   push QWORD [r14-32]
-;; [type_check_end_of_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 369, Column: 75
+;; [type_check_end_of_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 380, Column: 75
   call c3RyLmNhdA__
-;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 370, Column: 5
+;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 381, Column: 5
   mov rsi, type_check_end_of_program_s53 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 370, Column: 75
+;; [type_check_end_of_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 381, Column: 75
   call c3RyLmNhdA__
-;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 371, Column: 5
+;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 382, Column: 5
   mov rsi, type_check_end_of_program_s55 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 371, Column: 75
+;; [type_check_end_of_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 382, Column: 75
   call c3RyLmNhdA__
-;; [type_check_end_of_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 372, Column: 5
+;; [type_check_end_of_program] PUSH_BIND func | File: compiler/typecheck.torth, Row: 383, Column: 5
   push QWORD [r14-8]
-;; [type_check_end_of_program] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 372, Column: 10
+;; [type_check_end_of_program] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 383, Column: 10
   call RnVuYy5zaWduYXR1cmU_
-;; [type_check_end_of_program] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 372, Column: 25
+;; [type_check_end_of_program] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 383, Column: 25
   call U2lnbmF0dXJlLnJlcHI_
-;; [type_check_end_of_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 372, Column: 75
+;; [type_check_end_of_program] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 383, Column: 75
   call c3RyLmNhdA__
-;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 373, Column: 5
+;; [type_check_end_of_program] PUSH_STR | File: compiler/typecheck.torth, Row: 384, Column: 5
   mov rsi, type_check_end_of_program_s61 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_program] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 373, Column: 32
+;; [type_check_end_of_program] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 384, Column: 32
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_end_of_program] ENDIF | File: compiler/typecheck.torth, Row: 374, Column: 3
+;; [type_check_end_of_program] ENDIF | File: compiler/typecheck.torth, Row: 385, Column: 3
 type_check_end_of_program_ENDIF63:
 ;; [type_check_end_of_program] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -11507,166 +11691,172 @@ Y29ycmVjdF9yZXR1cm5fdHlwZXM_:
 ;; [correct_return_types] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [correct_return_types] POP_BIND func | File: compiler/typecheck.torth, Row: 382, Column: 31
+;; [correct_return_types] POP_BIND func | File: compiler/typecheck.torth, Row: 393, Column: 31
   pop rbx
   mov [r14-8], rbx
-;; [correct_return_types] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 382, Column: 41
+;; [correct_return_types] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 393, Column: 41
   pop rbx
   mov [r14-16], rbx
-;; [correct_return_types] PUSH_BIND func | File: compiler/typecheck.torth, Row: 383, Column: 3
+;; [correct_return_types] PUSH_BIND func | File: compiler/typecheck.torth, Row: 394, Column: 3
   push QWORD [r14-8]
-;; [correct_return_types] FUNCTION_CALL get_function_type_stack | File: compiler/typecheck.torth, Row: 383, Column: 9
+;; [correct_return_types] FUNCTION_CALL get_function_type_stack | File: compiler/typecheck.torth, Row: 394, Column: 9
   call Z2V0X2Z1bmN0aW9uX3R5cGVfc3RhY2s_
-;; [correct_return_types] PUSH_BIND func | File: compiler/typecheck.torth, Row: 384, Column: 3
+;; [correct_return_types] PUSH_BIND func | File: compiler/typecheck.torth, Row: 395, Column: 3
   push QWORD [r14-8]
-;; [correct_return_types] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 384, Column: 9
+;; [correct_return_types] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 395, Column: 9
   call RnVuYy5zaWduYXR1cmU_
-;; [correct_return_types] INTRINSIC dup | File: compiler/typecheck.torth, Row: 385, Column: 3
+;; [correct_return_types] INTRINSIC dup | File: compiler/typecheck.torth, Row: 396, Column: 3
   push QWORD [rsp]
-;; [correct_return_types] FUNCTION_CALL Signature.returns | File: compiler/typecheck.torth, Row: 385, Column: 9
+;; [correct_return_types] FUNCTION_CALL Signature.returns | File: compiler/typecheck.torth, Row: 396, Column: 9
   call U2lnbmF0dXJlLnJldHVybnM_
-;; [correct_return_types] INTRINSIC swap | File: compiler/typecheck.torth, Row: 386, Column: 3
+;; [correct_return_types] INTRINSIC swap | File: compiler/typecheck.torth, Row: 397, Column: 3
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [correct_return_types] FUNCTION_CALL Signature.params | File: compiler/typecheck.torth, Row: 386, Column: 9
+;; [correct_return_types] FUNCTION_CALL Signature.params | File: compiler/typecheck.torth, Row: 397, Column: 9
   call U2lnbmF0dXJlLnBhcmFtcw__
-;; [correct_return_types] PUSH_INT | File: compiler/typecheck.torth, Row: 387, Column: 3
+;; [correct_return_types] PUSH_INT | File: compiler/typecheck.torth, Row: 398, Column: 3
   mov rax, 0
   push rax
-;; [correct_return_types] TAKE | File: compiler/typecheck.torth, Row: 388, Column: 3
-;; [correct_return_types] POP_BIND index | File: compiler/typecheck.torth, Row: 389, Column: 5
+;; [correct_return_types] TAKE | File: compiler/typecheck.torth, Row: 399, Column: 3
+;; [correct_return_types] POP_BIND index | File: compiler/typecheck.torth, Row: 400, Column: 5
   pop rbx
   mov [r14-24], rbx
-;; [correct_return_types] POP_BIND params | File: compiler/typecheck.torth, Row: 390, Column: 5
+;; [correct_return_types] POP_BIND params | File: compiler/typecheck.torth, Row: 401, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [correct_return_types] POP_BIND returns | File: compiler/typecheck.torth, Row: 391, Column: 5
+;; [correct_return_types] POP_BIND returns | File: compiler/typecheck.torth, Row: 402, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [correct_return_types] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 392, Column: 5
+;; [correct_return_types] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 403, Column: 5
   pop rbx
   mov [r14-48], rbx
-;; [correct_return_types] IN | File: compiler/typecheck.torth, Row: 393, Column: 3
-;; [correct_return_types] WHILE | File: compiler/typecheck.torth, Row: 396, Column: 3
+;; [correct_return_types] IN | File: compiler/typecheck.torth, Row: 404, Column: 3
+;; [correct_return_types] WHILE | File: compiler/typecheck.torth, Row: 407, Column: 3
 correct_return_types_WHILE17:
-;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 396, Column: 9
+;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 407, Column: 9
   push QWORD [r14-24]
-;; [correct_return_types] PUSH_BIND params | File: compiler/typecheck.torth, Row: 396, Column: 15
+;; [correct_return_types] PUSH_BIND params | File: compiler/typecheck.torth, Row: 407, Column: 15
   push QWORD [r14-32]
-;; [correct_return_types] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 396, Column: 22
+;; [correct_return_types] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 407, Column: 22
   call TGlzdC5sZW4_
-;; [correct_return_types] INTRINSIC LT | File: compiler/typecheck.torth, Row: 396, Column: 31
+;; [correct_return_types] INTRINSIC LT | File: compiler/typecheck.torth, Row: 407, Column: 31
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [correct_return_types] DO | File: compiler/typecheck.torth, Row: 396, Column: 33
+;; [correct_return_types] DO | File: compiler/typecheck.torth, Row: 407, Column: 33
   pop rax
   test rax, rax
   jz correct_return_types_DONE31
-;; [correct_return_types] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 397, Column: 5
+;; [correct_return_types] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 408, Column: 5
   push QWORD [r14-48]
-;; [correct_return_types] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 397, Column: 16
+;; [correct_return_types] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 408, Column: 16
   call TGlua2VkTGlzdC5wb3A_
-;; [correct_return_types] INTRINSIC drop | File: compiler/typecheck.torth, Row: 397, Column: 31
+;; [correct_return_types] INTRINSIC drop | File: compiler/typecheck.torth, Row: 408, Column: 31
   add rsp, 8
-;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 398, Column: 5
+;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 409, Column: 5
   push QWORD [r14-24]
-;; [correct_return_types] PUSH_INT | File: compiler/typecheck.torth, Row: 398, Column: 11
+;; [correct_return_types] PUSH_INT | File: compiler/typecheck.torth, Row: 409, Column: 11
   mov rax, 1
   push rax
-;; [correct_return_types] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 398, Column: 13
+;; [correct_return_types] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 409, Column: 13
   pop rax
   add [rsp], rax
-;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 398, Column: 15
+;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 409, Column: 15
   push QWORD [r14-24]
-;; [correct_return_types] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 398, Column: 21
+;; [correct_return_types] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 409, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [correct_return_types] DONE | File: compiler/typecheck.torth, Row: 399, Column: 3
+;; [correct_return_types] DONE | File: compiler/typecheck.torth, Row: 410, Column: 3
   jmp correct_return_types_WHILE17
 correct_return_types_DONE31:
-;; [correct_return_types] PUSH_INT | File: compiler/typecheck.torth, Row: 402, Column: 3
+;; [correct_return_types] PUSH_INT | File: compiler/typecheck.torth, Row: 413, Column: 3
   mov rax, 0
   push rax
-;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 402, Column: 5
+;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 413, Column: 5
   push QWORD [r14-24]
-;; [correct_return_types] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 402, Column: 11
+;; [correct_return_types] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 413, Column: 11
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [correct_return_types] WHILE | File: compiler/typecheck.torth, Row: 403, Column: 3
+;; [correct_return_types] WHILE | File: compiler/typecheck.torth, Row: 414, Column: 3
 correct_return_types_WHILE35:
-;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 403, Column: 9
+;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 414, Column: 9
   push QWORD [r14-24]
-;; [correct_return_types] PUSH_BIND returns | File: compiler/typecheck.torth, Row: 403, Column: 15
+;; [correct_return_types] PUSH_BIND returns | File: compiler/typecheck.torth, Row: 414, Column: 15
   push QWORD [r14-40]
-;; [correct_return_types] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 403, Column: 23
+;; [correct_return_types] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 414, Column: 23
   call TGlzdC5sZW4_
-;; [correct_return_types] INTRINSIC LT | File: compiler/typecheck.torth, Row: 403, Column: 32
+;; [correct_return_types] INTRINSIC LT | File: compiler/typecheck.torth, Row: 414, Column: 32
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [correct_return_types] DO | File: compiler/typecheck.torth, Row: 403, Column: 34
+;; [correct_return_types] DO | File: compiler/typecheck.torth, Row: 414, Column: 34
   pop rax
   test rax, rax
   jz correct_return_types_DONE60
-;; [correct_return_types] PUSH_BIND func | File: compiler/typecheck.torth, Row: 404, Column: 5
+;; [correct_return_types] PUSH_BIND func | File: compiler/typecheck.torth, Row: 415, Column: 5
   push QWORD [r14-8]
-;; [correct_return_types] FUNCTION_CALL Func.tokens | File: compiler/typecheck.torth, Row: 404, Column: 10
+;; [correct_return_types] FUNCTION_CALL Func.tokens | File: compiler/typecheck.torth, Row: 415, Column: 10
   call RnVuYy50b2tlbnM_
-;; [correct_return_types] CAST | File: compiler/typecheck.torth, Row: 404, Column: 22
-;; [correct_return_types] FUNCTION_CALL List.first | File: compiler/typecheck.torth, Row: 404, Column: 33
+;; [correct_return_types] CAST | File: compiler/typecheck.torth, Row: 415, Column: 22
+;; [correct_return_types] FUNCTION_CALL List.first | File: compiler/typecheck.torth, Row: 415, Column: 33
   call TGlzdC5maXJzdA__
-;; [correct_return_types] FUNCTION_CALL Token.load | File: compiler/typecheck.torth, Row: 404, Column: 44
+;; [correct_return_types] FUNCTION_CALL Token.load | File: compiler/typecheck.torth, Row: 415, Column: 44
   call VG9rZW4ubG9hZA__
-;; [correct_return_types] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 404, Column: 55
+;; [correct_return_types] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 415, Column: 55
   call VG9rZW4ubG9jYXRpb24_
-;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 405, Column: 5
+;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 416, Column: 5
   push QWORD [r14-24]
-;; [correct_return_types] PUSH_BIND returns | File: compiler/typecheck.torth, Row: 405, Column: 11
+;; [correct_return_types] PUSH_BIND returns | File: compiler/typecheck.torth, Row: 416, Column: 11
   push QWORD [r14-40]
-;; [correct_return_types] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 405, Column: 19
+;; [correct_return_types] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 416, Column: 19
   call TGlzdC5udGg_
-;; [correct_return_types] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 405, Column: 28
+;; [correct_return_types] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 416, Column: 28
   call c3RyLmxvYWQ_
-;; [correct_return_types] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 405, Column: 37
+;; [correct_return_types] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 416, Column: 37
   call VHlwZU5vZGUuaW5pdA__
-;; [correct_return_types] CAST | File: compiler/typecheck.torth, Row: 405, Column: 51
-;; [correct_return_types] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 406, Column: 5
+;; [correct_return_types] CAST | File: compiler/typecheck.torth, Row: 416, Column: 51
+;; [correct_return_types] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 417, Column: 5
   push QWORD [r14-48]
-;; [correct_return_types] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 406, Column: 16
+;; [correct_return_types] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 417, Column: 16
   call TGlua2VkTGlzdC5wdXNo
-;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 407, Column: 5
+;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 418, Column: 5
   push QWORD [r14-24]
-;; [correct_return_types] PUSH_INT | File: compiler/typecheck.torth, Row: 407, Column: 11
+;; [correct_return_types] PUSH_INT | File: compiler/typecheck.torth, Row: 418, Column: 11
   mov rax, 1
   push rax
-;; [correct_return_types] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 407, Column: 13
+;; [correct_return_types] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 418, Column: 13
   pop rax
   add [rsp], rax
-;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 407, Column: 15
+;; [correct_return_types] PUSH_BIND index | File: compiler/typecheck.torth, Row: 418, Column: 15
   push QWORD [r14-24]
-;; [correct_return_types] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 407, Column: 21
+;; [correct_return_types] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 418, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [correct_return_types] DONE | File: compiler/typecheck.torth, Row: 408, Column: 3
+;; [correct_return_types] DONE | File: compiler/typecheck.torth, Row: 419, Column: 3
   jmp correct_return_types_WHILE35
 correct_return_types_DONE60:
-;; [correct_return_types] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 409, Column: 3
+;; [correct_return_types] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 420, Column: 3
   push QWORD [r14-16]
-;; [correct_return_types] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 409, Column: 14
+;; [correct_return_types] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 420, Column: 14
   push QWORD [r14-48]
-;; [correct_return_types] FUNCTION_CALL equal_stacks | File: compiler/typecheck.torth, Row: 409, Column: 25
+;; [correct_return_types] FUNCTION_CALL equal_stacks | File: compiler/typecheck.torth, Row: 420, Column: 25
   call ZXF1YWxfc3RhY2tz
+;; [correct_return_types] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 423, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [correct_return_types] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 423, Column: 17
+  push QWORD [r14-48]
+;; [correct_return_types] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 423, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [correct_return_types] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -11676,181 +11866,181 @@ ZXF1YWxfc3RhY2tz:
 ;; [equal_stacks] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [equal_stacks] POP_BIND type_stack1 | File: compiler/typecheck.torth, Row: 417, Column: 23
+;; [equal_stacks] POP_BIND type_stack1 | File: compiler/typecheck.torth, Row: 431, Column: 23
   pop rbx
   mov [r14-8], rbx
-;; [equal_stacks] POP_BIND type_stack2 | File: compiler/typecheck.torth, Row: 417, Column: 40
+;; [equal_stacks] POP_BIND type_stack2 | File: compiler/typecheck.torth, Row: 431, Column: 40
   pop rbx
   mov [r14-16], rbx
-;; [equal_stacks] PUSH_BIND type_stack1 | File: compiler/typecheck.torth, Row: 418, Column: 3
+;; [equal_stacks] PUSH_BIND type_stack1 | File: compiler/typecheck.torth, Row: 432, Column: 3
   push QWORD [r14-8]
-;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 418, Column: 15
-;; [equal_stacks] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 418, Column: 25
+;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 432, Column: 15
+;; [equal_stacks] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 432, Column: 25
   call Tm9kZS5sb2Fk
-;; [equal_stacks] PUSH_BIND type_stack2 | File: compiler/typecheck.torth, Row: 419, Column: 3
+;; [equal_stacks] PUSH_BIND type_stack2 | File: compiler/typecheck.torth, Row: 433, Column: 3
   push QWORD [r14-16]
-;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 419, Column: 15
-;; [equal_stacks] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 419, Column: 25
+;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 433, Column: 15
+;; [equal_stacks] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 433, Column: 25
   call Tm9kZS5sb2Fk
-;; [equal_stacks] TAKE | File: compiler/typecheck.torth, Row: 420, Column: 3
-;; [equal_stacks] POP_BIND type_node2 | File: compiler/typecheck.torth, Row: 420, Column: 8
+;; [equal_stacks] TAKE | File: compiler/typecheck.torth, Row: 434, Column: 3
+;; [equal_stacks] POP_BIND type_node2 | File: compiler/typecheck.torth, Row: 434, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [equal_stacks] POP_BIND type_node1 | File: compiler/typecheck.torth, Row: 420, Column: 19
+;; [equal_stacks] POP_BIND type_node1 | File: compiler/typecheck.torth, Row: 434, Column: 19
   pop rbx
   mov [r14-32], rbx
-;; [equal_stacks] IN | File: compiler/typecheck.torth, Row: 420, Column: 30
-;; [equal_stacks] WHILE | File: compiler/typecheck.torth, Row: 422, Column: 3
+;; [equal_stacks] IN | File: compiler/typecheck.torth, Row: 434, Column: 30
+;; [equal_stacks] WHILE | File: compiler/typecheck.torth, Row: 436, Column: 3
 equal_stacks_WHILE12:
-;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 423, Column: 5
+;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 437, Column: 5
   push QWORD [r14-32]
-;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 423, Column: 16
-;; [equal_stacks] PUSH_INT | File: compiler/typecheck.torth, Row: 423, Column: 26
+;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 437, Column: 16
+;; [equal_stacks] PUSH_INT | File: compiler/typecheck.torth, Row: 437, Column: 26
   mov rax, 0
   push rax
-;; [equal_stacks] INTRINSIC NE | File: compiler/typecheck.torth, Row: 423, Column: 31
+;; [equal_stacks] INTRINSIC NE | File: compiler/typecheck.torth, Row: 437, Column: 31
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 424, Column: 5
+;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 438, Column: 5
   push QWORD [r14-24]
-;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 424, Column: 16
-;; [equal_stacks] PUSH_INT | File: compiler/typecheck.torth, Row: 424, Column: 26
+;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 438, Column: 16
+;; [equal_stacks] PUSH_INT | File: compiler/typecheck.torth, Row: 438, Column: 26
   mov rax, 0
   push rax
-;; [equal_stacks] INTRINSIC NE | File: compiler/typecheck.torth, Row: 424, Column: 31
+;; [equal_stacks] INTRINSIC NE | File: compiler/typecheck.torth, Row: 438, Column: 31
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [equal_stacks] FUNCTION_CALL && | File: compiler/typecheck.torth, Row: 425, Column: 5
+;; [equal_stacks] FUNCTION_CALL && | File: compiler/typecheck.torth, Row: 439, Column: 5
   call JiY_
-;; [equal_stacks] DO | File: compiler/typecheck.torth, Row: 426, Column: 3
+;; [equal_stacks] DO | File: compiler/typecheck.torth, Row: 440, Column: 3
   pop rax
   test rax, rax
   jz equal_stacks_DONE61
-;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 428, Column: 5
+;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 442, Column: 5
   push QWORD [r14-32]
-;; [equal_stacks] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 428, Column: 16
+;; [equal_stacks] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 442, Column: 16
   call Tm9kZS5kYXRh
-;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 428, Column: 26
-;; [equal_stacks] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 428, Column: 41
+;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 442, Column: 26
+;; [equal_stacks] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 442, Column: 41
   call VHlwZU5vZGUudHlwZQ__
-;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 429, Column: 5
+;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 443, Column: 5
   push QWORD [r14-24]
-;; [equal_stacks] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 429, Column: 16
+;; [equal_stacks] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 443, Column: 16
   call Tm9kZS5kYXRh
-;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 429, Column: 26
-;; [equal_stacks] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 429, Column: 41
+;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 443, Column: 26
+;; [equal_stacks] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 443, Column: 41
   call VHlwZU5vZGUudHlwZQ__
-;; [equal_stacks] TAKE | File: compiler/typecheck.torth, Row: 430, Column: 5
-;; [equal_stacks] POP_BIND type1 | File: compiler/typecheck.torth, Row: 430, Column: 10
+;; [equal_stacks] TAKE | File: compiler/typecheck.torth, Row: 444, Column: 5
+;; [equal_stacks] POP_BIND type1 | File: compiler/typecheck.torth, Row: 444, Column: 10
   pop rbx
   mov [r14-40], rbx
-;; [equal_stacks] POP_BIND type2 | File: compiler/typecheck.torth, Row: 430, Column: 16
+;; [equal_stacks] POP_BIND type2 | File: compiler/typecheck.torth, Row: 444, Column: 16
   pop rbx
   mov [r14-48], rbx
-;; [equal_stacks] IN | File: compiler/typecheck.torth, Row: 430, Column: 22
-;; [equal_stacks] IF | File: compiler/typecheck.torth, Row: 432, Column: 5
-;; [equal_stacks] PUSH_BIND type1 | File: compiler/typecheck.torth, Row: 433, Column: 7
+;; [equal_stacks] IN | File: compiler/typecheck.torth, Row: 444, Column: 22
+;; [equal_stacks] IF | File: compiler/typecheck.torth, Row: 446, Column: 5
+;; [equal_stacks] PUSH_BIND type1 | File: compiler/typecheck.torth, Row: 447, Column: 7
   push QWORD [r14-40]
-;; [equal_stacks] PUSH_STR | File: compiler/typecheck.torth, Row: 433, Column: 13
+;; [equal_stacks] PUSH_STR | File: compiler/typecheck.torth, Row: 447, Column: 13
   mov rsi, equal_stacks_s37 ; Pointer to string
 
   push rsi
-;; [equal_stacks] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 433, Column: 19
+;; [equal_stacks] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 447, Column: 19
   call c3RyZXE_
-;; [equal_stacks] PUSH_BIND type2 | File: compiler/typecheck.torth, Row: 434, Column: 7
+;; [equal_stacks] PUSH_BIND type2 | File: compiler/typecheck.torth, Row: 448, Column: 7
   push QWORD [r14-48]
-;; [equal_stacks] PUSH_STR | File: compiler/typecheck.torth, Row: 434, Column: 13
+;; [equal_stacks] PUSH_STR | File: compiler/typecheck.torth, Row: 448, Column: 13
   mov rsi, equal_stacks_s40 ; Pointer to string
 
   push rsi
-;; [equal_stacks] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 434, Column: 19
+;; [equal_stacks] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 448, Column: 19
   call c3RyZXE_
-;; [equal_stacks] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 434, Column: 25
+;; [equal_stacks] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 448, Column: 25
   call fHw_
-;; [equal_stacks] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 434, Column: 28
+;; [equal_stacks] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 448, Column: 28
   call bm90
-;; [equal_stacks] PUSH_BIND type1 | File: compiler/typecheck.torth, Row: 435, Column: 7
+;; [equal_stacks] PUSH_BIND type1 | File: compiler/typecheck.torth, Row: 449, Column: 7
   push QWORD [r14-40]
-;; [equal_stacks] PUSH_BIND type2 | File: compiler/typecheck.torth, Row: 435, Column: 13
+;; [equal_stacks] PUSH_BIND type2 | File: compiler/typecheck.torth, Row: 449, Column: 13
   push QWORD [r14-48]
-;; [equal_stacks] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 435, Column: 19
+;; [equal_stacks] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 449, Column: 19
   call c3RyZXE_
-;; [equal_stacks] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 435, Column: 25
+;; [equal_stacks] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 449, Column: 25
   call bm90
-;; [equal_stacks] FUNCTION_CALL && | File: compiler/typecheck.torth, Row: 435, Column: 29
+;; [equal_stacks] FUNCTION_CALL && | File: compiler/typecheck.torth, Row: 449, Column: 29
   call JiY_
-;; [equal_stacks] DO | File: compiler/typecheck.torth, Row: 436, Column: 5
+;; [equal_stacks] DO | File: compiler/typecheck.torth, Row: 450, Column: 5
   pop rax
   test rax, rax
   jz equal_stacks_ENDIF52
-;; [equal_stacks] PUSH_BOOL | File: compiler/typecheck.torth, Row: 437, Column: 7
+;; [equal_stacks] PUSH_BOOL | File: compiler/typecheck.torth, Row: 451, Column: 7
   push 0
-;; [equal_stacks] RETURN | File: compiler/typecheck.torth, Row: 437, Column: 13
+;; [equal_stacks] RETURN | File: compiler/typecheck.torth, Row: 451, Column: 13
 ;; [equal_stacks] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
   ret
 
-;; [equal_stacks] ENDIF | File: compiler/typecheck.torth, Row: 438, Column: 5
+;; [equal_stacks] ENDIF | File: compiler/typecheck.torth, Row: 452, Column: 5
 equal_stacks_ENDIF52:
-;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 440, Column: 5
+;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 454, Column: 5
   push QWORD [r14-32]
-;; [equal_stacks] FUNCTION_CALL Node.next | File: compiler/typecheck.torth, Row: 440, Column: 16
+;; [equal_stacks] FUNCTION_CALL Node.next | File: compiler/typecheck.torth, Row: 454, Column: 16
   call Tm9kZS5uZXh0
-;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 440, Column: 26
+;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 454, Column: 26
   push QWORD [r14-32]
-;; [equal_stacks] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 440, Column: 37
+;; [equal_stacks] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 454, Column: 37
   add rsp, 8
   pop rbx
   mov [r14-32], rbx
-;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 441, Column: 5
+;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 455, Column: 5
   push QWORD [r14-24]
-;; [equal_stacks] FUNCTION_CALL Node.next | File: compiler/typecheck.torth, Row: 441, Column: 16
+;; [equal_stacks] FUNCTION_CALL Node.next | File: compiler/typecheck.torth, Row: 455, Column: 16
   call Tm9kZS5uZXh0
-;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 441, Column: 26
+;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 455, Column: 26
   push QWORD [r14-24]
-;; [equal_stacks] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 441, Column: 37
+;; [equal_stacks] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 455, Column: 37
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [equal_stacks] DONE | File: compiler/typecheck.torth, Row: 442, Column: 3
+;; [equal_stacks] DONE | File: compiler/typecheck.torth, Row: 456, Column: 3
   jmp equal_stacks_WHILE12
 equal_stacks_DONE61:
-;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 445, Column: 3
+;; [equal_stacks] PUSH_BIND type_node1 | File: compiler/typecheck.torth, Row: 459, Column: 3
   push QWORD [r14-32]
-;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 445, Column: 14
-;; [equal_stacks] PUSH_INT | File: compiler/typecheck.torth, Row: 445, Column: 24
+;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 459, Column: 14
+;; [equal_stacks] PUSH_INT | File: compiler/typecheck.torth, Row: 459, Column: 24
   mov rax, 0
   push rax
-;; [equal_stacks] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 445, Column: 29
+;; [equal_stacks] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 459, Column: 29
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 446, Column: 3
+;; [equal_stacks] PUSH_BIND type_node2 | File: compiler/typecheck.torth, Row: 460, Column: 3
   push QWORD [r14-24]
-;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 446, Column: 14
-;; [equal_stacks] PUSH_INT | File: compiler/typecheck.torth, Row: 446, Column: 24
+;; [equal_stacks] CAST | File: compiler/typecheck.torth, Row: 460, Column: 14
+;; [equal_stacks] PUSH_INT | File: compiler/typecheck.torth, Row: 460, Column: 24
   mov rax, 0
   push rax
-;; [equal_stacks] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 446, Column: 29
+;; [equal_stacks] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 460, Column: 29
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [equal_stacks] FUNCTION_CALL && | File: compiler/typecheck.torth, Row: 446, Column: 32
+;; [equal_stacks] FUNCTION_CALL && | File: compiler/typecheck.torth, Row: 460, Column: 32
   call JiY_
 ;; [equal_stacks] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -11861,271 +12051,271 @@ dHlwZV9jaGVja19lbmRfb2ZfYnJhbmNo:
 ;; [type_check_end_of_branch] Save the return address to return stack
   add r14, 64 ; 7 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_end_of_branch] POP_BIND token | File: compiler/typecheck.torth, Row: 458, Column: 3
+;; [type_check_end_of_branch] POP_BIND token | File: compiler/typecheck.torth, Row: 472, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_end_of_branch] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 459, Column: 3
+;; [type_check_end_of_branch] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 473, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_end_of_branch] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 460, Column: 3
+;; [type_check_end_of_branch] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 474, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_end_of_branch] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 461, Column: 3
+;; [type_check_end_of_branch] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 475, Column: 3
   pop rbx
   mov [r14-32], rbx
-;; [type_check_end_of_branch] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 464, Column: 3
+;; [type_check_end_of_branch] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 478, Column: 3
   push QWORD [r14-24]
-;; [type_check_end_of_branch] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 464, Column: 19
+;; [type_check_end_of_branch] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 478, Column: 19
   call TGlzdC5sYXN0
-;; [type_check_end_of_branch] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 464, Column: 29
+;; [type_check_end_of_branch] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 478, Column: 29
   call Tm9kZS5sb2Fk
-;; [type_check_end_of_branch] TAKE | File: compiler/typecheck.torth, Row: 465, Column: 3
-;; [type_check_end_of_branch] POP_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 465, Column: 8
+;; [type_check_end_of_branch] TAKE | File: compiler/typecheck.torth, Row: 479, Column: 3
+;; [type_check_end_of_branch] POP_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 479, Column: 8
   pop rbx
   mov [r14-40], rbx
-;; [type_check_end_of_branch] IN | File: compiler/typecheck.torth, Row: 465, Column: 27
-;; [type_check_end_of_branch] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 466, Column: 3
+;; [type_check_end_of_branch] IN | File: compiler/typecheck.torth, Row: 479, Column: 27
+;; [type_check_end_of_branch] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 480, Column: 3
   push QWORD [r14-24]
-;; [type_check_end_of_branch] INTRINSIC dup | File: compiler/typecheck.torth, Row: 466, Column: 19
+;; [type_check_end_of_branch] INTRINSIC dup | File: compiler/typecheck.torth, Row: 480, Column: 19
   push QWORD [rsp]
-;; [type_check_end_of_branch] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 466, Column: 23
+;; [type_check_end_of_branch] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 480, Column: 23
   call TGlzdC5sZW4_
-;; [type_check_end_of_branch] PUSH_INT | File: compiler/typecheck.torth, Row: 466, Column: 32
+;; [type_check_end_of_branch] PUSH_INT | File: compiler/typecheck.torth, Row: 480, Column: 32
   mov rax, 1
   push rax
-;; [type_check_end_of_branch] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 466, Column: 34
+;; [type_check_end_of_branch] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 480, Column: 34
   pop rax
   sub [rsp], rax
-;; [type_check_end_of_branch] INTRINSIC swap | File: compiler/typecheck.torth, Row: 466, Column: 36
+;; [type_check_end_of_branch] INTRINSIC swap | File: compiler/typecheck.torth, Row: 480, Column: 36
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [type_check_end_of_branch] FUNCTION_CALL List.pop | File: compiler/typecheck.torth, Row: 466, Column: 41
+;; [type_check_end_of_branch] FUNCTION_CALL List.pop | File: compiler/typecheck.torth, Row: 480, Column: 41
   call TGlzdC5wb3A_
-;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 469, Column: 3
-;; [type_check_end_of_branch] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 469, Column: 6
+;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 483, Column: 3
+;; [type_check_end_of_branch] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 483, Column: 6
   push QWORD [r14-24]
-;; [type_check_end_of_branch] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 469, Column: 22
+;; [type_check_end_of_branch] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 483, Column: 22
   call TGlzdC5sZW4_
-;; [type_check_end_of_branch] PUSH_INT | File: compiler/typecheck.torth, Row: 469, Column: 31
+;; [type_check_end_of_branch] PUSH_INT | File: compiler/typecheck.torth, Row: 483, Column: 31
   mov rax, 0
   push rax
-;; [type_check_end_of_branch] INTRINSIC LE | File: compiler/typecheck.torth, Row: 469, Column: 33
+;; [type_check_end_of_branch] INTRINSIC LE | File: compiler/typecheck.torth, Row: 483, Column: 33
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovle rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 469, Column: 36
+;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 483, Column: 36
   pop rax
   test rax, rax
   jz type_check_end_of_branch_ENDIF50
-;; [type_check_end_of_branch] PUSH_BIND token | File: compiler/typecheck.torth, Row: 470, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND token | File: compiler/typecheck.torth, Row: 484, Column: 5
   push QWORD [r14-8]
-;; [type_check_end_of_branch] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 470, Column: 11
+;; [type_check_end_of_branch] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 484, Column: 11
   call VG9rZW4udmFsdWU_
-;; [type_check_end_of_branch] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 470, Column: 23
+;; [type_check_end_of_branch] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 484, Column: 23
   call c3RyLmNvcHk_
-;; [type_check_end_of_branch] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 470, Column: 32
+;; [type_check_end_of_branch] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 484, Column: 32
   call c3RyLnVwcGVy
-;; [type_check_end_of_branch] TAKE | File: compiler/typecheck.torth, Row: 471, Column: 5
-;; [type_check_end_of_branch] POP_BIND token_value | File: compiler/typecheck.torth, Row: 471, Column: 10
+;; [type_check_end_of_branch] TAKE | File: compiler/typecheck.torth, Row: 485, Column: 5
+;; [type_check_end_of_branch] POP_BIND token_value | File: compiler/typecheck.torth, Row: 485, Column: 10
   pop rbx
   mov [r14-48], rbx
-;; [type_check_end_of_branch] IN | File: compiler/typecheck.torth, Row: 471, Column: 22
-;; [type_check_end_of_branch] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 473, Column: 5
+;; [type_check_end_of_branch] IN | File: compiler/typecheck.torth, Row: 485, Column: 22
+;; [type_check_end_of_branch] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 487, Column: 5
   push QWORD [r14-16]
-;; [type_check_end_of_branch] PUSH_BIND token | File: compiler/typecheck.torth, Row: 473, Column: 16
+;; [type_check_end_of_branch] PUSH_BIND token | File: compiler/typecheck.torth, Row: 487, Column: 16
   push QWORD [r14-8]
-;; [type_check_end_of_branch] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 474, Column: 8
+;; [type_check_end_of_branch] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 488, Column: 8
   push QWORD [r14-48]
-;; [type_check_end_of_branch] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 474, Column: 20
+;; [type_check_end_of_branch] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 488, Column: 20
   call c3RyLmNvcHk_
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 474, Column: 20
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 488, Column: 20
   mov rsi, type_check_end_of_branch_s34 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 474, Column: 41
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 488, Column: 41
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 475, Column: 5
-;; [type_check_end_of_branch] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 475, Column: 8
+;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 489, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 489, Column: 8
   push QWORD [r14-48]
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 475, Column: 20
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 489, Column: 20
   mov rsi, type_check_end_of_branch_s38 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 475, Column: 27
+;; [type_check_end_of_branch] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 489, Column: 27
   call c3RyZXE_
-;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 475, Column: 33
+;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 489, Column: 33
   pop rax
   test rax, rax
   jz type_check_end_of_branch_ELSE42
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 475, Column: 36
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 489, Column: 36
   mov rsi, type_check_end_of_branch_s41 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] ELSE | File: compiler/typecheck.torth, Row: 475, Column: 44
+;; [type_check_end_of_branch] ELSE | File: compiler/typecheck.torth, Row: 489, Column: 44
   jmp type_check_end_of_branch_ENDIF44
 type_check_end_of_branch_ELSE42:
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 475, Column: 49
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 489, Column: 49
   mov rsi, type_check_end_of_branch_s43 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 475, Column: 54
+;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 489, Column: 54
 type_check_end_of_branch_ENDIF44:
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 475, Column: 61
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 489, Column: 61
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 476, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 490, Column: 5
   mov rsi, type_check_end_of_branch_s46 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 476, Column: 61
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 490, Column: 61
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 477, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 491, Column: 5
   mov rsi, type_check_end_of_branch_s48 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 477, Column: 20
+;; [type_check_end_of_branch] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 491, Column: 20
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 478, Column: 3
+;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 492, Column: 3
 type_check_end_of_branch_ENDIF50:
-;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 481, Column: 3
-;; [type_check_end_of_branch] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 481, Column: 6
+;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 495, Column: 3
+;; [type_check_end_of_branch] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 495, Column: 6
   push QWORD [r14-32]
-;; [type_check_end_of_branch] CAST | File: compiler/typecheck.torth, Row: 481, Column: 28
-;; [type_check_end_of_branch] PUSH_INT | File: compiler/typecheck.torth, Row: 481, Column: 38
+;; [type_check_end_of_branch] CAST | File: compiler/typecheck.torth, Row: 495, Column: 28
+;; [type_check_end_of_branch] PUSH_INT | File: compiler/typecheck.torth, Row: 495, Column: 38
   mov rax, 0
   push rax
-;; [type_check_end_of_branch] INTRINSIC NE | File: compiler/typecheck.torth, Row: 481, Column: 43
+;; [type_check_end_of_branch] INTRINSIC NE | File: compiler/typecheck.torth, Row: 495, Column: 43
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 481, Column: 46
+;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 495, Column: 46
   pop rax
   test rax, rax
   jz type_check_end_of_branch_ENDIF78
-;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 483, Column: 5
-;; [type_check_end_of_branch] PUSH_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 483, Column: 8
+;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 497, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 497, Column: 8
   push QWORD [r14-40]
-;; [type_check_end_of_branch] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 483, Column: 27
+;; [type_check_end_of_branch] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 497, Column: 27
   push QWORD [r14-32]
-;; [type_check_end_of_branch] FUNCTION_CALL equal_stacks | File: compiler/typecheck.torth, Row: 483, Column: 49
+;; [type_check_end_of_branch] FUNCTION_CALL equal_stacks | File: compiler/typecheck.torth, Row: 497, Column: 49
   call ZXF1YWxfc3RhY2tz
-;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 483, Column: 62
+;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 497, Column: 62
   pop rax
   test rax, rax
   jz type_check_end_of_branch_ENDIF63
-;; [type_check_end_of_branch] RETURN | File: compiler/typecheck.torth, Row: 484, Column: 7
+;; [type_check_end_of_branch] RETURN | File: compiler/typecheck.torth, Row: 498, Column: 7
 ;; [type_check_end_of_branch] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 64 ; 7 local variables
   ret
 
-;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 485, Column: 5
+;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 499, Column: 5
 type_check_end_of_branch_ENDIF63:
-;; [type_check_end_of_branch] PUSH_BIND token | File: compiler/typecheck.torth, Row: 488, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND token | File: compiler/typecheck.torth, Row: 502, Column: 5
   push QWORD [r14-8]
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 489, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 503, Column: 5
   mov rsi, type_check_end_of_branch_s65 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 490, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 504, Column: 5
   mov rsi, type_check_end_of_branch_s66 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 490, Column: 51
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 504, Column: 51
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 491, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 505, Column: 5
   push QWORD [r14-32]
-;; [type_check_end_of_branch] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 491, Column: 27
+;; [type_check_end_of_branch] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 505, Column: 27
   call VHlwZVN0YWNrLnJlcHI_
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 491, Column: 51
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 505, Column: 51
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 492, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 506, Column: 5
   mov rsi, type_check_end_of_branch_s71 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 492, Column: 51
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 506, Column: 51
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 493, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 507, Column: 5
   push QWORD [r14-40]
-;; [type_check_end_of_branch] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 493, Column: 24
+;; [type_check_end_of_branch] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 507, Column: 24
   call VHlwZVN0YWNrLnJlcHI_
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 493, Column: 51
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 507, Column: 51
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 494, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 508, Column: 5
   mov rsi, type_check_end_of_branch_s76 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL CompilerErrorWithToken | File: compiler/typecheck.torth, Row: 494, Column: 40
+;; [type_check_end_of_branch] FUNCTION_CALL CompilerErrorWithToken | File: compiler/typecheck.torth, Row: 508, Column: 40
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 495, Column: 3
+;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 509, Column: 3
 type_check_end_of_branch_ENDIF78:
-;; [type_check_end_of_branch] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 498, Column: 3
+;; [type_check_end_of_branch] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 512, Column: 3
   push QWORD [r14-24]
-;; [type_check_end_of_branch] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 498, Column: 19
+;; [type_check_end_of_branch] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 512, Column: 19
   call TGlzdC5sYXN0
-;; [type_check_end_of_branch] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 498, Column: 29
+;; [type_check_end_of_branch] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 512, Column: 29
   call Tm9kZS5sb2Fk
-;; [type_check_end_of_branch] TAKE | File: compiler/typecheck.torth, Row: 499, Column: 3
-;; [type_check_end_of_branch] POP_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 499, Column: 8
+;; [type_check_end_of_branch] TAKE | File: compiler/typecheck.torth, Row: 513, Column: 3
+;; [type_check_end_of_branch] POP_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 513, Column: 8
   pop rbx
   mov [r14-56], rbx
-;; [type_check_end_of_branch] IN | File: compiler/typecheck.torth, Row: 499, Column: 28
-;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 502, Column: 3
-;; [type_check_end_of_branch] PUSH_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 502, Column: 6
+;; [type_check_end_of_branch] IN | File: compiler/typecheck.torth, Row: 513, Column: 28
+;; [type_check_end_of_branch] IF | File: compiler/typecheck.torth, Row: 516, Column: 3
+;; [type_check_end_of_branch] PUSH_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 516, Column: 6
   push QWORD [r14-56]
-;; [type_check_end_of_branch] PUSH_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 502, Column: 26
+;; [type_check_end_of_branch] PUSH_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 516, Column: 26
   push QWORD [r14-40]
-;; [type_check_end_of_branch] FUNCTION_CALL equal_stacks | File: compiler/typecheck.torth, Row: 502, Column: 45
+;; [type_check_end_of_branch] FUNCTION_CALL equal_stacks | File: compiler/typecheck.torth, Row: 516, Column: 45
   call ZXF1YWxfc3RhY2tz
-;; [type_check_end_of_branch] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 502, Column: 58
+;; [type_check_end_of_branch] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 516, Column: 58
   call bm90
-;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 502, Column: 62
+;; [type_check_end_of_branch] DO | File: compiler/typecheck.torth, Row: 516, Column: 62
   pop rax
   test rax, rax
   jz type_check_end_of_branch_ENDIF105
-;; [type_check_end_of_branch] PUSH_BIND token | File: compiler/typecheck.torth, Row: 503, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND token | File: compiler/typecheck.torth, Row: 517, Column: 5
   push QWORD [r14-8]
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 504, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 518, Column: 5
   mov rsi, type_check_end_of_branch_s92 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 505, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 519, Column: 5
   mov rsi, type_check_end_of_branch_s93 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 505, Column: 53
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 519, Column: 53
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 506, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 520, Column: 5
   push QWORD [r14-56]
-;; [type_check_end_of_branch] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 506, Column: 25
+;; [type_check_end_of_branch] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 520, Column: 25
   call VHlwZVN0YWNrLnJlcHI_
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 506, Column: 53
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 520, Column: 53
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 507, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 521, Column: 5
   mov rsi, type_check_end_of_branch_s98 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 507, Column: 53
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 521, Column: 53
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 508, Column: 5
+;; [type_check_end_of_branch] PUSH_BIND stack_after_branch | File: compiler/typecheck.torth, Row: 522, Column: 5
   push QWORD [r14-40]
-;; [type_check_end_of_branch] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 508, Column: 24
+;; [type_check_end_of_branch] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 522, Column: 24
   call VHlwZVN0YWNrLnJlcHI_
-;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 508, Column: 53
+;; [type_check_end_of_branch] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 522, Column: 53
   call c3RyLmNhdA__
-;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 509, Column: 5
+;; [type_check_end_of_branch] PUSH_STR | File: compiler/typecheck.torth, Row: 523, Column: 5
   mov rsi, type_check_end_of_branch_s103 ; Pointer to string
 
   push rsi
-;; [type_check_end_of_branch] FUNCTION_CALL CompilerErrorWithToken | File: compiler/typecheck.torth, Row: 509, Column: 40
+;; [type_check_end_of_branch] FUNCTION_CALL CompilerErrorWithToken | File: compiler/typecheck.torth, Row: 523, Column: 40
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 510, Column: 3
+;; [type_check_end_of_branch] ENDIF | File: compiler/typecheck.torth, Row: 524, Column: 3
 type_check_end_of_branch_ENDIF105:
 ;; [type_check_end_of_branch] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -12136,205 +12326,211 @@ dHlwZV9jaGVja19hc3NpZ25fYmluZA__:
 ;; [type_check_assign_bind] Save the return address to return stack
   add r14, 88 ; 10 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_assign_bind] POP_BIND token | File: compiler/typecheck.torth, Row: 521, Column: 3
+;; [type_check_assign_bind] POP_BIND token | File: compiler/typecheck.torth, Row: 535, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_assign_bind] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 522, Column: 3
+;; [type_check_assign_bind] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 536, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_assign_bind] POP_BIND program | File: compiler/typecheck.torth, Row: 523, Column: 3
+;; [type_check_assign_bind] POP_BIND program | File: compiler/typecheck.torth, Row: 537, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_assign_bind] POP_BIND variables | File: compiler/typecheck.torth, Row: 524, Column: 3
+;; [type_check_assign_bind] POP_BIND variables | File: compiler/typecheck.torth, Row: 538, Column: 3
   pop rbx
   mov [r14-32], rbx
-;; [type_check_assign_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 526, Column: 3
+;; [type_check_assign_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 540, Column: 3
   push QWORD [r14-16]
-;; [type_check_assign_bind] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 526, Column: 14
+;; [type_check_assign_bind] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 540, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_assign_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 527, Column: 3
+;; [type_check_assign_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 541, Column: 3
   push QWORD [r14-16]
-;; [type_check_assign_bind] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 527, Column: 14
+;; [type_check_assign_bind] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 541, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_assign_bind] CAST | File: compiler/typecheck.torth, Row: 527, Column: 29
-;; [type_check_assign_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 528, Column: 3
+;; [type_check_assign_bind] CAST | File: compiler/typecheck.torth, Row: 541, Column: 29
+;; [type_check_assign_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 542, Column: 3
   push QWORD [r14-16]
-;; [type_check_assign_bind] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 528, Column: 14
+;; [type_check_assign_bind] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 542, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_assign_bind] CAST | File: compiler/typecheck.torth, Row: 528, Column: 29
-;; [type_check_assign_bind] TAKE | File: compiler/typecheck.torth, Row: 529, Column: 3
-;; [type_check_assign_bind] POP_BIND t2 | File: compiler/typecheck.torth, Row: 529, Column: 8
+;; [type_check_assign_bind] CAST | File: compiler/typecheck.torth, Row: 542, Column: 29
+;; [type_check_assign_bind] TAKE | File: compiler/typecheck.torth, Row: 543, Column: 3
+;; [type_check_assign_bind] POP_BIND t2 | File: compiler/typecheck.torth, Row: 543, Column: 8
   pop rbx
   mov [r14-40], rbx
-;; [type_check_assign_bind] POP_BIND t1 | File: compiler/typecheck.torth, Row: 529, Column: 11
+;; [type_check_assign_bind] POP_BIND t1 | File: compiler/typecheck.torth, Row: 543, Column: 11
   pop rbx
   mov [r14-48], rbx
-;; [type_check_assign_bind] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 529, Column: 14
+;; [type_check_assign_bind] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 543, Column: 14
   pop rbx
   mov [r14-56], rbx
-;; [type_check_assign_bind] IN | File: compiler/typecheck.torth, Row: 529, Column: 25
-;; [type_check_assign_bind] IF | File: compiler/typecheck.torth, Row: 531, Column: 3
-;; [type_check_assign_bind] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 531, Column: 6
+;; [type_check_assign_bind] IN | File: compiler/typecheck.torth, Row: 543, Column: 25
+;; [type_check_assign_bind] IF | File: compiler/typecheck.torth, Row: 545, Column: 3
+;; [type_check_assign_bind] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 545, Column: 6
   push QWORD [r14-40]
-;; [type_check_assign_bind] CAST | File: compiler/typecheck.torth, Row: 531, Column: 9
-;; [type_check_assign_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 531, Column: 19
+;; [type_check_assign_bind] CAST | File: compiler/typecheck.torth, Row: 545, Column: 9
+;; [type_check_assign_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 545, Column: 19
   mov rax, -1
   push rax
-;; [type_check_assign_bind] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 531, Column: 22
+;; [type_check_assign_bind] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 545, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_assign_bind] DO | File: compiler/typecheck.torth, Row: 531, Column: 25
+;; [type_check_assign_bind] DO | File: compiler/typecheck.torth, Row: 545, Column: 25
   pop rax
   test rax, rax
   jz type_check_assign_bind_ENDIF28
-;; [type_check_assign_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 532, Column: 5
+;; [type_check_assign_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 546, Column: 5
   push QWORD [r14-56]
-;; [type_check_assign_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 532, Column: 16
+;; [type_check_assign_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 546, Column: 16
   push QWORD [r14-8]
-;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 533, Column: 5
+;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 547, Column: 5
   mov rsi, type_check_assign_bind_s25 ; Pointer to string
 
   push rsi
-;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 534, Column: 5
+;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 548, Column: 5
   mov rsi, type_check_assign_bind_s26 ; Pointer to string
 
   push rsi
-;; [type_check_assign_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 534, Column: 28
+;; [type_check_assign_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 548, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_assign_bind] ENDIF | File: compiler/typecheck.torth, Row: 535, Column: 3
+;; [type_check_assign_bind] ENDIF | File: compiler/typecheck.torth, Row: 549, Column: 3
 type_check_assign_bind_ENDIF28:
-;; [type_check_assign_bind] PUSH_BIND program | File: compiler/typecheck.torth, Row: 537, Column: 3
+;; [type_check_assign_bind] PUSH_BIND program | File: compiler/typecheck.torth, Row: 551, Column: 3
   push QWORD [r14-24]
-;; [type_check_assign_bind] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 537, Column: 11
+;; [type_check_assign_bind] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 551, Column: 11
   push QWORD [r14-48]
-;; [type_check_assign_bind] CAST | File: compiler/typecheck.torth, Row: 537, Column: 14
-;; [type_check_assign_bind] FUNCTION_CALL TypeNode.location | File: compiler/typecheck.torth, Row: 537, Column: 29
+;; [type_check_assign_bind] CAST | File: compiler/typecheck.torth, Row: 551, Column: 14
+;; [type_check_assign_bind] FUNCTION_CALL TypeNode.location | File: compiler/typecheck.torth, Row: 551, Column: 29
   call VHlwZU5vZGUubG9jYXRpb24_
-;; [type_check_assign_bind] FUNCTION_CALL get_op_from_location | File: compiler/typecheck.torth, Row: 537, Column: 47
+;; [type_check_assign_bind] FUNCTION_CALL get_op_from_location | File: compiler/typecheck.torth, Row: 551, Column: 47
   call Z2V0X29wX2Zyb21fbG9jYXRpb24_
-;; [type_check_assign_bind] FUNCTION_CALL Op.token | File: compiler/typecheck.torth, Row: 537, Column: 68
+;; [type_check_assign_bind] FUNCTION_CALL Op.token | File: compiler/typecheck.torth, Row: 551, Column: 68
   call T3AudG9rZW4_
-;; [type_check_assign_bind] TAKE | File: compiler/typecheck.torth, Row: 538, Column: 3
-;; [type_check_assign_bind] POP_BIND assign_token | File: compiler/typecheck.torth, Row: 538, Column: 8
+;; [type_check_assign_bind] TAKE | File: compiler/typecheck.torth, Row: 552, Column: 3
+;; [type_check_assign_bind] POP_BIND assign_token | File: compiler/typecheck.torth, Row: 552, Column: 8
   pop rbx
   mov [r14-64], rbx
-;; [type_check_assign_bind] IN | File: compiler/typecheck.torth, Row: 538, Column: 21
-;; [type_check_assign_bind] IF | File: compiler/typecheck.torth, Row: 540, Column: 3
-;; [type_check_assign_bind] PUSH_BIND assign_token | File: compiler/typecheck.torth, Row: 540, Column: 6
+;; [type_check_assign_bind] IN | File: compiler/typecheck.torth, Row: 552, Column: 21
+;; [type_check_assign_bind] IF | File: compiler/typecheck.torth, Row: 554, Column: 3
+;; [type_check_assign_bind] PUSH_BIND assign_token | File: compiler/typecheck.torth, Row: 554, Column: 6
   push QWORD [r14-64]
-;; [type_check_assign_bind] FUNCTION_CALL Token.vartype | File: compiler/typecheck.torth, Row: 540, Column: 19
+;; [type_check_assign_bind] FUNCTION_CALL Token.vartype | File: compiler/typecheck.torth, Row: 554, Column: 19
   call VG9rZW4udmFydHlwZQ__
-;; [type_check_assign_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 540, Column: 33
+;; [type_check_assign_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 554, Column: 33
   mov rax, 0
   push rax
-;; [type_check_assign_bind] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 540, Column: 46
+;; [type_check_assign_bind] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 554, Column: 46
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_assign_bind] DO | File: compiler/typecheck.torth, Row: 540, Column: 49
+;; [type_check_assign_bind] DO | File: compiler/typecheck.torth, Row: 554, Column: 49
   pop rax
   test rax, rax
   jz type_check_assign_bind_ENDIF49
-;; [type_check_assign_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 541, Column: 5
+;; [type_check_assign_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 555, Column: 5
   push QWORD [r14-56]
-;; [type_check_assign_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 541, Column: 16
+;; [type_check_assign_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 555, Column: 16
   push QWORD [r14-8]
-;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 542, Column: 5
+;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 556, Column: 5
   mov rsi, type_check_assign_bind_s46 ; Pointer to string
 
   push rsi
-;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 543, Column: 5
+;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 557, Column: 5
   mov rsi, type_check_assign_bind_s47 ; Pointer to string
 
   push rsi
-;; [type_check_assign_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 543, Column: 19
+;; [type_check_assign_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 557, Column: 19
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_assign_bind] ENDIF | File: compiler/typecheck.torth, Row: 544, Column: 3
+;; [type_check_assign_bind] ENDIF | File: compiler/typecheck.torth, Row: 558, Column: 3
 type_check_assign_bind_ENDIF49:
-;; [type_check_assign_bind] PUSH_BIND assign_token | File: compiler/typecheck.torth, Row: 547, Column: 3
+;; [type_check_assign_bind] PUSH_BIND assign_token | File: compiler/typecheck.torth, Row: 561, Column: 3
   push QWORD [r14-64]
-;; [type_check_assign_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 547, Column: 16
+;; [type_check_assign_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 561, Column: 16
   call VG9rZW4udmFsdWU_
-;; [type_check_assign_bind] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 547, Column: 28
+;; [type_check_assign_bind] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 561, Column: 28
   push QWORD [r14-32]
-;; [type_check_assign_bind] FUNCTION_CALL List.get_variable | File: compiler/typecheck.torth, Row: 547, Column: 38
+;; [type_check_assign_bind] FUNCTION_CALL List.get_variable | File: compiler/typecheck.torth, Row: 561, Column: 38
   call TGlzdC5nZXRfdmFyaWFibGU_
-;; [type_check_assign_bind] FUNCTION_CALL Variable.type | File: compiler/typecheck.torth, Row: 547, Column: 56
+;; [type_check_assign_bind] FUNCTION_CALL Variable.type | File: compiler/typecheck.torth, Row: 561, Column: 56
   call VmFyaWFibGUudHlwZQ__
-;; [type_check_assign_bind] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 548, Column: 3
+;; [type_check_assign_bind] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 562, Column: 3
   push QWORD [r14-40]
-;; [type_check_assign_bind] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 548, Column: 6
+;; [type_check_assign_bind] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 562, Column: 6
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_assign_bind] TAKE | File: compiler/typecheck.torth, Row: 549, Column: 3
-;; [type_check_assign_bind] POP_BIND popped_type | File: compiler/typecheck.torth, Row: 549, Column: 8
+;; [type_check_assign_bind] TAKE | File: compiler/typecheck.torth, Row: 563, Column: 3
+;; [type_check_assign_bind] POP_BIND popped_type | File: compiler/typecheck.torth, Row: 563, Column: 8
   pop rbx
   mov [r14-72], rbx
-;; [type_check_assign_bind] POP_BIND variable_type | File: compiler/typecheck.torth, Row: 549, Column: 20
+;; [type_check_assign_bind] POP_BIND variable_type | File: compiler/typecheck.torth, Row: 563, Column: 20
   pop rbx
   mov [r14-80], rbx
-;; [type_check_assign_bind] IN | File: compiler/typecheck.torth, Row: 549, Column: 34
-;; [type_check_assign_bind] IF | File: compiler/typecheck.torth, Row: 552, Column: 3
-;; [type_check_assign_bind] PUSH_BIND popped_type | File: compiler/typecheck.torth, Row: 552, Column: 6
+;; [type_check_assign_bind] IN | File: compiler/typecheck.torth, Row: 563, Column: 34
+;; [type_check_assign_bind] IF | File: compiler/typecheck.torth, Row: 566, Column: 3
+;; [type_check_assign_bind] PUSH_BIND popped_type | File: compiler/typecheck.torth, Row: 566, Column: 6
   push QWORD [r14-72]
-;; [type_check_assign_bind] PUSH_BIND variable_type | File: compiler/typecheck.torth, Row: 552, Column: 18
+;; [type_check_assign_bind] PUSH_BIND variable_type | File: compiler/typecheck.torth, Row: 566, Column: 18
   push QWORD [r14-80]
-;; [type_check_assign_bind] FUNCTION_CALL matching_token_types | File: compiler/typecheck.torth, Row: 552, Column: 32
+;; [type_check_assign_bind] FUNCTION_CALL matching_token_types | File: compiler/typecheck.torth, Row: 566, Column: 32
   call bWF0Y2hpbmdfdG9rZW5fdHlwZXM_
-;; [type_check_assign_bind] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 552, Column: 53
+;; [type_check_assign_bind] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 566, Column: 53
   call bm90
-;; [type_check_assign_bind] DO | File: compiler/typecheck.torth, Row: 552, Column: 57
+;; [type_check_assign_bind] DO | File: compiler/typecheck.torth, Row: 566, Column: 57
   pop rax
   test rax, rax
   jz type_check_assign_bind_ENDIF83
-;; [type_check_assign_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 553, Column: 5
+;; [type_check_assign_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 567, Column: 5
   push QWORD [r14-56]
-;; [type_check_assign_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 553, Column: 16
+;; [type_check_assign_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 567, Column: 16
   push QWORD [r14-8]
-;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 554, Column: 5
+;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 568, Column: 5
   mov rsi, type_check_assign_bind_s69 ; Pointer to string
 
   push rsi
-;; [type_check_assign_bind] PUSH_BIND popped_type | File: compiler/typecheck.torth, Row: 555, Column: 5
+;; [type_check_assign_bind] PUSH_BIND popped_type | File: compiler/typecheck.torth, Row: 569, Column: 5
   push QWORD [r14-72]
-;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 555, Column: 31
+;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 569, Column: 31
   call c3RyLmNhdA__
-;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 556, Column: 5
+;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 570, Column: 5
   mov rsi, type_check_assign_bind_s72 ; Pointer to string
 
   push rsi
-;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 556, Column: 31
+;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 570, Column: 31
   call c3RyLmNhdA__
-;; [type_check_assign_bind] PUSH_BIND assign_token | File: compiler/typecheck.torth, Row: 557, Column: 5
+;; [type_check_assign_bind] PUSH_BIND assign_token | File: compiler/typecheck.torth, Row: 571, Column: 5
   push QWORD [r14-64]
-;; [type_check_assign_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 557, Column: 18
+;; [type_check_assign_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 571, Column: 18
   call VG9rZW4udmFsdWU_
-;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 557, Column: 31
+;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 571, Column: 31
   call c3RyLmNhdA__
-;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 558, Column: 5
+;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 572, Column: 5
   mov rsi, type_check_assign_bind_s77 ; Pointer to string
 
   push rsi
-;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 558, Column: 31
+;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 572, Column: 31
   call c3RyLmNhdA__
-;; [type_check_assign_bind] PUSH_BIND variable_type | File: compiler/typecheck.torth, Row: 559, Column: 5
+;; [type_check_assign_bind] PUSH_BIND variable_type | File: compiler/typecheck.torth, Row: 573, Column: 5
   push QWORD [r14-80]
-;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 559, Column: 31
+;; [type_check_assign_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 573, Column: 31
   call c3RyLmNhdA__
-;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 560, Column: 5
+;; [type_check_assign_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 574, Column: 5
   mov rsi, type_check_assign_bind_s81 ; Pointer to string
 
   push rsi
-;; [type_check_assign_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 560, Column: 19
+;; [type_check_assign_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 574, Column: 19
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_assign_bind] ENDIF | File: compiler/typecheck.torth, Row: 561, Column: 3
+;; [type_check_assign_bind] ENDIF | File: compiler/typecheck.torth, Row: 575, Column: 3
 type_check_assign_bind_ENDIF83:
+;; [type_check_assign_bind] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 578, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_assign_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 578, Column: 17
+  push QWORD [r14-56]
+;; [type_check_assign_bind] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 578, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_assign_bind] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 88 ; 10 local variables
@@ -12344,128 +12540,128 @@ dHlwZV9jaGVja19jYXN0:
 ;; [type_check_cast] Save the return address to return stack
   add r14, 40 ; 4 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_cast] POP_BIND token | File: compiler/typecheck.torth, Row: 569, Column: 26
+;; [type_check_cast] POP_BIND token | File: compiler/typecheck.torth, Row: 586, Column: 26
   pop rbx
   mov [r14-8], rbx
-;; [type_check_cast] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 569, Column: 38
+;; [type_check_cast] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 586, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [type_check_cast] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 571, Column: 3
+;; [type_check_cast] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 588, Column: 3
   push QWORD [r14-16]
-;; [type_check_cast] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 571, Column: 14
+;; [type_check_cast] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 588, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 571, Column: 29
-;; [type_check_cast] TAKE | File: compiler/typecheck.torth, Row: 572, Column: 3
-;; [type_check_cast] POP_BIND type | File: compiler/typecheck.torth, Row: 572, Column: 8
+;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 588, Column: 29
+;; [type_check_cast] TAKE | File: compiler/typecheck.torth, Row: 589, Column: 3
+;; [type_check_cast] POP_BIND type | File: compiler/typecheck.torth, Row: 589, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_cast] IN | File: compiler/typecheck.torth, Row: 572, Column: 13
-;; [type_check_cast] IF | File: compiler/typecheck.torth, Row: 573, Column: 3
-;; [type_check_cast] PUSH_BIND type | File: compiler/typecheck.torth, Row: 573, Column: 6
+;; [type_check_cast] IN | File: compiler/typecheck.torth, Row: 589, Column: 13
+;; [type_check_cast] IF | File: compiler/typecheck.torth, Row: 590, Column: 3
+;; [type_check_cast] PUSH_BIND type | File: compiler/typecheck.torth, Row: 590, Column: 6
   push QWORD [r14-24]
-;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 573, Column: 11
-;; [type_check_cast] PUSH_INT | File: compiler/typecheck.torth, Row: 573, Column: 21
+;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 590, Column: 11
+;; [type_check_cast] PUSH_INT | File: compiler/typecheck.torth, Row: 590, Column: 21
   mov rax, -1
   push rax
-;; [type_check_cast] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 573, Column: 24
+;; [type_check_cast] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 590, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_cast] DO | File: compiler/typecheck.torth, Row: 573, Column: 27
+;; [type_check_cast] DO | File: compiler/typecheck.torth, Row: 590, Column: 27
   pop rax
   test rax, rax
   jz type_check_cast_ENDIF19
-;; [type_check_cast] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 574, Column: 5
+;; [type_check_cast] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 591, Column: 5
   push QWORD [r14-16]
-;; [type_check_cast] PUSH_BIND token | File: compiler/typecheck.torth, Row: 574, Column: 16
+;; [type_check_cast] PUSH_BIND token | File: compiler/typecheck.torth, Row: 591, Column: 16
   push QWORD [r14-8]
-;; [type_check_cast] PUSH_STR | File: compiler/typecheck.torth, Row: 575, Column: 5
+;; [type_check_cast] PUSH_STR | File: compiler/typecheck.torth, Row: 592, Column: 5
   mov rsi, type_check_cast_s16 ; Pointer to string
 
   push rsi
-;; [type_check_cast] PUSH_STR | File: compiler/typecheck.torth, Row: 576, Column: 5
+;; [type_check_cast] PUSH_STR | File: compiler/typecheck.torth, Row: 593, Column: 5
   mov rsi, type_check_cast_s17 ; Pointer to string
 
   push rsi
-;; [type_check_cast] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 576, Column: 28
+;; [type_check_cast] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 593, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_cast] ENDIF | File: compiler/typecheck.torth, Row: 577, Column: 3
+;; [type_check_cast] ENDIF | File: compiler/typecheck.torth, Row: 594, Column: 3
 type_check_cast_ENDIF19:
-;; [type_check_cast] PUSH_BIND token | File: compiler/typecheck.torth, Row: 580, Column: 3
+;; [type_check_cast] PUSH_BIND token | File: compiler/typecheck.torth, Row: 597, Column: 3
   push QWORD [r14-8]
-;; [type_check_cast] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 580, Column: 9
+;; [type_check_cast] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 597, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_cast] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 580, Column: 21
+;; [type_check_cast] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 597, Column: 21
   call c3RyLmNvcHk_
-;; [type_check_cast] TAKE | File: compiler/typecheck.torth, Row: 581, Column: 3
-;; [type_check_cast] POP_BIND token_value | File: compiler/typecheck.torth, Row: 581, Column: 8
+;; [type_check_cast] TAKE | File: compiler/typecheck.torth, Row: 598, Column: 3
+;; [type_check_cast] POP_BIND token_value | File: compiler/typecheck.torth, Row: 598, Column: 8
   pop rbx
   mov [r14-32], rbx
-;; [type_check_cast] IN | File: compiler/typecheck.torth, Row: 581, Column: 20
-;; [type_check_cast] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 582, Column: 3
+;; [type_check_cast] IN | File: compiler/typecheck.torth, Row: 598, Column: 20
+;; [type_check_cast] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 599, Column: 3
   push QWORD [r14-32]
-;; [type_check_cast] INTRINSIC dup | File: compiler/typecheck.torth, Row: 582, Column: 15
+;; [type_check_cast] INTRINSIC dup | File: compiler/typecheck.torth, Row: 599, Column: 15
   push QWORD [rsp]
-;; [type_check_cast] FUNCTION_CALL str.len | File: compiler/typecheck.torth, Row: 582, Column: 19
+;; [type_check_cast] FUNCTION_CALL str.len | File: compiler/typecheck.torth, Row: 599, Column: 19
   call c3RyLmxlbg__
-;; [type_check_cast] PUSH_INT | File: compiler/typecheck.torth, Row: 582, Column: 27
+;; [type_check_cast] PUSH_INT | File: compiler/typecheck.torth, Row: 599, Column: 27
   mov rax, 1
   push rax
-;; [type_check_cast] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 582, Column: 29
+;; [type_check_cast] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 599, Column: 29
   pop rax
   sub [rsp], rax
-;; [type_check_cast] FUNCTION_CALL str+ | File: compiler/typecheck.torth, Row: 582, Column: 31
+;; [type_check_cast] FUNCTION_CALL str+ | File: compiler/typecheck.torth, Row: 599, Column: 31
   call c3RyKw__
-;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 583, Column: 3
-;; [type_check_cast] PUSH_INT | File: compiler/typecheck.torth, Row: 583, Column: 13
+;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 600, Column: 3
+;; [type_check_cast] PUSH_INT | File: compiler/typecheck.torth, Row: 600, Column: 13
   mov rax, 0
   push rax
-;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 583, Column: 18
-;; [type_check_cast] INTRINSIC swap | File: compiler/typecheck.torth, Row: 583, Column: 29
+;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 600, Column: 18
+;; [type_check_cast] INTRINSIC swap | File: compiler/typecheck.torth, Row: 600, Column: 29
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [type_check_cast] FUNCTION_CALL char.store | File: compiler/typecheck.torth, Row: 583, Column: 34
+;; [type_check_cast] FUNCTION_CALL char.store | File: compiler/typecheck.torth, Row: 600, Column: 34
   call Y2hhci5zdG9yZQ__
-;; [type_check_cast] PUSH_STR | File: compiler/typecheck.torth, Row: 584, Column: 3
+;; [type_check_cast] PUSH_STR | File: compiler/typecheck.torth, Row: 601, Column: 3
   mov rsi, type_check_cast_s37 ; Pointer to string
 
   push rsi
-;; [type_check_cast] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 584, Column: 7
+;; [type_check_cast] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 601, Column: 7
   push QWORD [r14-32]
-;; [type_check_cast] FUNCTION_CALL str.find | File: compiler/typecheck.torth, Row: 584, Column: 19
+;; [type_check_cast] FUNCTION_CALL str.find | File: compiler/typecheck.torth, Row: 601, Column: 19
   call c3RyLmZpbmQ_
-;; [type_check_cast] PUSH_INT | File: compiler/typecheck.torth, Row: 584, Column: 28
+;; [type_check_cast] PUSH_INT | File: compiler/typecheck.torth, Row: 601, Column: 28
   mov rax, 1
   push rax
-;; [type_check_cast] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 584, Column: 30
+;; [type_check_cast] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 601, Column: 30
   pop rax
   add [rsp], rax
-;; [type_check_cast] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 585, Column: 3
+;; [type_check_cast] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 602, Column: 3
   push QWORD [r14-32]
-;; [type_check_cast] INTRINSIC swap | File: compiler/typecheck.torth, Row: 585, Column: 15
+;; [type_check_cast] INTRINSIC swap | File: compiler/typecheck.torth, Row: 602, Column: 15
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [type_check_cast] FUNCTION_CALL str+ | File: compiler/typecheck.torth, Row: 585, Column: 20
+;; [type_check_cast] FUNCTION_CALL str+ | File: compiler/typecheck.torth, Row: 602, Column: 20
   call c3RyKw__
-;; [type_check_cast] PUSH_BIND token | File: compiler/typecheck.torth, Row: 588, Column: 3
+;; [type_check_cast] PUSH_BIND token | File: compiler/typecheck.torth, Row: 605, Column: 3
   push QWORD [r14-8]
-;; [type_check_cast] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 588, Column: 9
+;; [type_check_cast] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 605, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_cast] INTRINSIC swap | File: compiler/typecheck.torth, Row: 588, Column: 24
+;; [type_check_cast] INTRINSIC swap | File: compiler/typecheck.torth, Row: 605, Column: 24
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [type_check_cast] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 588, Column: 29
+;; [type_check_cast] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 605, Column: 29
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 588, Column: 43
-;; [type_check_cast] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 589, Column: 3
+;; [type_check_cast] CAST | File: compiler/typecheck.torth, Row: 605, Column: 43
+;; [type_check_cast] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 606, Column: 3
   push QWORD [r14-16]
-;; [type_check_cast] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 589, Column: 14
+;; [type_check_cast] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 606, Column: 14
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_cast] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -12476,113 +12672,119 @@ dHlwZV9jaGVja19kbw__:
 ;; [type_check_do] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_do] POP_BIND token | File: compiler/typecheck.torth, Row: 599, Column: 3
+;; [type_check_do] POP_BIND token | File: compiler/typecheck.torth, Row: 616, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_do] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 600, Column: 3
+;; [type_check_do] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 617, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_do] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 601, Column: 3
+;; [type_check_do] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 618, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_do] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 603, Column: 3
+;; [type_check_do] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 620, Column: 3
   push QWORD [r14-16]
-;; [type_check_do] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 603, Column: 14
+;; [type_check_do] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 620, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_do] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 604, Column: 3
+;; [type_check_do] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 621, Column: 3
   push QWORD [r14-16]
-;; [type_check_do] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 604, Column: 14
+;; [type_check_do] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 621, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_do] CAST | File: compiler/typecheck.torth, Row: 604, Column: 29
-;; [type_check_do] TAKE | File: compiler/typecheck.torth, Row: 605, Column: 3
-;; [type_check_do] POP_BIND type | File: compiler/typecheck.torth, Row: 605, Column: 8
+;; [type_check_do] CAST | File: compiler/typecheck.torth, Row: 621, Column: 29
+;; [type_check_do] TAKE | File: compiler/typecheck.torth, Row: 622, Column: 3
+;; [type_check_do] POP_BIND type | File: compiler/typecheck.torth, Row: 622, Column: 8
   pop rbx
   mov [r14-32], rbx
-;; [type_check_do] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 605, Column: 13
+;; [type_check_do] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 622, Column: 13
   pop rbx
   mov [r14-40], rbx
-;; [type_check_do] IN | File: compiler/typecheck.torth, Row: 605, Column: 24
-;; [type_check_do] IF | File: compiler/typecheck.torth, Row: 607, Column: 3
-;; [type_check_do] PUSH_BIND type | File: compiler/typecheck.torth, Row: 607, Column: 6
+;; [type_check_do] IN | File: compiler/typecheck.torth, Row: 622, Column: 24
+;; [type_check_do] IF | File: compiler/typecheck.torth, Row: 624, Column: 3
+;; [type_check_do] PUSH_BIND type | File: compiler/typecheck.torth, Row: 624, Column: 6
   push QWORD [r14-32]
-;; [type_check_do] CAST | File: compiler/typecheck.torth, Row: 607, Column: 11
-;; [type_check_do] PUSH_INT | File: compiler/typecheck.torth, Row: 607, Column: 21
+;; [type_check_do] CAST | File: compiler/typecheck.torth, Row: 624, Column: 11
+;; [type_check_do] PUSH_INT | File: compiler/typecheck.torth, Row: 624, Column: 21
   mov rax, -1
   push rax
-;; [type_check_do] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 607, Column: 24
+;; [type_check_do] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 624, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_do] DO | File: compiler/typecheck.torth, Row: 607, Column: 27
+;; [type_check_do] DO | File: compiler/typecheck.torth, Row: 624, Column: 27
   pop rax
   test rax, rax
   jz type_check_do_ELIF23
-;; [type_check_do] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 608, Column: 5
+;; [type_check_do] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 625, Column: 5
   push QWORD [r14-40]
-;; [type_check_do] PUSH_BIND token | File: compiler/typecheck.torth, Row: 608, Column: 16
+;; [type_check_do] PUSH_BIND token | File: compiler/typecheck.torth, Row: 625, Column: 16
   push QWORD [r14-8]
-;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 609, Column: 5
+;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 626, Column: 5
   mov rsi, type_check_do_s20 ; Pointer to string
 
   push rsi
-;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 610, Column: 5
+;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 627, Column: 5
   mov rsi, type_check_do_s21 ; Pointer to string
 
   push rsi
-;; [type_check_do] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 610, Column: 28
+;; [type_check_do] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 627, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_do] ELIF | File: compiler/typecheck.torth, Row: 611, Column: 3
+;; [type_check_do] ELIF | File: compiler/typecheck.torth, Row: 628, Column: 3
   jmp type_check_do_ENDIF38
 type_check_do_ELIF23:
-;; [type_check_do] PUSH_BIND type | File: compiler/typecheck.torth, Row: 611, Column: 8
+;; [type_check_do] PUSH_BIND type | File: compiler/typecheck.torth, Row: 628, Column: 8
   push QWORD [r14-32]
-;; [type_check_do] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 611, Column: 13
+;; [type_check_do] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 628, Column: 13
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 611, Column: 27
+;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 628, Column: 27
   mov rsi, type_check_do_s26 ; Pointer to string
 
   push rsi
-;; [type_check_do] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 611, Column: 34
+;; [type_check_do] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 628, Column: 34
   call c3RyZXE_
-;; [type_check_do] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 611, Column: 40
+;; [type_check_do] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 628, Column: 40
   call bm90
-;; [type_check_do] DO | File: compiler/typecheck.torth, Row: 611, Column: 44
+;; [type_check_do] DO | File: compiler/typecheck.torth, Row: 628, Column: 44
   pop rax
   test rax, rax
   jz type_check_do_ENDIF38
-;; [type_check_do] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 612, Column: 5
+;; [type_check_do] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 629, Column: 5
   push QWORD [r14-40]
-;; [type_check_do] PUSH_BIND token | File: compiler/typecheck.torth, Row: 612, Column: 16
+;; [type_check_do] PUSH_BIND token | File: compiler/typecheck.torth, Row: 629, Column: 16
   push QWORD [r14-8]
-;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 613, Column: 5
+;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 630, Column: 5
   mov rsi, type_check_do_s32 ; Pointer to string
 
   push rsi
-;; [type_check_do] PUSH_BIND type | File: compiler/typecheck.torth, Row: 614, Column: 5
+;; [type_check_do] PUSH_BIND type | File: compiler/typecheck.torth, Row: 631, Column: 5
   push QWORD [r14-32]
-;; [type_check_do] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 614, Column: 10
+;; [type_check_do] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 631, Column: 10
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_do] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 614, Column: 24
+;; [type_check_do] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 631, Column: 24
   call c3RyLmNhdA__
-;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 615, Column: 5
+;; [type_check_do] PUSH_STR | File: compiler/typecheck.torth, Row: 632, Column: 5
   mov rsi, type_check_do_s36 ; Pointer to string
 
   push rsi
-;; [type_check_do] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 615, Column: 19
+;; [type_check_do] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 632, Column: 19
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_do] ENDIF | File: compiler/typecheck.torth, Row: 616, Column: 3
+;; [type_check_do] ENDIF | File: compiler/typecheck.torth, Row: 633, Column: 3
 type_check_do_ENDIF38:
-;; [type_check_do] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 617, Column: 3
+;; [type_check_do] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 635, Column: 3
   push QWORD [r14-16]
-;; [type_check_do] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 617, Column: 14
+;; [type_check_do] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 635, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_do] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 617, Column: 29
+;; [type_check_do] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 635, Column: 29
   push QWORD [r14-24]
-;; [type_check_do] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 617, Column: 45
+;; [type_check_do] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 635, Column: 45
   call TGlzdC5hcHBlbmQ_
+;; [type_check_do] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 638, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_do] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 638, Column: 17
+  push QWORD [r14-40]
+;; [type_check_do] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 638, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_do] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
@@ -12592,61 +12794,61 @@ dHlwZV9jaGVja19lbGlm:
 ;; [type_check_elif] Save the return address to return stack
   add r14, 40 ; 4 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_elif] POP_BIND token | File: compiler/typecheck.torth, Row: 628, Column: 3
+;; [type_check_elif] POP_BIND token | File: compiler/typecheck.torth, Row: 649, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_elif] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 629, Column: 3
+;; [type_check_elif] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 650, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_elif] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 630, Column: 3
+;; [type_check_elif] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 651, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_elif] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 631, Column: 3
+;; [type_check_elif] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 652, Column: 3
   pop rbx
   mov [r14-32], rbx
-;; [type_check_elif] IF | File: compiler/typecheck.torth, Row: 634, Column: 3
-;; [type_check_elif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 634, Column: 6
+;; [type_check_elif] IF | File: compiler/typecheck.torth, Row: 655, Column: 3
+;; [type_check_elif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 655, Column: 6
   push QWORD [r14-32]
-;; [type_check_elif] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 634, Column: 28
+;; [type_check_elif] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 655, Column: 28
   call Tm9kZS5kYXRh
-;; [type_check_elif] CAST | File: compiler/typecheck.torth, Row: 634, Column: 38
-;; [type_check_elif] PUSH_INT | File: compiler/typecheck.torth, Row: 634, Column: 48
+;; [type_check_elif] CAST | File: compiler/typecheck.torth, Row: 655, Column: 38
+;; [type_check_elif] PUSH_INT | File: compiler/typecheck.torth, Row: 655, Column: 48
   mov rax, 0
   push rax
-;; [type_check_elif] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 634, Column: 53
+;; [type_check_elif] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 655, Column: 53
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_elif] DO | File: compiler/typecheck.torth, Row: 634, Column: 56
+;; [type_check_elif] DO | File: compiler/typecheck.torth, Row: 655, Column: 56
   pop rax
   test rax, rax
   jz type_check_elif_ENDIF18
-;; [type_check_elif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 635, Column: 5
+;; [type_check_elif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 656, Column: 5
   push QWORD [r14-16]
-;; [type_check_elif] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 635, Column: 16
+;; [type_check_elif] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 656, Column: 16
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_elif] CAST | File: compiler/typecheck.torth, Row: 635, Column: 31
-;; [type_check_elif] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 635, Column: 41
+;; [type_check_elif] CAST | File: compiler/typecheck.torth, Row: 656, Column: 31
+;; [type_check_elif] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 656, Column: 41
   call Tm9kZS5sb2Fk
-;; [type_check_elif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 636, Column: 5
+;; [type_check_elif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 657, Column: 5
   push QWORD [r14-32]
-;; [type_check_elif] CAST | File: compiler/typecheck.torth, Row: 636, Column: 31
-;; [type_check_elif] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 636, Column: 41
+;; [type_check_elif] CAST | File: compiler/typecheck.torth, Row: 657, Column: 31
+;; [type_check_elif] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 657, Column: 41
   call Tm9kZS5zdG9yZQ__
-;; [type_check_elif] ENDIF | File: compiler/typecheck.torth, Row: 637, Column: 3
+;; [type_check_elif] ENDIF | File: compiler/typecheck.torth, Row: 658, Column: 3
 type_check_elif_ENDIF18:
-;; [type_check_elif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 638, Column: 3
+;; [type_check_elif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 659, Column: 3
   push QWORD [r14-32]
-;; [type_check_elif] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 638, Column: 25
+;; [type_check_elif] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 659, Column: 25
   push QWORD [r14-24]
-;; [type_check_elif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 638, Column: 41
+;; [type_check_elif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 659, Column: 41
   push QWORD [r14-16]
-;; [type_check_elif] PUSH_BIND token | File: compiler/typecheck.torth, Row: 638, Column: 52
+;; [type_check_elif] PUSH_BIND token | File: compiler/typecheck.torth, Row: 659, Column: 52
   push QWORD [r14-8]
-;; [type_check_elif] FUNCTION_CALL type_check_end_of_branch | File: compiler/typecheck.torth, Row: 638, Column: 58
+;; [type_check_elif] FUNCTION_CALL type_check_end_of_branch | File: compiler/typecheck.torth, Row: 659, Column: 58
   call dHlwZV9jaGVja19lbmRfb2ZfYnJhbmNo
 ;; [type_check_elif] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -12657,72 +12859,72 @@ dHlwZV9jaGVja19lbHNl:
 ;; [type_check_else] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_else] POP_BIND token | File: compiler/typecheck.torth, Row: 650, Column: 3
+;; [type_check_else] POP_BIND token | File: compiler/typecheck.torth, Row: 671, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_else] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 651, Column: 3
+;; [type_check_else] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 672, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_else] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 652, Column: 3
+;; [type_check_else] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 673, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_else] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 653, Column: 3
+;; [type_check_else] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 674, Column: 3
   pop rbx
   mov [r14-32], rbx
-;; [type_check_else] POP_BIND if_block_original_stack | File: compiler/typecheck.torth, Row: 654, Column: 3
+;; [type_check_else] POP_BIND if_block_original_stack | File: compiler/typecheck.torth, Row: 675, Column: 3
   pop rbx
   mov [r14-40], rbx
-;; [type_check_else] IF | File: compiler/typecheck.torth, Row: 657, Column: 3
-;; [type_check_else] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 657, Column: 6
+;; [type_check_else] IF | File: compiler/typecheck.torth, Row: 678, Column: 3
+;; [type_check_else] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 678, Column: 6
   push QWORD [r14-32]
-;; [type_check_else] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 657, Column: 28
+;; [type_check_else] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 678, Column: 28
   call Tm9kZS5kYXRh
-;; [type_check_else] CAST | File: compiler/typecheck.torth, Row: 657, Column: 38
-;; [type_check_else] PUSH_INT | File: compiler/typecheck.torth, Row: 657, Column: 48
+;; [type_check_else] CAST | File: compiler/typecheck.torth, Row: 678, Column: 38
+;; [type_check_else] PUSH_INT | File: compiler/typecheck.torth, Row: 678, Column: 48
   mov rax, 0
   push rax
-;; [type_check_else] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 657, Column: 53
+;; [type_check_else] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 678, Column: 53
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_else] DO | File: compiler/typecheck.torth, Row: 657, Column: 56
+;; [type_check_else] DO | File: compiler/typecheck.torth, Row: 678, Column: 56
   pop rax
   test rax, rax
   jz type_check_else_ENDIF19
-;; [type_check_else] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 658, Column: 5
+;; [type_check_else] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 679, Column: 5
   push QWORD [r14-16]
-;; [type_check_else] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 658, Column: 16
+;; [type_check_else] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 679, Column: 16
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_else] CAST | File: compiler/typecheck.torth, Row: 658, Column: 31
-;; [type_check_else] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 658, Column: 41
+;; [type_check_else] CAST | File: compiler/typecheck.torth, Row: 679, Column: 31
+;; [type_check_else] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 679, Column: 41
   call Tm9kZS5sb2Fk
-;; [type_check_else] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 659, Column: 5
+;; [type_check_else] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 680, Column: 5
   push QWORD [r14-32]
-;; [type_check_else] CAST | File: compiler/typecheck.torth, Row: 659, Column: 31
-;; [type_check_else] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 659, Column: 41
+;; [type_check_else] CAST | File: compiler/typecheck.torth, Row: 680, Column: 31
+;; [type_check_else] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 680, Column: 41
   call Tm9kZS5zdG9yZQ__
-;; [type_check_else] ENDIF | File: compiler/typecheck.torth, Row: 660, Column: 3
+;; [type_check_else] ENDIF | File: compiler/typecheck.torth, Row: 681, Column: 3
 type_check_else_ENDIF19:
-;; [type_check_else] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 661, Column: 3
+;; [type_check_else] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 682, Column: 3
   push QWORD [r14-32]
-;; [type_check_else] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 661, Column: 25
+;; [type_check_else] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 682, Column: 25
   push QWORD [r14-24]
-;; [type_check_else] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 661, Column: 41
+;; [type_check_else] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 682, Column: 41
   push QWORD [r14-16]
-;; [type_check_else] PUSH_BIND token | File: compiler/typecheck.torth, Row: 661, Column: 52
+;; [type_check_else] PUSH_BIND token | File: compiler/typecheck.torth, Row: 682, Column: 52
   push QWORD [r14-8]
-;; [type_check_else] FUNCTION_CALL type_check_end_of_branch | File: compiler/typecheck.torth, Row: 661, Column: 58
+;; [type_check_else] FUNCTION_CALL type_check_end_of_branch | File: compiler/typecheck.torth, Row: 682, Column: 58
   call dHlwZV9jaGVja19lbmRfb2ZfYnJhbmNo
-;; [type_check_else] PUSH_BIND if_block_original_stack | File: compiler/typecheck.torth, Row: 664, Column: 3
+;; [type_check_else] PUSH_BIND if_block_original_stack | File: compiler/typecheck.torth, Row: 685, Column: 3
   push QWORD [r14-40]
-;; [type_check_else] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 664, Column: 27
+;; [type_check_else] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 685, Column: 27
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_else] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 664, Column: 42
+;; [type_check_else] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 685, Column: 42
   push QWORD [r14-24]
-;; [type_check_else] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 664, Column: 58
+;; [type_check_else] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 685, Column: 58
   call TGlzdC5hcHBlbmQ_
 ;; [type_check_else] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -12733,235 +12935,235 @@ dHlwZV9jaGVja19lbmRpZg__:
 ;; [type_check_endif] Save the return address to return stack
   add r14, 80 ; 9 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_endif] POP_BIND token | File: compiler/typecheck.torth, Row: 680, Column: 3
+;; [type_check_endif] POP_BIND token | File: compiler/typecheck.torth, Row: 701, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_endif] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 681, Column: 3
+;; [type_check_endif] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 702, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_endif] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 682, Column: 3
+;; [type_check_endif] POP_BIND branched_stacks | File: compiler/typecheck.torth, Row: 703, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_endif] POP_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 683, Column: 3
+;; [type_check_endif] POP_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 704, Column: 3
   pop rbx
   mov [r14-32], rbx
-;; [type_check_endif] POP_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 684, Column: 3
+;; [type_check_endif] POP_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 705, Column: 3
   pop rbx
   mov [r14-40], rbx
-;; [type_check_endif] POP_BIND else_or_return_present | File: compiler/typecheck.torth, Row: 685, Column: 3
+;; [type_check_endif] POP_BIND else_or_return_present | File: compiler/typecheck.torth, Row: 706, Column: 3
   pop rbx
   mov [r14-48], rbx
-;; [type_check_endif] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 688, Column: 3
+;; [type_check_endif] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 709, Column: 3
   push QWORD [r14-32]
-;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 688, Column: 26
-;; [type_check_endif] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 688, Column: 37
+;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 709, Column: 26
+;; [type_check_endif] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 709, Column: 37
   call TGlzdC5sYXN0
-;; [type_check_endif] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 688, Column: 47
+;; [type_check_endif] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 709, Column: 47
   call Tm9kZS5sb2Fk
-;; [type_check_endif] TAKE | File: compiler/typecheck.torth, Row: 689, Column: 3
-;; [type_check_endif] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 689, Column: 8
+;; [type_check_endif] TAKE | File: compiler/typecheck.torth, Row: 710, Column: 3
+;; [type_check_endif] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 710, Column: 8
   pop rbx
   mov [r14-56], rbx
-;; [type_check_endif] IN | File: compiler/typecheck.torth, Row: 689, Column: 30
-;; [type_check_endif] IF | File: compiler/typecheck.torth, Row: 692, Column: 3
-;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 692, Column: 6
+;; [type_check_endif] IN | File: compiler/typecheck.torth, Row: 710, Column: 30
+;; [type_check_endif] IF | File: compiler/typecheck.torth, Row: 713, Column: 3
+;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 713, Column: 6
   push QWORD [r14-56]
-;; [type_check_endif] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 692, Column: 28
+;; [type_check_endif] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 713, Column: 28
   call Tm9kZS5kYXRh
-;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 692, Column: 38
-;; [type_check_endif] PUSH_INT | File: compiler/typecheck.torth, Row: 692, Column: 48
+;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 713, Column: 38
+;; [type_check_endif] PUSH_INT | File: compiler/typecheck.torth, Row: 713, Column: 48
   mov rax, 0
   push rax
-;; [type_check_endif] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 692, Column: 53
+;; [type_check_endif] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 713, Column: 53
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_endif] DO | File: compiler/typecheck.torth, Row: 692, Column: 56
+;; [type_check_endif] DO | File: compiler/typecheck.torth, Row: 713, Column: 56
   pop rax
   test rax, rax
   jz type_check_endif_ENDIF27
-;; [type_check_endif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 693, Column: 5
+;; [type_check_endif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 714, Column: 5
   push QWORD [r14-16]
-;; [type_check_endif] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 693, Column: 16
+;; [type_check_endif] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 714, Column: 16
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 693, Column: 31
-;; [type_check_endif] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 693, Column: 41
+;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 714, Column: 31
+;; [type_check_endif] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 714, Column: 41
   call Tm9kZS5sb2Fk
-;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 694, Column: 5
+;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 715, Column: 5
   push QWORD [r14-56]
-;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 694, Column: 31
-;; [type_check_endif] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 694, Column: 41
+;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 715, Column: 31
+;; [type_check_endif] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 715, Column: 41
   call Tm9kZS5zdG9yZQ__
-;; [type_check_endif] ENDIF | File: compiler/typecheck.torth, Row: 695, Column: 3
+;; [type_check_endif] ENDIF | File: compiler/typecheck.torth, Row: 716, Column: 3
 type_check_endif_ENDIF27:
-;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 698, Column: 3
+;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 719, Column: 3
   push QWORD [r14-56]
-;; [type_check_endif] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 698, Column: 25
+;; [type_check_endif] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 719, Column: 25
   push QWORD [r14-24]
-;; [type_check_endif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 698, Column: 41
+;; [type_check_endif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 719, Column: 41
   push QWORD [r14-16]
-;; [type_check_endif] PUSH_BIND token | File: compiler/typecheck.torth, Row: 698, Column: 52
+;; [type_check_endif] PUSH_BIND token | File: compiler/typecheck.torth, Row: 719, Column: 52
   push QWORD [r14-8]
-;; [type_check_endif] FUNCTION_CALL type_check_end_of_branch | File: compiler/typecheck.torth, Row: 698, Column: 58
+;; [type_check_endif] FUNCTION_CALL type_check_end_of_branch | File: compiler/typecheck.torth, Row: 719, Column: 58
   call dHlwZV9jaGVja19lbmRfb2ZfYnJhbmNo
-;; [type_check_endif] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 702, Column: 3
+;; [type_check_endif] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 723, Column: 3
   push QWORD [r14-24]
-;; [type_check_endif] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 702, Column: 19
+;; [type_check_endif] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 723, Column: 19
   call TGlzdC5sYXN0
-;; [type_check_endif] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 702, Column: 29
+;; [type_check_endif] FUNCTION_CALL Node.load | File: compiler/typecheck.torth, Row: 723, Column: 29
   call Tm9kZS5sb2Fk
-;; [type_check_endif] INTRINSIC dup | File: compiler/typecheck.torth, Row: 702, Column: 39
+;; [type_check_endif] INTRINSIC dup | File: compiler/typecheck.torth, Row: 723, Column: 39
   push QWORD [rsp]
-;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 703, Column: 3
+;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 724, Column: 3
   push QWORD [r14-56]
-;; [type_check_endif] FUNCTION_CALL equal_stacks | File: compiler/typecheck.torth, Row: 704, Column: 3
+;; [type_check_endif] FUNCTION_CALL equal_stacks | File: compiler/typecheck.torth, Row: 725, Column: 3
   call ZXF1YWxfc3RhY2tz
-;; [type_check_endif] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 704, Column: 16
+;; [type_check_endif] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 725, Column: 16
   call bm90
-;; [type_check_endif] TAKE | File: compiler/typecheck.torth, Row: 705, Column: 3
-;; [type_check_endif] POP_BIND stack_is_altered | File: compiler/typecheck.torth, Row: 705, Column: 8
+;; [type_check_endif] TAKE | File: compiler/typecheck.torth, Row: 726, Column: 3
+;; [type_check_endif] POP_BIND stack_is_altered | File: compiler/typecheck.torth, Row: 726, Column: 8
   pop rbx
   mov [r14-64], rbx
-;; [type_check_endif] POP_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 705, Column: 25
+;; [type_check_endif] POP_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 726, Column: 25
   pop rbx
   mov [r14-72], rbx
-;; [type_check_endif] IN | File: compiler/typecheck.torth, Row: 705, Column: 45
-;; [type_check_endif] IF | File: compiler/typecheck.torth, Row: 706, Column: 3
-;; [type_check_endif] PUSH_BIND else_or_return_present | File: compiler/typecheck.torth, Row: 707, Column: 5
+;; [type_check_endif] IN | File: compiler/typecheck.torth, Row: 726, Column: 45
+;; [type_check_endif] IF | File: compiler/typecheck.torth, Row: 727, Column: 3
+;; [type_check_endif] PUSH_BIND else_or_return_present | File: compiler/typecheck.torth, Row: 728, Column: 5
   push QWORD [r14-48]
-;; [type_check_endif] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 707, Column: 28
+;; [type_check_endif] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 728, Column: 28
   call bm90
-;; [type_check_endif] PUSH_BIND stack_is_altered | File: compiler/typecheck.torth, Row: 708, Column: 5
+;; [type_check_endif] PUSH_BIND stack_is_altered | File: compiler/typecheck.torth, Row: 729, Column: 5
   push QWORD [r14-64]
-;; [type_check_endif] FUNCTION_CALL && | File: compiler/typecheck.torth, Row: 709, Column: 5
+;; [type_check_endif] FUNCTION_CALL && | File: compiler/typecheck.torth, Row: 730, Column: 5
   call JiY_
-;; [type_check_endif] DO | File: compiler/typecheck.torth, Row: 710, Column: 3
+;; [type_check_endif] DO | File: compiler/typecheck.torth, Row: 731, Column: 3
   pop rax
   test rax, rax
   jz type_check_endif_ENDIF69
-;; [type_check_endif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 711, Column: 5
+;; [type_check_endif] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 732, Column: 5
   push QWORD [r14-16]
-;; [type_check_endif] PUSH_BIND token | File: compiler/typecheck.torth, Row: 711, Column: 16
+;; [type_check_endif] PUSH_BIND token | File: compiler/typecheck.torth, Row: 732, Column: 16
   push QWORD [r14-8]
-;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 712, Column: 5
+;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 733, Column: 5
   mov rsi, type_check_endif_s52 ; Pointer to string
 
   push rsi
-;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 713, Column: 5
+;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 734, Column: 5
   mov rsi, type_check_endif_s53 ; Pointer to string
 
   push rsi
-;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 713, Column: 89
+;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 734, Column: 89
   call c3RyLmNhdA__
-;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 714, Column: 5
+;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 735, Column: 5
   mov rsi, type_check_endif_s55 ; Pointer to string
 
   push rsi
-;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 714, Column: 89
+;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 735, Column: 89
   call c3RyLmNhdA__
-;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 715, Column: 5
+;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 736, Column: 5
   mov rsi, type_check_endif_s57 ; Pointer to string
 
   push rsi
-;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 715, Column: 89
+;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 736, Column: 89
   call c3RyLmNhdA__
-;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 716, Column: 5
+;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 737, Column: 5
   push QWORD [r14-56]
-;; [type_check_endif] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 716, Column: 27
+;; [type_check_endif] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 737, Column: 27
   call VHlwZVN0YWNrLnJlcHI_
-;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 716, Column: 89
+;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 737, Column: 89
   call c3RyLmNhdA__
-;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 717, Column: 5
+;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 738, Column: 5
   mov rsi, type_check_endif_s62 ; Pointer to string
 
   push rsi
-;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 717, Column: 89
+;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 738, Column: 89
   call c3RyLmNhdA__
-;; [type_check_endif] PUSH_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 718, Column: 5
+;; [type_check_endif] PUSH_BIND stack_before_branch | File: compiler/typecheck.torth, Row: 739, Column: 5
   push QWORD [r14-72]
-;; [type_check_endif] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 718, Column: 25
+;; [type_check_endif] FUNCTION_CALL TypeStack.repr | File: compiler/typecheck.torth, Row: 739, Column: 25
   call VHlwZVN0YWNrLnJlcHI_
-;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 718, Column: 89
+;; [type_check_endif] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 739, Column: 89
   call c3RyLmNhdA__
-;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 719, Column: 5
+;; [type_check_endif] PUSH_STR | File: compiler/typecheck.torth, Row: 740, Column: 5
   mov rsi, type_check_endif_s67 ; Pointer to string
 
   push rsi
-;; [type_check_endif] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 719, Column: 20
+;; [type_check_endif] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 740, Column: 20
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_endif] ENDIF | File: compiler/typecheck.torth, Row: 720, Column: 3
+;; [type_check_endif] ENDIF | File: compiler/typecheck.torth, Row: 741, Column: 3
 type_check_endif_ENDIF69:
-;; [type_check_endif] IF | File: compiler/typecheck.torth, Row: 723, Column: 3
-;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 723, Column: 6
+;; [type_check_endif] IF | File: compiler/typecheck.torth, Row: 744, Column: 3
+;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 744, Column: 6
   push QWORD [r14-56]
-;; [type_check_endif] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 723, Column: 28
+;; [type_check_endif] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 744, Column: 28
   call Tm9kZS5kYXRh
-;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 723, Column: 38
-;; [type_check_endif] PUSH_INT | File: compiler/typecheck.torth, Row: 723, Column: 48
+;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 744, Column: 38
+;; [type_check_endif] PUSH_INT | File: compiler/typecheck.torth, Row: 744, Column: 48
   mov rax, 0
   push rax
-;; [type_check_endif] INTRINSIC NE | File: compiler/typecheck.torth, Row: 723, Column: 53
+;; [type_check_endif] INTRINSIC NE | File: compiler/typecheck.torth, Row: 744, Column: 53
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_endif] DO | File: compiler/typecheck.torth, Row: 723, Column: 56
+;; [type_check_endif] DO | File: compiler/typecheck.torth, Row: 744, Column: 56
   pop rax
   test rax, rax
   jz type_check_endif_ENDIF82
-;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 724, Column: 5
+;; [type_check_endif] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 745, Column: 5
   push QWORD [r14-56]
-;; [type_check_endif] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 724, Column: 27
+;; [type_check_endif] PUSH_BIND branched_stacks | File: compiler/typecheck.torth, Row: 745, Column: 27
   push QWORD [r14-24]
-;; [type_check_endif] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 724, Column: 43
+;; [type_check_endif] FUNCTION_CALL List.last | File: compiler/typecheck.torth, Row: 745, Column: 43
   call TGlzdC5sYXN0
-;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 724, Column: 53
-;; [type_check_endif] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 724, Column: 63
+;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 745, Column: 53
+;; [type_check_endif] FUNCTION_CALL Node.store | File: compiler/typecheck.torth, Row: 745, Column: 63
   call Tm9kZS5zdG9yZQ__
-;; [type_check_endif] ENDIF | File: compiler/typecheck.torth, Row: 725, Column: 3
+;; [type_check_endif] ENDIF | File: compiler/typecheck.torth, Row: 746, Column: 3
 type_check_endif_ENDIF82:
-;; [type_check_endif] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 728, Column: 3
+;; [type_check_endif] PUSH_BIND if_block_original_stacks | File: compiler/typecheck.torth, Row: 749, Column: 3
   push QWORD [r14-40]
-;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 728, Column: 28
-;; [type_check_endif] INTRINSIC dup | File: compiler/typecheck.torth, Row: 728, Column: 39
+;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 749, Column: 28
+;; [type_check_endif] INTRINSIC dup | File: compiler/typecheck.torth, Row: 749, Column: 39
   push QWORD [rsp]
-;; [type_check_endif] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 728, Column: 43
+;; [type_check_endif] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 749, Column: 43
   call TGlzdC5sZW4_
-;; [type_check_endif] PUSH_INT | File: compiler/typecheck.torth, Row: 728, Column: 52
+;; [type_check_endif] PUSH_INT | File: compiler/typecheck.torth, Row: 749, Column: 52
   mov rax, 1
   push rax
-;; [type_check_endif] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 728, Column: 54
+;; [type_check_endif] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 749, Column: 54
   pop rax
   sub [rsp], rax
-;; [type_check_endif] INTRINSIC swap | File: compiler/typecheck.torth, Row: 728, Column: 56
+;; [type_check_endif] INTRINSIC swap | File: compiler/typecheck.torth, Row: 749, Column: 56
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [type_check_endif] FUNCTION_CALL List.pop | File: compiler/typecheck.torth, Row: 728, Column: 61
+;; [type_check_endif] FUNCTION_CALL List.pop | File: compiler/typecheck.torth, Row: 749, Column: 61
   call TGlzdC5wb3A_
-;; [type_check_endif] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 729, Column: 3
+;; [type_check_endif] PUSH_BIND if_block_return_stacks | File: compiler/typecheck.torth, Row: 750, Column: 3
   push QWORD [r14-32]
-;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 729, Column: 28
-;; [type_check_endif] INTRINSIC dup | File: compiler/typecheck.torth, Row: 729, Column: 39
+;; [type_check_endif] CAST | File: compiler/typecheck.torth, Row: 750, Column: 28
+;; [type_check_endif] INTRINSIC dup | File: compiler/typecheck.torth, Row: 750, Column: 39
   push QWORD [rsp]
-;; [type_check_endif] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 729, Column: 43
+;; [type_check_endif] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 750, Column: 43
   call TGlzdC5sZW4_
-;; [type_check_endif] PUSH_INT | File: compiler/typecheck.torth, Row: 729, Column: 52
+;; [type_check_endif] PUSH_INT | File: compiler/typecheck.torth, Row: 750, Column: 52
   mov rax, 1
   push rax
-;; [type_check_endif] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 729, Column: 54
+;; [type_check_endif] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 750, Column: 54
   pop rax
   sub [rsp], rax
-;; [type_check_endif] INTRINSIC swap | File: compiler/typecheck.torth, Row: 729, Column: 56
+;; [type_check_endif] INTRINSIC swap | File: compiler/typecheck.torth, Row: 750, Column: 56
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [type_check_endif] FUNCTION_CALL List.pop | File: compiler/typecheck.torth, Row: 729, Column: 61
+;; [type_check_endif] FUNCTION_CALL List.pop | File: compiler/typecheck.torth, Row: 750, Column: 61
   call TGlzdC5wb3A_
 ;; [type_check_endif] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -12972,315 +13174,321 @@ dHlwZV9jaGVja19mdW5jdGlvbl9jYWxs:
 ;; [type_check_function_call] Save the return address to return stack
   add r14, 120 ; 14 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_function_call] POP_BIND token | File: compiler/typecheck.torth, Row: 739, Column: 3
+;; [type_check_function_call] POP_BIND token | File: compiler/typecheck.torth, Row: 760, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_function_call] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 740, Column: 3
+;; [type_check_function_call] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 761, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_function_call] POP_BIND functions | File: compiler/typecheck.torth, Row: 741, Column: 3
+;; [type_check_function_call] POP_BIND functions | File: compiler/typecheck.torth, Row: 762, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_function_call] PUSH_BIND token | File: compiler/typecheck.torth, Row: 743, Column: 3
+;; [type_check_function_call] PUSH_BIND token | File: compiler/typecheck.torth, Row: 764, Column: 3
   push QWORD [r14-8]
-;; [type_check_function_call] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 743, Column: 9
+;; [type_check_function_call] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 764, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_function_call] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 744, Column: 3
+;; [type_check_function_call] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 765, Column: 3
   push QWORD [r14-16]
-;; [type_check_function_call] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 744, Column: 14
+;; [type_check_function_call] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 765, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 745, Column: 3
-;; [type_check_function_call] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 745, Column: 8
+;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 766, Column: 3
+;; [type_check_function_call] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 766, Column: 8
   pop rbx
   mov [r14-32], rbx
-;; [type_check_function_call] POP_BIND function_name | File: compiler/typecheck.torth, Row: 745, Column: 19
+;; [type_check_function_call] POP_BIND function_name | File: compiler/typecheck.torth, Row: 766, Column: 19
   pop rbx
   mov [r14-40], rbx
-;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 745, Column: 33
-;; [type_check_function_call] PUSH_BIND functions | File: compiler/typecheck.torth, Row: 748, Column: 3
+;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 766, Column: 33
+;; [type_check_function_call] PUSH_BIND functions | File: compiler/typecheck.torth, Row: 769, Column: 3
   push QWORD [r14-24]
-;; [type_check_function_call] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 748, Column: 13
+;; [type_check_function_call] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 769, Column: 13
   push QWORD [r14-40]
-;; [type_check_function_call] FUNCTION_CALL get_function_by_name | File: compiler/typecheck.torth, Row: 748, Column: 27
+;; [type_check_function_call] FUNCTION_CALL get_function_by_name | File: compiler/typecheck.torth, Row: 769, Column: 27
   call Z2V0X2Z1bmN0aW9uX2J5X25hbWU_
-;; [type_check_function_call] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 749, Column: 3
+;; [type_check_function_call] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 770, Column: 3
   call RnVuYy5zaWduYXR1cmU_
-;; [type_check_function_call] INTRINSIC dup | File: compiler/typecheck.torth, Row: 750, Column: 3
+;; [type_check_function_call] INTRINSIC dup | File: compiler/typecheck.torth, Row: 771, Column: 3
   push QWORD [rsp]
-;; [type_check_function_call] FUNCTION_CALL Signature.returns | File: compiler/typecheck.torth, Row: 750, Column: 9
+;; [type_check_function_call] FUNCTION_CALL Signature.returns | File: compiler/typecheck.torth, Row: 771, Column: 9
   call U2lnbmF0dXJlLnJldHVybnM_
-;; [type_check_function_call] INTRINSIC over | File: compiler/typecheck.torth, Row: 751, Column: 3
+;; [type_check_function_call] INTRINSIC over | File: compiler/typecheck.torth, Row: 772, Column: 3
   push QWORD [rsp+8]
-;; [type_check_function_call] FUNCTION_CALL Signature.params | File: compiler/typecheck.torth, Row: 751, Column: 9
+;; [type_check_function_call] FUNCTION_CALL Signature.params | File: compiler/typecheck.torth, Row: 772, Column: 9
   call U2lnbmF0dXJlLnBhcmFtcw__
-;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 752, Column: 3
-;; [type_check_function_call] POP_BIND param_types | File: compiler/typecheck.torth, Row: 753, Column: 5
+;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 773, Column: 3
+;; [type_check_function_call] POP_BIND param_types | File: compiler/typecheck.torth, Row: 774, Column: 5
   pop rbx
   mov [r14-48], rbx
-;; [type_check_function_call] POP_BIND return_types | File: compiler/typecheck.torth, Row: 754, Column: 5
+;; [type_check_function_call] POP_BIND return_types | File: compiler/typecheck.torth, Row: 775, Column: 5
   pop rbx
   mov [r14-56], rbx
-;; [type_check_function_call] POP_BIND signature | File: compiler/typecheck.torth, Row: 755, Column: 5
+;; [type_check_function_call] POP_BIND signature | File: compiler/typecheck.torth, Row: 776, Column: 5
   pop rbx
   mov [r14-64], rbx
-;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 756, Column: 3
-;; [type_check_function_call] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 758, Column: 3
+;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 777, Column: 3
+;; [type_check_function_call] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 779, Column: 3
   push QWORD [r14-56]
-;; [type_check_function_call] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 758, Column: 16
+;; [type_check_function_call] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 779, Column: 16
   call TGlzdC5sZW4_
-;; [type_check_function_call] PUSH_BIND param_types | File: compiler/typecheck.torth, Row: 759, Column: 3
+;; [type_check_function_call] PUSH_BIND param_types | File: compiler/typecheck.torth, Row: 780, Column: 3
   push QWORD [r14-48]
-;; [type_check_function_call] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 759, Column: 15
+;; [type_check_function_call] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 780, Column: 15
   call TGlzdC5sZW4_
-;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 760, Column: 3
+;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 781, Column: 3
   mov rax, 0
   push rax
-;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 761, Column: 3
-;; [type_check_function_call] POP_BIND index | File: compiler/typecheck.torth, Row: 762, Column: 5
+;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 782, Column: 3
+;; [type_check_function_call] POP_BIND index | File: compiler/typecheck.torth, Row: 783, Column: 5
   pop rbx
   mov [r14-72], rbx
-;; [type_check_function_call] POP_BIND param_types.len | File: compiler/typecheck.torth, Row: 763, Column: 5
+;; [type_check_function_call] POP_BIND param_types.len | File: compiler/typecheck.torth, Row: 784, Column: 5
   pop rbx
   mov [r14-80], rbx
-;; [type_check_function_call] POP_BIND return_types.len | File: compiler/typecheck.torth, Row: 764, Column: 5
+;; [type_check_function_call] POP_BIND return_types.len | File: compiler/typecheck.torth, Row: 785, Column: 5
   pop rbx
   mov [r14-88], rbx
-;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 765, Column: 3
-;; [type_check_function_call] WHILE | File: compiler/typecheck.torth, Row: 768, Column: 3
+;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 786, Column: 3
+;; [type_check_function_call] WHILE | File: compiler/typecheck.torth, Row: 789, Column: 3
 type_check_function_call_WHILE34:
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 768, Column: 9
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 789, Column: 9
   push QWORD [r14-72]
-;; [type_check_function_call] PUSH_BIND param_types.len | File: compiler/typecheck.torth, Row: 768, Column: 15
+;; [type_check_function_call] PUSH_BIND param_types.len | File: compiler/typecheck.torth, Row: 789, Column: 15
   push QWORD [r14-80]
-;; [type_check_function_call] INTRINSIC LT | File: compiler/typecheck.torth, Row: 768, Column: 31
+;; [type_check_function_call] INTRINSIC LT | File: compiler/typecheck.torth, Row: 789, Column: 31
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_function_call] DO | File: compiler/typecheck.torth, Row: 768, Column: 33
+;; [type_check_function_call] DO | File: compiler/typecheck.torth, Row: 789, Column: 33
   pop rax
   test rax, rax
   jz type_check_function_call_DONE99
-;; [type_check_function_call] IF | File: compiler/typecheck.torth, Row: 769, Column: 5
-;; [type_check_function_call] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 769, Column: 8
+;; [type_check_function_call] IF | File: compiler/typecheck.torth, Row: 790, Column: 5
+;; [type_check_function_call] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 790, Column: 8
   push QWORD [r14-16]
-;; [type_check_function_call] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 769, Column: 19
+;; [type_check_function_call] FUNCTION_CALL Node.data | File: compiler/typecheck.torth, Row: 790, Column: 19
   call Tm9kZS5kYXRh
-;; [type_check_function_call] CAST | File: compiler/typecheck.torth, Row: 769, Column: 29
-;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 769, Column: 39
+;; [type_check_function_call] CAST | File: compiler/typecheck.torth, Row: 790, Column: 29
+;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 790, Column: 39
   mov rax, 0
   push rax
-;; [type_check_function_call] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 769, Column: 44
+;; [type_check_function_call] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 790, Column: 44
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_function_call] DO | File: compiler/typecheck.torth, Row: 769, Column: 47
+;; [type_check_function_call] DO | File: compiler/typecheck.torth, Row: 790, Column: 47
   pop rax
   test rax, rax
   jz type_check_function_call_ENDIF60
-;; [type_check_function_call] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 770, Column: 7
+;; [type_check_function_call] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 791, Column: 7
   push QWORD [r14-32]
-;; [type_check_function_call] PUSH_BIND token | File: compiler/typecheck.torth, Row: 770, Column: 18
+;; [type_check_function_call] PUSH_BIND token | File: compiler/typecheck.torth, Row: 791, Column: 18
   push QWORD [r14-8]
-;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 771, Column: 7
+;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 792, Column: 7
   mov rsi, type_check_function_call_s48 ; Pointer to string
 
   push rsi
-;; [type_check_function_call] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 772, Column: 7
+;; [type_check_function_call] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 793, Column: 7
   push QWORD [r14-40]
-;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 772, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 793, Column: 33
   call c3RyLmNhdA__
-;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 773, Column: 7
+;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 794, Column: 7
   mov rsi, type_check_function_call_s51 ; Pointer to string
 
   push rsi
-;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 773, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 794, Column: 33
   call c3RyLmNhdA__
-;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 774, Column: 7
+;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 795, Column: 7
   mov rsi, type_check_function_call_s53 ; Pointer to string
 
   push rsi
-;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 774, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 795, Column: 33
   call c3RyLmNhdA__
-;; [type_check_function_call] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 775, Column: 7
+;; [type_check_function_call] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 796, Column: 7
   push QWORD [r14-64]
-;; [type_check_function_call] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 775, Column: 17
+;; [type_check_function_call] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 796, Column: 17
   call U2lnbmF0dXJlLnJlcHI_
-;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 775, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 796, Column: 33
   call c3RyLmNhdA__
-;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 776, Column: 7
+;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 797, Column: 7
   mov rsi, type_check_function_call_s58 ; Pointer to string
 
   push rsi
-;; [type_check_function_call] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 776, Column: 34
+;; [type_check_function_call] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 797, Column: 34
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_function_call] ENDIF | File: compiler/typecheck.torth, Row: 777, Column: 5
+;; [type_check_function_call] ENDIF | File: compiler/typecheck.torth, Row: 798, Column: 5
 type_check_function_call_ENDIF60:
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 780, Column: 5
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 801, Column: 5
   push QWORD [r14-72]
-;; [type_check_function_call] PUSH_BIND param_types | File: compiler/typecheck.torth, Row: 780, Column: 11
+;; [type_check_function_call] PUSH_BIND param_types | File: compiler/typecheck.torth, Row: 801, Column: 11
   push QWORD [r14-48]
-;; [type_check_function_call] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 780, Column: 23
+;; [type_check_function_call] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 801, Column: 23
   call TGlzdC5udGg_
-;; [type_check_function_call] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 780, Column: 32
+;; [type_check_function_call] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 801, Column: 32
   call c3RyLmxvYWQ_
-;; [type_check_function_call] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 781, Column: 5
+;; [type_check_function_call] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 802, Column: 5
   push QWORD [r14-16]
-;; [type_check_function_call] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 781, Column: 16
+;; [type_check_function_call] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 802, Column: 16
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_function_call] CAST | File: compiler/typecheck.torth, Row: 781, Column: 31
-;; [type_check_function_call] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 781, Column: 46
+;; [type_check_function_call] CAST | File: compiler/typecheck.torth, Row: 802, Column: 31
+;; [type_check_function_call] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 802, Column: 46
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 782, Column: 5
-;; [type_check_function_call] POP_BIND expected_type | File: compiler/typecheck.torth, Row: 782, Column: 10
+;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 803, Column: 5
+;; [type_check_function_call] POP_BIND expected_type | File: compiler/typecheck.torth, Row: 803, Column: 10
   pop rbx
   mov [r14-96], rbx
-;; [type_check_function_call] POP_BIND popped_type | File: compiler/typecheck.torth, Row: 782, Column: 24
+;; [type_check_function_call] POP_BIND popped_type | File: compiler/typecheck.torth, Row: 803, Column: 24
   pop rbx
   mov [r14-104], rbx
-;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 782, Column: 36
-;; [type_check_function_call] IF | File: compiler/typecheck.torth, Row: 784, Column: 5
-;; [type_check_function_call] PUSH_BIND expected_type | File: compiler/typecheck.torth, Row: 784, Column: 8
+;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 803, Column: 36
+;; [type_check_function_call] IF | File: compiler/typecheck.torth, Row: 805, Column: 5
+;; [type_check_function_call] PUSH_BIND expected_type | File: compiler/typecheck.torth, Row: 805, Column: 8
   push QWORD [r14-96]
-;; [type_check_function_call] PUSH_BIND popped_type | File: compiler/typecheck.torth, Row: 784, Column: 22
+;; [type_check_function_call] PUSH_BIND popped_type | File: compiler/typecheck.torth, Row: 805, Column: 22
   push QWORD [r14-104]
-;; [type_check_function_call] FUNCTION_CALL matching_token_types | File: compiler/typecheck.torth, Row: 784, Column: 34
+;; [type_check_function_call] FUNCTION_CALL matching_token_types | File: compiler/typecheck.torth, Row: 805, Column: 34
   call bWF0Y2hpbmdfdG9rZW5fdHlwZXM_
-;; [type_check_function_call] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 784, Column: 55
+;; [type_check_function_call] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 805, Column: 55
   call bm90
-;; [type_check_function_call] DO | File: compiler/typecheck.torth, Row: 784, Column: 59
+;; [type_check_function_call] DO | File: compiler/typecheck.torth, Row: 805, Column: 59
   pop rax
   test rax, rax
   jz type_check_function_call_ENDIF93
-;; [type_check_function_call] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 785, Column: 7
+;; [type_check_function_call] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 806, Column: 7
   push QWORD [r14-32]
-;; [type_check_function_call] PUSH_BIND token | File: compiler/typecheck.torth, Row: 785, Column: 18
+;; [type_check_function_call] PUSH_BIND token | File: compiler/typecheck.torth, Row: 806, Column: 18
   push QWORD [r14-8]
-;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 786, Column: 7
+;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 807, Column: 7
   mov rsi, type_check_function_call_s81 ; Pointer to string
 
   push rsi
-;; [type_check_function_call] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 787, Column: 7
+;; [type_check_function_call] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 808, Column: 7
   push QWORD [r14-40]
-;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 787, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 808, Column: 33
   call c3RyLmNhdA__
-;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 788, Column: 7
+;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 809, Column: 7
   mov rsi, type_check_function_call_s84 ; Pointer to string
 
   push rsi
-;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 788, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 809, Column: 33
   call c3RyLmNhdA__
-;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 789, Column: 7
+;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 810, Column: 7
   mov rsi, type_check_function_call_s86 ; Pointer to string
 
   push rsi
-;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 789, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 810, Column: 33
   call c3RyLmNhdA__
-;; [type_check_function_call] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 790, Column: 7
+;; [type_check_function_call] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 811, Column: 7
   push QWORD [r14-64]
-;; [type_check_function_call] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 790, Column: 17
+;; [type_check_function_call] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 811, Column: 17
   call U2lnbmF0dXJlLnJlcHI_
-;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 790, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 811, Column: 33
   call c3RyLmNhdA__
-;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 791, Column: 7
+;; [type_check_function_call] PUSH_STR | File: compiler/typecheck.torth, Row: 812, Column: 7
   mov rsi, type_check_function_call_s91 ; Pointer to string
 
   push rsi
-;; [type_check_function_call] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 791, Column: 34
+;; [type_check_function_call] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 812, Column: 34
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_function_call] ENDIF | File: compiler/typecheck.torth, Row: 792, Column: 5
+;; [type_check_function_call] ENDIF | File: compiler/typecheck.torth, Row: 813, Column: 5
 type_check_function_call_ENDIF93:
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 793, Column: 5
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 814, Column: 5
   push QWORD [r14-72]
-;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 793, Column: 11
+;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 814, Column: 11
   mov rax, 1
   push rax
-;; [type_check_function_call] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 793, Column: 13
+;; [type_check_function_call] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 814, Column: 13
   pop rax
   add [rsp], rax
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 793, Column: 15
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 814, Column: 15
   push QWORD [r14-72]
-;; [type_check_function_call] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 793, Column: 21
+;; [type_check_function_call] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 814, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-72], rbx
-;; [type_check_function_call] DONE | File: compiler/typecheck.torth, Row: 794, Column: 3
+;; [type_check_function_call] DONE | File: compiler/typecheck.torth, Row: 815, Column: 3
   jmp type_check_function_call_WHILE34
 type_check_function_call_DONE99:
-;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 797, Column: 3
+;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 818, Column: 3
   mov rax, 0
   push rax
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 797, Column: 5
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 818, Column: 5
   push QWORD [r14-72]
-;; [type_check_function_call] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 797, Column: 11
+;; [type_check_function_call] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 818, Column: 11
   add rsp, 8
   pop rbx
   mov [r14-72], rbx
-;; [type_check_function_call] WHILE | File: compiler/typecheck.torth, Row: 798, Column: 3
+;; [type_check_function_call] WHILE | File: compiler/typecheck.torth, Row: 819, Column: 3
 type_check_function_call_WHILE103:
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 798, Column: 9
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 819, Column: 9
   push QWORD [r14-72]
-;; [type_check_function_call] PUSH_BIND return_types.len | File: compiler/typecheck.torth, Row: 798, Column: 15
+;; [type_check_function_call] PUSH_BIND return_types.len | File: compiler/typecheck.torth, Row: 819, Column: 15
   push QWORD [r14-88]
-;; [type_check_function_call] INTRINSIC LT | File: compiler/typecheck.torth, Row: 798, Column: 32
+;; [type_check_function_call] INTRINSIC LT | File: compiler/typecheck.torth, Row: 819, Column: 32
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_function_call] DO | File: compiler/typecheck.torth, Row: 798, Column: 34
+;; [type_check_function_call] DO | File: compiler/typecheck.torth, Row: 819, Column: 34
   pop rax
   test rax, rax
   jz type_check_function_call_DONE127
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 800, Column: 5
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 821, Column: 5
   push QWORD [r14-72]
-;; [type_check_function_call] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 800, Column: 11
+;; [type_check_function_call] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 821, Column: 11
   push QWORD [r14-56]
-;; [type_check_function_call] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 800, Column: 24
+;; [type_check_function_call] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 821, Column: 24
   call TGlzdC5udGg_
-;; [type_check_function_call] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 800, Column: 33
+;; [type_check_function_call] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 821, Column: 33
   call c3RyLmxvYWQ_
-;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 801, Column: 5
-;; [type_check_function_call] POP_BIND return_type | File: compiler/typecheck.torth, Row: 801, Column: 10
+;; [type_check_function_call] TAKE | File: compiler/typecheck.torth, Row: 822, Column: 5
+;; [type_check_function_call] POP_BIND return_type | File: compiler/typecheck.torth, Row: 822, Column: 10
   pop rbx
   mov [r14-112], rbx
-;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 801, Column: 22
-;; [type_check_function_call] PUSH_BIND token | File: compiler/typecheck.torth, Row: 804, Column: 5
+;; [type_check_function_call] IN | File: compiler/typecheck.torth, Row: 822, Column: 22
+;; [type_check_function_call] PUSH_BIND token | File: compiler/typecheck.torth, Row: 825, Column: 5
   push QWORD [r14-8]
-;; [type_check_function_call] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 804, Column: 11
+;; [type_check_function_call] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 825, Column: 11
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_function_call] PUSH_BIND return_type | File: compiler/typecheck.torth, Row: 804, Column: 26
+;; [type_check_function_call] PUSH_BIND return_type | File: compiler/typecheck.torth, Row: 825, Column: 26
   push QWORD [r14-112]
-;; [type_check_function_call] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 804, Column: 38
+;; [type_check_function_call] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 825, Column: 38
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_function_call] CAST | File: compiler/typecheck.torth, Row: 804, Column: 52
-;; [type_check_function_call] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 805, Column: 5
+;; [type_check_function_call] CAST | File: compiler/typecheck.torth, Row: 825, Column: 52
+;; [type_check_function_call] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 826, Column: 5
   push QWORD [r14-16]
-;; [type_check_function_call] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 805, Column: 16
+;; [type_check_function_call] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 826, Column: 16
   call TGlua2VkTGlzdC5wdXNo
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 806, Column: 5
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 827, Column: 5
   push QWORD [r14-72]
-;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 806, Column: 11
+;; [type_check_function_call] PUSH_INT | File: compiler/typecheck.torth, Row: 827, Column: 11
   mov rax, 1
   push rax
-;; [type_check_function_call] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 806, Column: 13
+;; [type_check_function_call] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 827, Column: 13
   pop rax
   add [rsp], rax
-;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 806, Column: 15
+;; [type_check_function_call] PUSH_BIND index | File: compiler/typecheck.torth, Row: 827, Column: 15
   push QWORD [r14-72]
-;; [type_check_function_call] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 806, Column: 21
+;; [type_check_function_call] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 827, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-72], rbx
-;; [type_check_function_call] DONE | File: compiler/typecheck.torth, Row: 807, Column: 3
+;; [type_check_function_call] DONE | File: compiler/typecheck.torth, Row: 828, Column: 3
   jmp type_check_function_call_WHILE103
 type_check_function_call_DONE127:
+;; [type_check_function_call] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 831, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_function_call] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 831, Column: 17
+  push QWORD [r14-32]
+;; [type_check_function_call] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 831, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_function_call] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 120 ; 14 local variables
@@ -13290,76 +13498,76 @@ dHlwZV9jaGVja19wdXNoX2Zu:
 ;; [type_check_push_fn] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_push_fn] POP_BIND token | File: compiler/typecheck.torth, Row: 815, Column: 29
+;; [type_check_push_fn] POP_BIND token | File: compiler/typecheck.torth, Row: 839, Column: 29
   pop rbx
   mov [r14-8], rbx
-;; [type_check_push_fn] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 815, Column: 41
+;; [type_check_push_fn] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 839, Column: 41
   pop rbx
   mov [r14-16], rbx
-;; [type_check_push_fn] POP_BIND functions | File: compiler/typecheck.torth, Row: 815, Column: 57
+;; [type_check_push_fn] POP_BIND functions | File: compiler/typecheck.torth, Row: 839, Column: 57
   pop rbx
   mov [r14-24], rbx
-;; [type_check_push_fn] PUSH_STR | File: compiler/typecheck.torth, Row: 816, Column: 3
+;; [type_check_push_fn] PUSH_STR | File: compiler/typecheck.torth, Row: 840, Column: 3
   mov rsi, type_check_push_fn_s3 ; Pointer to string
 
   push rsi
-;; [type_check_push_fn] PUSH_BIND token | File: compiler/typecheck.torth, Row: 816, Column: 7
+;; [type_check_push_fn] PUSH_BIND token | File: compiler/typecheck.torth, Row: 840, Column: 7
   push QWORD [r14-8]
-;; [type_check_push_fn] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 816, Column: 13
+;; [type_check_push_fn] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 840, Column: 13
   call VG9rZW4udmFsdWU_
-;; [type_check_push_fn] FUNCTION_CALL str.removesuffix | File: compiler/typecheck.torth, Row: 816, Column: 25
+;; [type_check_push_fn] FUNCTION_CALL str.removesuffix | File: compiler/typecheck.torth, Row: 840, Column: 25
   call c3RyLnJlbW92ZXN1ZmZpeA__
-;; [type_check_push_fn] TAKE | File: compiler/typecheck.torth, Row: 817, Column: 3
-;; [type_check_push_fn] POP_BIND function_name | File: compiler/typecheck.torth, Row: 817, Column: 8
+;; [type_check_push_fn] TAKE | File: compiler/typecheck.torth, Row: 841, Column: 3
+;; [type_check_push_fn] POP_BIND function_name | File: compiler/typecheck.torth, Row: 841, Column: 8
   pop rbx
   mov [r14-32], rbx
-;; [type_check_push_fn] IN | File: compiler/typecheck.torth, Row: 817, Column: 22
-;; [type_check_push_fn] PUSH_BIND functions | File: compiler/typecheck.torth, Row: 819, Column: 3
+;; [type_check_push_fn] IN | File: compiler/typecheck.torth, Row: 841, Column: 22
+;; [type_check_push_fn] PUSH_BIND functions | File: compiler/typecheck.torth, Row: 843, Column: 3
   push QWORD [r14-24]
-;; [type_check_push_fn] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 819, Column: 13
+;; [type_check_push_fn] PUSH_BIND function_name | File: compiler/typecheck.torth, Row: 843, Column: 13
   push QWORD [r14-32]
-;; [type_check_push_fn] FUNCTION_CALL get_function_by_name | File: compiler/typecheck.torth, Row: 819, Column: 27
+;; [type_check_push_fn] FUNCTION_CALL get_function_by_name | File: compiler/typecheck.torth, Row: 843, Column: 27
   call Z2V0X2Z1bmN0aW9uX2J5X25hbWU_
-;; [type_check_push_fn] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 819, Column: 48
+;; [type_check_push_fn] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 843, Column: 48
   call RnVuYy5zaWduYXR1cmU_
-;; [type_check_push_fn] TAKE | File: compiler/typecheck.torth, Row: 820, Column: 3
-;; [type_check_push_fn] POP_BIND signature | File: compiler/typecheck.torth, Row: 820, Column: 8
+;; [type_check_push_fn] TAKE | File: compiler/typecheck.torth, Row: 844, Column: 3
+;; [type_check_push_fn] POP_BIND signature | File: compiler/typecheck.torth, Row: 844, Column: 8
   pop rbx
   mov [r14-40], rbx
-;; [type_check_push_fn] IN | File: compiler/typecheck.torth, Row: 820, Column: 18
-;; [type_check_push_fn] PUSH_STR | File: compiler/typecheck.torth, Row: 822, Column: 3
+;; [type_check_push_fn] IN | File: compiler/typecheck.torth, Row: 844, Column: 18
+;; [type_check_push_fn] PUSH_STR | File: compiler/typecheck.torth, Row: 846, Column: 3
   mov rsi, type_check_push_fn_s17 ; Pointer to string
 
   push rsi
-;; [type_check_push_fn] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 823, Column: 3
+;; [type_check_push_fn] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 847, Column: 3
   push QWORD [r14-40]
-;; [type_check_push_fn] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 823, Column: 13
+;; [type_check_push_fn] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 847, Column: 13
   call U2lnbmF0dXJlLnJlcHI_
-;; [type_check_push_fn] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 823, Column: 29
+;; [type_check_push_fn] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 847, Column: 29
   call c3RyLmNhdA__
-;; [type_check_push_fn] PUSH_STR | File: compiler/typecheck.torth, Row: 824, Column: 3
+;; [type_check_push_fn] PUSH_STR | File: compiler/typecheck.torth, Row: 848, Column: 3
   mov rsi, type_check_push_fn_s21 ; Pointer to string
 
   push rsi
-;; [type_check_push_fn] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 824, Column: 29
+;; [type_check_push_fn] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 848, Column: 29
   call c3RyLmNhdA__
-;; [type_check_push_fn] TAKE | File: compiler/typecheck.torth, Row: 825, Column: 3
-;; [type_check_push_fn] POP_BIND type | File: compiler/typecheck.torth, Row: 825, Column: 8
+;; [type_check_push_fn] TAKE | File: compiler/typecheck.torth, Row: 849, Column: 3
+;; [type_check_push_fn] POP_BIND type | File: compiler/typecheck.torth, Row: 849, Column: 8
   pop rbx
   mov [r14-48], rbx
-;; [type_check_push_fn] IN | File: compiler/typecheck.torth, Row: 825, Column: 13
-;; [type_check_push_fn] PUSH_BIND token | File: compiler/typecheck.torth, Row: 827, Column: 3
+;; [type_check_push_fn] IN | File: compiler/typecheck.torth, Row: 849, Column: 13
+;; [type_check_push_fn] PUSH_BIND token | File: compiler/typecheck.torth, Row: 851, Column: 3
   push QWORD [r14-8]
-;; [type_check_push_fn] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 827, Column: 9
+;; [type_check_push_fn] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 851, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_push_fn] PUSH_BIND type | File: compiler/typecheck.torth, Row: 827, Column: 24
+;; [type_check_push_fn] PUSH_BIND type | File: compiler/typecheck.torth, Row: 851, Column: 24
   push QWORD [r14-48]
-;; [type_check_push_fn] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 827, Column: 29
+;; [type_check_push_fn] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 851, Column: 29
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_push_fn] CAST | File: compiler/typecheck.torth, Row: 827, Column: 43
-;; [type_check_push_fn] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 828, Column: 3
+;; [type_check_push_fn] CAST | File: compiler/typecheck.torth, Row: 851, Column: 43
+;; [type_check_push_fn] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 852, Column: 3
   push QWORD [r14-16]
-;; [type_check_push_fn] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 828, Column: 14
+;; [type_check_push_fn] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 852, Column: 14
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_push_fn] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13370,138 +13578,144 @@ dHlwZV9jaGVja19wZWVrX2JpbmQ_:
 ;; [type_check_peek_bind] Save the return address to return stack
   add r14, 64 ; 7 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_peek_bind] POP_BIND token | File: compiler/typecheck.torth, Row: 839, Column: 3
+;; [type_check_peek_bind] POP_BIND token | File: compiler/typecheck.torth, Row: 863, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_peek_bind] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 840, Column: 3
+;; [type_check_peek_bind] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 864, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_peek_bind] POP_BIND variables | File: compiler/typecheck.torth, Row: 841, Column: 3
+;; [type_check_peek_bind] POP_BIND variables | File: compiler/typecheck.torth, Row: 865, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_peek_bind] POP_BIND count | File: compiler/typecheck.torth, Row: 842, Column: 3
+;; [type_check_peek_bind] POP_BIND count | File: compiler/typecheck.torth, Row: 866, Column: 3
   pop rbx
   mov [r14-32], rbx
-;; [type_check_peek_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 845, Column: 3
+;; [type_check_peek_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 869, Column: 3
   push QWORD [r14-16]
-;; [type_check_peek_bind] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 845, Column: 14
+;; [type_check_peek_bind] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 869, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_peek_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 846, Column: 3
+;; [type_check_peek_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 870, Column: 3
   mov rax, 0
   push rax
-;; [type_check_peek_bind] TAKE | File: compiler/typecheck.torth, Row: 846, Column: 5
-;; [type_check_peek_bind] POP_BIND index | File: compiler/typecheck.torth, Row: 846, Column: 10
+;; [type_check_peek_bind] TAKE | File: compiler/typecheck.torth, Row: 870, Column: 5
+;; [type_check_peek_bind] POP_BIND index | File: compiler/typecheck.torth, Row: 870, Column: 10
   pop rbx
   mov [r14-40], rbx
-;; [type_check_peek_bind] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 846, Column: 16
+;; [type_check_peek_bind] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 870, Column: 16
   pop rbx
   mov [r14-48], rbx
-;; [type_check_peek_bind] IN | File: compiler/typecheck.torth, Row: 846, Column: 27
-;; [type_check_peek_bind] WHILE | File: compiler/typecheck.torth, Row: 847, Column: 3
+;; [type_check_peek_bind] IN | File: compiler/typecheck.torth, Row: 870, Column: 27
+;; [type_check_peek_bind] WHILE | File: compiler/typecheck.torth, Row: 871, Column: 3
 type_check_peek_bind_WHILE11:
-;; [type_check_peek_bind] PUSH_BIND index | File: compiler/typecheck.torth, Row: 847, Column: 9
+;; [type_check_peek_bind] PUSH_BIND index | File: compiler/typecheck.torth, Row: 871, Column: 9
   push QWORD [r14-40]
-;; [type_check_peek_bind] PUSH_BIND count | File: compiler/typecheck.torth, Row: 847, Column: 15
+;; [type_check_peek_bind] PUSH_BIND count | File: compiler/typecheck.torth, Row: 871, Column: 15
   push QWORD [r14-32]
-;; [type_check_peek_bind] INTRINSIC LT | File: compiler/typecheck.torth, Row: 847, Column: 21
+;; [type_check_peek_bind] INTRINSIC LT | File: compiler/typecheck.torth, Row: 871, Column: 21
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_peek_bind] DO | File: compiler/typecheck.torth, Row: 847, Column: 23
+;; [type_check_peek_bind] DO | File: compiler/typecheck.torth, Row: 871, Column: 23
   pop rax
   test rax, rax
   jz type_check_peek_bind_DONE27
-;; [type_check_peek_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 848, Column: 5
+;; [type_check_peek_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 872, Column: 5
   push QWORD [r14-48]
-;; [type_check_peek_bind] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 848, Column: 16
+;; [type_check_peek_bind] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 872, Column: 16
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_peek_bind] CAST | File: compiler/typecheck.torth, Row: 848, Column: 31
-;; [type_check_peek_bind] TAKE | File: compiler/typecheck.torth, Row: 849, Column: 5
-;; [type_check_peek_bind] POP_BIND type | File: compiler/typecheck.torth, Row: 849, Column: 10
+;; [type_check_peek_bind] CAST | File: compiler/typecheck.torth, Row: 872, Column: 31
+;; [type_check_peek_bind] TAKE | File: compiler/typecheck.torth, Row: 873, Column: 5
+;; [type_check_peek_bind] POP_BIND type | File: compiler/typecheck.torth, Row: 873, Column: 10
   pop rbx
   mov [r14-56], rbx
-;; [type_check_peek_bind] IN | File: compiler/typecheck.torth, Row: 849, Column: 15
-;; [type_check_peek_bind] PUSH_BIND index | File: compiler/typecheck.torth, Row: 850, Column: 5
+;; [type_check_peek_bind] IN | File: compiler/typecheck.torth, Row: 873, Column: 15
+;; [type_check_peek_bind] PUSH_BIND index | File: compiler/typecheck.torth, Row: 874, Column: 5
   push QWORD [r14-40]
-;; [type_check_peek_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 850, Column: 11
+;; [type_check_peek_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 874, Column: 11
   mov rax, 1
   push rax
-;; [type_check_peek_bind] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 850, Column: 13
+;; [type_check_peek_bind] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 874, Column: 13
   pop rax
   add [rsp], rax
-;; [type_check_peek_bind] PUSH_BIND index | File: compiler/typecheck.torth, Row: 850, Column: 15
+;; [type_check_peek_bind] PUSH_BIND index | File: compiler/typecheck.torth, Row: 874, Column: 15
   push QWORD [r14-40]
-;; [type_check_peek_bind] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 850, Column: 21
+;; [type_check_peek_bind] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 874, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-40], rbx
-;; [type_check_peek_bind] DONE | File: compiler/typecheck.torth, Row: 851, Column: 3
+;; [type_check_peek_bind] DONE | File: compiler/typecheck.torth, Row: 875, Column: 3
   jmp type_check_peek_bind_WHILE11
 type_check_peek_bind_DONE27:
-;; [type_check_peek_bind] IF | File: compiler/typecheck.torth, Row: 853, Column: 3
-;; [type_check_peek_bind] PUSH_BIND type | File: compiler/typecheck.torth, Row: 853, Column: 6
+;; [type_check_peek_bind] IF | File: compiler/typecheck.torth, Row: 877, Column: 3
+;; [type_check_peek_bind] PUSH_BIND type | File: compiler/typecheck.torth, Row: 877, Column: 6
   push QWORD [r14-56]
-;; [type_check_peek_bind] CAST | File: compiler/typecheck.torth, Row: 853, Column: 11
-;; [type_check_peek_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 853, Column: 21
+;; [type_check_peek_bind] CAST | File: compiler/typecheck.torth, Row: 877, Column: 11
+;; [type_check_peek_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 877, Column: 21
   mov rax, -1
   push rax
-;; [type_check_peek_bind] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 853, Column: 24
+;; [type_check_peek_bind] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 877, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_peek_bind] DO | File: compiler/typecheck.torth, Row: 853, Column: 27
+;; [type_check_peek_bind] DO | File: compiler/typecheck.torth, Row: 877, Column: 27
   pop rax
   test rax, rax
   jz type_check_peek_bind_ENDIF44
-;; [type_check_peek_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 854, Column: 5
+;; [type_check_peek_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 878, Column: 5
   push QWORD [r14-16]
-;; [type_check_peek_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 854, Column: 16
+;; [type_check_peek_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 878, Column: 16
   push QWORD [r14-8]
-;; [type_check_peek_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 855, Column: 5
+;; [type_check_peek_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 879, Column: 5
   mov rsi, type_check_peek_bind_s36 ; Pointer to string
 
   push rsi
-;; [type_check_peek_bind] PUSH_BIND count | File: compiler/typecheck.torth, Row: 856, Column: 5
+;; [type_check_peek_bind] PUSH_BIND count | File: compiler/typecheck.torth, Row: 880, Column: 5
   push QWORD [r14-32]
-;; [type_check_peek_bind] FUNCTION_CALL itoa | File: compiler/typecheck.torth, Row: 856, Column: 11
+;; [type_check_peek_bind] FUNCTION_CALL itoa | File: compiler/typecheck.torth, Row: 880, Column: 11
   call aXRvYQ__
-;; [type_check_peek_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 856, Column: 16
+;; [type_check_peek_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 880, Column: 16
   call c3RyLmNhdA__
-;; [type_check_peek_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 857, Column: 5
+;; [type_check_peek_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 881, Column: 5
   mov rsi, type_check_peek_bind_s40 ; Pointer to string
 
   push rsi
-;; [type_check_peek_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 857, Column: 67
+;; [type_check_peek_bind] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 881, Column: 67
   call c3RyLmNhdA__
-;; [type_check_peek_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 858, Column: 5
+;; [type_check_peek_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 882, Column: 5
   mov rsi, type_check_peek_bind_s42 ; Pointer to string
 
   push rsi
-;; [type_check_peek_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 858, Column: 29
+;; [type_check_peek_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 882, Column: 29
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_peek_bind] ENDIF | File: compiler/typecheck.torth, Row: 859, Column: 3
+;; [type_check_peek_bind] ENDIF | File: compiler/typecheck.torth, Row: 883, Column: 3
 type_check_peek_bind_ENDIF44:
-;; [type_check_peek_bind] PUSH_BIND type | File: compiler/typecheck.torth, Row: 862, Column: 3
+;; [type_check_peek_bind] PUSH_BIND type | File: compiler/typecheck.torth, Row: 886, Column: 3
   push QWORD [r14-56]
-;; [type_check_peek_bind] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 862, Column: 8
+;; [type_check_peek_bind] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 886, Column: 8
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_peek_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 862, Column: 22
+;; [type_check_peek_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 886, Column: 22
   push QWORD [r14-8]
-;; [type_check_peek_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 862, Column: 28
+;; [type_check_peek_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 886, Column: 28
   call VG9rZW4udmFsdWU_
-;; [type_check_peek_bind] FUNCTION_CALL Variable.init | File: compiler/typecheck.torth, Row: 862, Column: 40
+;; [type_check_peek_bind] FUNCTION_CALL Variable.init | File: compiler/typecheck.torth, Row: 886, Column: 40
   call VmFyaWFibGUuaW5pdA__
-;; [type_check_peek_bind] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 863, Column: 3
+;; [type_check_peek_bind] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 887, Column: 3
   push QWORD [r14-24]
-;; [type_check_peek_bind] CAST | File: compiler/typecheck.torth, Row: 863, Column: 13
-;; [type_check_peek_bind] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 863, Column: 24
+;; [type_check_peek_bind] CAST | File: compiler/typecheck.torth, Row: 887, Column: 13
+;; [type_check_peek_bind] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 887, Column: 24
   call TGlzdC5hcHBlbmQ_
+;; [type_check_peek_bind] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 890, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_peek_bind] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 890, Column: 17
+  push QWORD [r14-48]
+;; [type_check_peek_bind] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 890, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_peek_bind] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 64 ; 7 local variables
@@ -13511,73 +13725,73 @@ dHlwZV9jaGVja19wb3BfYmluZA__:
 ;; [type_check_pop_bind] Save the return address to return stack
   add r14, 40 ; 4 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_pop_bind] POP_BIND token | File: compiler/typecheck.torth, Row: 873, Column: 3
+;; [type_check_pop_bind] POP_BIND token | File: compiler/typecheck.torth, Row: 900, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_pop_bind] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 874, Column: 3
+;; [type_check_pop_bind] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 901, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_pop_bind] POP_BIND variables | File: compiler/typecheck.torth, Row: 875, Column: 3
+;; [type_check_pop_bind] POP_BIND variables | File: compiler/typecheck.torth, Row: 902, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_pop_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 877, Column: 3
+;; [type_check_pop_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 904, Column: 3
   push QWORD [r14-16]
-;; [type_check_pop_bind] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 877, Column: 14
+;; [type_check_pop_bind] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 904, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_pop_bind] CAST | File: compiler/typecheck.torth, Row: 877, Column: 29
-;; [type_check_pop_bind] TAKE | File: compiler/typecheck.torth, Row: 878, Column: 3
-;; [type_check_pop_bind] POP_BIND type | File: compiler/typecheck.torth, Row: 878, Column: 8
+;; [type_check_pop_bind] CAST | File: compiler/typecheck.torth, Row: 904, Column: 29
+;; [type_check_pop_bind] TAKE | File: compiler/typecheck.torth, Row: 905, Column: 3
+;; [type_check_pop_bind] POP_BIND type | File: compiler/typecheck.torth, Row: 905, Column: 8
   pop rbx
   mov [r14-32], rbx
-;; [type_check_pop_bind] IN | File: compiler/typecheck.torth, Row: 878, Column: 13
-;; [type_check_pop_bind] IF | File: compiler/typecheck.torth, Row: 881, Column: 3
-;; [type_check_pop_bind] PUSH_BIND type | File: compiler/typecheck.torth, Row: 881, Column: 6
+;; [type_check_pop_bind] IN | File: compiler/typecheck.torth, Row: 905, Column: 13
+;; [type_check_pop_bind] IF | File: compiler/typecheck.torth, Row: 908, Column: 3
+;; [type_check_pop_bind] PUSH_BIND type | File: compiler/typecheck.torth, Row: 908, Column: 6
   push QWORD [r14-32]
-;; [type_check_pop_bind] CAST | File: compiler/typecheck.torth, Row: 881, Column: 11
-;; [type_check_pop_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 881, Column: 21
+;; [type_check_pop_bind] CAST | File: compiler/typecheck.torth, Row: 908, Column: 11
+;; [type_check_pop_bind] PUSH_INT | File: compiler/typecheck.torth, Row: 908, Column: 21
   mov rax, -1
   push rax
-;; [type_check_pop_bind] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 881, Column: 24
+;; [type_check_pop_bind] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 908, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_pop_bind] DO | File: compiler/typecheck.torth, Row: 881, Column: 27
+;; [type_check_pop_bind] DO | File: compiler/typecheck.torth, Row: 908, Column: 27
   pop rax
   test rax, rax
   jz type_check_pop_bind_ENDIF20
-;; [type_check_pop_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 882, Column: 5
+;; [type_check_pop_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 909, Column: 5
   push QWORD [r14-16]
-;; [type_check_pop_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 882, Column: 16
+;; [type_check_pop_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 909, Column: 16
   push QWORD [r14-8]
-;; [type_check_pop_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 883, Column: 5
+;; [type_check_pop_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 910, Column: 5
   mov rsi, type_check_pop_bind_s17 ; Pointer to string
 
   push rsi
-;; [type_check_pop_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 884, Column: 5
+;; [type_check_pop_bind] PUSH_STR | File: compiler/typecheck.torth, Row: 911, Column: 5
   mov rsi, type_check_pop_bind_s18 ; Pointer to string
 
   push rsi
-;; [type_check_pop_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 884, Column: 28
+;; [type_check_pop_bind] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 911, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_pop_bind] ENDIF | File: compiler/typecheck.torth, Row: 885, Column: 3
+;; [type_check_pop_bind] ENDIF | File: compiler/typecheck.torth, Row: 912, Column: 3
 type_check_pop_bind_ENDIF20:
-;; [type_check_pop_bind] PUSH_BIND type | File: compiler/typecheck.torth, Row: 887, Column: 3
+;; [type_check_pop_bind] PUSH_BIND type | File: compiler/typecheck.torth, Row: 914, Column: 3
   push QWORD [r14-32]
-;; [type_check_pop_bind] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 887, Column: 8
+;; [type_check_pop_bind] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 914, Column: 8
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_pop_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 887, Column: 22
+;; [type_check_pop_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 914, Column: 22
   push QWORD [r14-8]
-;; [type_check_pop_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 887, Column: 28
+;; [type_check_pop_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 914, Column: 28
   call VG9rZW4udmFsdWU_
-;; [type_check_pop_bind] FUNCTION_CALL Variable.init | File: compiler/typecheck.torth, Row: 887, Column: 40
+;; [type_check_pop_bind] FUNCTION_CALL Variable.init | File: compiler/typecheck.torth, Row: 914, Column: 40
   call VmFyaWFibGUuaW5pdA__
-;; [type_check_pop_bind] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 888, Column: 3
+;; [type_check_pop_bind] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 915, Column: 3
   push QWORD [r14-24]
-;; [type_check_pop_bind] CAST | File: compiler/typecheck.torth, Row: 888, Column: 13
-;; [type_check_pop_bind] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 888, Column: 24
+;; [type_check_pop_bind] CAST | File: compiler/typecheck.torth, Row: 915, Column: 13
+;; [type_check_pop_bind] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 915, Column: 24
   call TGlzdC5hcHBlbmQ_
 ;; [type_check_pop_bind] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13588,35 +13802,35 @@ dHlwZV9jaGVja19wdXNoX2JpbmQ_:
 ;; [type_check_push_bind] Save the return address to return stack
   add r14, 32 ; 3 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_push_bind] POP_BIND token | File: compiler/typecheck.torth, Row: 898, Column: 3
+;; [type_check_push_bind] POP_BIND token | File: compiler/typecheck.torth, Row: 925, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_push_bind] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 899, Column: 3
+;; [type_check_push_bind] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 926, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_push_bind] POP_BIND variables | File: compiler/typecheck.torth, Row: 900, Column: 3
+;; [type_check_push_bind] POP_BIND variables | File: compiler/typecheck.torth, Row: 927, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_push_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 902, Column: 3
+;; [type_check_push_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 929, Column: 3
   push QWORD [r14-8]
-;; [type_check_push_bind] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 902, Column: 9
+;; [type_check_push_bind] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 929, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_push_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 903, Column: 3
+;; [type_check_push_bind] PUSH_BIND token | File: compiler/typecheck.torth, Row: 930, Column: 3
   push QWORD [r14-8]
-;; [type_check_push_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 903, Column: 9
+;; [type_check_push_bind] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 930, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_push_bind] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 903, Column: 21
+;; [type_check_push_bind] PUSH_BIND variables | File: compiler/typecheck.torth, Row: 930, Column: 21
   push QWORD [r14-24]
-;; [type_check_push_bind] FUNCTION_CALL List.get_variable | File: compiler/typecheck.torth, Row: 903, Column: 31
+;; [type_check_push_bind] FUNCTION_CALL List.get_variable | File: compiler/typecheck.torth, Row: 930, Column: 31
   call TGlzdC5nZXRfdmFyaWFibGU_
-;; [type_check_push_bind] FUNCTION_CALL Variable.type | File: compiler/typecheck.torth, Row: 903, Column: 49
+;; [type_check_push_bind] FUNCTION_CALL Variable.type | File: compiler/typecheck.torth, Row: 930, Column: 49
   call VmFyaWFibGUudHlwZQ__
-;; [type_check_push_bind] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 904, Column: 3
+;; [type_check_push_bind] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 931, Column: 3
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_push_bind] CAST | File: compiler/typecheck.torth, Row: 904, Column: 17
-;; [type_check_push_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 904, Column: 27
+;; [type_check_push_bind] CAST | File: compiler/typecheck.torth, Row: 931, Column: 17
+;; [type_check_push_bind] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 931, Column: 27
   push QWORD [r14-16]
-;; [type_check_push_bind] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 904, Column: 38
+;; [type_check_push_bind] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 931, Column: 38
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_push_bind] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13627,26 +13841,26 @@ dHlwZV9jaGVja19wdXNoX2Jvb2w_:
 ;; [type_check_push_bool] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_push_bool] POP_BIND token | File: compiler/typecheck.torth, Row: 912, Column: 31
+;; [type_check_push_bool] POP_BIND token | File: compiler/typecheck.torth, Row: 939, Column: 31
   pop rbx
   mov [r14-8], rbx
-;; [type_check_push_bool] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 912, Column: 43
+;; [type_check_push_bool] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 939, Column: 43
   pop rbx
   mov [r14-16], rbx
-;; [type_check_push_bool] PUSH_BIND token | File: compiler/typecheck.torth, Row: 913, Column: 3
+;; [type_check_push_bool] PUSH_BIND token | File: compiler/typecheck.torth, Row: 940, Column: 3
   push QWORD [r14-8]
-;; [type_check_push_bool] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 913, Column: 9
+;; [type_check_push_bool] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 940, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_push_bool] PUSH_STR | File: compiler/typecheck.torth, Row: 913, Column: 24
+;; [type_check_push_bool] PUSH_STR | File: compiler/typecheck.torth, Row: 940, Column: 24
   mov rsi, type_check_push_bool_s4 ; Pointer to string
 
   push rsi
-;; [type_check_push_bool] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 913, Column: 31
+;; [type_check_push_bool] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 940, Column: 31
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_push_bool] CAST | File: compiler/typecheck.torth, Row: 913, Column: 45
-;; [type_check_push_bool] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 914, Column: 3
+;; [type_check_push_bool] CAST | File: compiler/typecheck.torth, Row: 940, Column: 45
+;; [type_check_push_bool] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 941, Column: 3
   push QWORD [r14-16]
-;; [type_check_push_bool] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 914, Column: 14
+;; [type_check_push_bool] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 941, Column: 14
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_push_bool] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13657,26 +13871,26 @@ dHlwZV9jaGVja19wdXNoX2NoYXI_:
 ;; [type_check_push_char] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_push_char] POP_BIND token | File: compiler/typecheck.torth, Row: 922, Column: 31
+;; [type_check_push_char] POP_BIND token | File: compiler/typecheck.torth, Row: 949, Column: 31
   pop rbx
   mov [r14-8], rbx
-;; [type_check_push_char] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 922, Column: 43
+;; [type_check_push_char] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 949, Column: 43
   pop rbx
   mov [r14-16], rbx
-;; [type_check_push_char] PUSH_BIND token | File: compiler/typecheck.torth, Row: 923, Column: 3
+;; [type_check_push_char] PUSH_BIND token | File: compiler/typecheck.torth, Row: 950, Column: 3
   push QWORD [r14-8]
-;; [type_check_push_char] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 923, Column: 9
+;; [type_check_push_char] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 950, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_push_char] PUSH_STR | File: compiler/typecheck.torth, Row: 923, Column: 24
+;; [type_check_push_char] PUSH_STR | File: compiler/typecheck.torth, Row: 950, Column: 24
   mov rsi, type_check_push_char_s4 ; Pointer to string
 
   push rsi
-;; [type_check_push_char] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 923, Column: 31
+;; [type_check_push_char] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 950, Column: 31
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_push_char] CAST | File: compiler/typecheck.torth, Row: 923, Column: 45
-;; [type_check_push_char] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 924, Column: 3
+;; [type_check_push_char] CAST | File: compiler/typecheck.torth, Row: 950, Column: 45
+;; [type_check_push_char] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 951, Column: 3
   push QWORD [r14-16]
-;; [type_check_push_char] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 924, Column: 14
+;; [type_check_push_char] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 951, Column: 14
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_push_char] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13687,26 +13901,26 @@ dHlwZV9jaGVja19wdXNoX2ludA__:
 ;; [type_check_push_int] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_push_int] POP_BIND token | File: compiler/typecheck.torth, Row: 932, Column: 30
+;; [type_check_push_int] POP_BIND token | File: compiler/typecheck.torth, Row: 959, Column: 30
   pop rbx
   mov [r14-8], rbx
-;; [type_check_push_int] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 932, Column: 42
+;; [type_check_push_int] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 959, Column: 42
   pop rbx
   mov [r14-16], rbx
-;; [type_check_push_int] PUSH_BIND token | File: compiler/typecheck.torth, Row: 933, Column: 3
+;; [type_check_push_int] PUSH_BIND token | File: compiler/typecheck.torth, Row: 960, Column: 3
   push QWORD [r14-8]
-;; [type_check_push_int] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 933, Column: 9
+;; [type_check_push_int] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 960, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_push_int] PUSH_STR | File: compiler/typecheck.torth, Row: 933, Column: 24
+;; [type_check_push_int] PUSH_STR | File: compiler/typecheck.torth, Row: 960, Column: 24
   mov rsi, type_check_push_int_s4 ; Pointer to string
 
   push rsi
-;; [type_check_push_int] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 933, Column: 30
+;; [type_check_push_int] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 960, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_push_int] CAST | File: compiler/typecheck.torth, Row: 933, Column: 44
-;; [type_check_push_int] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 934, Column: 3
+;; [type_check_push_int] CAST | File: compiler/typecheck.torth, Row: 960, Column: 44
+;; [type_check_push_int] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 961, Column: 3
   push QWORD [r14-16]
-;; [type_check_push_int] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 934, Column: 14
+;; [type_check_push_int] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 961, Column: 14
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_push_int] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13717,26 +13931,26 @@ dHlwZV9jaGVja19wdXNoX3B0cg__:
 ;; [type_check_push_ptr] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_push_ptr] POP_BIND token | File: compiler/typecheck.torth, Row: 942, Column: 30
+;; [type_check_push_ptr] POP_BIND token | File: compiler/typecheck.torth, Row: 969, Column: 30
   pop rbx
   mov [r14-8], rbx
-;; [type_check_push_ptr] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 942, Column: 42
+;; [type_check_push_ptr] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 969, Column: 42
   pop rbx
   mov [r14-16], rbx
-;; [type_check_push_ptr] PUSH_BIND token | File: compiler/typecheck.torth, Row: 943, Column: 3
+;; [type_check_push_ptr] PUSH_BIND token | File: compiler/typecheck.torth, Row: 970, Column: 3
   push QWORD [r14-8]
-;; [type_check_push_ptr] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 943, Column: 9
+;; [type_check_push_ptr] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 970, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_push_ptr] PUSH_STR | File: compiler/typecheck.torth, Row: 943, Column: 24
+;; [type_check_push_ptr] PUSH_STR | File: compiler/typecheck.torth, Row: 970, Column: 24
   mov rsi, type_check_push_ptr_s4 ; Pointer to string
 
   push rsi
-;; [type_check_push_ptr] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 943, Column: 30
+;; [type_check_push_ptr] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 970, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_push_ptr] CAST | File: compiler/typecheck.torth, Row: 943, Column: 44
-;; [type_check_push_ptr] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 944, Column: 3
+;; [type_check_push_ptr] CAST | File: compiler/typecheck.torth, Row: 970, Column: 44
+;; [type_check_push_ptr] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 971, Column: 3
   push QWORD [r14-16]
-;; [type_check_push_ptr] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 944, Column: 14
+;; [type_check_push_ptr] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 971, Column: 14
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_push_ptr] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13747,26 +13961,26 @@ dHlwZV9jaGVja19wdXNoX3N0cg__:
 ;; [type_check_push_str] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_push_str] POP_BIND token | File: compiler/typecheck.torth, Row: 952, Column: 30
+;; [type_check_push_str] POP_BIND token | File: compiler/typecheck.torth, Row: 979, Column: 30
   pop rbx
   mov [r14-8], rbx
-;; [type_check_push_str] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 952, Column: 42
+;; [type_check_push_str] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 979, Column: 42
   pop rbx
   mov [r14-16], rbx
-;; [type_check_push_str] PUSH_BIND token | File: compiler/typecheck.torth, Row: 953, Column: 3
+;; [type_check_push_str] PUSH_BIND token | File: compiler/typecheck.torth, Row: 980, Column: 3
   push QWORD [r14-8]
-;; [type_check_push_str] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 953, Column: 9
+;; [type_check_push_str] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 980, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_push_str] PUSH_STR | File: compiler/typecheck.torth, Row: 953, Column: 24
+;; [type_check_push_str] PUSH_STR | File: compiler/typecheck.torth, Row: 980, Column: 24
   mov rsi, type_check_push_str_s4 ; Pointer to string
 
   push rsi
-;; [type_check_push_str] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 953, Column: 30
+;; [type_check_push_str] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 980, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_push_str] CAST | File: compiler/typecheck.torth, Row: 953, Column: 44
-;; [type_check_push_str] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 954, Column: 3
+;; [type_check_push_str] CAST | File: compiler/typecheck.torth, Row: 980, Column: 44
+;; [type_check_push_str] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 981, Column: 3
   push QWORD [r14-16]
-;; [type_check_push_str] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 954, Column: 14
+;; [type_check_push_str] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 981, Column: 14
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_push_str] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13777,101 +13991,101 @@ dHlwZV9jaGVja19yZXR1cm4_:
 ;; [type_check_return] Save the return address to return stack
   add r14, 64 ; 7 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_return] POP_BIND op | File: compiler/typecheck.torth, Row: 965, Column: 3
+;; [type_check_return] POP_BIND op | File: compiler/typecheck.torth, Row: 992, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [type_check_return] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 966, Column: 3
+;; [type_check_return] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 993, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [type_check_return] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 967, Column: 3
+;; [type_check_return] POP_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 994, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [type_check_return] PUSH_BIND op | File: compiler/typecheck.torth, Row: 969, Column: 3
+;; [type_check_return] PUSH_BIND op | File: compiler/typecheck.torth, Row: 996, Column: 3
   push QWORD [r14-8]
-;; [type_check_return] FUNCTION_CALL Op.func | File: compiler/typecheck.torth, Row: 969, Column: 7
+;; [type_check_return] FUNCTION_CALL Op.func | File: compiler/typecheck.torth, Row: 996, Column: 7
   call T3AuZnVuYw__
-;; [type_check_return] INTRINSIC dup | File: compiler/typecheck.torth, Row: 970, Column: 3
+;; [type_check_return] INTRINSIC dup | File: compiler/typecheck.torth, Row: 997, Column: 3
   push QWORD [rsp]
-;; [type_check_return] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 970, Column: 7
+;; [type_check_return] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 997, Column: 7
   call RnVuYy5zaWduYXR1cmU_
-;; [type_check_return] INTRINSIC dup | File: compiler/typecheck.torth, Row: 971, Column: 3
+;; [type_check_return] INTRINSIC dup | File: compiler/typecheck.torth, Row: 998, Column: 3
   push QWORD [rsp]
-;; [type_check_return] FUNCTION_CALL Signature.returns | File: compiler/typecheck.torth, Row: 971, Column: 7
+;; [type_check_return] FUNCTION_CALL Signature.returns | File: compiler/typecheck.torth, Row: 998, Column: 7
   call U2lnbmF0dXJlLnJldHVybnM_
-;; [type_check_return] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 972, Column: 3
+;; [type_check_return] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 999, Column: 3
   push QWORD [r14-16]
-;; [type_check_return] FUNCTION_CALL TypeStack.get_types | File: compiler/typecheck.torth, Row: 972, Column: 14
+;; [type_check_return] FUNCTION_CALL TypeStack.get_types | File: compiler/typecheck.torth, Row: 999, Column: 14
   call VHlwZVN0YWNrLmdldF90eXBlcw__
-;; [type_check_return] TAKE | File: compiler/typecheck.torth, Row: 973, Column: 3
-;; [type_check_return] POP_BIND stack_types | File: compiler/typecheck.torth, Row: 974, Column: 5
+;; [type_check_return] TAKE | File: compiler/typecheck.torth, Row: 1000, Column: 3
+;; [type_check_return] POP_BIND stack_types | File: compiler/typecheck.torth, Row: 1001, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [type_check_return] POP_BIND return_types | File: compiler/typecheck.torth, Row: 975, Column: 5
+;; [type_check_return] POP_BIND return_types | File: compiler/typecheck.torth, Row: 1002, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [type_check_return] POP_BIND signature | File: compiler/typecheck.torth, Row: 976, Column: 5
+;; [type_check_return] POP_BIND signature | File: compiler/typecheck.torth, Row: 1003, Column: 5
   pop rbx
   mov [r14-48], rbx
-;; [type_check_return] POP_BIND func | File: compiler/typecheck.torth, Row: 977, Column: 5
+;; [type_check_return] POP_BIND func | File: compiler/typecheck.torth, Row: 1004, Column: 5
   pop rbx
   mov [r14-56], rbx
-;; [type_check_return] IN | File: compiler/typecheck.torth, Row: 978, Column: 3
-;; [type_check_return] IF | File: compiler/typecheck.torth, Row: 981, Column: 3
-;; [type_check_return] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 981, Column: 6
+;; [type_check_return] IN | File: compiler/typecheck.torth, Row: 1005, Column: 3
+;; [type_check_return] IF | File: compiler/typecheck.torth, Row: 1008, Column: 3
+;; [type_check_return] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 1008, Column: 6
   push QWORD [r14-40]
-;; [type_check_return] PUSH_BIND stack_types | File: compiler/typecheck.torth, Row: 981, Column: 19
+;; [type_check_return] PUSH_BIND stack_types | File: compiler/typecheck.torth, Row: 1008, Column: 19
   push QWORD [r14-32]
-;; [type_check_return] FUNCTION_CALL List.streq | File: compiler/typecheck.torth, Row: 981, Column: 31
+;; [type_check_return] FUNCTION_CALL List.streq | File: compiler/typecheck.torth, Row: 1008, Column: 31
   call TGlzdC5zdHJlcQ__
-;; [type_check_return] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 981, Column: 42
+;; [type_check_return] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1008, Column: 42
   call bm90
-;; [type_check_return] DO | File: compiler/typecheck.torth, Row: 981, Column: 46
+;; [type_check_return] DO | File: compiler/typecheck.torth, Row: 1008, Column: 46
   pop rax
   test rax, rax
   jz type_check_return_ENDIF39
-;; [type_check_return] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 982, Column: 5
+;; [type_check_return] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1009, Column: 5
   push QWORD [r14-16]
-;; [type_check_return] PUSH_BIND op | File: compiler/typecheck.torth, Row: 982, Column: 16
+;; [type_check_return] PUSH_BIND op | File: compiler/typecheck.torth, Row: 1009, Column: 16
   push QWORD [r14-8]
-;; [type_check_return] FUNCTION_CALL Op.token | File: compiler/typecheck.torth, Row: 982, Column: 19
+;; [type_check_return] FUNCTION_CALL Op.token | File: compiler/typecheck.torth, Row: 1009, Column: 19
   call T3AudG9rZW4_
-;; [type_check_return] PUSH_STR | File: compiler/typecheck.torth, Row: 983, Column: 5
+;; [type_check_return] PUSH_STR | File: compiler/typecheck.torth, Row: 1010, Column: 5
   mov rsi, type_check_return_s26 ; Pointer to string
 
   push rsi
-;; [type_check_return] PUSH_BIND func | File: compiler/typecheck.torth, Row: 984, Column: 5
+;; [type_check_return] PUSH_BIND func | File: compiler/typecheck.torth, Row: 1011, Column: 5
   push QWORD [r14-56]
-;; [type_check_return] FUNCTION_CALL Func.name | File: compiler/typecheck.torth, Row: 984, Column: 10
+;; [type_check_return] FUNCTION_CALL Func.name | File: compiler/typecheck.torth, Row: 1011, Column: 10
   call RnVuYy5uYW1l
-;; [type_check_return] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 984, Column: 31
+;; [type_check_return] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1011, Column: 31
   call c3RyLmNhdA__
-;; [type_check_return] PUSH_STR | File: compiler/typecheck.torth, Row: 985, Column: 5
+;; [type_check_return] PUSH_STR | File: compiler/typecheck.torth, Row: 1012, Column: 5
   mov rsi, type_check_return_s30 ; Pointer to string
 
   push rsi
-;; [type_check_return] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 985, Column: 31
+;; [type_check_return] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1012, Column: 31
   call c3RyLmNhdA__
-;; [type_check_return] PUSH_STR | File: compiler/typecheck.torth, Row: 986, Column: 5
+;; [type_check_return] PUSH_STR | File: compiler/typecheck.torth, Row: 1013, Column: 5
   mov rsi, type_check_return_s32 ; Pointer to string
 
   push rsi
-;; [type_check_return] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 986, Column: 31
+;; [type_check_return] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1013, Column: 31
   call c3RyLmNhdA__
-;; [type_check_return] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 987, Column: 5
+;; [type_check_return] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 1014, Column: 5
   push QWORD [r14-48]
-;; [type_check_return] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 987, Column: 15
+;; [type_check_return] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 1014, Column: 15
   call U2lnbmF0dXJlLnJlcHI_
-;; [type_check_return] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 987, Column: 31
+;; [type_check_return] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1014, Column: 31
   call c3RyLmNhdA__
-;; [type_check_return] PUSH_STR | File: compiler/typecheck.torth, Row: 988, Column: 5
+;; [type_check_return] PUSH_STR | File: compiler/typecheck.torth, Row: 1015, Column: 5
   mov rsi, type_check_return_s37 ; Pointer to string
 
   push rsi
-;; [type_check_return] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 988, Column: 32
+;; [type_check_return] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1015, Column: 32
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_return] ENDIF | File: compiler/typecheck.torth, Row: 989, Column: 3
+;; [type_check_return] ENDIF | File: compiler/typecheck.torth, Row: 1016, Column: 3
 type_check_return_ENDIF39:
-;; [type_check_return] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 990, Column: 3
+;; [type_check_return] PUSH_BIND if_block_return_stack | File: compiler/typecheck.torth, Row: 1017, Column: 3
   push QWORD [r14-24]
 ;; [type_check_return] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13882,85 +14096,85 @@ dHlwZV9jaGVja190eXBlb2Y_:
 ;; [type_check_typeof] Save the return address to return stack
   add r14, 40 ; 4 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_typeof] POP_BIND op | File: compiler/typecheck.torth, Row: 998, Column: 28
+;; [type_check_typeof] POP_BIND op | File: compiler/typecheck.torth, Row: 1025, Column: 28
   pop rbx
   mov [r14-8], rbx
-;; [type_check_typeof] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 998, Column: 34
+;; [type_check_typeof] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1025, Column: 34
   pop rbx
   mov [r14-16], rbx
-;; [type_check_typeof] PUSH_BIND op | File: compiler/typecheck.torth, Row: 999, Column: 3
+;; [type_check_typeof] PUSH_BIND op | File: compiler/typecheck.torth, Row: 1026, Column: 3
   push QWORD [r14-8]
-;; [type_check_typeof] FUNCTION_CALL Op.token | File: compiler/typecheck.torth, Row: 999, Column: 6
+;; [type_check_typeof] FUNCTION_CALL Op.token | File: compiler/typecheck.torth, Row: 1026, Column: 6
   call T3AudG9rZW4_
-;; [type_check_typeof] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1000, Column: 3
+;; [type_check_typeof] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1027, Column: 3
   push QWORD [r14-16]
-;; [type_check_typeof] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1000, Column: 14
+;; [type_check_typeof] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1027, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_typeof] CAST | File: compiler/typecheck.torth, Row: 1000, Column: 29
-;; [type_check_typeof] TAKE | File: compiler/typecheck.torth, Row: 1001, Column: 3
-;; [type_check_typeof] POP_BIND type | File: compiler/typecheck.torth, Row: 1001, Column: 8
+;; [type_check_typeof] CAST | File: compiler/typecheck.torth, Row: 1027, Column: 29
+;; [type_check_typeof] TAKE | File: compiler/typecheck.torth, Row: 1028, Column: 3
+;; [type_check_typeof] POP_BIND type | File: compiler/typecheck.torth, Row: 1028, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_typeof] POP_BIND token | File: compiler/typecheck.torth, Row: 1001, Column: 13
+;; [type_check_typeof] POP_BIND token | File: compiler/typecheck.torth, Row: 1028, Column: 13
   pop rbx
   mov [r14-32], rbx
-;; [type_check_typeof] IN | File: compiler/typecheck.torth, Row: 1001, Column: 19
-;; [type_check_typeof] IF | File: compiler/typecheck.torth, Row: 1004, Column: 3
-;; [type_check_typeof] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1004, Column: 6
+;; [type_check_typeof] IN | File: compiler/typecheck.torth, Row: 1028, Column: 19
+;; [type_check_typeof] IF | File: compiler/typecheck.torth, Row: 1031, Column: 3
+;; [type_check_typeof] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1031, Column: 6
   push QWORD [r14-24]
-;; [type_check_typeof] CAST | File: compiler/typecheck.torth, Row: 1004, Column: 11
-;; [type_check_typeof] PUSH_INT | File: compiler/typecheck.torth, Row: 1004, Column: 21
+;; [type_check_typeof] CAST | File: compiler/typecheck.torth, Row: 1031, Column: 11
+;; [type_check_typeof] PUSH_INT | File: compiler/typecheck.torth, Row: 1031, Column: 21
   mov rax, -1
   push rax
-;; [type_check_typeof] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1004, Column: 24
+;; [type_check_typeof] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1031, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_typeof] DO | File: compiler/typecheck.torth, Row: 1004, Column: 27
+;; [type_check_typeof] DO | File: compiler/typecheck.torth, Row: 1031, Column: 27
   pop rax
   test rax, rax
   jz type_check_typeof_ENDIF22
-;; [type_check_typeof] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1005, Column: 5
+;; [type_check_typeof] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1032, Column: 5
   push QWORD [r14-16]
-;; [type_check_typeof] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1005, Column: 16
+;; [type_check_typeof] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1032, Column: 16
   push QWORD [r14-32]
-;; [type_check_typeof] PUSH_STR | File: compiler/typecheck.torth, Row: 1006, Column: 5
+;; [type_check_typeof] PUSH_STR | File: compiler/typecheck.torth, Row: 1033, Column: 5
   mov rsi, type_check_typeof_s19 ; Pointer to string
 
   push rsi
-;; [type_check_typeof] PUSH_STR | File: compiler/typecheck.torth, Row: 1007, Column: 5
+;; [type_check_typeof] PUSH_STR | File: compiler/typecheck.torth, Row: 1034, Column: 5
   mov rsi, type_check_typeof_s20 ; Pointer to string
 
   push rsi
-;; [type_check_typeof] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1007, Column: 28
+;; [type_check_typeof] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1034, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_typeof] ENDIF | File: compiler/typecheck.torth, Row: 1008, Column: 3
+;; [type_check_typeof] ENDIF | File: compiler/typecheck.torth, Row: 1035, Column: 3
 type_check_typeof_ENDIF22:
-;; [type_check_typeof] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1011, Column: 3
+;; [type_check_typeof] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1038, Column: 3
   push QWORD [r14-24]
-;; [type_check_typeof] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1011, Column: 8
+;; [type_check_typeof] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1038, Column: 8
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_typeof] PUSH_BIND op | File: compiler/typecheck.torth, Row: 1011, Column: 22
+;; [type_check_typeof] PUSH_BIND op | File: compiler/typecheck.torth, Row: 1038, Column: 22
   push QWORD [r14-8]
-;; [type_check_typeof] FUNCTION_CALL Op->stack_typeof | File: compiler/typecheck.torth, Row: 1011, Column: 25
+;; [type_check_typeof] FUNCTION_CALL Op->stack_typeof | File: compiler/typecheck.torth, Row: 1038, Column: 25
   call T3AtPnN0YWNrX3R5cGVvZg__
-;; [type_check_typeof] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1014, Column: 3
+;; [type_check_typeof] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1041, Column: 3
   push QWORD [r14-32]
-;; [type_check_typeof] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1014, Column: 9
+;; [type_check_typeof] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1041, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_typeof] PUSH_STR | File: compiler/typecheck.torth, Row: 1014, Column: 24
+;; [type_check_typeof] PUSH_STR | File: compiler/typecheck.torth, Row: 1041, Column: 24
   mov rsi, type_check_typeof_s29 ; Pointer to string
 
   push rsi
-;; [type_check_typeof] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1014, Column: 30
+;; [type_check_typeof] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1041, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_typeof] CAST | File: compiler/typecheck.torth, Row: 1014, Column: 44
-;; [type_check_typeof] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1014, Column: 54
+;; [type_check_typeof] CAST | File: compiler/typecheck.torth, Row: 1041, Column: 44
+;; [type_check_typeof] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1041, Column: 54
   push QWORD [r14-16]
-;; [type_check_typeof] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1014, Column: 65
+;; [type_check_typeof] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1041, Column: 65
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_typeof] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -13971,55 +14185,55 @@ dHlwZV9jaGVja19kcm9w:
 ;; [type_check_drop] Save the return address to return stack
   add r14, 32 ; 3 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_drop] POP_BIND token | File: compiler/typecheck.torth, Row: 1066, Column: 26
+;; [type_check_drop] POP_BIND token | File: compiler/typecheck.torth, Row: 1092, Column: 26
   pop rbx
   mov [r14-8], rbx
-;; [type_check_drop] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1066, Column: 38
+;; [type_check_drop] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1092, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [type_check_drop] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1068, Column: 3
+;; [type_check_drop] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1094, Column: 3
   push QWORD [r14-16]
-;; [type_check_drop] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1068, Column: 14
+;; [type_check_drop] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1094, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_drop] CAST | File: compiler/typecheck.torth, Row: 1068, Column: 29
-;; [type_check_drop] TAKE | File: compiler/typecheck.torth, Row: 1069, Column: 3
-;; [type_check_drop] POP_BIND type | File: compiler/typecheck.torth, Row: 1069, Column: 8
+;; [type_check_drop] CAST | File: compiler/typecheck.torth, Row: 1094, Column: 29
+;; [type_check_drop] TAKE | File: compiler/typecheck.torth, Row: 1095, Column: 3
+;; [type_check_drop] POP_BIND type | File: compiler/typecheck.torth, Row: 1095, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_drop] IN | File: compiler/typecheck.torth, Row: 1069, Column: 13
-;; [type_check_drop] IF | File: compiler/typecheck.torth, Row: 1072, Column: 3
-;; [type_check_drop] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1072, Column: 6
+;; [type_check_drop] IN | File: compiler/typecheck.torth, Row: 1095, Column: 13
+;; [type_check_drop] IF | File: compiler/typecheck.torth, Row: 1098, Column: 3
+;; [type_check_drop] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1098, Column: 6
   push QWORD [r14-24]
-;; [type_check_drop] CAST | File: compiler/typecheck.torth, Row: 1072, Column: 11
-;; [type_check_drop] PUSH_INT | File: compiler/typecheck.torth, Row: 1072, Column: 21
+;; [type_check_drop] CAST | File: compiler/typecheck.torth, Row: 1098, Column: 11
+;; [type_check_drop] PUSH_INT | File: compiler/typecheck.torth, Row: 1098, Column: 21
   mov rax, -1
   push rax
-;; [type_check_drop] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1072, Column: 24
+;; [type_check_drop] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1098, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_drop] DO | File: compiler/typecheck.torth, Row: 1072, Column: 27
+;; [type_check_drop] DO | File: compiler/typecheck.torth, Row: 1098, Column: 27
   pop rax
   test rax, rax
   jz type_check_drop_ENDIF19
-;; [type_check_drop] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1073, Column: 5
+;; [type_check_drop] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1099, Column: 5
   push QWORD [r14-16]
-;; [type_check_drop] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1073, Column: 16
+;; [type_check_drop] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1099, Column: 16
   push QWORD [r14-8]
-;; [type_check_drop] PUSH_STR | File: compiler/typecheck.torth, Row: 1074, Column: 5
+;; [type_check_drop] PUSH_STR | File: compiler/typecheck.torth, Row: 1100, Column: 5
   mov rsi, type_check_drop_s16 ; Pointer to string
 
   push rsi
-;; [type_check_drop] PUSH_STR | File: compiler/typecheck.torth, Row: 1075, Column: 5
+;; [type_check_drop] PUSH_STR | File: compiler/typecheck.torth, Row: 1101, Column: 5
   mov rsi, type_check_drop_s17 ; Pointer to string
 
   push rsi
-;; [type_check_drop] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1075, Column: 28
+;; [type_check_drop] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1101, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_drop] ENDIF | File: compiler/typecheck.torth, Row: 1076, Column: 3
+;; [type_check_drop] ENDIF | File: compiler/typecheck.torth, Row: 1102, Column: 3
 type_check_drop_ENDIF19:
 ;; [type_check_drop] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -14030,69 +14244,69 @@ dHlwZV9jaGVja19kdXA_:
 ;; [type_check_dup] Save the return address to return stack
   add r14, 32 ; 3 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_dup] POP_BIND token | File: compiler/typecheck.torth, Row: 1084, Column: 25
+;; [type_check_dup] POP_BIND token | File: compiler/typecheck.torth, Row: 1110, Column: 25
   pop rbx
   mov [r14-8], rbx
-;; [type_check_dup] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1084, Column: 37
+;; [type_check_dup] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1110, Column: 37
   pop rbx
   mov [r14-16], rbx
-;; [type_check_dup] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1086, Column: 3
+;; [type_check_dup] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1112, Column: 3
   push QWORD [r14-16]
-;; [type_check_dup] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1086, Column: 14
+;; [type_check_dup] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1112, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_dup] CAST | File: compiler/typecheck.torth, Row: 1086, Column: 29
-;; [type_check_dup] TAKE | File: compiler/typecheck.torth, Row: 1087, Column: 3
-;; [type_check_dup] POP_BIND type | File: compiler/typecheck.torth, Row: 1087, Column: 8
+;; [type_check_dup] CAST | File: compiler/typecheck.torth, Row: 1112, Column: 29
+;; [type_check_dup] TAKE | File: compiler/typecheck.torth, Row: 1113, Column: 3
+;; [type_check_dup] POP_BIND type | File: compiler/typecheck.torth, Row: 1113, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_dup] IN | File: compiler/typecheck.torth, Row: 1087, Column: 13
-;; [type_check_dup] IF | File: compiler/typecheck.torth, Row: 1090, Column: 3
-;; [type_check_dup] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1090, Column: 6
+;; [type_check_dup] IN | File: compiler/typecheck.torth, Row: 1113, Column: 13
+;; [type_check_dup] IF | File: compiler/typecheck.torth, Row: 1116, Column: 3
+;; [type_check_dup] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1116, Column: 6
   push QWORD [r14-24]
-;; [type_check_dup] CAST | File: compiler/typecheck.torth, Row: 1090, Column: 11
-;; [type_check_dup] PUSH_INT | File: compiler/typecheck.torth, Row: 1090, Column: 21
+;; [type_check_dup] CAST | File: compiler/typecheck.torth, Row: 1116, Column: 11
+;; [type_check_dup] PUSH_INT | File: compiler/typecheck.torth, Row: 1116, Column: 21
   mov rax, -1
   push rax
-;; [type_check_dup] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1090, Column: 24
+;; [type_check_dup] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1116, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_dup] DO | File: compiler/typecheck.torth, Row: 1090, Column: 27
+;; [type_check_dup] DO | File: compiler/typecheck.torth, Row: 1116, Column: 27
   pop rax
   test rax, rax
   jz type_check_dup_ENDIF19
-;; [type_check_dup] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1091, Column: 5
+;; [type_check_dup] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1117, Column: 5
   push QWORD [r14-16]
-;; [type_check_dup] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1091, Column: 16
+;; [type_check_dup] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1117, Column: 16
   push QWORD [r14-8]
-;; [type_check_dup] PUSH_STR | File: compiler/typecheck.torth, Row: 1092, Column: 5
+;; [type_check_dup] PUSH_STR | File: compiler/typecheck.torth, Row: 1118, Column: 5
   mov rsi, type_check_dup_s16 ; Pointer to string
 
   push rsi
-;; [type_check_dup] PUSH_STR | File: compiler/typecheck.torth, Row: 1093, Column: 5
+;; [type_check_dup] PUSH_STR | File: compiler/typecheck.torth, Row: 1119, Column: 5
   mov rsi, type_check_dup_s17 ; Pointer to string
 
   push rsi
-;; [type_check_dup] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1093, Column: 28
+;; [type_check_dup] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1119, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_dup] ENDIF | File: compiler/typecheck.torth, Row: 1094, Column: 3
+;; [type_check_dup] ENDIF | File: compiler/typecheck.torth, Row: 1120, Column: 3
 type_check_dup_ENDIF19:
-;; [type_check_dup] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1097, Column: 3
+;; [type_check_dup] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1123, Column: 3
   push QWORD [r14-24]
-;; [type_check_dup] CAST | File: compiler/typecheck.torth, Row: 1097, Column: 8
-;; [type_check_dup] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1097, Column: 18
+;; [type_check_dup] CAST | File: compiler/typecheck.torth, Row: 1123, Column: 8
+;; [type_check_dup] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1123, Column: 18
   push QWORD [r14-16]
-;; [type_check_dup] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1097, Column: 29
+;; [type_check_dup] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1123, Column: 29
   call TGlua2VkTGlzdC5wdXNo
-;; [type_check_dup] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1098, Column: 3
+;; [type_check_dup] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1124, Column: 3
   push QWORD [r14-24]
-;; [type_check_dup] CAST | File: compiler/typecheck.torth, Row: 1098, Column: 8
-;; [type_check_dup] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1098, Column: 18
+;; [type_check_dup] CAST | File: compiler/typecheck.torth, Row: 1124, Column: 8
+;; [type_check_dup] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1124, Column: 18
   push QWORD [r14-16]
-;; [type_check_dup] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1098, Column: 29
+;; [type_check_dup] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1124, Column: 29
   call TGlua2VkTGlzdC5wdXNo
 ;; [type_check_dup] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -14103,401 +14317,407 @@ dHlwZV9jaGVja19leGVj:
 ;; [type_check_exec] Save the return address to return stack
   add r14, 96 ; 11 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_exec] POP_BIND token | File: compiler/typecheck.torth, Row: 1106, Column: 26
+;; [type_check_exec] POP_BIND token | File: compiler/typecheck.torth, Row: 1132, Column: 26
   pop rbx
   mov [r14-8], rbx
-;; [type_check_exec] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1106, Column: 38
+;; [type_check_exec] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1132, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1108, Column: 3
+;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1134, Column: 3
   push QWORD [r14-16]
-;; [type_check_exec] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1108, Column: 14
+;; [type_check_exec] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1134, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1109, Column: 3
+;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1135, Column: 3
   push QWORD [r14-16]
-;; [type_check_exec] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1109, Column: 14
+;; [type_check_exec] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1135, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_exec] CAST | File: compiler/typecheck.torth, Row: 1109, Column: 29
-;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1110, Column: 3
-;; [type_check_exec] POP_BIND type | File: compiler/typecheck.torth, Row: 1110, Column: 8
+;; [type_check_exec] CAST | File: compiler/typecheck.torth, Row: 1135, Column: 29
+;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1136, Column: 3
+;; [type_check_exec] POP_BIND type | File: compiler/typecheck.torth, Row: 1136, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_exec] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1110, Column: 13
+;; [type_check_exec] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1136, Column: 13
   pop rbx
   mov [r14-32], rbx
-;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1110, Column: 24
-;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1113, Column: 3
-;; [type_check_exec] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1113, Column: 6
+;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1136, Column: 24
+;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1139, Column: 3
+;; [type_check_exec] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1139, Column: 6
   push QWORD [r14-24]
-;; [type_check_exec] CAST | File: compiler/typecheck.torth, Row: 1113, Column: 11
-;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1113, Column: 21
+;; [type_check_exec] CAST | File: compiler/typecheck.torth, Row: 1139, Column: 11
+;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1139, Column: 21
   mov rax, -1
   push rax
-;; [type_check_exec] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1113, Column: 24
+;; [type_check_exec] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1139, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1113, Column: 27
+;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1139, Column: 27
   pop rax
   test rax, rax
   jz type_check_exec_ENDIF22
-;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1114, Column: 5
+;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1140, Column: 5
   push QWORD [r14-32]
-;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1114, Column: 16
+;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1140, Column: 16
   push QWORD [r14-8]
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1115, Column: 5
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1141, Column: 5
   mov rsi, type_check_exec_s19 ; Pointer to string
 
   push rsi
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1116, Column: 5
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1142, Column: 5
   mov rsi, type_check_exec_s20 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1116, Column: 28
+;; [type_check_exec] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1142, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1117, Column: 3
+;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1143, Column: 3
 type_check_exec_ENDIF22:
-;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1119, Column: 3
-;; [type_check_exec] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1119, Column: 6
+;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1145, Column: 3
+;; [type_check_exec] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1145, Column: 6
   push QWORD [r14-24]
-;; [type_check_exec] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1119, Column: 11
+;; [type_check_exec] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1145, Column: 11
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1119, Column: 25
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1145, Column: 25
   mov rsi, type_check_exec_s26 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL str.startswith | File: compiler/typecheck.torth, Row: 1119, Column: 31
+;; [type_check_exec] FUNCTION_CALL str.startswith | File: compiler/typecheck.torth, Row: 1145, Column: 31
   call c3RyLnN0YXJ0c3dpdGg_
-;; [type_check_exec] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1119, Column: 46
+;; [type_check_exec] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1145, Column: 46
   call bm90
-;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1119, Column: 50
+;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1145, Column: 50
   pop rax
   test rax, rax
   jz type_check_exec_ENDIF42
-;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1120, Column: 5
+;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1146, Column: 5
   push QWORD [r14-32]
-;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1120, Column: 16
+;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1146, Column: 16
   push QWORD [r14-8]
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1121, Column: 5
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1147, Column: 5
   mov rsi, type_check_exec_s32 ; Pointer to string
 
   push rsi
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1122, Column: 5
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1148, Column: 5
   mov rsi, type_check_exec_s33 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1122, Column: 41
+;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1148, Column: 41
   call c3RyLmNhdA__
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1123, Column: 5
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1149, Column: 5
   mov rsi, type_check_exec_s35 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1123, Column: 41
+;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1149, Column: 41
   call c3RyLmNhdA__
-;; [type_check_exec] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1124, Column: 5
+;; [type_check_exec] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1150, Column: 5
   push QWORD [r14-24]
-;; [type_check_exec] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1124, Column: 10
+;; [type_check_exec] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1150, Column: 10
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1124, Column: 41
+;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1150, Column: 41
   call c3RyLmNhdA__
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1125, Column: 5
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1151, Column: 5
   mov rsi, type_check_exec_s40 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1125, Column: 19
+;; [type_check_exec] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1151, Column: 19
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1126, Column: 3
+;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1152, Column: 3
 type_check_exec_ENDIF42:
-;; [type_check_exec] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1128, Column: 3
+;; [type_check_exec] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1154, Column: 3
   push QWORD [r14-24]
-;; [type_check_exec] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1128, Column: 8
+;; [type_check_exec] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1154, Column: 8
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_exec] FUNCTION_CALL parse_signature_from_fn_ptr | File: compiler/typecheck.torth, Row: 1128, Column: 22
+;; [type_check_exec] FUNCTION_CALL parse_signature_from_fn_ptr | File: compiler/typecheck.torth, Row: 1154, Column: 22
   call cGFyc2Vfc2lnbmF0dXJlX2Zyb21fZm5fcHRy
-;; [type_check_exec] INTRINSIC dup | File: compiler/typecheck.torth, Row: 1129, Column: 3
+;; [type_check_exec] INTRINSIC dup | File: compiler/typecheck.torth, Row: 1155, Column: 3
   push QWORD [rsp]
-;; [type_check_exec] FUNCTION_CALL Signature.params | File: compiler/typecheck.torth, Row: 1129, Column: 7
+;; [type_check_exec] FUNCTION_CALL Signature.params | File: compiler/typecheck.torth, Row: 1155, Column: 7
   call U2lnbmF0dXJlLnBhcmFtcw__
-;; [type_check_exec] INTRINSIC over | File: compiler/typecheck.torth, Row: 1130, Column: 3
+;; [type_check_exec] INTRINSIC over | File: compiler/typecheck.torth, Row: 1156, Column: 3
   push QWORD [rsp+8]
-;; [type_check_exec] FUNCTION_CALL Signature.returns | File: compiler/typecheck.torth, Row: 1130, Column: 8
+;; [type_check_exec] FUNCTION_CALL Signature.returns | File: compiler/typecheck.torth, Row: 1156, Column: 8
   call U2lnbmF0dXJlLnJldHVybnM_
-;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1131, Column: 3
-;; [type_check_exec] POP_BIND return_types | File: compiler/typecheck.torth, Row: 1132, Column: 5
+;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1157, Column: 3
+;; [type_check_exec] POP_BIND return_types | File: compiler/typecheck.torth, Row: 1158, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [type_check_exec] POP_BIND param_types | File: compiler/typecheck.torth, Row: 1133, Column: 5
+;; [type_check_exec] POP_BIND param_types | File: compiler/typecheck.torth, Row: 1159, Column: 5
   pop rbx
   mov [r14-48], rbx
-;; [type_check_exec] POP_BIND signature | File: compiler/typecheck.torth, Row: 1134, Column: 5
+;; [type_check_exec] POP_BIND signature | File: compiler/typecheck.torth, Row: 1160, Column: 5
   pop rbx
   mov [r14-56], rbx
-;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1135, Column: 3
-;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1138, Column: 3
+;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1161, Column: 3
+;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1164, Column: 3
   mov rax, 0
   push rax
-;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1138, Column: 5
-;; [type_check_exec] POP_BIND index | File: compiler/typecheck.torth, Row: 1138, Column: 10
+;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1164, Column: 5
+;; [type_check_exec] POP_BIND index | File: compiler/typecheck.torth, Row: 1164, Column: 10
   pop rbx
   mov [r14-64], rbx
-;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1138, Column: 16
-;; [type_check_exec] WHILE | File: compiler/typecheck.torth, Row: 1139, Column: 3
+;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1164, Column: 16
+;; [type_check_exec] WHILE | File: compiler/typecheck.torth, Row: 1165, Column: 3
 type_check_exec_WHILE59:
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1139, Column: 9
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1165, Column: 9
   push QWORD [r14-64]
-;; [type_check_exec] PUSH_BIND param_types | File: compiler/typecheck.torth, Row: 1139, Column: 15
+;; [type_check_exec] PUSH_BIND param_types | File: compiler/typecheck.torth, Row: 1165, Column: 15
   push QWORD [r14-48]
-;; [type_check_exec] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 1139, Column: 27
+;; [type_check_exec] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 1165, Column: 27
   call TGlzdC5sZW4_
-;; [type_check_exec] INTRINSIC LT | File: compiler/typecheck.torth, Row: 1139, Column: 36
+;; [type_check_exec] INTRINSIC LT | File: compiler/typecheck.torth, Row: 1165, Column: 36
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1139, Column: 38
+;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1165, Column: 38
   pop rax
   test rax, rax
   jz type_check_exec_DONE126
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1140, Column: 5
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1166, Column: 5
   push QWORD [r14-64]
-;; [type_check_exec] PUSH_BIND param_types | File: compiler/typecheck.torth, Row: 1140, Column: 11
+;; [type_check_exec] PUSH_BIND param_types | File: compiler/typecheck.torth, Row: 1166, Column: 11
   push QWORD [r14-48]
-;; [type_check_exec] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 1140, Column: 23
+;; [type_check_exec] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 1166, Column: 23
   call TGlzdC5udGg_
-;; [type_check_exec] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 1140, Column: 32
+;; [type_check_exec] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 1166, Column: 32
   call c3RyLmxvYWQ_
-;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1141, Column: 5
-;; [type_check_exec] POP_BIND expected_type | File: compiler/typecheck.torth, Row: 1141, Column: 10
+;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1167, Column: 5
+;; [type_check_exec] POP_BIND expected_type | File: compiler/typecheck.torth, Row: 1167, Column: 10
   pop rbx
   mov [r14-72], rbx
-;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1141, Column: 24
-;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1143, Column: 5
-;; [type_check_exec] PUSH_BIND expected_type | File: compiler/typecheck.torth, Row: 1143, Column: 8
+;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1167, Column: 24
+;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1169, Column: 5
+;; [type_check_exec] PUSH_BIND expected_type | File: compiler/typecheck.torth, Row: 1169, Column: 8
   push QWORD [r14-72]
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1143, Column: 22
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1169, Column: 22
   mov rsi, type_check_exec_s74 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 1143, Column: 29
+;; [type_check_exec] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 1169, Column: 29
   call c3RyZXE_
-;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1143, Column: 35
+;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1169, Column: 35
   pop rax
   test rax, rax
   jz type_check_exec_ENDIF78
-;; [type_check_exec] BREAK | File: compiler/typecheck.torth, Row: 1144, Column: 7
-  jmp type_check_exec_DONE126;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1145, Column: 5
+;; [type_check_exec] BREAK | File: compiler/typecheck.torth, Row: 1170, Column: 7
+  jmp type_check_exec_DONE126;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1171, Column: 5
 type_check_exec_ENDIF78:
-;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1148, Column: 5
-;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1148, Column: 8
+;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1174, Column: 5
+;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1174, Column: 8
   push QWORD [r14-16]
-;; [type_check_exec] FUNCTION_CALL TypeStack.get_types | File: compiler/typecheck.torth, Row: 1148, Column: 19
+;; [type_check_exec] FUNCTION_CALL TypeStack.get_types | File: compiler/typecheck.torth, Row: 1174, Column: 19
   call VHlwZVN0YWNrLmdldF90eXBlcw__
-;; [type_check_exec] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 1148, Column: 39
+;; [type_check_exec] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 1174, Column: 39
   call TGlzdC5sZW4_
-;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1148, Column: 48
+;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1174, Column: 48
   mov rax, 0
   push rax
-;; [type_check_exec] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1148, Column: 50
+;; [type_check_exec] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1174, Column: 50
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1148, Column: 53
+;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1174, Column: 53
   pop rax
   test rax, rax
   jz type_check_exec_ENDIF96
-;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1149, Column: 7
+;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1175, Column: 7
   push QWORD [r14-32]
-;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1149, Column: 18
+;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1175, Column: 18
   push QWORD [r14-8]
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1150, Column: 7
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1176, Column: 7
   mov rsi, type_check_exec_s88 ; Pointer to string
 
   push rsi
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1151, Column: 7
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1177, Column: 7
   mov rsi, type_check_exec_s89 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1151, Column: 33
+;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1177, Column: 33
   call c3RyLmNhdA__
-;; [type_check_exec] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 1152, Column: 7
+;; [type_check_exec] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 1178, Column: 7
   push QWORD [r14-56]
-;; [type_check_exec] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 1152, Column: 17
+;; [type_check_exec] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 1178, Column: 17
   call U2lnbmF0dXJlLnJlcHI_
-;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1152, Column: 33
+;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1178, Column: 33
   call c3RyLmNhdA__
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1153, Column: 7
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1179, Column: 7
   mov rsi, type_check_exec_s94 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1153, Column: 21
+;; [type_check_exec] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1179, Column: 21
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1154, Column: 5
+;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1180, Column: 5
 type_check_exec_ENDIF96:
-;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1156, Column: 5
+;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1182, Column: 5
   push QWORD [r14-16]
-;; [type_check_exec] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1156, Column: 16
+;; [type_check_exec] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1182, Column: 16
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_exec] CAST | File: compiler/typecheck.torth, Row: 1156, Column: 31
-;; [type_check_exec] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1156, Column: 46
+;; [type_check_exec] CAST | File: compiler/typecheck.torth, Row: 1182, Column: 31
+;; [type_check_exec] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1182, Column: 46
   call VHlwZU5vZGUudHlwZQ__
-;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1157, Column: 5
-;; [type_check_exec] POP_BIND popped_type | File: compiler/typecheck.torth, Row: 1157, Column: 10
+;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1183, Column: 5
+;; [type_check_exec] POP_BIND popped_type | File: compiler/typecheck.torth, Row: 1183, Column: 10
   pop rbx
   mov [r14-80], rbx
-;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1157, Column: 22
-;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1160, Column: 5
-;; [type_check_exec] PUSH_BIND popped_type | File: compiler/typecheck.torth, Row: 1160, Column: 8
+;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1183, Column: 22
+;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1186, Column: 5
+;; [type_check_exec] PUSH_BIND popped_type | File: compiler/typecheck.torth, Row: 1186, Column: 8
   push QWORD [r14-80]
-;; [type_check_exec] PUSH_BIND expected_type | File: compiler/typecheck.torth, Row: 1160, Column: 20
+;; [type_check_exec] PUSH_BIND expected_type | File: compiler/typecheck.torth, Row: 1186, Column: 20
   push QWORD [r14-72]
-;; [type_check_exec] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 1160, Column: 34
+;; [type_check_exec] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 1186, Column: 34
   call c3RyZXE_
-;; [type_check_exec] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1160, Column: 40
+;; [type_check_exec] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1186, Column: 40
   call bm90
-;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1160, Column: 44
+;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1186, Column: 44
   pop rax
   test rax, rax
   jz type_check_exec_ENDIF120
-;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1161, Column: 7
+;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1187, Column: 7
   push QWORD [r14-32]
-;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1161, Column: 18
+;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1187, Column: 18
   push QWORD [r14-8]
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1162, Column: 7
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1188, Column: 7
   mov rsi, type_check_exec_s112 ; Pointer to string
 
   push rsi
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1163, Column: 7
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1189, Column: 7
   mov rsi, type_check_exec_s113 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1163, Column: 33
+;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1189, Column: 33
   call c3RyLmNhdA__
-;; [type_check_exec] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 1164, Column: 7
+;; [type_check_exec] PUSH_BIND signature | File: compiler/typecheck.torth, Row: 1190, Column: 7
   push QWORD [r14-56]
-;; [type_check_exec] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 1164, Column: 17
+;; [type_check_exec] FUNCTION_CALL Signature.repr | File: compiler/typecheck.torth, Row: 1190, Column: 17
   call U2lnbmF0dXJlLnJlcHI_
-;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1164, Column: 33
+;; [type_check_exec] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1190, Column: 33
   call c3RyLmNhdA__
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1165, Column: 7
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1191, Column: 7
   mov rsi, type_check_exec_s118 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1165, Column: 21
+;; [type_check_exec] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1191, Column: 21
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1166, Column: 5
+;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1192, Column: 5
 type_check_exec_ENDIF120:
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1168, Column: 5
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1194, Column: 5
   push QWORD [r14-64]
-;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1168, Column: 11
+;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1194, Column: 11
   mov rax, 1
   push rax
-;; [type_check_exec] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1168, Column: 13
+;; [type_check_exec] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1194, Column: 13
   pop rax
   add [rsp], rax
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1168, Column: 15
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1194, Column: 15
   push QWORD [r14-64]
-;; [type_check_exec] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1168, Column: 21
+;; [type_check_exec] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1194, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-64], rbx
-;; [type_check_exec] DONE | File: compiler/typecheck.torth, Row: 1169, Column: 3
+;; [type_check_exec] DONE | File: compiler/typecheck.torth, Row: 1195, Column: 3
   jmp type_check_exec_WHILE59
 type_check_exec_DONE126:
-;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1171, Column: 3
+;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1197, Column: 3
   mov rax, 0
   push rax
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1171, Column: 5
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1197, Column: 5
   push QWORD [r14-64]
-;; [type_check_exec] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1171, Column: 11
+;; [type_check_exec] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1197, Column: 11
   add rsp, 8
   pop rbx
   mov [r14-64], rbx
-;; [type_check_exec] WHILE | File: compiler/typecheck.torth, Row: 1172, Column: 3
+;; [type_check_exec] WHILE | File: compiler/typecheck.torth, Row: 1198, Column: 3
 type_check_exec_WHILE130:
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1172, Column: 9
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1198, Column: 9
   push QWORD [r14-64]
-;; [type_check_exec] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 1172, Column: 15
+;; [type_check_exec] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 1198, Column: 15
   push QWORD [r14-40]
-;; [type_check_exec] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 1172, Column: 28
+;; [type_check_exec] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 1198, Column: 28
   call TGlzdC5sZW4_
-;; [type_check_exec] INTRINSIC LT | File: compiler/typecheck.torth, Row: 1172, Column: 37
+;; [type_check_exec] INTRINSIC LT | File: compiler/typecheck.torth, Row: 1198, Column: 37
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1172, Column: 39
+;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1198, Column: 39
   pop rax
   test rax, rax
   jz type_check_exec_DONE162
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1173, Column: 5
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1199, Column: 5
   push QWORD [r14-64]
-;; [type_check_exec] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 1173, Column: 11
+;; [type_check_exec] PUSH_BIND return_types | File: compiler/typecheck.torth, Row: 1199, Column: 11
   push QWORD [r14-40]
-;; [type_check_exec] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 1173, Column: 24
+;; [type_check_exec] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 1199, Column: 24
   call TGlzdC5udGg_
-;; [type_check_exec] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 1173, Column: 33
+;; [type_check_exec] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 1199, Column: 33
   call c3RyLmxvYWQ_
-;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1174, Column: 5
-;; [type_check_exec] POP_BIND return_type | File: compiler/typecheck.torth, Row: 1174, Column: 10
+;; [type_check_exec] TAKE | File: compiler/typecheck.torth, Row: 1200, Column: 5
+;; [type_check_exec] POP_BIND return_type | File: compiler/typecheck.torth, Row: 1200, Column: 10
   pop rbx
   mov [r14-88], rbx
-;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1174, Column: 22
-;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1176, Column: 5
-;; [type_check_exec] PUSH_BIND return_type | File: compiler/typecheck.torth, Row: 1176, Column: 8
+;; [type_check_exec] IN | File: compiler/typecheck.torth, Row: 1200, Column: 22
+;; [type_check_exec] IF | File: compiler/typecheck.torth, Row: 1202, Column: 5
+;; [type_check_exec] PUSH_BIND return_type | File: compiler/typecheck.torth, Row: 1202, Column: 8
   push QWORD [r14-88]
-;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1176, Column: 20
+;; [type_check_exec] PUSH_STR | File: compiler/typecheck.torth, Row: 1202, Column: 20
   mov rsi, type_check_exec_s145 ; Pointer to string
 
   push rsi
-;; [type_check_exec] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 1176, Column: 27
+;; [type_check_exec] FUNCTION_CALL streq | File: compiler/typecheck.torth, Row: 1202, Column: 27
   call c3RyZXE_
-;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1176, Column: 33
+;; [type_check_exec] DO | File: compiler/typecheck.torth, Row: 1202, Column: 33
   pop rax
   test rax, rax
   jz type_check_exec_ENDIF149
-;; [type_check_exec] BREAK | File: compiler/typecheck.torth, Row: 1177, Column: 7
-  jmp type_check_exec_DONE162;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1178, Column: 5
+;; [type_check_exec] BREAK | File: compiler/typecheck.torth, Row: 1203, Column: 7
+  jmp type_check_exec_DONE162;; [type_check_exec] ENDIF | File: compiler/typecheck.torth, Row: 1204, Column: 5
 type_check_exec_ENDIF149:
-;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1180, Column: 5
+;; [type_check_exec] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1206, Column: 5
   push QWORD [r14-8]
-;; [type_check_exec] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1180, Column: 11
+;; [type_check_exec] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1206, Column: 11
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_exec] PUSH_BIND return_type | File: compiler/typecheck.torth, Row: 1180, Column: 26
+;; [type_check_exec] PUSH_BIND return_type | File: compiler/typecheck.torth, Row: 1206, Column: 26
   push QWORD [r14-88]
-;; [type_check_exec] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1180, Column: 38
+;; [type_check_exec] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1206, Column: 38
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_exec] CAST | File: compiler/typecheck.torth, Row: 1180, Column: 52
-;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1181, Column: 5
+;; [type_check_exec] CAST | File: compiler/typecheck.torth, Row: 1206, Column: 52
+;; [type_check_exec] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1207, Column: 5
   push QWORD [r14-16]
-;; [type_check_exec] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1181, Column: 16
+;; [type_check_exec] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1207, Column: 16
   call TGlua2VkTGlzdC5wdXNo
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1183, Column: 5
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1209, Column: 5
   push QWORD [r14-64]
-;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1183, Column: 11
+;; [type_check_exec] PUSH_INT | File: compiler/typecheck.torth, Row: 1209, Column: 11
   mov rax, 1
   push rax
-;; [type_check_exec] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1183, Column: 13
+;; [type_check_exec] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1209, Column: 13
   pop rax
   add [rsp], rax
-;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1183, Column: 15
+;; [type_check_exec] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1209, Column: 15
   push QWORD [r14-64]
-;; [type_check_exec] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1183, Column: 21
+;; [type_check_exec] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1209, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-64], rbx
-;; [type_check_exec] DONE | File: compiler/typecheck.torth, Row: 1184, Column: 3
+;; [type_check_exec] DONE | File: compiler/typecheck.torth, Row: 1210, Column: 3
   jmp type_check_exec_WHILE130
 type_check_exec_DONE162:
+;; [type_check_exec] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1213, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_exec] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1213, Column: 17
+  push QWORD [r14-32]
+;; [type_check_exec] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1213, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_exec] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 96 ; 11 local variables
@@ -14507,35 +14727,35 @@ cGFyc2Vfc2lnbmF0dXJlX2Zyb21fZm5fcHRy:
 ;; [parse_signature_from_fn_ptr] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [parse_signature_from_fn_ptr] POP_BIND fn_ptr | File: compiler/typecheck.torth, Row: 1187, Column: 38
+;; [parse_signature_from_fn_ptr] POP_BIND fn_ptr | File: compiler/typecheck.torth, Row: 1216, Column: 38
   pop rbx
   mov [r14-8], rbx
-;; [parse_signature_from_fn_ptr] PUSH_STR | File: compiler/typecheck.torth, Row: 1188, Column: 3
+;; [parse_signature_from_fn_ptr] PUSH_STR | File: compiler/typecheck.torth, Row: 1217, Column: 3
   mov rsi, parse_signature_from_fn_ptr_s1 ; Pointer to string
 
   push rsi
-;; [parse_signature_from_fn_ptr] PUSH_BIND fn_ptr | File: compiler/typecheck.torth, Row: 1188, Column: 9
+;; [parse_signature_from_fn_ptr] PUSH_BIND fn_ptr | File: compiler/typecheck.torth, Row: 1217, Column: 9
   push QWORD [r14-8]
-;; [parse_signature_from_fn_ptr] FUNCTION_CALL str.removeprefix | File: compiler/typecheck.torth, Row: 1188, Column: 16
+;; [parse_signature_from_fn_ptr] FUNCTION_CALL str.removeprefix | File: compiler/typecheck.torth, Row: 1217, Column: 16
   call c3RyLnJlbW92ZXByZWZpeA__
-;; [parse_signature_from_fn_ptr] PUSH_STR | File: compiler/typecheck.torth, Row: 1189, Column: 3
+;; [parse_signature_from_fn_ptr] PUSH_STR | File: compiler/typecheck.torth, Row: 1218, Column: 3
   mov rsi, parse_signature_from_fn_ptr_s4 ; Pointer to string
 
   push rsi
-;; [parse_signature_from_fn_ptr] INTRINSIC swap | File: compiler/typecheck.torth, Row: 1189, Column: 7
+;; [parse_signature_from_fn_ptr] INTRINSIC swap | File: compiler/typecheck.torth, Row: 1218, Column: 7
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [parse_signature_from_fn_ptr] FUNCTION_CALL str.removesuffix | File: compiler/typecheck.torth, Row: 1189, Column: 12
+;; [parse_signature_from_fn_ptr] FUNCTION_CALL str.removesuffix | File: compiler/typecheck.torth, Row: 1218, Column: 12
   call c3RyLnJlbW92ZXN1ZmZpeA__
-;; [parse_signature_from_fn_ptr] TAKE | File: compiler/typecheck.torth, Row: 1190, Column: 3
-;; [parse_signature_from_fn_ptr] POP_BIND signature_repr | File: compiler/typecheck.torth, Row: 1190, Column: 8
+;; [parse_signature_from_fn_ptr] TAKE | File: compiler/typecheck.torth, Row: 1219, Column: 3
+;; [parse_signature_from_fn_ptr] POP_BIND signature_repr | File: compiler/typecheck.torth, Row: 1219, Column: 8
   pop rbx
   mov [r14-16], rbx
-;; [parse_signature_from_fn_ptr] IN | File: compiler/typecheck.torth, Row: 1190, Column: 23
-;; [parse_signature_from_fn_ptr] PUSH_BIND signature_repr | File: compiler/typecheck.torth, Row: 1192, Column: 3
+;; [parse_signature_from_fn_ptr] IN | File: compiler/typecheck.torth, Row: 1219, Column: 23
+;; [parse_signature_from_fn_ptr] PUSH_BIND signature_repr | File: compiler/typecheck.torth, Row: 1221, Column: 3
   push QWORD [r14-16]
-;; [parse_signature_from_fn_ptr] FUNCTION_CALL Signature.from_repr | File: compiler/typecheck.torth, Row: 1192, Column: 18
+;; [parse_signature_from_fn_ptr] FUNCTION_CALL Signature.from_repr | File: compiler/typecheck.torth, Row: 1221, Column: 18
   call U2lnbmF0dXJlLmZyb21fcmVwcg__
 ;; [parse_signature_from_fn_ptr] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -14546,131 +14766,84 @@ dHlwZV9jaGVja19sb2Fk:
 ;; [type_check_load] Save the return address to return stack
   add r14, 40 ; 4 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_load] POP_BIND token | File: compiler/typecheck.torth, Row: 1202, Column: 26
+;; [type_check_load] POP_BIND token | File: compiler/typecheck.torth, Row: 1231, Column: 26
   pop rbx
   mov [r14-8], rbx
-;; [type_check_load] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1202, Column: 38
+;; [type_check_load] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1231, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [type_check_load] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1204, Column: 3
+;; [type_check_load] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1233, Column: 3
   push QWORD [r14-16]
-;; [type_check_load] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1204, Column: 14
+;; [type_check_load] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1233, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_load] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1205, Column: 3
+;; [type_check_load] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1234, Column: 3
   push QWORD [r14-16]
-;; [type_check_load] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1205, Column: 14
+;; [type_check_load] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1234, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_load] CAST | File: compiler/typecheck.torth, Row: 1205, Column: 29
-;; [type_check_load] TAKE | File: compiler/typecheck.torth, Row: 1206, Column: 3
-;; [type_check_load] POP_BIND type | File: compiler/typecheck.torth, Row: 1206, Column: 8
+;; [type_check_load] CAST | File: compiler/typecheck.torth, Row: 1234, Column: 29
+;; [type_check_load] TAKE | File: compiler/typecheck.torth, Row: 1235, Column: 3
+;; [type_check_load] POP_BIND type | File: compiler/typecheck.torth, Row: 1235, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_load] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1206, Column: 13
+;; [type_check_load] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1235, Column: 13
   pop rbx
   mov [r14-32], rbx
-;; [type_check_load] IN | File: compiler/typecheck.torth, Row: 1206, Column: 24
-;; [type_check_load] IF | File: compiler/typecheck.torth, Row: 1209, Column: 3
-;; [type_check_load] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1209, Column: 6
+;; [type_check_load] IN | File: compiler/typecheck.torth, Row: 1235, Column: 24
+;; [type_check_load] IF | File: compiler/typecheck.torth, Row: 1238, Column: 3
+;; [type_check_load] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1238, Column: 6
   push QWORD [r14-24]
-;; [type_check_load] CAST | File: compiler/typecheck.torth, Row: 1209, Column: 11
-;; [type_check_load] PUSH_INT | File: compiler/typecheck.torth, Row: 1209, Column: 21
+;; [type_check_load] CAST | File: compiler/typecheck.torth, Row: 1238, Column: 11
+;; [type_check_load] PUSH_INT | File: compiler/typecheck.torth, Row: 1238, Column: 21
   mov rax, -1
   push rax
-;; [type_check_load] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1209, Column: 24
+;; [type_check_load] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1238, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_load] DO | File: compiler/typecheck.torth, Row: 1209, Column: 27
+;; [type_check_load] DO | File: compiler/typecheck.torth, Row: 1238, Column: 27
   pop rax
   test rax, rax
-  jz type_check_load_ELIF22
-;; [type_check_load] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1210, Column: 5
+  jz type_check_load_ENDIF22
+;; [type_check_load] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1239, Column: 5
   push QWORD [r14-32]
-;; [type_check_load] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1210, Column: 16
+;; [type_check_load] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1239, Column: 16
   push QWORD [r14-8]
-;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1211, Column: 5
+;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1240, Column: 5
   mov rsi, type_check_load_s19 ; Pointer to string
 
   push rsi
-;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1212, Column: 5
+;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1241, Column: 5
   mov rsi, type_check_load_s20 ; Pointer to string
 
   push rsi
-;; [type_check_load] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1212, Column: 28
+;; [type_check_load] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1241, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_load] ELIF | File: compiler/typecheck.torth, Row: 1214, Column: 3
-  jmp type_check_load_ENDIF44
-type_check_load_ELIF22:
-;; [type_check_load] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1214, Column: 8
-  push QWORD [r14-24]
-;; [type_check_load] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1214, Column: 13
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_load] FUNCTION_CALL POINTER_TYPES | File: compiler/typecheck.torth, Row: 1214, Column: 27
-  call UE9JTlRFUl9UWVBFUw__
-;; [type_check_load] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1214, Column: 41
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_load] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1214, Column: 60
-  call bm90
-;; [type_check_load] DO | File: compiler/typecheck.torth, Row: 1214, Column: 64
-  pop rax
-  test rax, rax
-  jz type_check_load_ENDIF44
-;; [type_check_load] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1215, Column: 5
-  push QWORD [r14-32]
-;; [type_check_load] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1215, Column: 16
+;; [type_check_load] ENDIF | File: compiler/typecheck.torth, Row: 1243, Column: 3
+type_check_load_ENDIF22:
+;; [type_check_load] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1246, Column: 3
   push QWORD [r14-8]
-;; [type_check_load] INTRINSIC dup | File: compiler/typecheck.torth, Row: 1216, Column: 5
-  push QWORD [rsp]
-;; [type_check_load] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1216, Column: 9
-  call VG9rZW4udmFsdWU_
-;; [type_check_load] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1216, Column: 21
-  call c3RyLmNvcHk_
-;; [type_check_load] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1216, Column: 30
-  call c3RyLnVwcGVy
-;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1217, Column: 5
-  mov rsi, type_check_load_s35 ; Pointer to string
-
-  push rsi
-;; [type_check_load] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1217, Column: 31
-  call c3RyLmNhdA__
-;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1218, Column: 5
-  mov rsi, type_check_load_s37 ; Pointer to string
-
-  push rsi
-;; [type_check_load] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1218, Column: 31
-  call c3RyLmNhdA__
-;; [type_check_load] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1219, Column: 5
-  push QWORD [r14-24]
-;; [type_check_load] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1219, Column: 10
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_load] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1219, Column: 31
-  call c3RyLmNhdA__
-;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1220, Column: 5
-  mov rsi, type_check_load_s42 ; Pointer to string
-
-  push rsi
-;; [type_check_load] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1220, Column: 19
-  call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_load] ENDIF | File: compiler/typecheck.torth, Row: 1221, Column: 3
-type_check_load_ENDIF44:
-;; [type_check_load] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1224, Column: 3
-  push QWORD [r14-8]
-;; [type_check_load] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1224, Column: 9
+;; [type_check_load] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1246, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1224, Column: 24
-  mov rsi, type_check_load_s47 ; Pointer to string
+;; [type_check_load] PUSH_STR | File: compiler/typecheck.torth, Row: 1246, Column: 24
+  mov rsi, type_check_load_s25 ; Pointer to string
 
   push rsi
-;; [type_check_load] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1224, Column: 30
+;; [type_check_load] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1246, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_load] CAST | File: compiler/typecheck.torth, Row: 1224, Column: 44
-;; [type_check_load] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1225, Column: 3
+;; [type_check_load] CAST | File: compiler/typecheck.torth, Row: 1246, Column: 44
+;; [type_check_load] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1247, Column: 3
   push QWORD [r14-16]
-;; [type_check_load] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1225, Column: 14
+;; [type_check_load] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1247, Column: 14
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_load] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1250, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_load] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1250, Column: 17
+  push QWORD [r14-32]
+;; [type_check_load] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1250, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_load] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 40 ; 4 local variables
@@ -14680,92 +14853,98 @@ dHlwZV9jaGVja19vdmVy:
 ;; [type_check_over] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_over] POP_BIND token | File: compiler/typecheck.torth, Row: 1234, Column: 26
+;; [type_check_over] POP_BIND token | File: compiler/typecheck.torth, Row: 1259, Column: 26
   pop rbx
   mov [r14-8], rbx
-;; [type_check_over] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1234, Column: 38
+;; [type_check_over] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1259, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1236, Column: 3
+;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1261, Column: 3
   push QWORD [r14-16]
-;; [type_check_over] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1236, Column: 14
+;; [type_check_over] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1261, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1237, Column: 3
+;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1262, Column: 3
   push QWORD [r14-16]
-;; [type_check_over] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1237, Column: 14
+;; [type_check_over] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1262, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1237, Column: 29
-;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1238, Column: 3
+;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1262, Column: 29
+;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1263, Column: 3
   push QWORD [r14-16]
-;; [type_check_over] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1238, Column: 14
+;; [type_check_over] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1263, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1238, Column: 29
-;; [type_check_over] TAKE | File: compiler/typecheck.torth, Row: 1239, Column: 3
-;; [type_check_over] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1239, Column: 8
+;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1263, Column: 29
+;; [type_check_over] TAKE | File: compiler/typecheck.torth, Row: 1264, Column: 3
+;; [type_check_over] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1264, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_over] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1239, Column: 11
+;; [type_check_over] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1264, Column: 11
   pop rbx
   mov [r14-32], rbx
-;; [type_check_over] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1239, Column: 14
+;; [type_check_over] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1264, Column: 14
   pop rbx
   mov [r14-40], rbx
-;; [type_check_over] IN | File: compiler/typecheck.torth, Row: 1239, Column: 25
-;; [type_check_over] IF | File: compiler/typecheck.torth, Row: 1242, Column: 3
-;; [type_check_over] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1242, Column: 6
+;; [type_check_over] IN | File: compiler/typecheck.torth, Row: 1264, Column: 25
+;; [type_check_over] IF | File: compiler/typecheck.torth, Row: 1267, Column: 3
+;; [type_check_over] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1267, Column: 6
   push QWORD [r14-24]
-;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1242, Column: 9
-;; [type_check_over] PUSH_INT | File: compiler/typecheck.torth, Row: 1242, Column: 19
+;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1267, Column: 9
+;; [type_check_over] PUSH_INT | File: compiler/typecheck.torth, Row: 1267, Column: 19
   mov rax, -1
   push rax
-;; [type_check_over] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1242, Column: 22
+;; [type_check_over] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1267, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_over] DO | File: compiler/typecheck.torth, Row: 1242, Column: 25
+;; [type_check_over] DO | File: compiler/typecheck.torth, Row: 1267, Column: 25
   pop rax
   test rax, rax
   jz type_check_over_ENDIF26
-;; [type_check_over] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1243, Column: 5
+;; [type_check_over] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1268, Column: 5
   push QWORD [r14-40]
-;; [type_check_over] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1243, Column: 16
+;; [type_check_over] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1268, Column: 16
   push QWORD [r14-8]
-;; [type_check_over] PUSH_STR | File: compiler/typecheck.torth, Row: 1244, Column: 5
+;; [type_check_over] PUSH_STR | File: compiler/typecheck.torth, Row: 1269, Column: 5
   mov rsi, type_check_over_s23 ; Pointer to string
 
   push rsi
-;; [type_check_over] PUSH_STR | File: compiler/typecheck.torth, Row: 1245, Column: 5
+;; [type_check_over] PUSH_STR | File: compiler/typecheck.torth, Row: 1270, Column: 5
   mov rsi, type_check_over_s24 ; Pointer to string
 
   push rsi
-;; [type_check_over] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1245, Column: 28
+;; [type_check_over] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1270, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_over] ENDIF | File: compiler/typecheck.torth, Row: 1246, Column: 3
+;; [type_check_over] ENDIF | File: compiler/typecheck.torth, Row: 1271, Column: 3
 type_check_over_ENDIF26:
-;; [type_check_over] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1249, Column: 3
+;; [type_check_over] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1274, Column: 3
   push QWORD [r14-24]
-;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1249, Column: 6
-;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1249, Column: 16
+;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1274, Column: 6
+;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1274, Column: 16
   push QWORD [r14-16]
-;; [type_check_over] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1249, Column: 27
+;; [type_check_over] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1274, Column: 27
   call TGlua2VkTGlzdC5wdXNo
-;; [type_check_over] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1250, Column: 3
+;; [type_check_over] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1275, Column: 3
   push QWORD [r14-32]
-;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1250, Column: 6
-;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1250, Column: 16
+;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1275, Column: 6
+;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1275, Column: 16
   push QWORD [r14-16]
-;; [type_check_over] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1250, Column: 27
+;; [type_check_over] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1275, Column: 27
   call TGlua2VkTGlzdC5wdXNo
-;; [type_check_over] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1251, Column: 3
+;; [type_check_over] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1276, Column: 3
   push QWORD [r14-24]
-;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1251, Column: 6
-;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1251, Column: 16
+;; [type_check_over] CAST | File: compiler/typecheck.torth, Row: 1276, Column: 6
+;; [type_check_over] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1276, Column: 16
   push QWORD [r14-16]
-;; [type_check_over] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1251, Column: 27
+;; [type_check_over] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1276, Column: 27
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_over] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1279, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_over] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1279, Column: 17
+  push QWORD [r14-40]
+;; [type_check_over] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1279, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_over] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
@@ -14775,100 +14954,106 @@ dHlwZV9jaGVja19yb3Q_:
 ;; [type_check_rot] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_rot] POP_BIND token | File: compiler/typecheck.torth, Row: 1260, Column: 25
+;; [type_check_rot] POP_BIND token | File: compiler/typecheck.torth, Row: 1288, Column: 25
   pop rbx
   mov [r14-8], rbx
-;; [type_check_rot] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1260, Column: 37
+;; [type_check_rot] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1288, Column: 37
   pop rbx
   mov [r14-16], rbx
-;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1262, Column: 3
+;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1290, Column: 3
   push QWORD [r14-16]
-;; [type_check_rot] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1262, Column: 14
+;; [type_check_rot] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1290, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1263, Column: 3
+;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1291, Column: 3
   push QWORD [r14-16]
-;; [type_check_rot] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1263, Column: 14
+;; [type_check_rot] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1291, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1263, Column: 29
-;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1264, Column: 3
+;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1291, Column: 29
+;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1292, Column: 3
   push QWORD [r14-16]
-;; [type_check_rot] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1264, Column: 14
+;; [type_check_rot] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1292, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1264, Column: 29
-;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1265, Column: 3
+;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1292, Column: 29
+;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1293, Column: 3
   push QWORD [r14-16]
-;; [type_check_rot] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1265, Column: 14
+;; [type_check_rot] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1293, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1265, Column: 29
-;; [type_check_rot] TAKE | File: compiler/typecheck.torth, Row: 1266, Column: 3
-;; [type_check_rot] POP_BIND t3 | File: compiler/typecheck.torth, Row: 1266, Column: 8
+;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1293, Column: 29
+;; [type_check_rot] TAKE | File: compiler/typecheck.torth, Row: 1294, Column: 3
+;; [type_check_rot] POP_BIND t3 | File: compiler/typecheck.torth, Row: 1294, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_rot] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1266, Column: 11
+;; [type_check_rot] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1294, Column: 11
   pop rbx
   mov [r14-32], rbx
-;; [type_check_rot] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1266, Column: 14
+;; [type_check_rot] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1294, Column: 14
   pop rbx
   mov [r14-40], rbx
-;; [type_check_rot] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1266, Column: 17
+;; [type_check_rot] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1294, Column: 17
   pop rbx
   mov [r14-48], rbx
-;; [type_check_rot] IN | File: compiler/typecheck.torth, Row: 1266, Column: 28
-;; [type_check_rot] IF | File: compiler/typecheck.torth, Row: 1269, Column: 3
-;; [type_check_rot] PUSH_BIND t3 | File: compiler/typecheck.torth, Row: 1269, Column: 6
+;; [type_check_rot] IN | File: compiler/typecheck.torth, Row: 1294, Column: 28
+;; [type_check_rot] IF | File: compiler/typecheck.torth, Row: 1297, Column: 3
+;; [type_check_rot] PUSH_BIND t3 | File: compiler/typecheck.torth, Row: 1297, Column: 6
   push QWORD [r14-24]
-;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1269, Column: 9
-;; [type_check_rot] PUSH_INT | File: compiler/typecheck.torth, Row: 1269, Column: 19
+;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1297, Column: 9
+;; [type_check_rot] PUSH_INT | File: compiler/typecheck.torth, Row: 1297, Column: 19
   mov rax, -1
   push rax
-;; [type_check_rot] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1269, Column: 22
+;; [type_check_rot] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1297, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_rot] DO | File: compiler/typecheck.torth, Row: 1269, Column: 25
+;; [type_check_rot] DO | File: compiler/typecheck.torth, Row: 1297, Column: 25
   pop rax
   test rax, rax
   jz type_check_rot_ENDIF30
-;; [type_check_rot] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1270, Column: 5
+;; [type_check_rot] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1298, Column: 5
   push QWORD [r14-48]
-;; [type_check_rot] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1270, Column: 16
+;; [type_check_rot] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1298, Column: 16
   push QWORD [r14-8]
-;; [type_check_rot] PUSH_STR | File: compiler/typecheck.torth, Row: 1271, Column: 5
+;; [type_check_rot] PUSH_STR | File: compiler/typecheck.torth, Row: 1299, Column: 5
   mov rsi, type_check_rot_s27 ; Pointer to string
 
   push rsi
-;; [type_check_rot] PUSH_STR | File: compiler/typecheck.torth, Row: 1272, Column: 5
+;; [type_check_rot] PUSH_STR | File: compiler/typecheck.torth, Row: 1300, Column: 5
   mov rsi, type_check_rot_s28 ; Pointer to string
 
   push rsi
-;; [type_check_rot] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1272, Column: 28
+;; [type_check_rot] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1300, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_rot] ENDIF | File: compiler/typecheck.torth, Row: 1273, Column: 3
+;; [type_check_rot] ENDIF | File: compiler/typecheck.torth, Row: 1301, Column: 3
 type_check_rot_ENDIF30:
-;; [type_check_rot] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1276, Column: 3
+;; [type_check_rot] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1304, Column: 3
   push QWORD [r14-32]
-;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1276, Column: 6
-;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1276, Column: 16
+;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1304, Column: 6
+;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1304, Column: 16
   push QWORD [r14-16]
-;; [type_check_rot] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1276, Column: 27
+;; [type_check_rot] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1304, Column: 27
   call TGlua2VkTGlzdC5wdXNo
-;; [type_check_rot] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1277, Column: 3
+;; [type_check_rot] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1305, Column: 3
   push QWORD [r14-40]
-;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1277, Column: 6
-;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1277, Column: 16
+;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1305, Column: 6
+;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1305, Column: 16
   push QWORD [r14-16]
-;; [type_check_rot] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1277, Column: 27
+;; [type_check_rot] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1305, Column: 27
   call TGlua2VkTGlzdC5wdXNo
-;; [type_check_rot] PUSH_BIND t3 | File: compiler/typecheck.torth, Row: 1278, Column: 3
+;; [type_check_rot] PUSH_BIND t3 | File: compiler/typecheck.torth, Row: 1306, Column: 3
   push QWORD [r14-24]
-;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1278, Column: 6
-;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1278, Column: 16
+;; [type_check_rot] CAST | File: compiler/typecheck.torth, Row: 1306, Column: 6
+;; [type_check_rot] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1306, Column: 16
   push QWORD [r14-16]
-;; [type_check_rot] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1278, Column: 27
+;; [type_check_rot] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1306, Column: 27
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_rot] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1309, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_rot] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1309, Column: 17
+  push QWORD [r14-48]
+;; [type_check_rot] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1309, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_rot] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -14878,153 +15063,94 @@ dHlwZV9jaGVja19zdG9yZQ__:
 ;; [type_check_store] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_store] POP_BIND token | File: compiler/typecheck.torth, Row: 1288, Column: 27
+;; [type_check_store] POP_BIND token | File: compiler/typecheck.torth, Row: 1319, Column: 27
   pop rbx
   mov [r14-8], rbx
-;; [type_check_store] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1288, Column: 39
+;; [type_check_store] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1319, Column: 39
   pop rbx
   mov [r14-16], rbx
-;; [type_check_store] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1290, Column: 3
+;; [type_check_store] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1321, Column: 3
   push QWORD [r14-16]
-;; [type_check_store] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1290, Column: 14
+;; [type_check_store] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1321, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_store] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1291, Column: 3
+;; [type_check_store] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1322, Column: 3
   push QWORD [r14-16]
-;; [type_check_store] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1291, Column: 14
+;; [type_check_store] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1322, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_store] CAST | File: compiler/typecheck.torth, Row: 1291, Column: 29
-;; [type_check_store] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1292, Column: 3
+;; [type_check_store] CAST | File: compiler/typecheck.torth, Row: 1322, Column: 29
+;; [type_check_store] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1323, Column: 3
   push QWORD [r14-16]
-;; [type_check_store] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1292, Column: 14
+;; [type_check_store] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1323, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_store] CAST | File: compiler/typecheck.torth, Row: 1292, Column: 29
-;; [type_check_store] TAKE | File: compiler/typecheck.torth, Row: 1293, Column: 3
-;; [type_check_store] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1293, Column: 8
+;; [type_check_store] CAST | File: compiler/typecheck.torth, Row: 1323, Column: 29
+;; [type_check_store] TAKE | File: compiler/typecheck.torth, Row: 1324, Column: 3
+;; [type_check_store] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1324, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_store] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1293, Column: 11
+;; [type_check_store] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1324, Column: 11
   pop rbx
   mov [r14-32], rbx
-;; [type_check_store] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1293, Column: 14
+;; [type_check_store] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1324, Column: 14
   pop rbx
   mov [r14-40], rbx
-;; [type_check_store] IN | File: compiler/typecheck.torth, Row: 1293, Column: 25
-;; [type_check_store] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1296, Column: 3
+;; [type_check_store] IN | File: compiler/typecheck.torth, Row: 1324, Column: 25
+;; [type_check_store] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1327, Column: 3
   push QWORD [r14-8]
-;; [type_check_store] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1296, Column: 9
+;; [type_check_store] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1327, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_store] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1296, Column: 21
+;; [type_check_store] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1327, Column: 21
   call c3RyLmNvcHk_
-;; [type_check_store] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1296, Column: 30
+;; [type_check_store] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1327, Column: 30
   call c3RyLnVwcGVy
-;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1297, Column: 3
+;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1328, Column: 3
   mov rsi, type_check_store_s19 ; Pointer to string
 
   push rsi
-;; [type_check_store] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1297, Column: 64
+;; [type_check_store] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1328, Column: 64
   call c3RyLmNhdA__
-;; [type_check_store] TAKE | File: compiler/typecheck.torth, Row: 1298, Column: 3
-;; [type_check_store] POP_BIND required_values_str | File: compiler/typecheck.torth, Row: 1298, Column: 8
+;; [type_check_store] TAKE | File: compiler/typecheck.torth, Row: 1329, Column: 3
+;; [type_check_store] POP_BIND required_values_str | File: compiler/typecheck.torth, Row: 1329, Column: 8
   pop rbx
   mov [r14-48], rbx
-;; [type_check_store] IN | File: compiler/typecheck.torth, Row: 1298, Column: 28
-;; [type_check_store] IF | File: compiler/typecheck.torth, Row: 1301, Column: 3
-;; [type_check_store] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1301, Column: 6
+;; [type_check_store] IN | File: compiler/typecheck.torth, Row: 1329, Column: 28
+;; [type_check_store] IF | File: compiler/typecheck.torth, Row: 1332, Column: 3
+;; [type_check_store] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1332, Column: 6
   push QWORD [r14-24]
-;; [type_check_store] CAST | File: compiler/typecheck.torth, Row: 1301, Column: 9
-;; [type_check_store] PUSH_INT | File: compiler/typecheck.torth, Row: 1301, Column: 19
+;; [type_check_store] CAST | File: compiler/typecheck.torth, Row: 1332, Column: 9
+;; [type_check_store] PUSH_INT | File: compiler/typecheck.torth, Row: 1332, Column: 19
   mov rax, -1
   push rax
-;; [type_check_store] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1301, Column: 22
+;; [type_check_store] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1332, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_store] DO | File: compiler/typecheck.torth, Row: 1301, Column: 25
+;; [type_check_store] DO | File: compiler/typecheck.torth, Row: 1332, Column: 25
   pop rax
   test rax, rax
-  jz type_check_store_ELIF35
-;; [type_check_store] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1302, Column: 5
+  jz type_check_store_ENDIF35
+;; [type_check_store] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1333, Column: 5
   push QWORD [r14-40]
-;; [type_check_store] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1302, Column: 16
+;; [type_check_store] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1333, Column: 16
   push QWORD [r14-8]
-;; [type_check_store] PUSH_BIND required_values_str | File: compiler/typecheck.torth, Row: 1303, Column: 5
+;; [type_check_store] PUSH_BIND required_values_str | File: compiler/typecheck.torth, Row: 1334, Column: 5
   push QWORD [r14-48]
-;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1304, Column: 5
+;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1335, Column: 5
   mov rsi, type_check_store_s33 ; Pointer to string
 
   push rsi
-;; [type_check_store] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1304, Column: 28
+;; [type_check_store] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1335, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_store] ELIF | File: compiler/typecheck.torth, Row: 1305, Column: 3
-  jmp type_check_store_ENDIF61
-type_check_store_ELIF35:
-;; [type_check_store] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1305, Column: 8
-  push QWORD [r14-32]
-;; [type_check_store] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1305, Column: 11
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_store] FUNCTION_CALL POINTER_TYPES | File: compiler/typecheck.torth, Row: 1305, Column: 25
-  call UE9JTlRFUl9UWVBFUw__
-;; [type_check_store] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1305, Column: 39
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_store] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1305, Column: 58
-  call bm90
-;; [type_check_store] DO | File: compiler/typecheck.torth, Row: 1305, Column: 62
-  pop rax
-  test rax, rax
-  jz type_check_store_ENDIF61
-;; [type_check_store] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1306, Column: 5
+;; [type_check_store] ENDIF | File: compiler/typecheck.torth, Row: 1336, Column: 3
+type_check_store_ENDIF35:
+;; [type_check_store] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1339, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_store] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1339, Column: 17
   push QWORD [r14-40]
-;; [type_check_store] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1306, Column: 16
-  push QWORD [r14-8]
-;; [type_check_store] PUSH_BIND required_values_str | File: compiler/typecheck.torth, Row: 1307, Column: 5
-  push QWORD [r14-48]
-;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1307, Column: 25
-  mov rsi, type_check_store_s45 ; Pointer to string
-
-  push rsi
-;; [type_check_store] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1307, Column: 37
-  call c3RyLmNhdA__
-;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1308, Column: 5
-  mov rsi, type_check_store_s47 ; Pointer to string
-
-  push rsi
-;; [type_check_store] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1308, Column: 37
-  call c3RyLmNhdA__
-;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1309, Column: 5
-  mov rsi, type_check_store_s49 ; Pointer to string
-
-  push rsi
-;; [type_check_store] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1309, Column: 37
-  call c3RyLmNhdA__
-;; [type_check_store] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1310, Column: 5
-  push QWORD [r14-32]
-;; [type_check_store] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1310, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_store] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1310, Column: 37
-  call c3RyLmNhdA__
-;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1311, Column: 5
-  mov rsi, type_check_store_s54 ; Pointer to string
-
-  push rsi
-;; [type_check_store] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1311, Column: 37
-  call c3RyLmNhdA__
-;; [type_check_store] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1312, Column: 5
-  push QWORD [r14-24]
-;; [type_check_store] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1312, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_store] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1312, Column: 37
-  call c3RyLmNhdA__
-;; [type_check_store] PUSH_STR | File: compiler/typecheck.torth, Row: 1313, Column: 5
-  mov rsi, type_check_store_s59 ; Pointer to string
-
-  push rsi
-;; [type_check_store] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1313, Column: 19
-  call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_store] ENDIF | File: compiler/typecheck.torth, Row: 1314, Column: 3
-type_check_store_ENDIF61:
+;; [type_check_store] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1339, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_store] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -15034,85 +15160,91 @@ dHlwZV9jaGVja19zd2Fw:
 ;; [type_check_swap] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_swap] POP_BIND token | File: compiler/typecheck.torth, Row: 1323, Column: 26
+;; [type_check_swap] POP_BIND token | File: compiler/typecheck.torth, Row: 1348, Column: 26
   pop rbx
   mov [r14-8], rbx
-;; [type_check_swap] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1323, Column: 38
+;; [type_check_swap] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1348, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1325, Column: 3
+;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1350, Column: 3
   push QWORD [r14-16]
-;; [type_check_swap] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1325, Column: 14
+;; [type_check_swap] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1350, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1326, Column: 3
+;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1351, Column: 3
   push QWORD [r14-16]
-;; [type_check_swap] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1326, Column: 14
+;; [type_check_swap] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1351, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1326, Column: 29
-;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1327, Column: 3
+;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1351, Column: 29
+;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1352, Column: 3
   push QWORD [r14-16]
-;; [type_check_swap] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1327, Column: 14
+;; [type_check_swap] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1352, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1327, Column: 29
-;; [type_check_swap] TAKE | File: compiler/typecheck.torth, Row: 1328, Column: 3
-;; [type_check_swap] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1328, Column: 8
+;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1352, Column: 29
+;; [type_check_swap] TAKE | File: compiler/typecheck.torth, Row: 1353, Column: 3
+;; [type_check_swap] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1353, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_swap] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1328, Column: 11
+;; [type_check_swap] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1353, Column: 11
   pop rbx
   mov [r14-32], rbx
-;; [type_check_swap] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1328, Column: 14
+;; [type_check_swap] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1353, Column: 14
   pop rbx
   mov [r14-40], rbx
-;; [type_check_swap] IN | File: compiler/typecheck.torth, Row: 1328, Column: 25
-;; [type_check_swap] IF | File: compiler/typecheck.torth, Row: 1331, Column: 3
-;; [type_check_swap] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1331, Column: 6
+;; [type_check_swap] IN | File: compiler/typecheck.torth, Row: 1353, Column: 25
+;; [type_check_swap] IF | File: compiler/typecheck.torth, Row: 1356, Column: 3
+;; [type_check_swap] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1356, Column: 6
   push QWORD [r14-24]
-;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1331, Column: 9
-;; [type_check_swap] PUSH_INT | File: compiler/typecheck.torth, Row: 1331, Column: 19
+;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1356, Column: 9
+;; [type_check_swap] PUSH_INT | File: compiler/typecheck.torth, Row: 1356, Column: 19
   mov rax, -1
   push rax
-;; [type_check_swap] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1331, Column: 22
+;; [type_check_swap] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1356, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_swap] DO | File: compiler/typecheck.torth, Row: 1331, Column: 25
+;; [type_check_swap] DO | File: compiler/typecheck.torth, Row: 1356, Column: 25
   pop rax
   test rax, rax
   jz type_check_swap_ENDIF26
-;; [type_check_swap] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1332, Column: 5
+;; [type_check_swap] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1357, Column: 5
   push QWORD [r14-40]
-;; [type_check_swap] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1332, Column: 16
+;; [type_check_swap] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1357, Column: 16
   push QWORD [r14-8]
-;; [type_check_swap] PUSH_STR | File: compiler/typecheck.torth, Row: 1333, Column: 5
+;; [type_check_swap] PUSH_STR | File: compiler/typecheck.torth, Row: 1358, Column: 5
   mov rsi, type_check_swap_s23 ; Pointer to string
 
   push rsi
-;; [type_check_swap] PUSH_STR | File: compiler/typecheck.torth, Row: 1334, Column: 5
+;; [type_check_swap] PUSH_STR | File: compiler/typecheck.torth, Row: 1359, Column: 5
   mov rsi, type_check_swap_s24 ; Pointer to string
 
   push rsi
-;; [type_check_swap] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1334, Column: 28
+;; [type_check_swap] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1359, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_swap] ENDIF | File: compiler/typecheck.torth, Row: 1335, Column: 3
+;; [type_check_swap] ENDIF | File: compiler/typecheck.torth, Row: 1360, Column: 3
 type_check_swap_ENDIF26:
-;; [type_check_swap] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1338, Column: 3
+;; [type_check_swap] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1363, Column: 3
   push QWORD [r14-32]
-;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1338, Column: 6
-;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1338, Column: 16
+;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1363, Column: 6
+;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1363, Column: 16
   push QWORD [r14-16]
-;; [type_check_swap] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1338, Column: 27
+;; [type_check_swap] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1363, Column: 27
   call TGlua2VkTGlzdC5wdXNo
-;; [type_check_swap] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1339, Column: 3
+;; [type_check_swap] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1364, Column: 3
   push QWORD [r14-24]
-;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1339, Column: 6
-;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1339, Column: 16
+;; [type_check_swap] CAST | File: compiler/typecheck.torth, Row: 1364, Column: 6
+;; [type_check_swap] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1364, Column: 16
   push QWORD [r14-16]
-;; [type_check_swap] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1339, Column: 27
+;; [type_check_swap] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1364, Column: 27
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_swap] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1367, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_swap] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1367, Column: 17
+  push QWORD [r14-40]
+;; [type_check_swap] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1367, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_swap] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
@@ -15122,369 +15254,316 @@ dHlwZV9jaGVja19zeXNjYWxs:
 ;; [type_check_syscall] Save the return address to return stack
   add r14, 64 ; 7 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_syscall] POP_BIND token | File: compiler/typecheck.torth, Row: 1352, Column: 29
+;; [type_check_syscall] POP_BIND token | File: compiler/typecheck.torth, Row: 1380, Column: 29
   pop rbx
   mov [r14-8], rbx
-;; [type_check_syscall] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1352, Column: 41
+;; [type_check_syscall] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1380, Column: 41
   pop rbx
   mov [r14-16], rbx
-;; [type_check_syscall] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1353, Column: 3
+;; [type_check_syscall] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1381, Column: 3
   push QWORD [r14-16]
-;; [type_check_syscall] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1353, Column: 14
+;; [type_check_syscall] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1381, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1354, Column: 3
+;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1382, Column: 3
   push QWORD [r14-8]
-;; [type_check_syscall] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1354, Column: 9
+;; [type_check_syscall] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1382, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_syscall] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1354, Column: 21
+;; [type_check_syscall] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1382, Column: 21
   call c3RyLmNvcHk_
-;; [type_check_syscall] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1354, Column: 30
+;; [type_check_syscall] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1382, Column: 30
   call c3RyLnVwcGVy
-;; [type_check_syscall] INTRINSIC dup | File: compiler/typecheck.torth, Row: 1359, Column: 3
+;; [type_check_syscall] INTRINSIC dup | File: compiler/typecheck.torth, Row: 1387, Column: 3
   push QWORD [rsp]
-;; [type_check_syscall] FUNCTION_CALL str.len | File: compiler/typecheck.torth, Row: 1359, Column: 7
+;; [type_check_syscall] FUNCTION_CALL str.len | File: compiler/typecheck.torth, Row: 1387, Column: 7
   call c3RyLmxlbg__
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1359, Column: 15
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1387, Column: 15
   mov rax, 1
   push rax
-;; [type_check_syscall] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 1359, Column: 17
+;; [type_check_syscall] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 1387, Column: 17
   pop rax
   sub [rsp], rax
-;; [type_check_syscall] INTRINSIC over | File: compiler/typecheck.torth, Row: 1359, Column: 19
+;; [type_check_syscall] INTRINSIC over | File: compiler/typecheck.torth, Row: 1387, Column: 19
   push QWORD [rsp+8]
-;; [type_check_syscall] FUNCTION_CALL str.char_at | File: compiler/typecheck.torth, Row: 1359, Column: 24
+;; [type_check_syscall] FUNCTION_CALL str.char_at | File: compiler/typecheck.torth, Row: 1387, Column: 24
   call c3RyLmNoYXJfYXQ_
-;; [type_check_syscall] PUSH_CHAR | File: compiler/typecheck.torth, Row: 1359, Column: 36
+;; [type_check_syscall] PUSH_CHAR | File: compiler/typecheck.torth, Row: 1387, Column: 36
   push 48
-;; [type_check_syscall] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 1359, Column: 40
+;; [type_check_syscall] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 1387, Column: 40
   pop rax
   sub [rsp], rax
-;; [type_check_syscall] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1362, Column: 3
+;; [type_check_syscall] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1390, Column: 3
   push QWORD [r14-16]
-;; [type_check_syscall] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1362, Column: 14
+;; [type_check_syscall] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1390, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1362, Column: 29
-;; [type_check_syscall] TAKE | File: compiler/typecheck.torth, Row: 1363, Column: 3
-;; [type_check_syscall] POP_BIND type | File: compiler/typecheck.torth, Row: 1364, Column: 5
+;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1390, Column: 29
+;; [type_check_syscall] TAKE | File: compiler/typecheck.torth, Row: 1391, Column: 3
+;; [type_check_syscall] POP_BIND type | File: compiler/typecheck.torth, Row: 1392, Column: 5
   pop rbx
   mov [r14-24], rbx
-;; [type_check_syscall] POP_BIND parameter_count | File: compiler/typecheck.torth, Row: 1365, Column: 5
+;; [type_check_syscall] POP_BIND parameter_count | File: compiler/typecheck.torth, Row: 1393, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [type_check_syscall] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1366, Column: 5
+;; [type_check_syscall] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1394, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [type_check_syscall] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1367, Column: 5
+;; [type_check_syscall] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1395, Column: 5
   pop rbx
   mov [r14-48], rbx
-;; [type_check_syscall] IN | File: compiler/typecheck.torth, Row: 1368, Column: 3
-;; [type_check_syscall] IF | File: compiler/typecheck.torth, Row: 1371, Column: 3
-;; [type_check_syscall] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1371, Column: 6
+;; [type_check_syscall] IN | File: compiler/typecheck.torth, Row: 1396, Column: 3
+;; [type_check_syscall] IF | File: compiler/typecheck.torth, Row: 1399, Column: 3
+;; [type_check_syscall] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1399, Column: 6
   push QWORD [r14-24]
-;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1371, Column: 11
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1371, Column: 21
+;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1399, Column: 11
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1399, Column: 21
   mov rax, -1
   push rax
-;; [type_check_syscall] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1371, Column: 24
+;; [type_check_syscall] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1399, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1371, Column: 27
+;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1399, Column: 27
   pop rax
   test rax, rax
-  jz type_check_syscall_ELIF55
-;; [type_check_syscall] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1372, Column: 5
+  jz type_check_syscall_ENDIF55
+;; [type_check_syscall] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1400, Column: 5
   push QWORD [r14-48]
-;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1372, Column: 16
+;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1400, Column: 16
   push QWORD [r14-8]
-;; [type_check_syscall] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1373, Column: 5
+;; [type_check_syscall] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1401, Column: 5
   push QWORD [r14-40]
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1373, Column: 17
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1401, Column: 17
   mov rsi, type_check_syscall_s34 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1373, Column: 41
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1401, Column: 41
   call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1374, Column: 5
+;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1402, Column: 5
   push QWORD [r14-32]
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1374, Column: 21
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1402, Column: 21
   mov rax, 1
   push rax
-;; [type_check_syscall] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1374, Column: 23
+;; [type_check_syscall] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1402, Column: 23
   pop rax
   add [rsp], rax
-;; [type_check_syscall] FUNCTION_CALL itoa | File: compiler/typecheck.torth, Row: 1374, Column: 25
+;; [type_check_syscall] FUNCTION_CALL itoa | File: compiler/typecheck.torth, Row: 1402, Column: 25
   call aXRvYQ__
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1374, Column: 41
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1402, Column: 41
   call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1375, Column: 5
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1403, Column: 5
   mov rsi, type_check_syscall_s41 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1375, Column: 41
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1403, Column: 41
   call c3RyLmNhdA__
-;; [type_check_syscall] IF | File: compiler/typecheck.torth, Row: 1376, Column: 5
-;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1376, Column: 8
+;; [type_check_syscall] IF | File: compiler/typecheck.torth, Row: 1404, Column: 5
+;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1404, Column: 8
   push QWORD [r14-32]
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1376, Column: 24
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1404, Column: 24
   mov rax, 0
   push rax
-;; [type_check_syscall] INTRINSIC GT | File: compiler/typecheck.torth, Row: 1376, Column: 26
+;; [type_check_syscall] INTRINSIC GT | File: compiler/typecheck.torth, Row: 1404, Column: 26
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovg rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1376, Column: 28
+;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1404, Column: 28
   pop rax
   test rax, rax
   jz type_check_syscall_ENDIF50
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1376, Column: 31
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1404, Column: 31
   mov rsi, type_check_syscall_s48 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1376, Column: 41
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1404, Column: 41
   call c3RyLmNhdA__
-;; [type_check_syscall] ENDIF | File: compiler/typecheck.torth, Row: 1376, Column: 49
+;; [type_check_syscall] ENDIF | File: compiler/typecheck.torth, Row: 1404, Column: 49
 type_check_syscall_ENDIF50:
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1377, Column: 5
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1405, Column: 5
   mov rsi, type_check_syscall_s51 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1377, Column: 41
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1405, Column: 41
   call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1378, Column: 5
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1406, Column: 5
   mov rsi, type_check_syscall_s53 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1378, Column: 28
+;; [type_check_syscall] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1406, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_syscall] ELIF | File: compiler/typecheck.torth, Row: 1380, Column: 3
-  jmp type_check_syscall_ENDIF78
-type_check_syscall_ELIF55:
-;; [type_check_syscall] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1380, Column: 8
-  push QWORD [r14-24]
-;; [type_check_syscall] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1380, Column: 13
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_syscall] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1380, Column: 27
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_syscall] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1380, Column: 41
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_syscall] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1380, Column: 60
-  call bm90
-;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1380, Column: 64
-  pop rax
-  test rax, rax
-  jz type_check_syscall_ENDIF78
-;; [type_check_syscall] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1381, Column: 5
-  push QWORD [r14-48]
-;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1381, Column: 16
-  push QWORD [r14-8]
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1382, Column: 5
-  mov rsi, type_check_syscall_s64 ; Pointer to string
-
-  push rsi
-;; [type_check_syscall] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1382, Column: 30
-  push QWORD [r14-40]
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1382, Column: 49
-  call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1383, Column: 5
-  mov rsi, type_check_syscall_s67 ; Pointer to string
-
-  push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1383, Column: 49
-  call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1384, Column: 5
-  mov rsi, type_check_syscall_s69 ; Pointer to string
-
-  push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1384, Column: 49
-  call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1385, Column: 5
-  mov rsi, type_check_syscall_s71 ; Pointer to string
-
-  push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1385, Column: 49
-  call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1386, Column: 5
-  push QWORD [r14-24]
-;; [type_check_syscall] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1386, Column: 10
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1386, Column: 49
-  call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1387, Column: 5
-  mov rsi, type_check_syscall_s76 ; Pointer to string
-
-  push rsi
-;; [type_check_syscall] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1387, Column: 19
-  call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_syscall] ENDIF | File: compiler/typecheck.torth, Row: 1388, Column: 3
-type_check_syscall_ENDIF78:
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1391, Column: 3
+;; [type_check_syscall] ENDIF | File: compiler/typecheck.torth, Row: 1408, Column: 3
+type_check_syscall_ENDIF55:
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1411, Column: 3
   mov rax, 1
   push rax
-;; [type_check_syscall] TAKE | File: compiler/typecheck.torth, Row: 1391, Column: 5
-;; [type_check_syscall] POP_BIND parameter_index | File: compiler/typecheck.torth, Row: 1391, Column: 10
+;; [type_check_syscall] TAKE | File: compiler/typecheck.torth, Row: 1411, Column: 5
+;; [type_check_syscall] POP_BIND parameter_index | File: compiler/typecheck.torth, Row: 1411, Column: 10
   pop rbx
   mov [r14-56], rbx
-;; [type_check_syscall] IN | File: compiler/typecheck.torth, Row: 1391, Column: 26
-;; [type_check_syscall] WHILE | File: compiler/typecheck.torth, Row: 1392, Column: 3
-type_check_syscall_WHILE83:
-;; [type_check_syscall] PUSH_BIND parameter_index | File: compiler/typecheck.torth, Row: 1392, Column: 9
+;; [type_check_syscall] IN | File: compiler/typecheck.torth, Row: 1411, Column: 26
+;; [type_check_syscall] WHILE | File: compiler/typecheck.torth, Row: 1412, Column: 3
+type_check_syscall_WHILE60:
+;; [type_check_syscall] PUSH_BIND parameter_index | File: compiler/typecheck.torth, Row: 1412, Column: 9
   push QWORD [r14-56]
-;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1392, Column: 25
+;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1412, Column: 25
   push QWORD [r14-32]
-;; [type_check_syscall] INTRINSIC LE | File: compiler/typecheck.torth, Row: 1392, Column: 41
+;; [type_check_syscall] INTRINSIC LE | File: compiler/typecheck.torth, Row: 1412, Column: 41
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovle rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1392, Column: 44
+;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1412, Column: 44
   pop rax
   test rax, rax
-  jz type_check_syscall_DONE132
-;; [type_check_syscall] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1393, Column: 5
+  jz type_check_syscall_DONE109
+;; [type_check_syscall] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1413, Column: 5
   push QWORD [r14-16]
-;; [type_check_syscall] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1393, Column: 16
+;; [type_check_syscall] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1413, Column: 16
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1393, Column: 31
-;; [type_check_syscall] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1394, Column: 5
+;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1413, Column: 31
+;; [type_check_syscall] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1414, Column: 5
   push QWORD [r14-24]
-;; [type_check_syscall] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1394, Column: 10
+;; [type_check_syscall] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1414, Column: 10
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_syscall] IF | File: compiler/typecheck.torth, Row: 1397, Column: 5
-;; [type_check_syscall] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1397, Column: 8
+;; [type_check_syscall] IF | File: compiler/typecheck.torth, Row: 1417, Column: 5
+;; [type_check_syscall] PUSH_BIND type | File: compiler/typecheck.torth, Row: 1417, Column: 8
   push QWORD [r14-24]
-;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1397, Column: 13
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1397, Column: 23
+;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1417, Column: 13
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1417, Column: 23
   mov rax, -1
   push rax
-;; [type_check_syscall] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1397, Column: 26
+;; [type_check_syscall] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1417, Column: 26
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1397, Column: 29
+;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1417, Column: 29
   pop rax
   test rax, rax
-  jz type_check_syscall_ENDIF126
-;; [type_check_syscall] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1398, Column: 7
+  jz type_check_syscall_ENDIF103
+;; [type_check_syscall] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1418, Column: 7
   push QWORD [r14-48]
-;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1398, Column: 18
+;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1418, Column: 18
   push QWORD [r14-8]
-;; [type_check_syscall] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1399, Column: 7
+;; [type_check_syscall] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1419, Column: 7
   push QWORD [r14-40]
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1399, Column: 19
-  mov rsi, type_check_syscall_s102 ; Pointer to string
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1419, Column: 19
+  mov rsi, type_check_syscall_s79 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1399, Column: 43
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1419, Column: 43
   call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1400, Column: 7
+;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1420, Column: 7
   push QWORD [r14-32]
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1400, Column: 23
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1420, Column: 23
   mov rax, 1
   push rax
-;; [type_check_syscall] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1400, Column: 25
+;; [type_check_syscall] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1420, Column: 25
   pop rax
   add [rsp], rax
-;; [type_check_syscall] FUNCTION_CALL itoa | File: compiler/typecheck.torth, Row: 1400, Column: 27
+;; [type_check_syscall] FUNCTION_CALL itoa | File: compiler/typecheck.torth, Row: 1420, Column: 27
   call aXRvYQ__
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1400, Column: 43
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1420, Column: 43
   call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1401, Column: 7
-  mov rsi, type_check_syscall_s109 ; Pointer to string
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1421, Column: 7
+  mov rsi, type_check_syscall_s86 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1401, Column: 43
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1421, Column: 43
   call c3RyLmNhdA__
-;; [type_check_syscall] IF | File: compiler/typecheck.torth, Row: 1402, Column: 7
-;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1402, Column: 10
+;; [type_check_syscall] IF | File: compiler/typecheck.torth, Row: 1422, Column: 7
+;; [type_check_syscall] PUSH_BIND parameter_count | File: compiler/typecheck.torth, Row: 1422, Column: 10
   push QWORD [r14-32]
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1402, Column: 26
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1422, Column: 26
   mov rax, 0
   push rax
-;; [type_check_syscall] INTRINSIC GT | File: compiler/typecheck.torth, Row: 1402, Column: 28
+;; [type_check_syscall] INTRINSIC GT | File: compiler/typecheck.torth, Row: 1422, Column: 28
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovg rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1402, Column: 30
+;; [type_check_syscall] DO | File: compiler/typecheck.torth, Row: 1422, Column: 30
   pop rax
   test rax, rax
-  jz type_check_syscall_ENDIF118
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1402, Column: 33
-  mov rsi, type_check_syscall_s116 ; Pointer to string
+  jz type_check_syscall_ENDIF95
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1422, Column: 33
+  mov rsi, type_check_syscall_s93 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1402, Column: 43
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1422, Column: 43
   call c3RyLmNhdA__
-;; [type_check_syscall] ENDIF | File: compiler/typecheck.torth, Row: 1402, Column: 51
-type_check_syscall_ENDIF118:
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1403, Column: 7
-  mov rsi, type_check_syscall_s119 ; Pointer to string
+;; [type_check_syscall] ENDIF | File: compiler/typecheck.torth, Row: 1422, Column: 51
+type_check_syscall_ENDIF95:
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1423, Column: 7
+  mov rsi, type_check_syscall_s96 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1403, Column: 43
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1423, Column: 43
   call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_BIND parameter_index | File: compiler/typecheck.torth, Row: 1404, Column: 7
+;; [type_check_syscall] PUSH_BIND parameter_index | File: compiler/typecheck.torth, Row: 1424, Column: 7
   push QWORD [r14-56]
-;; [type_check_syscall] FUNCTION_CALL itoa | File: compiler/typecheck.torth, Row: 1404, Column: 23
+;; [type_check_syscall] FUNCTION_CALL itoa | File: compiler/typecheck.torth, Row: 1424, Column: 23
   call aXRvYQ__
-;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1404, Column: 43
+;; [type_check_syscall] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1424, Column: 43
   call c3RyLmNhdA__
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1405, Column: 7
-  mov rsi, type_check_syscall_s124 ; Pointer to string
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1425, Column: 7
+  mov rsi, type_check_syscall_s101 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1405, Column: 30
+;; [type_check_syscall] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1425, Column: 30
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_syscall] ENDIF | File: compiler/typecheck.torth, Row: 1406, Column: 5
-type_check_syscall_ENDIF126:
-;; [type_check_syscall] PUSH_BIND parameter_index | File: compiler/typecheck.torth, Row: 1407, Column: 5
+;; [type_check_syscall] ENDIF | File: compiler/typecheck.torth, Row: 1426, Column: 5
+type_check_syscall_ENDIF103:
+;; [type_check_syscall] PUSH_BIND parameter_index | File: compiler/typecheck.torth, Row: 1427, Column: 5
   push QWORD [r14-56]
-;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1407, Column: 21
+;; [type_check_syscall] PUSH_INT | File: compiler/typecheck.torth, Row: 1427, Column: 21
   mov rax, 1
   push rax
-;; [type_check_syscall] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1407, Column: 23
+;; [type_check_syscall] INTRINSIC PLUS | File: compiler/typecheck.torth, Row: 1427, Column: 23
   pop rax
   add [rsp], rax
-;; [type_check_syscall] PUSH_BIND parameter_index | File: compiler/typecheck.torth, Row: 1408, Column: 5
+;; [type_check_syscall] PUSH_BIND parameter_index | File: compiler/typecheck.torth, Row: 1428, Column: 5
   push QWORD [r14-56]
-;; [type_check_syscall] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1408, Column: 21
+;; [type_check_syscall] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1428, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-56], rbx
-;; [type_check_syscall] DONE | File: compiler/typecheck.torth, Row: 1409, Column: 3
-  jmp type_check_syscall_WHILE83
-type_check_syscall_DONE132:
-;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1412, Column: 3
+;; [type_check_syscall] DONE | File: compiler/typecheck.torth, Row: 1429, Column: 3
+  jmp type_check_syscall_WHILE60
+type_check_syscall_DONE109:
+;; [type_check_syscall] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1432, Column: 3
   push QWORD [r14-8]
-;; [type_check_syscall] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1412, Column: 9
+;; [type_check_syscall] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1432, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1412, Column: 24
-  mov rsi, type_check_syscall_s135 ; Pointer to string
+;; [type_check_syscall] PUSH_STR | File: compiler/typecheck.torth, Row: 1432, Column: 24
+  mov rsi, type_check_syscall_s112 ; Pointer to string
 
   push rsi
-;; [type_check_syscall] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1412, Column: 30
+;; [type_check_syscall] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1432, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1412, Column: 44
-;; [type_check_syscall] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1413, Column: 3
+;; [type_check_syscall] CAST | File: compiler/typecheck.torth, Row: 1432, Column: 44
+;; [type_check_syscall] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1433, Column: 3
   push QWORD [r14-16]
-;; [type_check_syscall] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1413, Column: 14
+;; [type_check_syscall] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1433, Column: 14
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_syscall] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1436, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_syscall] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1436, Column: 17
+  push QWORD [r14-48]
+;; [type_check_syscall] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1436, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_syscall] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 64 ; 7 local variables
@@ -15494,172 +15573,107 @@ dHlwZV9jaGVja19iaXR3aXNl:
 ;; [type_check_bitwise] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_bitwise] POP_BIND token | File: compiler/typecheck.torth, Row: 1421, Column: 29
+;; [type_check_bitwise] POP_BIND token | File: compiler/typecheck.torth, Row: 1444, Column: 29
   pop rbx
   mov [r14-8], rbx
-;; [type_check_bitwise] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1421, Column: 41
+;; [type_check_bitwise] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1444, Column: 41
   pop rbx
   mov [r14-16], rbx
-;; [type_check_bitwise] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1423, Column: 3
+;; [type_check_bitwise] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1446, Column: 3
   push QWORD [r14-8]
-;; [type_check_bitwise] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1423, Column: 9
+;; [type_check_bitwise] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1446, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_bitwise] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1423, Column: 21
+;; [type_check_bitwise] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1446, Column: 21
   call c3RyLmNvcHk_
-;; [type_check_bitwise] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1423, Column: 30
+;; [type_check_bitwise] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1446, Column: 30
   call c3RyLnVwcGVy
-;; [type_check_bitwise] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1424, Column: 3
+;; [type_check_bitwise] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1447, Column: 3
   push QWORD [r14-16]
-;; [type_check_bitwise] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1424, Column: 14
+;; [type_check_bitwise] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1447, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_bitwise] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1425, Column: 3
+;; [type_check_bitwise] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1448, Column: 3
   push QWORD [r14-16]
-;; [type_check_bitwise] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1425, Column: 14
+;; [type_check_bitwise] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1448, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_bitwise] CAST | File: compiler/typecheck.torth, Row: 1425, Column: 29
-;; [type_check_bitwise] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1426, Column: 3
+;; [type_check_bitwise] CAST | File: compiler/typecheck.torth, Row: 1448, Column: 29
+;; [type_check_bitwise] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1449, Column: 3
   push QWORD [r14-16]
-;; [type_check_bitwise] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1426, Column: 14
+;; [type_check_bitwise] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1449, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_bitwise] CAST | File: compiler/typecheck.torth, Row: 1426, Column: 29
-;; [type_check_bitwise] TAKE | File: compiler/typecheck.torth, Row: 1427, Column: 3
-;; [type_check_bitwise] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1427, Column: 8
+;; [type_check_bitwise] CAST | File: compiler/typecheck.torth, Row: 1449, Column: 29
+;; [type_check_bitwise] TAKE | File: compiler/typecheck.torth, Row: 1450, Column: 3
+;; [type_check_bitwise] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1450, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_bitwise] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1427, Column: 11
+;; [type_check_bitwise] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1450, Column: 11
   pop rbx
   mov [r14-32], rbx
-;; [type_check_bitwise] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1427, Column: 14
+;; [type_check_bitwise] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1450, Column: 14
   pop rbx
   mov [r14-40], rbx
-;; [type_check_bitwise] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1427, Column: 25
+;; [type_check_bitwise] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1450, Column: 25
   pop rbx
   mov [r14-48], rbx
-;; [type_check_bitwise] IN | File: compiler/typecheck.torth, Row: 1427, Column: 37
-;; [type_check_bitwise] IF | File: compiler/typecheck.torth, Row: 1430, Column: 3
-;; [type_check_bitwise] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1430, Column: 6
+;; [type_check_bitwise] IN | File: compiler/typecheck.torth, Row: 1450, Column: 37
+;; [type_check_bitwise] IF | File: compiler/typecheck.torth, Row: 1453, Column: 3
+;; [type_check_bitwise] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1453, Column: 6
   push QWORD [r14-24]
-;; [type_check_bitwise] CAST | File: compiler/typecheck.torth, Row: 1430, Column: 9
-;; [type_check_bitwise] PUSH_INT | File: compiler/typecheck.torth, Row: 1430, Column: 19
+;; [type_check_bitwise] CAST | File: compiler/typecheck.torth, Row: 1453, Column: 9
+;; [type_check_bitwise] PUSH_INT | File: compiler/typecheck.torth, Row: 1453, Column: 19
   mov rax, -1
   push rax
-;; [type_check_bitwise] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1430, Column: 22
+;; [type_check_bitwise] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1453, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_bitwise] DO | File: compiler/typecheck.torth, Row: 1430, Column: 25
+;; [type_check_bitwise] DO | File: compiler/typecheck.torth, Row: 1453, Column: 25
   pop rax
   test rax, rax
-  jz type_check_bitwise_ELIF33
-;; [type_check_bitwise] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1431, Column: 5
+  jz type_check_bitwise_ENDIF33
+;; [type_check_bitwise] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1454, Column: 5
   push QWORD [r14-40]
-;; [type_check_bitwise] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1431, Column: 16
+;; [type_check_bitwise] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1454, Column: 16
   push QWORD [r14-8]
-;; [type_check_bitwise] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1432, Column: 5
+;; [type_check_bitwise] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1455, Column: 5
   push QWORD [r14-48]
-;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1432, Column: 17
+;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1455, Column: 17
   mov rsi, type_check_bitwise_s29 ; Pointer to string
 
   push rsi
-;; [type_check_bitwise] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1432, Column: 52
+;; [type_check_bitwise] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1455, Column: 52
   call c3RyLmNhdA__
-;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1433, Column: 5
+;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1456, Column: 5
   mov rsi, type_check_bitwise_s31 ; Pointer to string
 
   push rsi
-;; [type_check_bitwise] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1433, Column: 28
+;; [type_check_bitwise] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1456, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_bitwise] ELIF | File: compiler/typecheck.torth, Row: 1435, Column: 3
-  jmp type_check_bitwise_ENDIF63
-type_check_bitwise_ELIF33:
-;; [type_check_bitwise] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1436, Column: 5
-  push QWORD [r14-32]
-;; [type_check_bitwise] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1436, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_bitwise] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1436, Column: 22
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_bitwise] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1436, Column: 36
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_bitwise] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1436, Column: 55
-  call bm90
-;; [type_check_bitwise] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1437, Column: 5
-  push QWORD [r14-24]
-;; [type_check_bitwise] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1437, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_bitwise] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1437, Column: 22
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_bitwise] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1437, Column: 36
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_bitwise] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1437, Column: 55
-  call bm90
-;; [type_check_bitwise] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 1438, Column: 5
-  call fHw_
-;; [type_check_bitwise] DO | File: compiler/typecheck.torth, Row: 1439, Column: 3
-  pop rax
-  test rax, rax
-  jz type_check_bitwise_ENDIF63
-;; [type_check_bitwise] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1440, Column: 5
-  push QWORD [r14-40]
-;; [type_check_bitwise] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1440, Column: 16
+;; [type_check_bitwise] ENDIF | File: compiler/typecheck.torth, Row: 1458, Column: 3
+type_check_bitwise_ENDIF33:
+;; [type_check_bitwise] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1461, Column: 3
   push QWORD [r14-8]
-;; [type_check_bitwise] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1441, Column: 5
-  push QWORD [r14-48]
-;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1441, Column: 17
-  mov rsi, type_check_bitwise_s49 ; Pointer to string
-
-  push rsi
-;; [type_check_bitwise] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1441, Column: 56
-  call c3RyLmNhdA__
-;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1442, Column: 5
-  mov rsi, type_check_bitwise_s51 ; Pointer to string
-
-  push rsi
-;; [type_check_bitwise] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1442, Column: 23
-  call c3RyLmNhdA__
-;; [type_check_bitwise] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1443, Column: 5
-  push QWORD [r14-32]
-;; [type_check_bitwise] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1443, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_bitwise] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1443, Column: 22
-  call c3RyLmNhdA__
-;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1443, Column: 30
-  mov rsi, type_check_bitwise_s56 ; Pointer to string
-
-  push rsi
-;; [type_check_bitwise] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1443, Column: 35
-  call c3RyLmNhdA__
-;; [type_check_bitwise] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1444, Column: 5
-  push QWORD [r14-24]
-;; [type_check_bitwise] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1444, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_bitwise] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1444, Column: 22
-  call c3RyLmNhdA__
-;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1445, Column: 5
-  mov rsi, type_check_bitwise_s61 ; Pointer to string
-
-  push rsi
-;; [type_check_bitwise] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1445, Column: 19
-  call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_bitwise] ENDIF | File: compiler/typecheck.torth, Row: 1446, Column: 3
-type_check_bitwise_ENDIF63:
-;; [type_check_bitwise] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1449, Column: 3
-  push QWORD [r14-8]
-;; [type_check_bitwise] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1449, Column: 9
+;; [type_check_bitwise] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1461, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1449, Column: 24
-  mov rsi, type_check_bitwise_s66 ; Pointer to string
+;; [type_check_bitwise] PUSH_STR | File: compiler/typecheck.torth, Row: 1461, Column: 24
+  mov rsi, type_check_bitwise_s36 ; Pointer to string
 
   push rsi
-;; [type_check_bitwise] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1449, Column: 30
+;; [type_check_bitwise] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1461, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_bitwise] CAST | File: compiler/typecheck.torth, Row: 1449, Column: 44
-;; [type_check_bitwise] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1450, Column: 3
+;; [type_check_bitwise] CAST | File: compiler/typecheck.torth, Row: 1461, Column: 44
+;; [type_check_bitwise] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1462, Column: 3
   push QWORD [r14-16]
-;; [type_check_bitwise] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1450, Column: 14
+;; [type_check_bitwise] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1462, Column: 14
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_bitwise] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1465, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_bitwise] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1465, Column: 17
+  push QWORD [r14-40]
+;; [type_check_bitwise] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1465, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_bitwise] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -15669,172 +15683,107 @@ dHlwZV9jaGVja19iaXRzaGlmdA__:
 ;; [type_check_bitshift] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_bitshift] POP_BIND token | File: compiler/typecheck.torth, Row: 1460, Column: 30
+;; [type_check_bitshift] POP_BIND token | File: compiler/typecheck.torth, Row: 1475, Column: 30
   pop rbx
   mov [r14-8], rbx
-;; [type_check_bitshift] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1460, Column: 42
+;; [type_check_bitshift] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1475, Column: 42
   pop rbx
   mov [r14-16], rbx
-;; [type_check_bitshift] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1462, Column: 3
+;; [type_check_bitshift] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1477, Column: 3
   push QWORD [r14-8]
-;; [type_check_bitshift] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1462, Column: 9
+;; [type_check_bitshift] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1477, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_bitshift] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1462, Column: 21
+;; [type_check_bitshift] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1477, Column: 21
   call c3RyLmNvcHk_
-;; [type_check_bitshift] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1462, Column: 30
+;; [type_check_bitshift] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1477, Column: 30
   call c3RyLnVwcGVy
-;; [type_check_bitshift] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1463, Column: 3
+;; [type_check_bitshift] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1478, Column: 3
   push QWORD [r14-16]
-;; [type_check_bitshift] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1463, Column: 14
+;; [type_check_bitshift] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1478, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_bitshift] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1464, Column: 3
+;; [type_check_bitshift] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1479, Column: 3
   push QWORD [r14-16]
-;; [type_check_bitshift] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1464, Column: 14
+;; [type_check_bitshift] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1479, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_bitshift] CAST | File: compiler/typecheck.torth, Row: 1464, Column: 29
-;; [type_check_bitshift] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1465, Column: 3
+;; [type_check_bitshift] CAST | File: compiler/typecheck.torth, Row: 1479, Column: 29
+;; [type_check_bitshift] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1480, Column: 3
   push QWORD [r14-16]
-;; [type_check_bitshift] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1465, Column: 14
+;; [type_check_bitshift] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1480, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_bitshift] CAST | File: compiler/typecheck.torth, Row: 1465, Column: 29
-;; [type_check_bitshift] TAKE | File: compiler/typecheck.torth, Row: 1466, Column: 3
-;; [type_check_bitshift] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1466, Column: 8
+;; [type_check_bitshift] CAST | File: compiler/typecheck.torth, Row: 1480, Column: 29
+;; [type_check_bitshift] TAKE | File: compiler/typecheck.torth, Row: 1481, Column: 3
+;; [type_check_bitshift] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1481, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_bitshift] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1466, Column: 11
+;; [type_check_bitshift] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1481, Column: 11
   pop rbx
   mov [r14-32], rbx
-;; [type_check_bitshift] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1466, Column: 14
+;; [type_check_bitshift] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1481, Column: 14
   pop rbx
   mov [r14-40], rbx
-;; [type_check_bitshift] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1466, Column: 25
+;; [type_check_bitshift] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1481, Column: 25
   pop rbx
   mov [r14-48], rbx
-;; [type_check_bitshift] IN | File: compiler/typecheck.torth, Row: 1466, Column: 37
-;; [type_check_bitshift] IF | File: compiler/typecheck.torth, Row: 1469, Column: 3
-;; [type_check_bitshift] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1469, Column: 6
+;; [type_check_bitshift] IN | File: compiler/typecheck.torth, Row: 1481, Column: 37
+;; [type_check_bitshift] IF | File: compiler/typecheck.torth, Row: 1484, Column: 3
+;; [type_check_bitshift] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1484, Column: 6
   push QWORD [r14-24]
-;; [type_check_bitshift] CAST | File: compiler/typecheck.torth, Row: 1469, Column: 9
-;; [type_check_bitshift] PUSH_INT | File: compiler/typecheck.torth, Row: 1469, Column: 19
+;; [type_check_bitshift] CAST | File: compiler/typecheck.torth, Row: 1484, Column: 9
+;; [type_check_bitshift] PUSH_INT | File: compiler/typecheck.torth, Row: 1484, Column: 19
   mov rax, -1
   push rax
-;; [type_check_bitshift] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1469, Column: 22
+;; [type_check_bitshift] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1484, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_bitshift] DO | File: compiler/typecheck.torth, Row: 1469, Column: 25
+;; [type_check_bitshift] DO | File: compiler/typecheck.torth, Row: 1484, Column: 25
   pop rax
   test rax, rax
-  jz type_check_bitshift_ELIF33
-;; [type_check_bitshift] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1470, Column: 5
+  jz type_check_bitshift_ENDIF33
+;; [type_check_bitshift] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1485, Column: 5
   push QWORD [r14-40]
-;; [type_check_bitshift] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1470, Column: 16
+;; [type_check_bitshift] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1485, Column: 16
   push QWORD [r14-8]
-;; [type_check_bitshift] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1471, Column: 5
+;; [type_check_bitshift] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1486, Column: 5
   push QWORD [r14-48]
-;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1471, Column: 17
+;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1486, Column: 17
   mov rsi, type_check_bitshift_s29 ; Pointer to string
 
   push rsi
-;; [type_check_bitshift] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1471, Column: 63
+;; [type_check_bitshift] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1486, Column: 63
   call c3RyLmNhdA__
-;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1472, Column: 5
+;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1487, Column: 5
   mov rsi, type_check_bitshift_s31 ; Pointer to string
 
   push rsi
-;; [type_check_bitshift] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1472, Column: 28
+;; [type_check_bitshift] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1487, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_bitshift] ELIF | File: compiler/typecheck.torth, Row: 1474, Column: 3
-  jmp type_check_bitshift_ENDIF63
-type_check_bitshift_ELIF33:
-;; [type_check_bitshift] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1475, Column: 5
-  push QWORD [r14-32]
-;; [type_check_bitshift] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1475, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_bitshift] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1475, Column: 22
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_bitshift] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1475, Column: 36
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_bitshift] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1475, Column: 55
-  call bm90
-;; [type_check_bitshift] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1476, Column: 5
-  push QWORD [r14-24]
-;; [type_check_bitshift] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1476, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_bitshift] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1476, Column: 22
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_bitshift] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1476, Column: 36
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_bitshift] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1476, Column: 55
-  call bm90
-;; [type_check_bitshift] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 1477, Column: 5
-  call fHw_
-;; [type_check_bitshift] DO | File: compiler/typecheck.torth, Row: 1478, Column: 3
-  pop rax
-  test rax, rax
-  jz type_check_bitshift_ENDIF63
-;; [type_check_bitshift] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1479, Column: 5
-  push QWORD [r14-40]
-;; [type_check_bitshift] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1479, Column: 16
+;; [type_check_bitshift] ENDIF | File: compiler/typecheck.torth, Row: 1489, Column: 3
+type_check_bitshift_ENDIF33:
+;; [type_check_bitshift] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1492, Column: 3
   push QWORD [r14-8]
-;; [type_check_bitshift] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1480, Column: 5
-  push QWORD [r14-48]
-;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1480, Column: 17
-  mov rsi, type_check_bitshift_s49 ; Pointer to string
-
-  push rsi
-;; [type_check_bitshift] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1480, Column: 56
-  call c3RyLmNhdA__
-;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1481, Column: 5
-  mov rsi, type_check_bitshift_s51 ; Pointer to string
-
-  push rsi
-;; [type_check_bitshift] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1481, Column: 23
-  call c3RyLmNhdA__
-;; [type_check_bitshift] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1482, Column: 5
-  push QWORD [r14-32]
-;; [type_check_bitshift] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1482, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_bitshift] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1482, Column: 22
-  call c3RyLmNhdA__
-;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1482, Column: 30
-  mov rsi, type_check_bitshift_s56 ; Pointer to string
-
-  push rsi
-;; [type_check_bitshift] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1482, Column: 35
-  call c3RyLmNhdA__
-;; [type_check_bitshift] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1483, Column: 5
-  push QWORD [r14-24]
-;; [type_check_bitshift] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1483, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_bitshift] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1483, Column: 22
-  call c3RyLmNhdA__
-;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1484, Column: 5
-  mov rsi, type_check_bitshift_s61 ; Pointer to string
-
-  push rsi
-;; [type_check_bitshift] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1484, Column: 19
-  call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_bitshift] ENDIF | File: compiler/typecheck.torth, Row: 1485, Column: 3
-type_check_bitshift_ENDIF63:
-;; [type_check_bitshift] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1488, Column: 3
-  push QWORD [r14-8]
-;; [type_check_bitshift] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1488, Column: 9
+;; [type_check_bitshift] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1492, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1488, Column: 24
-  mov rsi, type_check_bitshift_s66 ; Pointer to string
+;; [type_check_bitshift] PUSH_STR | File: compiler/typecheck.torth, Row: 1492, Column: 24
+  mov rsi, type_check_bitshift_s36 ; Pointer to string
 
   push rsi
-;; [type_check_bitshift] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1488, Column: 30
+;; [type_check_bitshift] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1492, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_bitshift] CAST | File: compiler/typecheck.torth, Row: 1488, Column: 44
-;; [type_check_bitshift] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1489, Column: 3
+;; [type_check_bitshift] CAST | File: compiler/typecheck.torth, Row: 1492, Column: 44
+;; [type_check_bitshift] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1493, Column: 3
   push QWORD [r14-16]
-;; [type_check_bitshift] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1489, Column: 14
+;; [type_check_bitshift] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1493, Column: 14
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_bitshift] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1496, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_bitshift] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1496, Column: 17
+  push QWORD [r14-40]
+;; [type_check_bitshift] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1496, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_bitshift] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -15844,172 +15793,107 @@ dHlwZV9jaGVja19jYWxjdWxhdGlvbnM_:
 ;; [type_check_calculations] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_calculations] POP_BIND token | File: compiler/typecheck.torth, Row: 1497, Column: 34
+;; [type_check_calculations] POP_BIND token | File: compiler/typecheck.torth, Row: 1504, Column: 34
   pop rbx
   mov [r14-8], rbx
-;; [type_check_calculations] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1497, Column: 46
+;; [type_check_calculations] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1504, Column: 46
   pop rbx
   mov [r14-16], rbx
-;; [type_check_calculations] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1499, Column: 3
+;; [type_check_calculations] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1506, Column: 3
   push QWORD [r14-8]
-;; [type_check_calculations] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1499, Column: 9
+;; [type_check_calculations] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1506, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_calculations] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1499, Column: 21
+;; [type_check_calculations] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1506, Column: 21
   call c3RyLmNvcHk_
-;; [type_check_calculations] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1499, Column: 30
+;; [type_check_calculations] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1506, Column: 30
   call c3RyLnVwcGVy
-;; [type_check_calculations] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1500, Column: 3
+;; [type_check_calculations] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1507, Column: 3
   push QWORD [r14-16]
-;; [type_check_calculations] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1500, Column: 14
+;; [type_check_calculations] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1507, Column: 14
   call VHlwZVN0YWNrLmNvcHk_
-;; [type_check_calculations] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1501, Column: 3
+;; [type_check_calculations] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1508, Column: 3
   push QWORD [r14-16]
-;; [type_check_calculations] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1501, Column: 14
+;; [type_check_calculations] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1508, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_calculations] CAST | File: compiler/typecheck.torth, Row: 1501, Column: 29
-;; [type_check_calculations] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1502, Column: 3
+;; [type_check_calculations] CAST | File: compiler/typecheck.torth, Row: 1508, Column: 29
+;; [type_check_calculations] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1509, Column: 3
   push QWORD [r14-16]
-;; [type_check_calculations] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1502, Column: 14
+;; [type_check_calculations] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1509, Column: 14
   call TGlua2VkTGlzdC5wb3A_
-;; [type_check_calculations] CAST | File: compiler/typecheck.torth, Row: 1502, Column: 29
-;; [type_check_calculations] TAKE | File: compiler/typecheck.torth, Row: 1503, Column: 3
-;; [type_check_calculations] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1503, Column: 8
+;; [type_check_calculations] CAST | File: compiler/typecheck.torth, Row: 1509, Column: 29
+;; [type_check_calculations] TAKE | File: compiler/typecheck.torth, Row: 1510, Column: 3
+;; [type_check_calculations] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1510, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_calculations] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1503, Column: 11
+;; [type_check_calculations] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1510, Column: 11
   pop rbx
   mov [r14-32], rbx
-;; [type_check_calculations] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1503, Column: 14
+;; [type_check_calculations] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1510, Column: 14
   pop rbx
   mov [r14-40], rbx
-;; [type_check_calculations] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1503, Column: 25
+;; [type_check_calculations] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1510, Column: 25
   pop rbx
   mov [r14-48], rbx
-;; [type_check_calculations] IN | File: compiler/typecheck.torth, Row: 1503, Column: 37
-;; [type_check_calculations] IF | File: compiler/typecheck.torth, Row: 1506, Column: 3
-;; [type_check_calculations] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1506, Column: 6
+;; [type_check_calculations] IN | File: compiler/typecheck.torth, Row: 1510, Column: 37
+;; [type_check_calculations] IF | File: compiler/typecheck.torth, Row: 1513, Column: 3
+;; [type_check_calculations] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1513, Column: 6
   push QWORD [r14-24]
-;; [type_check_calculations] CAST | File: compiler/typecheck.torth, Row: 1506, Column: 9
-;; [type_check_calculations] PUSH_INT | File: compiler/typecheck.torth, Row: 1506, Column: 19
+;; [type_check_calculations] CAST | File: compiler/typecheck.torth, Row: 1513, Column: 9
+;; [type_check_calculations] PUSH_INT | File: compiler/typecheck.torth, Row: 1513, Column: 19
   mov rax, -1
   push rax
-;; [type_check_calculations] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1506, Column: 22
+;; [type_check_calculations] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1513, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_calculations] DO | File: compiler/typecheck.torth, Row: 1506, Column: 25
+;; [type_check_calculations] DO | File: compiler/typecheck.torth, Row: 1513, Column: 25
   pop rax
   test rax, rax
-  jz type_check_calculations_ELIF33
-;; [type_check_calculations] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1507, Column: 5
+  jz type_check_calculations_ENDIF33
+;; [type_check_calculations] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1514, Column: 5
   push QWORD [r14-40]
-;; [type_check_calculations] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1507, Column: 16
+;; [type_check_calculations] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1514, Column: 16
   push QWORD [r14-8]
-;; [type_check_calculations] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1508, Column: 5
+;; [type_check_calculations] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1515, Column: 5
   push QWORD [r14-48]
-;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1508, Column: 17
+;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1515, Column: 17
   mov rsi, type_check_calculations_s29 ; Pointer to string
 
   push rsi
-;; [type_check_calculations] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1508, Column: 53
+;; [type_check_calculations] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1515, Column: 53
   call c3RyLmNhdA__
-;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1509, Column: 5
+;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1516, Column: 5
   mov rsi, type_check_calculations_s31 ; Pointer to string
 
   push rsi
-;; [type_check_calculations] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1509, Column: 28
+;; [type_check_calculations] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1516, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_calculations] ELIF | File: compiler/typecheck.torth, Row: 1511, Column: 3
-  jmp type_check_calculations_ENDIF63
-type_check_calculations_ELIF33:
-;; [type_check_calculations] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1512, Column: 5
-  push QWORD [r14-32]
-;; [type_check_calculations] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1512, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_calculations] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1512, Column: 22
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_calculations] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1512, Column: 36
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_calculations] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1512, Column: 55
-  call bm90
-;; [type_check_calculations] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1513, Column: 5
-  push QWORD [r14-24]
-;; [type_check_calculations] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1513, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_calculations] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1513, Column: 22
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_calculations] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1513, Column: 36
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_calculations] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1513, Column: 55
-  call bm90
-;; [type_check_calculations] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 1514, Column: 5
-  call fHw_
-;; [type_check_calculations] DO | File: compiler/typecheck.torth, Row: 1515, Column: 3
-  pop rax
-  test rax, rax
-  jz type_check_calculations_ENDIF63
-;; [type_check_calculations] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1516, Column: 5
-  push QWORD [r14-40]
-;; [type_check_calculations] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1516, Column: 16
+;; [type_check_calculations] ENDIF | File: compiler/typecheck.torth, Row: 1518, Column: 3
+type_check_calculations_ENDIF33:
+;; [type_check_calculations] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1521, Column: 3
   push QWORD [r14-8]
-;; [type_check_calculations] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1517, Column: 5
-  push QWORD [r14-48]
-;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1517, Column: 17
-  mov rsi, type_check_calculations_s49 ; Pointer to string
-
-  push rsi
-;; [type_check_calculations] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1517, Column: 56
-  call c3RyLmNhdA__
-;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1518, Column: 5
-  mov rsi, type_check_calculations_s51 ; Pointer to string
-
-  push rsi
-;; [type_check_calculations] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1518, Column: 23
-  call c3RyLmNhdA__
-;; [type_check_calculations] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1519, Column: 5
-  push QWORD [r14-32]
-;; [type_check_calculations] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1519, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_calculations] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1519, Column: 22
-  call c3RyLmNhdA__
-;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1519, Column: 30
-  mov rsi, type_check_calculations_s56 ; Pointer to string
-
-  push rsi
-;; [type_check_calculations] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1519, Column: 35
-  call c3RyLmNhdA__
-;; [type_check_calculations] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1520, Column: 5
-  push QWORD [r14-24]
-;; [type_check_calculations] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1520, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_calculations] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1520, Column: 22
-  call c3RyLmNhdA__
-;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1521, Column: 5
-  mov rsi, type_check_calculations_s61 ; Pointer to string
-
-  push rsi
-;; [type_check_calculations] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1521, Column: 19
-  call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_calculations] ENDIF | File: compiler/typecheck.torth, Row: 1522, Column: 3
-type_check_calculations_ENDIF63:
-;; [type_check_calculations] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1525, Column: 3
-  push QWORD [r14-8]
-;; [type_check_calculations] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1525, Column: 9
+;; [type_check_calculations] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1521, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1525, Column: 24
-  mov rsi, type_check_calculations_s66 ; Pointer to string
+;; [type_check_calculations] PUSH_STR | File: compiler/typecheck.torth, Row: 1521, Column: 24
+  mov rsi, type_check_calculations_s36 ; Pointer to string
 
   push rsi
-;; [type_check_calculations] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1525, Column: 30
+;; [type_check_calculations] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1521, Column: 30
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_calculations] CAST | File: compiler/typecheck.torth, Row: 1525, Column: 44
-;; [type_check_calculations] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1526, Column: 3
+;; [type_check_calculations] CAST | File: compiler/typecheck.torth, Row: 1521, Column: 44
+;; [type_check_calculations] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1522, Column: 3
   push QWORD [r14-16]
-;; [type_check_calculations] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1526, Column: 14
+;; [type_check_calculations] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1522, Column: 14
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_calculations] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1525, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_calculations] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1525, Column: 17
+  push QWORD [r14-40]
+;; [type_check_calculations] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1525, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_calculations] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -16019,172 +15903,107 @@ dHlwZV9jaGVja19jb21wYXJpc29u:
 ;; [type_check_comparison] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [type_check_comparison] POP_BIND token | File: compiler/typecheck.torth, Row: 1536, Column: 32
+;; [type_check_comparison] POP_BIND token | File: compiler/typecheck.torth, Row: 1535, Column: 32
   pop rbx
   mov [r14-8], rbx
-;; [type_check_comparison] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1536, Column: 44
+;; [type_check_comparison] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1535, Column: 44
   pop rbx
   mov [r14-16], rbx
-;; [type_check_comparison] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1538, Column: 3
+;; [type_check_comparison] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1537, Column: 3
   push QWORD [r14-8]
-;; [type_check_comparison] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1538, Column: 9
+;; [type_check_comparison] FUNCTION_CALL Token.value | File: compiler/typecheck.torth, Row: 1537, Column: 9
   call VG9rZW4udmFsdWU_
-;; [type_check_comparison] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1538, Column: 21
+;; [type_check_comparison] FUNCTION_CALL str.copy | File: compiler/typecheck.torth, Row: 1537, Column: 21
   call c3RyLmNvcHk_
-;; [type_check_comparison] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1538, Column: 30
+;; [type_check_comparison] FUNCTION_CALL str.upper | File: compiler/typecheck.torth, Row: 1537, Column: 30
   call c3RyLnVwcGVy
+;; [type_check_comparison] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1538, Column: 3
+  push QWORD [r14-16]
+;; [type_check_comparison] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1538, Column: 14
+  call VHlwZVN0YWNrLmNvcHk_
 ;; [type_check_comparison] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1539, Column: 3
   push QWORD [r14-16]
-;; [type_check_comparison] FUNCTION_CALL TypeStack.copy | File: compiler/typecheck.torth, Row: 1539, Column: 14
-  call VHlwZVN0YWNrLmNvcHk_
+;; [type_check_comparison] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1539, Column: 14
+  call TGlua2VkTGlzdC5wb3A_
+;; [type_check_comparison] CAST | File: compiler/typecheck.torth, Row: 1539, Column: 29
 ;; [type_check_comparison] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1540, Column: 3
   push QWORD [r14-16]
 ;; [type_check_comparison] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1540, Column: 14
   call TGlua2VkTGlzdC5wb3A_
 ;; [type_check_comparison] CAST | File: compiler/typecheck.torth, Row: 1540, Column: 29
-;; [type_check_comparison] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1541, Column: 3
-  push QWORD [r14-16]
-;; [type_check_comparison] FUNCTION_CALL LinkedList.pop | File: compiler/typecheck.torth, Row: 1541, Column: 14
-  call TGlua2VkTGlzdC5wb3A_
-;; [type_check_comparison] CAST | File: compiler/typecheck.torth, Row: 1541, Column: 29
-;; [type_check_comparison] TAKE | File: compiler/typecheck.torth, Row: 1542, Column: 3
-;; [type_check_comparison] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1542, Column: 8
+;; [type_check_comparison] TAKE | File: compiler/typecheck.torth, Row: 1541, Column: 3
+;; [type_check_comparison] POP_BIND t2 | File: compiler/typecheck.torth, Row: 1541, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [type_check_comparison] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1542, Column: 11
+;; [type_check_comparison] POP_BIND t1 | File: compiler/typecheck.torth, Row: 1541, Column: 11
   pop rbx
   mov [r14-32], rbx
-;; [type_check_comparison] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1542, Column: 14
+;; [type_check_comparison] POP_BIND temp_stack | File: compiler/typecheck.torth, Row: 1541, Column: 14
   pop rbx
   mov [r14-40], rbx
-;; [type_check_comparison] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1542, Column: 25
+;; [type_check_comparison] POP_BIND token_value | File: compiler/typecheck.torth, Row: 1541, Column: 25
   pop rbx
   mov [r14-48], rbx
-;; [type_check_comparison] IN | File: compiler/typecheck.torth, Row: 1542, Column: 37
-;; [type_check_comparison] IF | File: compiler/typecheck.torth, Row: 1545, Column: 3
-;; [type_check_comparison] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1545, Column: 6
+;; [type_check_comparison] IN | File: compiler/typecheck.torth, Row: 1541, Column: 37
+;; [type_check_comparison] IF | File: compiler/typecheck.torth, Row: 1544, Column: 3
+;; [type_check_comparison] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1544, Column: 6
   push QWORD [r14-24]
-;; [type_check_comparison] CAST | File: compiler/typecheck.torth, Row: 1545, Column: 9
-;; [type_check_comparison] PUSH_INT | File: compiler/typecheck.torth, Row: 1545, Column: 19
+;; [type_check_comparison] CAST | File: compiler/typecheck.torth, Row: 1544, Column: 9
+;; [type_check_comparison] PUSH_INT | File: compiler/typecheck.torth, Row: 1544, Column: 19
   mov rax, -1
   push rax
-;; [type_check_comparison] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1545, Column: 22
+;; [type_check_comparison] INTRINSIC EQ | File: compiler/typecheck.torth, Row: 1544, Column: 22
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [type_check_comparison] DO | File: compiler/typecheck.torth, Row: 1545, Column: 25
+;; [type_check_comparison] DO | File: compiler/typecheck.torth, Row: 1544, Column: 25
   pop rax
   test rax, rax
-  jz type_check_comparison_ELIF33
-;; [type_check_comparison] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1546, Column: 5
+  jz type_check_comparison_ENDIF33
+;; [type_check_comparison] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1545, Column: 5
   push QWORD [r14-40]
-;; [type_check_comparison] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1546, Column: 16
+;; [type_check_comparison] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1545, Column: 16
   push QWORD [r14-8]
-;; [type_check_comparison] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1547, Column: 5
+;; [type_check_comparison] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1546, Column: 5
   push QWORD [r14-48]
-;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1547, Column: 17
+;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1546, Column: 17
   mov rsi, type_check_comparison_s29 ; Pointer to string
 
   push rsi
-;; [type_check_comparison] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1547, Column: 53
+;; [type_check_comparison] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1546, Column: 53
   call c3RyLmNhdA__
-;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1548, Column: 5
+;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1547, Column: 5
   mov rsi, type_check_comparison_s31 ; Pointer to string
 
   push rsi
-;; [type_check_comparison] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1548, Column: 28
+;; [type_check_comparison] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1547, Column: 28
   call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_comparison] ELIF | File: compiler/typecheck.torth, Row: 1550, Column: 3
-  jmp type_check_comparison_ENDIF63
-type_check_comparison_ELIF33:
-;; [type_check_comparison] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1551, Column: 5
-  push QWORD [r14-32]
-;; [type_check_comparison] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1551, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_comparison] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1551, Column: 22
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_comparison] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1551, Column: 36
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_comparison] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1551, Column: 55
-  call bm90
-;; [type_check_comparison] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1552, Column: 5
-  push QWORD [r14-24]
-;; [type_check_comparison] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1552, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_comparison] FUNCTION_CALL INTEGER_TYPES | File: compiler/typecheck.torth, Row: 1552, Column: 22
-  call SU5URUdFUl9UWVBFUw__
-;; [type_check_comparison] FUNCTION_CALL Array.contains_str | File: compiler/typecheck.torth, Row: 1552, Column: 36
-  call QXJyYXkuY29udGFpbnNfc3Ry
-;; [type_check_comparison] FUNCTION_CALL not | File: compiler/typecheck.torth, Row: 1552, Column: 55
-  call bm90
-;; [type_check_comparison] FUNCTION_CALL || | File: compiler/typecheck.torth, Row: 1553, Column: 5
-  call fHw_
-;; [type_check_comparison] DO | File: compiler/typecheck.torth, Row: 1554, Column: 3
-  pop rax
-  test rax, rax
-  jz type_check_comparison_ENDIF63
-;; [type_check_comparison] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1555, Column: 5
-  push QWORD [r14-40]
-;; [type_check_comparison] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1555, Column: 16
+;; [type_check_comparison] ENDIF | File: compiler/typecheck.torth, Row: 1549, Column: 3
+type_check_comparison_ENDIF33:
+;; [type_check_comparison] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1552, Column: 3
   push QWORD [r14-8]
-;; [type_check_comparison] PUSH_BIND token_value | File: compiler/typecheck.torth, Row: 1556, Column: 5
-  push QWORD [r14-48]
-;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1556, Column: 17
-  mov rsi, type_check_comparison_s49 ; Pointer to string
-
-  push rsi
-;; [type_check_comparison] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1556, Column: 56
-  call c3RyLmNhdA__
-;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1557, Column: 5
-  mov rsi, type_check_comparison_s51 ; Pointer to string
-
-  push rsi
-;; [type_check_comparison] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1557, Column: 23
-  call c3RyLmNhdA__
-;; [type_check_comparison] PUSH_BIND t1 | File: compiler/typecheck.torth, Row: 1558, Column: 5
-  push QWORD [r14-32]
-;; [type_check_comparison] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1558, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_comparison] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1558, Column: 22
-  call c3RyLmNhdA__
-;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1558, Column: 30
-  mov rsi, type_check_comparison_s56 ; Pointer to string
-
-  push rsi
-;; [type_check_comparison] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1558, Column: 35
-  call c3RyLmNhdA__
-;; [type_check_comparison] PUSH_BIND t2 | File: compiler/typecheck.torth, Row: 1559, Column: 5
-  push QWORD [r14-24]
-;; [type_check_comparison] FUNCTION_CALL TypeNode.type | File: compiler/typecheck.torth, Row: 1559, Column: 8
-  call VHlwZU5vZGUudHlwZQ__
-;; [type_check_comparison] FUNCTION_CALL str.cat | File: compiler/typecheck.torth, Row: 1559, Column: 22
-  call c3RyLmNhdA__
-;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1560, Column: 5
-  mov rsi, type_check_comparison_s61 ; Pointer to string
-
-  push rsi
-;; [type_check_comparison] FUNCTION_CALL CompilerErrorWithStack | File: compiler/typecheck.torth, Row: 1560, Column: 19
-  call Q29tcGlsZXJFcnJvcldpdGhTdGFjaw__
-;; [type_check_comparison] ENDIF | File: compiler/typecheck.torth, Row: 1561, Column: 3
-type_check_comparison_ENDIF63:
-;; [type_check_comparison] PUSH_BIND token | File: compiler/typecheck.torth, Row: 1564, Column: 3
-  push QWORD [r14-8]
-;; [type_check_comparison] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1564, Column: 9
+;; [type_check_comparison] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1552, Column: 9
   call VG9rZW4ubG9jYXRpb24_
-;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1564, Column: 24
-  mov rsi, type_check_comparison_s66 ; Pointer to string
+;; [type_check_comparison] PUSH_STR | File: compiler/typecheck.torth, Row: 1552, Column: 24
+  mov rsi, type_check_comparison_s36 ; Pointer to string
 
   push rsi
-;; [type_check_comparison] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1564, Column: 31
+;; [type_check_comparison] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1552, Column: 31
   call VHlwZU5vZGUuaW5pdA__
-;; [type_check_comparison] CAST | File: compiler/typecheck.torth, Row: 1564, Column: 45
-;; [type_check_comparison] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1565, Column: 3
+;; [type_check_comparison] CAST | File: compiler/typecheck.torth, Row: 1552, Column: 45
+;; [type_check_comparison] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1553, Column: 3
   push QWORD [r14-16]
-;; [type_check_comparison] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1565, Column: 14
+;; [type_check_comparison] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1553, Column: 14
   call TGlua2VkTGlzdC5wdXNo
+;; [type_check_comparison] FUNCTION_CALL TypeNode.size | File: compiler/typecheck.torth, Row: 1556, Column: 3
+  call VHlwZU5vZGUuc2l6ZQ__
+;; [type_check_comparison] PUSH_BIND temp_stack | File: compiler/typecheck.torth, Row: 1556, Column: 17
+  push QWORD [r14-40]
+;; [type_check_comparison] FUNCTION_CALL LinkedList.delete | File: compiler/typecheck.torth, Row: 1556, Column: 28
+  call TGlua2VkTGlzdC5kZWxldGU_
 ;; [type_check_comparison] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -16194,59 +16013,59 @@ Z2V0X25vdF90eXBlZF90b2tlbnM_:
 ;; [get_not_typed_tokens] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_not_typed_tokens] FUNCTION_CALL List.init | File: compiler/typecheck.torth, Row: 1575, Column: 3
+;; [get_not_typed_tokens] FUNCTION_CALL List.init | File: compiler/typecheck.torth, Row: 1566, Column: 3
   call TGlzdC5pbml0
-;; [get_not_typed_tokens] TAKE | File: compiler/typecheck.torth, Row: 1575, Column: 13
-;; [get_not_typed_tokens] POP_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1575, Column: 18
+;; [get_not_typed_tokens] TAKE | File: compiler/typecheck.torth, Row: 1566, Column: 13
+;; [get_not_typed_tokens] POP_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1566, Column: 18
   pop rbx
   mov [r14-8], rbx
-;; [get_not_typed_tokens] IN | File: compiler/typecheck.torth, Row: 1575, Column: 35
-;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1576, Column: 3
+;; [get_not_typed_tokens] IN | File: compiler/typecheck.torth, Row: 1566, Column: 35
+;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1567, Column: 3
   mov rsi, get_not_typed_tokens_s4 ; Pointer to string
 
   push rsi
-;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1576, Column: 15
-;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1576, Column: 25
+;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1567, Column: 15
+;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1567, Column: 25
   push QWORD [r14-8]
-;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1576, Column: 42
+;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1567, Column: 42
   call TGlzdC5hcHBlbmQ_
-;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1577, Column: 3
+;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1568, Column: 3
   mov rsi, get_not_typed_tokens_s8 ; Pointer to string
 
   push rsi
-;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1577, Column: 15
-;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1577, Column: 25
+;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1568, Column: 15
+;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1568, Column: 25
   push QWORD [r14-8]
-;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1577, Column: 42
+;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1568, Column: 42
   call TGlzdC5hcHBlbmQ_
-;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1578, Column: 3
+;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1569, Column: 3
   mov rsi, get_not_typed_tokens_s12 ; Pointer to string
 
   push rsi
-;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1578, Column: 15
-;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1578, Column: 25
+;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1569, Column: 15
+;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1569, Column: 25
   push QWORD [r14-8]
-;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1578, Column: 42
+;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1569, Column: 42
   call TGlzdC5hcHBlbmQ_
-;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1579, Column: 3
+;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1570, Column: 3
   mov rsi, get_not_typed_tokens_s16 ; Pointer to string
 
   push rsi
-;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1579, Column: 15
-;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1579, Column: 25
+;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1570, Column: 15
+;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1570, Column: 25
   push QWORD [r14-8]
-;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1579, Column: 42
+;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1570, Column: 42
   call TGlzdC5hcHBlbmQ_
-;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1580, Column: 3
+;; [get_not_typed_tokens] PUSH_STR | File: compiler/typecheck.torth, Row: 1571, Column: 3
   mov rsi, get_not_typed_tokens_s20 ; Pointer to string
 
   push rsi
-;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1580, Column: 15
-;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1580, Column: 25
+;; [get_not_typed_tokens] CAST | File: compiler/typecheck.torth, Row: 1571, Column: 15
+;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1571, Column: 25
   push QWORD [r14-8]
-;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1580, Column: 42
+;; [get_not_typed_tokens] FUNCTION_CALL List.append | File: compiler/typecheck.torth, Row: 1571, Column: 42
   call TGlzdC5hcHBlbmQ_
-;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1581, Column: 3
+;; [get_not_typed_tokens] PUSH_BIND not_typed_tokens | File: compiler/typecheck.torth, Row: 1572, Column: 3
   push QWORD [r14-8]
 ;; [get_not_typed_tokens] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -16257,107 +16076,107 @@ Z2V0X2Z1bmN0aW9uX3R5cGVfc3RhY2s_:
 ;; [get_function_type_stack] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_function_type_stack] POP_BIND func | File: compiler/typecheck.torth, Row: 1589, Column: 34
+;; [get_function_type_stack] POP_BIND func | File: compiler/typecheck.torth, Row: 1580, Column: 34
   pop rbx
   mov [r14-8], rbx
-;; [get_function_type_stack] PUSH_BIND func | File: compiler/typecheck.torth, Row: 1590, Column: 3
+;; [get_function_type_stack] PUSH_BIND func | File: compiler/typecheck.torth, Row: 1581, Column: 3
   push QWORD [r14-8]
-;; [get_function_type_stack] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 1590, Column: 8
+;; [get_function_type_stack] FUNCTION_CALL Func.signature | File: compiler/typecheck.torth, Row: 1581, Column: 8
   call RnVuYy5zaWduYXR1cmU_
-;; [get_function_type_stack] FUNCTION_CALL Signature.params | File: compiler/typecheck.torth, Row: 1590, Column: 23
+;; [get_function_type_stack] FUNCTION_CALL Signature.params | File: compiler/typecheck.torth, Row: 1581, Column: 23
   call U2lnbmF0dXJlLnBhcmFtcw__
-;; [get_function_type_stack] INTRINSIC dup | File: compiler/typecheck.torth, Row: 1591, Column: 3
+;; [get_function_type_stack] INTRINSIC dup | File: compiler/typecheck.torth, Row: 1582, Column: 3
   push QWORD [rsp]
-;; [get_function_type_stack] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 1591, Column: 7
+;; [get_function_type_stack] FUNCTION_CALL List.len | File: compiler/typecheck.torth, Row: 1582, Column: 7
   call TGlzdC5sZW4_
-;; [get_function_type_stack] PUSH_INT | File: compiler/typecheck.torth, Row: 1591, Column: 16
+;; [get_function_type_stack] PUSH_INT | File: compiler/typecheck.torth, Row: 1582, Column: 16
   mov rax, 1
   push rax
-;; [get_function_type_stack] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 1591, Column: 18
+;; [get_function_type_stack] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 1582, Column: 18
   pop rax
   sub [rsp], rax
-;; [get_function_type_stack] FUNCTION_CALL LinkedList.init | File: compiler/typecheck.torth, Row: 1592, Column: 3
+;; [get_function_type_stack] FUNCTION_CALL LinkedList.init | File: compiler/typecheck.torth, Row: 1583, Column: 3
   call TGlua2VkTGlzdC5pbml0
-;; [get_function_type_stack] TAKE | File: compiler/typecheck.torth, Row: 1593, Column: 3
-;; [get_function_type_stack] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1594, Column: 5
+;; [get_function_type_stack] TAKE | File: compiler/typecheck.torth, Row: 1584, Column: 3
+;; [get_function_type_stack] POP_BIND type_stack | File: compiler/typecheck.torth, Row: 1585, Column: 5
   pop rbx
   mov [r14-16], rbx
-;; [get_function_type_stack] POP_BIND index | File: compiler/typecheck.torth, Row: 1595, Column: 5
+;; [get_function_type_stack] POP_BIND index | File: compiler/typecheck.torth, Row: 1586, Column: 5
   pop rbx
   mov [r14-24], rbx
-;; [get_function_type_stack] POP_BIND params | File: compiler/typecheck.torth, Row: 1596, Column: 5
+;; [get_function_type_stack] POP_BIND params | File: compiler/typecheck.torth, Row: 1587, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [get_function_type_stack] IN | File: compiler/typecheck.torth, Row: 1597, Column: 3
-;; [get_function_type_stack] PUSH_BIND func | File: compiler/typecheck.torth, Row: 1600, Column: 3
+;; [get_function_type_stack] IN | File: compiler/typecheck.torth, Row: 1588, Column: 3
+;; [get_function_type_stack] PUSH_BIND func | File: compiler/typecheck.torth, Row: 1591, Column: 3
   push QWORD [r14-8]
-;; [get_function_type_stack] FUNCTION_CALL Func.tokens | File: compiler/typecheck.torth, Row: 1600, Column: 8
+;; [get_function_type_stack] FUNCTION_CALL Func.tokens | File: compiler/typecheck.torth, Row: 1591, Column: 8
   call RnVuYy50b2tlbnM_
-;; [get_function_type_stack] CAST | File: compiler/typecheck.torth, Row: 1600, Column: 20
-;; [get_function_type_stack] FUNCTION_CALL List.first | File: compiler/typecheck.torth, Row: 1600, Column: 31
+;; [get_function_type_stack] CAST | File: compiler/typecheck.torth, Row: 1591, Column: 20
+;; [get_function_type_stack] FUNCTION_CALL List.first | File: compiler/typecheck.torth, Row: 1591, Column: 31
   call TGlzdC5maXJzdA__
-;; [get_function_type_stack] FUNCTION_CALL Token.load | File: compiler/typecheck.torth, Row: 1600, Column: 42
+;; [get_function_type_stack] FUNCTION_CALL Token.load | File: compiler/typecheck.torth, Row: 1591, Column: 42
   call VG9rZW4ubG9hZA__
-;; [get_function_type_stack] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1600, Column: 53
+;; [get_function_type_stack] FUNCTION_CALL Token.location | File: compiler/typecheck.torth, Row: 1591, Column: 53
   call VG9rZW4ubG9jYXRpb24_
-;; [get_function_type_stack] TAKE | File: compiler/typecheck.torth, Row: 1601, Column: 3
-;; [get_function_type_stack] POP_BIND location | File: compiler/typecheck.torth, Row: 1601, Column: 8
+;; [get_function_type_stack] TAKE | File: compiler/typecheck.torth, Row: 1592, Column: 3
+;; [get_function_type_stack] POP_BIND location | File: compiler/typecheck.torth, Row: 1592, Column: 8
   pop rbx
   mov [r14-40], rbx
-;; [get_function_type_stack] IN | File: compiler/typecheck.torth, Row: 1601, Column: 17
-;; [get_function_type_stack] WHILE | File: compiler/typecheck.torth, Row: 1604, Column: 3
+;; [get_function_type_stack] IN | File: compiler/typecheck.torth, Row: 1592, Column: 17
+;; [get_function_type_stack] WHILE | File: compiler/typecheck.torth, Row: 1595, Column: 3
 get_function_type_stack_WHILE23:
-;; [get_function_type_stack] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1604, Column: 9
+;; [get_function_type_stack] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1595, Column: 9
   push QWORD [r14-24]
-;; [get_function_type_stack] PUSH_INT | File: compiler/typecheck.torth, Row: 1604, Column: 15
+;; [get_function_type_stack] PUSH_INT | File: compiler/typecheck.torth, Row: 1595, Column: 15
   mov rax, 0
   push rax
-;; [get_function_type_stack] INTRINSIC GE | File: compiler/typecheck.torth, Row: 1604, Column: 17
+;; [get_function_type_stack] INTRINSIC GE | File: compiler/typecheck.torth, Row: 1595, Column: 17
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovge rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_function_type_stack] DO | File: compiler/typecheck.torth, Row: 1604, Column: 20
+;; [get_function_type_stack] DO | File: compiler/typecheck.torth, Row: 1595, Column: 20
   pop rax
   test rax, rax
   jz get_function_type_stack_DONE42
-;; [get_function_type_stack] PUSH_BIND location | File: compiler/typecheck.torth, Row: 1606, Column: 5
+;; [get_function_type_stack] PUSH_BIND location | File: compiler/typecheck.torth, Row: 1597, Column: 5
   push QWORD [r14-40]
-;; [get_function_type_stack] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1607, Column: 5
+;; [get_function_type_stack] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1598, Column: 5
   push QWORD [r14-24]
-;; [get_function_type_stack] PUSH_BIND params | File: compiler/typecheck.torth, Row: 1607, Column: 11
+;; [get_function_type_stack] PUSH_BIND params | File: compiler/typecheck.torth, Row: 1598, Column: 11
   push QWORD [r14-32]
-;; [get_function_type_stack] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 1607, Column: 18
+;; [get_function_type_stack] FUNCTION_CALL List.nth | File: compiler/typecheck.torth, Row: 1598, Column: 18
   call TGlzdC5udGg_
-;; [get_function_type_stack] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 1607, Column: 27
+;; [get_function_type_stack] FUNCTION_CALL str.load | File: compiler/typecheck.torth, Row: 1598, Column: 27
   call c3RyLmxvYWQ_
-;; [get_function_type_stack] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1608, Column: 5
+;; [get_function_type_stack] FUNCTION_CALL TypeNode.init | File: compiler/typecheck.torth, Row: 1599, Column: 5
   call VHlwZU5vZGUuaW5pdA__
-;; [get_function_type_stack] CAST | File: compiler/typecheck.torth, Row: 1608, Column: 19
-;; [get_function_type_stack] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1609, Column: 5
+;; [get_function_type_stack] CAST | File: compiler/typecheck.torth, Row: 1599, Column: 19
+;; [get_function_type_stack] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1600, Column: 5
   push QWORD [r14-16]
-;; [get_function_type_stack] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1609, Column: 16
+;; [get_function_type_stack] FUNCTION_CALL LinkedList.push | File: compiler/typecheck.torth, Row: 1600, Column: 16
   call TGlua2VkTGlzdC5wdXNo
-;; [get_function_type_stack] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1610, Column: 5
+;; [get_function_type_stack] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1601, Column: 5
   push QWORD [r14-24]
-;; [get_function_type_stack] PUSH_INT | File: compiler/typecheck.torth, Row: 1610, Column: 11
+;; [get_function_type_stack] PUSH_INT | File: compiler/typecheck.torth, Row: 1601, Column: 11
   mov rax, 1
   push rax
-;; [get_function_type_stack] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 1610, Column: 13
+;; [get_function_type_stack] INTRINSIC MINUS | File: compiler/typecheck.torth, Row: 1601, Column: 13
   pop rax
   sub [rsp], rax
-;; [get_function_type_stack] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1610, Column: 15
+;; [get_function_type_stack] PUSH_BIND index | File: compiler/typecheck.torth, Row: 1601, Column: 15
   push QWORD [r14-24]
-;; [get_function_type_stack] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1610, Column: 21
+;; [get_function_type_stack] ASSIGN_BIND | File: compiler/typecheck.torth, Row: 1601, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [get_function_type_stack] DONE | File: compiler/typecheck.torth, Row: 1611, Column: 3
+;; [get_function_type_stack] DONE | File: compiler/typecheck.torth, Row: 1602, Column: 3
   jmp get_function_type_stack_WHILE23
 get_function_type_stack_DONE42:
-;; [get_function_type_stack] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1612, Column: 3
+;; [get_function_type_stack] PUSH_BIND type_stack | File: compiler/typecheck.torth, Row: 1603, Column: 3
   push QWORD [r14-16]
 ;; [get_function_type_stack] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -18154,6 +17973,68 @@ TGlua2VkTGlzdC5pc19lbXB0eQ__:
 ;; [LinkedList.is_empty] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 8 ; 0 local variables
+  ret
+
+TGlua2VkTGlzdC5kZWxldGU_:
+;; [LinkedList.delete] Save the return address to return stack
+  add r14, 32 ; 3 local variables
+  pop QWORD [r14] ; Save return address from stack
+;; [LinkedList.delete] POP_BIND linked_list | File: lib/typing.torth, Row: 617, Column: 28
+  pop rbx
+  mov [r14-8], rbx
+;; [LinkedList.delete] POP_BIND data_size | File: lib/typing.torth, Row: 617, Column: 45
+  pop rbx
+  mov [r14-16], rbx
+;; [LinkedList.delete] PUSH_BIND linked_list | File: lib/typing.torth, Row: 618, Column: 5
+  push QWORD [r14-8]
+;; [LinkedList.delete] CAST | File: lib/typing.torth, Row: 618, Column: 17
+;; [LinkedList.delete] FUNCTION_CALL Node.load | File: lib/typing.torth, Row: 618, Column: 27
+  call Tm9kZS5sb2Fk
+;; [LinkedList.delete] TAKE | File: lib/typing.torth, Row: 619, Column: 5
+;; [LinkedList.delete] POP_BIND node | File: lib/typing.torth, Row: 619, Column: 10
+  pop rbx
+  mov [r14-24], rbx
+;; [LinkedList.delete] IN | File: lib/typing.torth, Row: 619, Column: 15
+;; [LinkedList.delete] WHILE | File: lib/typing.torth, Row: 621, Column: 5
+LinkedList.delete_WHILE8:
+;; [LinkedList.delete] PUSH_BIND node | File: lib/typing.torth, Row: 621, Column: 11
+  push QWORD [r14-24]
+;; [LinkedList.delete] CAST | File: lib/typing.torth, Row: 621, Column: 16
+;; [LinkedList.delete] PUSH_INT | File: lib/typing.torth, Row: 621, Column: 26
+  mov rax, 0
+  push rax
+;; [LinkedList.delete] INTRINSIC NE | File: lib/typing.torth, Row: 621, Column: 31
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmovne rcx, rdx
+  mov QWORD [rsp], rcx
+;; [LinkedList.delete] DO | File: lib/typing.torth, Row: 621, Column: 34
+  pop rax
+  test rax, rax
+  jz LinkedList.delete_DONE22
+;; [LinkedList.delete] PUSH_BIND node | File: lib/typing.torth, Row: 622, Column: 9
+  push QWORD [r14-24]
+;; [LinkedList.delete] FUNCTION_CALL Node.next | File: lib/typing.torth, Row: 622, Column: 14
+  call Tm9kZS5uZXh0
+;; [LinkedList.delete] PUSH_BIND data_size | File: lib/typing.torth, Row: 623, Column: 9
+  push QWORD [r14-16]
+;; [LinkedList.delete] PUSH_BIND node | File: lib/typing.torth, Row: 623, Column: 19
+  push QWORD [r14-24]
+;; [LinkedList.delete] FUNCTION_CALL Node.delete | File: lib/typing.torth, Row: 623, Column: 24
+  call Tm9kZS5kZWxldGU_
+;; [LinkedList.delete] TAKE | File: lib/typing.torth, Row: 624, Column: 9
+;; [LinkedList.delete] POP_BIND node | File: lib/typing.torth, Row: 624, Column: 14
+  pop rbx
+  mov [r14-24], rbx
+;; [LinkedList.delete] IN | File: lib/typing.torth, Row: 624, Column: 19
+;; [LinkedList.delete] DONE | File: lib/typing.torth, Row: 625, Column: 5
+  jmp LinkedList.delete_WHILE8
+LinkedList.delete_DONE22:
+;; [LinkedList.delete] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 32 ; 3 local variables
   ret
 
 Q29tcGlsZXJFcnJvcg__:
@@ -20600,106 +20481,6 @@ UGFyc2VyQXJndW1lbnQuc2l6ZQ__:
   sub r14, 8 ; 0 local variables
   ret
 
-QXJyYXkuY29udGFpbnNfc3Ry:
-;; [Array.contains_str] Save the return address to return stack
-  add r14, 48 ; 5 local variables
-  pop QWORD [r14] ; Save return address from stack
-;; [Array.contains_str] INTRINSIC dup | File: lib/typing.torth, Row: 205, Column: 9
-  push QWORD [rsp]
-;; [Array.contains_str] FUNCTION_CALL Array.len | File: lib/typing.torth, Row: 205, Column: 13
-  call QXJyYXkubGVu
-;; [Array.contains_str] PUSH_INT | File: lib/typing.torth, Row: 206, Column: 9
-  mov rax, 0
-  push rax
-;; [Array.contains_str] TAKE | File: lib/typing.torth, Row: 207, Column: 9
-;; [Array.contains_str] POP_BIND index | File: lib/typing.torth, Row: 208, Column: 13
-  pop rbx
-  mov [r14-8], rbx
-;; [Array.contains_str] POP_BIND len | File: lib/typing.torth, Row: 209, Column: 13
-  pop rbx
-  mov [r14-16], rbx
-;; [Array.contains_str] POP_BIND array | File: lib/typing.torth, Row: 210, Column: 13
-  pop rbx
-  mov [r14-24], rbx
-;; [Array.contains_str] POP_BIND string | File: lib/typing.torth, Row: 211, Column: 13
-  pop rbx
-  mov [r14-32], rbx
-;; [Array.contains_str] IN | File: lib/typing.torth, Row: 212, Column: 9
-;; [Array.contains_str] WHILE | File: lib/typing.torth, Row: 214, Column: 9
-Array.contains_str_WHILE9:
-;; [Array.contains_str] PUSH_BIND index | File: lib/typing.torth, Row: 214, Column: 15
-  push QWORD [r14-8]
-;; [Array.contains_str] PUSH_BIND len | File: lib/typing.torth, Row: 214, Column: 21
-  push QWORD [r14-16]
-;; [Array.contains_str] INTRINSIC LT | File: lib/typing.torth, Row: 214, Column: 25
-  pop rax
-  mov rcx, 0
-  mov rdx, 1
-  cmp QWORD [rsp], rax
-  cmovl rcx, rdx
-  mov QWORD [rsp], rcx
-;; [Array.contains_str] DO | File: lib/typing.torth, Row: 214, Column: 27
-  pop rax
-  test rax, rax
-  jz Array.contains_str_DONE34
-;; [Array.contains_str] PUSH_BIND index | File: lib/typing.torth, Row: 215, Column: 13
-  push QWORD [r14-8]
-;; [Array.contains_str] PUSH_BIND array | File: lib/typing.torth, Row: 215, Column: 19
-  push QWORD [r14-24]
-;; [Array.contains_str] FUNCTION_CALL Array.nth | File: lib/typing.torth, Row: 215, Column: 25
-  call QXJyYXkubnRo
-;; [Array.contains_str] FUNCTION_CALL str.load | File: lib/typing.torth, Row: 215, Column: 35
-  call c3RyLmxvYWQ_
-;; [Array.contains_str] TAKE | File: lib/typing.torth, Row: 216, Column: 13
-;; [Array.contains_str] POP_BIND array_string | File: lib/typing.torth, Row: 216, Column: 18
-  pop rbx
-  mov [r14-40], rbx
-;; [Array.contains_str] IN | File: lib/typing.torth, Row: 216, Column: 31
-;; [Array.contains_str] IF | File: lib/typing.torth, Row: 219, Column: 13
-;; [Array.contains_str] PUSH_BIND string | File: lib/typing.torth, Row: 219, Column: 16
-  push QWORD [r14-32]
-;; [Array.contains_str] PUSH_BIND array_string | File: lib/typing.torth, Row: 219, Column: 23
-  push QWORD [r14-40]
-;; [Array.contains_str] FUNCTION_CALL streq | File: lib/typing.torth, Row: 219, Column: 36
-  call c3RyZXE_
-;; [Array.contains_str] DO | File: lib/typing.torth, Row: 219, Column: 42
-  pop rax
-  test rax, rax
-  jz Array.contains_str_ENDIF28
-;; [Array.contains_str] PUSH_BOOL | File: lib/typing.torth, Row: 220, Column: 17
-  push 1
-;; [Array.contains_str] RETURN | File: lib/typing.torth, Row: 220, Column: 22
-;; [Array.contains_str] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 48 ; 5 local variables
-  ret
-
-;; [Array.contains_str] ENDIF | File: lib/typing.torth, Row: 221, Column: 13
-Array.contains_str_ENDIF28:
-;; [Array.contains_str] PUSH_BIND index | File: lib/typing.torth, Row: 222, Column: 13
-  push QWORD [r14-8]
-;; [Array.contains_str] PUSH_INT | File: lib/typing.torth, Row: 222, Column: 19
-  mov rax, 1
-  push rax
-;; [Array.contains_str] INTRINSIC PLUS | File: lib/typing.torth, Row: 222, Column: 21
-  pop rax
-  add [rsp], rax
-;; [Array.contains_str] PUSH_BIND index | File: lib/typing.torth, Row: 222, Column: 23
-  push QWORD [r14-8]
-;; [Array.contains_str] ASSIGN_BIND | File: lib/typing.torth, Row: 222, Column: 29
-  add rsp, 8
-  pop rbx
-  mov [r14-8], rbx
-;; [Array.contains_str] DONE | File: lib/typing.torth, Row: 223, Column: 9
-  jmp Array.contains_str_WHILE9
-Array.contains_str_DONE34:
-;; [Array.contains_str] PUSH_BOOL | File: lib/typing.torth, Row: 224, Column: 9
-  push 0
-;; [Array.contains_str] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 48 ; 5 local variables
-  ret
-
 TGlzdC5hcnJheQ__:
 ;; [List.array] Save the return address to return stack
   add r14, 8 ; 0 local variables
@@ -20766,6 +20547,38 @@ TGlzdC5pbml0:
 ;; [List.init] PUSH_BIND list | File: lib/typing.torth, Row: 358, Column: 9
   push QWORD [r14-16]
 ;; [List.init] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 24 ; 2 local variables
+  ret
+
+TGlzdC5kZWxldGU_:
+;; [List.delete] Save the return address to return stack
+  add r14, 24 ; 2 local variables
+  pop QWORD [r14] ; Save return address from stack
+;; [List.delete] INTRINSIC dup | File: lib/typing.torth, Row: 363, Column: 9
+  push QWORD [rsp]
+;; [List.delete] FUNCTION_CALL List.array | File: lib/typing.torth, Row: 363, Column: 13
+  call TGlzdC5hcnJheQ__
+;; [List.delete] TAKE | File: lib/typing.torth, Row: 364, Column: 9
+;; [List.delete] POP_BIND array | File: lib/typing.torth, Row: 364, Column: 14
+  pop rbx
+  mov [r14-8], rbx
+;; [List.delete] POP_BIND list | File: lib/typing.torth, Row: 364, Column: 20
+  pop rbx
+  mov [r14-16], rbx
+;; [List.delete] IN | File: lib/typing.torth, Row: 364, Column: 25
+;; [List.delete] PUSH_BIND array | File: lib/typing.torth, Row: 367, Column: 9
+  push QWORD [r14-8]
+;; [List.delete] FUNCTION_CALL Array.delete | File: lib/typing.torth, Row: 367, Column: 15
+  call QXJyYXkuZGVsZXRl
+;; [List.delete] FUNCTION_CALL List.size | File: lib/typing.torth, Row: 370, Column: 9
+  call TGlzdC5zaXpl
+;; [List.delete] PUSH_BIND list | File: lib/typing.torth, Row: 370, Column: 19
+  push QWORD [r14-16]
+;; [List.delete] CAST | File: lib/typing.torth, Row: 370, Column: 24
+;; [List.delete] FUNCTION_CALL munmap | File: lib/typing.torth, Row: 370, Column: 34
+  call bXVubWFw
+;; [List.delete] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 24 ; 2 local variables
   ret
@@ -21044,19 +20857,19 @@ Tm9kZS5kYXRh:
 ;; [Node.data] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node.data] PUSH_INT | File: lib/typing.torth, Row: 618, Column: 5
+;; [Node.data] PUSH_INT | File: lib/typing.torth, Row: 629, Column: 5
   mov rax, 0
   push rax
-;; [Node.data] INTRINSIC swap | File: lib/typing.torth, Row: 618, Column: 5
+;; [Node.data] INTRINSIC swap | File: lib/typing.torth, Row: 629, Column: 5
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [Node.data] CAST | File: lib/typing.torth, Row: 618, Column: 5
-;; [Node.data] INTRINSIC PLUS | File: lib/typing.torth, Row: 618, Column: 5
+;; [Node.data] CAST | File: lib/typing.torth, Row: 629, Column: 5
+;; [Node.data] INTRINSIC PLUS | File: lib/typing.torth, Row: 629, Column: 5
   pop rax
   add [rsp], rax
-;; [Node.data] CAST | File: lib/typing.torth, Row: 618, Column: 5
-;; [Node.data] INTRINSIC LOAD_QWORD | File: lib/typing.torth, Row: 618, Column: 5
+;; [Node.data] CAST | File: lib/typing.torth, Row: 629, Column: 5
+;; [Node.data] INTRINSIC LOAD_QWORD | File: lib/typing.torth, Row: 629, Column: 5
   pop rax
   xor rbx, rbx
   mov rbx, [rax]
@@ -21070,19 +20883,19 @@ Tm9kZS0@ZGF0YQ__:
 ;; [Node->data] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node->data] PUSH_INT | File: lib/typing.torth, Row: 618, Column: 5
+;; [Node->data] PUSH_INT | File: lib/typing.torth, Row: 629, Column: 5
   mov rax, 0
   push rax
-;; [Node->data] INTRINSIC swap | File: lib/typing.torth, Row: 618, Column: 5
+;; [Node->data] INTRINSIC swap | File: lib/typing.torth, Row: 629, Column: 5
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [Node->data] CAST | File: lib/typing.torth, Row: 618, Column: 5
-;; [Node->data] INTRINSIC PLUS | File: lib/typing.torth, Row: 618, Column: 5
+;; [Node->data] CAST | File: lib/typing.torth, Row: 629, Column: 5
+;; [Node->data] INTRINSIC PLUS | File: lib/typing.torth, Row: 629, Column: 5
   pop rax
   add [rsp], rax
-;; [Node->data] CAST | File: lib/typing.torth, Row: 618, Column: 5
-;; [Node->data] INTRINSIC STORE_QWORD | File: lib/typing.torth, Row: 618, Column: 5
+;; [Node->data] CAST | File: lib/typing.torth, Row: 629, Column: 5
+;; [Node->data] INTRINSIC STORE_QWORD | File: lib/typing.torth, Row: 629, Column: 5
   pop rax
   pop rbx
   mov [rax], rbx
@@ -21095,19 +20908,19 @@ Tm9kZS5uZXh0:
 ;; [Node.next] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node.next] PUSH_INT | File: lib/typing.torth, Row: 619, Column: 5
+;; [Node.next] PUSH_INT | File: lib/typing.torth, Row: 630, Column: 5
   mov rax, 8
   push rax
-;; [Node.next] INTRINSIC swap | File: lib/typing.torth, Row: 619, Column: 5
+;; [Node.next] INTRINSIC swap | File: lib/typing.torth, Row: 630, Column: 5
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [Node.next] CAST | File: lib/typing.torth, Row: 619, Column: 5
-;; [Node.next] INTRINSIC PLUS | File: lib/typing.torth, Row: 619, Column: 5
+;; [Node.next] CAST | File: lib/typing.torth, Row: 630, Column: 5
+;; [Node.next] INTRINSIC PLUS | File: lib/typing.torth, Row: 630, Column: 5
   pop rax
   add [rsp], rax
-;; [Node.next] CAST | File: lib/typing.torth, Row: 619, Column: 5
-;; [Node.next] INTRINSIC LOAD_QWORD | File: lib/typing.torth, Row: 619, Column: 5
+;; [Node.next] CAST | File: lib/typing.torth, Row: 630, Column: 5
+;; [Node.next] INTRINSIC LOAD_QWORD | File: lib/typing.torth, Row: 630, Column: 5
   pop rax
   xor rbx, rbx
   mov rbx, [rax]
@@ -21121,19 +20934,19 @@ Tm9kZS0@bmV4dA__:
 ;; [Node->next] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node->next] PUSH_INT | File: lib/typing.torth, Row: 619, Column: 5
+;; [Node->next] PUSH_INT | File: lib/typing.torth, Row: 630, Column: 5
   mov rax, 8
   push rax
-;; [Node->next] INTRINSIC swap | File: lib/typing.torth, Row: 619, Column: 5
+;; [Node->next] INTRINSIC swap | File: lib/typing.torth, Row: 630, Column: 5
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [Node->next] CAST | File: lib/typing.torth, Row: 619, Column: 5
-;; [Node->next] INTRINSIC PLUS | File: lib/typing.torth, Row: 619, Column: 5
+;; [Node->next] CAST | File: lib/typing.torth, Row: 630, Column: 5
+;; [Node->next] INTRINSIC PLUS | File: lib/typing.torth, Row: 630, Column: 5
   pop rax
   add [rsp], rax
-;; [Node->next] CAST | File: lib/typing.torth, Row: 619, Column: 5
-;; [Node->next] INTRINSIC STORE_QWORD | File: lib/typing.torth, Row: 619, Column: 5
+;; [Node->next] CAST | File: lib/typing.torth, Row: 630, Column: 5
+;; [Node->next] INTRINSIC STORE_QWORD | File: lib/typing.torth, Row: 630, Column: 5
   pop rax
   pop rbx
   mov [rax], rbx
@@ -21146,19 +20959,19 @@ Tm9kZS5wcmV2:
 ;; [Node.prev] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node.prev] PUSH_INT | File: lib/typing.torth, Row: 620, Column: 5
+;; [Node.prev] PUSH_INT | File: lib/typing.torth, Row: 631, Column: 5
   mov rax, 16
   push rax
-;; [Node.prev] INTRINSIC swap | File: lib/typing.torth, Row: 620, Column: 5
+;; [Node.prev] INTRINSIC swap | File: lib/typing.torth, Row: 631, Column: 5
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [Node.prev] CAST | File: lib/typing.torth, Row: 620, Column: 5
-;; [Node.prev] INTRINSIC PLUS | File: lib/typing.torth, Row: 620, Column: 5
+;; [Node.prev] CAST | File: lib/typing.torth, Row: 631, Column: 5
+;; [Node.prev] INTRINSIC PLUS | File: lib/typing.torth, Row: 631, Column: 5
   pop rax
   add [rsp], rax
-;; [Node.prev] CAST | File: lib/typing.torth, Row: 620, Column: 5
-;; [Node.prev] INTRINSIC LOAD_QWORD | File: lib/typing.torth, Row: 620, Column: 5
+;; [Node.prev] CAST | File: lib/typing.torth, Row: 631, Column: 5
+;; [Node.prev] INTRINSIC LOAD_QWORD | File: lib/typing.torth, Row: 631, Column: 5
   pop rax
   xor rbx, rbx
   mov rbx, [rax]
@@ -21172,19 +20985,19 @@ Tm9kZS0@cHJldg__:
 ;; [Node->prev] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node->prev] PUSH_INT | File: lib/typing.torth, Row: 620, Column: 5
+;; [Node->prev] PUSH_INT | File: lib/typing.torth, Row: 631, Column: 5
   mov rax, 16
   push rax
-;; [Node->prev] INTRINSIC swap | File: lib/typing.torth, Row: 620, Column: 5
+;; [Node->prev] INTRINSIC swap | File: lib/typing.torth, Row: 631, Column: 5
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [Node->prev] CAST | File: lib/typing.torth, Row: 620, Column: 5
-;; [Node->prev] INTRINSIC PLUS | File: lib/typing.torth, Row: 620, Column: 5
+;; [Node->prev] CAST | File: lib/typing.torth, Row: 631, Column: 5
+;; [Node->prev] INTRINSIC PLUS | File: lib/typing.torth, Row: 631, Column: 5
   pop rax
   add [rsp], rax
-;; [Node->prev] CAST | File: lib/typing.torth, Row: 620, Column: 5
-;; [Node->prev] INTRINSIC STORE_QWORD | File: lib/typing.torth, Row: 620, Column: 5
+;; [Node->prev] CAST | File: lib/typing.torth, Row: 631, Column: 5
+;; [Node->prev] INTRINSIC STORE_QWORD | File: lib/typing.torth, Row: 631, Column: 5
   pop rax
   pop rbx
   mov [rax], rbx
@@ -21197,9 +21010,9 @@ Tm9kZS5sb2Fk:
 ;; [Node.load] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node.load] FUNCTION_CALL ptr.load | File: lib/typing.torth, Row: 623, Column: 9
+;; [Node.load] FUNCTION_CALL ptr.load | File: lib/typing.torth, Row: 634, Column: 9
   call cHRyLmxvYWQ_
-;; [Node.load] CAST | File: lib/typing.torth, Row: 623, Column: 18
+;; [Node.load] CAST | File: lib/typing.torth, Row: 634, Column: 18
 ;; [Node.load] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 8 ; 0 local variables
@@ -21209,27 +21022,57 @@ Tm9kZS5zdG9yZQ__:
 ;; [Node.store] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node.store] INTRINSIC swap | File: lib/typing.torth, Row: 627, Column: 9
+;; [Node.store] INTRINSIC swap | File: lib/typing.torth, Row: 638, Column: 9
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [Node.store] CAST | File: lib/typing.torth, Row: 627, Column: 14
-;; [Node.store] INTRINSIC swap | File: lib/typing.torth, Row: 627, Column: 24
+;; [Node.store] CAST | File: lib/typing.torth, Row: 638, Column: 14
+;; [Node.store] INTRINSIC swap | File: lib/typing.torth, Row: 638, Column: 24
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [Node.store] FUNCTION_CALL ptr.store | File: lib/typing.torth, Row: 627, Column: 29
+;; [Node.store] FUNCTION_CALL ptr.store | File: lib/typing.torth, Row: 638, Column: 29
   call cHRyLnN0b3Jl
 ;; [Node.store] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 8 ; 0 local variables
   ret
 
+Tm9kZS5kZWxldGU_:
+;; [Node.delete] Save the return address to return stack
+  add r14, 24 ; 2 local variables
+  pop QWORD [r14] ; Save return address from stack
+;; [Node.delete] POP_BIND node | File: lib/typing.torth, Row: 641, Column: 19
+  pop rbx
+  mov [r14-8], rbx
+;; [Node.delete] POP_BIND data_size | File: lib/typing.torth, Row: 641, Column: 29
+  pop rbx
+  mov [r14-16], rbx
+;; [Node.delete] PUSH_BIND data_size | File: lib/typing.torth, Row: 643, Column: 9
+  push QWORD [r14-16]
+;; [Node.delete] PUSH_BIND node | File: lib/typing.torth, Row: 643, Column: 19
+  push QWORD [r14-8]
+;; [Node.delete] FUNCTION_CALL Node.data | File: lib/typing.torth, Row: 643, Column: 24
+  call Tm9kZS5kYXRh
+;; [Node.delete] FUNCTION_CALL munmap | File: lib/typing.torth, Row: 643, Column: 34
+  call bXVubWFw
+;; [Node.delete] FUNCTION_CALL Node.size | File: lib/typing.torth, Row: 644, Column: 9
+  call Tm9kZS5zaXpl
+;; [Node.delete] PUSH_BIND node | File: lib/typing.torth, Row: 644, Column: 19
+  push QWORD [r14-8]
+;; [Node.delete] CAST | File: lib/typing.torth, Row: 644, Column: 24
+;; [Node.delete] FUNCTION_CALL munmap | File: lib/typing.torth, Row: 644, Column: 34
+  call bXVubWFw
+;; [Node.delete] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 24 ; 2 local variables
+  ret
+
 Tm9kZS5zaXpl:
 ;; [Node.size] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Node.size] PUSH_INT | File: lib/typing.torth, Row: 629, Column: 1
+;; [Node.size] PUSH_INT | File: lib/typing.torth, Row: 646, Column: 1
   mov rax, 24
   push rax
 ;; [Node.size] Return to the address found in return stack
@@ -21848,7 +21691,7 @@ T3Auc2l6ZQ__:
 ;; [Op.size] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Op.size] PUSH_INT | File: compiler/class/Op.torth, Row: 37, Column: 1
+;; [Op.size] PUSH_INT | File: compiler/class/Op.torth, Row: 28, Column: 1
   mov rax, 40
   push rax
 ;; [Op.size] Return to the address found in return stack
@@ -22131,7 +21974,7 @@ VG9rZW4uc2l6ZQ__:
 ;; [Token.size] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [Token.size] PUSH_INT | File: compiler/class/Token.torth, Row: 34, Column: 1
+;; [Token.size] PUSH_INT | File: compiler/class/Token.torth, Row: 27, Column: 1
   mov rax, 32
   push rax
 ;; [Token.size] Return to the address found in return stack
@@ -24468,6 +24311,10 @@ str.replace_ENDIF16:
   push QWORD [r14-40]
 ;; [str.replace] FUNCTION_CALL str.cat | File: lib/std.torth, Row: 479, Column: 15
   call c3RyLmNhdA__
+;; [str.replace] PUSH_BIND string_end | File: lib/std.torth, Row: 482, Column: 3
+  push QWORD [r14-40]
+;; [str.replace] FUNCTION_CALL str.delete | File: lib/std.torth, Row: 482, Column: 15
+  call c3RyLmRlbGV0ZQ__
 ;; [str.replace] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
@@ -24477,76 +24324,76 @@ c3RyLnJlcGxhY2VfYWxs:
 ;; [str.replace_all] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.replace_all] POP_BIND string | File: lib/std.torth, Row: 487, Column: 3
+;; [str.replace_all] POP_BIND string | File: lib/std.torth, Row: 490, Column: 3
   pop rbx
   mov [r14-8], rbx
-;; [str.replace_all] POP_BIND substring | File: lib/std.torth, Row: 488, Column: 3
+;; [str.replace_all] POP_BIND substring | File: lib/std.torth, Row: 491, Column: 3
   pop rbx
   mov [r14-16], rbx
-;; [str.replace_all] POP_BIND replacement | File: lib/std.torth, Row: 489, Column: 3
+;; [str.replace_all] POP_BIND replacement | File: lib/std.torth, Row: 492, Column: 3
   pop rbx
   mov [r14-24], rbx
-;; [str.replace_all] WHILE | File: lib/std.torth, Row: 492, Column: 3
+;; [str.replace_all] WHILE | File: lib/std.torth, Row: 495, Column: 3
 str.replace_all_WHILE3:
-;; [str.replace_all] PUSH_BOOL | File: lib/std.torth, Row: 492, Column: 9
+;; [str.replace_all] PUSH_BOOL | File: lib/std.torth, Row: 495, Column: 9
   push 1
-;; [str.replace_all] DO | File: lib/std.torth, Row: 492, Column: 14
+;; [str.replace_all] DO | File: lib/std.torth, Row: 495, Column: 14
   pop rax
   test rax, rax
   jz str.replace_all_DONE28
-;; [str.replace_all] PUSH_BIND string | File: lib/std.torth, Row: 494, Column: 5
+;; [str.replace_all] PUSH_BIND string | File: lib/std.torth, Row: 497, Column: 5
   push QWORD [r14-8]
-;; [str.replace_all] TAKE | File: lib/std.torth, Row: 494, Column: 12
-;; [str.replace_all] POP_BIND old_string | File: lib/std.torth, Row: 494, Column: 17
+;; [str.replace_all] TAKE | File: lib/std.torth, Row: 497, Column: 12
+;; [str.replace_all] POP_BIND old_string | File: lib/std.torth, Row: 497, Column: 17
   pop rbx
   mov [r14-32], rbx
-;; [str.replace_all] IN | File: lib/std.torth, Row: 494, Column: 28
-;; [str.replace_all] PUSH_BIND replacement | File: lib/std.torth, Row: 497, Column: 5
+;; [str.replace_all] IN | File: lib/std.torth, Row: 497, Column: 28
+;; [str.replace_all] PUSH_BIND replacement | File: lib/std.torth, Row: 500, Column: 5
   push QWORD [r14-24]
-;; [str.replace_all] PUSH_BIND substring | File: lib/std.torth, Row: 497, Column: 17
+;; [str.replace_all] PUSH_BIND substring | File: lib/std.torth, Row: 500, Column: 17
   push QWORD [r14-16]
-;; [str.replace_all] PUSH_BIND string | File: lib/std.torth, Row: 497, Column: 27
+;; [str.replace_all] PUSH_BIND string | File: lib/std.torth, Row: 500, Column: 27
   push QWORD [r14-8]
-;; [str.replace_all] FUNCTION_CALL str.replace | File: lib/std.torth, Row: 497, Column: 34
+;; [str.replace_all] FUNCTION_CALL str.replace | File: lib/std.torth, Row: 500, Column: 34
   call c3RyLnJlcGxhY2U_
-;; [str.replace_all] TAKE | File: lib/std.torth, Row: 498, Column: 5
-;; [str.replace_all] POP_BIND new_string | File: lib/std.torth, Row: 498, Column: 10
+;; [str.replace_all] TAKE | File: lib/std.torth, Row: 501, Column: 5
+;; [str.replace_all] POP_BIND new_string | File: lib/std.torth, Row: 501, Column: 10
   pop rbx
   mov [r14-40], rbx
-;; [str.replace_all] IN | File: lib/std.torth, Row: 498, Column: 21
-;; [str.replace_all] IF | File: lib/std.torth, Row: 499, Column: 5
-;; [str.replace_all] PUSH_BIND new_string | File: lib/std.torth, Row: 499, Column: 8
+;; [str.replace_all] IN | File: lib/std.torth, Row: 501, Column: 21
+;; [str.replace_all] IF | File: lib/std.torth, Row: 502, Column: 5
+;; [str.replace_all] PUSH_BIND new_string | File: lib/std.torth, Row: 502, Column: 8
   push QWORD [r14-40]
-;; [str.replace_all] PUSH_BIND old_string | File: lib/std.torth, Row: 499, Column: 19
+;; [str.replace_all] PUSH_BIND old_string | File: lib/std.torth, Row: 502, Column: 19
   push QWORD [r14-32]
-;; [str.replace_all] FUNCTION_CALL streq | File: lib/std.torth, Row: 499, Column: 30
+;; [str.replace_all] FUNCTION_CALL streq | File: lib/std.torth, Row: 502, Column: 30
   call c3RyZXE_
-;; [str.replace_all] DO | File: lib/std.torth, Row: 499, Column: 36
+;; [str.replace_all] DO | File: lib/std.torth, Row: 502, Column: 36
   pop rax
   test rax, rax
   jz str.replace_all_ENDIF24
-;; [str.replace_all] PUSH_BIND new_string | File: lib/std.torth, Row: 500, Column: 7
+;; [str.replace_all] PUSH_BIND new_string | File: lib/std.torth, Row: 503, Column: 7
   push QWORD [r14-40]
-;; [str.replace_all] RETURN | File: lib/std.torth, Row: 500, Column: 18
+;; [str.replace_all] RETURN | File: lib/std.torth, Row: 503, Column: 18
 ;; [str.replace_all] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
   ret
 
-;; [str.replace_all] ENDIF | File: lib/std.torth, Row: 501, Column: 5
+;; [str.replace_all] ENDIF | File: lib/std.torth, Row: 504, Column: 5
 str.replace_all_ENDIF24:
-;; [str.replace_all] PUSH_BIND new_string | File: lib/std.torth, Row: 504, Column: 5
+;; [str.replace_all] PUSH_BIND new_string | File: lib/std.torth, Row: 507, Column: 5
   push QWORD [r14-40]
-;; [str.replace_all] PUSH_BIND string | File: lib/std.torth, Row: 504, Column: 16
+;; [str.replace_all] PUSH_BIND string | File: lib/std.torth, Row: 507, Column: 16
   push QWORD [r14-8]
-;; [str.replace_all] ASSIGN_BIND | File: lib/std.torth, Row: 504, Column: 23
+;; [str.replace_all] ASSIGN_BIND | File: lib/std.torth, Row: 507, Column: 23
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [str.replace_all] DONE | File: lib/std.torth, Row: 505, Column: 3
+;; [str.replace_all] DONE | File: lib/std.torth, Row: 508, Column: 3
   jmp str.replace_all_WHILE3
 str.replace_all_DONE28:
-;; [str.replace_all] PUSH_BIND new_string | File: lib/std.torth, Row: 506, Column: 3
+;; [str.replace_all] PUSH_BIND new_string | File: lib/std.torth, Row: 509, Column: 3
   push QWORD [r14-40]
 ;; [str.replace_all] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -24555,165 +24402,238 @@ str.replace_all_DONE28:
 
 c3RyLmFwcGVuZA__:
 ;; [str.append] Save the return address to return stack
-  add r14, 32 ; 3 local variables
+  add r14, 40 ; 4 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.append] POP_BIND string | File: lib/std.torth, Row: 542, Column: 21
+;; [str.append] POP_BIND string | File: lib/std.torth, Row: 557, Column: 21
   pop rbx
   mov [r14-8], rbx
-;; [str.append] POP_BIND character | File: lib/std.torth, Row: 542, Column: 32
+;; [str.append] POP_BIND character | File: lib/std.torth, Row: 557, Column: 32
   pop rbx
   mov [r14-16], rbx
-;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 543, Column: 3
+;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 560, Column: 3
   push QWORD [r14-8]
-;; [str.append] FUNCTION_CALL str.len | File: lib/std.torth, Row: 543, Column: 10
+;; [str.append] FUNCTION_CALL str.len | File: lib/std.torth, Row: 560, Column: 10
   call c3RyLmxlbg__
-;; [str.append] PUSH_INT | File: lib/std.torth, Row: 543, Column: 18
+;; [str.append] PUSH_INT | File: lib/std.torth, Row: 560, Column: 18
+  mov rax, 4096
+  push rax
+;; [str.append] INTRINSIC MOD | File: lib/std.torth, Row: 560, Column: 28
+  xor edx, edx ; Do not use floating point arithmetic
+  pop rbx
+  pop rax
+  div rbx
+  push rdx ; Remainder
+;; [str.append] PUSH_INT | File: lib/std.torth, Row: 560, Column: 30
+  mov rax, 4096
+  push rax
+;; [str.append] PUSH_INT | File: lib/std.torth, Row: 560, Column: 40
   mov rax, 2
   push rax
-;; [str.append] INTRINSIC PLUS | File: lib/std.torth, Row: 543, Column: 20
+;; [str.append] INTRINSIC MINUS | File: lib/std.torth, Row: 560, Column: 42
   pop rax
-  add [rsp], rax
-;; [str.append] FUNCTION_CALL malloc | File: lib/std.torth, Row: 543, Column: 22
-  call bWFsbG9j
-;; [str.append] TAKE | File: lib/std.torth, Row: 544, Column: 3
-;; [str.append] POP_BIND buffer | File: lib/std.torth, Row: 544, Column: 8
+  sub [rsp], rax
+;; [str.append] INTRINSIC GT | File: lib/std.torth, Row: 560, Column: 44
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmovg rcx, rdx
+  mov QWORD [rsp], rcx
+;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 561, Column: 3
+  push QWORD [r14-8]
+;; [str.append] FUNCTION_CALL str.is_static | File: lib/std.torth, Row: 561, Column: 10
+  call c3RyLmlzX3N0YXRpYw__
+;; [str.append] FUNCTION_CALL || | File: lib/std.torth, Row: 561, Column: 24
+  call fHw_
+;; [str.append] TAKE | File: lib/std.torth, Row: 562, Column: 3
+;; [str.append] POP_BIND requires_allocation | File: lib/std.torth, Row: 562, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [str.append] IN | File: lib/std.torth, Row: 544, Column: 15
-;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 547, Column: 3
-  push QWORD [r14-8]
-;; [str.append] FUNCTION_CALL str.len | File: lib/std.torth, Row: 547, Column: 10
-  call c3RyLmxlbg__
-;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 548, Column: 3
-  push QWORD [r14-8]
-;; [str.append] CAST | File: lib/std.torth, Row: 548, Column: 10
-;; [str.append] PUSH_BIND buffer | File: lib/std.torth, Row: 549, Column: 3
+;; [str.append] IN | File: lib/std.torth, Row: 562, Column: 28
+;; [str.append] IF | File: lib/std.torth, Row: 565, Column: 3
+;; [str.append] PUSH_BIND requires_allocation | File: lib/std.torth, Row: 565, Column: 6
   push QWORD [r14-24]
-;; [str.append] FUNCTION_CALL memcpy | File: lib/std.torth, Row: 550, Column: 3
+;; [str.append] DO | File: lib/std.torth, Row: 565, Column: 26
+  pop rax
+  test rax, rax
+  jz str.append_ELSE33
+;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 567, Column: 5
+  push QWORD [r14-8]
+;; [str.append] FUNCTION_CALL str.len | File: lib/std.torth, Row: 567, Column: 12
+  call c3RyLmxlbg__
+;; [str.append] PUSH_INT | File: lib/std.torth, Row: 567, Column: 20
+  mov rax, 2
+  push rax
+;; [str.append] INTRINSIC PLUS | File: lib/std.torth, Row: 567, Column: 22
+  pop rax
+  add [rsp], rax
+;; [str.append] FUNCTION_CALL malloc | File: lib/std.torth, Row: 567, Column: 24
+  call bWFsbG9j
+;; [str.append] TAKE | File: lib/std.torth, Row: 568, Column: 5
+;; [str.append] POP_BIND buffer | File: lib/std.torth, Row: 568, Column: 10
+  pop rbx
+  mov [r14-32], rbx
+;; [str.append] IN | File: lib/std.torth, Row: 568, Column: 17
+;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 571, Column: 5
+  push QWORD [r14-8]
+;; [str.append] FUNCTION_CALL str.len | File: lib/std.torth, Row: 571, Column: 12
+  call c3RyLmxlbg__
+;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 572, Column: 5
+  push QWORD [r14-8]
+;; [str.append] CAST | File: lib/std.torth, Row: 572, Column: 12
+;; [str.append] PUSH_BIND buffer | File: lib/std.torth, Row: 573, Column: 5
+  push QWORD [r14-32]
+;; [str.append] FUNCTION_CALL memcpy | File: lib/std.torth, Row: 574, Column: 5
   call bWVtY3B5
-;; [str.append] PUSH_BIND character | File: lib/std.torth, Row: 553, Column: 3
-  push QWORD [r14-16]
-;; [str.append] PUSH_BIND buffer | File: lib/std.torth, Row: 553, Column: 13
-  push QWORD [r14-24]
-;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 553, Column: 20
+;; [str.append] ELSE | File: lib/std.torth, Row: 575, Column: 3
+  jmp str.append_ENDIF39
+str.append_ELSE33:
+;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 576, Column: 5
   push QWORD [r14-8]
-;; [str.append] FUNCTION_CALL str.len | File: lib/std.torth, Row: 553, Column: 27
+;; [str.append] CAST | File: lib/std.torth, Row: 576, Column: 12
+;; [str.append] TAKE | File: lib/std.torth, Row: 577, Column: 5
+;; [str.append] POP_BIND buffer | File: lib/std.torth, Row: 577, Column: 10
+  pop rbx
+  mov [r14-32], rbx
+;; [str.append] IN | File: lib/std.torth, Row: 577, Column: 17
+;; [str.append] ENDIF | File: lib/std.torth, Row: 578, Column: 3
+str.append_ENDIF39:
+;; [str.append] PUSH_BIND character | File: lib/std.torth, Row: 581, Column: 3
+  push QWORD [r14-16]
+;; [str.append] PUSH_BIND buffer | File: lib/std.torth, Row: 581, Column: 13
+  push QWORD [r14-32]
+;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 581, Column: 20
+  push QWORD [r14-8]
+;; [str.append] FUNCTION_CALL str.len | File: lib/std.torth, Row: 581, Column: 27
   call c3RyLmxlbg__
-;; [str.append] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 553, Column: 35
+;; [str.append] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 581, Column: 35
   call cHRyKw__
-;; [str.append] FUNCTION_CALL char.store | File: lib/std.torth, Row: 553, Column: 40
+;; [str.append] FUNCTION_CALL char.store | File: lib/std.torth, Row: 581, Column: 40
   call Y2hhci5zdG9yZQ__
-;; [str.append] PUSH_BIND buffer | File: lib/std.torth, Row: 555, Column: 3
+;; [str.append] IF | File: lib/std.torth, Row: 584, Column: 3
+;; [str.append] PUSH_BIND requires_allocation | File: lib/std.torth, Row: 584, Column: 6
   push QWORD [r14-24]
-;; [str.append] CAST | File: lib/std.torth, Row: 555, Column: 10
+;; [str.append] DO | File: lib/std.torth, Row: 584, Column: 26
+  pop rax
+  test rax, rax
+  jz str.append_ENDIF51
+;; [str.append] PUSH_BIND string | File: lib/std.torth, Row: 585, Column: 5
+  push QWORD [r14-8]
+;; [str.append] FUNCTION_CALL str.delete | File: lib/std.torth, Row: 585, Column: 12
+  call c3RyLmRlbGV0ZQ__
+;; [str.append] ENDIF | File: lib/std.torth, Row: 586, Column: 3
+str.append_ENDIF51:
+;; [str.append] PUSH_BIND buffer | File: lib/std.torth, Row: 588, Column: 3
+  push QWORD [r14-32]
+;; [str.append] CAST | File: lib/std.torth, Row: 588, Column: 10
 ;; [str.append] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
-  sub r14, 32 ; 3 local variables
+  sub r14, 40 ; 4 local variables
   ret
 
 c3RyLmlzX251bWVyaWM_:
 ;; [str.is_numeric] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.is_numeric] POP_BIND string | File: lib/std.torth, Row: 586, Column: 25
+;; [str.is_numeric] POP_BIND string | File: lib/std.torth, Row: 640, Column: 25
   pop rbx
   mov [r14-8], rbx
-;; [str.is_numeric] IF | File: lib/std.torth, Row: 588, Column: 3
-;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 588, Column: 6
+;; [str.is_numeric] IF | File: lib/std.torth, Row: 642, Column: 3
+;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 642, Column: 6
   push QWORD [r14-8]
-;; [str.is_numeric] CAST | File: lib/std.torth, Row: 588, Column: 13
-;; [str.is_numeric] FUNCTION_CALL char.load | File: lib/std.torth, Row: 588, Column: 23
+;; [str.is_numeric] CAST | File: lib/std.torth, Row: 642, Column: 13
+;; [str.is_numeric] FUNCTION_CALL char.load | File: lib/std.torth, Row: 642, Column: 23
   call Y2hhci5sb2Fk
-;; [str.is_numeric] PUSH_CHAR | File: lib/std.torth, Row: 588, Column: 33
+;; [str.is_numeric] PUSH_CHAR | File: lib/std.torth, Row: 642, Column: 33
   push 45
-;; [str.is_numeric] INTRINSIC EQ | File: lib/std.torth, Row: 588, Column: 37
+;; [str.is_numeric] INTRINSIC EQ | File: lib/std.torth, Row: 642, Column: 37
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.is_numeric] DO | File: lib/std.torth, Row: 588, Column: 40
+;; [str.is_numeric] DO | File: lib/std.torth, Row: 642, Column: 40
   pop rax
   test rax, rax
   jz str.is_numeric_ENDIF13
-;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 589, Column: 5
+;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 643, Column: 5
   push QWORD [r14-8]
-;; [str.is_numeric] PUSH_INT | File: lib/std.torth, Row: 589, Column: 12
+;; [str.is_numeric] PUSH_INT | File: lib/std.torth, Row: 643, Column: 12
   mov rax, 1
   push rax
-;; [str.is_numeric] FUNCTION_CALL str+ | File: lib/std.torth, Row: 589, Column: 14
+;; [str.is_numeric] FUNCTION_CALL str+ | File: lib/std.torth, Row: 643, Column: 14
   call c3RyKw__
-;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 589, Column: 19
+;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 643, Column: 19
   push QWORD [r14-8]
-;; [str.is_numeric] ASSIGN_BIND | File: lib/std.torth, Row: 589, Column: 26
+;; [str.is_numeric] ASSIGN_BIND | File: lib/std.torth, Row: 643, Column: 26
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [str.is_numeric] ENDIF | File: lib/std.torth, Row: 590, Column: 3
+;; [str.is_numeric] ENDIF | File: lib/std.torth, Row: 644, Column: 3
 str.is_numeric_ENDIF13:
-;; [str.is_numeric] WHILE | File: lib/std.torth, Row: 593, Column: 3
+;; [str.is_numeric] WHILE | File: lib/std.torth, Row: 647, Column: 3
 str.is_numeric_WHILE14:
-;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 593, Column: 9
+;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 647, Column: 9
   push QWORD [r14-8]
-;; [str.is_numeric] CAST | File: lib/std.torth, Row: 593, Column: 16
-;; [str.is_numeric] FUNCTION_CALL char.load | File: lib/std.torth, Row: 593, Column: 26
+;; [str.is_numeric] CAST | File: lib/std.torth, Row: 647, Column: 16
+;; [str.is_numeric] FUNCTION_CALL char.load | File: lib/std.torth, Row: 647, Column: 26
   call Y2hhci5sb2Fk
-;; [str.is_numeric] PUSH_INT | File: lib/std.torth, Row: 593, Column: 36
+;; [str.is_numeric] PUSH_INT | File: lib/std.torth, Row: 647, Column: 36
   mov rax, 0
   push rax
-;; [str.is_numeric] INTRINSIC NE | File: lib/std.torth, Row: 593, Column: 41
+;; [str.is_numeric] INTRINSIC NE | File: lib/std.torth, Row: 647, Column: 41
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.is_numeric] DO | File: lib/std.torth, Row: 593, Column: 44
+;; [str.is_numeric] DO | File: lib/std.torth, Row: 647, Column: 44
   pop rax
   test rax, rax
   jz str.is_numeric_DONE35
-;; [str.is_numeric] IF | File: lib/std.torth, Row: 595, Column: 5
-;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 595, Column: 8
+;; [str.is_numeric] IF | File: lib/std.torth, Row: 649, Column: 5
+;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 649, Column: 8
   push QWORD [r14-8]
-;; [str.is_numeric] CAST | File: lib/std.torth, Row: 595, Column: 15
-;; [str.is_numeric] FUNCTION_CALL char.load | File: lib/std.torth, Row: 595, Column: 25
+;; [str.is_numeric] CAST | File: lib/std.torth, Row: 649, Column: 15
+;; [str.is_numeric] FUNCTION_CALL char.load | File: lib/std.torth, Row: 649, Column: 25
   call Y2hhci5sb2Fk
-;; [str.is_numeric] FUNCTION_CALL char.is_numeric | File: lib/std.torth, Row: 595, Column: 35
+;; [str.is_numeric] FUNCTION_CALL char.is_numeric | File: lib/std.torth, Row: 649, Column: 35
   call Y2hhci5pc19udW1lcmlj
-;; [str.is_numeric] FUNCTION_CALL not | File: lib/std.torth, Row: 595, Column: 51
+;; [str.is_numeric] FUNCTION_CALL not | File: lib/std.torth, Row: 649, Column: 51
   call bm90
-;; [str.is_numeric] DO | File: lib/std.torth, Row: 595, Column: 55
+;; [str.is_numeric] DO | File: lib/std.torth, Row: 649, Column: 55
   pop rax
   test rax, rax
   jz str.is_numeric_ENDIF29
-;; [str.is_numeric] BREAK | File: lib/std.torth, Row: 596, Column: 7
-  jmp str.is_numeric_DONE35;; [str.is_numeric] ENDIF | File: lib/std.torth, Row: 597, Column: 5
+;; [str.is_numeric] BREAK | File: lib/std.torth, Row: 650, Column: 7
+  jmp str.is_numeric_DONE35;; [str.is_numeric] ENDIF | File: lib/std.torth, Row: 651, Column: 5
 str.is_numeric_ENDIF29:
-;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 598, Column: 5
+;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 652, Column: 5
   push QWORD [r14-8]
-;; [str.is_numeric] PUSH_INT | File: lib/std.torth, Row: 598, Column: 12
+;; [str.is_numeric] PUSH_INT | File: lib/std.torth, Row: 652, Column: 12
   mov rax, 1
   push rax
-;; [str.is_numeric] FUNCTION_CALL str+ | File: lib/std.torth, Row: 598, Column: 14
+;; [str.is_numeric] FUNCTION_CALL str+ | File: lib/std.torth, Row: 652, Column: 14
   call c3RyKw__
-;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 598, Column: 19
+;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 652, Column: 19
   push QWORD [r14-8]
-;; [str.is_numeric] ASSIGN_BIND | File: lib/std.torth, Row: 598, Column: 26
+;; [str.is_numeric] ASSIGN_BIND | File: lib/std.torth, Row: 652, Column: 26
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [str.is_numeric] DONE | File: lib/std.torth, Row: 599, Column: 3
+;; [str.is_numeric] DONE | File: lib/std.torth, Row: 653, Column: 3
   jmp str.is_numeric_WHILE14
 str.is_numeric_DONE35:
-;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 601, Column: 3
+;; [str.is_numeric] PUSH_BIND string | File: lib/std.torth, Row: 655, Column: 3
   push QWORD [r14-8]
-;; [str.is_numeric] FUNCTION_CALL str.len | File: lib/std.torth, Row: 601, Column: 10
+;; [str.is_numeric] FUNCTION_CALL str.len | File: lib/std.torth, Row: 655, Column: 10
   call c3RyLmxlbg__
-;; [str.is_numeric] PUSH_INT | File: lib/std.torth, Row: 601, Column: 18
+;; [str.is_numeric] PUSH_INT | File: lib/std.torth, Row: 655, Column: 18
   mov rax, 0
   push rax
-;; [str.is_numeric] INTRINSIC EQ | File: lib/std.torth, Row: 601, Column: 20
+;; [str.is_numeric] INTRINSIC EQ | File: lib/std.torth, Row: 655, Column: 20
   pop rax
   mov rcx, 0
   mov rdx, 1
@@ -24729,15 +24649,15 @@ c3RyLmVtcHR5:
 ;; [str.empty] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.empty] POP_BIND string | File: lib/std.torth, Row: 605, Column: 20
+;; [str.empty] POP_BIND string | File: lib/std.torth, Row: 659, Column: 20
   pop rbx
   mov [r14-8], rbx
-;; [str.empty] PUSH_INT | File: lib/std.torth, Row: 606, Column: 3
+;; [str.empty] PUSH_INT | File: lib/std.torth, Row: 660, Column: 3
   mov rax, 0
   push rax
-;; [str.empty] PUSH_BIND string | File: lib/std.torth, Row: 606, Column: 8
+;; [str.empty] PUSH_BIND string | File: lib/std.torth, Row: 660, Column: 8
   push QWORD [r14-8]
-;; [str.empty] INTRINSIC store_byte | File: lib/std.torth, Row: 606, Column: 15
+;; [str.empty] INTRINSIC store_byte | File: lib/std.torth, Row: 660, Column: 15
   pop rax
   pop rbx
   mov [rax], bl
@@ -24750,76 +24670,76 @@ c3RyLnVwcGVy:
 ;; [str.upper] Save the return address to return stack
   add r14, 32 ; 3 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.upper] POP_BIND string | File: lib/std.torth, Row: 624, Column: 20
+;; [str.upper] POP_BIND string | File: lib/std.torth, Row: 678, Column: 20
   pop rbx
   mov [r14-8], rbx
-;; [str.upper] PUSH_BIND string | File: lib/std.torth, Row: 625, Column: 3
+;; [str.upper] PUSH_BIND string | File: lib/std.torth, Row: 679, Column: 3
   push QWORD [r14-8]
-;; [str.upper] FUNCTION_CALL str.len | File: lib/std.torth, Row: 625, Column: 10
+;; [str.upper] FUNCTION_CALL str.len | File: lib/std.torth, Row: 679, Column: 10
   call c3RyLmxlbg__
-;; [str.upper] PUSH_INT | File: lib/std.torth, Row: 626, Column: 3
+;; [str.upper] PUSH_INT | File: lib/std.torth, Row: 680, Column: 3
   mov rax, 0
   push rax
-;; [str.upper] TAKE | File: lib/std.torth, Row: 627, Column: 3
-;; [str.upper] POP_BIND index | File: lib/std.torth, Row: 627, Column: 8
+;; [str.upper] TAKE | File: lib/std.torth, Row: 681, Column: 3
+;; [str.upper] POP_BIND index | File: lib/std.torth, Row: 681, Column: 8
   pop rbx
   mov [r14-16], rbx
-;; [str.upper] POP_BIND len | File: lib/std.torth, Row: 627, Column: 14
+;; [str.upper] POP_BIND len | File: lib/std.torth, Row: 681, Column: 14
   pop rbx
   mov [r14-24], rbx
-;; [str.upper] IN | File: lib/std.torth, Row: 627, Column: 18
-;; [str.upper] WHILE | File: lib/std.torth, Row: 630, Column: 3
+;; [str.upper] IN | File: lib/std.torth, Row: 681, Column: 18
+;; [str.upper] WHILE | File: lib/std.torth, Row: 684, Column: 3
 str.upper_WHILE8:
-;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 630, Column: 9
+;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 684, Column: 9
   push QWORD [r14-16]
-;; [str.upper] PUSH_BIND len | File: lib/std.torth, Row: 630, Column: 15
+;; [str.upper] PUSH_BIND len | File: lib/std.torth, Row: 684, Column: 15
   push QWORD [r14-24]
-;; [str.upper] INTRINSIC LT | File: lib/std.torth, Row: 630, Column: 19
+;; [str.upper] INTRINSIC LT | File: lib/std.torth, Row: 684, Column: 19
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.upper] DO | File: lib/std.torth, Row: 630, Column: 21
+;; [str.upper] DO | File: lib/std.torth, Row: 684, Column: 21
   pop rax
   test rax, rax
   jz str.upper_DONE27
-;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 631, Column: 5
+;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 685, Column: 5
   push QWORD [r14-16]
-;; [str.upper] PUSH_BIND string | File: lib/std.torth, Row: 631, Column: 11
+;; [str.upper] PUSH_BIND string | File: lib/std.torth, Row: 685, Column: 11
   push QWORD [r14-8]
-;; [str.upper] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 631, Column: 18
+;; [str.upper] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 685, Column: 18
   call c3RyLmNoYXJfYXQ_
-;; [str.upper] FUNCTION_CALL char.upper | File: lib/std.torth, Row: 631, Column: 30
+;; [str.upper] FUNCTION_CALL char.upper | File: lib/std.torth, Row: 685, Column: 30
   call Y2hhci51cHBlcg__
-;; [str.upper] PUSH_BIND string | File: lib/std.torth, Row: 632, Column: 5
+;; [str.upper] PUSH_BIND string | File: lib/std.torth, Row: 686, Column: 5
   push QWORD [r14-8]
-;; [str.upper] CAST | File: lib/std.torth, Row: 632, Column: 12
-;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 632, Column: 22
+;; [str.upper] CAST | File: lib/std.torth, Row: 686, Column: 12
+;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 686, Column: 22
   push QWORD [r14-16]
-;; [str.upper] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 632, Column: 28
+;; [str.upper] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 686, Column: 28
   call cHRyKw__
-;; [str.upper] FUNCTION_CALL char.store | File: lib/std.torth, Row: 632, Column: 33
+;; [str.upper] FUNCTION_CALL char.store | File: lib/std.torth, Row: 686, Column: 33
   call Y2hhci5zdG9yZQ__
-;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 633, Column: 5
+;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 687, Column: 5
   push QWORD [r14-16]
-;; [str.upper] PUSH_INT | File: lib/std.torth, Row: 633, Column: 11
+;; [str.upper] PUSH_INT | File: lib/std.torth, Row: 687, Column: 11
   mov rax, 1
   push rax
-;; [str.upper] INTRINSIC PLUS | File: lib/std.torth, Row: 633, Column: 13
+;; [str.upper] INTRINSIC PLUS | File: lib/std.torth, Row: 687, Column: 13
   pop rax
   add [rsp], rax
-;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 633, Column: 15
+;; [str.upper] PUSH_BIND index | File: lib/std.torth, Row: 687, Column: 15
   push QWORD [r14-16]
-;; [str.upper] ASSIGN_BIND | File: lib/std.torth, Row: 633, Column: 21
+;; [str.upper] ASSIGN_BIND | File: lib/std.torth, Row: 687, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-16], rbx
-;; [str.upper] DONE | File: lib/std.torth, Row: 634, Column: 3
+;; [str.upper] DONE | File: lib/std.torth, Row: 688, Column: 3
   jmp str.upper_WHILE8
 str.upper_DONE27:
-;; [str.upper] PUSH_BIND string | File: lib/std.torth, Row: 634, Column: 8
+;; [str.upper] PUSH_BIND string | File: lib/std.torth, Row: 688, Column: 8
   push QWORD [r14-8]
 ;; [str.upper] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -24830,129 +24750,129 @@ c3RyLnN0YXJ0c3dpdGg_:
 ;; [str.startswith] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.startswith] POP_BIND prefix | File: lib/std.torth, Row: 663, Column: 25
+;; [str.startswith] POP_BIND prefix | File: lib/std.torth, Row: 717, Column: 25
   pop rbx
   mov [r14-8], rbx
-;; [str.startswith] POP_BIND string | File: lib/std.torth, Row: 663, Column: 36
+;; [str.startswith] POP_BIND string | File: lib/std.torth, Row: 717, Column: 36
   pop rbx
   mov [r14-16], rbx
-;; [str.startswith] PUSH_BIND string | File: lib/std.torth, Row: 664, Column: 3
+;; [str.startswith] PUSH_BIND string | File: lib/std.torth, Row: 718, Column: 3
   push QWORD [r14-16]
-;; [str.startswith] FUNCTION_CALL str.len | File: lib/std.torth, Row: 664, Column: 10
+;; [str.startswith] FUNCTION_CALL str.len | File: lib/std.torth, Row: 718, Column: 10
   call c3RyLmxlbg__
-;; [str.startswith] PUSH_BIND prefix | File: lib/std.torth, Row: 665, Column: 3
+;; [str.startswith] PUSH_BIND prefix | File: lib/std.torth, Row: 719, Column: 3
   push QWORD [r14-8]
-;; [str.startswith] FUNCTION_CALL str.len | File: lib/std.torth, Row: 665, Column: 10
+;; [str.startswith] FUNCTION_CALL str.len | File: lib/std.torth, Row: 719, Column: 10
   call c3RyLmxlbg__
-;; [str.startswith] PUSH_INT | File: lib/std.torth, Row: 666, Column: 3
+;; [str.startswith] PUSH_INT | File: lib/std.torth, Row: 720, Column: 3
   mov rax, 0
   push rax
-;; [str.startswith] TAKE | File: lib/std.torth, Row: 667, Column: 3
-;; [str.startswith] POP_BIND index | File: lib/std.torth, Row: 668, Column: 5
+;; [str.startswith] TAKE | File: lib/std.torth, Row: 721, Column: 3
+;; [str.startswith] POP_BIND index | File: lib/std.torth, Row: 722, Column: 5
   pop rbx
   mov [r14-24], rbx
-;; [str.startswith] POP_BIND prefix.len | File: lib/std.torth, Row: 669, Column: 5
+;; [str.startswith] POP_BIND prefix.len | File: lib/std.torth, Row: 723, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [str.startswith] POP_BIND string.len | File: lib/std.torth, Row: 670, Column: 5
+;; [str.startswith] POP_BIND string.len | File: lib/std.torth, Row: 724, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [str.startswith] IN | File: lib/std.torth, Row: 671, Column: 3
-;; [str.startswith] IF | File: lib/std.torth, Row: 674, Column: 3
-;; [str.startswith] PUSH_BIND prefix.len | File: lib/std.torth, Row: 674, Column: 6
+;; [str.startswith] IN | File: lib/std.torth, Row: 725, Column: 3
+;; [str.startswith] IF | File: lib/std.torth, Row: 728, Column: 3
+;; [str.startswith] PUSH_BIND prefix.len | File: lib/std.torth, Row: 728, Column: 6
   push QWORD [r14-32]
-;; [str.startswith] PUSH_BIND string.len | File: lib/std.torth, Row: 674, Column: 17
+;; [str.startswith] PUSH_BIND string.len | File: lib/std.torth, Row: 728, Column: 17
   push QWORD [r14-40]
-;; [str.startswith] INTRINSIC GT | File: lib/std.torth, Row: 674, Column: 28
+;; [str.startswith] INTRINSIC GT | File: lib/std.torth, Row: 728, Column: 28
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovg rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.startswith] DO | File: lib/std.torth, Row: 674, Column: 30
+;; [str.startswith] DO | File: lib/std.torth, Row: 728, Column: 30
   pop rax
   test rax, rax
   jz str.startswith_ENDIF19
-;; [str.startswith] PUSH_BOOL | File: lib/std.torth, Row: 675, Column: 5
+;; [str.startswith] PUSH_BOOL | File: lib/std.torth, Row: 729, Column: 5
   push 0
-;; [str.startswith] RETURN | File: lib/std.torth, Row: 675, Column: 11
+;; [str.startswith] RETURN | File: lib/std.torth, Row: 729, Column: 11
 ;; [str.startswith] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
   ret
 
-;; [str.startswith] ENDIF | File: lib/std.torth, Row: 676, Column: 3
+;; [str.startswith] ENDIF | File: lib/std.torth, Row: 730, Column: 3
 str.startswith_ENDIF19:
-;; [str.startswith] WHILE | File: lib/std.torth, Row: 678, Column: 3
+;; [str.startswith] WHILE | File: lib/std.torth, Row: 732, Column: 3
 str.startswith_WHILE20:
-;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 678, Column: 9
+;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 732, Column: 9
   push QWORD [r14-24]
-;; [str.startswith] PUSH_BIND prefix.len | File: lib/std.torth, Row: 678, Column: 15
+;; [str.startswith] PUSH_BIND prefix.len | File: lib/std.torth, Row: 732, Column: 15
   push QWORD [r14-32]
-;; [str.startswith] INTRINSIC LT | File: lib/std.torth, Row: 678, Column: 26
+;; [str.startswith] INTRINSIC LT | File: lib/std.torth, Row: 732, Column: 26
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.startswith] DO | File: lib/std.torth, Row: 678, Column: 28
+;; [str.startswith] DO | File: lib/std.torth, Row: 732, Column: 28
   pop rax
   test rax, rax
   jz str.startswith_DONE42
-;; [str.startswith] IF | File: lib/std.torth, Row: 679, Column: 5
-;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 680, Column: 7
+;; [str.startswith] IF | File: lib/std.torth, Row: 733, Column: 5
+;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 734, Column: 7
   push QWORD [r14-24]
-;; [str.startswith] PUSH_BIND string | File: lib/std.torth, Row: 680, Column: 13
+;; [str.startswith] PUSH_BIND string | File: lib/std.torth, Row: 734, Column: 13
   push QWORD [r14-16]
-;; [str.startswith] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 680, Column: 20
+;; [str.startswith] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 734, Column: 20
   call c3RyLmNoYXJfYXQ_
-;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 681, Column: 7
+;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 735, Column: 7
   push QWORD [r14-24]
-;; [str.startswith] PUSH_BIND prefix | File: lib/std.torth, Row: 681, Column: 13
+;; [str.startswith] PUSH_BIND prefix | File: lib/std.torth, Row: 735, Column: 13
   push QWORD [r14-8]
-;; [str.startswith] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 681, Column: 20
+;; [str.startswith] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 735, Column: 20
   call c3RyLmNoYXJfYXQ_
-;; [str.startswith] INTRINSIC NE | File: lib/std.torth, Row: 682, Column: 7
+;; [str.startswith] INTRINSIC NE | File: lib/std.torth, Row: 736, Column: 7
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.startswith] DO | File: lib/std.torth, Row: 683, Column: 5
+;; [str.startswith] DO | File: lib/std.torth, Row: 737, Column: 5
   pop rax
   test rax, rax
   jz str.startswith_ENDIF36
-;; [str.startswith] PUSH_BOOL | File: lib/std.torth, Row: 684, Column: 7
+;; [str.startswith] PUSH_BOOL | File: lib/std.torth, Row: 738, Column: 7
   push 0
-;; [str.startswith] RETURN | File: lib/std.torth, Row: 684, Column: 13
+;; [str.startswith] RETURN | File: lib/std.torth, Row: 738, Column: 13
 ;; [str.startswith] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
   ret
 
-;; [str.startswith] ENDIF | File: lib/std.torth, Row: 685, Column: 5
+;; [str.startswith] ENDIF | File: lib/std.torth, Row: 739, Column: 5
 str.startswith_ENDIF36:
-;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 686, Column: 5
+;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 740, Column: 5
   push QWORD [r14-24]
-;; [str.startswith] PUSH_INT | File: lib/std.torth, Row: 686, Column: 11
+;; [str.startswith] PUSH_INT | File: lib/std.torth, Row: 740, Column: 11
   mov rax, 1
   push rax
-;; [str.startswith] INTRINSIC PLUS | File: lib/std.torth, Row: 686, Column: 13
+;; [str.startswith] INTRINSIC PLUS | File: lib/std.torth, Row: 740, Column: 13
   pop rax
   add [rsp], rax
-;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 686, Column: 15
+;; [str.startswith] PUSH_BIND index | File: lib/std.torth, Row: 740, Column: 15
   push QWORD [r14-24]
-;; [str.startswith] ASSIGN_BIND | File: lib/std.torth, Row: 686, Column: 21
+;; [str.startswith] ASSIGN_BIND | File: lib/std.torth, Row: 740, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [str.startswith] DONE | File: lib/std.torth, Row: 687, Column: 3
+;; [str.startswith] DONE | File: lib/std.torth, Row: 741, Column: 3
   jmp str.startswith_WHILE20
 str.startswith_DONE42:
-;; [str.startswith] PUSH_BOOL | File: lib/std.torth, Row: 688, Column: 3
+;; [str.startswith] PUSH_BOOL | File: lib/std.torth, Row: 742, Column: 3
   push 1
 ;; [str.startswith] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -24963,151 +24883,151 @@ c3RyLmVuZHN3aXRo:
 ;; [str.endswith] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.endswith] POP_BIND suffix | File: lib/std.torth, Row: 694, Column: 23
+;; [str.endswith] POP_BIND suffix | File: lib/std.torth, Row: 748, Column: 23
   pop rbx
   mov [r14-8], rbx
-;; [str.endswith] POP_BIND string | File: lib/std.torth, Row: 694, Column: 34
+;; [str.endswith] POP_BIND string | File: lib/std.torth, Row: 748, Column: 34
   pop rbx
   mov [r14-16], rbx
-;; [str.endswith] PUSH_BIND string | File: lib/std.torth, Row: 695, Column: 3
+;; [str.endswith] PUSH_BIND string | File: lib/std.torth, Row: 749, Column: 3
   push QWORD [r14-16]
-;; [str.endswith] FUNCTION_CALL str.len | File: lib/std.torth, Row: 695, Column: 10
+;; [str.endswith] FUNCTION_CALL str.len | File: lib/std.torth, Row: 749, Column: 10
   call c3RyLmxlbg__
-;; [str.endswith] PUSH_BIND suffix | File: lib/std.torth, Row: 696, Column: 3
+;; [str.endswith] PUSH_BIND suffix | File: lib/std.torth, Row: 750, Column: 3
   push QWORD [r14-8]
-;; [str.endswith] FUNCTION_CALL str.len | File: lib/std.torth, Row: 696, Column: 10
+;; [str.endswith] FUNCTION_CALL str.len | File: lib/std.torth, Row: 750, Column: 10
   call c3RyLmxlbg__
-;; [str.endswith] PUSH_INT | File: lib/std.torth, Row: 697, Column: 3
+;; [str.endswith] PUSH_INT | File: lib/std.torth, Row: 751, Column: 3
   mov rax, 0
   push rax
-;; [str.endswith] TAKE | File: lib/std.torth, Row: 698, Column: 3
-;; [str.endswith] POP_BIND index | File: lib/std.torth, Row: 699, Column: 5
+;; [str.endswith] TAKE | File: lib/std.torth, Row: 752, Column: 3
+;; [str.endswith] POP_BIND index | File: lib/std.torth, Row: 753, Column: 5
   pop rbx
   mov [r14-24], rbx
-;; [str.endswith] POP_BIND suffix.len | File: lib/std.torth, Row: 700, Column: 5
+;; [str.endswith] POP_BIND suffix.len | File: lib/std.torth, Row: 754, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [str.endswith] POP_BIND string.len | File: lib/std.torth, Row: 701, Column: 5
+;; [str.endswith] POP_BIND string.len | File: lib/std.torth, Row: 755, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [str.endswith] IN | File: lib/std.torth, Row: 702, Column: 3
-;; [str.endswith] IF | File: lib/std.torth, Row: 705, Column: 3
-;; [str.endswith] PUSH_BIND suffix.len | File: lib/std.torth, Row: 705, Column: 6
+;; [str.endswith] IN | File: lib/std.torth, Row: 756, Column: 3
+;; [str.endswith] IF | File: lib/std.torth, Row: 759, Column: 3
+;; [str.endswith] PUSH_BIND suffix.len | File: lib/std.torth, Row: 759, Column: 6
   push QWORD [r14-32]
-;; [str.endswith] PUSH_BIND string.len | File: lib/std.torth, Row: 705, Column: 17
+;; [str.endswith] PUSH_BIND string.len | File: lib/std.torth, Row: 759, Column: 17
   push QWORD [r14-40]
-;; [str.endswith] INTRINSIC GT | File: lib/std.torth, Row: 705, Column: 28
+;; [str.endswith] INTRINSIC GT | File: lib/std.torth, Row: 759, Column: 28
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovg rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.endswith] DO | File: lib/std.torth, Row: 705, Column: 30
+;; [str.endswith] DO | File: lib/std.torth, Row: 759, Column: 30
   pop rax
   test rax, rax
   jz str.endswith_ENDIF19
-;; [str.endswith] PUSH_BOOL | File: lib/std.torth, Row: 706, Column: 5
+;; [str.endswith] PUSH_BOOL | File: lib/std.torth, Row: 760, Column: 5
   push 0
-;; [str.endswith] RETURN | File: lib/std.torth, Row: 706, Column: 11
+;; [str.endswith] RETURN | File: lib/std.torth, Row: 760, Column: 11
 ;; [str.endswith] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
   ret
 
-;; [str.endswith] ENDIF | File: lib/std.torth, Row: 707, Column: 3
+;; [str.endswith] ENDIF | File: lib/std.torth, Row: 761, Column: 3
 str.endswith_ENDIF19:
-;; [str.endswith] WHILE | File: lib/std.torth, Row: 709, Column: 3
+;; [str.endswith] WHILE | File: lib/std.torth, Row: 763, Column: 3
 str.endswith_WHILE20:
-;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 709, Column: 9
+;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 763, Column: 9
   push QWORD [r14-24]
-;; [str.endswith] PUSH_BIND suffix.len | File: lib/std.torth, Row: 709, Column: 15
+;; [str.endswith] PUSH_BIND suffix.len | File: lib/std.torth, Row: 763, Column: 15
   push QWORD [r14-32]
-;; [str.endswith] INTRINSIC LT | File: lib/std.torth, Row: 709, Column: 26
+;; [str.endswith] INTRINSIC LT | File: lib/std.torth, Row: 763, Column: 26
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.endswith] DO | File: lib/std.torth, Row: 709, Column: 28
+;; [str.endswith] DO | File: lib/std.torth, Row: 763, Column: 28
   pop rax
   test rax, rax
   jz str.endswith_DONE50
-;; [str.endswith] IF | File: lib/std.torth, Row: 710, Column: 5
-;; [str.endswith] PUSH_BIND string.len | File: lib/std.torth, Row: 711, Column: 7
+;; [str.endswith] IF | File: lib/std.torth, Row: 764, Column: 5
+;; [str.endswith] PUSH_BIND string.len | File: lib/std.torth, Row: 765, Column: 7
   push QWORD [r14-40]
-;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 711, Column: 18
+;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 765, Column: 18
   push QWORD [r14-24]
-;; [str.endswith] INTRINSIC MINUS | File: lib/std.torth, Row: 711, Column: 24
+;; [str.endswith] INTRINSIC MINUS | File: lib/std.torth, Row: 765, Column: 24
   pop rax
   sub [rsp], rax
-;; [str.endswith] PUSH_INT | File: lib/std.torth, Row: 711, Column: 26
+;; [str.endswith] PUSH_INT | File: lib/std.torth, Row: 765, Column: 26
   mov rax, 1
   push rax
-;; [str.endswith] INTRINSIC MINUS | File: lib/std.torth, Row: 711, Column: 28
+;; [str.endswith] INTRINSIC MINUS | File: lib/std.torth, Row: 765, Column: 28
   pop rax
   sub [rsp], rax
-;; [str.endswith] PUSH_BIND string | File: lib/std.torth, Row: 711, Column: 30
+;; [str.endswith] PUSH_BIND string | File: lib/std.torth, Row: 765, Column: 30
   push QWORD [r14-16]
-;; [str.endswith] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 711, Column: 37
+;; [str.endswith] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 765, Column: 37
   call c3RyLmNoYXJfYXQ_
-;; [str.endswith] PUSH_BIND suffix.len | File: lib/std.torth, Row: 712, Column: 7
+;; [str.endswith] PUSH_BIND suffix.len | File: lib/std.torth, Row: 766, Column: 7
   push QWORD [r14-32]
-;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 712, Column: 18
+;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 766, Column: 18
   push QWORD [r14-24]
-;; [str.endswith] INTRINSIC MINUS | File: lib/std.torth, Row: 712, Column: 24
+;; [str.endswith] INTRINSIC MINUS | File: lib/std.torth, Row: 766, Column: 24
   pop rax
   sub [rsp], rax
-;; [str.endswith] PUSH_INT | File: lib/std.torth, Row: 712, Column: 26
+;; [str.endswith] PUSH_INT | File: lib/std.torth, Row: 766, Column: 26
   mov rax, 1
   push rax
-;; [str.endswith] INTRINSIC MINUS | File: lib/std.torth, Row: 712, Column: 28
+;; [str.endswith] INTRINSIC MINUS | File: lib/std.torth, Row: 766, Column: 28
   pop rax
   sub [rsp], rax
-;; [str.endswith] PUSH_BIND suffix | File: lib/std.torth, Row: 712, Column: 30
+;; [str.endswith] PUSH_BIND suffix | File: lib/std.torth, Row: 766, Column: 30
   push QWORD [r14-8]
-;; [str.endswith] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 712, Column: 37
+;; [str.endswith] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 766, Column: 37
   call c3RyLmNoYXJfYXQ_
-;; [str.endswith] INTRINSIC NE | File: lib/std.torth, Row: 713, Column: 7
+;; [str.endswith] INTRINSIC NE | File: lib/std.torth, Row: 767, Column: 7
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.endswith] DO | File: lib/std.torth, Row: 714, Column: 5
+;; [str.endswith] DO | File: lib/std.torth, Row: 768, Column: 5
   pop rax
   test rax, rax
   jz str.endswith_ENDIF44
-;; [str.endswith] PUSH_BOOL | File: lib/std.torth, Row: 715, Column: 7
+;; [str.endswith] PUSH_BOOL | File: lib/std.torth, Row: 769, Column: 7
   push 0
-;; [str.endswith] RETURN | File: lib/std.torth, Row: 715, Column: 13
+;; [str.endswith] RETURN | File: lib/std.torth, Row: 769, Column: 13
 ;; [str.endswith] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
   ret
 
-;; [str.endswith] ENDIF | File: lib/std.torth, Row: 716, Column: 5
+;; [str.endswith] ENDIF | File: lib/std.torth, Row: 770, Column: 5
 str.endswith_ENDIF44:
-;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 717, Column: 5
+;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 771, Column: 5
   push QWORD [r14-24]
-;; [str.endswith] PUSH_INT | File: lib/std.torth, Row: 717, Column: 11
+;; [str.endswith] PUSH_INT | File: lib/std.torth, Row: 771, Column: 11
   mov rax, 1
   push rax
-;; [str.endswith] INTRINSIC PLUS | File: lib/std.torth, Row: 717, Column: 13
+;; [str.endswith] INTRINSIC PLUS | File: lib/std.torth, Row: 771, Column: 13
   pop rax
   add [rsp], rax
-;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 717, Column: 15
+;; [str.endswith] PUSH_BIND index | File: lib/std.torth, Row: 771, Column: 15
   push QWORD [r14-24]
-;; [str.endswith] ASSIGN_BIND | File: lib/std.torth, Row: 717, Column: 21
+;; [str.endswith] ASSIGN_BIND | File: lib/std.torth, Row: 771, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [str.endswith] DONE | File: lib/std.torth, Row: 718, Column: 3
+;; [str.endswith] DONE | File: lib/std.torth, Row: 772, Column: 3
   jmp str.endswith_WHILE20
 str.endswith_DONE50:
-;; [str.endswith] PUSH_BOOL | File: lib/std.torth, Row: 719, Column: 3
+;; [str.endswith] PUSH_BOOL | File: lib/std.torth, Row: 773, Column: 3
   push 1
 ;; [str.endswith] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -25118,40 +25038,40 @@ c3RyLnJlbW92ZXByZWZpeA__:
 ;; [str.removeprefix] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.removeprefix] POP_BIND string | File: lib/std.torth, Row: 725, Column: 27
+;; [str.removeprefix] POP_BIND string | File: lib/std.torth, Row: 779, Column: 27
   pop rbx
   mov [r14-8], rbx
-;; [str.removeprefix] POP_BIND prefix | File: lib/std.torth, Row: 725, Column: 38
+;; [str.removeprefix] POP_BIND prefix | File: lib/std.torth, Row: 779, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [str.removeprefix] IF | File: lib/std.torth, Row: 726, Column: 3
-;; [str.removeprefix] PUSH_BIND string | File: lib/std.torth, Row: 726, Column: 6
+;; [str.removeprefix] IF | File: lib/std.torth, Row: 780, Column: 3
+;; [str.removeprefix] PUSH_BIND string | File: lib/std.torth, Row: 780, Column: 6
   push QWORD [r14-8]
-;; [str.removeprefix] PUSH_BIND prefix | File: lib/std.torth, Row: 726, Column: 13
+;; [str.removeprefix] PUSH_BIND prefix | File: lib/std.torth, Row: 780, Column: 13
   push QWORD [r14-16]
-;; [str.removeprefix] FUNCTION_CALL str.startswith | File: lib/std.torth, Row: 726, Column: 20
+;; [str.removeprefix] FUNCTION_CALL str.startswith | File: lib/std.torth, Row: 780, Column: 20
   call c3RyLnN0YXJ0c3dpdGg_
-;; [str.removeprefix] DO | File: lib/std.torth, Row: 726, Column: 35
+;; [str.removeprefix] DO | File: lib/std.torth, Row: 780, Column: 35
   pop rax
   test rax, rax
   jz str.removeprefix_ENDIF13
-;; [str.removeprefix] PUSH_BIND string | File: lib/std.torth, Row: 727, Column: 5
+;; [str.removeprefix] PUSH_BIND string | File: lib/std.torth, Row: 781, Column: 5
   push QWORD [r14-8]
-;; [str.removeprefix] PUSH_BIND prefix | File: lib/std.torth, Row: 727, Column: 12
+;; [str.removeprefix] PUSH_BIND prefix | File: lib/std.torth, Row: 781, Column: 12
   push QWORD [r14-16]
-;; [str.removeprefix] FUNCTION_CALL str.len | File: lib/std.torth, Row: 727, Column: 19
+;; [str.removeprefix] FUNCTION_CALL str.len | File: lib/std.torth, Row: 781, Column: 19
   call c3RyLmxlbg__
-;; [str.removeprefix] FUNCTION_CALL str+ | File: lib/std.torth, Row: 727, Column: 27
+;; [str.removeprefix] FUNCTION_CALL str+ | File: lib/std.torth, Row: 781, Column: 27
   call c3RyKw__
-;; [str.removeprefix] PUSH_BIND string | File: lib/std.torth, Row: 727, Column: 32
+;; [str.removeprefix] PUSH_BIND string | File: lib/std.torth, Row: 781, Column: 32
   push QWORD [r14-8]
-;; [str.removeprefix] ASSIGN_BIND | File: lib/std.torth, Row: 727, Column: 39
+;; [str.removeprefix] ASSIGN_BIND | File: lib/std.torth, Row: 781, Column: 39
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [str.removeprefix] ENDIF | File: lib/std.torth, Row: 728, Column: 3
+;; [str.removeprefix] ENDIF | File: lib/std.torth, Row: 782, Column: 3
 str.removeprefix_ENDIF13:
-;; [str.removeprefix] PUSH_BIND string | File: lib/std.torth, Row: 729, Column: 3
+;; [str.removeprefix] PUSH_BIND string | File: lib/std.torth, Row: 783, Column: 3
   push QWORD [r14-8]
 ;; [str.removeprefix] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -25162,53 +25082,53 @@ c3RyLnJlbW92ZXN1ZmZpeA__:
 ;; [str.removesuffix] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.removesuffix] POP_BIND string | File: lib/std.torth, Row: 735, Column: 27
+;; [str.removesuffix] POP_BIND string | File: lib/std.torth, Row: 789, Column: 27
   pop rbx
   mov [r14-8], rbx
-;; [str.removesuffix] POP_BIND suffix | File: lib/std.torth, Row: 735, Column: 38
+;; [str.removesuffix] POP_BIND suffix | File: lib/std.torth, Row: 789, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [str.removesuffix] IF | File: lib/std.torth, Row: 737, Column: 3
-;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 737, Column: 6
+;; [str.removesuffix] IF | File: lib/std.torth, Row: 791, Column: 3
+;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 791, Column: 6
   push QWORD [r14-8]
-;; [str.removesuffix] PUSH_BIND suffix | File: lib/std.torth, Row: 737, Column: 13
+;; [str.removesuffix] PUSH_BIND suffix | File: lib/std.torth, Row: 791, Column: 13
   push QWORD [r14-16]
-;; [str.removesuffix] FUNCTION_CALL str.endswith | File: lib/std.torth, Row: 737, Column: 20
+;; [str.removesuffix] FUNCTION_CALL str.endswith | File: lib/std.torth, Row: 791, Column: 20
   call c3RyLmVuZHN3aXRo
-;; [str.removesuffix] DO | File: lib/std.torth, Row: 737, Column: 33
+;; [str.removesuffix] DO | File: lib/std.torth, Row: 791, Column: 33
   pop rax
   test rax, rax
   jz str.removesuffix_ENDIF19
-;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 738, Column: 5
+;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 792, Column: 5
   push QWORD [r14-8]
-;; [str.removesuffix] FUNCTION_CALL str.copy | File: lib/std.torth, Row: 738, Column: 12
+;; [str.removesuffix] FUNCTION_CALL str.copy | File: lib/std.torth, Row: 792, Column: 12
   call c3RyLmNvcHk_
-;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 738, Column: 21
+;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 792, Column: 21
   push QWORD [r14-8]
-;; [str.removesuffix] ASSIGN_BIND | File: lib/std.torth, Row: 738, Column: 28
+;; [str.removesuffix] ASSIGN_BIND | File: lib/std.torth, Row: 792, Column: 28
   add rsp, 8
   pop rbx
   mov [r14-8], rbx
-;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 739, Column: 5
+;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 793, Column: 5
   push QWORD [r14-8]
-;; [str.removesuffix] INTRINSIC dup | File: lib/std.torth, Row: 739, Column: 12
+;; [str.removesuffix] INTRINSIC dup | File: lib/std.torth, Row: 793, Column: 12
   push QWORD [rsp]
-;; [str.removesuffix] FUNCTION_CALL str.len | File: lib/std.torth, Row: 739, Column: 16
+;; [str.removesuffix] FUNCTION_CALL str.len | File: lib/std.torth, Row: 793, Column: 16
   call c3RyLmxlbg__
-;; [str.removesuffix] PUSH_BIND suffix | File: lib/std.torth, Row: 739, Column: 24
+;; [str.removesuffix] PUSH_BIND suffix | File: lib/std.torth, Row: 793, Column: 24
   push QWORD [r14-16]
-;; [str.removesuffix] FUNCTION_CALL str.len | File: lib/std.torth, Row: 739, Column: 31
+;; [str.removesuffix] FUNCTION_CALL str.len | File: lib/std.torth, Row: 793, Column: 31
   call c3RyLmxlbg__
-;; [str.removesuffix] INTRINSIC MINUS | File: lib/std.torth, Row: 739, Column: 39
+;; [str.removesuffix] INTRINSIC MINUS | File: lib/std.torth, Row: 793, Column: 39
   pop rax
   sub [rsp], rax
-;; [str.removesuffix] FUNCTION_CALL str+ | File: lib/std.torth, Row: 739, Column: 41
+;; [str.removesuffix] FUNCTION_CALL str+ | File: lib/std.torth, Row: 793, Column: 41
   call c3RyKw__
-;; [str.removesuffix] FUNCTION_CALL str.empty | File: lib/std.torth, Row: 739, Column: 46
+;; [str.removesuffix] FUNCTION_CALL str.empty | File: lib/std.torth, Row: 793, Column: 46
   call c3RyLmVtcHR5
-;; [str.removesuffix] ENDIF | File: lib/std.torth, Row: 740, Column: 3
+;; [str.removesuffix] ENDIF | File: lib/std.torth, Row: 794, Column: 3
 str.removesuffix_ENDIF19:
-;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 741, Column: 3
+;; [str.removesuffix] PUSH_BIND string | File: lib/std.torth, Row: 795, Column: 3
   push QWORD [r14-8]
 ;; [str.removesuffix] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -25219,129 +25139,129 @@ c3RyZXE_:
 ;; [streq] Save the return address to return stack
   add r14, 48 ; 5 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [streq] POP_BIND str1 | File: lib/std.torth, Row: 745, Column: 16
+;; [streq] POP_BIND str1 | File: lib/std.torth, Row: 799, Column: 16
   pop rbx
   mov [r14-8], rbx
-;; [streq] POP_BIND str2 | File: lib/std.torth, Row: 745, Column: 25
+;; [streq] POP_BIND str2 | File: lib/std.torth, Row: 799, Column: 25
   pop rbx
   mov [r14-16], rbx
-;; [streq] PUSH_BIND str1 | File: lib/std.torth, Row: 746, Column: 3
+;; [streq] PUSH_BIND str1 | File: lib/std.torth, Row: 800, Column: 3
   push QWORD [r14-8]
-;; [streq] FUNCTION_CALL str.len | File: lib/std.torth, Row: 746, Column: 8
+;; [streq] FUNCTION_CALL str.len | File: lib/std.torth, Row: 800, Column: 8
   call c3RyLmxlbg__
-;; [streq] PUSH_BIND str2 | File: lib/std.torth, Row: 747, Column: 3
+;; [streq] PUSH_BIND str2 | File: lib/std.torth, Row: 801, Column: 3
   push QWORD [r14-16]
-;; [streq] FUNCTION_CALL str.len | File: lib/std.torth, Row: 747, Column: 8
+;; [streq] FUNCTION_CALL str.len | File: lib/std.torth, Row: 801, Column: 8
   call c3RyLmxlbg__
-;; [streq] PUSH_INT | File: lib/std.torth, Row: 748, Column: 3
+;; [streq] PUSH_INT | File: lib/std.torth, Row: 802, Column: 3
   mov rax, 0
   push rax
-;; [streq] TAKE | File: lib/std.torth, Row: 749, Column: 3
-;; [streq] POP_BIND index | File: lib/std.torth, Row: 750, Column: 5
+;; [streq] TAKE | File: lib/std.torth, Row: 803, Column: 3
+;; [streq] POP_BIND index | File: lib/std.torth, Row: 804, Column: 5
   pop rbx
   mov [r14-24], rbx
-;; [streq] POP_BIND str2.len | File: lib/std.torth, Row: 751, Column: 5
+;; [streq] POP_BIND str2.len | File: lib/std.torth, Row: 805, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [streq] POP_BIND str1.len | File: lib/std.torth, Row: 752, Column: 5
+;; [streq] POP_BIND str1.len | File: lib/std.torth, Row: 806, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [streq] IN | File: lib/std.torth, Row: 753, Column: 3
-;; [streq] IF | File: lib/std.torth, Row: 756, Column: 3
-;; [streq] PUSH_BIND str1.len | File: lib/std.torth, Row: 756, Column: 6
+;; [streq] IN | File: lib/std.torth, Row: 807, Column: 3
+;; [streq] IF | File: lib/std.torth, Row: 810, Column: 3
+;; [streq] PUSH_BIND str1.len | File: lib/std.torth, Row: 810, Column: 6
   push QWORD [r14-40]
-;; [streq] PUSH_BIND str2.len | File: lib/std.torth, Row: 756, Column: 15
+;; [streq] PUSH_BIND str2.len | File: lib/std.torth, Row: 810, Column: 15
   push QWORD [r14-32]
-;; [streq] INTRINSIC NE | File: lib/std.torth, Row: 756, Column: 24
+;; [streq] INTRINSIC NE | File: lib/std.torth, Row: 810, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [streq] DO | File: lib/std.torth, Row: 756, Column: 27
+;; [streq] DO | File: lib/std.torth, Row: 810, Column: 27
   pop rax
   test rax, rax
   jz streq_ENDIF19
-;; [streq] PUSH_BOOL | File: lib/std.torth, Row: 757, Column: 5
+;; [streq] PUSH_BOOL | File: lib/std.torth, Row: 811, Column: 5
   push 0
-;; [streq] RETURN | File: lib/std.torth, Row: 757, Column: 11
+;; [streq] RETURN | File: lib/std.torth, Row: 811, Column: 11
 ;; [streq] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
   ret
 
-;; [streq] ENDIF | File: lib/std.torth, Row: 758, Column: 3
+;; [streq] ENDIF | File: lib/std.torth, Row: 812, Column: 3
 streq_ENDIF19:
-;; [streq] WHILE | File: lib/std.torth, Row: 761, Column: 3
+;; [streq] WHILE | File: lib/std.torth, Row: 815, Column: 3
 streq_WHILE20:
-;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 762, Column: 5
+;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 816, Column: 5
   push QWORD [r14-24]
-;; [streq] PUSH_BIND str1.len | File: lib/std.torth, Row: 762, Column: 11
+;; [streq] PUSH_BIND str1.len | File: lib/std.torth, Row: 816, Column: 11
   push QWORD [r14-40]
-;; [streq] INTRINSIC LT | File: lib/std.torth, Row: 762, Column: 20
+;; [streq] INTRINSIC LT | File: lib/std.torth, Row: 816, Column: 20
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [streq] DO | File: lib/std.torth, Row: 763, Column: 3
+;; [streq] DO | File: lib/std.torth, Row: 817, Column: 3
   pop rax
   test rax, rax
   jz streq_DONE42
-;; [streq] IF | File: lib/std.torth, Row: 764, Column: 5
-;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 765, Column: 7
+;; [streq] IF | File: lib/std.torth, Row: 818, Column: 5
+;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 819, Column: 7
   push QWORD [r14-24]
-;; [streq] PUSH_BIND str1 | File: lib/std.torth, Row: 765, Column: 13
+;; [streq] PUSH_BIND str1 | File: lib/std.torth, Row: 819, Column: 13
   push QWORD [r14-8]
-;; [streq] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 765, Column: 18
+;; [streq] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 819, Column: 18
   call c3RyLmNoYXJfYXQ_
-;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 766, Column: 7
+;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 820, Column: 7
   push QWORD [r14-24]
-;; [streq] PUSH_BIND str2 | File: lib/std.torth, Row: 766, Column: 13
+;; [streq] PUSH_BIND str2 | File: lib/std.torth, Row: 820, Column: 13
   push QWORD [r14-16]
-;; [streq] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 766, Column: 18
+;; [streq] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 820, Column: 18
   call c3RyLmNoYXJfYXQ_
-;; [streq] INTRINSIC NE | File: lib/std.torth, Row: 767, Column: 7
+;; [streq] INTRINSIC NE | File: lib/std.torth, Row: 821, Column: 7
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovne rcx, rdx
   mov QWORD [rsp], rcx
-;; [streq] DO | File: lib/std.torth, Row: 768, Column: 5
+;; [streq] DO | File: lib/std.torth, Row: 822, Column: 5
   pop rax
   test rax, rax
   jz streq_ENDIF36
-;; [streq] PUSH_BOOL | File: lib/std.torth, Row: 769, Column: 7
+;; [streq] PUSH_BOOL | File: lib/std.torth, Row: 823, Column: 7
   push 0
-;; [streq] RETURN | File: lib/std.torth, Row: 769, Column: 13
+;; [streq] RETURN | File: lib/std.torth, Row: 823, Column: 13
 ;; [streq] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 48 ; 5 local variables
   ret
 
-;; [streq] ENDIF | File: lib/std.torth, Row: 770, Column: 5
+;; [streq] ENDIF | File: lib/std.torth, Row: 824, Column: 5
 streq_ENDIF36:
-;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 771, Column: 5
+;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 825, Column: 5
   push QWORD [r14-24]
-;; [streq] PUSH_INT | File: lib/std.torth, Row: 771, Column: 11
+;; [streq] PUSH_INT | File: lib/std.torth, Row: 825, Column: 11
   mov rax, 1
   push rax
-;; [streq] INTRINSIC PLUS | File: lib/std.torth, Row: 771, Column: 13
+;; [streq] INTRINSIC PLUS | File: lib/std.torth, Row: 825, Column: 13
   pop rax
   add [rsp], rax
-;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 771, Column: 15
+;; [streq] PUSH_BIND index | File: lib/std.torth, Row: 825, Column: 15
   push QWORD [r14-24]
-;; [streq] ASSIGN_BIND | File: lib/std.torth, Row: 771, Column: 21
+;; [streq] ASSIGN_BIND | File: lib/std.torth, Row: 825, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [streq] DONE | File: lib/std.torth, Row: 772, Column: 3
+;; [streq] DONE | File: lib/std.torth, Row: 826, Column: 3
   jmp streq_WHILE20
 streq_DONE42:
-;; [streq] PUSH_BOOL | File: lib/std.torth, Row: 773, Column: 3
+;; [streq] PUSH_BOOL | File: lib/std.torth, Row: 827, Column: 3
   push 1
 ;; [streq] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -25352,78 +25272,78 @@ c3RyLnJldmVyc2U_:
 ;; [str.reverse] Save the return address to return stack
   add r14, 32 ; 3 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [str.reverse] POP_BIND original | File: lib/std.torth, Row: 777, Column: 22
+;; [str.reverse] POP_BIND original | File: lib/std.torth, Row: 831, Column: 22
   pop rbx
   mov [r14-8], rbx
-;; [str.reverse] PUSH_BIND original | File: lib/std.torth, Row: 779, Column: 3
+;; [str.reverse] PUSH_BIND original | File: lib/std.torth, Row: 833, Column: 3
   push QWORD [r14-8]
-;; [str.reverse] FUNCTION_CALL str.len | File: lib/std.torth, Row: 779, Column: 12
+;; [str.reverse] FUNCTION_CALL str.len | File: lib/std.torth, Row: 833, Column: 12
   call c3RyLmxlbg__
-;; [str.reverse] INTRINSIC dup | File: lib/std.torth, Row: 779, Column: 20
+;; [str.reverse] INTRINSIC dup | File: lib/std.torth, Row: 833, Column: 20
   push QWORD [rsp]
-;; [str.reverse] FUNCTION_CALL malloc | File: lib/std.torth, Row: 779, Column: 24
+;; [str.reverse] FUNCTION_CALL malloc | File: lib/std.torth, Row: 833, Column: 24
   call bWFsbG9j
-;; [str.reverse] CAST | File: lib/std.torth, Row: 779, Column: 31
-;; [str.reverse] TAKE | File: lib/std.torth, Row: 780, Column: 3
-;; [str.reverse] POP_BIND reversed | File: lib/std.torth, Row: 780, Column: 8
+;; [str.reverse] CAST | File: lib/std.torth, Row: 833, Column: 31
+;; [str.reverse] TAKE | File: lib/std.torth, Row: 834, Column: 3
+;; [str.reverse] POP_BIND reversed | File: lib/std.torth, Row: 834, Column: 8
   pop rbx
   mov [r14-16], rbx
-;; [str.reverse] POP_BIND index | File: lib/std.torth, Row: 780, Column: 17
+;; [str.reverse] POP_BIND index | File: lib/std.torth, Row: 834, Column: 17
   pop rbx
   mov [r14-24], rbx
-;; [str.reverse] IN | File: lib/std.torth, Row: 780, Column: 23
-;; [str.reverse] WHILE | File: lib/std.torth, Row: 783, Column: 3
+;; [str.reverse] IN | File: lib/std.torth, Row: 834, Column: 23
+;; [str.reverse] WHILE | File: lib/std.torth, Row: 837, Column: 3
 str.reverse_WHILE10:
-;; [str.reverse] PUSH_INT | File: lib/std.torth, Row: 783, Column: 9
+;; [str.reverse] PUSH_INT | File: lib/std.torth, Row: 837, Column: 9
   mov rax, 0
   push rax
-;; [str.reverse] PUSH_BIND index | File: lib/std.torth, Row: 783, Column: 11
+;; [str.reverse] PUSH_BIND index | File: lib/std.torth, Row: 837, Column: 11
   push QWORD [r14-24]
-;; [str.reverse] INTRINSIC LT | File: lib/std.torth, Row: 783, Column: 17
+;; [str.reverse] INTRINSIC LT | File: lib/std.torth, Row: 837, Column: 17
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [str.reverse] DO | File: lib/std.torth, Row: 783, Column: 19
+;; [str.reverse] DO | File: lib/std.torth, Row: 837, Column: 19
   pop rax
   test rax, rax
   jz str.reverse_DONE27
-;; [str.reverse] PUSH_BIND index | File: lib/std.torth, Row: 784, Column: 5
+;; [str.reverse] PUSH_BIND index | File: lib/std.torth, Row: 838, Column: 5
   push QWORD [r14-24]
-;; [str.reverse] PUSH_INT | File: lib/std.torth, Row: 784, Column: 11
+;; [str.reverse] PUSH_INT | File: lib/std.torth, Row: 838, Column: 11
   mov rax, 1
   push rax
-;; [str.reverse] INTRINSIC MINUS | File: lib/std.torth, Row: 784, Column: 13
+;; [str.reverse] INTRINSIC MINUS | File: lib/std.torth, Row: 838, Column: 13
   pop rax
   sub [rsp], rax
-;; [str.reverse] PUSH_BIND index | File: lib/std.torth, Row: 784, Column: 15
+;; [str.reverse] PUSH_BIND index | File: lib/std.torth, Row: 838, Column: 15
   push QWORD [r14-24]
-;; [str.reverse] ASSIGN_BIND | File: lib/std.torth, Row: 784, Column: 21
+;; [str.reverse] ASSIGN_BIND | File: lib/std.torth, Row: 838, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [str.reverse] PUSH_BIND index | File: lib/std.torth, Row: 785, Column: 5
+;; [str.reverse] PUSH_BIND index | File: lib/std.torth, Row: 839, Column: 5
   push QWORD [r14-24]
-;; [str.reverse] PUSH_BIND original | File: lib/std.torth, Row: 785, Column: 11
+;; [str.reverse] PUSH_BIND original | File: lib/std.torth, Row: 839, Column: 11
   push QWORD [r14-8]
-;; [str.reverse] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 785, Column: 20
+;; [str.reverse] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 839, Column: 20
   call c3RyLmNoYXJfYXQ_
-;; [str.reverse] PUSH_BIND reversed | File: lib/std.torth, Row: 788, Column: 5
+;; [str.reverse] PUSH_BIND reversed | File: lib/std.torth, Row: 842, Column: 5
   push QWORD [r14-16]
-;; [str.reverse] FUNCTION_CALL str.append | File: lib/std.torth, Row: 788, Column: 14
+;; [str.reverse] FUNCTION_CALL str.append | File: lib/std.torth, Row: 842, Column: 14
   call c3RyLmFwcGVuZA__
-;; [str.reverse] PUSH_BIND reversed | File: lib/std.torth, Row: 788, Column: 25
+;; [str.reverse] PUSH_BIND reversed | File: lib/std.torth, Row: 842, Column: 25
   push QWORD [r14-16]
-;; [str.reverse] ASSIGN_BIND | File: lib/std.torth, Row: 788, Column: 34
+;; [str.reverse] ASSIGN_BIND | File: lib/std.torth, Row: 842, Column: 34
   add rsp, 8
   pop rbx
   mov [r14-16], rbx
-;; [str.reverse] DONE | File: lib/std.torth, Row: 789, Column: 3
+;; [str.reverse] DONE | File: lib/std.torth, Row: 843, Column: 3
   jmp str.reverse_WHILE10
 str.reverse_DONE27:
-;; [str.reverse] PUSH_BIND reversed | File: lib/std.torth, Row: 789, Column: 8
+;; [str.reverse] PUSH_BIND reversed | File: lib/std.torth, Row: 843, Column: 8
   push QWORD [r14-16]
 ;; [str.reverse] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -25432,207 +25352,201 @@ str.reverse_DONE27:
 
 cmVhZF9maWxl:
 ;; [read_file] Save the return address to return stack
-  add r14, 64 ; 7 local variables
+  add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [read_file] POP_BIND path | File: lib/std.torth, Row: 881, Column: 20
+;; [read_file] POP_BIND path | File: lib/std.torth, Row: 935, Column: 20
   pop rbx
   mov [r14-8], rbx
-;; [read_file] PUSH_BIND path | File: lib/std.torth, Row: 884, Column: 3
+;; [read_file] PUSH_BIND path | File: lib/std.torth, Row: 938, Column: 3
   push QWORD [r14-8]
-;; [read_file] PUSH_INT | File: lib/std.torth, Row: 884, Column: 8
+;; [read_file] PUSH_INT | File: lib/std.torth, Row: 938, Column: 8
   mov rax, 0
   push rax
-;; [read_file] FUNCTION_CALL open_file | File: lib/std.torth, Row: 884, Column: 17
+;; [read_file] FUNCTION_CALL open_file | File: lib/std.torth, Row: 938, Column: 17
   call b3Blbl9maWxl
-;; [read_file] PUSH_INT | File: lib/std.torth, Row: 887, Column: 3
+;; [read_file] PUSH_INT | File: lib/std.torth, Row: 941, Column: 3
   mov rax, 430080
   push rax
-;; [read_file] FUNCTION_CALL malloc | File: lib/std.torth, Row: 887, Column: 19
+;; [read_file] FUNCTION_CALL malloc | File: lib/std.torth, Row: 941, Column: 19
   call bWFsbG9j
-;; [read_file] CAST | File: lib/std.torth, Row: 887, Column: 26
-;; [read_file] TAKE | File: lib/std.torth, Row: 888, Column: 3
-;; [read_file] POP_BIND buffer | File: lib/std.torth, Row: 888, Column: 8
+;; [read_file] CAST | File: lib/std.torth, Row: 941, Column: 26
+;; [read_file] TAKE | File: lib/std.torth, Row: 942, Column: 3
+;; [read_file] POP_BIND buffer | File: lib/std.torth, Row: 942, Column: 8
   pop rbx
   mov [r14-16], rbx
-;; [read_file] POP_BIND fd | File: lib/std.torth, Row: 888, Column: 15
+;; [read_file] POP_BIND fd | File: lib/std.torth, Row: 942, Column: 15
   pop rbx
   mov [r14-24], rbx
-;; [read_file] IN | File: lib/std.torth, Row: 888, Column: 18
-;; [read_file] PUSH_INT | File: lib/std.torth, Row: 891, Column: 3
+;; [read_file] IN | File: lib/std.torth, Row: 942, Column: 18
+;; [read_file] PUSH_INT | File: lib/std.torth, Row: 945, Column: 3
   mov rax, 430080
   push rax
-;; [read_file] PUSH_BIND buffer | File: lib/std.torth, Row: 891, Column: 19
+;; [read_file] PUSH_BIND buffer | File: lib/std.torth, Row: 945, Column: 19
   push QWORD [r14-16]
-;; [read_file] PUSH_BIND fd | File: lib/std.torth, Row: 891, Column: 26
+;; [read_file] PUSH_BIND fd | File: lib/std.torth, Row: 945, Column: 26
   push QWORD [r14-24]
-;; [read_file] FUNCTION_CALL read | File: lib/std.torth, Row: 891, Column: 29
+;; [read_file] FUNCTION_CALL read | File: lib/std.torth, Row: 945, Column: 29
   call cmVhZA__
-;; [read_file] PUSH_INT | File: lib/std.torth, Row: 891, Column: 34
+;; [read_file] PUSH_INT | File: lib/std.torth, Row: 945, Column: 34
   mov rax, 1
   push rax
-;; [read_file] INTRINSIC PLUS | File: lib/std.torth, Row: 891, Column: 36
+;; [read_file] INTRINSIC PLUS | File: lib/std.torth, Row: 945, Column: 36
   pop rax
   add [rsp], rax
-;; [read_file] TAKE | File: lib/std.torth, Row: 892, Column: 3
-;; [read_file] POP_BIND read_bytes | File: lib/std.torth, Row: 892, Column: 8
+;; [read_file] TAKE | File: lib/std.torth, Row: 946, Column: 3
+;; [read_file] POP_BIND read_bytes | File: lib/std.torth, Row: 946, Column: 8
   pop rbx
   mov [r14-32], rbx
-;; [read_file] IN | File: lib/std.torth, Row: 892, Column: 19
-;; [read_file] PUSH_INT | File: lib/std.torth, Row: 896, Column: 3
+;; [read_file] IN | File: lib/std.torth, Row: 946, Column: 19
+;; [read_file] PUSH_INT | File: lib/std.torth, Row: 949, Column: 3
   mov rax, 4096
   push rax
-;; [read_file] TAKE | File: lib/std.torth, Row: 896, Column: 8
-;; [read_file] POP_BIND PAGE_SIZE | File: lib/std.torth, Row: 896, Column: 13
-  pop rbx
-  mov [r14-40], rbx
-;; [read_file] IN | File: lib/std.torth, Row: 896, Column: 23
-;; [read_file] PUSH_BIND PAGE_SIZE | File: lib/std.torth, Row: 899, Column: 3
-  push QWORD [r14-40]
-;; [read_file] PUSH_BIND read_bytes | File: lib/std.torth, Row: 899, Column: 13
+;; [read_file] PUSH_BIND read_bytes | File: lib/std.torth, Row: 949, Column: 13
   push QWORD [r14-32]
-;; [read_file] PUSH_BIND PAGE_SIZE | File: lib/std.torth, Row: 899, Column: 24
-  push QWORD [r14-40]
-;; [read_file] INTRINSIC MOD | File: lib/std.torth, Row: 899, Column: 34
+;; [read_file] PUSH_INT | File: lib/std.torth, Row: 949, Column: 24
+  mov rax, 4096
+  push rax
+;; [read_file] INTRINSIC MOD | File: lib/std.torth, Row: 949, Column: 34
   xor edx, edx ; Do not use floating point arithmetic
   pop rbx
   pop rax
   div rbx
   push rdx ; Remainder
-;; [read_file] INTRINSIC MINUS | File: lib/std.torth, Row: 899, Column: 36
+;; [read_file] INTRINSIC MINUS | File: lib/std.torth, Row: 949, Column: 36
   pop rax
   sub [rsp], rax
-;; [read_file] TAKE | File: lib/std.torth, Row: 900, Column: 3
-;; [read_file] POP_BIND offset | File: lib/std.torth, Row: 900, Column: 8
+;; [read_file] TAKE | File: lib/std.torth, Row: 950, Column: 3
+;; [read_file] POP_BIND offset | File: lib/std.torth, Row: 950, Column: 8
   pop rbx
-  mov [r14-48], rbx
-;; [read_file] IN | File: lib/std.torth, Row: 900, Column: 15
-;; [read_file] PUSH_INT | File: lib/std.torth, Row: 902, Column: 3
+  mov [r14-40], rbx
+;; [read_file] IN | File: lib/std.torth, Row: 950, Column: 15
+;; [read_file] PUSH_INT | File: lib/std.torth, Row: 952, Column: 3
   mov rax, 430080
   push rax
-;; [read_file] PUSH_BIND read_bytes | File: lib/std.torth, Row: 902, Column: 19
+;; [read_file] PUSH_BIND read_bytes | File: lib/std.torth, Row: 952, Column: 19
   push QWORD [r14-32]
-;; [read_file] INTRINSIC MINUS | File: lib/std.torth, Row: 902, Column: 30
+;; [read_file] INTRINSIC MINUS | File: lib/std.torth, Row: 952, Column: 30
   pop rax
   sub [rsp], rax
-;; [read_file] PUSH_BIND offset | File: lib/std.torth, Row: 902, Column: 32
-  push QWORD [r14-48]
-;; [read_file] INTRINSIC MINUS | File: lib/std.torth, Row: 902, Column: 39
+;; [read_file] PUSH_BIND offset | File: lib/std.torth, Row: 952, Column: 32
+  push QWORD [r14-40]
+;; [read_file] INTRINSIC MINUS | File: lib/std.torth, Row: 952, Column: 39
   pop rax
   sub [rsp], rax
-;; [read_file] TAKE | File: lib/std.torth, Row: 903, Column: 3
-;; [read_file] POP_BIND excessive_bytes | File: lib/std.torth, Row: 903, Column: 8
+;; [read_file] TAKE | File: lib/std.torth, Row: 953, Column: 3
+;; [read_file] POP_BIND excessive_bytes | File: lib/std.torth, Row: 953, Column: 8
   pop rbx
-  mov [r14-56], rbx
-;; [read_file] IN | File: lib/std.torth, Row: 903, Column: 24
-;; [read_file] PUSH_BIND excessive_bytes | File: lib/std.torth, Row: 905, Column: 3
-  push QWORD [r14-56]
-;; [read_file] PUSH_BIND buffer | File: lib/std.torth, Row: 905, Column: 19
-  push QWORD [r14-16]
-;; [read_file] CAST | File: lib/std.torth, Row: 905, Column: 26
-;; [read_file] PUSH_BIND read_bytes | File: lib/std.torth, Row: 905, Column: 36
-  push QWORD [r14-32]
-;; [read_file] PUSH_BIND offset | File: lib/std.torth, Row: 905, Column: 47
+  mov [r14-48], rbx
+;; [read_file] IN | File: lib/std.torth, Row: 953, Column: 24
+;; [read_file] PUSH_BIND excessive_bytes | File: lib/std.torth, Row: 955, Column: 3
   push QWORD [r14-48]
-;; [read_file] INTRINSIC PLUS | File: lib/std.torth, Row: 905, Column: 54
+;; [read_file] PUSH_BIND buffer | File: lib/std.torth, Row: 955, Column: 19
+  push QWORD [r14-16]
+;; [read_file] CAST | File: lib/std.torth, Row: 955, Column: 26
+;; [read_file] PUSH_BIND read_bytes | File: lib/std.torth, Row: 955, Column: 36
+  push QWORD [r14-32]
+;; [read_file] PUSH_BIND offset | File: lib/std.torth, Row: 955, Column: 47
+  push QWORD [r14-40]
+;; [read_file] INTRINSIC PLUS | File: lib/std.torth, Row: 955, Column: 54
   pop rax
   add [rsp], rax
-;; [read_file] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 905, Column: 56
+;; [read_file] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 955, Column: 56
   call cHRyKw__
-;; [read_file] FUNCTION_CALL munmap | File: lib/std.torth, Row: 905, Column: 61
+;; [read_file] FUNCTION_CALL munmap | File: lib/std.torth, Row: 955, Column: 61
   call bXVubWFw
-;; [read_file] PUSH_BIND fd | File: lib/std.torth, Row: 908, Column: 3
+;; [read_file] PUSH_BIND fd | File: lib/std.torth, Row: 958, Column: 3
   push QWORD [r14-24]
-;; [read_file] PUSH_INT | File: lib/std.torth, Row: 908, Column: 6
+;; [read_file] PUSH_INT | File: lib/std.torth, Row: 958, Column: 6
   mov rax, 3
   push rax
-;; [read_file] INTRINSIC syscall1 | File: lib/std.torth, Row: 908, Column: 16
+;; [read_file] INTRINSIC syscall1 | File: lib/std.torth, Row: 958, Column: 16
   pop rax ; syscall
   pop rdi ; 1. arg
   syscall
   push rax ; return code
-;; [read_file] INTRINSIC drop | File: lib/std.torth, Row: 908, Column: 25
+;; [read_file] INTRINSIC drop | File: lib/std.torth, Row: 958, Column: 25
   add rsp, 8
-;; [read_file] PUSH_BIND buffer | File: lib/std.torth, Row: 911, Column: 3
+;; [read_file] PUSH_BIND buffer | File: lib/std.torth, Row: 961, Column: 3
   push QWORD [r14-16]
 ;; [read_file] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
-  sub r14, 64 ; 7 local variables
+  sub r14, 56 ; 6 local variables
   ret
 
 YXBwZW5kX2ZpbGU_:
 ;; [append_file] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [append_file] PUSH_INT | File: lib/std.torth, Row: 939, Column: 3
+;; [append_file] PUSH_INT | File: lib/std.torth, Row: 989, Column: 3
   mov rax, 0x1a4
   push rax
-;; [append_file] PUSH_INT | File: lib/std.torth, Row: 940, Column: 3
+;; [append_file] PUSH_INT | File: lib/std.torth, Row: 990, Column: 3
   mov rax, 0x400
   push rax
-;; [append_file] PUSH_INT | File: lib/std.torth, Row: 940, Column: 12
+;; [append_file] PUSH_INT | File: lib/std.torth, Row: 990, Column: 12
   mov rax, 0x40
   push rax
-;; [append_file] PUSH_INT | File: lib/std.torth, Row: 940, Column: 20
+;; [append_file] PUSH_INT | File: lib/std.torth, Row: 990, Column: 20
   mov rax, 1
   push rax
-;; [append_file] FUNCTION_CALL | | File: lib/std.torth, Row: 940, Column: 29
+;; [append_file] FUNCTION_CALL | | File: lib/std.torth, Row: 990, Column: 29
   call fA__
-;; [append_file] FUNCTION_CALL | | File: lib/std.torth, Row: 940, Column: 31
+;; [append_file] FUNCTION_CALL | | File: lib/std.torth, Row: 990, Column: 31
   call fA__
-;; [append_file] INTRINSIC rot | File: lib/std.torth, Row: 941, Column: 3
+;; [append_file] INTRINSIC rot | File: lib/std.torth, Row: 991, Column: 3
   pop rax
   xchg rax, QWORD [rsp]
   xchg rax, QWORD [rsp+8]
   push rax
-;; [append_file] PUSH_INT | File: lib/std.torth, Row: 941, Column: 7
+;; [append_file] PUSH_INT | File: lib/std.torth, Row: 991, Column: 7
   mov rax, 2
   push rax
-;; [append_file] INTRINSIC syscall3 | File: lib/std.torth, Row: 941, Column: 16
+;; [append_file] INTRINSIC syscall3 | File: lib/std.torth, Row: 991, Column: 16
   pop rax ; syscall
   pop rdi ; 1. arg
   pop rsi ; 2. arg
   pop rdx ; 3. arg
   syscall
   push rax ; return code
-;; [append_file] TAKE | File: lib/std.torth, Row: 943, Column: 3
-;; [append_file] POP_BIND fd | File: lib/std.torth, Row: 943, Column: 8
+;; [append_file] TAKE | File: lib/std.torth, Row: 993, Column: 3
+;; [append_file] POP_BIND fd | File: lib/std.torth, Row: 993, Column: 8
   pop rbx
   mov [r14-8], rbx
-;; [append_file] POP_BIND buf | File: lib/std.torth, Row: 943, Column: 11
+;; [append_file] POP_BIND buf | File: lib/std.torth, Row: 993, Column: 11
   pop rbx
   mov [r14-16], rbx
-;; [append_file] IN | File: lib/std.torth, Row: 943, Column: 15
-;; [append_file] PUSH_BIND buf | File: lib/std.torth, Row: 944, Column: 3
+;; [append_file] IN | File: lib/std.torth, Row: 993, Column: 15
+;; [append_file] PUSH_BIND buf | File: lib/std.torth, Row: 994, Column: 3
   push QWORD [r14-16]
-;; [append_file] FUNCTION_CALL str.len | File: lib/std.torth, Row: 944, Column: 7
+;; [append_file] FUNCTION_CALL str.len | File: lib/std.torth, Row: 994, Column: 7
   call c3RyLmxlbg__
-;; [append_file] PUSH_BIND buf | File: lib/std.torth, Row: 945, Column: 3
+;; [append_file] PUSH_BIND buf | File: lib/std.torth, Row: 995, Column: 3
   push QWORD [r14-16]
-;; [append_file] PUSH_BIND fd | File: lib/std.torth, Row: 945, Column: 7
+;; [append_file] PUSH_BIND fd | File: lib/std.torth, Row: 995, Column: 7
   push QWORD [r14-8]
-;; [append_file] PUSH_INT | File: lib/std.torth, Row: 945, Column: 10
+;; [append_file] PUSH_INT | File: lib/std.torth, Row: 995, Column: 10
   mov rax, 1
   push rax
-;; [append_file] INTRINSIC syscall3 | File: lib/std.torth, Row: 945, Column: 20
+;; [append_file] INTRINSIC syscall3 | File: lib/std.torth, Row: 995, Column: 20
   pop rax ; syscall
   pop rdi ; 1. arg
   pop rsi ; 2. arg
   pop rdx ; 3. arg
   syscall
   push rax ; return code
-;; [append_file] INTRINSIC drop | File: lib/std.torth, Row: 945, Column: 29
+;; [append_file] INTRINSIC drop | File: lib/std.torth, Row: 995, Column: 29
   add rsp, 8
-;; [append_file] PUSH_BIND fd | File: lib/std.torth, Row: 948, Column: 3
+;; [append_file] PUSH_BIND fd | File: lib/std.torth, Row: 998, Column: 3
   push QWORD [r14-8]
-;; [append_file] PUSH_INT | File: lib/std.torth, Row: 948, Column: 6
+;; [append_file] PUSH_INT | File: lib/std.torth, Row: 998, Column: 6
   mov rax, 3
   push rax
-;; [append_file] INTRINSIC syscall1 | File: lib/std.torth, Row: 948, Column: 16
+;; [append_file] INTRINSIC syscall1 | File: lib/std.torth, Row: 998, Column: 16
   pop rax ; syscall
   pop rdi ; 1. arg
   syscall
   push rax ; return code
-;; [append_file] INTRINSIC drop | File: lib/std.torth, Row: 948, Column: 25
+;; [append_file] INTRINSIC drop | File: lib/std.torth, Row: 998, Column: 25
   add rsp, 8
 ;; [append_file] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -25643,67 +25557,67 @@ ZmlsZV9leGlzdHM_:
 ;; [file_exists] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [file_exists] PUSH_INT | File: lib/std.torth, Row: 960, Column: 3
+;; [file_exists] PUSH_INT | File: lib/std.torth, Row: 1010, Column: 3
   mov rax, 0
   push rax
-;; [file_exists] INTRINSIC swap | File: lib/std.torth, Row: 960, Column: 12
+;; [file_exists] INTRINSIC swap | File: lib/std.torth, Row: 1010, Column: 12
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [file_exists] PUSH_INT | File: lib/std.torth, Row: 960, Column: 17
+;; [file_exists] PUSH_INT | File: lib/std.torth, Row: 1010, Column: 17
   mov rax, 2
   push rax
-;; [file_exists] INTRINSIC syscall2 | File: lib/std.torth, Row: 960, Column: 26
+;; [file_exists] INTRINSIC syscall2 | File: lib/std.torth, Row: 1010, Column: 26
   pop rax ; syscall
   pop rdi ; 1. arg
   pop rsi ; 2. arg
   syscall
   push rax ; return code
-;; [file_exists] TAKE | File: lib/std.torth, Row: 961, Column: 3
-;; [file_exists] POP_BIND fd | File: lib/std.torth, Row: 961, Column: 8
+;; [file_exists] TAKE | File: lib/std.torth, Row: 1011, Column: 3
+;; [file_exists] POP_BIND fd | File: lib/std.torth, Row: 1011, Column: 8
   pop rbx
   mov [r14-8], rbx
-;; [file_exists] IN | File: lib/std.torth, Row: 961, Column: 11
-;; [file_exists] IF | File: lib/std.torth, Row: 963, Column: 3
-;; [file_exists] PUSH_BIND fd | File: lib/std.torth, Row: 963, Column: 6
+;; [file_exists] IN | File: lib/std.torth, Row: 1011, Column: 11
+;; [file_exists] IF | File: lib/std.torth, Row: 1013, Column: 3
+;; [file_exists] PUSH_BIND fd | File: lib/std.torth, Row: 1013, Column: 6
   push QWORD [r14-8]
-;; [file_exists] PUSH_INT | File: lib/std.torth, Row: 963, Column: 9
+;; [file_exists] PUSH_INT | File: lib/std.torth, Row: 1013, Column: 9
   mov rax, 0
   push rax
-;; [file_exists] INTRINSIC GT | File: lib/std.torth, Row: 963, Column: 11
+;; [file_exists] INTRINSIC GT | File: lib/std.torth, Row: 1013, Column: 11
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovg rcx, rdx
   mov QWORD [rsp], rcx
-;; [file_exists] DO | File: lib/std.torth, Row: 963, Column: 13
+;; [file_exists] DO | File: lib/std.torth, Row: 1013, Column: 13
   pop rax
   test rax, rax
   jz file_exists_ENDIF18
-;; [file_exists] PUSH_BIND fd | File: lib/std.torth, Row: 964, Column: 5
+;; [file_exists] PUSH_BIND fd | File: lib/std.torth, Row: 1014, Column: 5
   push QWORD [r14-8]
-;; [file_exists] PUSH_INT | File: lib/std.torth, Row: 964, Column: 8
+;; [file_exists] PUSH_INT | File: lib/std.torth, Row: 1014, Column: 8
   mov rax, 3
   push rax
-;; [file_exists] INTRINSIC syscall1 | File: lib/std.torth, Row: 964, Column: 18
+;; [file_exists] INTRINSIC syscall1 | File: lib/std.torth, Row: 1014, Column: 18
   pop rax ; syscall
   pop rdi ; 1. arg
   syscall
   push rax ; return code
-;; [file_exists] INTRINSIC drop | File: lib/std.torth, Row: 964, Column: 27
+;; [file_exists] INTRINSIC drop | File: lib/std.torth, Row: 1014, Column: 27
   add rsp, 8
-;; [file_exists] PUSH_BOOL | File: lib/std.torth, Row: 965, Column: 5
+;; [file_exists] PUSH_BOOL | File: lib/std.torth, Row: 1015, Column: 5
   push 1
-;; [file_exists] RETURN | File: lib/std.torth, Row: 965, Column: 10
+;; [file_exists] RETURN | File: lib/std.torth, Row: 1015, Column: 10
 ;; [file_exists] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 16 ; 1 local variables
   ret
 
-;; [file_exists] ENDIF | File: lib/std.torth, Row: 966, Column: 3
+;; [file_exists] ENDIF | File: lib/std.torth, Row: 1016, Column: 3
 file_exists_ENDIF18:
-;; [file_exists] PUSH_BOOL | File: lib/std.torth, Row: 967, Column: 3
+;; [file_exists] PUSH_BOOL | File: lib/std.torth, Row: 1017, Column: 3
   push 0
 ;; [file_exists] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -25714,24 +25628,24 @@ Z2V0X2FyZ3VtZW50:
 ;; [get_argument] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_argument] PUSH_INT | File: lib/std.torth, Row: 974, Column: 3
+;; [get_argument] PUSH_INT | File: lib/std.torth, Row: 1024, Column: 3
   mov rax, 8
   push rax
-;; [get_argument] INTRINSIC MUL | File: lib/std.torth, Row: 974, Column: 12
+;; [get_argument] INTRINSIC MUL | File: lib/std.torth, Row: 1024, Column: 12
   pop rax
   mul QWORD [rsp]
   mov QWORD [rsp], rax ; Product
-;; [get_argument] INTRINSIC argv | File: lib/std.torth, Row: 974, Column: 14
+;; [get_argument] INTRINSIC argv | File: lib/std.torth, Row: 1024, Column: 14
   mov rax, [args_ptr]
   add rax, 8
   push rax
-;; [get_argument] INTRINSIC swap | File: lib/std.torth, Row: 974, Column: 19
+;; [get_argument] INTRINSIC swap | File: lib/std.torth, Row: 1024, Column: 19
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [get_argument] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 974, Column: 24
+;; [get_argument] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 1024, Column: 24
   call cHRyKw__
-;; [get_argument] FUNCTION_CALL str.load | File: lib/std.torth, Row: 974, Column: 29
+;; [get_argument] FUNCTION_CALL str.load | File: lib/std.torth, Row: 1024, Column: 29
   call c3RyLmxvYWQ_
 ;; [get_argument] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -29790,24 +29704,24 @@ c2V0X2xvY2FsX3ZhcmlhYmxl:
 ;; [set_local_variable] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [set_local_variable] POP_BIND op | File: compiler/asm.torth, Row: 1040, Column: 29
+;; [set_local_variable] POP_BIND op | File: compiler/asm.torth, Row: 1041, Column: 29
   pop rbx
   mov [r14-8], rbx
-;; [set_local_variable] PUSH_BIND op | File: compiler/asm.torth, Row: 1042, Column: 3
-  push QWORD [r14-8]
-;; [set_local_variable] FUNCTION_CALL Op.func | File: compiler/asm.torth, Row: 1042, Column: 6
-  call T3AuZnVuYw__
-;; [set_local_variable] FUNCTION_CALL Func.variables | File: compiler/asm.torth, Row: 1042, Column: 14
-  call RnVuYy52YXJpYWJsZXM_
 ;; [set_local_variable] PUSH_BIND op | File: compiler/asm.torth, Row: 1043, Column: 3
   push QWORD [r14-8]
-;; [set_local_variable] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1043, Column: 6
+;; [set_local_variable] FUNCTION_CALL Op.func | File: compiler/asm.torth, Row: 1043, Column: 6
+  call T3AuZnVuYw__
+;; [set_local_variable] FUNCTION_CALL Func.variables | File: compiler/asm.torth, Row: 1043, Column: 14
+  call RnVuYy52YXJpYWJsZXM_
+;; [set_local_variable] PUSH_BIND op | File: compiler/asm.torth, Row: 1044, Column: 3
+  push QWORD [r14-8]
+;; [set_local_variable] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1044, Column: 6
   call T3AudG9rZW4_
-;; [set_local_variable] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 1043, Column: 15
+;; [set_local_variable] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 1044, Column: 15
   call VG9rZW4udmFsdWU_
-;; [set_local_variable] FUNCTION_CALL get_variable_index | File: compiler/asm.torth, Row: 1043, Column: 27
+;; [set_local_variable] FUNCTION_CALL get_variable_index | File: compiler/asm.torth, Row: 1044, Column: 27
   call Z2V0X3ZhcmlhYmxlX2luZGV4
-;; [set_local_variable] FUNCTION_CALL set_nth_from_return_stack_asm | File: compiler/asm.torth, Row: 1045, Column: 3
+;; [set_local_variable] FUNCTION_CALL set_nth_from_return_stack_asm | File: compiler/asm.torth, Row: 1046, Column: 3
   call c2V0X250aF9mcm9tX3JldHVybl9zdGFja19hc20_
 ;; [set_local_variable] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -29818,66 +29732,66 @@ Z2V0X250aF9mcm9tX3JldHVybl9zdGFja19hc20_:
 ;; [get_nth_from_return_stack_asm] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_nth_from_return_stack_asm] POP_BIND N | File: compiler/asm.torth, Row: 1049, Column: 40
+;; [get_nth_from_return_stack_asm] POP_BIND N | File: compiler/asm.torth, Row: 1050, Column: 40
   pop rbx
   mov [r14-8], rbx
-;; [get_nth_from_return_stack_asm] IF | File: compiler/asm.torth, Row: 1050, Column: 3
-;; [get_nth_from_return_stack_asm] PUSH_BIND N | File: compiler/asm.torth, Row: 1050, Column: 6
+;; [get_nth_from_return_stack_asm] IF | File: compiler/asm.torth, Row: 1051, Column: 3
+;; [get_nth_from_return_stack_asm] PUSH_BIND N | File: compiler/asm.torth, Row: 1051, Column: 6
   push QWORD [r14-8]
-;; [get_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1050, Column: 8
+;; [get_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1051, Column: 8
   mov rax, 0
   push rax
-;; [get_nth_from_return_stack_asm] INTRINSIC LT | File: compiler/asm.torth, Row: 1050, Column: 10
+;; [get_nth_from_return_stack_asm] INTRINSIC LT | File: compiler/asm.torth, Row: 1051, Column: 10
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_nth_from_return_stack_asm] DO | File: compiler/asm.torth, Row: 1050, Column: 12
+;; [get_nth_from_return_stack_asm] DO | File: compiler/asm.torth, Row: 1051, Column: 12
   pop rax
   test rax, rax
   jz get_nth_from_return_stack_asm_ENDIF9
-;; [get_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1051, Column: 5
+;; [get_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1052, Column: 5
   mov rsi, get_nth_from_return_stack_asm_s6 ; Pointer to string
 
   push rsi
-;; [get_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1052, Column: 5
+;; [get_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1053, Column: 5
   mov rsi, get_nth_from_return_stack_asm_s7 ; Pointer to string
 
   push rsi
-;; [get_nth_from_return_stack_asm] FUNCTION_CALL CompilerError | File: compiler/asm.torth, Row: 1052, Column: 19
+;; [get_nth_from_return_stack_asm] FUNCTION_CALL CompilerError | File: compiler/asm.torth, Row: 1053, Column: 19
   call Q29tcGlsZXJFcnJvcg__
-;; [get_nth_from_return_stack_asm] ENDIF | File: compiler/asm.torth, Row: 1053, Column: 3
+;; [get_nth_from_return_stack_asm] ENDIF | File: compiler/asm.torth, Row: 1054, Column: 3
 get_nth_from_return_stack_asm_ENDIF9:
-;; [get_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1055, Column: 5
+;; [get_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1056, Column: 5
   mov rsi, get_nth_from_return_stack_asm_s10 ; Pointer to string
 
   push rsi
-;; [get_nth_from_return_stack_asm] PUSH_BIND N | File: compiler/asm.torth, Row: 1055, Column: 24
+;; [get_nth_from_return_stack_asm] PUSH_BIND N | File: compiler/asm.torth, Row: 1056, Column: 24
   push QWORD [r14-8]
-;; [get_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1055, Column: 26
+;; [get_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1056, Column: 26
   mov rax, 8
   push rax
-;; [get_nth_from_return_stack_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1055, Column: 28
+;; [get_nth_from_return_stack_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1056, Column: 28
   pop rax
   mul QWORD [rsp]
   mov QWORD [rsp], rax ; Product
-;; [get_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1055, Column: 30
+;; [get_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1056, Column: 30
   mov rax, 8
   push rax
-;; [get_nth_from_return_stack_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1055, Column: 32
+;; [get_nth_from_return_stack_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1056, Column: 32
   pop rax
   add [rsp], rax
-;; [get_nth_from_return_stack_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1055, Column: 34
+;; [get_nth_from_return_stack_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1056, Column: 34
   call aXRvYQ__
-;; [get_nth_from_return_stack_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1055, Column: 39
+;; [get_nth_from_return_stack_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1056, Column: 39
   call c3RyLmNhdA__
-;; [get_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1055, Column: 39
+;; [get_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1056, Column: 39
   mov rsi, get_nth_from_return_stack_asm_s18 ; Pointer to string
 
   push rsi
-;; [get_nth_from_return_stack_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1055, Column: 42
+;; [get_nth_from_return_stack_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1056, Column: 42
   call c3RyLmNhdA__
 ;; [get_nth_from_return_stack_asm] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -29888,66 +29802,66 @@ c2V0X250aF9mcm9tX3JldHVybl9zdGFja19hc20_:
 ;; [set_nth_from_return_stack_asm] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [set_nth_from_return_stack_asm] POP_BIND N | File: compiler/asm.torth, Row: 1059, Column: 40
+;; [set_nth_from_return_stack_asm] POP_BIND N | File: compiler/asm.torth, Row: 1060, Column: 40
   pop rbx
   mov [r14-8], rbx
-;; [set_nth_from_return_stack_asm] IF | File: compiler/asm.torth, Row: 1060, Column: 3
-;; [set_nth_from_return_stack_asm] PUSH_BIND N | File: compiler/asm.torth, Row: 1060, Column: 6
+;; [set_nth_from_return_stack_asm] IF | File: compiler/asm.torth, Row: 1061, Column: 3
+;; [set_nth_from_return_stack_asm] PUSH_BIND N | File: compiler/asm.torth, Row: 1061, Column: 6
   push QWORD [r14-8]
-;; [set_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1060, Column: 8
+;; [set_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1061, Column: 8
   mov rax, 0
   push rax
-;; [set_nth_from_return_stack_asm] INTRINSIC LT | File: compiler/asm.torth, Row: 1060, Column: 10
+;; [set_nth_from_return_stack_asm] INTRINSIC LT | File: compiler/asm.torth, Row: 1061, Column: 10
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [set_nth_from_return_stack_asm] DO | File: compiler/asm.torth, Row: 1060, Column: 12
+;; [set_nth_from_return_stack_asm] DO | File: compiler/asm.torth, Row: 1061, Column: 12
   pop rax
   test rax, rax
   jz set_nth_from_return_stack_asm_ENDIF9
-;; [set_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1061, Column: 5
+;; [set_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1062, Column: 5
   mov rsi, set_nth_from_return_stack_asm_s6 ; Pointer to string
 
   push rsi
-;; [set_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1062, Column: 5
+;; [set_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1063, Column: 5
   mov rsi, set_nth_from_return_stack_asm_s7 ; Pointer to string
 
   push rsi
-;; [set_nth_from_return_stack_asm] FUNCTION_CALL CompilerError | File: compiler/asm.torth, Row: 1062, Column: 19
+;; [set_nth_from_return_stack_asm] FUNCTION_CALL CompilerError | File: compiler/asm.torth, Row: 1063, Column: 19
   call Q29tcGlsZXJFcnJvcg__
-;; [set_nth_from_return_stack_asm] ENDIF | File: compiler/asm.torth, Row: 1063, Column: 3
+;; [set_nth_from_return_stack_asm] ENDIF | File: compiler/asm.torth, Row: 1064, Column: 3
 set_nth_from_return_stack_asm_ENDIF9:
-;; [set_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1065, Column: 5
+;; [set_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1066, Column: 5
   mov rsi, set_nth_from_return_stack_asm_s10 ; Pointer to string
 
   push rsi
-;; [set_nth_from_return_stack_asm] PUSH_BIND N | File: compiler/asm.torth, Row: 1066, Column: 13
+;; [set_nth_from_return_stack_asm] PUSH_BIND N | File: compiler/asm.torth, Row: 1067, Column: 13
   push QWORD [r14-8]
-;; [set_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1066, Column: 15
+;; [set_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1067, Column: 15
   mov rax, 8
   push rax
-;; [set_nth_from_return_stack_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1066, Column: 17
+;; [set_nth_from_return_stack_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1067, Column: 17
   pop rax
   mul QWORD [rsp]
   mov QWORD [rsp], rax ; Product
-;; [set_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1066, Column: 19
+;; [set_nth_from_return_stack_asm] PUSH_INT | File: compiler/asm.torth, Row: 1067, Column: 19
   mov rax, 8
   push rax
-;; [set_nth_from_return_stack_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1066, Column: 21
+;; [set_nth_from_return_stack_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1067, Column: 21
   pop rax
   add [rsp], rax
-;; [set_nth_from_return_stack_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1066, Column: 23
+;; [set_nth_from_return_stack_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1067, Column: 23
   call aXRvYQ__
-;; [set_nth_from_return_stack_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1066, Column: 28
+;; [set_nth_from_return_stack_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1067, Column: 28
   call c3RyLmNhdA__
-;; [set_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1066, Column: 28
+;; [set_nth_from_return_stack_asm] PUSH_STR | File: compiler/asm.torth, Row: 1067, Column: 28
   mov rsi, set_nth_from_return_stack_asm_s18 ; Pointer to string
 
   push rsi
-;; [set_nth_from_return_stack_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1066, Column: 36
+;; [set_nth_from_return_stack_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1067, Column: 36
   call c3RyLmNhdA__
 ;; [set_nth_from_return_stack_asm] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -29958,134 +29872,134 @@ Z2V0X2Z1bmN0aW9uX3N0YXJ0X2FzbQ__:
 ;; [get_function_start_asm] Save the return address to return stack
   add r14, 32 ; 3 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_function_start_asm] POP_BIND func | File: compiler/asm.torth, Row: 1072, Column: 33
+;; [get_function_start_asm] POP_BIND func | File: compiler/asm.torth, Row: 1073, Column: 33
   pop rbx
   mov [r14-8], rbx
-;; [get_function_start_asm] PUSH_BIND func | File: compiler/asm.torth, Row: 1073, Column: 3
-  push QWORD [r14-8]
-;; [get_function_start_asm] FUNCTION_CALL Func.name | File: compiler/asm.torth, Row: 1073, Column: 8
-  call RnVuYy5uYW1l
 ;; [get_function_start_asm] PUSH_BIND func | File: compiler/asm.torth, Row: 1074, Column: 3
   push QWORD [r14-8]
-;; [get_function_start_asm] FUNCTION_CALL Func.variables | File: compiler/asm.torth, Row: 1074, Column: 8
+;; [get_function_start_asm] FUNCTION_CALL Func.name | File: compiler/asm.torth, Row: 1074, Column: 8
+  call RnVuYy5uYW1l
+;; [get_function_start_asm] PUSH_BIND func | File: compiler/asm.torth, Row: 1075, Column: 3
+  push QWORD [r14-8]
+;; [get_function_start_asm] FUNCTION_CALL Func.variables | File: compiler/asm.torth, Row: 1075, Column: 8
   call RnVuYy52YXJpYWJsZXM_
-;; [get_function_start_asm] CAST | File: compiler/asm.torth, Row: 1074, Column: 23
-;; [get_function_start_asm] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1074, Column: 34
+;; [get_function_start_asm] CAST | File: compiler/asm.torth, Row: 1075, Column: 23
+;; [get_function_start_asm] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1075, Column: 34
   call TGlzdC5sZW4_
-;; [get_function_start_asm] TAKE | File: compiler/asm.torth, Row: 1075, Column: 3
-;; [get_function_start_asm] POP_BIND variable_count | File: compiler/asm.torth, Row: 1075, Column: 8
+;; [get_function_start_asm] TAKE | File: compiler/asm.torth, Row: 1076, Column: 3
+;; [get_function_start_asm] POP_BIND variable_count | File: compiler/asm.torth, Row: 1076, Column: 8
   pop rbx
   mov [r14-16], rbx
-;; [get_function_start_asm] POP_BIND function_name | File: compiler/asm.torth, Row: 1075, Column: 23
+;; [get_function_start_asm] POP_BIND function_name | File: compiler/asm.torth, Row: 1076, Column: 23
   pop rbx
   mov [r14-24], rbx
-;; [get_function_start_asm] IN | File: compiler/asm.torth, Row: 1075, Column: 37
-;; [get_function_start_asm] IF | File: compiler/asm.torth, Row: 1078, Column: 3
-;; [get_function_start_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1078, Column: 6
+;; [get_function_start_asm] IN | File: compiler/asm.torth, Row: 1076, Column: 37
+;; [get_function_start_asm] IF | File: compiler/asm.torth, Row: 1079, Column: 3
+;; [get_function_start_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1079, Column: 6
   push QWORD [r14-24]
-;; [get_function_start_asm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1078, Column: 20
+;; [get_function_start_asm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1079, Column: 20
   call c3RyLmNvcHk_
-;; [get_function_start_asm] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1078, Column: 29
+;; [get_function_start_asm] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1079, Column: 29
   call c3RyLnVwcGVy
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1078, Column: 39
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1079, Column: 39
   mov rsi, get_function_start_asm_s15 ; Pointer to string
 
   push rsi
-;; [get_function_start_asm] FUNCTION_CALL streq | File: compiler/asm.torth, Row: 1078, Column: 46
+;; [get_function_start_asm] FUNCTION_CALL streq | File: compiler/asm.torth, Row: 1079, Column: 46
   call c3RyZXE_
-;; [get_function_start_asm] DO | File: compiler/asm.torth, Row: 1078, Column: 52
+;; [get_function_start_asm] DO | File: compiler/asm.torth, Row: 1079, Column: 52
   pop rax
   test rax, rax
   jz get_function_start_asm_ENDIF27
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1079, Column: 7
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1080, Column: 7
   mov rsi, get_function_start_asm_s18 ; Pointer to string
 
   push rsi
-;; [get_function_start_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1083, Column: 13
+;; [get_function_start_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1084, Column: 13
   push QWORD [r14-16]
-;; [get_function_start_asm] PUSH_INT | File: compiler/asm.torth, Row: 1083, Column: 28
+;; [get_function_start_asm] PUSH_INT | File: compiler/asm.torth, Row: 1084, Column: 28
   mov rax, 8
   push rax
-;; [get_function_start_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1083, Column: 30
+;; [get_function_start_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1084, Column: 30
   pop rax
   mul QWORD [rsp]
   mov QWORD [rsp], rax ; Product
-;; [get_function_start_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1083, Column: 32
+;; [get_function_start_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1084, Column: 32
   call aXRvYQ__
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1083, Column: 37
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1084, Column: 37
   call c3RyLmNhdA__
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1083, Column: 37
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1084, Column: 37
   mov rsi, get_function_start_asm_s24 ; Pointer to string
 
   push rsi
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1083, Column: 39
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1084, Column: 39
   call c3RyLmNhdA__
-;; [get_function_start_asm] RETURN | File: compiler/asm.torth, Row: 1083, Column: 41
+;; [get_function_start_asm] RETURN | File: compiler/asm.torth, Row: 1084, Column: 41
 ;; [get_function_start_asm] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 32 ; 3 local variables
   ret
 
-;; [get_function_start_asm] ENDIF | File: compiler/asm.torth, Row: 1084, Column: 3
+;; [get_function_start_asm] ENDIF | File: compiler/asm.torth, Row: 1085, Column: 3
 get_function_start_asm_ENDIF27:
-;; [get_function_start_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1086, Column: 6
+;; [get_function_start_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1087, Column: 6
   push QWORD [r14-24]
-;; [get_function_start_asm] FUNCTION_CALL get_valid_label_for_nasm | File: compiler/asm.torth, Row: 1086, Column: 20
+;; [get_function_start_asm] FUNCTION_CALL get_valid_label_for_nasm | File: compiler/asm.torth, Row: 1087, Column: 20
   call Z2V0X3ZhbGlkX2xhYmVsX2Zvcl9uYXNt
-;; [get_function_start_asm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1086, Column: 45
+;; [get_function_start_asm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1087, Column: 45
   call c3RyLmNvcHk_
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1086, Column: 45
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1087, Column: 45
   mov rsi, get_function_start_asm_s31 ; Pointer to string
 
   push rsi
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1087, Column: 5
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1088, Column: 5
   call c3RyLmNhdA__
-;; [get_function_start_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1087, Column: 6
+;; [get_function_start_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1088, Column: 6
   push QWORD [r14-24]
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1087, Column: 20
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1088, Column: 20
   call c3RyLmNhdA__
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1087, Column: 20
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1088, Column: 20
   mov rsi, get_function_start_asm_s35 ; Pointer to string
 
   push rsi
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1088, Column: 12
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1089, Column: 12
   call c3RyLmNhdA__
-;; [get_function_start_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1088, Column: 13
+;; [get_function_start_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1089, Column: 13
   push QWORD [r14-16]
-;; [get_function_start_asm] PUSH_INT | File: compiler/asm.torth, Row: 1088, Column: 28
+;; [get_function_start_asm] PUSH_INT | File: compiler/asm.torth, Row: 1089, Column: 28
   mov rax, 8
   push rax
-;; [get_function_start_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1088, Column: 30
+;; [get_function_start_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1089, Column: 30
   pop rax
   mul QWORD [rsp]
   mov QWORD [rsp], rax ; Product
-;; [get_function_start_asm] PUSH_INT | File: compiler/asm.torth, Row: 1088, Column: 32
+;; [get_function_start_asm] PUSH_INT | File: compiler/asm.torth, Row: 1089, Column: 32
   mov rax, 8
   push rax
-;; [get_function_start_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1088, Column: 34
+;; [get_function_start_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1089, Column: 34
   pop rax
   add [rsp], rax
-;; [get_function_start_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1088, Column: 36
+;; [get_function_start_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1089, Column: 36
   call aXRvYQ__
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1088, Column: 41
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1089, Column: 41
   call c3RyLmNhdA__
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1088, Column: 41
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1089, Column: 41
   mov rsi, get_function_start_asm_s44 ; Pointer to string
 
   push rsi
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1088, Column: 44
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1089, Column: 44
   call c3RyLmNhdA__
-;; [get_function_start_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1088, Column: 45
+;; [get_function_start_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1089, Column: 45
   push QWORD [r14-16]
-;; [get_function_start_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1088, Column: 60
+;; [get_function_start_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1089, Column: 60
   call aXRvYQ__
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1088, Column: 65
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1089, Column: 65
   call c3RyLmNhdA__
-;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1088, Column: 65
+;; [get_function_start_asm] PUSH_STR | File: compiler/asm.torth, Row: 1089, Column: 65
   mov rsi, get_function_start_asm_s49 ; Pointer to string
 
   push rsi
-;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1089, Column: 53
+;; [get_function_start_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1090, Column: 53
   call c3RyLmNhdA__
 ;; [get_function_start_asm] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -30096,107 +30010,107 @@ Z2V0X2Z1bmN0aW9uX2VuZF9hc20_:
 ;; [get_function_end_asm] Save the return address to return stack
   add r14, 32 ; 3 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_function_end_asm] POP_BIND func | File: compiler/asm.torth, Row: 1095, Column: 31
+;; [get_function_end_asm] POP_BIND func | File: compiler/asm.torth, Row: 1096, Column: 31
   pop rbx
   mov [r14-8], rbx
-;; [get_function_end_asm] PUSH_BIND func | File: compiler/asm.torth, Row: 1096, Column: 3
-  push QWORD [r14-8]
-;; [get_function_end_asm] FUNCTION_CALL Func.name | File: compiler/asm.torth, Row: 1096, Column: 8
-  call RnVuYy5uYW1l
 ;; [get_function_end_asm] PUSH_BIND func | File: compiler/asm.torth, Row: 1097, Column: 3
   push QWORD [r14-8]
-;; [get_function_end_asm] FUNCTION_CALL Func.variables | File: compiler/asm.torth, Row: 1097, Column: 8
+;; [get_function_end_asm] FUNCTION_CALL Func.name | File: compiler/asm.torth, Row: 1097, Column: 8
+  call RnVuYy5uYW1l
+;; [get_function_end_asm] PUSH_BIND func | File: compiler/asm.torth, Row: 1098, Column: 3
+  push QWORD [r14-8]
+;; [get_function_end_asm] FUNCTION_CALL Func.variables | File: compiler/asm.torth, Row: 1098, Column: 8
   call RnVuYy52YXJpYWJsZXM_
-;; [get_function_end_asm] CAST | File: compiler/asm.torth, Row: 1097, Column: 23
-;; [get_function_end_asm] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1097, Column: 34
+;; [get_function_end_asm] CAST | File: compiler/asm.torth, Row: 1098, Column: 23
+;; [get_function_end_asm] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1098, Column: 34
   call TGlzdC5sZW4_
-;; [get_function_end_asm] TAKE | File: compiler/asm.torth, Row: 1098, Column: 3
-;; [get_function_end_asm] POP_BIND variable_count | File: compiler/asm.torth, Row: 1098, Column: 8
+;; [get_function_end_asm] TAKE | File: compiler/asm.torth, Row: 1099, Column: 3
+;; [get_function_end_asm] POP_BIND variable_count | File: compiler/asm.torth, Row: 1099, Column: 8
   pop rbx
   mov [r14-16], rbx
-;; [get_function_end_asm] POP_BIND function_name | File: compiler/asm.torth, Row: 1098, Column: 23
+;; [get_function_end_asm] POP_BIND function_name | File: compiler/asm.torth, Row: 1099, Column: 23
   pop rbx
   mov [r14-24], rbx
-;; [get_function_end_asm] IN | File: compiler/asm.torth, Row: 1098, Column: 37
-;; [get_function_end_asm] IF | File: compiler/asm.torth, Row: 1101, Column: 3
-;; [get_function_end_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1101, Column: 6
+;; [get_function_end_asm] IN | File: compiler/asm.torth, Row: 1099, Column: 37
+;; [get_function_end_asm] IF | File: compiler/asm.torth, Row: 1102, Column: 3
+;; [get_function_end_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1102, Column: 6
   push QWORD [r14-24]
-;; [get_function_end_asm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1101, Column: 20
+;; [get_function_end_asm] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1102, Column: 20
   call c3RyLmNvcHk_
-;; [get_function_end_asm] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1101, Column: 29
+;; [get_function_end_asm] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1102, Column: 29
   call c3RyLnVwcGVy
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1101, Column: 39
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1102, Column: 39
   mov rsi, get_function_end_asm_s15 ; Pointer to string
 
   push rsi
-;; [get_function_end_asm] FUNCTION_CALL streq | File: compiler/asm.torth, Row: 1101, Column: 46
+;; [get_function_end_asm] FUNCTION_CALL streq | File: compiler/asm.torth, Row: 1102, Column: 46
   call c3RyZXE_
-;; [get_function_end_asm] DO | File: compiler/asm.torth, Row: 1101, Column: 52
+;; [get_function_end_asm] DO | File: compiler/asm.torth, Row: 1102, Column: 52
   pop rax
   test rax, rax
   jz get_function_end_asm_ENDIF20
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1102, Column: 5
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1103, Column: 5
   mov rsi, get_function_end_asm_s18 ; Pointer to string
 
   push rsi
-;; [get_function_end_asm] RETURN | File: compiler/asm.torth, Row: 1105, Column: 16
+;; [get_function_end_asm] RETURN | File: compiler/asm.torth, Row: 1106, Column: 16
 ;; [get_function_end_asm] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 32 ; 3 local variables
   ret
 
-;; [get_function_end_asm] ENDIF | File: compiler/asm.torth, Row: 1106, Column: 3
+;; [get_function_end_asm] ENDIF | File: compiler/asm.torth, Row: 1107, Column: 3
 get_function_end_asm_ENDIF20:
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1108, Column: 5
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1109, Column: 5
   mov rsi, get_function_end_asm_s21 ; Pointer to string
 
   push rsi
-;; [get_function_end_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1108, Column: 10
+;; [get_function_end_asm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1109, Column: 10
   push QWORD [r14-24]
-;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1108, Column: 24
+;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1109, Column: 24
   call c3RyLmNhdA__
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1108, Column: 24
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1109, Column: 24
   mov rsi, get_function_end_asm_s24 ; Pointer to string
 
   push rsi
-;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1110, Column: 12
+;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1111, Column: 12
   call c3RyLmNhdA__
-;; [get_function_end_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1110, Column: 13
+;; [get_function_end_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1111, Column: 13
   push QWORD [r14-16]
-;; [get_function_end_asm] PUSH_INT | File: compiler/asm.torth, Row: 1110, Column: 28
+;; [get_function_end_asm] PUSH_INT | File: compiler/asm.torth, Row: 1111, Column: 28
   mov rax, 8
   push rax
-;; [get_function_end_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1110, Column: 30
+;; [get_function_end_asm] INTRINSIC MUL | File: compiler/asm.torth, Row: 1111, Column: 30
   pop rax
   mul QWORD [rsp]
   mov QWORD [rsp], rax ; Product
-;; [get_function_end_asm] PUSH_INT | File: compiler/asm.torth, Row: 1110, Column: 32
+;; [get_function_end_asm] PUSH_INT | File: compiler/asm.torth, Row: 1111, Column: 32
   mov rax, 8
   push rax
-;; [get_function_end_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1110, Column: 34
+;; [get_function_end_asm] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1111, Column: 34
   pop rax
   add [rsp], rax
-;; [get_function_end_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1110, Column: 36
+;; [get_function_end_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1111, Column: 36
   call aXRvYQ__
-;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1110, Column: 41
+;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1111, Column: 41
   call c3RyLmNhdA__
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1110, Column: 41
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1111, Column: 41
   mov rsi, get_function_end_asm_s33 ; Pointer to string
 
   push rsi
-;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1110, Column: 44
+;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1111, Column: 44
   call c3RyLmNhdA__
-;; [get_function_end_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1110, Column: 45
+;; [get_function_end_asm] PUSH_BIND variable_count | File: compiler/asm.torth, Row: 1111, Column: 45
   push QWORD [r14-16]
-;; [get_function_end_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1110, Column: 60
+;; [get_function_end_asm] FUNCTION_CALL itoa | File: compiler/asm.torth, Row: 1111, Column: 60
   call aXRvYQ__
-;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1110, Column: 65
+;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1111, Column: 65
   call c3RyLmNhdA__
-;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1110, Column: 65
+;; [get_function_end_asm] PUSH_STR | File: compiler/asm.torth, Row: 1111, Column: 65
   mov rsi, get_function_end_asm_s38 ; Pointer to string
 
   push rsi
-;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1111, Column: 10
+;; [get_function_end_asm] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1112, Column: 10
   call c3RyLmNhdA__
 ;; [get_function_end_asm] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -30207,218 +30121,218 @@ Z2V0X3JlbGF0ZWRfZW5kaWY_:
 ;; [get_related_endif] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_related_endif] POP_BIND op | File: compiler/asm.torth, Row: 1151, Column: 28
+;; [get_related_endif] POP_BIND op | File: compiler/asm.torth, Row: 1154, Column: 28
   pop rbx
   mov [r14-8], rbx
-;; [get_related_endif] POP_BIND program | File: compiler/asm.torth, Row: 1151, Column: 34
+;; [get_related_endif] POP_BIND program | File: compiler/asm.torth, Row: 1154, Column: 34
   pop rbx
   mov [r14-16], rbx
-;; [get_related_endif] PUSH_BIND op | File: compiler/asm.torth, Row: 1152, Column: 3
+;; [get_related_endif] PUSH_BIND op | File: compiler/asm.torth, Row: 1155, Column: 3
   push QWORD [r14-8]
-;; [get_related_endif] FUNCTION_CALL Op.id | File: compiler/asm.torth, Row: 1152, Column: 6
+;; [get_related_endif] FUNCTION_CALL Op.id | File: compiler/asm.torth, Row: 1155, Column: 6
   call T3AuaWQ_
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1152, Column: 12
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1155, Column: 12
   mov rax, 1
   push rax
-;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1152, Column: 14
+;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1155, Column: 14
   pop rax
   add [rsp], rax
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1153, Column: 3
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1156, Column: 3
   mov rax, 0
   push rax
-;; [get_related_endif] TAKE | File: compiler/asm.torth, Row: 1154, Column: 3
-;; [get_related_endif] POP_BIND if_count | File: compiler/asm.torth, Row: 1154, Column: 8
+;; [get_related_endif] TAKE | File: compiler/asm.torth, Row: 1157, Column: 3
+;; [get_related_endif] POP_BIND if_count | File: compiler/asm.torth, Row: 1157, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [get_related_endif] POP_BIND index | File: compiler/asm.torth, Row: 1154, Column: 17
+;; [get_related_endif] POP_BIND index | File: compiler/asm.torth, Row: 1157, Column: 17
   pop rbx
   mov [r14-32], rbx
-;; [get_related_endif] IN | File: compiler/asm.torth, Row: 1154, Column: 23
-;; [get_related_endif] WHILE | File: compiler/asm.torth, Row: 1156, Column: 3
+;; [get_related_endif] IN | File: compiler/asm.torth, Row: 1157, Column: 23
+;; [get_related_endif] WHILE | File: compiler/asm.torth, Row: 1159, Column: 3
 get_related_endif_WHILE11:
-;; [get_related_endif] PUSH_BIND index | File: compiler/asm.torth, Row: 1156, Column: 9
+;; [get_related_endif] PUSH_BIND index | File: compiler/asm.torth, Row: 1159, Column: 9
   push QWORD [r14-32]
-;; [get_related_endif] PUSH_BIND program | File: compiler/asm.torth, Row: 1156, Column: 15
+;; [get_related_endif] PUSH_BIND program | File: compiler/asm.torth, Row: 1159, Column: 15
   push QWORD [r14-16]
-;; [get_related_endif] CAST | File: compiler/asm.torth, Row: 1156, Column: 23
-;; [get_related_endif] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1156, Column: 34
+;; [get_related_endif] CAST | File: compiler/asm.torth, Row: 1159, Column: 23
+;; [get_related_endif] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1159, Column: 34
   call TGlzdC5sZW4_
-;; [get_related_endif] INTRINSIC LT | File: compiler/asm.torth, Row: 1156, Column: 43
+;; [get_related_endif] INTRINSIC LT | File: compiler/asm.torth, Row: 1159, Column: 43
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1156, Column: 45
+;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1159, Column: 45
   pop rax
   test rax, rax
   jz get_related_endif_DONE64
-;; [get_related_endif] PUSH_BIND index | File: compiler/asm.torth, Row: 1157, Column: 5
+;; [get_related_endif] PUSH_BIND index | File: compiler/asm.torth, Row: 1160, Column: 5
   push QWORD [r14-32]
-;; [get_related_endif] PUSH_BIND program | File: compiler/asm.torth, Row: 1157, Column: 11
+;; [get_related_endif] PUSH_BIND program | File: compiler/asm.torth, Row: 1160, Column: 11
   push QWORD [r14-16]
-;; [get_related_endif] CAST | File: compiler/asm.torth, Row: 1157, Column: 19
-;; [get_related_endif] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 1157, Column: 30
+;; [get_related_endif] CAST | File: compiler/asm.torth, Row: 1160, Column: 19
+;; [get_related_endif] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 1160, Column: 30
   call TGlzdC5udGg_
-;; [get_related_endif] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1157, Column: 39
+;; [get_related_endif] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1160, Column: 39
   call T3AubG9hZA__
-;; [get_related_endif] INTRINSIC dup | File: compiler/asm.torth, Row: 1158, Column: 5
+;; [get_related_endif] INTRINSIC dup | File: compiler/asm.torth, Row: 1161, Column: 5
   push QWORD [rsp]
-;; [get_related_endif] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 1158, Column: 9
+;; [get_related_endif] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 1161, Column: 9
   call T3AudHlwZQ__
-;; [get_related_endif] TAKE | File: compiler/asm.torth, Row: 1159, Column: 5
-;; [get_related_endif] POP_BIND current_op_type | File: compiler/asm.torth, Row: 1159, Column: 10
+;; [get_related_endif] TAKE | File: compiler/asm.torth, Row: 1162, Column: 5
+;; [get_related_endif] POP_BIND current_op_type | File: compiler/asm.torth, Row: 1162, Column: 10
   pop rbx
   mov [r14-40], rbx
-;; [get_related_endif] POP_BIND current_op | File: compiler/asm.torth, Row: 1159, Column: 26
+;; [get_related_endif] POP_BIND current_op | File: compiler/asm.torth, Row: 1162, Column: 26
   pop rbx
   mov [r14-48], rbx
-;; [get_related_endif] IN | File: compiler/asm.torth, Row: 1159, Column: 37
-;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1162, Column: 5
-;; [get_related_endif] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1162, Column: 8
+;; [get_related_endif] IN | File: compiler/asm.torth, Row: 1162, Column: 37
+;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1165, Column: 5
+;; [get_related_endif] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1165, Column: 8
   push QWORD [r14-40]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1162, Column: 24
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1165, Column: 24
   mov rax, 9
   push rax
-;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1162, Column: 37
+;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1165, Column: 37
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1162, Column: 40
+;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1165, Column: 40
   pop rax
   test rax, rax
   jz get_related_endif_ENDIF47
-;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1163, Column: 7
-;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1163, Column: 10
+;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1166, Column: 7
+;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1166, Column: 10
   push QWORD [r14-24]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1163, Column: 19
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1166, Column: 19
   mov rax, 0
   push rax
-;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1163, Column: 21
+;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1166, Column: 21
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1163, Column: 24
+;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1166, Column: 24
   pop rax
   test rax, rax
   jz get_related_endif_ENDIF41
-;; [get_related_endif] PUSH_BIND current_op | File: compiler/asm.torth, Row: 1164, Column: 9
+;; [get_related_endif] PUSH_BIND current_op | File: compiler/asm.torth, Row: 1167, Column: 9
   push QWORD [r14-48]
-;; [get_related_endif] RETURN | File: compiler/asm.torth, Row: 1164, Column: 20
+;; [get_related_endif] RETURN | File: compiler/asm.torth, Row: 1167, Column: 20
 ;; [get_related_endif] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
   ret
 
-;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1165, Column: 7
+;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1168, Column: 7
 get_related_endif_ENDIF41:
-;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1166, Column: 7
+;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1169, Column: 7
   push QWORD [r14-24]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1166, Column: 16
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1169, Column: 16
   mov rax, 1
   push rax
-;; [get_related_endif] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1166, Column: 18
+;; [get_related_endif] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1169, Column: 18
   pop rax
   sub [rsp], rax
-;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1166, Column: 20
+;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1169, Column: 20
   push QWORD [r14-24]
-;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1166, Column: 29
+;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1169, Column: 29
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1167, Column: 5
+;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1170, Column: 5
 get_related_endif_ENDIF47:
-;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1170, Column: 5
-;; [get_related_endif] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1170, Column: 8
+;; [get_related_endif] IF | File: compiler/asm.torth, Row: 1173, Column: 5
+;; [get_related_endif] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1173, Column: 8
   push QWORD [r14-40]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1170, Column: 24
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1173, Column: 24
   mov rax, 12
   push rax
-;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1170, Column: 34
+;; [get_related_endif] INTRINSIC EQ | File: compiler/asm.torth, Row: 1173, Column: 34
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1170, Column: 37
+;; [get_related_endif] DO | File: compiler/asm.torth, Row: 1173, Column: 37
   pop rax
   test rax, rax
   jz get_related_endif_ENDIF58
-;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1171, Column: 7
+;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1174, Column: 7
   push QWORD [r14-24]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1171, Column: 16
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1174, Column: 16
   mov rax, 1
   push rax
-;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1171, Column: 18
+;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1174, Column: 18
   pop rax
   add [rsp], rax
-;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1171, Column: 20
+;; [get_related_endif] PUSH_BIND if_count | File: compiler/asm.torth, Row: 1174, Column: 20
   push QWORD [r14-24]
-;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1171, Column: 29
+;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1174, Column: 29
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1172, Column: 5
+;; [get_related_endif] ENDIF | File: compiler/asm.torth, Row: 1175, Column: 5
 get_related_endif_ENDIF58:
-;; [get_related_endif] PUSH_BIND index | File: compiler/asm.torth, Row: 1174, Column: 5
+;; [get_related_endif] PUSH_BIND index | File: compiler/asm.torth, Row: 1177, Column: 5
   push QWORD [r14-32]
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1174, Column: 11
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1177, Column: 11
   mov rax, 1
   push rax
-;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1174, Column: 13
+;; [get_related_endif] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1177, Column: 13
   pop rax
   add [rsp], rax
-;; [get_related_endif] PUSH_BIND index | File: compiler/asm.torth, Row: 1174, Column: 15
+;; [get_related_endif] PUSH_BIND index | File: compiler/asm.torth, Row: 1177, Column: 15
   push QWORD [r14-32]
-;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1174, Column: 21
+;; [get_related_endif] ASSIGN_BIND | File: compiler/asm.torth, Row: 1177, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-32], rbx
-;; [get_related_endif] DONE | File: compiler/asm.torth, Row: 1175, Column: 3
+;; [get_related_endif] DONE | File: compiler/asm.torth, Row: 1178, Column: 3
   jmp get_related_endif_WHILE11
 get_related_endif_DONE64:
-;; [get_related_endif] PUSH_BIND op | File: compiler/asm.torth, Row: 1178, Column: 3
+;; [get_related_endif] PUSH_BIND op | File: compiler/asm.torth, Row: 1181, Column: 3
   push QWORD [r14-8]
-;; [get_related_endif] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1178, Column: 6
+;; [get_related_endif] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1181, Column: 6
   call T3AudG9rZW4_
-;; [get_related_endif] PUSH_STR | File: compiler/asm.torth, Row: 1179, Column: 3
+;; [get_related_endif] PUSH_STR | File: compiler/asm.torth, Row: 1182, Column: 3
   mov rsi, get_related_endif_s67 ; Pointer to string
 
   push rsi
-;; [get_related_endif] PUSH_BIND op | File: compiler/asm.torth, Row: 1180, Column: 3
+;; [get_related_endif] PUSH_BIND op | File: compiler/asm.torth, Row: 1183, Column: 3
   push QWORD [r14-8]
-;; [get_related_endif] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1180, Column: 6
+;; [get_related_endif] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1183, Column: 6
   call T3AudG9rZW4_
-;; [get_related_endif] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 1180, Column: 15
+;; [get_related_endif] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 1183, Column: 15
   call VG9rZW4udmFsdWU_
-;; [get_related_endif] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1180, Column: 27
+;; [get_related_endif] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1183, Column: 27
   call c3RyLmNvcHk_
-;; [get_related_endif] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1180, Column: 36
+;; [get_related_endif] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1183, Column: 36
   call c3RyLnVwcGVy
-;; [get_related_endif] PUSH_STR | File: compiler/asm.torth, Row: 1181, Column: 3
+;; [get_related_endif] PUSH_STR | File: compiler/asm.torth, Row: 1184, Column: 3
   mov rsi, get_related_endif_s73 ; Pointer to string
 
   push rsi
-;; [get_related_endif] INTRINSIC swap | File: compiler/asm.torth, Row: 1181, Column: 16
+;; [get_related_endif] INTRINSIC swap | File: compiler/asm.torth, Row: 1184, Column: 16
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [get_related_endif] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1181, Column: 21
+;; [get_related_endif] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1184, Column: 21
   call c3RyLmNhdA__
-;; [get_related_endif] FUNCTION_CALL CompilerErrorWithToken | File: compiler/asm.torth, Row: 1181, Column: 29
+;; [get_related_endif] FUNCTION_CALL CompilerErrorWithToken | File: compiler/asm.torth, Row: 1184, Column: 29
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1182, Column: 3
+;; [get_related_endif] PUSH_INT | File: compiler/asm.torth, Row: 1185, Column: 3
   mov rax, 0
   push rax
-;; [get_related_endif] CAST | File: compiler/asm.torth, Row: 1182, Column: 8
+;; [get_related_endif] CAST | File: compiler/asm.torth, Row: 1185, Column: 8
 ;; [get_related_endif] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -30428,216 +30342,216 @@ Z2V0X3BhcmVudF93aGlsZQ__:
 ;; [get_parent_while] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_parent_while] POP_BIND op | File: compiler/asm.torth, Row: 1188, Column: 27
+;; [get_parent_while] POP_BIND op | File: compiler/asm.torth, Row: 1191, Column: 27
   pop rbx
   mov [r14-8], rbx
-;; [get_parent_while] POP_BIND program | File: compiler/asm.torth, Row: 1188, Column: 33
+;; [get_parent_while] POP_BIND program | File: compiler/asm.torth, Row: 1191, Column: 33
   pop rbx
   mov [r14-16], rbx
-;; [get_parent_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1189, Column: 3
+;; [get_parent_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1192, Column: 3
   push QWORD [r14-8]
-;; [get_parent_while] FUNCTION_CALL Op.id | File: compiler/asm.torth, Row: 1189, Column: 6
+;; [get_parent_while] FUNCTION_CALL Op.id | File: compiler/asm.torth, Row: 1192, Column: 6
   call T3AuaWQ_
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1189, Column: 12
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1192, Column: 12
   mov rax, 1
   push rax
-;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1189, Column: 14
+;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1192, Column: 14
   pop rax
   sub [rsp], rax
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1190, Column: 3
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1193, Column: 3
   mov rax, 0
   push rax
-;; [get_parent_while] TAKE | File: compiler/asm.torth, Row: 1191, Column: 3
-;; [get_parent_while] POP_BIND done_count | File: compiler/asm.torth, Row: 1191, Column: 8
+;; [get_parent_while] TAKE | File: compiler/asm.torth, Row: 1194, Column: 3
+;; [get_parent_while] POP_BIND done_count | File: compiler/asm.torth, Row: 1194, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [get_parent_while] POP_BIND index | File: compiler/asm.torth, Row: 1191, Column: 19
+;; [get_parent_while] POP_BIND index | File: compiler/asm.torth, Row: 1194, Column: 19
   pop rbx
   mov [r14-32], rbx
-;; [get_parent_while] IN | File: compiler/asm.torth, Row: 1191, Column: 25
-;; [get_parent_while] WHILE | File: compiler/asm.torth, Row: 1193, Column: 3
+;; [get_parent_while] IN | File: compiler/asm.torth, Row: 1194, Column: 25
+;; [get_parent_while] WHILE | File: compiler/asm.torth, Row: 1196, Column: 3
 get_parent_while_WHILE11:
-;; [get_parent_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1193, Column: 9
+;; [get_parent_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1196, Column: 9
   push QWORD [r14-32]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1193, Column: 15
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1196, Column: 15
   mov rax, -1
   push rax
-;; [get_parent_while] INTRINSIC GT | File: compiler/asm.torth, Row: 1193, Column: 18
+;; [get_parent_while] INTRINSIC GT | File: compiler/asm.torth, Row: 1196, Column: 18
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovg rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1193, Column: 20
+;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1196, Column: 20
   pop rax
   test rax, rax
   jz get_parent_while_DONE62
-;; [get_parent_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1194, Column: 5
+;; [get_parent_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1197, Column: 5
   push QWORD [r14-32]
-;; [get_parent_while] PUSH_BIND program | File: compiler/asm.torth, Row: 1194, Column: 11
+;; [get_parent_while] PUSH_BIND program | File: compiler/asm.torth, Row: 1197, Column: 11
   push QWORD [r14-16]
-;; [get_parent_while] CAST | File: compiler/asm.torth, Row: 1194, Column: 19
-;; [get_parent_while] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 1194, Column: 30
+;; [get_parent_while] CAST | File: compiler/asm.torth, Row: 1197, Column: 19
+;; [get_parent_while] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 1197, Column: 30
   call TGlzdC5udGg_
-;; [get_parent_while] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1194, Column: 39
+;; [get_parent_while] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1197, Column: 39
   call T3AubG9hZA__
-;; [get_parent_while] INTRINSIC dup | File: compiler/asm.torth, Row: 1195, Column: 5
+;; [get_parent_while] INTRINSIC dup | File: compiler/asm.torth, Row: 1198, Column: 5
   push QWORD [rsp]
-;; [get_parent_while] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 1195, Column: 9
+;; [get_parent_while] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 1198, Column: 9
   call T3AudHlwZQ__
-;; [get_parent_while] TAKE | File: compiler/asm.torth, Row: 1196, Column: 5
-;; [get_parent_while] POP_BIND current_op_type | File: compiler/asm.torth, Row: 1196, Column: 10
+;; [get_parent_while] TAKE | File: compiler/asm.torth, Row: 1199, Column: 5
+;; [get_parent_while] POP_BIND current_op_type | File: compiler/asm.torth, Row: 1199, Column: 10
   pop rbx
   mov [r14-40], rbx
-;; [get_parent_while] POP_BIND current_op | File: compiler/asm.torth, Row: 1196, Column: 26
+;; [get_parent_while] POP_BIND current_op | File: compiler/asm.torth, Row: 1199, Column: 26
   pop rbx
   mov [r14-48], rbx
-;; [get_parent_while] IN | File: compiler/asm.torth, Row: 1196, Column: 37
-;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1199, Column: 5
-;; [get_parent_while] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1199, Column: 8
+;; [get_parent_while] IN | File: compiler/asm.torth, Row: 1199, Column: 37
+;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1202, Column: 5
+;; [get_parent_while] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1202, Column: 8
   push QWORD [r14-40]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1199, Column: 24
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1202, Column: 24
   mov rax, 27
   push rax
-;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1199, Column: 37
+;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1202, Column: 37
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1199, Column: 40
+;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1202, Column: 40
   pop rax
   test rax, rax
   jz get_parent_while_ENDIF45
-;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1200, Column: 7
-;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1200, Column: 10
+;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1203, Column: 7
+;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1203, Column: 10
   push QWORD [r14-24]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1200, Column: 21
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1203, Column: 21
   mov rax, 0
   push rax
-;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1200, Column: 23
+;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1203, Column: 23
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1200, Column: 26
+;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1203, Column: 26
   pop rax
   test rax, rax
   jz get_parent_while_ENDIF39
-;; [get_parent_while] PUSH_BIND current_op | File: compiler/asm.torth, Row: 1201, Column: 9
+;; [get_parent_while] PUSH_BIND current_op | File: compiler/asm.torth, Row: 1204, Column: 9
   push QWORD [r14-48]
-;; [get_parent_while] RETURN | File: compiler/asm.torth, Row: 1201, Column: 20
+;; [get_parent_while] RETURN | File: compiler/asm.torth, Row: 1204, Column: 20
 ;; [get_parent_while] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
   ret
 
-;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1202, Column: 7
+;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1205, Column: 7
 get_parent_while_ENDIF39:
-;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1203, Column: 7
+;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1206, Column: 7
   push QWORD [r14-24]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1203, Column: 18
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1206, Column: 18
   mov rax, 1
   push rax
-;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1203, Column: 20
+;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1206, Column: 20
   pop rax
   sub [rsp], rax
-;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1203, Column: 22
+;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1206, Column: 22
   push QWORD [r14-24]
-;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1203, Column: 33
+;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1206, Column: 33
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1204, Column: 5
+;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1207, Column: 5
 get_parent_while_ENDIF45:
-;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1207, Column: 5
-;; [get_parent_while] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1207, Column: 8
+;; [get_parent_while] IF | File: compiler/asm.torth, Row: 1210, Column: 5
+;; [get_parent_while] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1210, Column: 8
   push QWORD [r14-40]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1207, Column: 24
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1210, Column: 24
   mov rax, 5
   push rax
-;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1207, Column: 36
+;; [get_parent_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1210, Column: 36
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1207, Column: 39
+;; [get_parent_while] DO | File: compiler/asm.torth, Row: 1210, Column: 39
   pop rax
   test rax, rax
   jz get_parent_while_ENDIF56
-;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1208, Column: 7
+;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1211, Column: 7
   push QWORD [r14-24]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1208, Column: 18
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1211, Column: 18
   mov rax, 1
   push rax
-;; [get_parent_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1208, Column: 20
+;; [get_parent_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1211, Column: 20
   pop rax
   add [rsp], rax
-;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1208, Column: 22
+;; [get_parent_while] PUSH_BIND done_count | File: compiler/asm.torth, Row: 1211, Column: 22
   push QWORD [r14-24]
-;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1208, Column: 33
+;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1211, Column: 33
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1209, Column: 5
+;; [get_parent_while] ENDIF | File: compiler/asm.torth, Row: 1212, Column: 5
 get_parent_while_ENDIF56:
-;; [get_parent_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1211, Column: 5
+;; [get_parent_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1214, Column: 5
   push QWORD [r14-32]
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1211, Column: 11
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1214, Column: 11
   mov rax, 1
   push rax
-;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1211, Column: 13
+;; [get_parent_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1214, Column: 13
   pop rax
   sub [rsp], rax
-;; [get_parent_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1211, Column: 15
+;; [get_parent_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1214, Column: 15
   push QWORD [r14-32]
-;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1211, Column: 21
+;; [get_parent_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1214, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-32], rbx
-;; [get_parent_while] DONE | File: compiler/asm.torth, Row: 1212, Column: 3
+;; [get_parent_while] DONE | File: compiler/asm.torth, Row: 1215, Column: 3
   jmp get_parent_while_WHILE11
 get_parent_while_DONE62:
-;; [get_parent_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1215, Column: 3
+;; [get_parent_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1218, Column: 3
   push QWORD [r14-8]
-;; [get_parent_while] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1215, Column: 6
+;; [get_parent_while] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1218, Column: 6
   call T3AudG9rZW4_
-;; [get_parent_while] PUSH_STR | File: compiler/asm.torth, Row: 1216, Column: 3
+;; [get_parent_while] PUSH_STR | File: compiler/asm.torth, Row: 1219, Column: 3
   mov rsi, get_parent_while_s65 ; Pointer to string
 
   push rsi
-;; [get_parent_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1217, Column: 3
+;; [get_parent_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1220, Column: 3
   push QWORD [r14-8]
-;; [get_parent_while] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1217, Column: 6
+;; [get_parent_while] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1220, Column: 6
   call T3AudG9rZW4_
-;; [get_parent_while] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 1217, Column: 15
+;; [get_parent_while] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 1220, Column: 15
   call VG9rZW4udmFsdWU_
-;; [get_parent_while] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1217, Column: 27
+;; [get_parent_while] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1220, Column: 27
   call c3RyLmNvcHk_
-;; [get_parent_while] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1217, Column: 36
+;; [get_parent_while] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1220, Column: 36
   call c3RyLnVwcGVy
-;; [get_parent_while] PUSH_STR | File: compiler/asm.torth, Row: 1218, Column: 3
+;; [get_parent_while] PUSH_STR | File: compiler/asm.torth, Row: 1221, Column: 3
   mov rsi, get_parent_while_s71 ; Pointer to string
 
   push rsi
-;; [get_parent_while] INTRINSIC swap | File: compiler/asm.torth, Row: 1218, Column: 16
+;; [get_parent_while] INTRINSIC swap | File: compiler/asm.torth, Row: 1221, Column: 16
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [get_parent_while] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1218, Column: 21
+;; [get_parent_while] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1221, Column: 21
   call c3RyLmNhdA__
-;; [get_parent_while] FUNCTION_CALL CompilerErrorWithToken | File: compiler/asm.torth, Row: 1219, Column: 3
+;; [get_parent_while] FUNCTION_CALL CompilerErrorWithToken | File: compiler/asm.torth, Row: 1222, Column: 3
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1220, Column: 3
+;; [get_parent_while] PUSH_INT | File: compiler/asm.torth, Row: 1223, Column: 3
   mov rax, 0
   push rax
-;; [get_parent_while] CAST | File: compiler/asm.torth, Row: 1220, Column: 8
+;; [get_parent_while] CAST | File: compiler/asm.torth, Row: 1223, Column: 8
 ;; [get_parent_while] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -30647,212 +30561,212 @@ Z2V0X2RvbmVfb3BfZm9yX3doaWxl:
 ;; [get_done_op_for_while] Save the return address to return stack
   add r14, 56 ; 6 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_done_op_for_while] POP_BIND op | File: compiler/asm.torth, Row: 1226, Column: 32
+;; [get_done_op_for_while] POP_BIND op | File: compiler/asm.torth, Row: 1229, Column: 32
   pop rbx
   mov [r14-8], rbx
-;; [get_done_op_for_while] POP_BIND program | File: compiler/asm.torth, Row: 1226, Column: 38
+;; [get_done_op_for_while] POP_BIND program | File: compiler/asm.torth, Row: 1229, Column: 38
   pop rbx
   mov [r14-16], rbx
-;; [get_done_op_for_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1227, Column: 3
+;; [get_done_op_for_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1230, Column: 3
   push QWORD [r14-8]
-;; [get_done_op_for_while] FUNCTION_CALL Op.id | File: compiler/asm.torth, Row: 1227, Column: 6
+;; [get_done_op_for_while] FUNCTION_CALL Op.id | File: compiler/asm.torth, Row: 1230, Column: 6
   call T3AuaWQ_
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1228, Column: 3
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1231, Column: 3
   mov rax, 0
   push rax
-;; [get_done_op_for_while] TAKE | File: compiler/asm.torth, Row: 1229, Column: 3
-;; [get_done_op_for_while] POP_BIND while_count | File: compiler/asm.torth, Row: 1229, Column: 8
+;; [get_done_op_for_while] TAKE | File: compiler/asm.torth, Row: 1232, Column: 3
+;; [get_done_op_for_while] POP_BIND while_count | File: compiler/asm.torth, Row: 1232, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [get_done_op_for_while] POP_BIND index | File: compiler/asm.torth, Row: 1229, Column: 20
+;; [get_done_op_for_while] POP_BIND index | File: compiler/asm.torth, Row: 1232, Column: 20
   pop rbx
   mov [r14-32], rbx
-;; [get_done_op_for_while] IN | File: compiler/asm.torth, Row: 1229, Column: 26
-;; [get_done_op_for_while] WHILE | File: compiler/asm.torth, Row: 1232, Column: 3
+;; [get_done_op_for_while] IN | File: compiler/asm.torth, Row: 1232, Column: 26
+;; [get_done_op_for_while] WHILE | File: compiler/asm.torth, Row: 1235, Column: 3
 get_done_op_for_while_WHILE9:
-;; [get_done_op_for_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1232, Column: 9
+;; [get_done_op_for_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1235, Column: 9
   push QWORD [r14-32]
-;; [get_done_op_for_while] PUSH_BIND program | File: compiler/asm.torth, Row: 1232, Column: 15
+;; [get_done_op_for_while] PUSH_BIND program | File: compiler/asm.torth, Row: 1235, Column: 15
   push QWORD [r14-16]
-;; [get_done_op_for_while] CAST | File: compiler/asm.torth, Row: 1232, Column: 23
-;; [get_done_op_for_while] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1232, Column: 34
+;; [get_done_op_for_while] CAST | File: compiler/asm.torth, Row: 1235, Column: 23
+;; [get_done_op_for_while] FUNCTION_CALL List.len | File: compiler/asm.torth, Row: 1235, Column: 34
   call TGlzdC5sZW4_
-;; [get_done_op_for_while] INTRINSIC LT | File: compiler/asm.torth, Row: 1232, Column: 43
+;; [get_done_op_for_while] INTRINSIC LT | File: compiler/asm.torth, Row: 1235, Column: 43
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1232, Column: 45
+;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1235, Column: 45
   pop rax
   test rax, rax
   jz get_done_op_for_while_DONE62
-;; [get_done_op_for_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1235, Column: 5
+;; [get_done_op_for_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1238, Column: 5
   push QWORD [r14-32]
-;; [get_done_op_for_while] PUSH_BIND program | File: compiler/asm.torth, Row: 1235, Column: 11
+;; [get_done_op_for_while] PUSH_BIND program | File: compiler/asm.torth, Row: 1238, Column: 11
   push QWORD [r14-16]
-;; [get_done_op_for_while] CAST | File: compiler/asm.torth, Row: 1235, Column: 19
-;; [get_done_op_for_while] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 1235, Column: 30
+;; [get_done_op_for_while] CAST | File: compiler/asm.torth, Row: 1238, Column: 19
+;; [get_done_op_for_while] FUNCTION_CALL List.nth | File: compiler/asm.torth, Row: 1238, Column: 30
   call TGlzdC5udGg_
-;; [get_done_op_for_while] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1235, Column: 39
+;; [get_done_op_for_while] FUNCTION_CALL Op.load | File: compiler/asm.torth, Row: 1238, Column: 39
   call T3AubG9hZA__
-;; [get_done_op_for_while] INTRINSIC dup | File: compiler/asm.torth, Row: 1236, Column: 5
+;; [get_done_op_for_while] INTRINSIC dup | File: compiler/asm.torth, Row: 1239, Column: 5
   push QWORD [rsp]
-;; [get_done_op_for_while] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 1236, Column: 9
+;; [get_done_op_for_while] FUNCTION_CALL Op.type | File: compiler/asm.torth, Row: 1239, Column: 9
   call T3AudHlwZQ__
-;; [get_done_op_for_while] TAKE | File: compiler/asm.torth, Row: 1237, Column: 5
-;; [get_done_op_for_while] POP_BIND current_op_type | File: compiler/asm.torth, Row: 1237, Column: 10
+;; [get_done_op_for_while] TAKE | File: compiler/asm.torth, Row: 1240, Column: 5
+;; [get_done_op_for_while] POP_BIND current_op_type | File: compiler/asm.torth, Row: 1240, Column: 10
   pop rbx
   mov [r14-40], rbx
-;; [get_done_op_for_while] POP_BIND current_op | File: compiler/asm.torth, Row: 1237, Column: 26
+;; [get_done_op_for_while] POP_BIND current_op | File: compiler/asm.torth, Row: 1240, Column: 26
   pop rbx
   mov [r14-48], rbx
-;; [get_done_op_for_while] IN | File: compiler/asm.torth, Row: 1237, Column: 37
-;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1240, Column: 5
-;; [get_done_op_for_while] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1240, Column: 8
+;; [get_done_op_for_while] IN | File: compiler/asm.torth, Row: 1240, Column: 37
+;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1243, Column: 5
+;; [get_done_op_for_while] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1243, Column: 8
   push QWORD [r14-40]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1240, Column: 24
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1243, Column: 24
   mov rax, 5
   push rax
-;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1240, Column: 36
+;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1243, Column: 36
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1240, Column: 39
+;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1243, Column: 39
   pop rax
   test rax, rax
   jz get_done_op_for_while_ENDIF45
-;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1241, Column: 7
+;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1244, Column: 7
   push QWORD [r14-24]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1241, Column: 19
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1244, Column: 19
   mov rax, 1
   push rax
-;; [get_done_op_for_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1241, Column: 21
+;; [get_done_op_for_while] INTRINSIC MINUS | File: compiler/asm.torth, Row: 1244, Column: 21
   pop rax
   sub [rsp], rax
-;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1241, Column: 23
+;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1244, Column: 23
   push QWORD [r14-24]
-;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1241, Column: 35
+;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1244, Column: 35
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1242, Column: 7
-;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1242, Column: 10
+;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1245, Column: 7
+;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1245, Column: 10
   push QWORD [r14-24]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1242, Column: 22
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1245, Column: 22
   mov rax, 0
   push rax
-;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1242, Column: 24
+;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1245, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1242, Column: 27
+;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1245, Column: 27
   pop rax
   test rax, rax
   jz get_done_op_for_while_ENDIF44
-;; [get_done_op_for_while] PUSH_BIND current_op | File: compiler/asm.torth, Row: 1243, Column: 9
+;; [get_done_op_for_while] PUSH_BIND current_op | File: compiler/asm.torth, Row: 1246, Column: 9
   push QWORD [r14-48]
-;; [get_done_op_for_while] RETURN | File: compiler/asm.torth, Row: 1243, Column: 20
+;; [get_done_op_for_while] RETURN | File: compiler/asm.torth, Row: 1246, Column: 20
 ;; [get_done_op_for_while] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
   ret
 
-;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1244, Column: 7
+;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1247, Column: 7
 get_done_op_for_while_ENDIF44:
-;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1245, Column: 5
+;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1248, Column: 5
 get_done_op_for_while_ENDIF45:
-;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1248, Column: 5
-;; [get_done_op_for_while] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1248, Column: 8
+;; [get_done_op_for_while] IF | File: compiler/asm.torth, Row: 1251, Column: 5
+;; [get_done_op_for_while] PUSH_BIND current_op_type | File: compiler/asm.torth, Row: 1251, Column: 8
   push QWORD [r14-40]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1248, Column: 24
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1251, Column: 24
   mov rax, 27
   push rax
-;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1248, Column: 37
+;; [get_done_op_for_while] INTRINSIC EQ | File: compiler/asm.torth, Row: 1251, Column: 37
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1248, Column: 40
+;; [get_done_op_for_while] DO | File: compiler/asm.torth, Row: 1251, Column: 40
   pop rax
   test rax, rax
   jz get_done_op_for_while_ENDIF56
-;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1249, Column: 7
+;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1252, Column: 7
   push QWORD [r14-24]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1249, Column: 19
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1252, Column: 19
   mov rax, 1
   push rax
-;; [get_done_op_for_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1249, Column: 21
+;; [get_done_op_for_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1252, Column: 21
   pop rax
   add [rsp], rax
-;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1249, Column: 23
+;; [get_done_op_for_while] PUSH_BIND while_count | File: compiler/asm.torth, Row: 1252, Column: 23
   push QWORD [r14-24]
-;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1249, Column: 35
+;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1252, Column: 35
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1250, Column: 5
+;; [get_done_op_for_while] ENDIF | File: compiler/asm.torth, Row: 1253, Column: 5
 get_done_op_for_while_ENDIF56:
-;; [get_done_op_for_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1252, Column: 5
+;; [get_done_op_for_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1255, Column: 5
   push QWORD [r14-32]
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1252, Column: 11
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1255, Column: 11
   mov rax, 1
   push rax
-;; [get_done_op_for_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1252, Column: 13
+;; [get_done_op_for_while] INTRINSIC PLUS | File: compiler/asm.torth, Row: 1255, Column: 13
   pop rax
   add [rsp], rax
-;; [get_done_op_for_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1252, Column: 15
+;; [get_done_op_for_while] PUSH_BIND index | File: compiler/asm.torth, Row: 1255, Column: 15
   push QWORD [r14-32]
-;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1252, Column: 21
+;; [get_done_op_for_while] ASSIGN_BIND | File: compiler/asm.torth, Row: 1255, Column: 21
   add rsp, 8
   pop rbx
   mov [r14-32], rbx
-;; [get_done_op_for_while] DONE | File: compiler/asm.torth, Row: 1253, Column: 3
+;; [get_done_op_for_while] DONE | File: compiler/asm.torth, Row: 1256, Column: 3
   jmp get_done_op_for_while_WHILE9
 get_done_op_for_while_DONE62:
-;; [get_done_op_for_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1256, Column: 3
+;; [get_done_op_for_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1259, Column: 3
   push QWORD [r14-8]
-;; [get_done_op_for_while] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1256, Column: 6
+;; [get_done_op_for_while] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1259, Column: 6
   call T3AudG9rZW4_
-;; [get_done_op_for_while] PUSH_STR | File: compiler/asm.torth, Row: 1257, Column: 3
+;; [get_done_op_for_while] PUSH_STR | File: compiler/asm.torth, Row: 1260, Column: 3
   mov rsi, get_done_op_for_while_s65 ; Pointer to string
 
   push rsi
-;; [get_done_op_for_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1258, Column: 3
+;; [get_done_op_for_while] PUSH_BIND op | File: compiler/asm.torth, Row: 1261, Column: 3
   push QWORD [r14-8]
-;; [get_done_op_for_while] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1258, Column: 6
+;; [get_done_op_for_while] FUNCTION_CALL Op.token | File: compiler/asm.torth, Row: 1261, Column: 6
   call T3AudG9rZW4_
-;; [get_done_op_for_while] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 1258, Column: 15
+;; [get_done_op_for_while] FUNCTION_CALL Token.value | File: compiler/asm.torth, Row: 1261, Column: 15
   call VG9rZW4udmFsdWU_
-;; [get_done_op_for_while] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1258, Column: 27
+;; [get_done_op_for_while] FUNCTION_CALL str.copy | File: compiler/asm.torth, Row: 1261, Column: 27
   call c3RyLmNvcHk_
-;; [get_done_op_for_while] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1258, Column: 36
+;; [get_done_op_for_while] FUNCTION_CALL str.upper | File: compiler/asm.torth, Row: 1261, Column: 36
   call c3RyLnVwcGVy
-;; [get_done_op_for_while] PUSH_STR | File: compiler/asm.torth, Row: 1259, Column: 3
+;; [get_done_op_for_while] PUSH_STR | File: compiler/asm.torth, Row: 1262, Column: 3
   mov rsi, get_done_op_for_while_s71 ; Pointer to string
 
   push rsi
-;; [get_done_op_for_while] INTRINSIC swap | File: compiler/asm.torth, Row: 1259, Column: 16
+;; [get_done_op_for_while] INTRINSIC swap | File: compiler/asm.torth, Row: 1262, Column: 16
   pop rax
   push QWORD [rsp]
   mov QWORD [rsp+8], rax
-;; [get_done_op_for_while] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1259, Column: 21
+;; [get_done_op_for_while] FUNCTION_CALL str.cat | File: compiler/asm.torth, Row: 1262, Column: 21
   call c3RyLmNhdA__
-;; [get_done_op_for_while] FUNCTION_CALL CompilerErrorWithToken | File: compiler/asm.torth, Row: 1259, Column: 29
+;; [get_done_op_for_while] FUNCTION_CALL CompilerErrorWithToken | File: compiler/asm.torth, Row: 1262, Column: 29
   call Q29tcGlsZXJFcnJvcldpdGhUb2tlbg__
-;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1260, Column: 3
+;; [get_done_op_for_while] PUSH_INT | File: compiler/asm.torth, Row: 1263, Column: 3
   mov rax, 0
   push rax
-;; [get_done_op_for_while] CAST | File: compiler/asm.torth, Row: 1260, Column: 8
+;; [get_done_op_for_while] CAST | File: compiler/asm.torth, Row: 1263, Column: 8
 ;; [get_done_op_for_while] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 56 ; 6 local variables
@@ -30862,42 +30776,42 @@ Z2V0X3ZhbGlkX2xhYmVsX2Zvcl9uYXNt:
 ;; [get_valid_label_for_nasm] Save the return address to return stack
   add r14, 16 ; 1 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [get_valid_label_for_nasm] POP_BIND function_name | File: compiler/asm.torth, Row: 1266, Column: 35
+;; [get_valid_label_for_nasm] POP_BIND function_name | File: compiler/asm.torth, Row: 1269, Column: 35
   pop rbx
   mov [r14-8], rbx
-;; [get_valid_label_for_nasm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1267, Column: 3
+;; [get_valid_label_for_nasm] PUSH_BIND function_name | File: compiler/asm.torth, Row: 1270, Column: 3
   push QWORD [r14-8]
-;; [get_valid_label_for_nasm] FUNCTION_CALL base64.encode | File: compiler/asm.torth, Row: 1267, Column: 17
+;; [get_valid_label_for_nasm] FUNCTION_CALL base64.encode | File: compiler/asm.torth, Row: 1270, Column: 17
   call YmFzZTY0LmVuY29kZQ__
-;; [get_valid_label_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1270, Column: 3
+;; [get_valid_label_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1273, Column: 3
   mov rsi, get_valid_label_for_nasm_s3 ; Pointer to string
 
   push rsi
-;; [get_valid_label_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1270, Column: 7
+;; [get_valid_label_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1273, Column: 7
   mov rsi, get_valid_label_for_nasm_s4 ; Pointer to string
 
   push rsi
-;; [get_valid_label_for_nasm] INTRINSIC rot | File: compiler/asm.torth, Row: 1270, Column: 11
+;; [get_valid_label_for_nasm] INTRINSIC rot | File: compiler/asm.torth, Row: 1273, Column: 11
   pop rax
   xchg rax, QWORD [rsp]
   xchg rax, QWORD [rsp+8]
   push rax
-;; [get_valid_label_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1270, Column: 15
+;; [get_valid_label_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1273, Column: 15
   call c3RyLnJlcGxhY2VfYWxs
-;; [get_valid_label_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1271, Column: 3
+;; [get_valid_label_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1274, Column: 3
   mov rsi, get_valid_label_for_nasm_s7 ; Pointer to string
 
   push rsi
-;; [get_valid_label_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1271, Column: 7
+;; [get_valid_label_for_nasm] PUSH_STR | File: compiler/asm.torth, Row: 1274, Column: 7
   mov rsi, get_valid_label_for_nasm_s8 ; Pointer to string
 
   push rsi
-;; [get_valid_label_for_nasm] INTRINSIC rot | File: compiler/asm.torth, Row: 1271, Column: 11
+;; [get_valid_label_for_nasm] INTRINSIC rot | File: compiler/asm.torth, Row: 1274, Column: 11
   pop rax
   xchg rax, QWORD [rsp]
   xchg rax, QWORD [rsp+8]
   push rax
-;; [get_valid_label_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1271, Column: 15
+;; [get_valid_label_for_nasm] FUNCTION_CALL str.replace_all | File: compiler/asm.torth, Row: 1274, Column: 15
   call c3RyLnJlcGxhY2VfYWxs
 ;; [get_valid_label_for_nasm] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -31567,111 +31481,6 @@ Z2V0X2Z1bmN0aW9uX3BhcnRfZGVsaW1pdGVycw__:
 ;; [get_function_part_delimiters] PUSH_BIND FUNCTION_PART_DELIMITERS | File: compiler/lex.torth, Row: 283, Column: 3
   push QWORD [r14-8]
 ;; [get_function_part_delimiters] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 16 ; 1 local variables
-  ret
-
-SU5URUdFUl9UWVBFUw__:
-;; [INTEGER_TYPES] Save the return address to return stack
-  add r14, 16 ; 1 local variables
-  pop QWORD [r14] ; Save return address from stack
-;; [INTEGER_TYPES] PUSH_INT | File: compiler/typecheck.torth, Row: 14, Column: 3
-  mov rax, 5
-  push rax
-;; [INTEGER_TYPES] FUNCTION_CALL Array.init | File: compiler/typecheck.torth, Row: 14, Column: 5
-  call QXJyYXkuaW5pdA__
-;; [INTEGER_TYPES] TAKE | File: compiler/typecheck.torth, Row: 15, Column: 3
-;; [INTEGER_TYPES] POP_BIND array | File: compiler/typecheck.torth, Row: 15, Column: 8
-  pop rbx
-  mov [r14-8], rbx
-;; [INTEGER_TYPES] IN | File: compiler/typecheck.torth, Row: 15, Column: 14
-;; [INTEGER_TYPES] PUSH_STR | File: compiler/typecheck.torth, Row: 16, Column: 3
-  mov rsi, INTEGER_TYPES_s5 ; Pointer to string
-
-  push rsi
-;; [INTEGER_TYPES] CAST | File: compiler/typecheck.torth, Row: 16, Column: 11
-;; [INTEGER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 16, Column: 21
-  push QWORD [r14-8]
-;; [INTEGER_TYPES] FUNCTION_CALL Array.append | File: compiler/typecheck.torth, Row: 16, Column: 27
-  call QXJyYXkuYXBwZW5k
-;; [INTEGER_TYPES] PUSH_STR | File: compiler/typecheck.torth, Row: 17, Column: 3
-  mov rsi, INTEGER_TYPES_s9 ; Pointer to string
-
-  push rsi
-;; [INTEGER_TYPES] CAST | File: compiler/typecheck.torth, Row: 17, Column: 11
-;; [INTEGER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 17, Column: 21
-  push QWORD [r14-8]
-;; [INTEGER_TYPES] FUNCTION_CALL Array.append | File: compiler/typecheck.torth, Row: 17, Column: 27
-  call QXJyYXkuYXBwZW5k
-;; [INTEGER_TYPES] PUSH_STR | File: compiler/typecheck.torth, Row: 18, Column: 3
-  mov rsi, INTEGER_TYPES_s13 ; Pointer to string
-
-  push rsi
-;; [INTEGER_TYPES] CAST | File: compiler/typecheck.torth, Row: 18, Column: 11
-;; [INTEGER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 18, Column: 21
-  push QWORD [r14-8]
-;; [INTEGER_TYPES] FUNCTION_CALL Array.append | File: compiler/typecheck.torth, Row: 18, Column: 27
-  call QXJyYXkuYXBwZW5k
-;; [INTEGER_TYPES] PUSH_STR | File: compiler/typecheck.torth, Row: 19, Column: 3
-  mov rsi, INTEGER_TYPES_s17 ; Pointer to string
-
-  push rsi
-;; [INTEGER_TYPES] CAST | File: compiler/typecheck.torth, Row: 19, Column: 11
-;; [INTEGER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 19, Column: 21
-  push QWORD [r14-8]
-;; [INTEGER_TYPES] FUNCTION_CALL Array.append | File: compiler/typecheck.torth, Row: 19, Column: 27
-  call QXJyYXkuYXBwZW5k
-;; [INTEGER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 20, Column: 3
-  push QWORD [r14-8]
-;; [INTEGER_TYPES] Return to the address found in return stack
-  push QWORD [r14] ; Get function's return address
-  sub r14, 16 ; 1 local variables
-  ret
-
-UE9JTlRFUl9UWVBFUw__:
-;; [POINTER_TYPES] Save the return address to return stack
-  add r14, 16 ; 1 local variables
-  pop QWORD [r14] ; Save return address from stack
-;; [POINTER_TYPES] PUSH_INT | File: compiler/typecheck.torth, Row: 29, Column: 3
-  mov rax, 3
-  push rax
-;; [POINTER_TYPES] FUNCTION_CALL Array.init | File: compiler/typecheck.torth, Row: 29, Column: 5
-  call QXJyYXkuaW5pdA__
-;; [POINTER_TYPES] TAKE | File: compiler/typecheck.torth, Row: 30, Column: 3
-;; [POINTER_TYPES] POP_BIND array | File: compiler/typecheck.torth, Row: 30, Column: 8
-  pop rbx
-  mov [r14-8], rbx
-;; [POINTER_TYPES] IN | File: compiler/typecheck.torth, Row: 30, Column: 14
-;; [POINTER_TYPES] PUSH_STR | File: compiler/typecheck.torth, Row: 31, Column: 3
-  mov rsi, POINTER_TYPES_s5 ; Pointer to string
-
-  push rsi
-;; [POINTER_TYPES] CAST | File: compiler/typecheck.torth, Row: 31, Column: 9
-;; [POINTER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 31, Column: 19
-  push QWORD [r14-8]
-;; [POINTER_TYPES] FUNCTION_CALL Array.append | File: compiler/typecheck.torth, Row: 31, Column: 25
-  call QXJyYXkuYXBwZW5k
-;; [POINTER_TYPES] PUSH_STR | File: compiler/typecheck.torth, Row: 32, Column: 3
-  mov rsi, POINTER_TYPES_s9 ; Pointer to string
-
-  push rsi
-;; [POINTER_TYPES] CAST | File: compiler/typecheck.torth, Row: 32, Column: 9
-;; [POINTER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 32, Column: 19
-  push QWORD [r14-8]
-;; [POINTER_TYPES] FUNCTION_CALL Array.append | File: compiler/typecheck.torth, Row: 32, Column: 25
-  call QXJyYXkuYXBwZW5k
-;; [POINTER_TYPES] PUSH_STR | File: compiler/typecheck.torth, Row: 33, Column: 3
-  mov rsi, POINTER_TYPES_s13 ; Pointer to string
-
-  push rsi
-;; [POINTER_TYPES] CAST | File: compiler/typecheck.torth, Row: 33, Column: 9
-;; [POINTER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 33, Column: 19
-  push QWORD [r14-8]
-;; [POINTER_TYPES] FUNCTION_CALL Array.append | File: compiler/typecheck.torth, Row: 33, Column: 25
-  call QXJyYXkuYXBwZW5k
-;; [POINTER_TYPES] PUSH_BIND array | File: compiler/typecheck.torth, Row: 34, Column: 3
-  push QWORD [r14-8]
-;; [POINTER_TYPES] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 16 ; 1 local variables
   ret
@@ -33774,6 +33583,106 @@ Array.pop_DONE51:
   sub r14, 32 ; 3 local variables
   ret
 
+QXJyYXkuY29udGFpbnNfc3Ry:
+;; [Array.contains_str] Save the return address to return stack
+  add r14, 48 ; 5 local variables
+  pop QWORD [r14] ; Save return address from stack
+;; [Array.contains_str] INTRINSIC dup | File: lib/typing.torth, Row: 205, Column: 9
+  push QWORD [rsp]
+;; [Array.contains_str] FUNCTION_CALL Array.len | File: lib/typing.torth, Row: 205, Column: 13
+  call QXJyYXkubGVu
+;; [Array.contains_str] PUSH_INT | File: lib/typing.torth, Row: 206, Column: 9
+  mov rax, 0
+  push rax
+;; [Array.contains_str] TAKE | File: lib/typing.torth, Row: 207, Column: 9
+;; [Array.contains_str] POP_BIND index | File: lib/typing.torth, Row: 208, Column: 13
+  pop rbx
+  mov [r14-8], rbx
+;; [Array.contains_str] POP_BIND len | File: lib/typing.torth, Row: 209, Column: 13
+  pop rbx
+  mov [r14-16], rbx
+;; [Array.contains_str] POP_BIND array | File: lib/typing.torth, Row: 210, Column: 13
+  pop rbx
+  mov [r14-24], rbx
+;; [Array.contains_str] POP_BIND string | File: lib/typing.torth, Row: 211, Column: 13
+  pop rbx
+  mov [r14-32], rbx
+;; [Array.contains_str] IN | File: lib/typing.torth, Row: 212, Column: 9
+;; [Array.contains_str] WHILE | File: lib/typing.torth, Row: 214, Column: 9
+Array.contains_str_WHILE9:
+;; [Array.contains_str] PUSH_BIND index | File: lib/typing.torth, Row: 214, Column: 15
+  push QWORD [r14-8]
+;; [Array.contains_str] PUSH_BIND len | File: lib/typing.torth, Row: 214, Column: 21
+  push QWORD [r14-16]
+;; [Array.contains_str] INTRINSIC LT | File: lib/typing.torth, Row: 214, Column: 25
+  pop rax
+  mov rcx, 0
+  mov rdx, 1
+  cmp QWORD [rsp], rax
+  cmovl rcx, rdx
+  mov QWORD [rsp], rcx
+;; [Array.contains_str] DO | File: lib/typing.torth, Row: 214, Column: 27
+  pop rax
+  test rax, rax
+  jz Array.contains_str_DONE34
+;; [Array.contains_str] PUSH_BIND index | File: lib/typing.torth, Row: 215, Column: 13
+  push QWORD [r14-8]
+;; [Array.contains_str] PUSH_BIND array | File: lib/typing.torth, Row: 215, Column: 19
+  push QWORD [r14-24]
+;; [Array.contains_str] FUNCTION_CALL Array.nth | File: lib/typing.torth, Row: 215, Column: 25
+  call QXJyYXkubnRo
+;; [Array.contains_str] FUNCTION_CALL str.load | File: lib/typing.torth, Row: 215, Column: 35
+  call c3RyLmxvYWQ_
+;; [Array.contains_str] TAKE | File: lib/typing.torth, Row: 216, Column: 13
+;; [Array.contains_str] POP_BIND array_string | File: lib/typing.torth, Row: 216, Column: 18
+  pop rbx
+  mov [r14-40], rbx
+;; [Array.contains_str] IN | File: lib/typing.torth, Row: 216, Column: 31
+;; [Array.contains_str] IF | File: lib/typing.torth, Row: 219, Column: 13
+;; [Array.contains_str] PUSH_BIND string | File: lib/typing.torth, Row: 219, Column: 16
+  push QWORD [r14-32]
+;; [Array.contains_str] PUSH_BIND array_string | File: lib/typing.torth, Row: 219, Column: 23
+  push QWORD [r14-40]
+;; [Array.contains_str] FUNCTION_CALL streq | File: lib/typing.torth, Row: 219, Column: 36
+  call c3RyZXE_
+;; [Array.contains_str] DO | File: lib/typing.torth, Row: 219, Column: 42
+  pop rax
+  test rax, rax
+  jz Array.contains_str_ENDIF28
+;; [Array.contains_str] PUSH_BOOL | File: lib/typing.torth, Row: 220, Column: 17
+  push 1
+;; [Array.contains_str] RETURN | File: lib/typing.torth, Row: 220, Column: 22
+;; [Array.contains_str] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 48 ; 5 local variables
+  ret
+
+;; [Array.contains_str] ENDIF | File: lib/typing.torth, Row: 221, Column: 13
+Array.contains_str_ENDIF28:
+;; [Array.contains_str] PUSH_BIND index | File: lib/typing.torth, Row: 222, Column: 13
+  push QWORD [r14-8]
+;; [Array.contains_str] PUSH_INT | File: lib/typing.torth, Row: 222, Column: 19
+  mov rax, 1
+  push rax
+;; [Array.contains_str] INTRINSIC PLUS | File: lib/typing.torth, Row: 222, Column: 21
+  pop rax
+  add [rsp], rax
+;; [Array.contains_str] PUSH_BIND index | File: lib/typing.torth, Row: 222, Column: 23
+  push QWORD [r14-8]
+;; [Array.contains_str] ASSIGN_BIND | File: lib/typing.torth, Row: 222, Column: 29
+  add rsp, 8
+  pop rbx
+  mov [r14-8], rbx
+;; [Array.contains_str] DONE | File: lib/typing.torth, Row: 223, Column: 9
+  jmp Array.contains_str_WHILE9
+Array.contains_str_DONE34:
+;; [Array.contains_str] PUSH_BOOL | File: lib/typing.torth, Row: 224, Column: 9
+  push 0
+;; [Array.contains_str] Return to the address found in return stack
+  push QWORD [r14] ; Get function's return address
+  sub r14, 48 ; 5 local variables
+  ret
+
 QXJyYXkuc3RyZXE_:
 ;; [Array.streq] Save the return address to return stack
   add r14, 48 ; 5 local variables
@@ -35002,459 +34911,459 @@ YmFzZTY0LmVuY29kZQ__:
 ;; [base64.encode] Save the return address to return stack
   add r14, 80 ; 9 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [base64.encode] POP_BIND string | File: lib/std.torth, Row: 793, Column: 24
+;; [base64.encode] POP_BIND string | File: lib/std.torth, Row: 847, Column: 24
   pop rbx
   mov [r14-8], rbx
-;; [base64.encode] PUSH_BIND string | File: lib/std.torth, Row: 794, Column: 3
+;; [base64.encode] PUSH_BIND string | File: lib/std.torth, Row: 848, Column: 3
   push QWORD [r14-8]
-;; [base64.encode] FUNCTION_CALL str.len | File: lib/std.torth, Row: 794, Column: 10
+;; [base64.encode] FUNCTION_CALL str.len | File: lib/std.torth, Row: 848, Column: 10
   call c3RyLmxlbg__
-;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 795, Column: 3
+;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 849, Column: 3
   push QWORD [rsp]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 795, Column: 7
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 849, Column: 7
   mov rax, 3
   push rax
-;; [base64.encode] INTRINSIC MOD | File: lib/std.torth, Row: 795, Column: 9
+;; [base64.encode] INTRINSIC MOD | File: lib/std.torth, Row: 849, Column: 9
   xor edx, edx ; Do not use floating point arithmetic
   pop rbx
   pop rax
   div rbx
   push rdx ; Remainder
-;; [base64.encode] INTRINSIC over | File: lib/std.torth, Row: 796, Column: 3
+;; [base64.encode] INTRINSIC over | File: lib/std.torth, Row: 850, Column: 3
   push QWORD [rsp+8]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 796, Column: 8
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 850, Column: 8
   mov rax, 2
   push rax
-;; [base64.encode] INTRINSIC MUL | File: lib/std.torth, Row: 796, Column: 10
+;; [base64.encode] INTRINSIC MUL | File: lib/std.torth, Row: 850, Column: 10
   pop rax
   mul QWORD [rsp]
   mov QWORD [rsp], rax ; Product
-;; [base64.encode] FUNCTION_CALL malloc | File: lib/std.torth, Row: 796, Column: 12
+;; [base64.encode] FUNCTION_CALL malloc | File: lib/std.torth, Row: 850, Column: 12
   call bWFsbG9j
-;; [base64.encode] CAST | File: lib/std.torth, Row: 796, Column: 19
-;; [base64.encode] PUSH_STR | File: lib/std.torth, Row: 797, Column: 3
+;; [base64.encode] CAST | File: lib/std.torth, Row: 850, Column: 19
+;; [base64.encode] PUSH_STR | File: lib/std.torth, Row: 851, Column: 3
   mov rsi, base64.encode_s11 ; Pointer to string
 
   push rsi
-;; [base64.encode] FUNCTION_CALL str.copy | File: lib/std.torth, Row: 797, Column: 70
+;; [base64.encode] FUNCTION_CALL str.copy | File: lib/std.torth, Row: 851, Column: 70
   call c3RyLmNvcHk_
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 798, Column: 3
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 852, Column: 3
   mov rax, 0
   push rax
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 799, Column: 3
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 853, Column: 3
   mov rax, 0
   push rax
-;; [base64.encode] TAKE | File: lib/std.torth, Row: 800, Column: 3
-;; [base64.encode] POP_BIND padding_size | File: lib/std.torth, Row: 801, Column: 5
+;; [base64.encode] TAKE | File: lib/std.torth, Row: 854, Column: 3
+;; [base64.encode] POP_BIND padding_size | File: lib/std.torth, Row: 855, Column: 5
   pop rbx
   mov [r14-16], rbx
-;; [base64.encode] POP_BIND base64_index | File: lib/std.torth, Row: 802, Column: 5
+;; [base64.encode] POP_BIND base64_index | File: lib/std.torth, Row: 856, Column: 5
   pop rbx
   mov [r14-24], rbx
-;; [base64.encode] POP_BIND base64_characters | File: lib/std.torth, Row: 803, Column: 5
+;; [base64.encode] POP_BIND base64_characters | File: lib/std.torth, Row: 857, Column: 5
   pop rbx
   mov [r14-32], rbx
-;; [base64.encode] POP_BIND base64_string | File: lib/std.torth, Row: 804, Column: 5
+;; [base64.encode] POP_BIND base64_string | File: lib/std.torth, Row: 858, Column: 5
   pop rbx
   mov [r14-40], rbx
-;; [base64.encode] POP_BIND char_index | File: lib/std.torth, Row: 805, Column: 5
+;; [base64.encode] POP_BIND char_index | File: lib/std.torth, Row: 859, Column: 5
   pop rbx
   mov [r14-48], rbx
-;; [base64.encode] POP_BIND string.len | File: lib/std.torth, Row: 806, Column: 5
+;; [base64.encode] POP_BIND string.len | File: lib/std.torth, Row: 860, Column: 5
   pop rbx
   mov [r14-56], rbx
-;; [base64.encode] IN | File: lib/std.torth, Row: 807, Column: 3
-;; [base64.encode] IF | File: lib/std.torth, Row: 810, Column: 3
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 810, Column: 6
+;; [base64.encode] IN | File: lib/std.torth, Row: 861, Column: 3
+;; [base64.encode] IF | File: lib/std.torth, Row: 864, Column: 3
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 864, Column: 6
   push QWORD [r14-48]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 810, Column: 17
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 864, Column: 17
   mov rax, 0
   push rax
-;; [base64.encode] INTRINSIC GT | File: lib/std.torth, Row: 810, Column: 19
+;; [base64.encode] INTRINSIC GT | File: lib/std.torth, Row: 864, Column: 19
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovg rcx, rdx
   mov QWORD [rsp], rcx
-;; [base64.encode] DO | File: lib/std.torth, Row: 810, Column: 21
+;; [base64.encode] DO | File: lib/std.torth, Row: 864, Column: 21
   pop rax
   test rax, rax
   jz base64.encode_ENDIF43
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 811, Column: 5
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 865, Column: 5
   push QWORD [r14-48]
-;; [base64.encode] WHILE | File: lib/std.torth, Row: 811, Column: 16
+;; [base64.encode] WHILE | File: lib/std.torth, Row: 865, Column: 16
 base64.encode_WHILE29:
-;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 811, Column: 22
+;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 865, Column: 22
   push QWORD [rsp]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 811, Column: 26
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 865, Column: 26
   mov rax, 3
   push rax
-;; [base64.encode] INTRINSIC LT | File: lib/std.torth, Row: 811, Column: 28
+;; [base64.encode] INTRINSIC LT | File: lib/std.torth, Row: 865, Column: 28
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [base64.encode] DO | File: lib/std.torth, Row: 811, Column: 30
+;; [base64.encode] DO | File: lib/std.torth, Row: 865, Column: 30
   pop rax
   test rax, rax
   jz base64.encode_DONE41
-;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 812, Column: 7
+;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 866, Column: 7
   push QWORD [r14-16]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 812, Column: 20
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 866, Column: 20
   mov rax, 1
   push rax
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 812, Column: 22
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 866, Column: 22
   pop rax
   add [rsp], rax
-;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 812, Column: 24
+;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 866, Column: 24
   push QWORD [r14-16]
-;; [base64.encode] ASSIGN_BIND | File: lib/std.torth, Row: 812, Column: 37
+;; [base64.encode] ASSIGN_BIND | File: lib/std.torth, Row: 866, Column: 37
   add rsp, 8
   pop rbx
   mov [r14-16], rbx
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 813, Column: 7
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 867, Column: 7
   mov rax, 1
   push rax
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 813, Column: 9
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 867, Column: 9
   pop rax
   add [rsp], rax
-;; [base64.encode] DONE | File: lib/std.torth, Row: 814, Column: 5
+;; [base64.encode] DONE | File: lib/std.torth, Row: 868, Column: 5
   jmp base64.encode_WHILE29
 base64.encode_DONE41:
-;; [base64.encode] INTRINSIC drop | File: lib/std.torth, Row: 814, Column: 10
+;; [base64.encode] INTRINSIC drop | File: lib/std.torth, Row: 868, Column: 10
   add rsp, 8
-;; [base64.encode] ENDIF | File: lib/std.torth, Row: 815, Column: 3
+;; [base64.encode] ENDIF | File: lib/std.torth, Row: 869, Column: 3
 base64.encode_ENDIF43:
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 818, Column: 3
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 872, Column: 3
   mov rax, 0
   push rax
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 818, Column: 5
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 872, Column: 5
   push QWORD [r14-48]
-;; [base64.encode] ASSIGN_BIND | File: lib/std.torth, Row: 818, Column: 16
+;; [base64.encode] ASSIGN_BIND | File: lib/std.torth, Row: 872, Column: 16
   add rsp, 8
   pop rbx
   mov [r14-48], rbx
-;; [base64.encode] WHILE | File: lib/std.torth, Row: 819, Column: 3
+;; [base64.encode] WHILE | File: lib/std.torth, Row: 873, Column: 3
 base64.encode_WHILE47:
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 819, Column: 9
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 873, Column: 9
   push QWORD [r14-48]
-;; [base64.encode] PUSH_BIND string.len | File: lib/std.torth, Row: 819, Column: 20
+;; [base64.encode] PUSH_BIND string.len | File: lib/std.torth, Row: 873, Column: 20
   push QWORD [r14-56]
-;; [base64.encode] INTRINSIC LT | File: lib/std.torth, Row: 819, Column: 31
+;; [base64.encode] INTRINSIC LT | File: lib/std.torth, Row: 873, Column: 31
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [base64.encode] DO | File: lib/std.torth, Row: 819, Column: 33
+;; [base64.encode] DO | File: lib/std.torth, Row: 873, Column: 33
   pop rax
   test rax, rax
   jz base64.encode_DONE139
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 822, Column: 5
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 876, Column: 5
   push QWORD [r14-48]
-;; [base64.encode] PUSH_BIND string | File: lib/std.torth, Row: 822, Column: 21
+;; [base64.encode] PUSH_BIND string | File: lib/std.torth, Row: 876, Column: 21
   push QWORD [r14-8]
-;; [base64.encode] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 822, Column: 28
+;; [base64.encode] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 876, Column: 28
   call c3RyLmNoYXJfYXQ_
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 822, Column: 40
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 876, Column: 40
   mov rax, 16
   push rax
-;; [base64.encode] INTRINSIC shl | File: lib/std.torth, Row: 822, Column: 43
+;; [base64.encode] INTRINSIC shl | File: lib/std.torth, Row: 876, Column: 43
   pop rcx
   shl QWORD [rsp], cl
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 823, Column: 5
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 877, Column: 5
   push QWORD [r14-48]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 823, Column: 16
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 877, Column: 16
   mov rax, 1
   push rax
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 823, Column: 18
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 877, Column: 18
   pop rax
   add [rsp], rax
-;; [base64.encode] PUSH_BIND string | File: lib/std.torth, Row: 823, Column: 21
+;; [base64.encode] PUSH_BIND string | File: lib/std.torth, Row: 877, Column: 21
   push QWORD [r14-8]
-;; [base64.encode] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 823, Column: 28
+;; [base64.encode] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 877, Column: 28
   call c3RyLmNoYXJfYXQ_
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 823, Column: 40
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 877, Column: 40
   mov rax, 8
   push rax
-;; [base64.encode] INTRINSIC shl | File: lib/std.torth, Row: 823, Column: 42
+;; [base64.encode] INTRINSIC shl | File: lib/std.torth, Row: 877, Column: 42
   pop rcx
   shl QWORD [rsp], cl
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 823, Column: 46
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 877, Column: 46
   pop rax
   add [rsp], rax
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 824, Column: 5
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 878, Column: 5
   push QWORD [r14-48]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 824, Column: 16
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 878, Column: 16
   mov rax, 2
   push rax
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 824, Column: 18
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 878, Column: 18
   pop rax
   add [rsp], rax
-;; [base64.encode] PUSH_BIND string | File: lib/std.torth, Row: 824, Column: 21
+;; [base64.encode] PUSH_BIND string | File: lib/std.torth, Row: 878, Column: 21
   push QWORD [r14-8]
-;; [base64.encode] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 824, Column: 28
+;; [base64.encode] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 878, Column: 28
   call c3RyLmNoYXJfYXQ_
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 824, Column: 40
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 878, Column: 40
   pop rax
   add [rsp], rax
-;; [base64.encode] TAKE | File: lib/std.torth, Row: 825, Column: 5
-;; [base64.encode] POP_BIND 24bit_number | File: lib/std.torth, Row: 825, Column: 10
+;; [base64.encode] TAKE | File: lib/std.torth, Row: 879, Column: 5
+;; [base64.encode] POP_BIND 24bit_number | File: lib/std.torth, Row: 879, Column: 10
   pop rbx
   mov [r14-64], rbx
-;; [base64.encode] IN | File: lib/std.torth, Row: 825, Column: 23
-;; [base64.encode] FUNCTION_CALL List.init | File: lib/std.torth, Row: 828, Column: 5
+;; [base64.encode] IN | File: lib/std.torth, Row: 879, Column: 23
+;; [base64.encode] FUNCTION_CALL List.init | File: lib/std.torth, Row: 882, Column: 5
   call TGlzdC5pbml0
-;; [base64.encode] TAKE | File: lib/std.torth, Row: 829, Column: 5
-;; [base64.encode] POP_BIND 6bit_list | File: lib/std.torth, Row: 829, Column: 10
+;; [base64.encode] TAKE | File: lib/std.torth, Row: 883, Column: 5
+;; [base64.encode] POP_BIND 6bit_list | File: lib/std.torth, Row: 883, Column: 10
   pop rbx
   mov [r14-72], rbx
-;; [base64.encode] IN | File: lib/std.torth, Row: 829, Column: 20
-;; [base64.encode] PUSH_BIND 24bit_number | File: lib/std.torth, Row: 830, Column: 5
+;; [base64.encode] IN | File: lib/std.torth, Row: 883, Column: 20
+;; [base64.encode] PUSH_BIND 24bit_number | File: lib/std.torth, Row: 884, Column: 5
   push QWORD [r14-64]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 830, Column: 18
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 884, Column: 18
   mov rax, 18
   push rax
-;; [base64.encode] INTRINSIC shr | File: lib/std.torth, Row: 830, Column: 21
+;; [base64.encode] INTRINSIC shr | File: lib/std.torth, Row: 884, Column: 21
   pop rcx
   shr QWORD [rsp], cl
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 830, Column: 25
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 884, Column: 25
   mov rax, 63
   push rax
-;; [base64.encode] INTRINSIC and | File: lib/std.torth, Row: 830, Column: 28
+;; [base64.encode] INTRINSIC and | File: lib/std.torth, Row: 884, Column: 28
   pop rax
   and [rsp], rax
-;; [base64.encode] CAST | File: lib/std.torth, Row: 830, Column: 32
-;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 830, Column: 42
+;; [base64.encode] CAST | File: lib/std.torth, Row: 884, Column: 32
+;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 884, Column: 42
   push QWORD [r14-72]
-;; [base64.encode] FUNCTION_CALL List.append | File: lib/std.torth, Row: 830, Column: 52
+;; [base64.encode] FUNCTION_CALL List.append | File: lib/std.torth, Row: 884, Column: 52
   call TGlzdC5hcHBlbmQ_
-;; [base64.encode] PUSH_BIND 24bit_number | File: lib/std.torth, Row: 831, Column: 5
+;; [base64.encode] PUSH_BIND 24bit_number | File: lib/std.torth, Row: 885, Column: 5
   push QWORD [r14-64]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 831, Column: 18
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 885, Column: 18
   mov rax, 12
   push rax
-;; [base64.encode] INTRINSIC shr | File: lib/std.torth, Row: 831, Column: 21
+;; [base64.encode] INTRINSIC shr | File: lib/std.torth, Row: 885, Column: 21
   pop rcx
   shr QWORD [rsp], cl
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 831, Column: 25
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 885, Column: 25
   mov rax, 63
   push rax
-;; [base64.encode] INTRINSIC and | File: lib/std.torth, Row: 831, Column: 28
+;; [base64.encode] INTRINSIC and | File: lib/std.torth, Row: 885, Column: 28
   pop rax
   and [rsp], rax
-;; [base64.encode] CAST | File: lib/std.torth, Row: 831, Column: 32
-;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 831, Column: 42
+;; [base64.encode] CAST | File: lib/std.torth, Row: 885, Column: 32
+;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 885, Column: 42
   push QWORD [r14-72]
-;; [base64.encode] FUNCTION_CALL List.append | File: lib/std.torth, Row: 831, Column: 52
+;; [base64.encode] FUNCTION_CALL List.append | File: lib/std.torth, Row: 885, Column: 52
   call TGlzdC5hcHBlbmQ_
-;; [base64.encode] PUSH_BIND 24bit_number | File: lib/std.torth, Row: 832, Column: 5
+;; [base64.encode] PUSH_BIND 24bit_number | File: lib/std.torth, Row: 886, Column: 5
   push QWORD [r14-64]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 832, Column: 18
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 886, Column: 18
   mov rax, 6
   push rax
-;; [base64.encode] INTRINSIC shr | File: lib/std.torth, Row: 832, Column: 21
+;; [base64.encode] INTRINSIC shr | File: lib/std.torth, Row: 886, Column: 21
   pop rcx
   shr QWORD [rsp], cl
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 832, Column: 25
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 886, Column: 25
   mov rax, 63
   push rax
-;; [base64.encode] INTRINSIC and | File: lib/std.torth, Row: 832, Column: 28
+;; [base64.encode] INTRINSIC and | File: lib/std.torth, Row: 886, Column: 28
   pop rax
   and [rsp], rax
-;; [base64.encode] CAST | File: lib/std.torth, Row: 832, Column: 32
-;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 832, Column: 42
+;; [base64.encode] CAST | File: lib/std.torth, Row: 886, Column: 32
+;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 886, Column: 42
   push QWORD [r14-72]
-;; [base64.encode] FUNCTION_CALL List.append | File: lib/std.torth, Row: 832, Column: 52
+;; [base64.encode] FUNCTION_CALL List.append | File: lib/std.torth, Row: 886, Column: 52
   call TGlzdC5hcHBlbmQ_
-;; [base64.encode] PUSH_BIND 24bit_number | File: lib/std.torth, Row: 833, Column: 5
+;; [base64.encode] PUSH_BIND 24bit_number | File: lib/std.torth, Row: 887, Column: 5
   push QWORD [r14-64]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 833, Column: 25
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 887, Column: 25
   mov rax, 63
   push rax
-;; [base64.encode] INTRINSIC and | File: lib/std.torth, Row: 833, Column: 28
+;; [base64.encode] INTRINSIC and | File: lib/std.torth, Row: 887, Column: 28
   pop rax
   and [rsp], rax
-;; [base64.encode] CAST | File: lib/std.torth, Row: 833, Column: 32
-;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 833, Column: 42
+;; [base64.encode] CAST | File: lib/std.torth, Row: 887, Column: 32
+;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 887, Column: 42
   push QWORD [r14-72]
-;; [base64.encode] FUNCTION_CALL List.append | File: lib/std.torth, Row: 833, Column: 52
+;; [base64.encode] FUNCTION_CALL List.append | File: lib/std.torth, Row: 887, Column: 52
   call TGlzdC5hcHBlbmQ_
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 836, Column: 5
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 890, Column: 5
   mov rax, 0
   push rax
-;; [base64.encode] WHILE | File: lib/std.torth, Row: 836, Column: 7
+;; [base64.encode] WHILE | File: lib/std.torth, Row: 890, Column: 7
 base64.encode_WHILE109:
-;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 836, Column: 13
+;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 890, Column: 13
   push QWORD [rsp]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 836, Column: 17
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 890, Column: 17
   mov rax, 4
   push rax
-;; [base64.encode] INTRINSIC LT | File: lib/std.torth, Row: 836, Column: 19
+;; [base64.encode] INTRINSIC LT | File: lib/std.torth, Row: 890, Column: 19
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [base64.encode] DO | File: lib/std.torth, Row: 836, Column: 21
+;; [base64.encode] DO | File: lib/std.torth, Row: 890, Column: 21
   pop rax
   test rax, rax
   jz base64.encode_DONE132
-;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 837, Column: 7
+;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 891, Column: 7
   push QWORD [rsp]
-;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 837, Column: 11
+;; [base64.encode] PUSH_BIND 6bit_list | File: lib/std.torth, Row: 891, Column: 11
   push QWORD [r14-72]
-;; [base64.encode] FUNCTION_CALL List.nth | File: lib/std.torth, Row: 837, Column: 21
+;; [base64.encode] FUNCTION_CALL List.nth | File: lib/std.torth, Row: 891, Column: 21
   call TGlzdC5udGg_
-;; [base64.encode] FUNCTION_CALL int.load | File: lib/std.torth, Row: 837, Column: 30
+;; [base64.encode] FUNCTION_CALL int.load | File: lib/std.torth, Row: 891, Column: 30
   call aW50LmxvYWQ_
-;; [base64.encode] PUSH_BIND base64_characters | File: lib/std.torth, Row: 837, Column: 39
+;; [base64.encode] PUSH_BIND base64_characters | File: lib/std.torth, Row: 891, Column: 39
   push QWORD [r14-32]
-;; [base64.encode] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 837, Column: 57
+;; [base64.encode] FUNCTION_CALL str.char_at | File: lib/std.torth, Row: 891, Column: 57
   call c3RyLmNoYXJfYXQ_
-;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 838, Column: 7
+;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 892, Column: 7
   push QWORD [r14-40]
-;; [base64.encode] CAST | File: lib/std.torth, Row: 838, Column: 21
-;; [base64.encode] PUSH_BIND base64_index | File: lib/std.torth, Row: 838, Column: 31
+;; [base64.encode] CAST | File: lib/std.torth, Row: 892, Column: 21
+;; [base64.encode] PUSH_BIND base64_index | File: lib/std.torth, Row: 892, Column: 31
   push QWORD [r14-24]
-;; [base64.encode] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 838, Column: 44
+;; [base64.encode] FUNCTION_CALL ptr+ | File: lib/std.torth, Row: 892, Column: 44
   call cHRyKw__
-;; [base64.encode] FUNCTION_CALL char.store | File: lib/std.torth, Row: 838, Column: 49
+;; [base64.encode] FUNCTION_CALL char.store | File: lib/std.torth, Row: 892, Column: 49
   call Y2hhci5zdG9yZQ__
-;; [base64.encode] PUSH_BIND base64_index | File: lib/std.torth, Row: 839, Column: 7
+;; [base64.encode] PUSH_BIND base64_index | File: lib/std.torth, Row: 893, Column: 7
   push QWORD [r14-24]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 839, Column: 20
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 893, Column: 20
   mov rax, 1
   push rax
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 839, Column: 22
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 893, Column: 22
   pop rax
   add [rsp], rax
-;; [base64.encode] PUSH_BIND base64_index | File: lib/std.torth, Row: 839, Column: 24
+;; [base64.encode] PUSH_BIND base64_index | File: lib/std.torth, Row: 893, Column: 24
   push QWORD [r14-24]
-;; [base64.encode] ASSIGN_BIND | File: lib/std.torth, Row: 839, Column: 37
+;; [base64.encode] ASSIGN_BIND | File: lib/std.torth, Row: 893, Column: 37
   add rsp, 8
   pop rbx
   mov [r14-24], rbx
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 840, Column: 7
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 894, Column: 7
   mov rax, 1
   push rax
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 840, Column: 9
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 894, Column: 9
   pop rax
   add [rsp], rax
-;; [base64.encode] DONE | File: lib/std.torth, Row: 841, Column: 5
+;; [base64.encode] DONE | File: lib/std.torth, Row: 895, Column: 5
   jmp base64.encode_WHILE109
 base64.encode_DONE132:
-;; [base64.encode] INTRINSIC drop | File: lib/std.torth, Row: 841, Column: 10
+;; [base64.encode] INTRINSIC drop | File: lib/std.torth, Row: 895, Column: 10
   add rsp, 8
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 843, Column: 5
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 897, Column: 5
   push QWORD [r14-48]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 843, Column: 16
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 897, Column: 16
   mov rax, 3
   push rax
-;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 843, Column: 18
+;; [base64.encode] INTRINSIC PLUS | File: lib/std.torth, Row: 897, Column: 18
   pop rax
   add [rsp], rax
-;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 843, Column: 20
+;; [base64.encode] PUSH_BIND char_index | File: lib/std.torth, Row: 897, Column: 20
   push QWORD [r14-48]
-;; [base64.encode] ASSIGN_BIND | File: lib/std.torth, Row: 843, Column: 31
+;; [base64.encode] ASSIGN_BIND | File: lib/std.torth, Row: 897, Column: 31
   add rsp, 8
   pop rbx
   mov [r14-48], rbx
-;; [base64.encode] DONE | File: lib/std.torth, Row: 844, Column: 3
+;; [base64.encode] DONE | File: lib/std.torth, Row: 898, Column: 3
   jmp base64.encode_WHILE47
 base64.encode_DONE139:
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 847, Column: 3
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 901, Column: 3
   mov rax, 0
   push rax
-;; [base64.encode] CAST | File: lib/std.torth, Row: 847, Column: 8
-;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 847, Column: 19
+;; [base64.encode] CAST | File: lib/std.torth, Row: 901, Column: 8
+;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 901, Column: 19
   push QWORD [r14-40]
-;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 847, Column: 33
+;; [base64.encode] INTRINSIC dup | File: lib/std.torth, Row: 901, Column: 33
   push QWORD [rsp]
-;; [base64.encode] FUNCTION_CALL str.len | File: lib/std.torth, Row: 847, Column: 37
+;; [base64.encode] FUNCTION_CALL str.len | File: lib/std.torth, Row: 901, Column: 37
   call c3RyLmxlbg__
-;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 847, Column: 45
+;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 901, Column: 45
   push QWORD [r14-16]
-;; [base64.encode] INTRINSIC MINUS | File: lib/std.torth, Row: 847, Column: 58
+;; [base64.encode] INTRINSIC MINUS | File: lib/std.torth, Row: 901, Column: 58
   pop rax
   sub [rsp], rax
-;; [base64.encode] FUNCTION_CALL str+ | File: lib/std.torth, Row: 847, Column: 60
+;; [base64.encode] FUNCTION_CALL str+ | File: lib/std.torth, Row: 901, Column: 60
   call c3RyKw__
-;; [base64.encode] CAST | File: lib/std.torth, Row: 847, Column: 65
-;; [base64.encode] FUNCTION_CALL char.store | File: lib/std.torth, Row: 847, Column: 75
+;; [base64.encode] CAST | File: lib/std.torth, Row: 901, Column: 65
+;; [base64.encode] FUNCTION_CALL char.store | File: lib/std.torth, Row: 901, Column: 75
   call Y2hhci5zdG9yZQ__
-;; [base64.encode] IF | File: lib/std.torth, Row: 848, Column: 3
-;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 848, Column: 9
+;; [base64.encode] IF | File: lib/std.torth, Row: 902, Column: 3
+;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 902, Column: 9
   push QWORD [r14-16]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 848, Column: 22
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 902, Column: 22
   mov rax, 1
   push rax
-;; [base64.encode] INTRINSIC EQ | File: lib/std.torth, Row: 848, Column: 24
+;; [base64.encode] INTRINSIC EQ | File: lib/std.torth, Row: 902, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [base64.encode] DO | File: lib/std.torth, Row: 849, Column: 3
+;; [base64.encode] DO | File: lib/std.torth, Row: 903, Column: 3
   pop rax
   test rax, rax
   jz base64.encode_ELIF159
-;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 849, Column: 9
+;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 903, Column: 9
   push QWORD [r14-40]
-;; [base64.encode] PUSH_STR | File: lib/std.torth, Row: 849, Column: 23
+;; [base64.encode] PUSH_STR | File: lib/std.torth, Row: 903, Column: 23
   mov rsi, base64.encode_s156 ; Pointer to string
 
   push rsi
-;; [base64.encode] FUNCTION_CALL str.cat | File: lib/std.torth, Row: 849, Column: 29
+;; [base64.encode] FUNCTION_CALL str.cat | File: lib/std.torth, Row: 903, Column: 29
   call c3RyLmNhdA__
-;; [base64.encode] RETURN | File: lib/std.torth, Row: 849, Column: 37
+;; [base64.encode] RETURN | File: lib/std.torth, Row: 903, Column: 37
 ;; [base64.encode] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 80 ; 9 local variables
   ret
 
-;; [base64.encode] ELIF | File: lib/std.torth, Row: 850, Column: 3
+;; [base64.encode] ELIF | File: lib/std.torth, Row: 904, Column: 3
   jmp base64.encode_ENDIF168
 base64.encode_ELIF159:
-;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 850, Column: 9
+;; [base64.encode] PUSH_BIND padding_size | File: lib/std.torth, Row: 904, Column: 9
   push QWORD [r14-16]
-;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 850, Column: 22
+;; [base64.encode] PUSH_INT | File: lib/std.torth, Row: 904, Column: 22
   mov rax, 2
   push rax
-;; [base64.encode] INTRINSIC EQ | File: lib/std.torth, Row: 850, Column: 24
+;; [base64.encode] INTRINSIC EQ | File: lib/std.torth, Row: 904, Column: 24
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [base64.encode] DO | File: lib/std.torth, Row: 851, Column: 3
+;; [base64.encode] DO | File: lib/std.torth, Row: 905, Column: 3
   pop rax
   test rax, rax
   jz base64.encode_ENDIF168
-;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 851, Column: 9
+;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 905, Column: 9
   push QWORD [r14-40]
-;; [base64.encode] PUSH_STR | File: lib/std.torth, Row: 851, Column: 23
+;; [base64.encode] PUSH_STR | File: lib/std.torth, Row: 905, Column: 23
   mov rsi, base64.encode_s165 ; Pointer to string
 
   push rsi
-;; [base64.encode] FUNCTION_CALL str.cat | File: lib/std.torth, Row: 851, Column: 29
+;; [base64.encode] FUNCTION_CALL str.cat | File: lib/std.torth, Row: 905, Column: 29
   call c3RyLmNhdA__
-;; [base64.encode] RETURN | File: lib/std.torth, Row: 851, Column: 37
+;; [base64.encode] RETURN | File: lib/std.torth, Row: 905, Column: 37
 ;; [base64.encode] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
   sub r14, 80 ; 9 local variables
   ret
 
-;; [base64.encode] ENDIF | File: lib/std.torth, Row: 852, Column: 3
+;; [base64.encode] ENDIF | File: lib/std.torth, Row: 906, Column: 3
 base64.encode_ENDIF168:
-;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 852, Column: 9
+;; [base64.encode] PUSH_BIND base64_string | File: lib/std.torth, Row: 906, Column: 9
   push QWORD [r14-40]
 ;; [base64.encode] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -35465,191 +35374,191 @@ b3Blbl9maWxl:
 ;; [open_file] Save the return address to return stack
   add r14, 32 ; 3 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [open_file] POP_BIND oflag | File: lib/std.torth, Row: 858, Column: 20
+;; [open_file] POP_BIND oflag | File: lib/std.torth, Row: 912, Column: 20
   pop rbx
   mov [r14-8], rbx
-;; [open_file] POP_BIND path | File: lib/std.torth, Row: 858, Column: 30
+;; [open_file] POP_BIND path | File: lib/std.torth, Row: 912, Column: 30
   pop rbx
   mov [r14-16], rbx
-;; [open_file] PUSH_BIND oflag | File: lib/std.torth, Row: 859, Column: 3
+;; [open_file] PUSH_BIND oflag | File: lib/std.torth, Row: 913, Column: 3
   push QWORD [r14-8]
-;; [open_file] PUSH_BIND path | File: lib/std.torth, Row: 859, Column: 9
+;; [open_file] PUSH_BIND path | File: lib/std.torth, Row: 913, Column: 9
   push QWORD [r14-16]
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 859, Column: 14
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 913, Column: 14
   mov rax, 2
   push rax
-;; [open_file] INTRINSIC syscall2 | File: lib/std.torth, Row: 859, Column: 23
+;; [open_file] INTRINSIC syscall2 | File: lib/std.torth, Row: 913, Column: 23
   pop rax ; syscall
   pop rdi ; 1. arg
   pop rsi ; 2. arg
   syscall
   push rax ; return code
-;; [open_file] TAKE | File: lib/std.torth, Row: 860, Column: 3
-;; [open_file] POP_BIND fd | File: lib/std.torth, Row: 860, Column: 8
+;; [open_file] TAKE | File: lib/std.torth, Row: 914, Column: 3
+;; [open_file] POP_BIND fd | File: lib/std.torth, Row: 914, Column: 8
   pop rbx
   mov [r14-24], rbx
-;; [open_file] IN | File: lib/std.torth, Row: 860, Column: 11
-;; [open_file] IF | File: lib/std.torth, Row: 861, Column: 3
-;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 861, Column: 6
+;; [open_file] IN | File: lib/std.torth, Row: 914, Column: 11
+;; [open_file] IF | File: lib/std.torth, Row: 915, Column: 3
+;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 915, Column: 6
   push QWORD [r14-24]
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 861, Column: 9
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 915, Column: 9
   mov rax, -2
   push rax
-;; [open_file] INTRINSIC EQ | File: lib/std.torth, Row: 861, Column: 16
+;; [open_file] INTRINSIC EQ | File: lib/std.torth, Row: 915, Column: 16
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [open_file] DO | File: lib/std.torth, Row: 861, Column: 19
+;; [open_file] DO | File: lib/std.torth, Row: 915, Column: 19
   pop rax
   test rax, rax
   jz open_file_ELIF22
-;; [open_file] PUSH_STR | File: lib/std.torth, Row: 862, Column: 5
+;; [open_file] PUSH_STR | File: lib/std.torth, Row: 916, Column: 5
   mov rsi, open_file_s14 ; Pointer to string
 
   push rsi
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 862, Column: 14
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 916, Column: 14
   call ZXB1dHM_
-;; [open_file] PUSH_BIND path | File: lib/std.torth, Row: 862, Column: 20
+;; [open_file] PUSH_BIND path | File: lib/std.torth, Row: 916, Column: 20
   push QWORD [r14-16]
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 862, Column: 25
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 916, Column: 25
   call ZXB1dHM_
-;; [open_file] PUSH_STR | File: lib/std.torth, Row: 862, Column: 31
+;; [open_file] PUSH_STR | File: lib/std.torth, Row: 916, Column: 31
   mov rsi, open_file_s18 ; Pointer to string
 
   push rsi
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 862, Column: 53
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 916, Column: 53
   call ZXB1dHM_
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 863, Column: 5
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 917, Column: 5
   mov rax, 1
   push rax
-;; [open_file] FUNCTION_CALL exit | File: lib/std.torth, Row: 863, Column: 7
+;; [open_file] FUNCTION_CALL exit | File: lib/std.torth, Row: 917, Column: 7
   call ZXhpdA__
-;; [open_file] ELIF | File: lib/std.torth, Row: 864, Column: 3
+;; [open_file] ELIF | File: lib/std.torth, Row: 918, Column: 3
   jmp open_file_ENDIF61
 open_file_ELIF22:
-;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 864, Column: 8
+;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 918, Column: 8
   push QWORD [r14-24]
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 864, Column: 11
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 918, Column: 11
   mov rax, -13
   push rax
-;; [open_file] INTRINSIC EQ | File: lib/std.torth, Row: 864, Column: 19
+;; [open_file] INTRINSIC EQ | File: lib/std.torth, Row: 918, Column: 19
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [open_file] DO | File: lib/std.torth, Row: 864, Column: 22
+;; [open_file] DO | File: lib/std.torth, Row: 918, Column: 22
   pop rax
   test rax, rax
   jz open_file_ELIF35
-;; [open_file] PUSH_STR | File: lib/std.torth, Row: 865, Column: 5
+;; [open_file] PUSH_STR | File: lib/std.torth, Row: 919, Column: 5
   mov rsi, open_file_s27 ; Pointer to string
 
   push rsi
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 865, Column: 26
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 919, Column: 26
   call ZXB1dHM_
-;; [open_file] PUSH_BIND path | File: lib/std.torth, Row: 865, Column: 32
+;; [open_file] PUSH_BIND path | File: lib/std.torth, Row: 919, Column: 32
   push QWORD [r14-16]
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 865, Column: 37
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 919, Column: 37
   call ZXB1dHM_
-;; [open_file] PUSH_STR | File: lib/std.torth, Row: 865, Column: 43
+;; [open_file] PUSH_STR | File: lib/std.torth, Row: 919, Column: 43
   mov rsi, open_file_s31 ; Pointer to string
 
   push rsi
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 865, Column: 69
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 919, Column: 69
   call ZXB1dHM_
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 866, Column: 5
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 920, Column: 5
   mov rax, 1
   push rax
-;; [open_file] FUNCTION_CALL exit | File: lib/std.torth, Row: 866, Column: 7
+;; [open_file] FUNCTION_CALL exit | File: lib/std.torth, Row: 920, Column: 7
   call ZXhpdA__
-;; [open_file] ELIF | File: lib/std.torth, Row: 867, Column: 3
+;; [open_file] ELIF | File: lib/std.torth, Row: 921, Column: 3
   jmp open_file_ENDIF61
 open_file_ELIF35:
-;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 867, Column: 8
+;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 921, Column: 8
   push QWORD [r14-24]
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 867, Column: 11
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 921, Column: 11
   mov rax, -14
   push rax
-;; [open_file] INTRINSIC EQ | File: lib/std.torth, Row: 867, Column: 18
+;; [open_file] INTRINSIC EQ | File: lib/std.torth, Row: 921, Column: 18
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmove rcx, rdx
   mov QWORD [rsp], rcx
-;; [open_file] DO | File: lib/std.torth, Row: 867, Column: 21
+;; [open_file] DO | File: lib/std.torth, Row: 921, Column: 21
   pop rax
   test rax, rax
   jz open_file_ELIF44
-;; [open_file] PUSH_STR | File: lib/std.torth, Row: 868, Column: 5
+;; [open_file] PUSH_STR | File: lib/std.torth, Row: 922, Column: 5
   mov rsi, open_file_s40 ; Pointer to string
 
   push rsi
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 868, Column: 82
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 922, Column: 82
   call ZXB1dHM_
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 869, Column: 5
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 923, Column: 5
   mov rax, 1
   push rax
-;; [open_file] FUNCTION_CALL exit | File: lib/std.torth, Row: 869, Column: 7
+;; [open_file] FUNCTION_CALL exit | File: lib/std.torth, Row: 923, Column: 7
   call ZXhpdA__
-;; [open_file] ELIF | File: lib/std.torth, Row: 870, Column: 3
+;; [open_file] ELIF | File: lib/std.torth, Row: 924, Column: 3
   jmp open_file_ENDIF61
 open_file_ELIF44:
-;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 870, Column: 8
+;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 924, Column: 8
   push QWORD [r14-24]
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 870, Column: 11
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 924, Column: 11
   mov rax, 0
   push rax
-;; [open_file] INTRINSIC LT | File: lib/std.torth, Row: 870, Column: 13
+;; [open_file] INTRINSIC LT | File: lib/std.torth, Row: 924, Column: 13
   pop rax
   mov rcx, 0
   mov rdx, 1
   cmp QWORD [rsp], rax
   cmovl rcx, rdx
   mov QWORD [rsp], rcx
-;; [open_file] DO | File: lib/std.torth, Row: 870, Column: 15
+;; [open_file] DO | File: lib/std.torth, Row: 924, Column: 15
   pop rax
   test rax, rax
   jz open_file_ENDIF61
-;; [open_file] PUSH_STR | File: lib/std.torth, Row: 871, Column: 5
+;; [open_file] PUSH_STR | File: lib/std.torth, Row: 925, Column: 5
   mov rsi, open_file_s49 ; Pointer to string
 
   push rsi
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 871, Column: 47
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 925, Column: 47
   call ZXB1dHM_
-;; [open_file] PUSH_BIND path | File: lib/std.torth, Row: 871, Column: 53
+;; [open_file] PUSH_BIND path | File: lib/std.torth, Row: 925, Column: 53
   push QWORD [r14-16]
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 871, Column: 58
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 925, Column: 58
   call ZXB1dHM_
-;; [open_file] PUSH_STR | File: lib/std.torth, Row: 871, Column: 64
+;; [open_file] PUSH_STR | File: lib/std.torth, Row: 925, Column: 64
   mov rsi, open_file_s53 ; Pointer to string
 
   push rsi
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 871, Column: 71
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 925, Column: 71
   call ZXB1dHM_
-;; [open_file] PUSH_STR | File: lib/std.torth, Row: 872, Column: 5
+;; [open_file] PUSH_STR | File: lib/std.torth, Row: 926, Column: 5
   mov rsi, open_file_s55 ; Pointer to string
 
   push rsi
-;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 872, Column: 20
+;; [open_file] FUNCTION_CALL eputs | File: lib/std.torth, Row: 926, Column: 20
   call ZXB1dHM_
-;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 872, Column: 26
+;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 926, Column: 26
   push QWORD [r14-24]
-;; [open_file] FUNCTION_CALL eputi | File: lib/std.torth, Row: 872, Column: 29
+;; [open_file] FUNCTION_CALL eputi | File: lib/std.torth, Row: 926, Column: 29
   call ZXB1dGk_
-;; [open_file] PUSH_INT | File: lib/std.torth, Row: 873, Column: 5
+;; [open_file] PUSH_INT | File: lib/std.torth, Row: 927, Column: 5
   mov rax, 1
   push rax
-;; [open_file] FUNCTION_CALL exit | File: lib/std.torth, Row: 873, Column: 7
+;; [open_file] FUNCTION_CALL exit | File: lib/std.torth, Row: 927, Column: 7
   call ZXhpdA__
-;; [open_file] ENDIF | File: lib/std.torth, Row: 874, Column: 3
+;; [open_file] ENDIF | File: lib/std.torth, Row: 928, Column: 3
 open_file_ENDIF61:
-;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 875, Column: 3
+;; [open_file] PUSH_BIND fd | File: lib/std.torth, Row: 929, Column: 3
   push QWORD [r14-24]
 ;; [open_file] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -35660,45 +35569,45 @@ d3JpdGVfZmlsZQ__:
 ;; [write_file] Save the return address to return stack
   add r14, 24 ; 2 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [write_file] FUNCTION_CALL touch_file | File: lib/std.torth, Row: 926, Column: 3
+;; [write_file] FUNCTION_CALL touch_file | File: lib/std.torth, Row: 976, Column: 3
   call dG91Y2hfZmlsZQ__
-;; [write_file] TAKE | File: lib/std.torth, Row: 929, Column: 3
-;; [write_file] POP_BIND fd | File: lib/std.torth, Row: 929, Column: 8
+;; [write_file] TAKE | File: lib/std.torth, Row: 979, Column: 3
+;; [write_file] POP_BIND fd | File: lib/std.torth, Row: 979, Column: 8
   pop rbx
   mov [r14-8], rbx
-;; [write_file] POP_BIND buf | File: lib/std.torth, Row: 929, Column: 11
+;; [write_file] POP_BIND buf | File: lib/std.torth, Row: 979, Column: 11
   pop rbx
   mov [r14-16], rbx
-;; [write_file] IN | File: lib/std.torth, Row: 929, Column: 15
-;; [write_file] PUSH_BIND buf | File: lib/std.torth, Row: 930, Column: 3
+;; [write_file] IN | File: lib/std.torth, Row: 979, Column: 15
+;; [write_file] PUSH_BIND buf | File: lib/std.torth, Row: 980, Column: 3
   push QWORD [r14-16]
-;; [write_file] FUNCTION_CALL str.len | File: lib/std.torth, Row: 930, Column: 7
+;; [write_file] FUNCTION_CALL str.len | File: lib/std.torth, Row: 980, Column: 7
   call c3RyLmxlbg__
-;; [write_file] PUSH_BIND buf | File: lib/std.torth, Row: 931, Column: 3
+;; [write_file] PUSH_BIND buf | File: lib/std.torth, Row: 981, Column: 3
   push QWORD [r14-16]
-;; [write_file] PUSH_BIND fd | File: lib/std.torth, Row: 931, Column: 7
+;; [write_file] PUSH_BIND fd | File: lib/std.torth, Row: 981, Column: 7
   push QWORD [r14-8]
-;; [write_file] PUSH_INT | File: lib/std.torth, Row: 931, Column: 10
+;; [write_file] PUSH_INT | File: lib/std.torth, Row: 981, Column: 10
   mov rax, 1
   push rax
-;; [write_file] INTRINSIC syscall3 | File: lib/std.torth, Row: 931, Column: 20
+;; [write_file] INTRINSIC syscall3 | File: lib/std.torth, Row: 981, Column: 20
   pop rax ; syscall
   pop rdi ; 1. arg
   pop rsi ; 2. arg
   pop rdx ; 3. arg
   syscall
   push rax ; return code
-;; [write_file] PUSH_BIND fd | File: lib/std.torth, Row: 934, Column: 3
+;; [write_file] PUSH_BIND fd | File: lib/std.torth, Row: 984, Column: 3
   push QWORD [r14-8]
-;; [write_file] PUSH_INT | File: lib/std.torth, Row: 934, Column: 6
+;; [write_file] PUSH_INT | File: lib/std.torth, Row: 984, Column: 6
   mov rax, 3
   push rax
-;; [write_file] INTRINSIC syscall1 | File: lib/std.torth, Row: 934, Column: 16
+;; [write_file] INTRINSIC syscall1 | File: lib/std.torth, Row: 984, Column: 16
   pop rax ; syscall
   pop rdi ; 1. arg
   syscall
   push rax ; return code
-;; [write_file] INTRINSIC drop | File: lib/std.torth, Row: 934, Column: 25
+;; [write_file] INTRINSIC drop | File: lib/std.torth, Row: 984, Column: 25
   add rsp, 8
 ;; [write_file] Return to the address found in return stack
   push QWORD [r14] ; Get function's return address
@@ -36095,10 +36004,10 @@ dG91Y2hfZmlsZQ__:
 ;; [touch_file] Save the return address to return stack
   add r14, 8 ; 0 local variables
   pop QWORD [r14] ; Save return address from stack
-;; [touch_file] PUSH_INT | File: lib/std.torth, Row: 918, Column: 3
+;; [touch_file] PUSH_INT | File: lib/std.torth, Row: 968, Column: 3
   mov rax, 85
   push rax
-;; [touch_file] INTRINSIC syscall2 | File: lib/std.torth, Row: 918, Column: 13
+;; [touch_file] INTRINSIC syscall2 | File: lib/std.torth, Row: 968, Column: 13
   pop rax ; syscall
   pop rdi ; 1. arg
   pop rsi ; 2. arg
@@ -36276,8 +36185,9 @@ section .data
   link_with_ld_s3 db ".o",0
   link_with_ld_s10 db "ld",0
   link_with_ld_s14 db "-melf_x86_64",0
-  link_with_ld_s18 db "-o",0
-  link_with_ld_s33 db "/usr/bin/ld",0
+  link_with_ld_s18 db "-s",0
+  link_with_ld_s22 db "-o",0
+  link_with_ld_s37 db "/usr/bin/ld",0
   remove_compilation_files_s3 db ".asm",0
   remove_compilation_files_s9 db ".o",0
   get_included_files_from_file_s6 db "",0
@@ -36493,6 +36403,10 @@ section .data
   get_tokens_op_type_s382 db "Operation '",0
   get_tokens_op_type_s386 db "' is unknown",0
   get_tokens_op_type_s388 db "OP_NOT_FOUND",0
+  type_check_sub_program_s87 db "Something went wrong while type checking the '",0
+  type_check_sub_program_s91 db "' function",10,"",0
+  type_check_sub_program_s93 db "This is most likely a bug in the compiler type checking logic",0
+  type_check_sub_program_s95 db "ASSERTION_ERROR",0
   type_check_op_s13 db "All OpTypes are not taken into account in `type_check_op` function.",10,"",0
   type_check_op_s14 db "ASSERTION_ERROR",0
   type_check_op_s342 db "Parsing token '",0
@@ -36625,21 +36539,13 @@ section .data
   parse_signature_from_fn_ptr_s4 db "]",0
   type_check_load_s19 db "The stack is empty - PTR required",0
   type_check_load_s20 db "POP_FROM_EMPTY_STACK",0
-  type_check_load_s35 db " requires a pointer",10,"",10,"",0
-  type_check_load_s37 db "Popped type: ",0
-  type_check_load_s42 db "VALUE_ERROR",0
-  type_check_load_s47 db "any",0
+  type_check_load_s25 db "any",0
   type_check_over_s23 db "OVER intrinsic requires two values in the stack",0
   type_check_over_s24 db "POP_FROM_EMPTY_STACK",0
   type_check_rot_s27 db "ROT intrinsic requires three values in the stack",0
   type_check_rot_s28 db "POP_FROM_EMPTY_STACK",0
   type_check_store_s19 db " intrinsic requires two values on the stack, PTR and value",0
   type_check_store_s33 db "POP_FROM_EMPTY_STACK",0
-  type_check_store_s45 db "",10,"",10,"",0
-  type_check_store_s47 db "Expected types:",10,"PTR",10,"ANY",10,"",10,"",0
-  type_check_store_s49 db "Popped types:",10,"",0
-  type_check_store_s54 db "",10,"",0
-  type_check_store_s59 db "VALUE_ERROR",0
   type_check_swap_s23 db "SWAP intrinsic requires two values in the stack",0
   type_check_swap_s24 db "POP_FROM_EMPTY_STACK",0
   type_check_syscall_s34 db " intrinsic requires ",0
@@ -36647,45 +36553,24 @@ section .data
   type_check_syscall_s48 db "s",0
   type_check_syscall_s51 db " in the stack",0
   type_check_syscall_s53 db "POP_FROM_EMPTY_STACK",0
-  type_check_syscall_s64 db "The first argument of ",0
-  type_check_syscall_s67 db " should be the number of the syscall",10,"",10,"",0
-  type_check_syscall_s69 db "Expected type: INT",10,"",0
-  type_check_syscall_s71 db "Popped type: ",0
-  type_check_syscall_s76 db "VALUE_ERROR",0
-  type_check_syscall_s102 db " intrinsic requires ",0
-  type_check_syscall_s109 db " value",0
-  type_check_syscall_s116 db "s",0
-  type_check_syscall_s119 db " in the stack but got ",0
-  type_check_syscall_s124 db "POP_FROM_EMPTY_STACK",0
-  type_check_syscall_s135 db "int",0
+  type_check_syscall_s79 db " intrinsic requires ",0
+  type_check_syscall_s86 db " value",0
+  type_check_syscall_s93 db "s",0
+  type_check_syscall_s96 db " in the stack but got ",0
+  type_check_syscall_s101 db "POP_FROM_EMPTY_STACK",0
+  type_check_syscall_s112 db "int",0
   type_check_bitwise_s29 db " intrinsic requires two integers",0
   type_check_bitwise_s31 db "POP_FROM_EMPTY_STACK",0
-  type_check_bitwise_s49 db " intrinsic requires two integers",10,"",10,"",0
-  type_check_bitwise_s51 db "Popped types:",10,"",0
-  type_check_bitwise_s56 db "",10,"",0
-  type_check_bitwise_s61 db "VALUE_ERROR",0
-  type_check_bitwise_s66 db "int",0
+  type_check_bitwise_s36 db "int",0
   type_check_bitshift_s29 db " intrinsic requires two values in the stack",0
   type_check_bitshift_s31 db "POP_FROM_EMPTY_STACK",0
-  type_check_bitshift_s49 db " intrinsic requires two integers",10,"",10,"",0
-  type_check_bitshift_s51 db "Popped types:",10,"",0
-  type_check_bitshift_s56 db "",10,"",0
-  type_check_bitshift_s61 db "VALUE_ERROR",0
-  type_check_bitshift_s66 db "int",0
+  type_check_bitshift_s36 db "int",0
   type_check_calculations_s29 db " requires two values on the stack",0
   type_check_calculations_s31 db "POP_FROM_EMPTY_STACK",0
-  type_check_calculations_s49 db " intrinsic requires two integers",10,"",10,"",0
-  type_check_calculations_s51 db "Popped types:",10,"",0
-  type_check_calculations_s56 db "",10,"",0
-  type_check_calculations_s61 db "VALUE_ERROR",0
-  type_check_calculations_s66 db "int",0
+  type_check_calculations_s36 db "int",0
   type_check_comparison_s29 db " requires two values on the stack",0
   type_check_comparison_s31 db "POP_FROM_EMPTY_STACK",0
-  type_check_comparison_s49 db " intrinsic requires two integers",10,"",10,"",0
-  type_check_comparison_s51 db "Popped types:",10,"",0
-  type_check_comparison_s56 db "",10,"",0
-  type_check_comparison_s61 db "VALUE_ERROR",0
-  type_check_comparison_s66 db "bool",0
+  type_check_comparison_s36 db "bool",0
   get_not_typed_tokens_s4 db "BREAK",0
   get_not_typed_tokens_s8 db "CONTINUE",0
   get_not_typed_tokens_s12 db "PEEK",0
@@ -37028,13 +36913,6 @@ section .data
   get_function_part_delimiters_s4 db "->",0
   get_function_part_delimiters_s8 db ":",0
   get_function_part_delimiters_s12 db "END",0
-  INTEGER_TYPES_s5 db "any",0
-  INTEGER_TYPES_s9 db "bool",0
-  INTEGER_TYPES_s13 db "char",0
-  INTEGER_TYPES_s17 db "int",0
-  POINTER_TYPES_s5 db "any",0
-  POINTER_TYPES_s9 db "ptr",0
-  POINTER_TYPES_s13 db "str",0
   get_token_info_s1 db "",27,"[95m",0
   get_token_info_s3 db "Token",0
   get_token_info_s5 db "",27,"[0m",0
