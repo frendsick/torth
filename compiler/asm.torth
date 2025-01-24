@@ -157,7 +157,7 @@ function get_intrinsic_asm token:Token -> str :
   elif intrinsic "LT" streq do
     get_lt_asm return
   elif intrinsic "LOAD_" str.startswith do
-    token intrinsic get_load_asm
+    intrinsic get_load_asm
   elif intrinsic "MINUS" streq do
     get_minus_asm return
   elif intrinsic "MOD" streq do
@@ -727,30 +727,22 @@ function get_lt_asm -> str :
   "setl" get_comparison_asm
 end
 
-// Params: load_variant, Token
+// Params: intrinsic
 // Return: Assembly
-function get_load_asm str Token -> str :
-  str.copy str.upper
-  take load_variant token in
-
-  // Get the correct size register for the load_variant
-  if    load_variant "LOAD_BYTE"  streq do "bl"
-  elif  load_variant "LOAD_WORD"  streq do "bx"
-  elif  load_variant "LOAD_DWORD" streq do "ebx"
-  elif  load_variant "LOAD_QWORD" streq do "rbx"
-  else
-    token
-    "'" load_variant                  str.cat
-    "' is not a valid LOAD Intrinsic" str.cat
-    "VALUE_ERROR" CompilerErrorWithToken ""
-  endif
-  take register in
+function get_load_asm intrinsic:str -> str :
+  // Parse operation size
+  // "BYTE" | "WORD" | "DWORD" | "QWORD"
+  intrinsic str.copy str.upper "LOAD_" str.len str+
+  take operation_size in
 
   // Generate assembly
-  f"  pop rax
-  xor rbx, rbx
-  mov {register}, [rax]
-  push rbx\n"
+  "  pop rax\n"
+  if operation_size "QWORD" streq do
+    "  mov rax, [rax]\n" str.cat
+  else
+    f"  movzx rax, {operation_size} [rax]\n" str.cat
+  endif
+  "  push rax\n" str.cat
 end
 
 // Pop two integers from the stack and decrement the second value from the top one
