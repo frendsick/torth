@@ -565,7 +565,7 @@ end
 // Params: Op
 // Return: Assembly
 function get_push_str_asm op:Op -> str :
-  f"  mov rsi, {op Op.func Func.name}_s{op Op.id itoa} ; Pointer to string\n
+  f"  mov rsi, {op Op.func Func.name}_s{op Op.id itoa} ; Pointer to string
   push rsi\n"
 end
 
