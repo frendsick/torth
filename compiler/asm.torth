@@ -609,16 +609,14 @@ function get_arithmetic_asm operand:str -> str :
 end
 
 // Generate assembly code for different comparison Intrinsics, like EQ and GE.
-// Only the cmov operand changes with different comparison intrinsics.
-// Params: cmov_operand
+// Params: set_operand -> Example: "sete" for `eq`
 // Return: Assembly
-function get_comparison_asm cmov_operand:str -> str :
+function get_comparison_asm set_operand:str -> str :
   f"  pop rax
-  mov rcx, 0
-  mov rdx, 1
-  cmp QWORD [rsp], rax
-  {cmov_operand} rcx, rdx
-  mov QWORD [rsp], rcx\n"
+  cmp [rsp], rax
+  {set_operand} al
+  movzx rax, al
+  mov [rsp], rax\n"
 end
 
 // AND performs bitwise-AND operation to two integers
@@ -694,7 +692,7 @@ end
 // Params: None
 // Return: Assembly
 function get_eq_asm -> str :
-  "cmove" get_comparison_asm
+  "sete" get_comparison_asm
 end
 
 // GE takes two items from the stack and checks if the second item >= the other.
@@ -702,7 +700,7 @@ end
 // Params: None
 // Return: Assembly
 function get_ge_asm -> str :
-  "cmovge" get_comparison_asm
+  "setge" get_comparison_asm
 end
 
 // GT takes two items from the stack and checks if the second item > the other.
@@ -710,7 +708,7 @@ end
 // Params: None
 // Return: Assembly
 function get_gt_asm -> str :
-  "cmovg" get_comparison_asm
+  "setg" get_comparison_asm
 end
 
 // LE takes two items from the stack and checks if the second item <= the other.
@@ -718,7 +716,7 @@ end
 // Params: None
 // Return: Assembly
 function get_le_asm -> str :
-  "cmovle" get_comparison_asm
+  "setle" get_comparison_asm
 end
 
 // LT takes two items from the stack and checks if the second item < the other.
@@ -726,7 +724,7 @@ end
 // Params: None
 // Return: Assembly
 function get_lt_asm -> str :
-  "cmovl" get_comparison_asm
+  "setl" get_comparison_asm
 end
 
 // Params: load_variant, Token
@@ -785,7 +783,7 @@ end
 // Params: None
 // Return: Assembly
 function get_ne_asm -> str :
-  "cmovne" get_comparison_asm
+  "setne" get_comparison_asm
 end
 
 // OR performs bitwise-OR operation to two integers
