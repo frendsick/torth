@@ -90,10 +90,12 @@ Different comparison intrinsics:
 
 A bit shift moves each digit left or right in the binary representation of an [integer](definitions.md#integer-types).
 
+The first parameter decides the number of places to shift; the second parameter is the bit-shifted value.
+
 Different bit shift intrinsics:
 
-- `SHL`: Bit shift left
-- `SHR`: Bit shift right
+- `SHL` Bit shift left
+- `SHR` Bit shift right
 
 **Examples**
 
@@ -112,11 +114,11 @@ Perform bitwise AND for two [integers](definitions.md#integer-types).
 
 ## ARGC
 
-Push the command line argument count to the stack.
+Push the command line argument count `argc` to the stack.
 
 ## ARGV
 
-Push the pointer to the command line argument array to the stack.
+Push the pointer to the command line argument array `*argv[]` to the stack.
 
 ## DROP
 
@@ -132,29 +134,34 @@ Duplicate the top element of the stack.
 
 ## ENVP
 
-Push the environment pointer to the stack.
+Push the environment pointer `*envp[]` to the stack.
 
 ## EXEC
 
 Pop and execute a [function pointer](types#fn---function-pointer) from the stack.
 
+Here is an example where `add_one` is a function that increments `int` by one.
+
+`2 add_one& exec` -> `3`
+
 ## LOAD
 
-Load a value from a memory location pointer by a [PTR](types.md#ptr---pointer). LOAD-intrinsics push a value pointed by a [pointer-like](types.md#ptr---pointer) type to the stack.
-
-1. Pop a [PTR](types.md#ptr---pointer) type value from the stack
-2. Push the value pointed by the popped pointer to the stack
+Load a value from a memory location pointed by a [pointer](types.md#ptr---pointer).
 
 ### LOAD Variants
 
-There are four different LOAD intrinsic variants:
+There are four different `LOAD` intrinsic variants:
 
-- LOAD_BYTE (8-bit)
-- LOAD_WORD (16-bit)
-- LOAD_DWORD (32-bit)
-- LOAD_QWORD (64-bit)
+- `LOAD_BYTE` (8-bit)
+- `LOAD_WORD` (16-bit)
+- `LOAD_DWORD` (32-bit)
+- `LOAD_QWORD` (64-bit)
 
-For example, to load a value of type [INT](types.md#int---integer) (64-bit) from a memory location to the stack, you should use the LOAD_QWORD intrinsic. Also, it is preferred to use the _type.load_ functions from the [std-library](../lib/std.torth) which also explicitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [built-in type](types.md#built-in-types), for example `int.load`.
+For example, to load a value of type [INT](types.md#int---integer) (64-bit) from a memory location to the stack, you should use the `LOAD_QWORD` intrinsic.
+
+`pointer_to_int load_qword`
+
+You can also use the _type.load_ functions from the [std-library](../lib/std.torth) which also explicitly cast the loaded value to the corresponding [type](types.md). There is a typed load function for every [built-in type](types.md#built-in-types), for example `int.load`.
 
 ## OR
 
@@ -180,21 +187,22 @@ Rotate the top three items on the stack so that the third element moves to the t
 
 ## STORE
 
-A [PTR](types.md#ptr---pointer) stores a value to a memory location pointer. STORE-intrinsics pops two values from the stack. The second item of the stack is stored in the memory address pointed by the first.
-
-- The top element should be of type [PTR](types.md#ptr---pointer)
-- The second element is stored at the address pointed by the pointer
+Store a value to a memory location pointed by a [pointer](types.md#ptr---pointer).
 
 ### STORE Variants
 
-There are four different STORE intrinsic variants:
+There are four different `STORE` intrinsic variants:
 
-- STORE_BYTE (8-bit)
-- STORE_WORD (16-bit)
-- STORE_DWORD (32-bit)
-- STORE_QWORD (64-bit)
+- `STORE_BYTE` (8-bit)
+- `STORE_WORD` (16-bit)
+- `STORE_DWORD` (32-bit)
+- `STORE_QWORD` (64-bit)
 
-For example, to store [INT](types.md#int---integer) (64-bit) to a memory location, you should use the STORE_QWORD intrinsic. Also, it is preferred to use the _type.store_ functions from the [std-library](../lib/std.torth), which also checks if the value in the stack that is to be stored is of the correct [type](types.md). There is a typed store function for every [built-in type](types.md#built-in-types), for example `int.store`.
+For example, to store [INT](types.md#int---integer) (64-bit) to a memory location, you should use the `STORE_QWORD` intrinsic.
+
+`42 pointer_to_int store_qword`
+
+You can also use the _type.store_ functions from the [std-library](../lib/std.torth), which also checks if the value in the stack that is to be stored is of the correct [type](types.md). There is a typed store function for every [built-in type](types.md#built-in-types), for example `int.store`.
 
 ## SWAP
 
@@ -204,9 +212,10 @@ Swap the top two elements in the stack.
 
 ## SYSCALL
 
-SYSCALL-intrinsic variants call a Linux syscall. Syscalls require different amounts of arguments from 0 to 6. Different variants are named SYSCALL0 - SYSCALL6 by the amount of arguments. The first argument should be an [integer](definitions.md#integer-types).
+`SYSCALL`-intrinsic variants call a Linux syscall. Syscalls require different amounts of arguments from 0 to 6. Different variants are named `SYSCALL0` - `SYSCALL6` based on the number of arguments. The first argument is the number of the syscall. See [x86_64 syscall table](https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#x86_64-64_bit)
 
-1. Pop the top element and the required number of arguments from the stack
-2. Call the syscall which matches the first popped element
+The different syscall constants can be found in the [sys](../lib/sys.torth) library. Naming convention (case sensitive): `SYS_<syscall>`, for example, `SYS_write`.
 
-The different syscall constants can be found from lib/sys.torth. Naming convention (case sensitive): SYS\_<syscall>. For example, **SYS_write**.
+Example of how to print "Hello, World!" without any library dependencies using the [write](https://man7.org/linux/man-pages/man2/write.2.html) syscall:
+
+`14 "Hello, World!\n" 1 1 syscall3`
