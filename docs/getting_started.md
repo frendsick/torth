@@ -11,11 +11,10 @@ For now, the language only works with Linux using x86_64 architecture. Windows u
 
 ## Install requirements
 
-The following requirements can probably be installed via your distro's package manager, for example, [APT](https://manpages.ubuntu.com/manpages/xenial/man8/apt.8.html) for Ubuntu and Debian.
+The following requirements can be installed via your Linux distro's package manager.
 
-- NASM
-- LD (**binutils** package in APT)
-- Git (For cloning the repository, not required)
+- [NASM](https://www.nasm.us/)
+- [LD](https://linux.die.net/man/1/ld) (_binutils_ package in APT)
 
 ## Compile the compiler
 
@@ -51,13 +50,11 @@ Hello, World!
 
 ## Apply syntax highlighting
 
-Coding in any language could be pretty painful without syntax highlighting for the particular editor you are using. Torth currently only supports syntax highlighting for [VIM](syntax_highlighting.md#vim) and [VSCode](syntax_highlighting.md#visual-studio-code). There is also a really barebones and outdated [torth-mode](./../editor/emacs/torth-mode.el) for Emacs.
-
-If you want support for a particular editor, please create a [feature request issue](https://github.com/frendsick/torth/issues/new/choose). Contributions are also appreciated, so feel free to create a syntax highlighting configuration to an editor to the [editor](../editor/) folder and hit me with a pull request!
+Coding in any language could be painful without syntax highlighting for the particular editor you are using. Torth currently only supports syntax highlighting for [VIM](syntax_highlighting.md#vim) and [VSCode](syntax_highlighting.md#visual-studio-code). There is also a really barebones and outdated [torth-mode](./../editor/emacs/torth-mode.el) for Emacs.
 
 ## Check examples
 
-The [examples](../examples/) folder contains some example programs that show how the language can be used. For example, there are [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as implementations of some [Project Euler problems](../examples/euler/). The [torth.torth](./../torth.torth) compiler itself is also written in Torth, so it could also be used as an example.
+The [examples](../examples/) folder contains some example programs that show how the language can be used. For example, there are [FizzBuzz](../examples/fizzbuzz.torth) and [Fibonacci number sequence](../examples/fibonacci.torth) as well as implementations of some [Project Euler problems](../examples/euler/). The [torth.torth](./../torth.torth) compiler itself is also written in Torth.
 
 ## Read documentation
 
