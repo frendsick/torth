@@ -29,17 +29,19 @@ BREAK is an unconditional jump to the operation after [DONE](#done) of the curre
 
 The CAST keyword is used to cast any type to another. The keyword does not generate any assembly code and thus does not affect the effectiveness of the resulting binary.
 
+`true cast(int)` -> `1`
+
 ## CONST
 
 Constants are named literal values that cannot be modified. The constant name can be used in code to push the constant's value to the stack.
 
-### Syntax
+**Syntax**
 
 ```pascal
 CONST <name> <value> END
 ```
 
-### Examples
+**Examples**
 
 ```pascal
 const DATABASE "/dev/null" end
@@ -48,15 +50,17 @@ const MAX_USERS 1337 end
 
 ## CONTINUE
 
-CONTINUE is an unconditional jump to the current loop's [WHILE](#while).
+CONTINUE is an unconditional jump to the current loop's [WHILE](#while) keyword.
 
-- [How to use CONTINUE?](control_flow.md#continue-statement)
+See also:
+
+- [WHILE Loops](control_flow.md#while-loops)
 
 ## DO
 
 DO is a conditional jump to the operation after the next [ELIF](#elif), [ELSE](#else), [ENDIF](#endif), or [DONE](#done).
 
-The conditional jump will occur if the condition does not match because if it does, the block of code should be executed.
+The conditional jump will occur if the condition _does not_ match because if it does, the block of code should be executed.
 
 With [IF](#if) and [ELIF](#elif) statements, DO is a conditional jump to the operation after the next [ELIF](#elif), [ELSE](#else) or [ENDIF](#endif) keywords.
 
@@ -105,19 +109,19 @@ See also:
 
 ## ENUM
 
-Enumerations in Torth enable generating named running integer values with a certain positive offset between each integer. Names defined inside the ENUM block can be used as tokens in the code, just like [constants](#CONST). The ENUM block's name will also be a constant with the value of `offset * items_count`.
+Enumerations in Torth enable the generation of named running integer values with a certain positive offset between each integer. Names defined inside the ENUM block can be used as tokens in the code, just like [constants](#CONST). The ENUM block's name will also be a constant with the value of `offset * items_count`.
 
 See also:
 
 - [CONST](#CONST)
 
-### Syntax
+**Syntax**
 
 ```pascal
 ENUM <name> <offset> : item1 item2 END
 ```
 
-### Examples
+**Examples**
 
 ```pascal
 ENUM offset_by_one 1 : item1 item2 item3 END
@@ -142,42 +146,43 @@ end
 
 ## FUNCTION
 
-Functions are defined using the FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as a token. When called, the function's name is replaced with the contents of the function (**function_body** in the [Function syntax](#function-syntax) section) during compilation. Defined functions are case-sensitive tokens, unlike most other keywords in Torth.
+Functions are defined using the FUNCTION keyword. Functions are pieces of code that can be called from wherever inside the program by using its name as a token. Defined functions are case-sensitive.
 
-The **main** function (case-sensitive) is mandatory in every Torth program. It is the function from which the execution starts. The main function cannot take any parameters, and it either returns nothing or one [INT](types.md#int---integer), which will become the program's return value. The default return value is 0 (success) if nothing is returned.
+The `main` function is mandatory in every Torth program. It is the function from which the execution starts. The `main` function cannot take any parameters, and it does not return anything. If the `main` function runs to the end, the program exits with the exit code 0 (success).
 
-Functions do not take parameters but instead use the current stack. The required topmost items in the stack before and after the function execution are defined in the function declaration (**argument_types** and **return_types** in the following [Function syntax](#function-syntax) section). The compiler verifies at compile time if the topmost types in the stack match with the function signature before and after its execution. If there are more items in the return types than argument types, then the compiler will assume that there should be more elements in the stack after the execution than before calling the function and vice versa.
-
-If the function does not return anything, it can be declared without the `->` token (See [Function syntax](#function-syntax)).
-
-### Function syntax
+Functions use the current stack as parameters. The required topmost items in the stack before and after the function execution are defined in the function declaration. The compiler verifies at compile time if the topmost types in the stack match with the function signature before and after its execution. If there are more items in the return types than argument types, then the compiler will assume that there should be more elements in the stack after the execution than before calling the function and vice versa.
 
 ```pascal
 // Different tokens or words can be on different lines
 FUNCTION <name> <argument_types> -> <return_types> : <function_body> END
+```
 
+If the function does not return anything, it can be declared without the `->` token.
+
+```
 // Functions without return types can be defined without the '->' token
 FUNCTION <name> <argument_types> : <function_body> END
 ```
 
-### Examples
+**Examples**
 
 ```pascal
 include "std"
-// Example with name and age as parameters, name is on top of the stack
-// Note: Strings pushes two items to the stack, it's length and pointer to the string buffer
-function is_adult str int int -> bool :
-  puts // Prints name
-  if dup 18 > do
-    False " you are not an adult"
+
+function is_adult age:int -> bool :
+  if age 18 >= do
+    True
   else
-    True  " you are an adult"
-  endif puts // Prints
+    False
+  endif
 end
 
 function main :
-  42 "frendsick" is_adult
-  "Return value: " puts putu "\n" puts // Output: 40
+  if 42 is_adult do
+    "You are an adult!\n" puts
+  else
+    "You are not an adult!\n" puts
+  endif
 end
 ```
 
@@ -199,15 +204,6 @@ function main :
 end
 ```
 
-```pascal
-// Non-zero exit code example
-include "std"
-function main -> int :
-  42 dup
-  "This program will return with exit code " puts putu "\n" puts
-end
-```
-
 ## IF
 
 IF is just a keyword that starts an [IF block](control_flow.md#if-blocks). IF-block ends to [ENDIF](#ENDIF).
@@ -216,9 +212,9 @@ IF is just a keyword that starts an [IF block](control_flow.md#if-blocks). IF-bl
 
 With the INCLUDE keyword, you can include code from another file. The INCLUDE statement consists of the keyword INCLUDE and the file to be imported in double quotes ("). The file name should be either its absolute file path or the relative path compared to the compiler file [torth.torth](../torth.torth). The file can also refer to a relative path from the compiler file with any of the entries in [PATH](definitions.md#path) as the parent directory.
 
-Note: A file will only be included once, even if it is included by multiple different included files. Thus, it is safe and preferable to include every needed file in each of the different files.
+Note: A file will only be included once, even if multiple different included files include it. Thus, it is safe and preferable to include every needed file in each of the different files.
 
-### Syntax
+**Syntax**
 
 ```pascal
 // The whole statement has to be in one line
@@ -232,10 +228,10 @@ There are some limitations in using INCLUDE statements:
 - Statement MUST be outside a function
 - Statement MUST be in one line
 
-### Examples
+**Examples**
 
 ```pascal
-// Different styles of including the std-library
+// Different styles of including the `std` library
 INCLUDE "std"
 INCLUDE "std.torth"
 INCLUDE "lib/std"
@@ -253,7 +249,7 @@ Return from current [FUNCTION](#function).
 
 Pop the topmost item from the stack and push the string representation of its type to the stack as [str](./types.md#str---string).
 
-The type of stack's topmost item is calculated at compile time and the type is saved in the resulting binary as a string literal. If you want to mutate the string, please create a copy from it first using the `str.copy` function from the [std](../lib/std.torth) library. Mutating static string literals could result in undefined behavior.
+The type of stack's topmost item is calculated at compile time, and the type is saved in the resulting binary as a string literal. If you want to mutate the string, please create a copy from it first using the `str.copy` function from the [std](../lib/std.torth) library. Mutating static string literals could result in undefined behavior.
 
 ## WHILE
 
