@@ -1,6 +1,6 @@
 # Torth
 
-Stack based programming language inspired by [Porth](https://gitlab.com/tsoding/porth) that uses [Reverse Polish notation](./docs/definitions.md#reverse-polish-notation).
+Stack-based programming language inspired by [Porth](https://gitlab.com/tsoding/porth).
 
 - [x] Compiled
 - [x] Statically typed
@@ -46,7 +46,7 @@ Options:
 
 ## Examples
 
-More examples are found from the [examples](./examples/)-folder.
+More examples are found in the [examples](./examples/)-folder.
 
 ### [Hello World](./examples/hello_world.torth)
 
@@ -99,8 +99,8 @@ function FizzBuzz limit:int -> int :
     1   // index
 
     // Save two topmost values from the stack to variables
-    // => TAKE keyword also removes the values from the stack
-    // => PEEK keyword would instead save the values without removing them from the stack
+    // => The TAKE keyword also removes the values from the stack
+    // => The PEEK keyword would instead save the values without removing them from the stack
     take index sum in
 
     // Loop while index <= limit
@@ -132,13 +132,13 @@ function FizzBuzz limit:int -> int :
     sum // Return sum
 end
 
-// Program execution starts from MAIN function (case-insensitive)
+// Program execution starts from the `main` function
 function main :
     // Call FizzBuzz with one integer parameter
     // FizzBuzz(limit=30)
     30 FizzBuzz
 
-    // Save the return value to variable called sum and print it with text
+    // Save the return value to a variable called sum and print it with text
     take sum in
     "Sum of all numbers not divisible by 3 or 5: " puts
     sum putu "\n" puts
