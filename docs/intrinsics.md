@@ -46,52 +46,69 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 
 ## Calculations
 
-Perform a calculation operation for two [integers](definitions.md#integer-types) and push the result.
-
-1. Pop two [integers](definitions.md#integer-types) from the stack
-2. Perform a calculation operation to the popped values
-3. Push result
+Perform a calculation operation for two [integers](definitions.md#integer-types).
 
 Different calculation intrinsics:
 
-- PLUS (+)
-- MINUS (-)
-- MUL (\*)
-- DIV (/)
-- MOD (%)
+- `PLUS` | `+`
+- `MINUS` | `-`
+- `MUL` | `*`
+- `DIV` | `/`
+- `MOD` | `%`
+
+**Examples**
+
+- `10 3 +` -> `13`
+- `10 3 -` -> `7`
+- `10 3 *` -> `30`
+- `10 3 /` -> `3`
+- `10 3 %` -> `1`
 
 ## Comparisons
 
 Perform a certain comparison operation to two [integers](definitions.md#integer-types).
 
-1. Pop two [integers](definitions.md#integer-types) from the stack
-2. Push the result of the comparison as [BOOL](types.md#bool---boolean)
-
 Different comparison intrinsics:
 
-- **EQ**: Equal (==)
-- **GE**: Greater than or equal (>=)
-- **GT**: Greater than (>)
-- **LE**: Less than or equal (<=)
-- **LT**: Less than (<)
-- **NE**: Not equal (!=)
+- `EQ` | `==`
+- `GE` | `>=`
+- `GT` | `>`
+- `LE` | `<=`
+- `LT` | `<`
+- `NE` | `!=`
+
+**Examples**
+
+- `10 3 ==` -> `false`
+- `10 3 >=` -> `true`
+- `10 3 >` -> `true`
+- `10 3 <=` -> `false`
+- `10 3 <` -> `false`
+- `10 3 !=` -> `true`
 
 ## Bit shifts
 
-A bit shift moves each digit in a number's binary representation left or right.
+A bit shift moves each digit left or right in the binary representation of an [integer](definitions.md#integer-types).
 
 Different bit shift intrinsics:
 
-- **SHL**: Bit shift left (<<)
-- **SHR**: Bit shift right (>>)
+- `SHL`: Bit shift left
+- `SHR`: Bit shift right
+
+**Examples**
+
+- `16 2 shl` -> `64`
+- `16 2 shr` -> `4`
 
 ## AND
 
-Perform bitwise AND for two [integer](definitions.md#integer-types) values.
+Perform bitwise AND for two [integers](definitions.md#integer-types).
 
-1. Pop two [integers](definitions.md#integer-types) from the stack
-2. Perform bitwise AND operation to the popped values
-3. Push the result of the bitwise operation as [INT](types.md#int---integer)
+**Examples**
+
+- `10 3 and` -> `2`
+- `16 5 and` -> `0`
+- `15 15 and` -> `15`
 
 ## ARGC
 
@@ -141,11 +158,13 @@ For example, to load a value of type [INT](types.md#int---integer) (64-bit) from
 
 ## OR
 
-Perform bitwise OR for two [integer](definitions.md#integer-types) values.
+Perform bitwise OR for two [integers](definitions.md#integer-types).
 
-1. Pop two [integers](definitions.md#integer-types) from the stack
-2. Perform bitwise OR operation to the popped values
-3. Push the result of the bitwise operation as [INT](types.md#int---integer)
+**Examples**
+
+- `10 3 or` -> `11`
+- `16 5 or` -> `21`
+- `15 15 or` -> `15`
 
 ## OVER
 
