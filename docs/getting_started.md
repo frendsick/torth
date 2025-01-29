@@ -9,26 +9,16 @@ For now, the language only works with Linux using x86_64 architecture. Windows u
 - Object file is linked to a statically linked 64-bit ELF-executable with LD
 - The resulting executable does not have any external dependencies
 
-## Install requirements
+## Requirements
 
 The following requirements can be installed via your Linux distro's package manager.
 
 - [NASM](https://www.nasm.us/)
 - [LD](https://linux.die.net/man/1/ld) (_binutils_ package in APT)
 
-## Compile the compiler
+## Installation
 
-The Torth compiler does not ship with the repository. Instead, you must compile it from its [Assembly version](../bootstrap/torth.asm).
-
-1. Clone the [Torth](https://github.com/frendsick/torth) repository from GitHub
-1. Compile the Assembly source code with NASM using the `make` command
-
-```sh
-$ git clone https://github.com/frendsick/torth.git
-$ cd torth/
-$ make
-$ ./torth --help
-```
+Install the Torth compiler and the `std` library from the [releases](https://github.com/frendsick/torth/releases) and put them in the same folder. Alternatively, you can create a `lib` folder inside the folder that contains the `torth` compiler and store the libraries there.
 
 ## Compile your first program
 
