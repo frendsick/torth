@@ -1,6 +1,6 @@
 # Intrinsics
 
-Intrinsics are built-in functions that generate static assembly output. The key difference between a [keyword](keywords.md) and an intrinsic is that the behavior of a keyword is dependent on other words in the program, whereas an intrinsic will always generate the same assembly output regardless of the context in which it is used.
+Intrinsics are built-in functions that generate static assembly output. The key difference between a [keyword](keywords.md) and an intrinsic is that the behavior of a keyword is dependent on other words in the program. In contrast, an intrinsic will always generate the same assembly output regardless of the context in which it is used.
 
 ## List of Intrinsics
 
@@ -181,7 +181,7 @@ Push a copy of the second element of the stack.
 
 ## ROT
 
-Rotate the top three items on the stack so that the third element moves to the top and the other two moves one spot deeper in the stack.
+Rotate the top three items on the stack so that the third element moves to the top and the other two move one spot deeper in the stack.
 
 `a b c -> c a b`
 
@@ -216,6 +216,6 @@ Swap the top two elements in the stack.
 
 The different syscall constants can be found in the [sys](../lib/sys.torth) library. Naming convention (case sensitive): `SYS_<syscall>`, for example, `SYS_write`.
 
-Example of how to print "Hello, World!" without any library dependencies using the [write](https://man7.org/linux/man-pages/man2/write.2.html) syscall:
+Example of how to print "Hello, World!" to `stdout` without any library dependencies using the [write](https://man7.org/linux/man-pages/man2/write.2.html) syscall:
 
 `14 "Hello, World!\n" 1 1 syscall3`
