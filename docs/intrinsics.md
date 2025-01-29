@@ -140,9 +140,17 @@ Push the environment pointer `*envp[]` to the stack.
 
 Pop and execute a [function pointer](types#fn---function-pointer) from the stack.
 
-Here is an example where `add_one` is a function that increments `int` by one.
+**Example**
 
 `2 add_one& exec` -> `3`
+
+Where the `add_one` function is defined as follows:
+
+```
+function add_one int -> int :
+    1 +
+end
+```
 
 ## LOAD
 
