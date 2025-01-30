@@ -46,7 +46,7 @@ Options:
 
 ## Examples
 
-More examples are found in the [examples](./examples/)-folder.
+More examples are found in the [examples](./examples/) folder.
 
 ### [Hello World](./examples/hello_world.torth)
 
