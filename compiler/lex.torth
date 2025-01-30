@@ -776,12 +776,27 @@ function get_functions
   while index tokens cast(List) List.len < do
     // Get current word
     index tokens cast(List) List.nth Token.load
-    Token.value str.copy str.upper
-    take token_upper in
+    dup Token.value str.copy
+    take token_value token in
 
-    if token_upper "FUNCTION" streq do
+    if token_value str.upper "FUNCTION" streq do
       index 1 + index =
-      "" constants index tokens parse_function
+      "" False constants index tokens parse_function
+      functions cast(List) List.append
+    elif token_value str.upper "INLINE" streq do
+      // Verify that the next token is "FUNCTION"
+      if
+        index 1 + tokens cast(List) List.nth Token.load Token.value
+        peek next_token in
+        str.copy str.upper "FUNCTION" streq not
+      do
+        token
+        f"Token '{token_value}' should be followed by 'FUNCTION' keyword but got {next_token}"
+        "SYNTAX_ERROR" CompilerErrorWithToken
+      endif
+
+      index 2 + index =
+      "" True constants index tokens parse_function
       functions cast(List) List.append
     endif
     index 1 + index =
@@ -801,11 +816,14 @@ end
 //    tokens:       List[Token]
 //    token_index:  int
 //    constants:    List[Constant]
+//    class_name:   str
+//    is_inline     bool
 // Return Func
 function parse_function
   tokens:List[Token]
   token_index:int
   constants:List[Constant]
+  is_inline:bool
   class_name:str
 -> Func :
   // Initialize variables
@@ -826,6 +844,7 @@ function parse_function
     FUNCTION_PART_DELIMITERS
   in
 
+  // Verify that there are more tokens to parse
   if token_index tokens cast(List) List.len >= do
     tokens cast(List) List.last Token.load Token.value
     take token_value in
@@ -880,12 +899,14 @@ function parse_function
           function_tokens cast(List) List.append
         endif
 
-        // return Func(function_name, signature, function_tokens, variables, is_used)
+        // return Func(function_name, signature, function_tokens, variables, is_used, is_inline)
+        is_inline
         is_used
         variables
         function_tokens
         return_types param_types Signature.init
-        function_name Func.init
+        function_name
+        Func.init
         take func in
 
         // Set MAIN function as used
@@ -1118,7 +1139,7 @@ function parse_class
     if token_value str.copy str.upper "METHOD" streq do
       // Parse all methods
       token_index 1 + token_index =
-      class_name constants token_index tokens parse_function
+      class_name False constants token_index tokens parse_function
       take class_method in
 
       // Add method to list of functions
@@ -1226,7 +1247,7 @@ function get_object_size_function
   return_types List.init Signature.init
   take signature in
 
-  False List.init cast(List[Variable]) tokens signature function_name Func.init
+  False False List.init cast(List[Variable]) tokens signature function_name Func.init
 end
 
 function generate_attribution_function
@@ -1270,7 +1291,7 @@ function generate_attribution_function
   take tokens in
 
   // Create Func and append it to list of Funcs
-  False List.init cast(List[Variable]) tokens signature function_name Func.init
+  False False List.init cast(List[Variable]) tokens signature function_name Func.init
 end
 
 function get_attribute_function_tokens

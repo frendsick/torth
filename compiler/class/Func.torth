@@ -8,6 +8,7 @@ class Func
   tokens:List[Token]
   variables:List[Variable]
   is_used:bool
+  is_inline:bool
 
   method init
     name:str
@@ -15,6 +16,7 @@ class Func
     tokens:List[Token]
     variables:List[Variable]
     is_used:bool
+    is_inline:bool
   -> Func :
     Func.size malloc cast(Func)
     take func in
@@ -24,6 +26,7 @@ class Func
     tokens    func Func->tokens
     variables func Func->variables
     is_used   func Func->is_used
+    is_inline func Func->is_inline
     func
   end
 
