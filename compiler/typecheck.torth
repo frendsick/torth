@@ -144,7 +144,7 @@ function type_check_op
   if_block_return_stacks:List[TypeStack]
 -> TypeCheckInfo :
   // Assert that every OpType has been taken into account
-  if OpType.len 28 != do
+  if OpType.len 29 != do
     "All OpTypes are not taken into account in `type_check_op` function.\n"
     "ASSERTION_ERROR" CompilerError
   endif
@@ -202,7 +202,12 @@ function type_check_op
     // Set type_check_info.else_present to False
     False type_check_info TypeCheckInfo->else_present
     type_check_info return
-  elif op_type OpType.FUNCTION_CALL == do
+  elif
+    // Type check inline functions and regular functions similarly
+    op_type OpType.FUNCTION_CALL ==
+    op_type OpType.INLINE_FUNCTION_CALL ==
+    ||
+  do
     functions type_stack token type_check_function_call
     type_check_info return
   elif op_type OpType.IF == do

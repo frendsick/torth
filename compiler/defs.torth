@@ -22,6 +22,7 @@ ENUM OpType.len 1 :
   OpType.FUNCTION_RETURN
   OpType.IF
   OpType.IN
+  OpType.INLINE_FUNCTION_CALL
   OpType.INTRINSIC
   OpType.PEEK
   OpType.PEEK_BIND

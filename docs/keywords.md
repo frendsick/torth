@@ -15,6 +15,7 @@ This is the documentation for different keywords available in the Torth language
 - [FUNCTION](#FUNCTION)
 - [IF](#IF)
 - [INCLUDE](#INCLUDE)
+- [INLINE](#INLINE)
 - [RETURN](#RETURN)
 - [TYPEOF](#TYPEOF)
 - [WHILE](#WHILE)
@@ -237,6 +238,26 @@ INCLUDE "std.torth"
 INCLUDE "lib/std"
 INCLUDE "lib/std.torth"
 INCLUDE "path/to/torth/lib/std.torth"
+```
+
+## INLINE
+
+INLINE keyword is used for creating inline [functions](#FUNCTION).
+
+> The inline keyword suggests that the compiler substitute the code within the function definition in place of each call to that function.
+
+> Using inline functions can make your program faster because they eliminate the overhead associated with function calls.
+
+> A tradeoff of inline functions is that the overall size of your program can increase.
+
+References:
+
+- [Inline functions in C++](https://learn.microsoft.com/en-us/cpp/cpp/inline-functions-cpp)
+
+**Syntax**
+
+```
+INLINE FUNCTION <name> <argument_types> : <function_body> END
 ```
 
 ## RETURN

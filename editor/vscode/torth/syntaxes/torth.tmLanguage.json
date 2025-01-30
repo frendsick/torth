@@ -71,7 +71,7 @@
         },
         {
           "name": "entity.name.function.torth",
-          "match": "(?i)(?<=(class|enum|function|method)\\s)\\b(\\S+)\\b"
+          "match": "(?i)(?<=(class|enum|function|inline|method)\\s)\\b(\\S+)\\b"
         }
       ]
     },
