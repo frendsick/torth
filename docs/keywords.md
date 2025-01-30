@@ -245,7 +245,9 @@ INCLUDE "path/to/torth/lib/std.torth"
 INLINE keyword is used for creating inline [functions](#FUNCTION).
 
 > The inline keyword suggests that the compiler substitute the code within the function definition in place of each call to that function.
+
 > Using inline functions can make your program faster because they eliminate the overhead associated with function calls.
+
 > A tradeoff of inline functions is that the overall size of your program can increase.
 
 References:
