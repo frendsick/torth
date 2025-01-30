@@ -171,11 +171,7 @@ FUNCTION <name> <argument_types> : <function_body> END
 include "std"
 
 function is_adult age:int -> bool :
-  if age 18 >= do
-    True
-  else
-    False
-  endif
+  age 18 >=
 end
 
 function main :
