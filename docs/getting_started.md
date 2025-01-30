@@ -18,7 +18,13 @@ The following requirements can be installed via your Linux distro's package mana
 
 ## Installation
 
-Install the Torth compiler and the `std.torth` library from the [releases](https://github.com/frendsick/torth/releases/latest) and put them in the same folder. Alternatively, you can create a `lib` folder inside the folder that contains the `torth` compiler and store the libraries there.
+Install the Torth compiler `torth` and the `std.torth` library from the [releases](https://github.com/frendsick/torth/releases/latest) and put them in the same folder. Alternatively, you can create a `lib` folder inside the folder that contains the `torth` compiler and store the libraries there.
+
+The `torth` file must be set as executable with the `chmod` command.
+
+```sh
+chmod +x torth
+```
 
 ## Compile your first program
 
