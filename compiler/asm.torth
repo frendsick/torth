@@ -1143,11 +1143,39 @@ function append_programs_assembly_code file_name:str program:Program sub_program
   func get_function_start_asm file_name append_file
 
   // Write assembly code of each Op in program
-  sub_programs program generate_program_ops_assembly_code
-  file_name append_file
+  sub_programs program file_name append_program_ops_assembly_code
 
   // Prepend the Func's beginning code and prepend the ending code
   func get_function_end_asm file_name append_file
+end
+
+// Generate assembly for program
+function append_program_ops_assembly_code
+  file_name:str
+  program:Program
+  sub_programs:List[Program]
+-> :
+  program cast(List) List.len
+  0
+  take
+    index
+    program.len
+  in
+
+  // Generate assembly for each Op in Program
+  while index program.len < do
+
+    // Get the current Op
+    index program cast(List) List.nth Op.load
+    take op in
+
+    // Generate assembly for Op
+    op get_op_comment_asm file_name append_file
+    sub_programs program op get_op_asm file_name append_file
+
+    // Append the current Op's assembly to file
+    index 1 + index =
+  done
 end
 
 function generate_program_ops_assembly_code
@@ -1170,7 +1198,7 @@ function generate_program_ops_assembly_code
     index program cast(List) List.nth Op.load
     take op in
 
-    // Generate comment for Op
+    // Generate assembly for Op
     assembly_code
     op get_op_comment_asm str.cat
     sub_programs program op get_op_asm str.cat
