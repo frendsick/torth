@@ -29,12 +29,12 @@ const mode_640 0x1a0 end
 const mode_600 0x180 end
 
 // Extra intrinsics
-function NULLPTR            -> ptr  : NULL cast(ptr)    end
-function ^        int int   -> int  : pow               end
-function not      bool      -> bool : True !=           end
-function |        int int   -> int  : or                end
-function ||       bool bool -> bool : or cast(bool)     end
-function &&       bool bool -> bool : and cast(bool)    end
+inline function NULLPTR            -> ptr  : NULL cast(ptr)    end
+inline function ^        int int   -> int  : pow               end
+inline function not      bool      -> bool : True !=           end
+inline function |        int int   -> int  : or                end
+inline function ||       bool bool -> bool : or cast(bool)     end
+inline function &&       bool bool -> bool : and cast(bool)    end
 
 // Get user input from stdin
 function input -> str :
@@ -49,17 +49,17 @@ end
 // Write a string to a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t written_bytes
-function write int str int -> int : SYS_write syscall3 end
+inline function write int str int -> int : SYS_write syscall3 end
 
 // Read <count> bytes from a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t read_bytes
-function read int str int -> int : SYS_read syscall3 end
+inline function read int str int -> int : SYS_read syscall3 end
 
 // Execute the command referred to by <pathname>
 // Params: const char *pathname, char *const argv[], char *const envp[]
 // Return: On success, execve does not return, on error -1 is returned
-function execve str ptr ptr -> int : SYS_execve syscall3 end
+inline function execve str ptr ptr -> int : SYS_execve syscall3 end
 
 // Exit from the program with a <status> code
 // Params: int status
@@ -91,7 +91,7 @@ end
 // Deallocate memory
 // Params: pointer (PTR), len (INT)
 // Return: None
-function munmap ptr int :
+inline function munmap ptr int :
   SYS_munmap SYSCALL2 drop
 end
 
@@ -108,37 +108,37 @@ function memcpy dest:ptr src:ptr len:int :
 end
 
 // Print a string to stdout
-function puts  str : stdout fputs end
+inline function puts  str : stdout fputs end
 
 // Print a string to stderr
-function eputs str : stderr fputs end
+inline function eputs str : stderr fputs end
 
 // Print an unsigned integer to stdout
-function putu int : itoa puts end
+inline function putu int : itoa puts end
 
 // Print an unsigned integer to stderr
-function eputu int : itoa eputs end
+inline function eputu int : itoa eputs end
 
 // Print a signed integer to stdout
-function puti int : itoa puts end
+inline function puti int : itoa puts end
 
 // Print a signed integer to stderr
-function eputi int : itoa eputs end
+inline function eputi int : itoa eputs end
 
 // Ptr functions
-function ptr+       int ptr -> ptr : swap cast(int) + cast(ptr) end
-function ptr-       int ptr -> ptr : swap cast(int) - cast(ptr) end
-function ptr++      ptr     -> ptr : ptr.size ptr+              end
-function ptr.load   ptr     -> ptr : LOAD_QWORD cast(ptr)       end
-function ptr.store  ptr ptr ->     : STORE_QWORD                end
+inline function ptr+       int ptr -> ptr : swap cast(int) + cast(ptr) end
+inline function ptr-       int ptr -> ptr : swap cast(int) - cast(ptr) end
+inline function ptr++      ptr     -> ptr : ptr.size ptr+              end
+inline function ptr.load   ptr     -> ptr : LOAD_QWORD cast(ptr)       end
+inline function ptr.store  ptr ptr ->     : STORE_QWORD                end
 
 // Bool functions
-function bool.load  ptr       -> bool : LOAD_BYTE cast(bool)    end
-function bool.store ptr bool  ->      : STORE_BYTE              end
+inline function bool.load  ptr       -> bool : LOAD_BYTE cast(bool)    end
+inline function bool.store ptr bool  ->      : STORE_BYTE              end
 
 // Char functions
-function char.load  ptr       -> char : LOAD_BYTE cast(char)    end
-function char.store ptr char  ->      : STORE_BYTE              end
+inline function char.load  ptr       -> char : LOAD_BYTE cast(char)    end
+inline function char.store ptr char  ->      : STORE_BYTE              end
 
 // Return the lowercase character for the given character
 function char.lower char -> char :
@@ -201,8 +201,8 @@ function char.to_string character:char -> str :
 end
 
 // Int functions
-function int.load     ptr       -> int    : LOAD_QWORD cast(int)  end
-function int.store    ptr int   ->        : STORE_QWORD           end
+inline function int.load     ptr       -> int    : LOAD_QWORD cast(int)  end
+inline function int.store    ptr int   ->        : STORE_QWORD           end
 
 // Get the amount of digits in an integer
 // Params: number
@@ -314,9 +314,9 @@ function atoi string:str -> int :
 end
 
 // String functions
-function str+         int str   -> str  : swap cast(int) + cast(str)    end
-function str.load     ptr       -> str  : LOAD_QWORD cast(str)          end
-function str.store    ptr str   ->      : STORE_QWORD                   end
+inline function str+         int str   -> str  : swap cast(int) + cast(str)    end
+inline function str.load     ptr       -> str  : LOAD_QWORD cast(str)          end
+inline function str.store    ptr str   ->      : STORE_QWORD                   end
 
 // Copy string to a newly allocated memory location and return the copied string
 function str.copy str -> str :
@@ -622,13 +622,13 @@ end
 // Get the character at a certain index of a string
 // Params: string, index
 // Return: character_at_index
-function str.char_at str int -> char : swap str+ cast(ptr) char.load end
+inline function str.char_at str int -> char : swap str+ cast(ptr) char.load end
 
 // Test if a string is a palindrome (reads the same backward or forward)
-function str.is_palindrome str -> bool : dup str.reverse streq end
+inline function str.is_palindrome str -> bool : dup str.reverse streq end
 
 // Test if a string is static string aka. string literal
-function str.is_static str -> bool : cast(int) KERNEL_SPACE_PTR < end
+inline function str.is_static str -> bool : cast(int) KERNEL_SPACE_PTR < end
 
 // Test if string only contains numeric characters
 function str.is_numeric string:str -> bool :
@@ -650,8 +650,8 @@ function str.is_numeric string:str -> bool :
 end
 
 // "Empty" a string by storing NULL byte to the beginning
-function str.empty string:str :
-  NULL string store_byte
+inline function str.empty str :
+  NULL swap store_byte
 end
 
 // Convert string to lowercase letters
@@ -958,7 +958,7 @@ end
 // Create a file
 // Params: const char *pathname, mode_t mode
 // Return: int fd
-function touch_file str int -> int :
+inline function touch_file str int -> int :
   SYS_creat syscall2
 end
 
@@ -995,7 +995,7 @@ end
 // Print file contents to stdout
 // Params: const char *pathname
 // Return: ssize_t written_bytes
-function print_file str :
+inline function print_file str :
   read_file puts
 end
 
