@@ -1242,9 +1242,16 @@ function type_check_load token:Token type_stack:Node :
   // Stack is empty
   if type cast(int) -1 == do
     temp_stack token
-    "The stack is empty - PTR required"
+    "The stack is empty - Expected 'ptr'"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
   // Wrong token type
+  endif
+
+  // Verify argument type
+  if type TypeNode.type "ptr" matching_token_types not do
+    temp_stack token
+    f"Expected 'ptr' but got '{type TypeNode.type}'"
+    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Push loaded value which could be of any type
