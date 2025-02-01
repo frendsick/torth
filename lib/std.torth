@@ -147,7 +147,7 @@ end
 
 // Return the uppercase character for the given character
 function char.upper char -> char :
-  if dup char.is_lowercase do 32 - cast(char) endif
+  if dup char.is_lowercase do cast(int) 32 - cast(char) endif
 end
 
 // Test if character is a number
@@ -264,8 +264,8 @@ function itoa num:int -> str :
 
     // str[index] = (rem > 9)? (rem-10) + 'a' : rem + '0';
     if dup 9 >
-    do    10 - 'a' +
-    else  '0' +
+    do    10 - 'a' cast(int) +
+    else  '0' cast(int) +
     endif cast(char)
     string str.append
     string =
@@ -306,7 +306,7 @@ function atoi string:str -> int :
     endif
 
     // Append the current character to integer
-    '0' -
+    cast(int) '0' cast(int) -
     integer 10 * +
     integer =
     index 1 + index = // index++
@@ -867,9 +867,9 @@ function base64.encode string:str -> str :
   while char_index string.len < do
 
     // These three 8-bit (ASCII) characters become one 24-bit number
-    char_index      string str.char_at 16 shl
-    char_index 1 +  string str.char_at 8 shl +
-    char_index 2 +  string str.char_at +
+    char_index      string str.char_at cast(int) 16 shl
+    char_index 1 +  string str.char_at cast(int) 8 shl +
+    char_index 2 +  string str.char_at cast(int) +
     take 24bit_number in
 
     // This 24-bit number gets separated into four 6-bit numbers

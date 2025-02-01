@@ -893,7 +893,7 @@ end
 function get_syscall_asm str -> str :
 
   // Get the Syscall variant's number
-  7 swap str.char_at '0' -
+  7 swap str.char_at cast(int) '0' cast(int) -
 
   // Get argument registers used for syscalls (List[str])
   get_syscall_argument_registers
