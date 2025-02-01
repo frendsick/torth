@@ -651,7 +651,7 @@ end
 
 // "Empty" a string by storing NULL byte to the beginning
 inline function str.empty str :
-  NULL swap store_byte
+  NULL swap cast(ptr) store_byte
 end
 
 // Convert string to lowercase letters

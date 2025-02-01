@@ -1333,18 +1333,21 @@ function type_check_store token:Token type_stack:Node :
   type_stack TypeStack.copy
   type_stack LinkedList.pop cast(TypeNode)
   type_stack LinkedList.pop cast(TypeNode)
-  take t2 t1 temp_stack in
-
-  // Generate error message beforehand
   token Token.value str.copy str.upper
-  " intrinsic requires two values on the stack, PTR and value" str.cat
-  take required_values_str in
+  take intrinsic t2 t1 temp_stack in
 
   // Not enough values in the stack
   if t2 cast(int) -1 == do
     temp_stack token
-    required_values_str
+    f"{intrinsic} intrinsic requires two values on the stack, 'ptr' and the value to be stored"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
+  endif
+
+  // Verify argument type
+  if t1 TypeNode.type "ptr" matching_token_types not do
+    temp_stack token
+    f"The first argument of {intrinsic} intrinsic should be 'ptr' but got '{t1 TypeNode.type}'"
+    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Clean memory from the temporary stack
