@@ -1409,7 +1409,13 @@ function type_check_syscall token:Token type_stack:Node :
     if parameter_count 0 > do "s"       str.cat endif
     " in the stack"                     str.cat
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  // The first parameter should be the number of the syscall
+  endif
+
+  // The first parameter is the number of the syscall
+  if type TypeNode.type "int" matching_token_types not do
+    temp_stack token
+    f"The first argument of {token_value} should be of type 'int', meaning the number of the syscall"
+    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Pop the syscall parameters
