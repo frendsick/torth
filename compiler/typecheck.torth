@@ -1504,9 +1504,19 @@ function type_check_bitshift token:Token type_stack:Node :
   // Not enough values in the stack
   if t2 cast(int) -1 == do
     temp_stack token
-    token_value " intrinsic requires two values in the stack" str.cat
+    f"{token_value} intrinsic requires two values in the stack"
     "POP_FROM_EMPTY_STACK" CompilerErrorWithStack
-  // Wrong token type
+  endif
+
+  // Validate argument types
+  if
+    t1 TypeNode.type "int" matching_token_types
+    t2 TypeNode.type "int" matching_token_types
+    && not
+  do
+    temp_stack token
+    f"{token_value} intrinsic requires two integers"
+    "VALUE_ERROR" CompilerErrorWithStack
   endif
 
   // Push the result to the stack
