@@ -35,6 +35,27 @@ class JsonValue
             self JsonValue.value itoa return
         elif type "string" streq do
             self JsonValue.value cast(str) return
+        elif type "array" streq do
+            self JsonValue.value cast(List)
+            "[" str.copy
+            0
+            take
+                index
+                repr
+                array_items
+            in
+
+            while index array_items List.len < do
+                index array_items List.nth ptr.load cast(JsonValue) JsonValue.repr
+                repr swap str.cat repr =
+                index 1 + index =
+
+                if index array_items List.len < do
+                    ',' repr str.append repr =
+                endif
+            done
+
+            ']' repr str.append return
         endif
 
         if type JsonValue.is_valid_type do
@@ -102,6 +123,33 @@ function parse_json_string parser:Parser -> str :
     f"{double_quote}{string}{double_quote}"
 end
 
+function parse_json_array parser:Parser -> List[JsonValue] :
+    if '[' parser Parser.parse_character str.len 0 == do
+        NULL cast(List[JsonValue]) return
+    endif
+
+    List.init cast(List[JsonValue])
+    take json_array in
+    parser Parser.parse_whitespace drop
+    while ']' parser Parser.parse_character str.len 0 == do
+        // Parse array item
+        parser json_parser take array_item in
+        if array_item cast(int) NULL == do
+            NULL cast(List[JsonValue]) return
+        endif
+
+        // Append the array item to list
+        array_item json_array cast(List) List.append
+
+        // Comma separates array items
+        parser Parser.parse_whitespace drop
+        ',' parser Parser.parse_character drop
+        parser Parser.parse_whitespace drop
+    done
+
+    json_array
+end
+
 function string_to_bool string:str -> bool :
     if string "true" streq do
         True return
@@ -114,16 +162,10 @@ function string_to_bool string:str -> bool :
     False // unreachable
 end
 
-// Returns NULL if the input is not valid JSON
-function parse_json input:str -> JsonValue :
-    input Parser.init
-    take parser in
-
+function json_parser parser:Parser -> JsonValue :
     // null
     "null" parser Parser.parse_string
     take parsed_null in
-
-    parsed_null puts
     if parsed_null str.len 0 > do
         "null" "null" JsonValue.init return
     endif
@@ -149,5 +191,17 @@ function parse_json input:str -> JsonValue :
         "string" parsed_string JsonValue.init return
     endif
 
+    // array
+    parser parse_json_array
+    take json_array in
+    if json_array cast(int) NULL != do
+        "array" json_array JsonValue.init return
+    endif
+
     NULL cast(JsonValue)
+end
+
+// Returns NULL if the input is not valid JSON
+function parse_json input:str -> JsonValue :
+    input Parser.init json_parser
 end
