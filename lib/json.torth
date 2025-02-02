@@ -1,0 +1,70 @@
+include "std"
+include "typing"
+
+class JsonValue
+    value:any
+    type:str
+
+    method init value:any type:str -> JsonValue :
+        JsonValue.size malloc cast(JsonValue)
+        take json_value in
+
+        // Validate arguments
+        if type JsonValue.is_valid_type not do
+            NULL cast(JsonValue) return
+        endif
+
+        value       json_value JsonValue->value
+        type        json_value JsonValue->type
+        json_value
+    end
+
+    method repr self:JsonValue -> str :
+        self JsonValue.type take type in
+
+        if type "boolean" streq do
+            if self JsonValue.value do
+                "true" return
+            endif
+            "false" return
+        endif
+
+        if type JsonValue.is_valid_type do
+            f"JsonValue.repr is not yet implemented for type '{type}'\n" eputs
+            1 exit
+        endif
+
+        f"Unknown JsonValue.type '{type}'" eputs
+        1 exit
+        "unreachable"
+    end
+
+    method is_valid_type type:str -> bool :
+        type "null"     streq
+        type "boolean"  streq ||
+        type "number"   streq ||
+        type "string"   streq ||
+        type "array"    streq ||
+        type "object"   streq ||
+    end
+endclass
+
+function parse_json_boolean input:str -> JsonValue :
+    if input "true" streq do
+        "boolean" True JsonValue.init return
+    elif input "false" streq do
+        "boolean" False JsonValue.init return
+    endif
+
+    NULL cast(JsonValue)
+end
+
+// Returns NULL if the input is not valid JSON
+function parse_json input:str -> JsonValue :
+    input parse_json_boolean take json_boolean in
+    if json_boolean cast(int) NULL != do
+        json_boolean return
+    endif
+
+    NULL cast(JsonValue)
+end
