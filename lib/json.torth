@@ -31,6 +31,8 @@ class JsonValue
             "false" return
         elif type "number" streq do
             self JsonValue.value itoa return
+        elif type "string" streq do
+            self JsonValue.value cast(str) return
         endif
 
         if type JsonValue.is_valid_type do
@@ -80,6 +82,19 @@ function parse_json_number input:str -> JsonValue :
     NULL cast(JsonValue)
 end
 
+function parse_json_string input:str -> JsonValue :
+    '"' char.to_string take double_quote in
+    if
+        input double_quote str.startswith
+        input double_quote str.endswith
+        &&
+    do
+        "string" input JsonValue.init return
+    endif
+
+    NULL cast(JsonValue)
+end
+
 // Returns NULL if the input is not valid JSON
 function parse_json input:str -> JsonValue :
     // null
@@ -98,6 +113,12 @@ function parse_json input:str -> JsonValue :
     input parse_json_number take json_number in
     if json_number cast(int) NULL != do
         json_number return
+    endif
+
+    // string
+    input parse_json_string take json_string in
+    if json_string cast(int) NULL != do
+        json_string return
     endif
 
     NULL cast(JsonValue)
