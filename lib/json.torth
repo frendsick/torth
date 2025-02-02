@@ -22,7 +22,9 @@ class JsonValue
     method repr self:JsonValue -> str :
         self JsonValue.type take type in
 
-        if type "boolean" streq do
+        if type "null" streq do
+            "null" return
+        elif type "boolean" streq do
             if self JsonValue.value do
                 "true" return
             endif
@@ -49,6 +51,14 @@ class JsonValue
     end
 endclass
 
+function parse_json_null input:str -> JsonValue :
+    if input "null" streq do
+        "null" NULL JsonValue.init return
+    endif
+
+    NULL cast(JsonValue)
+end
+
 function parse_json_boolean input:str -> JsonValue :
     if input "true" streq do
         "boolean" True JsonValue.init return
@@ -61,6 +71,13 @@ end
 
 // Returns NULL if the input is not valid JSON
 function parse_json input:str -> JsonValue :
+    // null
+    input parse_json_null take json_null in
+    if json_null cast(int) NULL != do
+        json_null return
+    endif
+
+    // boolean
     input parse_json_boolean take json_boolean in
     if json_boolean cast(int) NULL != do
         json_boolean return
