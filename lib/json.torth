@@ -167,20 +167,14 @@ end
 function parse_json_string parser:Parser -> str :
     // Opening double quote
     '"' parser Parser.parse_character
-    take double_quote in
-    if double_quote str.len 0 == do
+    take opening_quote in
+    if opening_quote str.len 0 == do
         "" return
     endif
 
     parse_double_quote& parser Parser.parse_until
-    take string in
-    if string str.len 0 == do
-        "" return
-    endif
-
-    '"' parser Parser.parse_character drop
-    // Enclose string in quotes
-    f"{double_quote}{string}{double_quote}"
+    take rest in
+    f"{opening_quote}{rest}"
 end
 
 function parse_json_array parser:Parser -> List[JsonValue] :
@@ -231,7 +225,6 @@ function parse_json_object parser:Parser -> JsonObject :
         if key str.len 0 == do
             NULL cast(JsonObject) return
         endif
-        parse_double_quote& parser Parser.parse_predicate drop
 
         // Colon separates key and value
         parser Parser.parse_whitespace drop
