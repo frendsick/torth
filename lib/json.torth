@@ -57,6 +57,8 @@ class JsonValue
             else
                 "false" return
             endif
+        elif type "float" streq do
+            self JsonValue.value cast(str) return
         elif type "number" streq do
             self JsonValue.value itoa return
         elif type "string" streq do
@@ -118,11 +120,6 @@ class JsonValue
             '}' repr str.append return
         endif
 
-        if type JsonValue.is_valid_type do
-            f"JsonValue.repr is not yet implemented for type '{type}'\n" eputs
-            1 exit
-        endif
-
         f"Unknown JsonValue.type '{type}'" eputs
         1 exit
         "unreachable"
@@ -131,6 +128,7 @@ class JsonValue
     method is_valid_type type:str -> bool :
         type "null"     streq
         type "boolean"  streq ||
+        type "float"    streq ||
         type "number"   streq ||
         type "string"   streq ||
         type "array"    streq ||
@@ -158,6 +156,33 @@ function parse_number parser:Parser -> str :
     endif
 
     current_char char.to_string
+end
+
+function parse_json_float parser:Parser -> str :
+    parser Parser.cursor
+    take original_cursor in
+
+    parse_number& parser Parser.parse_while
+    take number in
+    if number str.len 0 == do
+        "" return
+    endif
+
+    '.' parser Parser.parse_character
+    take point in
+    if point str.len 0 == do
+        original_cursor parser Parser->cursor
+        "" return
+    endif
+
+    parse_number& parser Parser.parse_while
+    take decimal in
+    if decimal str.len 0 == do
+        original_cursor parser Parser->cursor
+        "" return
+    endif
+
+    f"{number}{point}{decimal}"
 end
 
 function parse_double_quote parser:Parser -> str :
@@ -276,7 +301,14 @@ function json_parser parser:Parser -> JsonValue :
         "boolean" parsed_boolean string_to_bool JsonValue.init return
     endif
 
-    // number
+    // float
+    parser parse_json_float
+    take parsed_float in
+    if parsed_float str.len 0 > do
+        "float" parsed_float JsonValue.init return
+    endif
+
+    // number (integer)
     parse_number& parser Parser.parse_while
     take parsed_number in
     if parsed_number str.len 0 > do
