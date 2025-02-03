@@ -190,16 +190,29 @@ function parse_double_quote parser:Parser -> str :
 end
 
 function parse_json_string parser:Parser -> str :
+    parser Parser.cursor
+    take original_cursor in
+
     // Opening double quote
     '"' parser Parser.parse_character
-    take opening_quote in
-    if opening_quote str.len 0 == do
+    take double_quote in
+    if double_quote str.len 0 == do
         "" return
+    endif
+
+    '"' parser Parser.parse_character
+    double_quote =
+    if double_quote str.len 0 > do
+        f"{double_quote}{double_quote}" return
     endif
 
     parse_double_quote& parser Parser.parse_until
     take rest in
-    f"{opening_quote}{rest}"
+    if rest str.len 0 == do
+        original_cursor parser Parser->cursor
+        "" return
+    endif
+    f"{double_quote}{rest}{double_quote}"
 end
 
 function parse_json_array parser:Parser -> List[JsonValue] :
