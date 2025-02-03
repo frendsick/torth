@@ -39,11 +39,11 @@ inline function &&       bool bool -> bool : and cast(bool)    end
 // Get user input from stdin
 function input -> str :
   // Allocate memory for the user input
-  MEMORY_CAPACITY malloc
-  MEMORY_CAPACITY over cast(str) stdin read // Returns the amount of bytes read
+  MEMORY_CAPACITY malloc cast(str) take buffer in
 
-  // Remove the newline character from the end
-  over swap 1 - ptr+ NULL cast(char) swap char.store cast(str)
+  // Read and return the user input
+  MEMORY_CAPACITY buffer stdin read drop
+  buffer
 end
 
 // Write a string to a file descriptor
