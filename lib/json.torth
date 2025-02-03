@@ -1,0 +1,345 @@
+include "std"
+include "parser"
+include "typing"
+
+class Pair
+    key:str
+    value:any
+
+    method init key:str value:any -> Pair :
+        Pair.size malloc cast(Pair)
+        take pair in
+
+        key     pair Pair->key
+        value   pair Pair->value
+        pair
+    end
+endclass
+
+class JsonObject
+    pairs:List[Pair]
+
+    method init pairs:List[Pair] -> JsonObject :
+        JsonObject.size malloc cast(JsonObject)
+        take json_object in
+
+        pairs json_object JsonObject->pairs
+        json_object
+    end
+endclass
+
+class JsonValue
+    value:any
+    type:str
+
+    method init value:any type:str -> JsonValue :
+        JsonValue.size malloc cast(JsonValue)
+        take json_value in
+
+        // Validate arguments
+        if type JsonValue.is_valid_type not do
+            NULL cast(JsonValue) return
+        endif
+
+        value       json_value JsonValue->value
+        type        json_value JsonValue->type
+        json_value
+    end
+
+    method repr self:JsonValue -> str :
+        self JsonValue.type take type in
+
+        if type "null" streq do
+            "null" return
+        elif type "boolean" streq do
+            if self JsonValue.value cast(bool) do
+                "true" return
+            else
+                "false" return
+            endif
+        elif type "float" streq do
+            self JsonValue.value cast(str) return
+        elif type "number" streq do
+            self JsonValue.value itoa return
+        elif type "string" streq do
+            self JsonValue.value cast(str) return
+        elif type "array" streq do
+            self JsonValue.value cast(List[JsonValue])
+            "[" str.copy
+            0
+            take
+                index
+                repr
+                array_items
+            in
+
+            while index array_items cast(List) List.len < do
+                index array_items cast(List) List.nth
+                ptr.load cast(JsonValue) JsonValue.repr
+                repr swap str.cat repr =
+                index 1 + index =
+
+                if index array_items cast(List) List.len < do
+                    ',' repr str.append repr =
+                endif
+            done
+
+            ']' repr str.append return
+        elif type "object" streq do
+            self JsonValue.value ptr.load cast(List[Pair])
+            "{" str.copy
+            0
+            take
+                index
+                repr
+                key_value_pairs
+            in
+
+            while index key_value_pairs cast(List) List.len < do
+                index key_value_pairs cast(List) List.nth ptr.load cast(Pair)
+                take pair in
+
+                // Key
+                repr '"' char.to_string str.cat
+                pair Pair.key str.cat
+                '"' swap str.append
+
+                // Colon separates key and value
+                ':' swap str.append repr =
+
+                // Value
+                pair Pair.value cast(JsonValue) JsonValue.repr
+                repr swap str.cat repr =
+                index 1 + index =
+
+                if index key_value_pairs cast(List) List.len < do
+                    ',' repr str.append repr =
+                endif
+            done
+
+            '}' repr str.append return
+        endif
+
+        f"Unknown JsonValue.type '{type}'" eputs
+        1 exit
+        "unreachable"
+    end
+
+    method is_valid_type type:str -> bool :
+        type "null"     streq
+        type "boolean"  streq ||
+        type "float"    streq ||
+        type "number"   streq ||
+        type "string"   streq ||
+        type "array"    streq ||
+        type "object"   streq ||
+    end
+endclass
+
+function parse_json_boolean parser:Parser -> str :
+    parser Parser.get_unparsed take unparsed in
+
+    if "true" parser Parser.parse_string str.len 0 > do
+        "true" return
+    endif
+
+    "false" parser Parser.parse_string
+end
+
+// Only integers are supported
+function parse_number parser:Parser -> str :
+    parser Parser.get_unparsed cast(ptr) char.load
+    take current_char in
+
+    if current_char char.is_numeric not do
+        "" return
+    endif
+
+    current_char char.to_string
+end
+
+function parse_json_float parser:Parser -> str :
+    parser Parser.cursor
+    take original_cursor in
+
+    parse_number& parser Parser.parse_while
+    take number in
+    if number str.len 0 == do
+        "" return
+    endif
+
+    '.' parser Parser.parse_character
+    take point in
+    if point str.len 0 == do
+        original_cursor parser Parser->cursor
+        "" return
+    endif
+
+    parse_number& parser Parser.parse_while
+    take decimal in
+    if decimal str.len 0 == do
+        original_cursor parser Parser->cursor
+        "" return
+    endif
+
+    f"{number}{point}{decimal}"
+end
+
+function parse_double_quote parser:Parser -> str :
+    '"' parser Parser.parse_character
+end
+
+function parse_json_string parser:Parser -> str :
+    // Opening double quote
+    '"' parser Parser.parse_character
+    take opening_quote in
+    if opening_quote str.len 0 == do
+        "" return
+    endif
+
+    parse_double_quote& parser Parser.parse_until
+    take rest in
+    f"{opening_quote}{rest}"
+end
+
+function parse_json_array parser:Parser -> List[JsonValue] :
+    if '[' parser Parser.parse_character str.len 0 == do
+        NULL cast(List[JsonValue]) return
+    endif
+
+    List.init cast(List[JsonValue])
+    take json_array in
+    parser Parser.parse_whitespace drop
+    while ']' parser Parser.parse_character str.len 0 == do
+        // Parse array item
+        parser json_parser take array_item in
+        if array_item cast(int) NULL == do
+            NULL cast(List[JsonValue]) return
+        endif
+
+        // Append the array item to list
+        array_item json_array cast(List) List.append
+
+        // Comma separates array items
+        parser Parser.parse_whitespace drop
+        ',' parser Parser.parse_character drop
+        parser Parser.parse_whitespace drop
+    done
+
+    json_array
+end
+
+function parse_json_object parser:Parser -> JsonObject :
+    if '{' parser Parser.parse_character str.len 0 == do
+        NULL cast(JsonObject) return
+    endif
+
+    List.init cast(List[Pair])
+    take pairs in
+    parser Parser.parse_whitespace drop
+    while '}' parser Parser.parse_character str.len 0 == do
+        // Parse key
+        parse_double_quote& parser Parser.parse_predicate
+        take double_quote in
+        if double_quote str.len 0 == do
+            NULL cast(JsonObject) return
+        endif
+
+        parse_double_quote& parser Parser.parse_until
+        take key in
+        if key str.len 0 == do
+            NULL cast(JsonObject) return
+        endif
+
+        // Colon separates key and value
+        parser Parser.parse_whitespace drop
+        ':' parser Parser.parse_character drop
+        parser Parser.parse_whitespace drop
+
+        // Parse value
+        parser json_parser take value in
+        if value cast(int) NULL == do
+            NULL cast(JsonObject) return
+        endif
+
+        // Append the object to list of objects
+        value key Pair.init pairs cast(List) List.append
+
+        // Comma separates keys of objects
+        parser Parser.parse_whitespace drop
+        ',' parser Parser.parse_character drop
+        parser Parser.parse_whitespace drop
+    done
+
+    pairs JsonObject.init
+end
+
+function string_to_bool string:str -> bool :
+    if string "true" streq do
+        True return
+    elif string "false" streq do
+        False return
+    endif
+
+    f"Invalid JSON boolean: {string}" eputs
+    1 exit
+    False // unreachable
+end
+
+function json_parser parser:Parser -> JsonValue :
+    // null
+    "null" parser Parser.parse_string
+    take parsed_null in
+    if parsed_null str.len 0 > do
+        "null" "null" JsonValue.init return
+    endif
+
+    // boolean
+    parse_json_boolean& parser Parser.parse_predicate
+    take parsed_boolean in
+    if parsed_boolean str.len 0 > do
+        "boolean" parsed_boolean string_to_bool JsonValue.init return
+    endif
+
+    // float
+    parser parse_json_float
+    take parsed_float in
+    if parsed_float str.len 0 > do
+        "float" parsed_float JsonValue.init return
+    endif
+
+    // number (integer)
+    parse_number& parser Parser.parse_while
+    take parsed_number in
+    if parsed_number str.len 0 > do
+        "number" parsed_number atoi JsonValue.init return
+    endif
+
+    // string
+    parse_json_string& parser Parser.parse_predicate
+    take parsed_string in
+    if parsed_string str.len 0 > do
+        "string" parsed_string JsonValue.init return
+    endif
+
+    // array
+    parser parse_json_array
+    take json_array in
+    if json_array cast(int) NULL != do
+        "array" json_array JsonValue.init return
+    endif
+
+    // object
+    parser parse_json_object
+    take json_object in
+    if json_object cast(int) NULL != do
+        "object" json_object JsonValue.init return
+    endif
+
+    NULL cast(JsonValue)
+end
+
+// Returns NULL if the input is not valid JSON
+function parse_json input:str -> JsonValue :
+    input Parser.init json_parser
+end
