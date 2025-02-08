@@ -684,6 +684,30 @@ class HashMap
         hash_map
     end
 
+    method set self:HashMap key:str value:any :
+        // Hash the key
+        key HashMap.hash self HashMap.capacity %
+        peek hashed_key in
+
+        // Find the linked list index for the hashed key
+        self HashMap.nodes cast(List) List.nth Node.load
+        dup cast(ptr) Node.load
+        value key Pair.init
+        take pair node linked_list in
+
+        // Overwrite existing key
+        while node cast(int) NULL != do
+            if node Node.data cast(Pair) Pair.key key streq do
+                pair cast(ptr) node Node->data
+                return
+            endif
+            node Node.next node =
+        done
+
+        // Push the value to the linked list
+        pair cast(ptr) linked_list LinkedList.push
+    end
+
     // Implementation of djb2 algorithm
     // https://theartincode.stanis.me/008-djb2/
     method hash input:str -> int :
