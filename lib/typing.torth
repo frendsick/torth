@@ -708,6 +708,30 @@ class HashMap
         pair cast(ptr) linked_list LinkedList.push
     end
 
+    // Returns NULL if the key does not exist
+    method get self:HashMap key:str -> any :
+        // Hash the key
+        key HashMap.hash self HashMap.capacity %
+        peek hashed_key in
+
+        // Find the linked list index for the hashed key
+        self HashMap.nodes cast(List) List.nth ptr.load Node.load
+        take node in
+
+        // Find the value from the linked list
+        while node cast(int) NULL != do
+            if
+                node Node.data cast(Pair) peek pair in
+                Pair.key key streq
+            do
+                pair Pair.value return
+            endif
+            node Node.next node =
+        done
+
+        NULL // Key was not found
+    end
+
     // Implementation of djb2 algorithm
     // https://theartincode.stanis.me/008-djb2/
     method hash input:str -> int :
