@@ -2,20 +2,6 @@ include "std"
 include "parser"
 include "typing"
 
-class Pair
-    key:str
-    value:any
-
-    method init key:str value:any -> Pair :
-        Pair.size malloc cast(Pair)
-        take pair in
-
-        key     pair Pair->key
-        value   pair Pair->value
-        pair
-    end
-endclass
-
 class JsonObject
     pairs:List[Pair]
 
