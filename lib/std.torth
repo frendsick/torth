@@ -35,6 +35,8 @@ inline function not      bool      -> bool : True !=           end
 inline function |        int int   -> int  : or                end
 inline function ||       bool bool -> bool : or cast(bool)     end
 inline function &&       bool bool -> bool : and cast(bool)    end
+inline function <<       int int   -> int  : shl               end
+inline function >>       int int   -> int  : shr               end
 
 // Get user input from stdin
 function input -> str :
