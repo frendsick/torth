@@ -683,4 +683,23 @@ class HashMap
         pairs hash_map HashMap->pairs
         hash_map
     end
+
+    // Implementation of djb2 algorithm
+    // https://theartincode.stanis.me/008-djb2/
+    method hash input:str -> int :
+        5381 take hash in
+
+        0 // character index for input
+        while
+            dup input str.char_at cast(int)
+            peek c in
+            NULL !=
+        do
+            // hash = ((hash << 5) + hash) + c
+            hash 5 << hash + c + hash =
+            1 +
+        done drop
+
+        hash
+    end
 endclass // HashMap
