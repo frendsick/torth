@@ -743,7 +743,6 @@ class HashMap
         take node linked_list in
 
         // Delete the node if it exists
-        0 take index in
         while node cast(int) NULL != do
             if
                 node Node.data cast(Pair) peek pair in
@@ -766,8 +765,28 @@ class HashMap
                 return
             endif
             node Node.next node =
+        done
+    end
+
+    method keys self:HashMap -> List :
+        List.init
+        0
+        take index keys in
+
+
+        while index self HashMap.capacity < do
+            index self HashMap.nodes cast(List) List.nth ptr.load Node.load
+            take node in
+
+            while node cast(int) NULL != do
+                node Node.data cast(Pair) Pair.key
+                keys List.append
+                node Node.next node =
+            done
             index 1 + index =
         done
+
+        keys
     end
 
     // Implementation of djb2 algorithm
