@@ -662,7 +662,7 @@ endclass
 const DEFAULT_HASHMAP_CAPACITY 256 end
 class HashMap
     capacity:int
-    pairs:List[LinkedList]
+    nodes:List[LinkedList]
 
     method init -> HashMap :
         HashMap.size malloc cast(HashMap)
@@ -670,17 +670,17 @@ class HashMap
         0
         take
             index
-            pairs
+            nodes
             hash_map
         in
 
         while index DEFAULT_HASHMAP_CAPACITY < do
-            LinkedList.init pairs cast(List) List.append
+            LinkedList.init nodes cast(List) List.append
             index 1 + index =
         done
 
         DEFAULT_HASHMAP_CAPACITY hash_map HashMap->capacity
-        pairs hash_map HashMap->pairs
+        nodes hash_map HashMap->nodes
         hash_map
     end
 
