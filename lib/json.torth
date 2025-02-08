@@ -2,18 +2,6 @@ include "std"
 include "parser"
 include "typing"
 
-class JsonObject
-    pairs:List[Pair]
-
-    method init pairs:List[Pair] -> JsonObject :
-        JsonObject.size malloc cast(JsonObject)
-        take json_object in
-
-        pairs json_object JsonObject->pairs
-        json_object
-    end
-endclass
-
 class JsonValue
     value:any
     type:str
@@ -72,33 +60,34 @@ class JsonValue
 
             ']' repr str.append return
         elif type "object" streq do
-            self JsonValue.value ptr.load cast(List[Pair])
+            self JsonValue.value cast(HashMap)
+            dup HashMap.keys
             "{" str.copy
             0
             take
                 index
                 repr
-                key_value_pairs
+                keys
+                object
             in
 
-            while index key_value_pairs cast(List) List.len < do
-                index key_value_pairs cast(List) List.nth ptr.load cast(Pair)
-                take pair in
-
+            while index keys List.len < do
                 // Key
                 repr '"' char.to_string str.cat
-                pair Pair.key str.cat
+                index keys List.nth str.load
+                peek key in str.cat
                 '"' swap str.append
 
                 // Colon separates key and value
                 ':' swap str.append repr =
 
+
                 // Value
-                pair Pair.value cast(JsonValue) JsonValue.repr
+                key object HashMap.get cast(JsonValue) JsonValue.repr
                 repr swap str.cat repr =
                 index 1 + index =
 
-                if index key_value_pairs cast(List) List.len < do
+                if index keys List.len < do
                     ',' repr str.append repr =
                 endif
             done
@@ -228,26 +217,26 @@ function parse_json_array parser:Parser -> List[JsonValue] :
     json_array
 end
 
-function parse_json_object parser:Parser -> JsonObject :
+function parse_json_object parser:Parser -> HashMap :
     if '{' parser Parser.parse_character str.len 0 == do
-        NULL cast(JsonObject) return
+        NULL cast(HashMap) return
     endif
 
-    List.init cast(List[Pair])
-    take pairs in
+    HashMap.init
+    take object in
     parser Parser.parse_whitespace drop
     while '}' parser Parser.parse_character str.len 0 == do
         // Parse key
         parse_double_quote& parser Parser.parse_predicate
         take double_quote in
         if double_quote str.len 0 == do
-            NULL cast(JsonObject) return
+            NULL cast(HashMap) return
         endif
 
         parse_double_quote& parser Parser.parse_until
         take key in
         if key str.len 0 == do
-            NULL cast(JsonObject) return
+            NULL cast(HashMap) return
         endif
 
         // Colon separates key and value
@@ -258,11 +247,11 @@ function parse_json_object parser:Parser -> JsonObject :
         // Parse value
         parser json_parser take value in
         if value cast(int) NULL == do
-            NULL cast(JsonObject) return
+            NULL cast(HashMap) return
         endif
 
-        // Append the object to list of objects
-        value key Pair.init pairs cast(List) List.append
+        // Add the key to the hash map
+        value key object HashMap.set
 
         // Comma separates keys of objects
         parser Parser.parse_whitespace drop
@@ -270,7 +259,7 @@ function parse_json_object parser:Parser -> JsonObject :
         parser Parser.parse_whitespace drop
     done
 
-    pairs JsonObject.init
+    object
 end
 
 function string_to_bool string:str -> bool :
