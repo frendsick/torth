@@ -732,6 +732,44 @@ class HashMap
         NULL // Key was not found
     end
 
+    method delete self:HashMap key:str :
+        // Hash the key
+        key HashMap.hash self HashMap.capacity %
+        peek hashed_key in
+
+        // Find the linked list index for the hashed key
+        self HashMap.nodes cast(List) List.nth Node.load
+        dup cast(ptr) Node.load
+        take node linked_list in
+
+        // Delete the node if it exists
+        0 take index in
+        while node cast(int) NULL != do
+            if
+                node Node.data cast(Pair) peek pair in
+                Pair.key key streq
+            do
+                node Node.next
+                node Node.prev
+                take prev next in
+
+                // Unlink the current node
+                if next cast(int) NULL != do
+                    prev next Node->prev
+                endif
+                if prev cast(int) NULL != do
+                    next prev Node->next
+                endif
+
+                // Deallocate the deleted node
+                Pair.size node Node.delete
+                return
+            endif
+            node Node.next node =
+            index 1 + index =
+        done
+    end
+
     // Implementation of djb2 algorithm
     // https://theartincode.stanis.me/008-djb2/
     method hash input:str -> int :
