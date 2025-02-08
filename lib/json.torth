@@ -36,7 +36,9 @@ class JsonValue
         elif type "number" streq do
             self JsonValue.value itoa return
         elif type "string" streq do
-            self JsonValue.value cast(str) return
+            '"' char.to_string
+            self JsonValue.value cast(str) str.cat
+            '"' swap str.append return
         elif type "array" streq do
             self JsonValue.value cast(List[JsonValue])
             "[" str.copy
