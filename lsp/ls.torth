@@ -1,0 +1,143 @@
+include "std"
+include "json"
+include "typing"
+
+const JSONRPC_VERSION "2.0" end
+const SERVER_NAME "torth_ls" end
+const SERVER_VERSION "0.0.1" end
+
+// Errors
+const ERROR_METHOD_NOT_FOUND -32603 end
+
+function handle_request request:str :
+    // Parse Content-Length
+    request "Content-Length: " str.len str+
+    parse_number_from_beginning
+    take content_length in
+
+    // Parse request body
+    request "\r\n\r\n" request str.find str+ 4 str+
+    str.copy peek request_body in
+
+    // Parse the body as JSON
+    parse_json take body_json in
+
+    // Expect object
+    if body_json JsonValue.type "object" streq not do
+        "Not object" eputs
+        1 exit
+    endif
+
+    // Parse content part
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#contentPart
+    body_json JsonValue.value cast(HashMap)
+    take body_object in
+    "jsonrpc" body_object HashMap.get str.load
+    // Remove backslashes (escape character) from method
+    "" "\" "method" body_object HashMap.get str.load str.replace
+    take _method jsonrpc in
+
+    // Assert `jsonrpc` version
+    if jsonrpc JSONRPC_VERSION streq not do
+        f"Expected jsonrpc version {JSONRPC_VERSION} but got {jsonrpc}" eputs
+        1 exit
+    endif
+
+    // Ignore notification requests (`id` is missing)
+    if "id" body_object HashMap.get NULL == do
+        return
+    endif
+
+    // Handle different methods
+    if _method "initialize" streq do
+        body_object handle_initialize_request
+    else
+        f"Method '{_method}' is not implemented" dup eputs
+        ERROR_METHOD_NOT_FOUND generate_error_request
+        JsonValue.repr puts
+    endif
+end
+
+function generate_error_request code:int message:str -> JsonValue :
+    HashMap.init take response in
+
+    "number" code JsonValue.init "code" response HashMap.set
+    "string" message JsonValue.init "message" response HashMap.set
+
+    "object" response JsonValue.init
+end
+
+function get_server_info -> JsonValue :
+    HashMap.init take server_info in
+
+    "string" SERVER_NAME JsonValue.init "name" server_info HashMap.set
+    "string" SERVER_VERSION JsonValue.init "version" server_info HashMap.set
+
+    "object" server_info JsonValue.init
+end
+
+function get_server_capabilities -> JsonValue :
+    HashMap.init take capabilities in
+
+    "object" capabilities JsonValue.init
+end
+
+function generate_response response_body:str -> str :
+    f"Content-Length: {response_body str.len itoa}\r\n\r\n{response_body}"
+end
+
+function initialize_response_message body:HashMap -> JsonValue :
+    "id" body HashMap.get int.load
+    HashMap.init
+    take response_message id in
+
+    "string" JSONRPC_VERSION JsonValue.init "jsonrpc" response_message HashMap.set
+    "number" id JsonValue.init "id" response_message HashMap.set
+
+    "object" response_message JsonValue.init
+end
+
+function handle_initialize_request body:HashMap :
+    body initialize_response_message take response_message in
+
+    // Parse `InitializeResult`
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#initializeResult
+    HashMap.init take initialize_result in
+    get_server_capabilities "capabilities" initialize_result HashMap.set
+    get_server_info "serverInfo" initialize_result HashMap.set
+    "object" initialize_result JsonValue.init "result" response_message JsonValue.value HashMap.set
+
+    response_message JsonValue.repr generate_response puts
+end
+
+function parse_number_from_beginning input:str -> int :
+    input str.len
+    "" str.copy
+    0
+    take index parsed_number input.len in
+
+    while index input.len < do
+        if
+            index input str.char_at
+            peek current_character in
+            char.is_numeric not
+        do
+            break
+        endif
+        current_character parsed_number str.append parsed_number =
+        index 1 + index =
+    done
+
+    // The input string did not begin with number
+    if parsed_number str.len 0 == do
+        -1 return
+    endif
+
+    parsed_number atoi
+end
+
+function main :
+    while True do
+        input handle_request
+    done
+end
