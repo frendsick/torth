@@ -216,8 +216,20 @@ function generate_hover_markdown body:HashMap -> str :
     endif
 
     // Intrinsic
-    if token get_intrinsic_signature peek signature in "" streq not do
-        f"(intrinsic) {token str.upper}: {signature}" return
+    if token get_intrinsic_signature peek intrinsic_signature in "" streq not do
+        f"(intrinsic) {token str.upper}: {intrinsic_signature}" return
+    endif
+
+    // Parse functions and classes
+    tokens get_constants peek constants in
+    tokens get_functions take functions in
+    constants functions tokens parse_classes
+
+    // Function
+    if functions token function_exists do
+        functions token get_function_by_name peek func in
+        Func.signature take function_signature in
+        f"(function) {token}: {function_signature Signature.repr}" return
     endif
 
     f"Hover is not implemented for '{token}' token"
