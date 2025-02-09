@@ -30,19 +30,19 @@ function get_intrinsic_signature token:str -> str :
     if token_upper "AND" streq do
         "any any -> int" return
     elif token_upper "ARGC" streq do
-        "-> int" return
+        "None -> int" return
     elif token_upper "ARGV" streq do
-        "-> ptr" return
+        "None -> ptr" return
     elif token_upper "ARGV" streq do
-        "-> ptr" return
+        "None -> ptr" return
     elif token_upper "DIV" streq do
         "int int -> int" return
     elif token_upper "DROP" streq do
-        "any" return
+        "any -> None" return
     elif token_upper "DUP" streq do
         "T -> T T" return
     elif token_upper "ENVP" streq do
-        "-> ptr" return
+        "None -> ptr" return
     elif token_upper "EXEC" streq do
         "fn[T2 T1 -> R1 R2] T2 T1 -> R1 R2" return
     elif token_upper "EQ" streq do
@@ -84,13 +84,13 @@ function get_intrinsic_signature token:str -> str :
     elif token_upper "SHR" streq do
         "int int -> int" return
     elif token_upper "STORE_BYTE" streq do
-        "ptr any" return
+        "ptr any -> None" return
     elif token_upper "STORE_WORD" streq do
-        "ptr any" return
+        "ptr any -> None" return
     elif token_upper "STORE_DWORD" streq do
-        "ptr any" return
+        "ptr any -> None" return
     elif token_upper "STORE_QWORD" streq do
-        "ptr any" return
+        "ptr any -> None" return
     elif token_upper "SWAP" streq do
         "T2 T1 -> T2 T1" return
     elif token_upper "SYSCALL0" streq do
