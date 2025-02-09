@@ -68,6 +68,8 @@ function handle_request request:str state:State :
     elif _method "shutdown" streq do
         true state State->is_shutdown_requested
         body_object generate_shutdown_response puts
+    elif _method "textDocument/hover" streq do
+        body_object generate_hover_response puts
     else
         f"Method '{_method}' is not implemented" dup eputs
         ERROR_METHOD_NOT_FOUND generate_error_request
@@ -98,6 +100,23 @@ function generate_shutdown_response body:HashMap -> str :
     response_message JsonValue.repr generate_response
 end
 
+function generate_hover_response body:HashMap -> str :
+    body initialize_response_message take response_message in
+
+    // Generate hover response
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#markupContent
+    HashMap.init take hover in
+    HashMap.init take markdown_content in
+    "string" "markdown" JsonValue.init "kind" markdown_content HashMap.set
+    // TODO: Parse relevant value based on the code base
+    "string" "Hover content" JsonValue.init "value" markdown_content HashMap.set
+    "object" markdown_content JsonValue.init "contents" hover HashMap.set
+
+    // Generate response
+    "object" hover JsonValue.init "result" response_message JsonValue.value HashMap.set
+    response_message JsonValue.repr generate_response
+end
+
 function generate_error_request code:int message:str -> JsonValue :
     HashMap.init take response in
 
@@ -118,6 +137,9 @@ end
 
 function get_server_capabilities -> JsonValue :
     HashMap.init take capabilities in
+
+    // List capabilities
+    "boolean" true JsonValue.init "hoverProvider" capabilities HashMap.set
 
     "object" capabilities JsonValue.init
 end
