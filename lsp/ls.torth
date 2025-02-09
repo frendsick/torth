@@ -1,6 +1,7 @@
 include "std"
 include "json"
 include "typing"
+include "compiler/lex"
 
 const JSONRPC_VERSION "2.0" end
 const SERVER_NAME "torth_ls" end
@@ -21,6 +22,95 @@ class State
         state
     end
 endclass
+
+function get_intrinsic_signature token:str -> str :
+    token str.copy str.upper
+    take token_upper in
+
+    if token_upper "AND" streq do
+        "any any -> int" return
+    elif token_upper "ARGC" streq do
+        "-> int" return
+    elif token_upper "ARGV" streq do
+        "-> ptr" return
+    elif token_upper "ARGV" streq do
+        "-> ptr" return
+    elif token_upper "DIV" streq do
+        "int int -> int" return
+    elif token_upper "DROP" streq do
+        "any" return
+    elif token_upper "DUP" streq do
+        "T -> T T" return
+    elif token_upper "ENVP" streq do
+        "-> ptr" return
+    elif token_upper "EXEC" streq do
+        "fn[T2 T1 -> R1 R2] T2 T1 -> R1 R2" return
+    elif token_upper "EQ" streq do
+        "any any -> bool" return
+    elif token_upper "GE" streq do
+        "any any -> bool" return
+    elif token_upper "GT" streq do
+        "any any -> bool" return
+    elif token_upper "LE" streq do
+        "any any -> bool" return
+    elif token_upper "LOAD_BYTE" streq do
+        "ptr -> any" return
+    elif token_upper "LOAD_WORD" streq do
+        "ptr -> any" return
+    elif token_upper "LOAD_DWORD" streq do
+        "ptr -> any" return
+    elif token_upper "LOAD_QWORD" streq do
+        "ptr -> any" return
+    elif token_upper "LT" streq do
+        "any any -> bool" return
+    elif token_upper "MINUS" streq do
+        "int int -> int" return
+    elif token_upper "MOD" streq do
+        "int int -> int" return
+    elif token_upper "MUL" streq do
+        "int int -> int" return
+    elif token_upper "NE" streq do
+        "any any -> bool" return
+    elif token_upper "OR" streq do
+        "any any -> int" return
+    elif token_upper "OVER" streq do
+        "T2 T1 -> T1 T2 T1" return
+    elif token_upper "PLUS" streq do
+        "int int -> int" return
+    elif token_upper "ROT" streq do
+        "T3 T2 T1 -> T2 T1 T3" return
+    elif token_upper "SHL" streq do
+        "int int -> int" return
+    elif token_upper "SHR" streq do
+        "int int -> int" return
+    elif token_upper "STORE_BYTE" streq do
+        "ptr any" return
+    elif token_upper "STORE_WORD" streq do
+        "ptr any" return
+    elif token_upper "STORE_DWORD" streq do
+        "ptr any" return
+    elif token_upper "STORE_QWORD" streq do
+        "ptr any" return
+    elif token_upper "SWAP" streq do
+        "T2 T1 -> T2 T1" return
+    elif token_upper "SYSCALL0" streq do
+        "int -> int" return
+    elif token_upper "SYSCALL1" streq do
+        "int any -> int" return
+    elif token_upper "SYSCALL2" streq do
+        "int any any -> int" return
+    elif token_upper "SYSCALL3" streq do
+        "int any any any -> int" return
+    elif token_upper "SYSCALL4" streq do
+        "int any any any any -> int" return
+    elif token_upper "SYSCALL5" streq do
+        "int any any any any any -> int" return
+    elif token_upper "SYSCALL6" streq do
+        "int any any any any any any -> int" return
+    endif
+
+    "" // Token is not an intrinsic
+end
 
 function handle_request request:str state:State :
     // Parse Content-Length
@@ -100,16 +190,90 @@ function generate_shutdown_response body:HashMap -> str :
     response_message JsonValue.repr generate_response
 end
 
+function generate_hover_markdown body:HashMap -> str :
+    // Parse relevant values from body
+    "params" body HashMap.get JsonValue.value cast(HashMap) take params in
+    "textDocument" params HashMap.get JsonValue.value cast(HashMap) take textDocument in
+    "uri" textDocument HashMap.get JsonValue.value cast(str) take uri in
+    "position" params HashMap.get JsonValue.value cast(HashMap) take position in
+    "line" position HashMap.get JsonValue.value cast(int) take line in
+    "character" position HashMap.get JsonValue.value cast(int) take character in
+
+    // Parse file name from uri
+    "" "\" uri str.replace_all // Remove escape characters '\'
+    "file://" swap str.removeprefix // Remove uri prefix
+    take file_path in
+
+    // Parse tokens
+    file_path get_included_files peek included_files in
+    get_tokens_from_files take tokens in
+
+    // Get the token under the cursor
+    character line file_path tokens get_token_under_cursor
+    take token in
+    if token "" streq do
+        "" return
+    endif
+
+    // Intrinsic
+    if token get_intrinsic_signature peek signature in "" streq not do
+        f"(intrinsic) {token str.upper}: {signature}" return
+    endif
+
+    f"Hover is not implemented for '{token}' token"
+end
+
+function get_token_under_cursor tokens:List[Token] file:str row:int column:int -> str :
+    tokens cast(List) List.len
+    0
+    column 1 +
+    row 1 +
+    take row column index tokens.len in
+
+    while index tokens.len < do
+        index tokens cast(List) List.nth Token.load
+        dup Token.location
+        take location token in
+
+        // Ignore different file
+        if file location Location.file streq not do
+            index 1 + index =
+            continue
+        endif
+
+        // Match was not found if we went past the cursor line
+        if row location Location.row < do
+            break
+        // Match is found if the cursor is inside a token
+        // TODO: Multi-line tokens
+        elif
+            column location Location.column >=
+            column location Location.column token Token.value str.len + <
+            &&
+            row location Location.row ==
+            &&
+        do
+            token Token.value return
+        endif
+
+        index 1 + index =
+    done
+
+    "" // Match was not found
+end
+
 function generate_hover_response body:HashMap -> str :
     body initialize_response_message take response_message in
+
+    // Generate hover markdown
+    body generate_hover_markdown take markdown in
 
     // Generate hover response
     // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#markupContent
     HashMap.init take hover in
     HashMap.init take markdown_content in
     "string" "markdown" JsonValue.init "kind" markdown_content HashMap.set
-    // TODO: Parse relevant value based on the code base
-    "string" "Hover content" JsonValue.init "value" markdown_content HashMap.set
+    "string" markdown JsonValue.init "value" markdown_content HashMap.set
     "object" markdown_content JsonValue.init "contents" hover HashMap.set
 
     // Generate response
