@@ -23,8 +23,8 @@ class State
     end
 endclass
 
-function get_intrinsic_signature token:str -> str :
-    token str.copy str.upper
+function get_intrinsic_signature token_value:str -> str :
+    token_value str.copy str.upper
     take token_upper in
 
     if token_upper "AND" streq do
@@ -209,15 +209,15 @@ function generate_hover_markdown body:HashMap -> str :
     get_tokens_from_files take tokens in
 
     // Get the token under the cursor
-    character line file_path tokens get_token_under_cursor
-    take token in
-    if token "" streq do
+    character line file_path tokens get_token_under_cursor take token in
+    if token NULL == do
         "" return
     endif
+    token Token.value take token_value in
 
     // Intrinsic
-    if token get_intrinsic_signature peek intrinsic_signature in "" streq not do
-        f"(intrinsic) {token str.upper}: {intrinsic_signature}" return
+    if token_value get_intrinsic_signature peek intrinsic_signature in "" streq not do
+        f"(intrinsic) {token_value str.upper}: {intrinsic_signature}" return
     endif
 
     // Parse functions and classes
@@ -226,28 +226,28 @@ function generate_hover_markdown body:HashMap -> str :
     constants functions tokens parse_classes
 
     // Constant
-    if constants token constant_exists do
-        constants token get_constant take constant in
-        f"(constant) {token}: {constant Constant.value escape_json_string}" return
+    if constants token_value constant_exists do
+        constants token_value get_constant take constant in
+        f"(constant) {token_value}: {constant Constant.value escape_json_string}" return
     endif
 
     // Function
-    if functions token function_exists do
-        functions token get_function_by_name peek func in
+    if functions token_value function_exists do
+        functions token_value get_function_by_name peek func in
         Func.signature take function_signature in
-        f"(function) {token}: {function_signature Signature.repr}" return
+        f"(function) {token_value}: {function_signature Signature.repr}" return
     endif
 
-    f"Hover is not implemented for '{token}' token"
+    f"Hover is not implemented for '{token_value}' token"
 end
 
 function escape_json_string string:str -> str :
     '"' char.to_string take quote in
-    f"{quote}{quote}" f"{quote} string str.replace_all
+    f"{quote}{quote}" quote string str.replace_all
     f"\{quote}" f"{quote}{quote}" rot str.replace_all
 end
 
-function get_token_under_cursor tokens:List[Token] file:str row:int column:int -> str :
+function get_token_under_cursor tokens:List[Token] file:str row:int column:int -> Token :
     tokens cast(List) List.len
     0
     column 1 +
@@ -277,13 +277,13 @@ function get_token_under_cursor tokens:List[Token] file:str row:int column:int -
             row location Location.row ==
             &&
         do
-            token Token.value return
+            token return
         endif
 
         index 1 + index =
     done
 
-    "" // Match was not found
+    NULL cast(Token) // Match was not found
 end
 
 function generate_hover_response body:HashMap -> str :
