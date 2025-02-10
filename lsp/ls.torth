@@ -225,6 +225,12 @@ function generate_hover_markdown body:HashMap -> str :
     tokens get_functions take functions in
     constants functions tokens parse_classes
 
+    // Constant
+    if constants token constant_exists do
+        constants token get_constant take constant in
+        f"(constant) {token}: {constant Constant.value}" return
+    endif
+
     // Function
     if functions token function_exists do
         functions token get_function_by_name peek func in
