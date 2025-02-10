@@ -228,7 +228,7 @@ function generate_hover_markdown body:HashMap -> str :
     // Constant
     if constants token constant_exists do
         constants token get_constant take constant in
-        f"(constant) {token}: {constant Constant.value}" return
+        f"(constant) {token}: {constant Constant.value escape_json_string}" return
     endif
 
     // Function
@@ -239,6 +239,12 @@ function generate_hover_markdown body:HashMap -> str :
     endif
 
     f"Hover is not implemented for '{token}' token"
+end
+
+function escape_json_string string:str -> str :
+    '"' char.to_string take quote in
+    f"{quote}{quote}" f"{quote} string str.replace_all
+    f"\{quote}" f"{quote}{quote}" rot str.replace_all
 end
 
 function get_token_under_cursor tokens:List[Token] file:str row:int column:int -> str :
