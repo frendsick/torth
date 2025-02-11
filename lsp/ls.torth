@@ -17,7 +17,6 @@ class State
     tokens:List[Token]
     constants:List[Constant]
     functions:List[Func]
-    sub_programs:List[Program]
     is_shutdown_requested:bool
 
     method init -> State :
@@ -414,14 +413,12 @@ function parse_file_to_state file_uri:str state:State :
     tokens get_constants peek constants in
     tokens get_functions take functions in
     constants functions tokens parse_classes
-    constants functions get_sub_programs take sub_programs in
 
     // Save parsed things to the state
     file_uri        state   State->file_uri
     tokens          state   State->tokens
     constants       state   State->constants
     functions       state   State->functions
-    sub_programs    state   State->sub_programs
 end
 
 function main :
