@@ -213,7 +213,20 @@ function generate_hover_markdown body:HashMap -> str :
     if token NULL == do
         "" return
     endif
-    token Token.value take token_value in
+    token Token.value
+    token Token.type
+    take token_type token_value in
+
+    // Literal
+    if token_type "bool" streq do
+        f"(literal) {token_value}: bool" return
+    elif token_type "char" streq do
+        f"(literal) {token_value}: char" return
+    elif token_type "int" streq do
+        f"(literal) {token_value}: int" return
+    elif token_type "str" streq do
+        f"(literal) {token_value escape_json_string}: str" return
+    endif
 
     // Intrinsic
     if token_value get_intrinsic_signature peek intrinsic_signature in "" streq not do
