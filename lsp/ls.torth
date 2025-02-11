@@ -216,7 +216,9 @@ function generate_hover_markdown body:HashMap state:State -> str :
     endif
     token Token.value
     token Token.type
-    take token_type token_value in
+    state State.constants
+    state State.functions
+    take functions constants token_type token_value in
 
     // Literal
     if token_type "bool" streq do
@@ -229,20 +231,23 @@ function generate_hover_markdown body:HashMap state:State -> str :
         f"(literal) {token_value escape_json_string}: str" return
     endif
 
+    constants functions token get_tokens_op_type
+    take op_type in
+
     // Intrinsic
-    if token_value get_intrinsic_signature peek intrinsic_signature in "" streq not do
-        f"(intrinsic) {token_value str.upper}: {intrinsic_signature}" return
+    if op_type OpType.INTRINSIC == do
+        f"(intrinsic) {token_value str.upper}: {token_value get_intrinsic_signature}" return
     endif
 
     // Constant
-    if state State.constants token_value constant_exists do
-        state State.constants token_value get_constant take constant in
+    if constants token_value constant_exists do
+        constants token_value get_constant take constant in
         f"(constant) {token_value}: {constant Constant.value escape_json_string}" return
     endif
 
     // Function
-    if state State.functions token_value function_exists do
-        state State.functions token_value get_function_by_name peek func in
+    if functions token_value function_exists do
+        functions token_value get_function_by_name peek func in
         Func.signature take function_signature in
         f"(function) {token_value}: {function_signature Signature.repr}" return
     endif
