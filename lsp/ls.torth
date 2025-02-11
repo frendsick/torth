@@ -214,23 +214,12 @@ function generate_hover_markdown body:HashMap state:State -> str :
     if token NULL == do
         "" return
     endif
+
     token Token.value
     token Token.type
     state State.constants
     state State.functions
     take functions constants token_type token_value in
-
-    // Literal
-    if token_type "bool" streq do
-        f"(literal) {token_value}: bool" return
-    elif token_type "char" streq do
-        f"(literal) {token_value}: char" return
-    elif token_type "int" streq do
-        f"(literal) {token_value}: int" return
-    elif token_type "str" streq do
-        f"(literal) {token_value escape_json_string}: str" return
-    endif
-
     constants functions token get_tokens_op_type
     take op_type in
 
@@ -246,6 +235,14 @@ function generate_hover_markdown body:HashMap state:State -> str :
         "(keyword) CAST([T]): any -> [T]\n\n"
         "Cast a value to a type" str.cat
         return
+    elif op_type OpType.PUSH_BOOL == do
+        f"(literal) {token_value}: bool" return
+    elif op_type OpType.PUSH_CHAR == do
+        f"(literal) {token_value}: char" return
+    elif op_type OpType.PUSH_INT == do
+        f"(literal) {token_value}: int" return
+    elif op_type OpType.PUSH_STR == do
+        f"(literal) {token_value}: str" return
     elif op_type OpType.TYPEOF == do
         "(keyword) TYPEOF: any -> str\n\n"
         "Get the string representation for the type of the topmost value in the stack" str.cat
