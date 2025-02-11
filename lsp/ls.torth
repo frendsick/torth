@@ -242,6 +242,10 @@ function generate_hover_markdown body:HashMap state:State -> str :
         "Assign value to a variable of same type\n\n" str.cat
         "Example: 42 number_variable ASSIGN" str.cat
         return
+    elif op_type OpType.CAST == do
+        "(keyword) CAST([T]): any -> [T]\n\n"
+        "Cast a value to a type" str.cat
+        return
     elif op_type OpType.TYPEOF == do
         "(keyword) TYPEOF: any -> str\n\n"
         "Get the string representation for the type of the topmost value in the stack" str.cat
