@@ -232,6 +232,10 @@ function generate_hover_markdown body:HashMap state:State -> str :
         "Assign value to a variable of same type\n\n" str.cat
         "Example: 42 number_variable ASSIGN" str.cat
         return
+    elif op_type OpType.BREAK == do
+        "(keyword) BREAK\n\n"
+        "Break out of a loop by jumping to the loop's `DONE` keyword" str.cat
+        return
     elif op_type OpType.CAST == do
         token_value get_cast_type take type in
         f"(keyword) CAST(`{type}`): any -> `{type}`\n\n"
