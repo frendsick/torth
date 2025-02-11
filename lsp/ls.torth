@@ -2,6 +2,7 @@ include "std"
 include "json"
 include "typing"
 include "compiler/lex"
+include "compiler/program"
 
 const JSONRPC_VERSION "2.0" end
 const SERVER_NAME "torth_ls" end
@@ -12,6 +13,11 @@ const ERROR_METHOD_NOT_FOUND -32603 end
 
 // State object for current LSP client
 class State
+    file_uri:str
+    tokens:List[Token]
+    constants:List[Constant]
+    functions:List[Func]
+    sub_programs:List[Program]
     is_shutdown_requested:bool
 
     method init -> State :
@@ -159,7 +165,7 @@ function handle_request request:str state:State :
         true state State->is_shutdown_requested
         body_object generate_shutdown_response puts
     elif _method "textDocument/hover" streq do
-        body_object generate_hover_response puts
+        state body_object generate_hover_response puts
     else
         f"Method '{_method}' is not implemented" dup eputs
         ERROR_METHOD_NOT_FOUND generate_error_request
@@ -190,7 +196,7 @@ function generate_shutdown_response body:HashMap -> str :
     response_message JsonValue.repr generate_response
 end
 
-function generate_hover_markdown body:HashMap -> str :
+function generate_hover_markdown body:HashMap state:State -> str :
     // Parse relevant values from body
     "params" body HashMap.get JsonValue.value cast(HashMap) take params in
     "textDocument" params HashMap.get JsonValue.value cast(HashMap) take textDocument in
@@ -199,17 +205,13 @@ function generate_hover_markdown body:HashMap -> str :
     "line" position HashMap.get JsonValue.value cast(int) take line in
     "character" position HashMap.get JsonValue.value cast(int) take character in
 
-    // Parse file name from uri
-    "" "\" uri str.replace_all // Remove escape characters '\'
-    "file://" swap str.removeprefix // Remove uri prefix
-    take file_path in
-
-    // Parse tokens
-    file_path get_included_files peek included_files in
-    get_tokens_from_files take tokens in
+    // Initial file parsing
+    if state State.file_uri NULL == do
+        state uri parse_file_to_state
+    endif
 
     // Get the token under the cursor
-    character line file_path tokens get_token_under_cursor take token in
+    character line state State.file_uri state State.tokens get_token_under_cursor take token in
     if token NULL == do
         "" return
     endif
@@ -233,20 +235,15 @@ function generate_hover_markdown body:HashMap -> str :
         f"(intrinsic) {token_value str.upper}: {intrinsic_signature}" return
     endif
 
-    // Parse functions and classes
-    tokens get_constants peek constants in
-    tokens get_functions take functions in
-    constants functions tokens parse_classes
-
     // Constant
-    if constants token_value constant_exists do
-        constants token_value get_constant take constant in
+    if state State.constants token_value constant_exists do
+        state State.constants token_value get_constant take constant in
         f"(constant) {token_value}: {constant Constant.value escape_json_string}" return
     endif
 
     // Function
-    if functions token_value function_exists do
-        functions token_value get_function_by_name peek func in
+    if state State.functions token_value function_exists do
+        state State.functions token_value get_function_by_name peek func in
         Func.signature take function_signature in
         f"(function) {token_value}: {function_signature Signature.repr}" return
     endif
@@ -262,12 +259,13 @@ function escape_json_string string:str -> str :
     f"\{quote}" temp rot str.replace_all
 end
 
-function get_token_under_cursor tokens:List[Token] file:str row:int column:int -> Token :
+function get_token_under_cursor tokens:List[Token] file_uri:str row:int column:int -> Token :
+    file_uri uri_to_file_path
     tokens cast(List) List.len
     0
     column 1 +
     row 1 +
-    take row column index tokens.len in
+    take row column index tokens.len file in
 
     while index tokens.len < do
         index tokens cast(List) List.nth Token.load
@@ -301,11 +299,11 @@ function get_token_under_cursor tokens:List[Token] file:str row:int column:int -
     NULL cast(Token) // Match was not found
 end
 
-function generate_hover_response body:HashMap -> str :
+function generate_hover_response body:HashMap state:State -> str :
     body initialize_response_message take response_message in
 
     // Generate hover markdown
-    body generate_hover_markdown take markdown in
+    state body generate_hover_markdown take markdown in
 
     // Generate hover response
     // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#markupContent
@@ -402,9 +400,40 @@ function parse_number_from_beginning input:str -> int :
     parsed_number atoi
 end
 
+function uri_to_file_path file_uri:str -> str :
+    "" "\" file_uri str.copy str.replace_all    // Remove escape characters '\'
+    "file://" swap str.removeprefix             // Remove uri prefix
+end
+
+function parse_file_to_state file_uri:str state:State :
+    file_uri uri_to_file_path take file_path in
+
+    // Parse program
+    file_path get_included_files peek included_files in
+    get_tokens_from_files take tokens in
+    tokens get_constants peek constants in
+    tokens get_functions take functions in
+    constants functions tokens parse_classes
+    constants functions get_sub_programs take sub_programs in
+
+    // Save parsed things to the state
+    file_uri        state   State->file_uri
+    tokens          state   State->tokens
+    constants       state   State->constants
+    functions       state   State->functions
+    sub_programs    state   State->sub_programs
+end
+
 function main :
     State.init take state in
+
     while True do
         state input handle_request
+
+        // Cache the current state
+        // TODO: Only parse when there are changes
+        if state State.file_uri NULL != do
+            state dup State.file_uri parse_file_to_state
+        endif
     done
 end
