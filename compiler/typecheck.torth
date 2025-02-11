@@ -604,12 +604,7 @@ function type_check_cast token:Token type_stack:Node :
   endif
 
   // Extract <type> from inside CAST(<type>)
-  token Token.value str.copy
-  take token_value in
-  token_value dup str.len 1 - str+
-  cast(ptr) NULL cast(char) swap char.store
-  "(" token_value str.find 1 +
-  token_value swap str+
+  token Token.value str.copy get_cast_type
 
   // Push <type> to the stack
   token Token.location swap TypeNode.init cast(ptr)

@@ -357,6 +357,14 @@ function TypeStack.repr type_stack:Node -> str :
   stack_repr
 end
 
+// "cast(int)" -> "int"
+function get_cast_type token_value:str -> str :
+  token_value dup str.len 1 - str+
+  cast(ptr) NULL cast(char) swap char.store
+  "(" token_value str.find 1 +
+  token_value swap str+
+end
+
 // Get the string representation of the OpType
 // Params: OpType
 // Return: str(OpType)
