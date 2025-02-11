@@ -217,16 +217,17 @@ function generate_hover_markdown body:HashMap state:State -> str :
     endif
 
     token Token.value
+    dup str.upper
     token Token.type
     state State.constants
     state State.functions
-    take functions constants token_type token_value in
+    take functions constants token_type token_upper token_value in
     constants functions token get_tokens_op_type
     take op_type in
 
     // Handle different OpTypes
     if op_type OpType.INTRINSIC == do
-        f"(intrinsic) {token_value str.upper}: {token_value get_intrinsic_signature}" return
+        f"(intrinsic) {token_upper}: {token_value get_intrinsic_signature}" return
     elif op_type OpType.ASSIGN_BIND == do
         "(keyword) ASSIGN: variable<`T`> `T` -> None\n\n"
         "Assign value to a variable of same type\n\n" str.cat
@@ -252,6 +253,13 @@ function generate_hover_markdown body:HashMap state:State -> str :
     elif op_type OpType.TYPEOF == do
         "(keyword) TYPEOF: any -> str\n\n"
         "Get the string representation for the type of the topmost value in the stack" str.cat
+        return
+    endif
+
+    // Keywords without OpType
+    if token_upper "CONST" streq do
+        "(keyword) CONST\n\n"
+        "Define a literal value with name" str.cat
         return
     endif
 
