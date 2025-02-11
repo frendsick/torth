@@ -234,9 +234,14 @@ function generate_hover_markdown body:HashMap state:State -> str :
     constants functions token get_tokens_op_type
     take op_type in
 
-    // Intrinsic
+    // Handle different OpTypes
     if op_type OpType.INTRINSIC == do
         f"(intrinsic) {token_value str.upper}: {token_value get_intrinsic_signature}" return
+    elif op_type OpType.ASSIGN_BIND == do
+        "(keyword) ASSIGN: variable<T> T -> None\n\n"
+        "Assign value to a variable of same type\n\n" str.cat
+        "Example: 42 number_variable ASSIGN" str.cat
+        return
     endif
 
     // Constant
