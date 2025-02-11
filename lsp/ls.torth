@@ -242,9 +242,11 @@ function generate_hover_markdown body:HashMap -> str :
 end
 
 function escape_json_string string:str -> str :
+    "__quote__" take temp in
     '"' char.to_string take quote in
-    f"{quote}{quote}" quote string str.replace_all
-    f"\{quote}" f"{quote}{quote}" rot str.replace_all
+
+    temp quote string str.replace_all
+    f"\{quote}" temp rot str.replace_all
 end
 
 function get_token_under_cursor tokens:List[Token] file:str row:int column:int -> Token :
