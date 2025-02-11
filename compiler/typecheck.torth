@@ -144,7 +144,7 @@ function type_check_op
   if_block_return_stacks:List[TypeStack]
 -> TypeCheckInfo :
   // Assert that every OpType has been taken into account
-  if OpType.len 29 != do
+  if OpType.len 30 != do
     "All OpTypes are not taken into account in `type_check_op` function.\n"
     "ASSERTION_ERROR" CompilerError
   endif
@@ -162,7 +162,12 @@ function type_check_op
   in
 
   // Switch like if block with every type of Op
-  if op_type OpType.INTRINSIC == do
+  if op_type OpType.NONEXISTENT == do
+    token
+    "Op found with OpType.NONEXISTENT\n"
+    "This is most likely a bug in the compiler parsing logic" str.cat
+    "ASSERTION_ERROR" CompilerErrorWithToken
+  elif op_type OpType.INTRINSIC == do
     program type_stack token type_check_intrinsic
     type_check_info return
   elif op_type OpType.ASSIGN_BIND == do
