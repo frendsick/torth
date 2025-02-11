@@ -3,6 +3,7 @@ include "json"
 include "typing"
 include "compiler/lex"
 include "compiler/program"
+include "compiler/utils"
 
 const JSONRPC_VERSION "2.0" end
 const SERVER_NAME "torth_ls" end
@@ -232,7 +233,8 @@ function generate_hover_markdown body:HashMap state:State -> str :
         "Example: 42 number_variable ASSIGN" str.cat
         return
     elif op_type OpType.CAST == do
-        "(keyword) CAST([T]): any -> [T]\n\n"
+        token_value get_cast_type take type in
+        f"(keyword) CAST([{type}]): any -> [{type}]\n\n"
         "Cast a value to a type" str.cat
         return
     elif op_type OpType.PUSH_BOOL == do
