@@ -217,7 +217,7 @@ function generate_hover_markdown body:HashMap state:State -> str :
     endif
 
     token Token.value
-    dup str.upper
+    dup str.copy str.upper
     token Token.type
     state State.constants
     state State.functions
