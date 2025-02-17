@@ -7,6 +7,7 @@ class Func
   signature:Signature
   tokens:List[Token]
   variables:List[Variable]
+  location:Location
   is_used:bool
   is_inline:bool
 
@@ -15,6 +16,7 @@ class Func
     signature:Signature
     tokens:List[Token]
     variables:List[Variable]
+    location:Location
     is_used:bool
     is_inline:bool
   -> Func :
@@ -25,6 +27,7 @@ class Func
     signature func Func->signature
     tokens    func Func->tokens
     variables func Func->variables
+    location  func Func->location
     is_used   func Func->is_used
     is_inline func Func->is_inline
     func
