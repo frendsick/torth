@@ -246,6 +246,15 @@ function generate_hover_markdown body:HashMap state:State -> str :
         "(keyword) CONTINUE\n\n"
         "Perform next iteration of a loop by jumping to the loop's `WHILE` keyword" str.cat
         return
+    elif op_type OpType.PEEK_BIND == do
+        // TODO: Display variable type
+        f"(variable) {token_value}" return
+    elif op_type OpType.POP_BIND == do
+        // TODO: Display variable type
+        f"(variable) {token_value}" return
+    elif op_type OpType.PUSH_BIND == do
+        // TODO: Display variable type
+        f"(variable) {token_value}" return
     elif op_type OpType.PUSH_BOOL == do
         f"(literal) {token_value}: `bool`" return
     elif op_type OpType.PUSH_CHAR == do
