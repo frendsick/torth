@@ -1013,6 +1013,13 @@ function file_exists str -> bool :
   False
 end
 
+// https://man7.org/linux/man-pages/man2/getcwd.2.html
+function getcwd -> str :
+    "" str.copy take cwd_buffer in
+    4096 cwd_buffer SYS_getcwd syscall2 drop
+    cwd_buffer
+end
+
 // Get Nth command line argument
 // Params: index
 // Return: *argv[index]
@@ -1204,6 +1211,7 @@ const SYS_vfork 58 end
 const SYS_execve 59 end
 const SYS_exit 60 end
 const SYS_wait4 61 end
+const SYS_getcwd 79 end
 const SYS_creat 85 end
 
 // SYS_open flags
