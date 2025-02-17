@@ -242,6 +242,10 @@ function generate_hover_markdown body:HashMap state:State -> str :
         f"(keyword) CAST(`{type}`): `any -> {type}`\n\n"
         "Cast a value to a type" str.cat
         return
+    elif op_type OpType.CONTINUE == do
+        "(keyword) CONTINUE\n\n"
+        "Perform next iteration of a loop by jumping to the loop's `WHILE` keyword" str.cat
+        return
     elif op_type OpType.PUSH_BOOL == do
         f"(literal) {token_value}: `bool`" return
     elif op_type OpType.PUSH_CHAR == do
