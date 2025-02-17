@@ -412,9 +412,14 @@ function generate_location_link
     location Location.file
     take file line character in
 
+    // Links within the current file
+    if file getcwd str.startswith not do
+        f"{getcwd}/{file}" file =
+    endif
+
     character name str.len + character line generate_range take target_range in
     HashMap.init take location_object in
-    "string" f"file://{getcwd}/{file}" JsonValue.init "targetUri" location_object HashMap.set
+    "string" f"file://{file}" dup eputs JsonValue.init "targetUri" location_object HashMap.set
     "object" target_range JsonValue.init "targetRange" location_object HashMap.set
     "object" target_range JsonValue.init "targetSelectionRange" location_object HashMap.set
 
