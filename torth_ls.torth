@@ -246,6 +246,13 @@ function generate_hover_markdown body:HashMap state:State -> str :
         "(keyword) CONTINUE\n\n"
         "Perform next iteration of a loop by jumping to the loop's `WHILE` keyword" str.cat
         return
+    elif token_upper "INCLUDE" streq do
+        '"' char.to_string take quote in
+        "(keyword) INCLUDE\n\n"
+        "Include code from another file.\n" str.cat
+        "A file will only be included once, even if multiple included files include it.\n\n" str.cat
+        "Example:\n" str.cat
+        f"include {quote}std{quote}" "torth" markdown_code_block escape_json_string str.cat return
     elif op_type OpType.PEEK == do
         "(keyword) PEEK\n\n"
         "Save copies of N topmost values from the stack to variables,\n" str.cat
