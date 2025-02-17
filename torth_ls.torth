@@ -256,13 +256,6 @@ function generate_hover_markdown body:HashMap state:State -> str :
         return
     endif
 
-    // Keywords without OpType
-    if token_upper "CONST" streq do
-        "(keyword) CONST\n\n"
-        "Define a literal value with name" str.cat
-        return
-    endif
-
     // Constant
     if constants token_value constant_exists do
         constants token_value get_constant take constant in
