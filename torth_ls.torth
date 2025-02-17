@@ -269,7 +269,7 @@ function generate_hover_markdown body:HashMap state:State -> str :
         f"(function) {token_value}: `{function_signature Signature.repr}`" return
     endif
 
-    f"Hover is not implemented for '{token_value}' token"
+    "" // No information available
 end
 
 function escape_json_string string:str -> str :
