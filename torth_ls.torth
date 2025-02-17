@@ -275,6 +275,10 @@ function generate_hover_markdown body:HashMap state:State -> str :
         f"(literal) {token_value}: `int`" return
     elif op_type OpType.PUSH_STR == do
         f"(literal) {token_value escape_json_string}: `str`" return
+    elif op_type OpType.RETURN == do
+        f"(keyword) RETURN\n\n"
+        "Return from the current function.\n" str.cat
+        "The stack state must match with the return types of the function signature." str.cat return
     elif op_type OpType.TAKE == do
         "(keyword) TAKE\n\n"
         "Pop N topmost values from the stack and save them to variables,\n" str.cat
