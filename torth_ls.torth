@@ -259,6 +259,12 @@ function generate_hover_markdown body:HashMap state:State -> str :
         f"(literal) {token_value}: `bool`" return
     elif op_type OpType.PUSH_CHAR == do
         f"(literal) {token_value}: `char`" return
+    elif op_type OpType.PUSH_FN == do
+        functions "&" token_value str.removesuffix get_function_by_name
+        dup Func.signature Signature.repr
+        take signature_repr func in
+        f"(function pointer) {token_value}: `fn[{signature_repr}]`\n"
+        f"function {func Func.name} {signature_repr}" "torth" markdown_code_block str.cat return
     elif op_type OpType.PUSH_INT == do
         f"(literal) {token_value}: `int`" return
     elif op_type OpType.PUSH_STR == do
@@ -283,6 +289,10 @@ function generate_hover_markdown body:HashMap state:State -> str :
     endif
 
     "" // No information available
+end
+
+function markdown_code_block language:str code:str -> str :
+    f"```{language}\n{code}\n```"
 end
 
 function escape_json_string string:str -> str :
