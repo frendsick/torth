@@ -246,6 +246,12 @@ function generate_hover_markdown body:HashMap state:State -> str :
         "(keyword) CONTINUE\n\n"
         "Perform next iteration of a loop by jumping to the loop's `WHILE` keyword" str.cat
         return
+    elif op_type OpType.PEEK == do
+        "(keyword) PEEK\n\n"
+        "Save copies of N topmost values from the stack to variables,\n" str.cat
+        "where N is the number of variable names between `PEEK` and `IN` keywords\n\n" str.cat
+        "Example:\n" str.cat
+        "peek var1 var2 var3 in" "torth" markdown_code_block str.cat return
     elif op_type OpType.PEEK_BIND == do
         // TODO: Display variable type
         f"(variable) {token_value}" return
@@ -269,6 +275,12 @@ function generate_hover_markdown body:HashMap state:State -> str :
         f"(literal) {token_value}: `int`" return
     elif op_type OpType.PUSH_STR == do
         f"(literal) {token_value escape_json_string}: `str`" return
+    elif op_type OpType.TAKE == do
+        "(keyword) TAKE\n\n"
+        "Pop N topmost values from the stack and save them to variables,\n" str.cat
+        "where N is the number of variable names between `TAKE` and `IN` keywords\n\n" str.cat
+        "Example:\n" str.cat
+        "take var1 var2 var3 in" "torth" markdown_code_block str.cat return
     elif op_type OpType.TYPEOF == do
         "(keyword) TYPEOF: `any -> str`\n\n"
         "Get the string representation for the type of the topmost value in the stack" str.cat
