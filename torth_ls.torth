@@ -164,6 +164,8 @@ function handle_request request:str state:State :
     elif _method "shutdown" streq do
         true state State->is_shutdown_requested
         body_object generate_shutdown_response puts
+    elif _method "textDocument/definition" streq do
+        state body_object generate_definition_response puts
     elif _method "textDocument/hover" streq do
         state body_object generate_hover_response puts
     else
@@ -196,7 +198,7 @@ function generate_shutdown_response body:HashMap -> str :
     response_message JsonValue.repr generate_response
 end
 
-function generate_hover_markdown body:HashMap state:State -> str :
+function get_token_from_request body:HashMap state:State -> Token :
     // Parse relevant values from body
     "params" body HashMap.get JsonValue.value cast(HashMap) take params in
     "textDocument" params HashMap.get JsonValue.value cast(HashMap) take textDocument in
@@ -211,7 +213,39 @@ function generate_hover_markdown body:HashMap state:State -> str :
     endif
 
     // Get the token under the cursor
-    character line state State.file_uri state State.tokens get_token_under_cursor take token in
+    character line state State.file_uri state State.tokens get_token_under_cursor
+end
+
+function generate_definition_response body:HashMap state:State -> str :
+    body initialize_response_message take response_message in
+
+    state body get_token_from_request take token in
+    if token NULL == do
+        response_message JsonValue.repr generate_response return
+    endif
+
+    token Token.value
+    state State.functions
+    take functions token_value in
+
+    // Function
+    if functions token_value function_exists do
+        functions token_value get_function_by_name
+        dup Func.name
+        swap Func.location
+        take location function_name in
+        state body location function_name generate_location_link
+        take location_link in
+        "object" location_link JsonValue.init "result" response_message JsonValue.value HashMap.set
+    endif
+
+    // Generate definition response
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_definition
+    response_message JsonValue.repr generate_response
+end
+
+function generate_hover_markdown body:HashMap state:State -> str :
+    state body get_token_from_request take token in
     if token NULL == do
         "" return
     endif
@@ -366,6 +400,44 @@ function get_token_under_cursor tokens:List[Token] file_uri:str row:int column:i
     NULL cast(Token) // Match was not found
 end
 
+// https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#locationLink
+function generate_location_link
+    name:str
+    location:Location
+    body:HashMap
+    state:State
+-> HashMap :
+    location Location.column 1 -
+    location Location.row 1 -
+    location Location.file
+    take file line character in
+
+    character name str.len + character line generate_range take target_range in
+    HashMap.init take location_object in
+    file eputs
+    "string" f"file://{file}" JsonValue.init "targetUri" location_object HashMap.set
+    "object" target_range JsonValue.init "targetRange" location_object HashMap.set
+    "object" target_range JsonValue.init "targetSelectionRange" location_object HashMap.set
+
+    location_object
+end
+
+// https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#range
+function generate_range line:int start_character:int end_character:int -> HashMap :
+    HashMap.init take range in
+    HashMap.init take range_start in
+    HashMap.init take range_end in
+
+    "number" line JsonValue.init "line" range_start HashMap.set
+    "number" start_character JsonValue.init "character" range_start HashMap.set
+    "number" line JsonValue.init "line" range_end HashMap.set
+    "number" end_character JsonValue.init "character" range_end HashMap.set
+    "object" range_start JsonValue.init "start" range HashMap.set
+    "object" range_end JsonValue.init "end" range HashMap.set
+
+    range
+end
+
 function generate_hover_response body:HashMap state:State -> str :
     body initialize_response_message take response_message in
 
@@ -407,6 +479,7 @@ function get_server_capabilities -> JsonValue :
     HashMap.init take capabilities in
 
     // List capabilities
+    "boolean" true JsonValue.init "definitionProvider" capabilities HashMap.set
     "boolean" true JsonValue.init "hoverProvider" capabilities HashMap.set
 
     "object" capabilities JsonValue.init
