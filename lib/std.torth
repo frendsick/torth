@@ -793,34 +793,23 @@ end
 
 // Tests if two strings are equal
 function streq str1:str str2:str -> bool :
-  str1 str.len
-  str2 str.len
-  0
-  take
-    index
-    str2.len
-    str1.len
-  in
-
-  // Different length strings are not equal
-  if str1.len str2.len != do
-    False return
-  endif
-
   // Iterate over every character of the strings
+  0 take index in
   while
-    index str1.len <
+    index str1 str.char_at peek char1 in NULL !=
+    index str2 str.char_at peek char2 in NULL !=
+    &&
   do
-    if
-      index str1 str.char_at
-      index str2 str.char_at
-      !=
-    do
+    if char1 char2 != do
       False return
     endif
     index 1 + index =
   done
-  True
+
+  // Strings are equal if both were iterated to the end
+  char1 NULL ==
+  char2 NULL ==
+  &&
 end
 
 // Reverse a string
