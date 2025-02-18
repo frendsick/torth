@@ -264,6 +264,12 @@ function get_token_type token_value:str -> str :
     &&
   do
     "str" return
+  elif
+    token_value '"' "c" str.append str.startswith
+    token_value str.len 1 - token_value str.char_at '"' ==
+    &&
+  do
+    "cstr" return
   endif
   "word"
 end

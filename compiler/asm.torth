@@ -31,7 +31,7 @@ end
 // Get Assembly for certain Op
 function get_op_asm op:Op program:Program sub_programs:List[Program] -> str :
   // Assert that every OpType has been taken into account
-  if OpType.len 30 != do
+  if OpType.len 31 != do
     "All OpTypes are not taken into account in `get_op_asm` function.\n"
     "ASSERTION_ERROR" CompilerError
   endif
@@ -124,6 +124,9 @@ function get_op_asm op:Op program:Program sub_programs:List[Program] -> str :
     return
   elif op_type OpType.PUSH_CHAR == do
     1 token_value str.char_at get_push_char_asm
+    return
+  elif op_type OpType.PUSH_CSTR == do
+    op get_push_cstr_asm
     return
   elif op_type OpType.PUSH_FN == do
     "&" token_value str.removesuffix get_push_fn_asm
@@ -574,6 +577,14 @@ function get_push_char_asm character:char -> str :
   f"  push {character cast(int) itoa}\n"
 end
 
+// Generate Assembly for OpType.PUSH_CSTR
+// Params: Op
+// Return: Assembly
+function get_push_cstr_asm op:Op -> str :
+  f"  mov rsi, {op Op.func Func.name}_s{op Op.id itoa} ; Pointer to string
+  push rsi\n"
+end
+
 // Generate Assembly for OpType.PUSH_FN
 // Params: Op.token.value
 // Return: Assembly
@@ -999,9 +1010,9 @@ function get_string_variables_for_data_section program:Program -> str :
 
     // Add only strings to the assembly
     if
-      op Op.type OpType.PUSH_STR !=
-      op Op.type OpType.TYPEOF   !=
-      &&
+      op Op.type OpType.PUSH_CSTR   !=
+      op Op.type OpType.PUSH_STR    != &&
+      op Op.type OpType.TYPEOF      != &&
     do
       index 1 + index =
       continue
@@ -1011,7 +1022,10 @@ function get_string_variables_for_data_section program:Program -> str :
     op Op.func Func.name
     take function_name op_id in
 
-    if op Op.type OpType.PUSH_STR == do
+    if op Op.type OpType.PUSH_CSTR == do
+        "c" op Op.token Token.value str.removeprefix format_escape_sequences_for_nasm
+        take string in
+    elif op Op.type OpType.PUSH_STR == do
         op Op.token Token.value format_escape_sequences_for_nasm
         take string in
     elif op Op.type OpType.TYPEOF == do
