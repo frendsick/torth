@@ -133,7 +133,7 @@ function handle_request request:str state:State :
 
     // Expect object
     if body_json JsonValue.type "object" streq not do
-        "Not object" eputs
+        f"Request body is not JSON object.\nRequest body: {body_json JsonValue.repr}" eputs
         1 exit
     endif
 
