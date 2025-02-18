@@ -101,9 +101,8 @@ function generate_program
     take op_type in
     if op_type OpType.NONEXISTENT == do
       token
-      "Op found with OpType.NONEXISTENT\n"
-      "This is most likely a bug in the compiler parsing logic" str.cat
-      "ASSERTION_ERROR" CompilerErrorWithToken
+      f"Operation '{token Token.value}' is unknown"
+      "OP_NOT_FOUND" CompilerErrorWithToken
     endif
 
     // Append Op to Program
