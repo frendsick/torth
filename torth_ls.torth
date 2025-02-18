@@ -1,0 +1,581 @@
+include "std"
+include "json"
+include "typing"
+include "compiler/lex"
+include "compiler/program"
+include "compiler/utils"
+
+const JSONRPC_VERSION "2.0" end
+const SERVER_NAME "torth_ls" end
+const SERVER_VERSION "0.0.1" end
+
+// Errors
+const ERROR_METHOD_NOT_FOUND -32603 end
+
+// State object for current LSP client
+class State
+    file_uri:str
+    tokens:List[Token]
+    constants:List[Constant]
+    functions:List[Func]
+    is_shutdown_requested:bool
+
+    method init -> State :
+        State.size malloc cast(State)
+        take state in
+
+        false state State->is_shutdown_requested
+        state
+    end
+endclass
+
+function get_intrinsic_signature token_value:str -> str :
+    token_value str.copy str.upper
+    take token_upper in
+
+    if token_upper "AND" streq do
+        "any any -> int" return
+    elif token_upper "ARGC" streq do
+        "None -> int" return
+    elif token_upper "ARGV" streq do
+        "None -> ptr" return
+    elif token_upper "ARGV" streq do
+        "None -> ptr" return
+    elif token_upper "DIV" streq do
+        "int int -> int" return
+    elif token_upper "DROP" streq do
+        "any -> None" return
+    elif token_upper "DUP" streq do
+        "T -> T T" return
+    elif token_upper "ENVP" streq do
+        "None -> ptr" return
+    elif token_upper "EXEC" streq do
+        "fn[T2 T1 -> R1 R2] T2 T1 -> R1 R2" return
+    elif token_upper "EQ" streq do
+        "any any -> bool" return
+    elif token_upper "GE" streq do
+        "any any -> bool" return
+    elif token_upper "GT" streq do
+        "any any -> bool" return
+    elif token_upper "LE" streq do
+        "any any -> bool" return
+    elif token_upper "LOAD_BYTE" streq do
+        "ptr -> any" return
+    elif token_upper "LOAD_WORD" streq do
+        "ptr -> any" return
+    elif token_upper "LOAD_DWORD" streq do
+        "ptr -> any" return
+    elif token_upper "LOAD_QWORD" streq do
+        "ptr -> any" return
+    elif token_upper "LT" streq do
+        "any any -> bool" return
+    elif token_upper "MINUS" streq do
+        "int int -> int" return
+    elif token_upper "MOD" streq do
+        "int int -> int" return
+    elif token_upper "MUL" streq do
+        "int int -> int" return
+    elif token_upper "NE" streq do
+        "any any -> bool" return
+    elif token_upper "OR" streq do
+        "any any -> int" return
+    elif token_upper "OVER" streq do
+        "T2 T1 -> T1 T2 T1" return
+    elif token_upper "PLUS" streq do
+        "int int -> int" return
+    elif token_upper "ROT" streq do
+        "T3 T2 T1 -> T2 T1 T3" return
+    elif token_upper "SHL" streq do
+        "int int -> int" return
+    elif token_upper "SHR" streq do
+        "int int -> int" return
+    elif token_upper "STORE_BYTE" streq do
+        "ptr any -> None" return
+    elif token_upper "STORE_WORD" streq do
+        "ptr any -> None" return
+    elif token_upper "STORE_DWORD" streq do
+        "ptr any -> None" return
+    elif token_upper "STORE_QWORD" streq do
+        "ptr any -> None" return
+    elif token_upper "SWAP" streq do
+        "T2 T1 -> T2 T1" return
+    elif token_upper "SYSCALL0" streq do
+        "int -> int" return
+    elif token_upper "SYSCALL1" streq do
+        "int any -> int" return
+    elif token_upper "SYSCALL2" streq do
+        "int any any -> int" return
+    elif token_upper "SYSCALL3" streq do
+        "int any any any -> int" return
+    elif token_upper "SYSCALL4" streq do
+        "int any any any any -> int" return
+    elif token_upper "SYSCALL5" streq do
+        "int any any any any any -> int" return
+    elif token_upper "SYSCALL6" streq do
+        "int any any any any any any -> int" return
+    endif
+
+    "" // Token is not an intrinsic
+end
+
+function handle_request request:str state:State :
+    // Parse Content-Length
+    request "Content-Length: " str.len str+
+    parse_number_from_beginning
+    take content_length in
+
+    // Parse request body
+    request "\r\n\r\n" request str.find str+ 4 str+
+    str.copy peek request_body in
+
+    // Parse the body as JSON
+    parse_json take body_json in
+
+    // Expect object
+    if body_json JsonValue.type "object" streq not do
+        f"Request body is not JSON object.\nRequest body: {body_json JsonValue.repr}" eputs
+        1 exit
+    endif
+
+    // Parse content part
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#contentPart
+    body_json JsonValue.value cast(HashMap)
+    take body_object in
+    "jsonrpc" body_object HashMap.get str.load
+    // Remove backslashes (escape character) from method
+    "" "\" "method" body_object HashMap.get str.load str.replace
+    take _method jsonrpc in
+
+    // Assert `jsonrpc` version
+    if jsonrpc JSONRPC_VERSION streq not do
+        f"Expected jsonrpc version {JSONRPC_VERSION} but got {jsonrpc}" eputs
+        1 exit
+    endif
+
+    // Handle notifications
+    if "id" body_object HashMap.get NULL == do
+        state _method handle_notification
+        return
+    endif
+
+    // Handle different methods
+    if _method "initialize" streq do
+        body_object generate_initialize_response puts
+    elif _method "shutdown" streq do
+        true state State->is_shutdown_requested
+        body_object generate_shutdown_response puts
+    elif _method "textDocument/definition" streq do
+        state body_object generate_definition_response puts
+    elif _method "textDocument/hover" streq do
+        state body_object generate_hover_response puts
+    else
+        f"Method '{_method}' is not implemented" dup eputs
+        ERROR_METHOD_NOT_FOUND generate_error_request
+        JsonValue.repr puts
+    endif
+end
+
+// Handle some notifications and ignore the rest
+function handle_notification _method:str state:State :
+    // `exit`: Asks the server to exit its process
+    if _method "exit" streq do
+        if state State.is_shutdown_requested do
+            0 exit
+        else
+            1 exit
+        endif
+    endif
+end
+
+function generate_shutdown_response body:HashMap -> str :
+    body initialize_response_message take response_message in
+
+    // Generate shutdown request
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#shutdown
+    "null" "null" JsonValue.init "result" response_message JsonValue.value HashMap.set
+
+    // Generate response
+    response_message JsonValue.repr generate_response
+end
+
+function get_token_from_request body:HashMap state:State -> Token :
+    // Parse relevant values from body
+    "params" body HashMap.get JsonValue.value cast(HashMap) take params in
+    "textDocument" params HashMap.get JsonValue.value cast(HashMap) take textDocument in
+    "uri" textDocument HashMap.get JsonValue.value cast(str) take uri in
+    "position" params HashMap.get JsonValue.value cast(HashMap) take position in
+    "line" position HashMap.get JsonValue.value cast(int) take line in
+    "character" position HashMap.get JsonValue.value cast(int) take character in
+
+    // Initial file parsing
+    if state State.file_uri NULL == do
+        state uri parse_file_to_state
+    endif
+
+    // Get the token under the cursor
+    character line state State.file_uri state State.tokens get_token_under_cursor
+end
+
+function generate_definition_response body:HashMap state:State -> str :
+    body initialize_response_message take response_message in
+
+    state body get_token_from_request take token in
+    if token NULL == do
+        response_message JsonValue.repr generate_response return
+    endif
+
+    token Token.value
+    state State.functions
+    take functions token_value in
+
+    // Function
+    if functions token_value function_exists do
+        functions token_value get_function_by_name
+        dup Func.name
+        swap Func.location
+        take location function_name in
+        state body location function_name generate_location_link
+        take location_link in
+        "object" location_link JsonValue.init "result" response_message JsonValue.value HashMap.set
+    endif
+
+    // Generate definition response
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_definition
+    response_message JsonValue.repr generate_response
+end
+
+function generate_hover_markdown body:HashMap state:State -> str :
+    state body get_token_from_request take token in
+    if token NULL == do
+        "" return
+    endif
+
+    token Token.value
+    dup str.copy str.upper
+    token Token.type
+    state State.constants
+    state State.functions
+    take functions constants token_type token_upper token_value in
+    constants functions token get_tokens_op_type
+    take op_type in
+
+    // Handle different OpTypes
+    if op_type OpType.INTRINSIC == do
+        f"(intrinsic) {token_upper}: `{token_value get_intrinsic_signature}`" return
+    elif op_type OpType.ASSIGN_BIND == do
+        "(keyword) ASSIGN: `variable<T> T -> None`\n\n"
+        "Assign value to a variable of same type\n\n" str.cat
+        "Example: 42 number_variable ASSIGN" str.cat
+        return
+    elif op_type OpType.BREAK == do
+        "(keyword) BREAK\n\n"
+        "Break out of a loop by jumping to the loop's `DONE` keyword" str.cat
+        return
+    elif op_type OpType.CAST == do
+        token_value get_cast_type take type in
+        f"(keyword) CAST(`{type}`): `any -> {type}`\n\n"
+        "Cast a value to a type" str.cat
+        return
+    elif op_type OpType.CONTINUE == do
+        "(keyword) CONTINUE\n\n"
+        "Perform next iteration of a loop by jumping to the loop's `WHILE` keyword" str.cat
+        return
+    elif token_upper "INCLUDE" streq do
+        '"' char.to_string take quote in
+        "(keyword) INCLUDE\n\n"
+        "Include code from another file.\n" str.cat
+        "A file will only be included once, even if multiple included files include it.\n\n" str.cat
+        "Example:\n" str.cat
+        f"include {quote}std{quote}" "torth" markdown_code_block escape_json_string str.cat return
+    elif op_type OpType.PEEK == do
+        "(keyword) PEEK\n\n"
+        "Save copies of N topmost values from the stack to variables,\n" str.cat
+        "where N is the number of variable names between `PEEK` and `IN` keywords\n\n" str.cat
+        "Example:\n" str.cat
+        "peek var1 var2 var3 in" "torth" markdown_code_block str.cat return
+    elif op_type OpType.PEEK_BIND == do
+        // TODO: Display variable type
+        f"(variable) {token_value}" return
+    elif op_type OpType.POP_BIND == do
+        // TODO: Display variable type
+        f"(variable) {token_value}" return
+    elif op_type OpType.PUSH_BIND == do
+        // TODO: Display variable type
+        f"(variable) {token_value}" return
+    elif op_type OpType.PUSH_BOOL == do
+        f"(literal) {token_value}: `bool`" return
+    elif op_type OpType.PUSH_CHAR == do
+        f"(literal) {token_value}: `char`" return
+    elif op_type OpType.PUSH_FN == do
+        functions "&" token_value str.removesuffix get_function_by_name
+        dup Func.signature Signature.repr
+        take signature_repr func in
+        f"(function pointer) {token_value}: `fn[{signature_repr}]`\n"
+        f"function {func Func.name} {signature_repr}" "torth" markdown_code_block str.cat return
+    elif op_type OpType.PUSH_INT == do
+        f"(literal) {token_value}: `int`" return
+    elif op_type OpType.PUSH_STR == do
+        f"(literal) {token_value escape_json_string}: `str`" return
+    elif op_type OpType.RETURN == do
+        f"(keyword) RETURN\n\n"
+        "Return from the current function.\n" str.cat
+        "The stack state must match with the return types of the function signature." str.cat return
+    elif op_type OpType.TAKE == do
+        "(keyword) TAKE\n\n"
+        "Pop N topmost values from the stack and save them to variables,\n" str.cat
+        "where N is the number of variable names between `TAKE` and `IN` keywords\n\n" str.cat
+        "Example:\n" str.cat
+        "take var1 var2 var3 in" "torth" markdown_code_block str.cat return
+    elif op_type OpType.TYPEOF == do
+        "(keyword) TYPEOF: `any -> str`\n\n"
+        "Get the string representation for the type of the topmost value in the stack" str.cat
+        return
+    endif
+
+    // Constant
+    if constants token_value constant_exists do
+        constants token_value get_constant take constant in
+        f"(constant) {token_value}: `{constant Constant.value get_token_type}`" return
+    endif
+
+    // Function
+    if functions token_value function_exists do
+        functions token_value get_function_by_name peek func in
+        Func.signature take function_signature in
+        f"(function) {token_value}: `{function_signature Signature.repr}`" return
+    endif
+
+    "" // No information available
+end
+
+function markdown_code_block language:str code:str -> str :
+    f"```{language}\n{code}\n```"
+end
+
+function escape_json_string string:str -> str :
+    "__quote__" take temp in
+    '"' char.to_string take quote in
+
+    temp quote string str.replace_all
+    f"\{quote}" temp rot str.replace_all
+end
+
+function get_token_under_cursor tokens:List[Token] file_uri:str row:int column:int -> Token :
+    file_uri uri_to_file_path
+    tokens cast(List) List.len
+    0
+    column 1 +
+    row 1 +
+    take row column index tokens.len file in
+
+    while index tokens.len < do
+        index tokens cast(List) List.nth Token.load
+        dup Token.location
+        take location token in
+
+        // Ignore different file
+        if file location Location.file streq not do
+            index 1 + index =
+            continue
+        endif
+
+        // Match was not found if we went past the cursor line
+        if row location Location.row < do
+            break
+        // Match is found if the cursor is inside a token
+        // TODO: Multi-line tokens
+        elif
+            column location Location.column >=
+            column location Location.column token Token.value str.len + <
+            &&
+            row location Location.row ==
+            &&
+        do
+            token return
+        endif
+
+        index 1 + index =
+    done
+
+    NULL cast(Token) // Match was not found
+end
+
+// https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#locationLink
+function generate_location_link
+    name:str
+    location:Location
+    body:HashMap
+    state:State
+-> HashMap :
+    location Location.column 1 -
+    location Location.row 1 -
+    location Location.file
+    take file line character in
+
+    // Links within the current file
+    if file getcwd str.startswith not do
+        f"{getcwd}/{file}" file =
+    endif
+
+    character name str.len + character line generate_range take target_range in
+    HashMap.init take location_object in
+    "string" f"file://{file}" dup eputs JsonValue.init "targetUri" location_object HashMap.set
+    "object" target_range JsonValue.init "targetRange" location_object HashMap.set
+    "object" target_range JsonValue.init "targetSelectionRange" location_object HashMap.set
+
+    location_object
+end
+
+// https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#range
+function generate_range line:int start_character:int end_character:int -> HashMap :
+    HashMap.init take range in
+    HashMap.init take range_start in
+    HashMap.init take range_end in
+
+    "number" line JsonValue.init "line" range_start HashMap.set
+    "number" start_character JsonValue.init "character" range_start HashMap.set
+    "number" line JsonValue.init "line" range_end HashMap.set
+    "number" end_character JsonValue.init "character" range_end HashMap.set
+    "object" range_start JsonValue.init "start" range HashMap.set
+    "object" range_end JsonValue.init "end" range HashMap.set
+
+    range
+end
+
+function generate_hover_response body:HashMap state:State -> str :
+    body initialize_response_message take response_message in
+
+    // Generate hover markdown
+    state body generate_hover_markdown take markdown in
+
+    // Generate hover response
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#markupContent
+    HashMap.init take hover in
+    HashMap.init take markdown_content in
+    "string" "markdown" JsonValue.init "kind" markdown_content HashMap.set
+    "string" markdown JsonValue.init "value" markdown_content HashMap.set
+    "object" markdown_content JsonValue.init "contents" hover HashMap.set
+
+    // Generate response
+    "object" hover JsonValue.init "result" response_message JsonValue.value HashMap.set
+    response_message JsonValue.repr generate_response
+end
+
+function generate_error_request code:int message:str -> JsonValue :
+    HashMap.init take response in
+
+    "number" code JsonValue.init "code" response HashMap.set
+    "string" message JsonValue.init "message" response HashMap.set
+
+    "object" response JsonValue.init
+end
+
+function get_server_info -> JsonValue :
+    HashMap.init take server_info in
+
+    "string" SERVER_NAME JsonValue.init "name" server_info HashMap.set
+    "string" SERVER_VERSION JsonValue.init "version" server_info HashMap.set
+
+    "object" server_info JsonValue.init
+end
+
+function get_server_capabilities -> JsonValue :
+    HashMap.init take capabilities in
+
+    // List capabilities
+    "boolean" true JsonValue.init "definitionProvider" capabilities HashMap.set
+    "boolean" true JsonValue.init "hoverProvider" capabilities HashMap.set
+
+    "object" capabilities JsonValue.init
+end
+
+function generate_response response_body:str -> str :
+    f"Content-Length: {response_body str.len itoa}\r\n\r\n{response_body}"
+end
+
+function initialize_response_message body:HashMap -> JsonValue :
+    "id" body HashMap.get int.load
+    HashMap.init
+    take response_message id in
+
+    "string" JSONRPC_VERSION JsonValue.init "jsonrpc" response_message HashMap.set
+    "number" id JsonValue.init "id" response_message HashMap.set
+
+    "object" response_message JsonValue.init
+end
+
+function generate_initialize_response body:HashMap -> str :
+    body initialize_response_message take response_message in
+
+    // Generate `InitializeResult`
+    // https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#initializeResult
+    HashMap.init take initialize_result in
+    get_server_capabilities "capabilities" initialize_result HashMap.set
+    get_server_info "serverInfo" initialize_result HashMap.set
+    "object" initialize_result JsonValue.init "result" response_message JsonValue.value HashMap.set
+
+    // Generate response
+    response_message JsonValue.repr generate_response
+end
+
+function parse_number_from_beginning input:str -> int :
+    input str.len
+    "" str.copy
+    0
+    take index parsed_number input.len in
+
+    while index input.len < do
+        if
+            index input str.char_at
+            peek current_character in
+            char.is_numeric not
+        do
+            break
+        endif
+        current_character parsed_number str.append parsed_number =
+        index 1 + index =
+    done
+
+    // The input string did not begin with number
+    if parsed_number str.len 0 == do
+        -1 return
+    endif
+
+    parsed_number atoi
+end
+
+function uri_to_file_path file_uri:str -> str :
+    "" "\" file_uri str.copy str.replace_all    // Remove escape characters '\'
+    "file://" swap str.removeprefix             // Remove uri prefix
+end
+
+function parse_file_to_state file_uri:str state:State :
+    file_uri uri_to_file_path take file_path in
+
+    // Parse program
+    file_path get_included_files peek included_files in
+    get_tokens_from_files take tokens in
+    tokens get_constants peek constants in
+    tokens get_functions take functions in
+    constants functions tokens parse_classes
+
+    // Save parsed things to the state
+    file_uri        state   State->file_uri
+    tokens          state   State->tokens
+    constants       state   State->constants
+    functions       state   State->functions
+end
+
+function main :
+    State.init take state in
+
+    while True do
+        state input handle_request
+
+        // Cache the current state
+        // TODO: Only parse when there are changes
+        if state State.file_uri NULL != do
+            state dup State.file_uri parse_file_to_state
+        endif
+    done
+end

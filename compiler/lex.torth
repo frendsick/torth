@@ -854,8 +854,10 @@ function parse_function
   endif
 
   // Set Func.name
-  token_index tokens cast(List) List.nth Token.load Token.value
-  take function_name in
+  token_index tokens cast(List) List.nth Token.load
+  dup Token.value
+  swap Token.location
+  take function_location function_name in
   token_index 1 + token_index =
 
   // The str.cat function from `std` library is used for f-strings
@@ -899,9 +901,10 @@ function parse_function
           function_tokens cast(List) List.append
         endif
 
-        // return Func(function_name, signature, function_tokens, variables, is_used, is_inline)
+        // return Func(function_name, signature, function_tokens, variables, location, is_used, is_inline)
         is_inline
         is_used
+        function_location
         variables
         function_tokens
         return_types param_types Signature.init
@@ -1247,7 +1250,16 @@ function get_object_size_function
   return_types List.init Signature.init
   take signature in
 
-  False False List.init cast(List[Variable]) tokens signature function_name Func.init
+  // return Func(function_name, signature, function_tokens, variables, location, is_used, is_inline)
+  False
+  False
+  endclass_token Token.location
+  List.init
+  cast(List[Variable])
+  tokens
+  signature
+  function_name
+  Func.init
 end
 
 function generate_attribution_function
@@ -1290,8 +1302,16 @@ function generate_attribution_function
   is_getter attribute_token attribute_offset attribute_type attribute_name class_name get_attribute_function_tokens
   take tokens in
 
-  // Create Func and append it to list of Funcs
-  False False List.init cast(List[Variable]) tokens signature function_name Func.init
+  // return Func(function_name, signature, function_tokens, variables, location, is_used, is_inline)
+  False
+  False
+  attribute_token Token.location
+  List.init
+  cast(List[Variable])
+  tokens
+  signature
+  function_name
+  Func.init
 end
 
 function get_attribute_function_tokens

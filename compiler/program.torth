@@ -99,6 +99,11 @@ function generate_program
     // Get the Token's OpType
     constants functions token get_tokens_op_type
     take op_type in
+    if op_type OpType.NONEXISTENT == do
+      token
+      f"Operation '{token Token.value}' is unknown"
+      "OP_NOT_FOUND" CompilerErrorWithToken
+    endif
 
     // Append Op to Program
     func token op_type index Op.init
@@ -117,7 +122,7 @@ function get_tokens_op_type
   constants:List[Constant]
 -> int :
   // Assert that every OpType has been taken into account
-  if OpType.len 29 != do
+  if OpType.len 30 != do
     "All OpTypes are not taken into account in `get_tokens_op_type` function.\n"
     "ASSERTION_ERROR" CompilerError
   endif
@@ -254,11 +259,5 @@ function get_tokens_op_type
     OpType.INTRINSIC return
   endif
 
-  // Report error when Op was not found
-  token
-  "Operation '"
-  token Token.value str.cat
-  "' is unknown"    str.cat
-  "OP_NOT_FOUND" CompilerErrorWithToken
-  NULL 0 exit
+  OpType.NONEXISTENT // Token's OpType could not be determined
 end
