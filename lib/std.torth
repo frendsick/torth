@@ -877,6 +877,21 @@ function str.removeprefix string:str prefix:str -> str :
   endif
   string
 end
+function str.removeprefix_new string:str prefix:str -> str :
+  if string prefix str.startswith_new not do
+    string return
+  endif
+
+  string str.len_new // string_len
+  prefix str.len_new peek prefix_len in
+  minus take new_len in
+
+  // Erase the prefix by moving the string pointer
+  string prefix_len str+
+
+  // Store the new length at the first 8 bytes of the new string
+  new_len over cast(ptr) int.store
+end
 
 // Remove a suffix if it exists. Otherwise return the original string.
 // Params: string (STR), suffix (STR)
