@@ -933,6 +933,25 @@ function streq str1:str str2:str -> bool :
   char2 NULL ==
   &&
 end
+function streq_new str1:str str2:str -> bool :
+  // Iterate over every character of the strings
+  0 take index in
+  while
+    index str1 str.char_at_new peek char1 in NULL !=
+    index str2 str.char_at_new peek char2 in NULL !=
+    &&
+  do
+    if char1 char2 != do
+      False return
+    endif
+    index 1 + index =
+  done
+
+  // Strings are equal if both were iterated to the end
+  char1 NULL ==
+  char2 NULL ==
+  &&
+end
 
 // Reverse a string
 function str.reverse original:str -> str :
