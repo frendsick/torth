@@ -786,6 +786,31 @@ function str.startswith prefix:str string:str -> bool :
   done
   True
 end
+function str.startswith_new prefix:str string:str -> bool :
+  // Return False if prefix.len > string.len
+  if
+    prefix str.len_new peek prefix.len in
+    string str.len_new peek string.len in
+    >
+  do
+    False return
+  endif
+
+  // Iterate characters
+  0 take index in
+  while index prefix.len < do
+    // If a character does not match, the string does not start with the prefix
+    if
+      index string str.char_at_new
+      index prefix str.char_at_new
+      !=
+    do
+      False return
+    endif
+    index 1 + index =
+  done
+  True
+end
 
 // Check if a string ends with another string
 // Params: suffix (STR), string (STR)
