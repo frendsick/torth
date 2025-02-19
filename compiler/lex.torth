@@ -433,7 +433,9 @@ function get_tokens_from_code
 
     // Double quote starts a string
     if
-      word str.len 0 ==
+      word "" streq
+      word "c" streq
+      ||
       current_char '"' ==
       &&
     do
