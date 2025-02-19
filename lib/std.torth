@@ -592,7 +592,7 @@ end
 // Deallocate string's memory if it is not a string literal
 function str.delete string:str :
   if string str.is_static do return endif
-  string str.len 1 + string cast(ptr) munmap
+  string str.len int.size + 1 + string cast(ptr) munmap
 end
 
 // Append a character to the end of a string buffer
