@@ -673,6 +673,7 @@ end
 // Params: string, index
 // Return: character_at_index
 inline function str.char_at str int -> char : swap str+ cast(ptr) char.load end
+inline function str.char_at_new str int -> char : swap str+ int.size str+ cast(ptr) char.load end
 
 // Test if a string is a palindrome (reads the same backward or forward)
 inline function str.is_palindrome str -> bool : dup str.reverse streq end
