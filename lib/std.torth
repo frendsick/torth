@@ -47,21 +47,36 @@ function input -> str :
   MEMORY_CAPACITY buffer stdin read drop
   buffer
 end
+function input_new -> str :
+  // Allocate memory for the user input
+  MEMORY_CAPACITY malloc cast(str) take buffer in
+
+  // Read user input
+  MEMORY_CAPACITY buffer str.to_cstr stdin read
+
+  // Store the string length
+  buffer cast(ptr) int.store
+
+  buffer
+end
 
 // Write a string to a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t written_bytes
 inline function write int str int -> int : SYS_write syscall3 end
+inline function write_new int cstr int -> int : SYS_write syscall3 end
 
 // Read <count> bytes from a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t read_bytes
 inline function read int str int -> int : SYS_read syscall3 end
+inline function read_new int cstr int -> int : SYS_read syscall3 end
 
 // Execute the command referred to by <pathname>
 // Params: const char *pathname, char *const argv[], char *const envp[]
 // Return: On success, execve does not return, on error -1 is returned
 inline function execve str ptr ptr -> int : SYS_execve syscall3 end
+inline function execve_new cstr ptr ptr -> int : SYS_execve syscall3 end
 
 // Exit from the program with a <status> code
 // Params: int status
@@ -72,6 +87,7 @@ function exit int : SYS_exit syscall1 drop end
 // Params: int fd, char *buf
 // Return: None
 function fputs fd:int buf:str : buf str.len buf fd write drop end
+function fputs_new fd:int buf:str : buf str.len_new buf str.to_cstr fd write_new drop end
 
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
@@ -109,8 +125,11 @@ function memcpy dest:ptr src:ptr len:int :
   done
 end
 
+inline function str.to_cstr str -> cstr : int.size str+ cast(cstr) end
+
 // Print a string to stdout
 inline function puts  str : stdout fputs end
+inline function puts_new  str : stdout fputs_new end
 
 // Print a string to stderr
 inline function eputs str : stderr fputs end
@@ -327,6 +346,16 @@ function str.copy str -> str :
   swap // str
   str.fill
 end
+function str.copy_new string:str -> str :
+  // Allocate memory which can store the string
+  string str.len
+  int.size + // First 8 bytes contain the string length
+  1 + // NULL byte at the end
+  malloc
+
+  // Fill the new memory with string content
+  string str.fill_new
+end
 
 // Get the length of a string
 // Example: "Test string" -> 11
@@ -335,6 +364,7 @@ function str.len string:str -> int :
     1 +
   done
 end
+inline function str.len_new str -> int : cast(ptr) int.load end
 
 // Fill a ptr with the contents of a string
 function str.fill string:str pointer:ptr -> str :
@@ -342,6 +372,24 @@ function str.fill string:str pointer:ptr -> str :
   0 take index in
   while
     index string str.char_at
+    peek character in
+    NULL !=
+  do
+    character
+    pointer index ptr+ char.store
+    index 1 + index =
+  done
+  pointer cast(str)
+end
+function str.fill_new string:str pointer:ptr -> str :
+  // Store the string length on the first byte
+  string str.len_new peek string_len in
+  pointer int.store
+
+  // Store the string content to the pointer character by character
+  int.size take index in
+  while
+    string index str+ cast(ptr) char.load
     peek character in
     NULL !=
   do
