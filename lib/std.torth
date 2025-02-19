@@ -796,7 +796,7 @@ function str.startswith_new prefix:str string:str -> bool :
     False return
   endif
 
-  // Iterate characters
+  // Iterate characters from the start
   0 take index in
   while index prefix.len < do
     // If a character does not match, the string does not start with the prefix
@@ -839,6 +839,31 @@ function str.endswith suffix:str string:str -> bool :
       False return
     endif
     index 1 + index = // index++
+  done
+  True
+end
+function str.endswith_new suffix:str string:str -> bool :
+  // Return False if prefix.len > string.len
+  if
+    suffix str.len_new peek suffix.len in
+    string str.len_new peek string.len in
+    >
+  do
+    False return
+  endif
+
+  // Iterate characters from the end
+  0 take index in
+  while index suffix.len < do
+    // If a character does not match, the string does not end with the prefix
+    if
+      string.len index - 1 - string str.char_at_new
+      suffix.len index - 1 - suffix str.char_at_new
+      !=
+    do
+      False return
+    endif
+    index 1 + index =
   done
   True
 end
