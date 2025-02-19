@@ -904,6 +904,14 @@ function str.removesuffix string:str suffix:str -> str :
   endif
   string
 end
+function str.removesuffix_new string:str suffix:str -> str :
+  if string suffix str.endswith_new do
+    // "Remove" suffix by changing the string length
+    string str.len_new suffix str.len_new minus
+    string cast(ptr) int.store
+  endif
+  string
+end
 
 // Tests if two strings are equal
 function streq str1:str str2:str -> bool :
