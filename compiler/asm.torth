@@ -126,7 +126,7 @@ function get_op_asm op:Op program:Program sub_programs:List[Program] -> str :
     1 token_value str.char_at get_push_char_asm
     return
   elif op_type OpType.PUSH_CSTR == do
-    op get_push_cstr_asm
+    op get_push_str_asm
     return
   elif op_type OpType.PUSH_FN == do
     "&" token_value str.removesuffix get_push_fn_asm
@@ -577,14 +577,6 @@ function get_push_char_asm character:char -> str :
   f"  push {character cast(int) itoa}\n"
 end
 
-// Generate Assembly for OpType.PUSH_CSTR
-// Params: Op
-// Return: Assembly
-function get_push_cstr_asm op:Op -> str :
-  f"  mov rsi, {op Op.func Func.name}_s{op Op.id itoa} ; Pointer to string
-  push rsi\n"
-end
-
 // Generate Assembly for OpType.PUSH_FN
 // Params: Op.token.value
 // Return: Assembly
@@ -1020,13 +1012,16 @@ function get_string_variables_for_data_section program:Program -> str :
 
     op Op.id itoa
     op Op.func Func.name
-    take function_name op_id in
+    op Op.token Token.value
+    take token_value function_name op_id in
 
     if op Op.type OpType.PUSH_CSTR == do
-        "c" op Op.token Token.value str.removeprefix format_escape_sequences_for_nasm
+        "c" token_value str.removeprefix format_escape_sequences_for_nasm
         take string in
     elif op Op.type OpType.PUSH_STR == do
-        op Op.token Token.value format_escape_sequences_for_nasm
+        // First 8 bytes encode the string length
+        token_value str.len 2 - encode_str_variable_length
+        token_value format_escape_sequences_for_nasm str.cat
         take string in
     elif op Op.type OpType.TYPEOF == do
         op Op.stack_typeof format_escape_sequences_for_nasm
@@ -1040,6 +1035,21 @@ function get_string_variables_for_data_section program:Program -> str :
     index 1 + index =
   done
   assembly_code
+end
+
+// The first 8 bytes of `str` encode the length of the static string (little-endian)
+// Example: 4   -> "4,0,0,0,0,0,0,0,"
+// Example: 420 -> "164,1,0,0,0,0,0,0,"
+function encode_str_variable_length length:int -> str :
+    "" str.copy
+    0
+    take index buffer in
+    while index 8 < do
+        buffer length 8 index * >> 0xFF and itoa str.cat "," str.cat
+        buffer =
+        index 1 + index =
+    done
+    buffer
 end
 
 function format_escape_sequences_for_nasm string:str -> str :
