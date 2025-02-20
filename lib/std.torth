@@ -125,7 +125,14 @@ function memcpy dest:ptr src:ptr len:int :
   done
 end
 
-inline function str.to_cstr str -> cstr : int.size str+ cast(cstr) end
+function str.to_cstr string:str -> cstr :
+    // Add NULL byte to the end of string
+    // `str` implementation does not guarantee NULL byte in the end
+    NULL string cast(ptr) int.size ptr+ string str.len_new ptr+ store_byte
+
+    // Return the c-style string
+    string int.size str+ cast(cstr)
+end
 
 // Print a string to stdout
 inline function puts  str : stdout fputs end
