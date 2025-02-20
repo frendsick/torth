@@ -448,7 +448,6 @@ function str.copy_new string:str -> str :
   // Allocate memory which can store the string
   string str.len
   int.size + // First 8 bytes contain the string length
-  1 + // NULL byte at the end
   malloc
 
   // Fill the new memory with string content
@@ -725,7 +724,7 @@ end
 // Deallocate string's memory if it is not a string literal
 function str.delete string:str :
   if string str.is_static do return endif
-  string str.len int.size + 1 + string cast(ptr) munmap
+  string str.len int.size + string cast(ptr) munmap
 end
 
 // Append a character to the end of a string buffer
