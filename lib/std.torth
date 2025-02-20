@@ -631,6 +631,42 @@ function str.append string:str character:char -> str :
 
   buffer cast(str)
 end
+function str.append_new string:str character:char -> str :
+  // Test if the character fits in the current memory page
+  // String literals cannot be appended so them always require allocation
+  int.size 2 +
+  string str.len_new
+  take string_len required_extra_space in
+
+  string_len PAGE_SIZE % PAGE_SIZE required_extra_space - >
+  string str.is_static ||
+  take requires_allocation in
+
+  // Allocate memory for the string if needed
+  if requires_allocation do
+    // Allocate memory for the buffer
+    string_len required_extra_space + malloc
+    peek buffer in
+    // Copy the string to buffer
+    string str.fill_new drop
+  else
+    string cast(ptr)
+    take buffer in
+  endif
+
+  // Add character to the end
+  character buffer int.size ptr+ string_len ptr+ char.store
+
+  // Update string length
+  string_len 1 + buffer int.store
+
+  // Deallocate the original string if new memory was allocated
+  if requires_allocation do
+    string str.delete
+  endif
+
+  buffer cast(str)
+end
 
 // Prepend a character to the start of a string buffer
 // Params: string, character
