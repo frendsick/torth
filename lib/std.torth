@@ -227,6 +227,19 @@ function char.to_string character:char -> str :
   take string in
   character string str.append
 end
+function char.to_string_new character:char -> str :
+  1 peek string_len in
+  int.size + // First 8 bytes contain the string length
+  malloc cast(str)
+  take string in
+
+  // Save the string length
+  string_len string cast(ptr) int.store
+  // Save the character as the string
+  character string cast(ptr) int.size ptr+ char.store
+
+  string
+end
 
 // Int functions
 inline function int.load     ptr       -> int    : LOAD_QWORD cast(int)  end
