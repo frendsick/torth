@@ -149,6 +149,7 @@ inline function eputu int : itoa eputs end
 
 // Print a signed integer to stdout
 inline function puti int : itoa puts end
+inline function puti_new int : itoa_new puts_new end
 
 // Print a signed integer to stderr
 inline function eputi int : itoa eputs end
@@ -325,6 +326,55 @@ function itoa num:int -> str :
   // Reverse for correct processing
   string str.reverse
 end
+function itoa_new num:int -> str :
+  // Return "0" if parameter is 0
+  if num 0 == do
+    "0" return
+  endif
+
+  // Swap sign of negative number
+  num 0 < take is_negative in
+  if is_negative do
+    num int.to_positive
+    num =
+  endif
+
+  // Allocate memory to the string representation
+  num int.get_digits
+  dup int.size + malloc cast(str)
+  10
+  take
+    base
+    string
+    digits
+  in
+
+  // Process individual digits: https://www.geeksforgeeks.org/implement-itoa/
+  0 while dup digits < do
+    num base %  // rem = num/base
+
+    // str[index] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+    if dup 9 >
+    do    10 - 'a' cast(int) +
+    else  '0' cast(int) +
+    endif cast(char)
+    string str.append_new
+    string =
+
+    num base / num =  // num = num/base
+    1 +               // index++
+  done drop
+
+  // Add '-' character to the end of string for negative number
+  // This will be reversed later
+  if is_negative do
+    '-' string str.append_new
+    string =
+  endif
+
+  // Reverse for correct processing
+  string str.reverse_new
+end
 
 // Get an integer representation of a string
 function atoi string:str -> int :
@@ -352,6 +402,34 @@ function atoi string:str -> int :
     integer =
     index 1 + index = // index++
   done integer
+end
+function atoi_new string:str -> int :
+  NULL
+  0
+  take index integer in
+
+  // Iterate the string character by character
+  while index string str.char_at_new NULL != do
+
+    // Get current character
+    index string str.char_at_new
+
+    // Raise an error if the character is not a number
+    if dup char.is_numeric not do
+      "[ERROR] atoi function failed: '"
+      string                    str.cat
+      "' is not an integer.\n"  str.cat
+      eputs 1 exit
+    endif
+
+    // Append the current character to integer
+    cast(int) '0' cast(int) -
+    integer 10 * +
+    integer =
+    index 1 + index = // index++
+  done
+
+  integer
 end
 
 // String functions
@@ -1064,6 +1142,23 @@ function str.reverse original:str -> str :
     // Append the current character to the reversed string
     reversed str.append reversed =
   done reversed
+end
+function str.reverse_new original:str -> str :
+  // Allocate memory for the reversed string
+  original str.len_new
+  dup int.size + malloc cast(str)
+  take reversed index in
+
+  // Append characters from the parameter string to allocated memory in the reversed order
+  while 0 index < do
+    index 1 - index =           // index--
+    index original str.char_at_new  // original[index]
+
+    // Append the current character to the reversed string
+    reversed str.append_new reversed =
+  done
+
+  reversed
 end
 
 // https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64
