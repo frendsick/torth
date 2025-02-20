@@ -704,6 +704,47 @@ function str.prepend string:str character:char -> str :
 
   buffer cast(str)
 end
+function str.prepend_new string:str character:char -> str :
+  // Test if the character fits in the current memory page
+  // String literals cannot be appended so them always require allocation
+  string str.len_new
+  int.size 2 +
+  take required_extra_space string_len in
+
+  // Test if the character fits in the current memory page
+  // String literals cannot be appended so them always require allocation
+  string_len PAGE_SIZE % PAGE_SIZE required_extra_space - >
+  string str.is_static ||
+  take requires_allocation in
+
+  if requires_allocation do
+    // Allocate memory for the buffer
+    string_len required_extra_space + malloc
+    take buffer in
+  else
+    string cast(ptr)
+    take buffer in
+  endif
+
+  // Add character to the beginning
+  character buffer int.size ptr+ char.store
+
+  // Copy rest of the string to the end
+  string_len
+  string str.to_cstr cast(ptr)
+  buffer int.size ptr+ 1 ptr+
+  memcpy
+
+  // Update string length
+  string_len 1 + buffer int.store
+
+  // Deallocate the original string if new memory was allocated
+  if requires_allocation do
+    string str.delete
+  endif
+
+  buffer cast(str)
+end
 
 // Get the character at a certain index of a string
 // Params: string, index
