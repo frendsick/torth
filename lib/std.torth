@@ -686,6 +686,41 @@ function str.cat str2:str str1:str -> str :
 
   result
 end
+function str.cat_new str2:str str1:str -> str :
+  str2 str.len_new
+  str1 str.len_new
+  str1
+  take result str1.len str2.len in
+
+  str1.len int.size + PAGE_SIZE %
+  str2.len          + PAGE_SIZE >
+  str1 str.is_static ||
+  take requires_allocation in
+
+  if requires_allocation do
+    // Allocate memory to hold both string
+    str1.len str2.len + int.size + malloc
+
+    // Fill the beginning of the allocated memory with str1
+    str1 str.fill_new result =
+  endif
+
+  // Append `str2` to `str1`
+  str2.len
+  str2 str.to_cstr cast(ptr)
+  result int.size str+ str1.len str+ cast(ptr)
+  memcpy
+
+  // Update `result` string length
+  str1.len str2.len + result cast(ptr) int.store
+
+  // Deallocate `str1` new memory was allocated
+  if requires_allocation do
+    str1 str.delete
+  endif
+
+  result
+end
 
 // Deallocate string's memory if it is not a string literal
 function str.delete string:str :
