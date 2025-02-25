@@ -172,7 +172,7 @@ inline function char.store ptr char  ->      : STORE_BYTE              end
 
 // Return the lowercase character for the given character
 function char.lower char -> char :
-  if dup char.is_uppercase do 32 + cast(char) endif
+  if dup char.is_uppercase do cast(int) 32 + cast(char) endif
 end
 
 // Return the uppercase character for the given character
