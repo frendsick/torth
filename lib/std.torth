@@ -1019,6 +1019,18 @@ function str.lower string:str -> str :
     index 1 + index = // index++
   done string
 end
+function str.lower_new string:str -> str :
+  string str.len_new
+  0
+  take index string_len in
+  while index string_len < do
+    index string str.char_at_new char.lower
+    string int.size index + str+ cast(ptr) char.store
+    index 1 + index =
+  done
+
+  string
+end
 
 // Convert string to uppercase letters
 function str.upper string:str -> str :
