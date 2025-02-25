@@ -927,7 +927,7 @@ end
 // Params: int oflag, const char *path
 // Return: fd
 function open_file oflag:int path:str -> int :
-  oflag path SYS_open syscall2
+  oflag path str.to_cstr SYS_open syscall2
   take fd in
   if fd ENOENT == do
     "File '" eputs path eputs "' does not exist.\n" eputs
@@ -959,17 +959,11 @@ function read_file path:str -> str :
   take buffer fd in
 
   // Read the file to the string buffer and return it
-  MEMORY_CAPACITY buffer fd read 1 + // Include NULL byte
+  MEMORY_CAPACITY buffer str.to_cstr fd read
   take read_bytes in
 
-  // Find the size of excess memory to the closest memory page after buf
-  PAGE_SIZE read_bytes PAGE_SIZE % -
-  take offset in
-
-  MEMORY_CAPACITY read_bytes - offset -
-  take excessive_bytes in
-
-  excessive_bytes buffer cast(ptr) read_bytes offset + ptr+ munmap
+  // Save the buffer length
+  read_bytes buffer cast(ptr) int.store
 
   // Close the file descriptor
   fd SYS_close syscall1 drop
