@@ -557,6 +557,50 @@ function str.find string:str substring:str -> int :
   // String was not found
   -1
 end
+function str.find_new string:str substring:str -> int :
+  substring str.len_new
+  string str.len_new
+  string str.copy_new
+  0
+  take
+    index
+    string_copy
+    string_len
+    substring_len
+  in
+
+  // Return -1 if substring is longer than the string
+  // or the substring is 0 length
+  if
+    substring_len string_len >
+    substring_len 0 <=
+    ||
+  do
+    -1 return
+  endif
+
+  while
+    string_copy str.len_new
+    peek string_copy_len in
+    substring_len >=
+  do
+    // String starting from the index starts with the substring
+    if string_copy substring str.startswith_new do
+      index return
+    endif
+
+    // Remove the first character from `string_copy`
+    string_copy_len 1 -
+    string_copy 1 str+
+    dup string_copy =
+    cast(ptr) int.store
+
+    index 1 + index =
+  done
+
+  // String was not found
+  -1
+end
 
 // Replace first occurrence of substring with another string.
 // Return the original string if substring is not found
