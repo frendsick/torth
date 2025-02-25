@@ -1037,9 +1037,14 @@ end
 
 // https://man7.org/linux/man-pages/man2/getcwd.2.html
 function getcwd -> str :
-    "" str.copy take cwd_buffer in
-    4096 cwd_buffer SYS_getcwd syscall2 drop
-    cwd_buffer
+    "" str.copy
+    dup str.to_cstr
+    take buffer cwd in
+    4096 buffer SYS_getcwd syscall2 drop
+
+    // Construct the string
+    buffer cstr.len cwd cast(ptr) int.store
+    cwd
 end
 
 // Get Nth command line argument
