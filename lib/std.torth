@@ -696,6 +696,28 @@ function str.replace_all
   done
   new_string
 end
+function str.replace_all_new
+  string:str
+  substring:str
+  replacement:str
+-> str :
+  // Loop as long as string as occurrences of substring
+  while True do
+    // Save the current string as old_string
+    string take old_string in
+
+    // Return if str.replace does not do changes
+    replacement substring string str.replace_new
+    take new_string in
+    if new_string old_string streq do
+      new_string return
+    endif
+
+    // Use the new string in the next iteration as old_string
+    new_string string =
+  done
+  new_string
+end
 
 // Concatenate two strings. Uses existing memory page if it can store both strings.
 // Note: If the value of `str1` is still needed after `str.cat`, please copy it with `str.copy` before calling `str.cat`
