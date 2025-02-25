@@ -125,6 +125,7 @@ function memcpy dest:ptr src:ptr len:int :
   done
 end
 
+inline function cstr+ int cstr  -> cstr : swap cast(int) + cast(cstr) end
 function str.to_cstr string:str -> cstr :
     // Add NULL byte to the end of string
     // `str` implementation does not guarantee NULL byte in the end
@@ -976,6 +977,24 @@ function str.is_numeric string:str -> bool :
   done
   // Return True if the whole string was numeric
   string str.len 0 ==
+end
+function str.is_numeric_new string:str -> bool :
+  // Check for negative numbers
+  if string str.to_cstr peek cstring in cast(ptr) char.load '-' == do
+    cstring 1 cstr+ cstring =
+  endif
+
+  // Iterate over every character of the string
+  while cstring cast(ptr) char.load peek character in NULL != do
+    // Break if non-numeric character is found
+    if character char.is_numeric not do
+      break
+    endif
+    cstring 1 cstr+ cstring = // Point to the next character
+  done
+
+  // Return True if the whole string was numeric
+  character NULL ==
 end
 
 // "Empty" a string by storing NULL byte to the beginning
