@@ -1018,11 +1018,12 @@ inline function print_file str :
 end
 
 // Test if a file exists
-function file_exists str -> bool :
-  O_RDONLY swap SYS_open syscall2
+function file_exists filename:str -> bool :
+  O_RDONLY filename str.to_cstr SYS_open syscall2
   take fd in
 
   if fd 0 > do
+    // Close the file descriptor
     fd SYS_close syscall1 drop
     True return
   endif
