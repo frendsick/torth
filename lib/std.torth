@@ -632,6 +632,43 @@ function str.replace
   // Deallocate unused strings
   string_end  str.delete
 end
+function str.replace_new
+  string:str
+  substring:str
+  replacement:str
+-> str :
+  // Get the index of the first substring match
+  substring string str.find_new
+  take index in
+
+  // Return the original string if no match was found
+  if index 0 < do
+    string return
+  endif
+
+  // Store the string length
+  string str.copy_new peek string_start in
+  str.len_new index - substring str.len_new - peek end_len in
+  int.size + malloc cast(str) take string_end in
+  end_len string_end cast(ptr) int.store
+
+  // Copy the end of string from index to `string_end`
+  end_len
+  string_start int.size index + str+ cast(ptr)
+  string_end int.size str+ cast(ptr)
+  memcpy
+
+  // Update the length of the string start
+  index string_start cast(ptr) int.store
+
+  // Construct the final string
+  string_start
+  replacement str.cat_new
+  string_end  str.cat_new
+
+  // Deallocate unused strings
+  string_end str.delete
+end
 
 // Replace all occurrences of substring with another string.
 // Return the original string if substring is not found.
