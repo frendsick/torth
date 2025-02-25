@@ -989,21 +989,22 @@ function write_file str int str -> int :
   // Write to the file
   take fd buf in
   buf str.len // size_t count
-  buf fd SYS_write syscall3
+  buf str.to_cstr fd SYS_write syscall3
 
   // Close the file descriptor
   fd SYS_close syscall1 drop
 end
 
 // Params: const char *filename, const void *buf
-function append_file str str :
+function append_file filename:str buffer:str :
+  // Open the file
   mode_644
   O_APPEND O_CREAT O_WRONLY | |
-  rot SYS_open syscall3
+  filename SYS_open syscall3
+  take fd in
 
-  take fd buf in
-  buf str.len // size_t count
-  buf fd SYS_write syscall3 drop
+  // Append buffer to file
+  buffer str.len buffer str.to_cstr fd SYS_write syscall3 drop
 
   // Close the file descriptor
   fd SYS_close syscall1 drop
