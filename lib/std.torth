@@ -1001,6 +1001,10 @@ end
 inline function str.empty str :
   NULL swap cast(ptr) store_byte
 end
+// "Empty" a string by making its length zero
+inline function str.empty_new string:str :
+  0 string cast(ptr) int.store
+end
 
 // Convert string to lowercase letters
 function str.lower string:str -> str :
