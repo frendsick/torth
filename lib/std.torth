@@ -976,7 +976,7 @@ end
 // Params: const char *pathname, mode_t mode
 // Return: int fd
 inline function touch_file str int -> int :
-  SYS_creat syscall2
+  str.to_cstr SYS_creat syscall2
 end
 
 // Write a string to a file
