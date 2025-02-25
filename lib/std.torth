@@ -1072,10 +1072,19 @@ function getcwd -> str :
 end
 
 // Get Nth command line argument
+// Return NULL if Nth argument is not found
 // Params: index
 // Return: *argv[index]
-function get_argument int -> str :
-  int.size * argv swap ptr+ str.load
+function get_argument N:int -> str :
+  argv int.size N * ptr+
+  take argv_index_ptr in
+
+  if argv_index_ptr int.load 0 == do
+    NULL cast(str) return
+  endif
+
+  // Convert argument to `str`
+  argv_index_ptr cstr.load cstr.to_str
 end
 
 // Sleep causes the calling thread to sleep either until the
