@@ -1090,17 +1090,15 @@ end
 // Sleep causes the calling thread to sleep either until the
 // number of real-time seconds specified in parameters have elapsed or
 // until a signal arrives which is not ignored.
-// Params: How many seconds to sleep (STR)
-// Return: None
 // Usage: "4.2" sleep  // Sleep for 4.2 seconds
-function sleep str :
+function sleep time:str :
   // Allocate memory for two strings
   str.size 2 * malloc take argv in
 
   // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
-  "sleep" argv str.store
-  argv ptr.size ptr+ str.store
-  envp argv "/usr/bin/sleep" execve drop
+  "sleep" str.to_cstr argv cstr.store
+  time    str.to_cstr argv ptr.size ptr+ cstr.store
+  envp argv "/usr/bin/sleep" str.to_cstr execve drop
 end
 
 // Get the value of certain environment variable
