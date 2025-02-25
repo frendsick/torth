@@ -43,14 +43,6 @@ function input -> str :
   // Allocate memory for the user input
   MEMORY_CAPACITY malloc cast(str) take buffer in
 
-  // Read and return the user input
-  MEMORY_CAPACITY buffer stdin read drop
-  buffer
-end
-function input_new -> str :
-  // Allocate memory for the user input
-  MEMORY_CAPACITY malloc cast(str) take buffer in
-
   // Read user input
   MEMORY_CAPACITY buffer str.to_cstr stdin read
 
@@ -63,20 +55,17 @@ end
 // Write a string to a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t written_bytes
-inline function write int str int -> int : SYS_write syscall3 end
-inline function write_new int cstr int -> int : SYS_write syscall3 end
+inline function write int cstr int -> int : SYS_write syscall3 end
 
 // Read <count> bytes from a file descriptor
 // Params: int fd, char *buf, size_t count
 // Return: ssize_t read_bytes
-inline function read int str int -> int : SYS_read syscall3 end
-inline function read_new int cstr int -> int : SYS_read syscall3 end
+inline function read int cstr int -> int : SYS_read syscall3 end
 
 // Execute the command referred to by <pathname>
 // Params: const char *pathname, char *const argv[], char *const envp[]
 // Return: On success, execve does not return, on error -1 is returned
-inline function execve str ptr ptr -> int : SYS_execve syscall3 end
-inline function execve_new cstr ptr ptr -> int : SYS_execve syscall3 end
+inline function execve cstr ptr ptr -> int : SYS_execve syscall3 end
 
 // Exit from the program with a <status> code
 // Params: int status
@@ -86,8 +75,7 @@ function exit int : SYS_exit syscall1 drop end
 // Print a string to a file descriptor
 // Params: int fd, char *buf
 // Return: None
-function fputs fd:int buf:str : buf str.len buf fd write drop end
-function fputs_new fd:int buf:str : buf str.len_new buf str.to_cstr fd write_new drop end
+function fputs fd:int buf:str : buf str.len buf str.to_cstr fd write drop end
 
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
@@ -129,15 +117,14 @@ inline function cstr+ int cstr  -> cstr : swap cast(int) + cast(cstr) end
 function str.to_cstr string:str -> cstr :
     // Add NULL byte to the end of string
     // `str` implementation does not guarantee NULL byte in the end
-    NULL string cast(ptr) int.size ptr+ string str.len_new ptr+ store_byte
+    NULL string cast(ptr) int.size ptr+ string str.len ptr+ store_byte
 
     // Return the c-style string
     string int.size str+ cast(cstr)
 end
 
 // Print a string to stdout
-inline function puts  str : stdout fputs end
-inline function puts_new  str : stdout fputs_new end
+inline function puts str : stdout fputs end
 
 // Print a string to stderr
 inline function eputs str : stderr fputs end
@@ -150,7 +137,6 @@ inline function eputu int : itoa eputs end
 
 // Print a signed integer to stdout
 inline function puti int : itoa puts end
-inline function puti_new int : itoa_new puts_new end
 
 // Print a signed integer to stderr
 inline function eputi int : itoa eputs end
@@ -225,11 +211,6 @@ function char.is_whitespace c:char -> bool :
 end
 
 function char.to_string character:char -> str :
-  "" str.copy
-  take string in
-  character string str.append
-end
-function char.to_string_new character:char -> str :
   1 peek string_len in
   int.size + // First 8 bytes contain the string length
   malloc cast(str)
@@ -292,9 +273,9 @@ function itoa num:int -> str :
   endif
 
   // Allocate memory to the string representation
-  num int.get_digits        // digits
-  dup 2 + malloc cast(str)  // string
-  10                        // base
+  num int.get_digits
+  dup int.size + malloc cast(str)
+  10
   take
     base
     string
@@ -327,55 +308,6 @@ function itoa num:int -> str :
   // Reverse for correct processing
   string str.reverse
 end
-function itoa_new num:int -> str :
-  // Return "0" if parameter is 0
-  if num 0 == do
-    "0" return
-  endif
-
-  // Swap sign of negative number
-  num 0 < take is_negative in
-  if is_negative do
-    num int.to_positive
-    num =
-  endif
-
-  // Allocate memory to the string representation
-  num int.get_digits
-  dup int.size + malloc cast(str)
-  10
-  take
-    base
-    string
-    digits
-  in
-
-  // Process individual digits: https://www.geeksforgeeks.org/implement-itoa/
-  0 while dup digits < do
-    num base %  // rem = num/base
-
-    // str[index] = (rem > 9)? (rem-10) + 'a' : rem + '0';
-    if dup 9 >
-    do    10 - 'a' cast(int) +
-    else  '0' cast(int) +
-    endif cast(char)
-    string str.append_new
-    string =
-
-    num base / num =  // num = num/base
-    1 +               // index++
-  done drop
-
-  // Add '-' character to the end of string for negative number
-  // This will be reversed later
-  if is_negative do
-    '-' string str.append_new
-    string =
-  endif
-
-  // Reverse for correct processing
-  string str.reverse_new
-end
 
 // Get an integer representation of a string
 function atoi string:str -> int :
@@ -402,32 +334,6 @@ function atoi string:str -> int :
     integer 10 * +
     integer =
     index 1 + index = // index++
-  done integer
-end
-function atoi_new string:str -> int :
-  NULL
-  0
-  take index integer in
-
-  // Iterate the string character by character
-  while index string str.char_at_new NULL != do
-
-    // Get current character
-    index string str.char_at_new
-
-    // Raise an error if the character is not a number
-    if dup char.is_numeric not do
-      "[ERROR] atoi function failed: '"
-      string                    str.cat
-      "' is not an integer.\n"  str.cat
-      eputs 1 exit
-    endif
-
-    // Append the current character to integer
-    cast(int) '0' cast(int) -
-    integer 10 * +
-    integer =
-    index 1 + index = // index++
   done
 
   integer
@@ -439,49 +345,24 @@ inline function str.load     ptr       -> str  : LOAD_QWORD cast(str)          e
 inline function str.store    ptr str   ->      : STORE_QWORD                   end
 
 // Copy string to a newly allocated memory location and return the copied string
-function str.copy str -> str :
-  // Allocate memory which can store the string
-  dup str.len 1 + malloc
-  swap // str
-  str.fill
-end
-function str.copy_new string:str -> str :
+function str.copy string:str -> str :
   // Allocate memory which can store the string
   string str.len
   int.size + // First 8 bytes contain the string length
   malloc
 
   // Fill the new memory with string content
-  string str.fill_new
+  string str.fill
 end
 
 // Get the length of a string
 // Example: "Test string" -> 11
-function str.len string:str -> int :
-  0 while dup string str.char_at NULL != do
-    1 +
-  done
-end
-inline function str.len_new str -> int : cast(ptr) int.load end
+inline function str.len str -> int : cast(ptr) int.load end
 
 // Fill a ptr with the contents of a string
 function str.fill string:str pointer:ptr -> str :
-  // Loop through every character of the first string
-  0 take index in
-  while
-    index string str.char_at
-    peek character in
-    NULL !=
-  do
-    character
-    pointer index ptr+ char.store
-    index 1 + index =
-  done
-  pointer cast(str)
-end
-function str.fill_new string:str pointer:ptr -> str :
   // Store the string length on the first byte
-  string str.len_new peek string_len in
+  string str.len peek string_len in
   pointer int.store
 
   // Store the string content to the pointer character by character
@@ -528,40 +409,7 @@ end
 function str.find string:str substring:str -> int :
   substring str.len
   string str.len
-  0
-  take
-    index
-    string.len
-    substring.len
-  in
-
-  // Return -1 if substring is longer than the string
-  // or the substring is 0 length
-  if
-    substring.len string.len >
-    substring.len 0 <=
-    ||
-  do
-    -1 return
-  endif
-
-  while index string.len substring.len - <= do
-
-    // String starting from the index starts with the substring
-    if string index str+ substring str.startswith do
-      index return
-    endif
-
-    index 1 + index =
-  done
-
-  // String was not found
-  -1
-end
-function str.find_new string:str substring:str -> int :
-  substring str.len_new
-  string str.len_new
-  string str.copy_new
+  string str.copy
   0
   take
     index
@@ -581,12 +429,12 @@ function str.find_new string:str substring:str -> int :
   endif
 
   while
-    string_copy str.len_new
+    string_copy str.len
     peek string_copy_len in
     substring_len >=
   do
     // String starting from the index starts with the substring
-    if string_copy substring str.startswith_new do
+    if string_copy substring str.startswith do
       index return
     endif
 
@@ -605,8 +453,6 @@ end
 
 // Replace first occurrence of substring with another string.
 // Return the original string if substring is not found
-// Params: string, substring, replacement
-// Return: string
 function str.replace
   string:str
   substring:str
@@ -621,35 +467,9 @@ function str.replace
     string return
   endif
 
-  // Split the string from the index
-  string index str+ cast(ptr) NULL cast(char) swap char.store
-  string index substring str.len + str+
-  take string_end in
-
-  string str.copy
-  replacement str.cat
-  string_end  str.cat
-
-  // Deallocate unused strings
-  string_end  str.delete
-end
-function str.replace_new
-  string:str
-  substring:str
-  replacement:str
--> str :
-  // Get the index of the first substring match
-  substring string str.find_new
-  take index in
-
-  // Return the original string if no match was found
-  if index 0 < do
-    string return
-  endif
-
   // Store the string length
-  string str.copy_new peek string_start in
-  str.len_new index - substring str.len_new - peek end_len in
+  string str.copy peek string_start in
+  str.len index - substring str.len - peek end_len in
   int.size + malloc cast(str) take string_end in
   end_len string_end cast(ptr) int.store
 
@@ -664,8 +484,8 @@ function str.replace_new
 
   // Construct the final string
   string_start
-  replacement str.cat_new
-  string_end  str.cat_new
+  replacement str.cat
+  string_end  str.cat
 
   // Deallocate unused strings
   string_end str.delete
@@ -697,67 +517,14 @@ function str.replace_all
   done
   new_string
 end
-function str.replace_all_new
-  string:str
-  substring:str
-  replacement:str
--> str :
-  // Loop as long as string as occurrences of substring
-  while True do
-    // Save the current string as old_string
-    string take old_string in
-
-    // Return if str.replace does not do changes
-    replacement substring string str.replace_new
-    take new_string in
-    if new_string old_string streq do
-      new_string return
-    endif
-
-    // Use the new string in the next iteration as old_string
-    new_string string =
-  done
-  new_string
-end
 
 // Concatenate two strings. Uses existing memory page if it can store both strings.
 // Note: If the value of `str1` is still needed after `str.cat`, please copy it with `str.copy` before calling `str.cat`
 // Params: str2, str1
 // Return: concat(str1+str2)
 function str.cat str2:str str1:str -> str :
+  str2 str.len
   str1 str.len
-  str1 str.len
-  take str1.len str2.len in
-
-  str1.len 1 + PAGE_SIZE %
-  str2.len   + PAGE_SIZE >
-  str1 str.is_static ||
-  take requires_allocation in
-
-  if requires_allocation do
-    // Allocate memory to hold both string
-    str1.len str2.len + 1 + malloc
-
-    // Fill the beginning of the allocated memory with str1
-    str1 str.fill   take result in
-  else
-    str1            take result in
-  endif
-
-  // Append `str2` to `str1`
-  result str1.len str+ cast(ptr)
-  str2 str.fill drop
-
-  // Deallocate `str1` new memory was allocated
-  if requires_allocation do
-    str1 str.delete
-  endif
-
-  result
-end
-function str.cat_new str2:str str1:str -> str :
-  str2 str.len_new
-  str1 str.len_new
   str1
   take result str1.len str2.len in
 
@@ -771,7 +538,7 @@ function str.cat_new str2:str str1:str -> str :
     str1.len str2.len + int.size + malloc
 
     // Fill the beginning of the allocated memory with str1
-    str1 str.fill_new result =
+    str1 str.fill result =
   endif
 
   // Append `str2` to `str1`
@@ -798,46 +565,11 @@ function str.delete string:str :
 end
 
 // Append a character to the end of a string buffer
-// Params: string, character
-// Return: None
 function str.append string:str character:char -> str :
   // Test if the character fits in the current memory page
   // String literals cannot be appended so them always require allocation
-  string str.len PAGE_SIZE % PAGE_SIZE 2 - >
-  string str.is_static ||
-  take requires_allocation in
-
-  // Allocate memory for the string if needed
-  if requires_allocation do
-    // Allocate memory for the buffer
-    string str.len 2 + malloc
-    take buffer in
-
-    // Copy the string to buffer
-    string str.len
-    string cast(ptr)
-    buffer
-    memcpy
-  else
-    string cast(ptr)
-    take buffer in
-  endif
-
-  // Add character to the end
-  character buffer string str.len ptr+ char.store
-
-  // Deallocate the original string if new memory was allocated
-  if requires_allocation do
-    string str.delete
-  endif
-
-  buffer cast(str)
-end
-function str.append_new string:str character:char -> str :
-  // Test if the character fits in the current memory page
-  // String literals cannot be appended so them always require allocation
   int.size 2 +
-  string str.len_new
+  string str.len
   take string_len required_extra_space in
 
   string_len PAGE_SIZE % PAGE_SIZE required_extra_space - >
@@ -850,7 +582,7 @@ function str.append_new string:str character:char -> str :
     string_len required_extra_space + malloc
     peek buffer in
     // Copy the string to buffer
-    string str.fill_new drop
+    string str.fill drop
   else
     string cast(ptr)
     take buffer in
@@ -871,45 +603,10 @@ function str.append_new string:str character:char -> str :
 end
 
 // Prepend a character to the start of a string buffer
-// Params: string, character
-// Return: None
 function str.prepend string:str character:char -> str :
   // Test if the character fits in the current memory page
   // String literals cannot be appended so them always require allocation
   string str.len
-  dup PAGE_SIZE % PAGE_SIZE 2 - >
-  string str.is_static ||
-  take requires_allocation string.len in
-
-  if requires_allocation do
-    // Allocate memory for the buffer
-    string.len 2 + malloc
-    take buffer in
-  else
-    string cast(ptr)
-    take buffer in
-  endif
-
-  // Add character to the beginning
-  character buffer char.store
-
-  // Copy rest of the string to the end
-  string.len
-  string cast(ptr)
-  buffer 1 ptr+
-  memcpy
-
-  // Deallocate the original string if new memory was allocated
-  if requires_allocation do
-    string str.delete
-  endif
-
-  buffer cast(str)
-end
-function str.prepend_new string:str character:char -> str :
-  // Test if the character fits in the current memory page
-  // String literals cannot be appended so them always require allocation
-  string str.len_new
   int.size 2 +
   take required_extra_space string_len in
 
@@ -951,8 +648,7 @@ end
 // Get the character at a certain index of a string
 // Params: string, index
 // Return: character_at_index
-inline function str.char_at str int -> char : swap str+ cast(ptr) char.load end
-inline function str.char_at_new str int -> char : swap str+ int.size str+ cast(ptr) char.load end
+inline function str.char_at str int -> char : swap str+ int.size str+ cast(ptr) char.load end
 
 // Test if a string is a palindrome (reads the same backward or forward)
 inline function str.is_palindrome str -> bool : dup str.reverse streq end
@@ -962,23 +658,6 @@ inline function str.is_static str -> bool : cast(int) KERNEL_SPACE_PTR < end
 
 // Test if string only contains numeric characters
 function str.is_numeric string:str -> bool :
-  // Check for negative numbers
-  if string cast(ptr) char.load '-' == do
-    string 1 str+ string =
-  endif
-
-  // Iterate over every character of the string
-  while string cast(ptr) char.load NULL != do
-    // Break if non-numeric character is found
-    if string cast(ptr) char.load char.is_numeric not do
-      break
-    endif
-    string 1 str+ string = // Point to the next character
-  done
-  // Return True if the whole string was numeric
-  string str.len 0 ==
-end
-function str.is_numeric_new string:str -> bool :
   // Check for negative numbers
   if string str.to_cstr peek cstring in cast(ptr) char.load '-' == do
     cstring 1 cstr+ cstring =
@@ -997,34 +676,18 @@ function str.is_numeric_new string:str -> bool :
   character NULL ==
 end
 
-// "Empty" a string by storing NULL byte to the beginning
-inline function str.empty str :
-  NULL swap cast(ptr) store_byte
-end
 // "Empty" a string by making its length zero
-inline function str.empty_new string:str :
+inline function str.empty string:str :
   0 string cast(ptr) int.store
 end
 
 // Convert string to lowercase letters
 function str.lower string:str -> str :
-  string str.len  // len
-  0               // index
-  take index len in
-
-  // Rewrite string with lowercase characters
-  while index len < do
-    index string str.char_at char.lower
-    string cast(ptr) index ptr+ char.store
-    index 1 + index = // index++
-  done string
-end
-function str.lower_new string:str -> str :
-  string str.len_new
+  string str.len
   0
   take index string_len in
   while index string_len < do
-    index string str.char_at_new char.lower
+    index string str.char_at char.lower
     string int.size index + str+ cast(ptr) char.store
     index 1 + index =
   done
@@ -1034,23 +697,11 @@ end
 
 // Convert string to uppercase letters
 function str.upper string:str -> str :
-  string str.len  // len
-  0               // index
-  take index len in
-
-  // Rewrite string with uppercase characters
-  while index len < do
-    index string str.char_at char.upper
-    string cast(ptr) index ptr+ char.store
-    index 1 + index = // index++
-  done string
-end
-function str.upper_new string:str -> str :
-  string str.len_new
+  string str.len
   0
   take index string_len in
   while index string_len < do
-    index string str.char_at_new char.upper
+    index string str.char_at char.upper
     string int.size index + str+ cast(ptr) char.store
     index 1 + index =
   done
@@ -1061,7 +712,7 @@ end
 // Strip all non-alphanumeric characters from a string
 function str.alphanumeric string:str -> str :
   // Allocate enough memory to hold the whole string
-  string str.len_new
+  string str.len
   dup int.size + malloc cast(str)
   0
   take index buffer string_len in
@@ -1072,7 +723,7 @@ function str.alphanumeric string:str -> str :
 
     // Append alphanumeric character to the buffer
     if current_char char.is_alphanumeric do
-      current_char buffer str.append_new buffer =
+      current_char buffer str.append buffer =
     endif
     index 1 + index =
   done
@@ -1084,37 +735,10 @@ end
 // Params: prefix (STR), string (STR)
 // Return: True/False
 function str.startswith prefix:str string:str -> bool :
-  string str.len
-  prefix str.len
-  0
-  take
-    index
-    prefix.len
-    string.len
-  in
-
-  // Return False if prefix.len > string.len
-  if prefix.len string.len > do
-    False return
-  endif
-
-  while index prefix.len < do
-    if
-      index string str.char_at
-      index prefix str.char_at
-      !=
-    do
-      False return
-    endif
-    index 1 + index = // index++
-  done
-  True
-end
-function str.startswith_new prefix:str string:str -> bool :
   // Return False if prefix.len > string.len
   if
-    prefix str.len_new peek prefix.len in
-    string str.len_new peek string.len in
+    prefix str.len peek prefix.len in
+    string str.len peek string.len in
     >
   do
     False return
@@ -1125,8 +749,8 @@ function str.startswith_new prefix:str string:str -> bool :
   while index prefix.len < do
     // If a character does not match, the string does not start with the prefix
     if
-      index string str.char_at_new
-      index prefix str.char_at_new
+      index string str.char_at
+      index prefix str.char_at
       !=
     do
       False return
@@ -1140,37 +764,10 @@ end
 // Params: suffix (STR), string (STR)
 // Return: True/False
 function str.endswith suffix:str string:str -> bool :
-  string str.len
-  suffix str.len
-  0
-  take
-    index
-    suffix.len
-    string.len
-  in
-
-  // Return False if suffix.len > string.len
-  if suffix.len string.len > do
-    False return
-  endif
-
-  while index suffix.len < do
-    if
-      string.len index - 1 - string str.char_at
-      suffix.len index - 1 - suffix str.char_at
-      !=
-    do
-      False return
-    endif
-    index 1 + index = // index++
-  done
-  True
-end
-function str.endswith_new suffix:str string:str -> bool :
   // Return False if prefix.len > string.len
   if
-    suffix str.len_new peek suffix.len in
-    string str.len_new peek string.len in
+    suffix str.len peek suffix.len in
+    string str.len peek string.len in
     >
   do
     False return
@@ -1181,8 +778,8 @@ function str.endswith_new suffix:str string:str -> bool :
   while index suffix.len < do
     // If a character does not match, the string does not end with the prefix
     if
-      string.len index - 1 - string str.char_at_new
-      suffix.len index - 1 - suffix str.char_at_new
+      string.len index - 1 - string str.char_at
+      suffix.len index - 1 - suffix str.char_at
       !=
     do
       False return
@@ -1196,18 +793,12 @@ end
 // Params: string (STR), prefix (STR)
 // Return: None
 function str.removeprefix string:str prefix:str -> str :
-  if string prefix str.startswith do
-    string prefix str.len str+ string =
-  endif
-  string
-end
-function str.removeprefix_new string:str prefix:str -> str :
-  if string prefix str.startswith_new not do
+  if string prefix str.startswith not do
     string return
   endif
 
-  string str.len_new // string_len
-  prefix str.len_new peek prefix_len in
+  string str.len // string_len
+  prefix str.len peek prefix_len in
   minus take new_len in
 
   // Erase the prefix by moving the string pointer
@@ -1221,17 +812,9 @@ end
 // Params: string (STR), suffix (STR)
 // Return: None
 function str.removesuffix string:str suffix:str -> str :
-  // Return a new string without the matching suffix
   if string suffix str.endswith do
-    string str.copy string =
-    string dup str.len suffix str.len - str+ str.empty
-  endif
-  string
-end
-function str.removesuffix_new string:str suffix:str -> str :
-  if string suffix str.endswith_new do
     // "Remove" suffix by changing the string length
-    string str.len_new suffix str.len_new minus
+    string str.len suffix str.len minus
     string cast(ptr) int.store
   endif
   string
@@ -1257,30 +840,12 @@ function streq str1:str str2:str -> bool :
   char2 NULL ==
   &&
 end
-function streq_new str1:str str2:str -> bool :
-  // Iterate over every character of the strings
-  0 take index in
-  while
-    index str1 str.char_at_new peek char1 in NULL !=
-    index str2 str.char_at_new peek char2 in NULL !=
-    &&
-  do
-    if char1 char2 != do
-      False return
-    endif
-    index 1 + index =
-  done
-
-  // Strings are equal if both were iterated to the end
-  char1 NULL ==
-  char2 NULL ==
-  &&
-end
 
 // Reverse a string
 function str.reverse original:str -> str :
   // Allocate memory for the reversed string
-  original str.len dup malloc cast(str)
+  original str.len
+  dup int.size + malloc cast(str)
   take reversed index in
 
   // Append characters from the parameter string to allocated memory in the reversed order
@@ -1290,21 +855,6 @@ function str.reverse original:str -> str :
 
     // Append the current character to the reversed string
     reversed str.append reversed =
-  done reversed
-end
-function str.reverse_new original:str -> str :
-  // Allocate memory for the reversed string
-  original str.len_new
-  dup int.size + malloc cast(str)
-  take reversed index in
-
-  // Append characters from the parameter string to allocated memory in the reversed order
-  while 0 index < do
-    index 1 - index =           // index--
-    index original str.char_at_new  // original[index]
-
-    // Append the current character to the reversed string
-    reversed str.append_new reversed =
   done
 
   reversed
