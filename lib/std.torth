@@ -113,7 +113,31 @@ function memcpy dest:ptr src:ptr len:int :
   done
 end
 
+inline function cstr.load  ptr      -> cstr : LOAD_QWORD cast(cstr)   end
+inline function cstr.store ptr cstr ->      : STORE_QWORD             end
 inline function cstr+ int cstr  -> cstr : swap cast(int) + cast(cstr) end
+function cstr.to_str cstring:cstr -> str :
+    cstring cstr.len take cstring_len in
+    if cstring_len 0 == do
+        "" return
+    endif
+
+    // Allocate memory for string
+    cstring_len int.size + malloc cast(str)
+    take string in
+
+    // Save the string length
+    cstring_len string cast(ptr) int.store
+
+    // Copy the `cstring` contents to `string`
+    cstring_len
+    cstring cast(ptr)
+    string int.size str+ cast(ptr)
+    memcpy
+
+    string
+end
+
 function str.to_cstr string:str -> cstr :
     // Add NULL byte to the end of string
     // `str` implementation does not guarantee NULL byte in the end
