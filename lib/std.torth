@@ -358,6 +358,11 @@ end
 // Get the length of a string
 // Example: "Test string" -> 11
 inline function str.len str -> int : cast(ptr) int.load end
+function cstr.len string:cstr -> int :
+  0 while string over cstr+ cast(ptr) char.load NULL != do
+    1 +
+  done
+end
 
 // Fill a ptr with the contents of a string
 function str.fill string:str pointer:ptr -> str :
