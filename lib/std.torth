@@ -1109,7 +1109,7 @@ function getenv evar_key:str -> str :
   // Check environment variables one by one
   0 take index in
   while envp int.load NULL != do
-    envp index ptr.size * ptr+ str.load
+    envp index ptr.size * ptr+ cstr.load cstr.to_str
     take evar_value in
 
     // Return the environment variable when found
@@ -1119,7 +1119,8 @@ function getenv evar_key:str -> str :
       done
 
       // Get the string from the character after '='
-      evar_value cast(ptr) swap 1 + ptr+ cast(str)
+      evar_value cast(ptr) swap 1 + int.size + ptr+
+      cast(cstr) cstr.to_str
       return
     endif
     index 1 + index = // index++
