@@ -764,8 +764,9 @@ end
 function get_load_asm intrinsic:str -> str :
   // Parse operation size
   // "BYTE" | "WORD" | "DWORD" | "QWORD"
-  intrinsic str.copy str.upper "LOAD_" str.len str+
+  "LOAD_" intrinsic str.copy str.removeprefix
   take operation_size in
+  f"{operation_size}\n" puts
 
   // Generate assembly
   "  pop rax\n"
