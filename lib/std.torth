@@ -547,6 +547,29 @@ function str.replace_all
   new_string
 end
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
+// Get slice from string, does not copy
+function str.slice string:str start_index:int end_index:int -> str :
+    // Return empty string when `start_index` does not make sense
+    if
+        start_index end_index >=
+        start_index string str.len peek string_len in >=
+        ||
+    do
+        "" return
+    endif
+
+    // Use the string length as the end index when `end_index` is too large
+    if end_index string_len >= do
+        string_len end_index =
+    endif
+
+    // Construct the new string
+    string start_index str+ string =
+    end_index start_index - string cast(ptr) int.store
+    string
+end
+
 // Concatenate two strings. Uses existing memory page if it can store both strings.
 // Note: If the value of `str1` is still needed after `str.cat`, please copy it with `str.copy` before calling `str.cat`
 // Params: str2, str1
