@@ -166,26 +166,34 @@ end
 // Return NULL if there is no string inside quotes
 // Params: String which begins with a double quote
 // Return: The multiline string between double quotes
-function get_string_inside_quotes str -> str :
-  str.copy
-  take original in
+function get_string_inside_quotes string:str -> str :
+  string str.copy take string_copy in
 
   // Return NULL if the first character is not a double quote
-  if original cast(ptr) char.load '"' != do
+  if 0 string_copy str.char_at '"' != do
     NULLPTR cast(str) return
   endif
 
-  1 while dup original str.len < do
-    1 + // index++
-
+  string_copy str.len
+  1
+  take index string_copy_len in
+  while index string_copy_len < do
     // Return when the other quote is found
-    if dup original str.char_at '"' == do
-      original cast(ptr) over ptr+ NULL cast(char) swap char.store
-      drop
-      original 1 str+ return
+    if index string_copy str.char_at peek end_quote in '"' == do
+      // Remove the first character, the double quote
+      string_copy 1 str+ string_copy =
+
+      // Save the string length
+      index 1 - string_copy cast(ptr) int.store
+
+      // Return the string
+      string_copy return
     endif
-  done drop
-  NULLPTR cast(str)
+
+    index 1 + index =
+  done
+
+  NULLPTR cast(str) // Closing quote was not found
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
