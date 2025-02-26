@@ -359,10 +359,10 @@ end
 
 // "cast(int)" -> "int"
 function get_cast_type token_value:str -> str :
-  token_value dup str.len 1 - str+
-  cast(ptr) NULL cast(char) swap char.store
+  token_value str.len 1 -
   "(" token_value str.find 1 +
-  token_value swap str+
+  token_value
+  str.slice
 end
 
 // Get the string representation of the OpType
