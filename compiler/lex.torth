@@ -241,7 +241,7 @@ function get_token_type token_value:str -> str :
   // Character => 'a'
   elif
     token_value str.len 3 ==
-    token_value cast(ptr) char.load single_quote ==
+    0 token_value str.char_at single_quote ==
     2 token_value str.char_at single_quote ==
     && &&
   do
@@ -253,14 +253,14 @@ function get_token_type token_value:str -> str :
     "int" return
   // Hexadecimal => 0x1337
   elif
-    token_value cast(ptr) char.load '0' ==
+    0 token_value str.char_at '0' ==
     1 token_value str.char_at 'x' ==
     &&
   do
     "int" return
   // String => "This is string\n"
   elif
-    token_value cast(ptr) char.load                 '"' ==
+    0 token_value str.char_at '"' ==
     token_value str.len 1 - token_value str.char_at '"' ==
     &&
   do
