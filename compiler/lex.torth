@@ -99,7 +99,7 @@ end
 // Return: file_with_path: str
 function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
   // Get the file name without quotes
-  if file_name cast(ptr) char.load '"' == do
+  if 0 file_name str.char_at '"' == do
     file_name get_string_inside_quotes
     file_name =
   endif
