@@ -698,9 +698,17 @@ function str.prepend string:str character:char -> str :
 end
 
 // Get the character at a certain index of a string
-// Params: string, index
-// Return: character_at_index
-inline function str.char_at str int -> char : swap str+ int.size str+ cast(ptr) char.load end
+// Return NULL if index is not within the string
+function str.char_at string:str index:int -> char :
+    if
+        index string str.len >=
+        index 0 <
+        ||
+    do
+        NULL cast(char) return
+    endif
+    string int.size str+ index str+ cast(ptr) char.load
+end
 
 // Test if a string is a palindrome (reads the same backward or forward)
 inline function str.is_palindrome str -> bool : dup str.reverse streq end
