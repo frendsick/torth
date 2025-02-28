@@ -966,16 +966,19 @@ function base64.encode string:str -> str :
     // Those four 6-bit numbers are used as indices into the base64 character list
     0 while dup 4 < do
       dup 6bit_list List.nth int.load base64_characters str.char_at
-      base64_string cast(ptr) base64_index ptr+ char.store
-      base64_index 1 + base64_index = // base64_index++
+      base64_string cast(ptr) int.size ptr+ base64_index ptr+ char.store
+      base64_string str.len 1 + base64_string cast(ptr) int.store
+      base64_index 1 + base64_index =
       1 +
     done drop
 
     char_index 3 + char_index = // char_index += 3
   done
 
-  // Append the padding characters and return the result
-  NULL cast(char) base64_string dup str.len padding_size - str+ cast(ptr) char.store
+  // Replace the end characters with possible padding
+  base64_string str.len padding_size - 0 base64_string str.slice
+  base64_string =
+
   if    padding_size 1 ==
   do    base64_string "="   str.cat return
   elif  padding_size 2 ==
