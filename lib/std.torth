@@ -504,7 +504,7 @@ function str.replace
 
   // Copy the end of string from index to `string_end`
   end_len
-  string_start int.size index + str+ cast(ptr)
+  string_start int.size index + substring str.len + str+ cast(ptr)
   string_end int.size str+ cast(ptr)
   memcpy
 
