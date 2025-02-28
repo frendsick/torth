@@ -61,7 +61,7 @@ function execute_program file:str :
   str.size malloc
   take argv executable in
 
-  executable argv str.store
+  executable str.to_cstr argv cstr.store
   NULLPTR argv executable str.to_cstr execve drop
 end
 
@@ -78,8 +78,8 @@ end
 function remove_file file_name:str :
   // Allocate memory for the arguments
   List.init take argv in
-  "rm"        cast(ptr) argv List.append
-  file_name   cast(ptr) argv List.append
+  "rm"        str.to_cstr cast(ptr) argv List.append
+  file_name   str.to_cstr cast(ptr) argv List.append
   NULLPTR argv List.first "/usr/bin/rm" str.to_cstr execve drop
 end
 
@@ -225,7 +225,7 @@ end
 // Params: index
 // Return: *argv[index]
 function get_nth_cmd_line_argument int -> str :
-  int.size * argv swap ptr+ str.load
+  int.size * argv swap ptr+ cstr.load cstr.to_str
 end
 
 // Get Constant with certain name from List[Constants]
