@@ -414,7 +414,7 @@ function get_tokens_from_code
         endif
 
         // The expression ends to the close curly bracket
-        close_curly_index 0 expr str.copy str.slice
+        close_curly_index 0 expr str.slice
         expr =
 
         newline_indexes index tokens file_name expr get_tokens_from_code
