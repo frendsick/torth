@@ -1060,7 +1060,7 @@ function append_file filename:str buffer:str :
   // Open the file
   mode_644
   O_APPEND O_CREAT O_WRONLY | |
-  filename SYS_open syscall3
+  filename str.to_cstr SYS_open syscall3
   take fd in
 
   // Append buffer to file
