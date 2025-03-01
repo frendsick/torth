@@ -54,7 +54,7 @@ syntax keyword torthNull  NULL
 syntax keyword torthBoolean TRUE FALSE
 
 " Type names the compiler recognizes
-syntax keyword torthTypeNames any bool char fn none int ptr str List Array LinkedList
+syntax keyword torthTypeNames any bool char cstr fn none int ptr str List Array LinkedList
 
 " Delimiters
 syntax match torthDelimiter /\v([:.()\[\]]|-\>|-(\D|$)@=)/  ": . ( ) [ ] ->"
