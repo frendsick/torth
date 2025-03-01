@@ -2,158 +2,167 @@ include "std"
 
 class Parser
     input:str
-    input_len:int
-    cursor:int
 
     method init input:str -> Parser :
         Parser.size malloc cast(Parser)
-        take parser in
-
-        input           parser Parser->input
-        input str.len   parser Parser->input_len
-        0               parser Parser->cursor
-        parser
+        input over Parser->input
     end
 
-    // Is the cursor is greater than the input_len, parsing is complete
     method is_complete self:Parser -> bool :
-        self Parser.cursor self Parser.input_len >=
+        self Parser.input str.len 0 ==
     end
 
-    // Get the remaining string from cursor
-    method get_unparsed self:Parser -> str :
-        self Parser.input self Parser.cursor str+
-    end
-
-    // Save new value to cursor if possible
-    method save_cursor self:Parser cursor:int -> bool :
-        // Invalid value for cursor
-        if
-            cursor self Parser.input_len >=
-            cursor 0 <
-            ||
-        do
-            False return
-        endif
-
-        // Save the new cursor value
-        cursor self Parser->cursor
-        True
-    end
-
-    // Parse a character if it matches
-    method parse_character self:Parser character:char -> str :
+    method parse_character self:Parser character:char -> char bool :
         // Parsing is complete
         if self Parser.is_complete do
-            "" return
+            NULL cast(char) False return
         endif
 
-        // The character at cursor does not match
-        if self Parser.get_unparsed cast(ptr) char.load character != do
-            "" return
+        // The first character does not match
+        if 0 self Parser.input peek original_input in str.char_at character != do
+            NULL cast(char) False return
         endif
 
-        // Parse over the matching character
-        self Parser.cursor 1 + self Parser->cursor
-        character char.to_string
+        // Parse over the first character
+        original_input str.len 1 original_input str.slice self Parser->input
+        character True
     end
 
-    method parse_string self:Parser string:str -> str :
+    method parse_string self:Parser string:str -> str bool :
         // Parsing is complete
         if self Parser.is_complete do
-            "" return
+            "" False return
         endif
 
         // The string at cursor does not match
-        if self Parser.get_unparsed string str.startswith not do
-            "" return
+        if self Parser.input string str.startswith not do
+            "" False return
         endif
 
         // Parse over the matching string
-        self Parser.cursor string str.len + self Parser->cursor
-        string
+        self Parser.input str.len string str.len self Parser.input str.slice
+        self Parser->input
+        string True
     end
 
-    // Parse whitespace characters
-    method parse_whitespace self:Parser -> str :
-        // Parsing is complete
-        if self Parser.is_complete do
-            "" return
-        endif
-
-        // Parse whitespace characters
-        "" str.copy take parsed in
-        while
-            self Parser.get_unparsed cast(ptr) char.load
-            peek current_char in
+    // Parse one whitespace character
+    method parse_whitespace self:Parser -> str bool :
+        if
+            0 self Parser.input str.char_at
+            peek character in
             char.is_whitespace
         do
-            current_char parsed str.append parsed =
-            self Parser.cursor 1 + self Parser->cursor
-        done
+            1 self Parser.take_n drop drop
+            character char.to_string True return
+        endif
 
-        parsed
+        NULL cast(str) False
     end
 
-    method parse_predicate self:Parser predicate:fn[Parser -> str] -> str :
+    // Parse zero or more whitespace characters
+    method parse_whitespaces self:Parser -> str :
+        Parser.parse_whitespace& self Parser.parse_while
+    end
+
+    // Parse one number character
+    method parse_number self:Parser -> str bool :
+        if
+            0 self Parser.input str.char_at
+            peek character in
+            char.is_numeric
+        do
+            1 self Parser.take_n drop drop
+            character char.to_string True return
+        endif
+
+        NULL cast(str) False
+    end
+
+    method parse_numbers self:Parser -> str :
+        Parser.parse_number& self Parser.parse_while
+    end
+
+    method parse_predicate self:Parser predicate:fn[Parser -> str bool] -> str bool :
         // Parsing is complete
         if self Parser.is_complete do
-            "" return
+            "" False return
         endif
 
         self predicate exec
     end
 
-    // Parse characters until predicate function matches
-    method parse_until self:Parser predicate:fn[Parser -> str] -> str :
+    // Parse while predicate function matches
+    method parse_while self:Parser predicate:fn[Parser -> str bool] -> str :
         // Parsing is complete
         if self Parser.is_complete do
-            "" return
+            "" True return
         endif
 
-        // Parse characters until predicate function matches
-        self Parser.cursor
+        // Parse while predicate function matches
         "" str.copy
-        take parsed original_cursor in
-        while self predicate exec str.len 0 == do
-            // Predicate function never matched
-            if self Parser.is_complete do
-                original_cursor self Parser->cursor
-                "" return
-            endif
+        take parsed in
+        while
+            self predicate exec
+            take matched predicate_parsed in
+            matched
+        do
+            // Append parsed string from predicate function
+            parsed predicate_parsed str.cat parsed =
 
-            self Parser.get_unparsed cast(ptr) char.load
-            parsed str.append parsed =
-            self Parser.cursor 1 + self Parser->cursor
+            // Parsing is complete
+            if self Parser.is_complete do
+                break
+            endif
         done
 
         parsed
     end
 
-    // Parse characters while predicate function matches
-    method parse_while self:Parser predicate:fn[Parser -> str] -> str :
+    // Parse character by character until the predicate function matches
+    method parse_until self:Parser predicate:fn[Parser -> str bool] -> str bool :
         // Parsing is complete
         if self Parser.is_complete do
-            "" return
+            "" False return
         endif
 
-        // Parse characters while predicate function matches
+        // Parse characters until predicate function matches
+        self Parser.input str.copy
         "" str.copy
-        take parsed in
+        take parsed original_input in
         while
             self predicate exec
-            peek predicate_parsed in
-            str.len 0 >
+            take matched predicate_parsed in
+            matched not
         do
-            // Parsing is complete
+            // Predicate function never matched
             if self Parser.is_complete do
-                break
+                original_input self Parser->input
+                "" False return
             endif
 
-            parsed predicate_parsed str.cat parsed =
-            self Parser.cursor predicate_parsed str.len + self Parser->cursor
+            // Append the current character to the parsed string
+            parsed 1 self Parser.take_n drop str.cat
+            parsed =
         done
 
-        parsed
+        // Return the parsed string to Parser.input
+        predicate_parsed self Parser.input str.cat self Parser->input
+
+        parsed True
+    end
+
+    method take_n self:Parser N:int -> str bool :
+        // Cannot take N characters if N > Parser.input
+        if N self Parser.input peek old_input in str.len > do
+            "" False return
+        endif
+
+        // Parse over N characters
+        old_input str.len N old_input str.copy str.slice
+        self Parser->input
+
+        // Return the parsed string
+        N 0 old_input str.slice
+        True
     end
 endclass

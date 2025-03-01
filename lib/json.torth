@@ -113,162 +113,154 @@ class JsonValue
     end
 endclass
 
-function parse_json_boolean parser:Parser -> str :
-    parser Parser.get_unparsed take unparsed in
-
-    if "true" parser Parser.parse_string str.len 0 > do
-        "true" return
+function parse_json_boolean parser:Parser -> str bool :
+    if "true" parser Parser.parse_string swap drop do
+        "true" True return
+    endif
+    if "false" parser Parser.parse_string swap drop do
+        "false" True return
     endif
 
-    "false" parser Parser.parse_string
+    // Was not boolean
+    "" False
 end
 
-// Only integers are supported
-function parse_number parser:Parser -> str :
-    parser Parser.get_unparsed cast(ptr) char.load
-    take current_char in
+function parse_json_number parser:Parser -> str bool :
+    parser Parser.parse_numbers dup str.len 0 >
+end
 
-    if current_char char.is_numeric not do
-        "" return
+function parse_json_float parser:Parser -> str bool :
+    // Save original input
+    parser Parser.input str.copy take original_input in
+
+    if parser parse_json_number not do
+        drop
+        "" False return
     endif
-
-    current_char char.to_string
-end
-
-function parse_json_float parser:Parser -> str :
-    parser Parser.cursor
-    take original_cursor in
-
-    parse_number& parser Parser.parse_while
     take number in
-    if number str.len 0 == do
-        "" return
+
+    if '.' parser Parser.parse_character not swap drop do
+        original_input parser Parser->input
+        "" False return
     endif
 
-    '.' parser Parser.parse_character
-    take point in
-    if point str.len 0 == do
-        original_cursor parser Parser->cursor
-        "" return
+    if parser parse_json_number not do
+        drop
+        original_input parser Parser->input
+        "" False return
     endif
-
-    parse_number& parser Parser.parse_while
     take decimal in
-    if decimal str.len 0 == do
-        original_cursor parser Parser->cursor
-        "" return
-    endif
 
-    f"{number}{point}{decimal}"
+    f"{number}.{decimal}" True
 end
 
-function parse_double_quote parser:Parser -> str :
-    '"' parser Parser.parse_character
+function parse_double_quote parser:Parser -> str bool :
+    '"' parser Parser.parse_character swap char.to_string swap
 end
 
-function parse_json_string parser:Parser -> str :
-    parser Parser.cursor
-    take original_cursor in
+function parse_json_string parser:Parser -> str bool :
+    // Save original input
+    parser Parser.input str.copy take original_input in
 
     // Opening double quote
-    '"' parser Parser.parse_character
+    if parser parse_double_quote not do
+        drop
+        "" False return
+    endif
     take double_quote in
-    if double_quote str.len 0 == do
-        "" return
-    endif
 
-    '"' parser Parser.parse_character
-    double_quote =
-    if double_quote str.len 0 > do
-        f"{double_quote}{double_quote}" return
+    // Rest of the string
+    if parse_double_quote& parser Parser.parse_until not do
+        drop
+        original_input parser Parser->input
+        "" False return
     endif
-
-    parse_double_quote& parser Parser.parse_until
-    take rest in
-    if rest str.len 0 == do
-        original_cursor parser Parser->cursor
-        "" return
-    endif
-    f"{double_quote}{rest}{double_quote}"
+    parser parse_double_quote drop drop
+    True
 end
 
-function parse_json_array parser:Parser -> List[JsonValue] :
-    if '[' parser Parser.parse_character str.len 0 == do
-        NULL cast(List[JsonValue]) return
+function parse_json_array parser:Parser -> List[JsonValue] bool :
+    if '[' parser Parser.parse_character not swap drop do
+        NULL cast(List[JsonValue]) False return
     endif
 
-    parser Parser.cursor
+    parser Parser.input str.copy
     List.init cast(List[JsonValue])
-    take json_array original_cursor in
+    take json_array original_input in
 
-    parser Parser.parse_whitespace drop
-    while ']' parser Parser.parse_character str.len 0 == do
+    parser Parser.parse_whitespaces drop
+    while ']' parser Parser.parse_character not swap drop do
         // Parse array item
-        parser json_parser take array_item in
-        if array_item cast(int) NULL == do
-            original_cursor parser Parser->cursor
-            NULL cast(List[JsonValue]) return
+        if parser json_parser not do
+            drop
+            original_input parser Parser->input
+            NULL cast(List[JsonValue]) False return
         endif
+        take array_item in
 
         // Append the array item to list
         array_item json_array cast(List) List.append
 
         // Comma separates array items
-        parser Parser.parse_whitespace drop
-        ',' parser Parser.parse_character drop
-        parser Parser.parse_whitespace drop
+        parser Parser.parse_whitespaces drop
+        ',' parser Parser.parse_character drop drop
+        parser Parser.parse_whitespaces drop
     done
 
-    json_array
+    json_array True
 end
 
-function parse_json_object parser:Parser -> HashMap :
-    if '{' parser Parser.parse_character str.len 0 == do
-        NULL cast(HashMap) return
+function parse_json_object parser:Parser -> HashMap bool :
+    if '{' parser Parser.parse_character not swap drop do
+        NULL cast(HashMap) False return
     endif
 
-    parser Parser.cursor
+    parser Parser.input
     HashMap.init
-    take object original_cursor in
-    parser Parser.parse_whitespace drop
-    while '}' parser Parser.parse_character str.len 0 == do
+    take object original_input in
+
+    parser Parser.parse_whitespaces drop
+    while '}' parser Parser.parse_character not swap drop do
         // Parse key
-        parse_double_quote& parser Parser.parse_predicate
-        take double_quote in
-        if double_quote str.len 0 == do
-            original_cursor parser Parser->cursor
-            NULL cast(HashMap) return
+        if parse_double_quote& parser Parser.parse_predicate not swap drop do
+            original_input parser Parser->input
+            NULL cast(HashMap) False return
         endif
 
-        parse_double_quote& parser Parser.parse_until
-        take key in
-        if key str.len 0 == do
-            original_cursor parser Parser->cursor
-            NULL cast(HashMap) return
+        if parse_double_quote& parser Parser.parse_until not do
+            drop
+            original_input parser Parser->input
+            NULL cast(HashMap) False return
         endif
+        take key in
+        parser parse_double_quote drop drop
 
         // Colon separates key and value
-        parser Parser.parse_whitespace drop
-        ':' parser Parser.parse_character drop
-        parser Parser.parse_whitespace drop
+        parser Parser.parse_whitespaces drop
+        if ':' parser Parser.parse_character not swap drop do
+            original_input parser Parser->input
+            NULL cast(HashMap) False return
+        endif
+        parser Parser.parse_whitespaces drop
 
         // Parse value
-        parser json_parser take value in
-        if value cast(int) NULL == do
-            original_cursor parser Parser->cursor
-            NULL cast(HashMap) return
+        if parser json_parser not do
+            drop
+            original_input parser Parser->input
+            NULL cast(HashMap) False return
         endif
+        take value in
 
         // Add the key to the hash map
         value key object HashMap.set
 
         // Comma separates keys of objects
-        parser Parser.parse_whitespace drop
-        ',' parser Parser.parse_character drop
-        parser Parser.parse_whitespace drop
+        parser Parser.parse_whitespaces drop
+        ',' parser Parser.parse_character drop drop
+        parser Parser.parse_whitespaces drop
     done
 
-    object
+    object True
 end
 
 function string_to_bool string:str -> bool :
@@ -283,60 +275,45 @@ function string_to_bool string:str -> bool :
     False // unreachable
 end
 
-function json_parser parser:Parser -> JsonValue :
+function json_parser parser:Parser -> JsonValue bool :
     // null
-    "null" parser Parser.parse_string
-    take parsed_null in
-    if parsed_null str.len 0 > do
-        "null" "null" JsonValue.init return
-    endif
+    if "null" parser Parser.parse_string do
+        "null" JsonValue.init True return
+    endif drop
 
-    // boolean
-    parse_json_boolean& parser Parser.parse_predicate
-    take parsed_boolean in
-    if parsed_boolean str.len 0 > do
-        "boolean" parsed_boolean string_to_bool JsonValue.init return
-    endif
+    if parser parse_json_boolean do
+        "boolean" swap JsonValue.init True return
+    endif drop
 
     // float
-    parser parse_json_float
-    take parsed_float in
-    if parsed_float str.len 0 > do
-        "float" parsed_float JsonValue.init return
-    endif
+    if parser parse_json_float do
+        "float" swap JsonValue.init True return
+    endif drop
 
     // number (integer)
-    parse_number& parser Parser.parse_while
-    take parsed_number in
-    if parsed_number str.len 0 > do
-        "number" parsed_number atoi JsonValue.init return
-    endif
+    if parser parse_json_number do
+        "number" swap atoi JsonValue.init True return
+    endif drop
 
     // string
-    parse_json_string& parser Parser.parse_predicate
-    take parsed_string in
-    if parsed_string str.len 0 > do
-        "string" parsed_string JsonValue.init return
-    endif
+    if parser parse_json_string do
+        "string" swap JsonValue.init True return
+    endif drop
 
     // array
-    parser parse_json_array
-    take json_array in
-    if json_array cast(int) NULL != do
-        "array" json_array JsonValue.init return
-    endif
+    if parser parse_json_array do
+        "array" swap JsonValue.init True return
+    endif drop
 
     // object
-    parser parse_json_object
-    take json_object in
-    if json_object cast(int) NULL != do
-        "object" json_object JsonValue.init return
-    endif
+    if parser parse_json_object do
+        "object" swap JsonValue.init True return
+    endif drop
 
-    NULL cast(JsonValue)
+    NULL cast(JsonValue) False
 end
 
 // Returns NULL if the input is not valid JSON
-function parse_json input:str -> JsonValue :
+function parse_json input:str -> JsonValue bool :
     input Parser.init json_parser
 end

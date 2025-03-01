@@ -120,16 +120,21 @@ end
 
 function handle_request request:str state:State :
     // Parse Content-Length
-    request "Content-Length: " str.len str+
+    "Content-Length: " request str.copy str.removeprefix
     parse_number_from_beginning
     take content_length in
 
     // Parse request body
-    request "\r\n\r\n" request str.find str+ 4 str+
-    str.copy peek request_body in
+    "\r\n\r\n" request str.find take rn_index in
+    request str.len rn_index 4 + request str.copy str.slice
+    peek request_body in
 
     // Parse the body as JSON
-    parse_json take body_json in
+    if parse_json not do
+        f"Invalid JSON from the client.\nRequest body: {request_body}" eputs
+        1 exit
+    endif
+    take body_json in
 
     // Expect object
     if body_json JsonValue.type "object" streq not do
