@@ -1253,6 +1253,20 @@ class Arena
         // Update used bytes count
         region ArenaRegion.count bytes + region ArenaRegion->count
     end
+
+    // Reset arena without deallocating the chunks
+    method delete self:Arena :
+        // Deallocate regions
+        self Arena.begin take region in
+        while region NULL != do
+            region ArenaRegion.next take next in
+            region ArenaRegion.delete
+            next region =
+        done
+
+        // Deallocate arena
+        Arena.size self cast(ptr) munmap
+    end
 endclass
 
 class ArenaRegion
@@ -1272,6 +1286,11 @@ class ArenaRegion
         capacity                                region ArenaRegion->capacity
         region cast(ptr) ArenaRegion.size ptr+  region ArenaRegion->data
         region
+    end
+
+    method delete self:ArenaRegion :
+        self ArenaRegion.capacity ArenaRegion.size +
+        self cast(ptr) munmap
     end
 endclass
 
