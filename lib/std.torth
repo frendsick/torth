@@ -1222,6 +1222,37 @@ class Arena
         region arena Arena->last
         arena
     end
+
+    // Find region with enough space from the arena
+    method find_region self:Arena bytes:int -> ArenaRegion bool :
+        self Arena.last take region in
+        while region NULL != do
+            // Region with enough leftover capacity is found
+            if region ArenaRegion.capacity region ArenaRegion.count bytes + >= do
+                region True return
+            endif
+            region ArenaRegion.next region =
+        done
+
+        // Region with enough space was not found
+        NULL cast(ArenaRegion) False
+    end
+
+    // Allocate `bytes` for Arena
+    method allocate self:Arena bytes:int -> ptr :
+        if bytes self Arena.find_region not do
+            drop bytes ArenaRegion.init
+            dup  self Arena.last ArenaRegion->next
+            dup  self Arena->last
+        endif
+        take region in
+
+        // Get pointer to the allocated chunk, this will be returned
+        region ArenaRegion.data region ArenaRegion.count ptr+
+
+        // Update used bytes count
+        region ArenaRegion.count bytes + region ArenaRegion->count
+    end
 endclass
 
 class ArenaRegion
