@@ -1238,6 +1238,7 @@ class Arena
 
     // Allocate `bytes` for Arena
     method allocate self:Arena bytes:int -> ptr :
+        // Find region with enough free space or allocate one
         if bytes self Arena.find_region not do
             drop bytes ArenaRegion.init
             dup  self Arena.last ArenaRegion->next
@@ -1252,7 +1253,7 @@ class Arena
         region ArenaRegion.count bytes + region ArenaRegion->count
     end
 
-    // Reset arena without deallocating the chunks
+    // Deallocating the arena with its regions
     method delete self:Arena :
         // Deallocate regions
         self Arena.begin take region in
@@ -1289,6 +1290,7 @@ class ArenaRegion
         region
     end
 
+    // Deallocate region
     method delete self:ArenaRegion :
         self ArenaRegion.capacity ArenaRegion.size +
         self cast(ptr) munmap
