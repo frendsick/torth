@@ -10,7 +10,7 @@ function get_series_product str -> int :
   dup str.len 0 0
   take index product series.len series in
   while index series.len < do
-    index series str.char_at '0' -
+    index series str.char_at cast(int) '0' cast(int) -
     if product 0 == do
       dup product =
     else
@@ -22,13 +22,10 @@ function get_series_product str -> int :
 end
 
 // Get the current subseries
-// Params: series series.len series_index
+// Params: series series_len series_index
 // Return: subseries
-function get_current_series str int int -> str :
-  take series series.len index in
-  series str.copy index str+ // series_start
-  NULL cast(char) over series.len str+ cast(ptr) char.store
-  str.copy  // Return current series
+function get_current_series series:str series_len:int index:int -> str :
+  series_len index + index series str.copy str.slice
 end
 
 // Get the largest product in series (string of numbers)
