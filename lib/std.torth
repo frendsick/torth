@@ -1208,16 +1208,18 @@ function sqrt int -> int :
 end
 
 // Arena allocator
+const ARENA_REGION_MIN_CAPACITY 4096 end
+
 class Arena
     begin:ArenaRegion   // First region of the arena
-    end:ArenaRegion     // Last used region
+    last:ArenaRegion    // Last used region
 
     method init capacity:int -> Arena :
         Arena.size malloc cast(Arena)   take arena in
         capacity ArenaRegion.init       take region in
 
         region arena Arena->begin
-        region arena Arena->end
+        region arena Arena->last
         arena
     end
 endclass
@@ -1229,6 +1231,9 @@ class ArenaRegion
     data:ptr            // Allocated chunk of `capacity` bytes
 
     method init capacity:int -> ArenaRegion :
+        if capacity ARENA_REGION_MIN_CAPACITY < do
+            ARENA_REGION_MIN_CAPACITY capacity =
+        endif
         capacity ArenaRegion.size + malloc cast(ArenaRegion)
         take region in
 
