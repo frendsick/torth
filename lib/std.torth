@@ -116,7 +116,7 @@ end
 inline function cstr.load  ptr      -> cstr : LOAD_QWORD cast(cstr)   end
 inline function cstr.store ptr cstr ->      : STORE_QWORD             end
 inline function cstr+ int cstr  -> cstr : swap cast(int) + cast(cstr) end
-function cstr.to_str cstring:cstr -> str :
+function cstr.to_string cstring:cstr -> str :
     cstring cstr.len take cstring_len in
     if cstring_len 0 == do
         "" return
@@ -1118,7 +1118,7 @@ function get_argument N:int -> str :
   endif
 
   // Convert argument to `str`
-  argv_index_ptr cstr.load cstr.to_str
+  argv_index_ptr cstr.load cstr.to_string
 end
 
 // Sleep causes the calling thread to sleep either until the
@@ -1143,7 +1143,7 @@ function getenv evar_key:str -> str :
   // Check environment variables one by one
   0 take index in
   while envp int.load NULL != do
-    envp index ptr.size * ptr+ cstr.load cstr.to_str
+    envp index ptr.size * ptr+ cstr.load cstr.to_string
     take evar_value in
 
     // Return the environment variable when found
@@ -1154,7 +1154,7 @@ function getenv evar_key:str -> str :
 
       // Get the string from the character after '='
       evar_value cast(ptr) swap 1 + int.size + ptr+
-      cast(cstr) cstr.to_str
+      cast(cstr) cstr.to_string
       return
     endif
     index 1 + index = // index++
