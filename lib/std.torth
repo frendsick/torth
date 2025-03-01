@@ -1207,6 +1207,96 @@ function sqrt int -> int :
   done swap drop
 end
 
+// Arena allocator
+class Arena
+    begin:ArenaRegion   // First region of the arena
+    last:ArenaRegion    // Last used region
+
+    method init capacity:int -> Arena :
+        Arena.size malloc cast(Arena)   take arena in
+        capacity ArenaRegion.init       take region in
+
+        region arena Arena->begin
+        region arena Arena->last
+        arena
+    end
+
+    // Find region with enough space from the arena
+    method find_region self:Arena bytes:int -> ArenaRegion bool :
+        self Arena.last take region in
+        while region NULL != do
+            // Region with enough leftover capacity is found
+            if region ArenaRegion.capacity region ArenaRegion.count bytes + >= do
+                region True return
+            endif
+            region ArenaRegion.next region =
+        done
+
+        // Region with enough space was not found
+        NULL cast(ArenaRegion) False
+    end
+
+    // Allocate `bytes` for Arena
+    method allocate self:Arena bytes:int -> ptr :
+        // Find region with enough free space or allocate one
+        if bytes self Arena.find_region not do
+            drop bytes ArenaRegion.init
+            dup  self Arena.last ArenaRegion->next
+            dup  self Arena->last
+        endif
+        take region in
+
+        // Get pointer to the allocated chunk, this will be returned
+        region ArenaRegion.data region ArenaRegion.count ptr+
+
+        // Update used bytes count
+        region ArenaRegion.count bytes + region ArenaRegion->count
+    end
+
+    // Deallocating the arena with its regions
+    method delete self:Arena :
+        // Deallocate regions
+        self Arena.begin take region in
+        while region NULL != do
+            region ArenaRegion.next take next in
+            region ArenaRegion.delete
+            next region =
+        done
+
+        // Deallocate arena
+        Arena.size self cast(ptr) munmap
+    end
+endclass
+
+// 4064 + ArenaRegion.size == 4096 == PAGE_SIZE
+const ARENA_REGION_MIN_CAPACITY 4064 end
+
+class ArenaRegion
+    next:ArenaRegion    // Pointer to the next region, linked list
+    count:int           // How many bytes of the region is used
+    capacity:int        // Capacity of the whole region in bytes
+    data:ptr            // Allocated chunk of `capacity` bytes
+
+    method init capacity:int -> ArenaRegion :
+        if capacity ARENA_REGION_MIN_CAPACITY < do
+            ARENA_REGION_MIN_CAPACITY capacity =
+        endif
+        capacity ArenaRegion.size + malloc cast(ArenaRegion)
+        take region in
+
+        0                                       region ArenaRegion->count
+        capacity                                region ArenaRegion->capacity
+        region cast(ptr) ArenaRegion.size ptr+  region ArenaRegion->data
+        region
+    end
+
+    // Deallocate region
+    method delete self:ArenaRegion :
+        self ArenaRegion.capacity ArenaRegion.size +
+        self cast(ptr) munmap
+    end
+endclass
+
 // The <errno.h> header file defines the integer variable errno,
 // which is set by system calls and some library functions in the
 // event of an error to indicate what went wrong.
