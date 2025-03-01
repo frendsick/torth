@@ -315,6 +315,8 @@ function TypeStack.get_types type_stack:Node -> List :
   while stack_depth 0 >= do
     node Node.data cast(TypeNode)
     TypeNode.type cast(ptr) token_types List.append
+
+    node Node.prev node =
     stack_depth 1 - stack_depth =
   done
   token_types
