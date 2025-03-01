@@ -1130,9 +1130,9 @@ function sleep time:str :
   str.size 2 * malloc take argv in
 
   // execve("/usr/bin/sleep", ["sleep", "0.01"], envp)
-  "sleep" str.to_cstr argv cstr.store
+  c"sleep"            argv cstr.store
   time    str.to_cstr argv ptr.size ptr+ cstr.store
-  envp argv "/usr/bin/sleep" str.to_cstr execve drop
+  envp argv c"/usr/bin/sleep" execve drop
 end
 
 // Get the value of certain environment variable

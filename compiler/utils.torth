@@ -78,9 +78,9 @@ end
 function remove_file file_name:str :
   // Allocate memory for the arguments
   List.init take argv in
-  "rm"        str.to_cstr cast(ptr) argv List.append
+  c"rm"                   cast(ptr) argv List.append
   file_name   str.to_cstr cast(ptr) argv List.append
-  NULLPTR argv List.first "/usr/bin/rm" str.to_cstr execve drop
+  NULLPTR argv List.first c"/usr/bin/rm" execve drop
 end
 
 function get_location_info location:Location -> str :
