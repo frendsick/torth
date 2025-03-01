@@ -1207,6 +1207,38 @@ function sqrt int -> int :
   done swap drop
 end
 
+// Arena allocator
+class Arena
+    begin:ArenaRegion   // First region of the arena
+    end:ArenaRegion     // Last used region
+
+    method init capacity:int -> Arena :
+        Arena.size malloc cast(Arena)   take arena in
+        capacity ArenaRegion.init       take region in
+
+        region arena Arena->begin
+        region arena Arena->end
+        arena
+    end
+endclass
+
+class ArenaRegion
+    next:ArenaRegion    // Pointer to the next region, linked list
+    count:int           // How many bytes of the region is used
+    capacity:int        // Capacity of the whole region in bytes
+    data:ptr            // Allocated chunk of `capacity` bytes
+
+    method init capacity:int -> ArenaRegion :
+        capacity ArenaRegion.size + malloc cast(ArenaRegion)
+        take region in
+
+        0                                       region ArenaRegion->count
+        capacity                                region ArenaRegion->capacity
+        region cast(ptr) ArenaRegion.size ptr+  region ArenaRegion->data
+        region
+    end
+endclass
+
 // The <errno.h> header file defines the integer variable errno,
 // which is set by system calls and some library functions in the
 // event of an error to indicate what went wrong.
