@@ -94,17 +94,12 @@ end
 // Return
 //    path: str
 function request.path str -> str :
+  str.copy
   take request in
 
-  // Example: GET /path HTTP/1.1
-  request str.copy
-  "/" swap str.find
-  request swap str+
-  take path in
-
-  // Insert NULL byte to the end of path
-  " HTTP/1.1" path str.find
-  path swap str+
-  cast(ptr) NULL cast(char) swap char.store
-  path
+  // Find the path from the middle of request
+  // Example: "GET /path HTTP/1.1"
+  " HTTP/1.1" request str.find
+  "/" request str.find
+  request str.slice
 end
