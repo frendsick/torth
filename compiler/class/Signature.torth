@@ -19,15 +19,17 @@ class Signature
     List.init
     "" str.copy
     0
+    "->" repr str.find
     take
+      arrow_index
       index
       buffer
       param_types
       return_types
     in
 
-    while repr "->" str.startswith not do
-      0 repr str.char_at
+    while index arrow_index < do
+      index repr str.char_at
       take current_char in
 
       if current_char char.is_whitespace do
@@ -37,10 +39,11 @@ class Signature
         current_char buffer str.append buffer =
       endif
 
-      repr 1 str+ repr =
+      index 1 + index =
     done
 
-    "-> " repr str.removeprefix repr =
+    // Parse over the arrow token
+    index "-> " str.len + index =
 
     while index repr str.char_at NULL != do
       index repr str.char_at

@@ -31,7 +31,7 @@ end
 // Get Assembly for certain Op
 function get_op_asm op:Op program:Program sub_programs:List[Program] -> str :
   // Assert that every OpType has been taken into account
-  if OpType.len 30 != do
+  if OpType.len 31 != do
     "All OpTypes are not taken into account in `get_op_asm` function.\n"
     "ASSERTION_ERROR" CompilerError
   endif
@@ -124,6 +124,9 @@ function get_op_asm op:Op program:Program sub_programs:List[Program] -> str :
     return
   elif op_type OpType.PUSH_CHAR == do
     1 token_value str.char_at get_push_char_asm
+    return
+  elif op_type OpType.PUSH_CSTR == do
+    op get_push_str_asm
     return
   elif op_type OpType.PUSH_FN == do
     "&" token_value str.removesuffix get_push_fn_asm
@@ -761,7 +764,7 @@ end
 function get_load_asm intrinsic:str -> str :
   // Parse operation size
   // "BYTE" | "WORD" | "DWORD" | "QWORD"
-  intrinsic str.copy str.upper "LOAD_" str.len str+
+  "LOAD_" intrinsic str.copy str.removeprefix
   take operation_size in
 
   // Generate assembly
@@ -999,9 +1002,9 @@ function get_string_variables_for_data_section program:Program -> str :
 
     // Add only strings to the assembly
     if
-      op Op.type OpType.PUSH_STR !=
-      op Op.type OpType.TYPEOF   !=
-      &&
+      op Op.type OpType.PUSH_CSTR   !=
+      op Op.type OpType.PUSH_STR    != &&
+      op Op.type OpType.TYPEOF      != &&
     do
       index 1 + index =
       continue
@@ -1009,10 +1012,16 @@ function get_string_variables_for_data_section program:Program -> str :
 
     op Op.id itoa
     op Op.func Func.name
-    take function_name op_id in
+    op Op.token Token.value
+    take token_value function_name op_id in
 
-    if op Op.type OpType.PUSH_STR == do
-        op Op.token Token.value format_escape_sequences_for_nasm
+    if op Op.type OpType.PUSH_CSTR == do
+        "c" token_value str.removeprefix format_escape_sequences_for_nasm
+        take string in
+    elif op Op.type OpType.PUSH_STR == do
+        // First 8 bytes encode the string length
+        token_value str.len 2 - encode_str_variable_length
+        token_value format_escape_sequences_for_nasm str.cat
         take string in
     elif op Op.type OpType.TYPEOF == do
         op Op.stack_typeof format_escape_sequences_for_nasm
@@ -1026,6 +1035,21 @@ function get_string_variables_for_data_section program:Program -> str :
     index 1 + index =
   done
   assembly_code
+end
+
+// The first 8 bytes of `str` encode the length of the static string (little-endian)
+// Example: 4   -> "4,0,0,0,0,0,0,0,"
+// Example: 420 -> "164,1,0,0,0,0,0,0,"
+function encode_str_variable_length length:int -> str :
+    "" str.copy
+    0
+    take index buffer in
+    while index 8 < do
+        buffer length 8 index * >> 0xFF and itoa str.cat "," str.cat
+        buffer =
+        index 1 + index =
+    done
+    buffer
 end
 
 function format_escape_sequences_for_nasm string:str -> str :

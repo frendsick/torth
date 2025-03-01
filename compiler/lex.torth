@@ -11,9 +11,9 @@ include "compiler/class/Signature"
 include "compiler/class/Variable"
 
 // Parse included files from a code string. Return the list of files.
-function get_included_files str -> List :
-  cast(ptr) List.init
-  peek included_files in List.append
+function get_included_files code_file:str -> List :
+  List.init take included_files in
+  code_file included_files List.append
 
   // Iterate over all of the new included files for this loop iteration
   0 take index in
@@ -99,7 +99,7 @@ end
 // Return: file_with_path: str
 function get_file_name_from_path file_name:str INCLUDE_PATHS:List -> str :
   // Get the file name without quotes
-  if file_name cast(ptr) char.load '"' == do
+  if 0 file_name str.char_at '"' == do
     file_name get_string_inside_quotes
     file_name =
   endif
@@ -166,26 +166,34 @@ end
 // Return NULL if there is no string inside quotes
 // Params: String which begins with a double quote
 // Return: The multiline string between double quotes
-function get_string_inside_quotes str -> str :
-  str.copy
-  take original in
+function get_string_inside_quotes string:str -> str :
+  string str.copy take string_copy in
 
   // Return NULL if the first character is not a double quote
-  if original cast(ptr) char.load '"' != do
+  if 0 string_copy str.char_at '"' != do
     NULLPTR cast(str) return
   endif
 
-  1 while dup original str.len < do
-    1 + // index++
-
+  string_copy str.len
+  1
+  take index string_copy_len in
+  while index string_copy_len < do
     // Return when the other quote is found
-    if dup original str.char_at '"' == do
-      original cast(ptr) over ptr+ NULL cast(char) swap char.store
-      drop
-      original 1 str+ return
+    if index string_copy str.char_at peek end_quote in '"' == do
+      // Remove the first character, the double quote
+      string_copy 1 str+ string_copy =
+
+      // Save the string length
+      index 1 - string_copy cast(ptr) int.store
+
+      // Return the string
+      string_copy return
     endif
-  done drop
-  NULLPTR cast(str)
+
+    index 1 + index =
+  done
+
+  NULLPTR cast(str) // Closing quote was not found
 end
 
 // Transfer comparison and calculations related symbols to their text counterparts
@@ -233,7 +241,7 @@ function get_token_type token_value:str -> str :
   // Character => 'a'
   elif
     token_value str.len 3 ==
-    token_value cast(ptr) char.load single_quote ==
+    0 token_value str.char_at single_quote ==
     2 token_value str.char_at single_quote ==
     && &&
   do
@@ -245,14 +253,14 @@ function get_token_type token_value:str -> str :
     "int" return
   // Hexadecimal => 0x1337
   elif
-    token_value cast(ptr) char.load '0' ==
+    0 token_value str.char_at '0' ==
     1 token_value str.char_at 'x' ==
     &&
   do
     "int" return
   // String => "This is string\n"
   elif
-    token_value cast(ptr) char.load                 '"' ==
+    0 token_value str.char_at '"' ==
     token_value str.len 1 - token_value str.char_at '"' ==
     &&
   do
@@ -264,6 +272,12 @@ function get_token_type token_value:str -> str :
     &&
   do
     "str" return
+  elif
+    token_value '"' "c" str.append str.startswith
+    token_value str.len 1 - token_value str.char_at '"' ==
+    &&
+  do
+    "cstr" return
   endif
   "word"
 end
@@ -383,7 +397,7 @@ function get_tokens_from_code
 
         // Parse the expression between curly brackets
         index 1 + index =
-        code index str+ str.copy
+        code str.len index code str.copy str.slice
         take expr in
 
         "}" expr str.find
@@ -400,7 +414,8 @@ function get_tokens_from_code
         endif
 
         // The expression ends to the close curly bracket
-        NULL expr close_curly_index str+ cast(ptr) store_byte
+        close_curly_index 0 expr str.slice
+        expr =
 
         newline_indexes index tokens file_name expr get_tokens_from_code
         newline_indexes =
@@ -427,7 +442,9 @@ function get_tokens_from_code
 
     // Double quote starts a string
     if
-      word str.len 0 ==
+      word "" streq
+      word "c" streq
+      ||
       current_char '"' ==
       &&
     do
@@ -875,16 +892,17 @@ function parse_function
     // Get current Token
     token_index tokens cast(List) List.nth Token.load
     dup Token.value
-    take token_value token in
+    dup str.copy str.upper
+    take token_upper token_value token in
 
-    if token_value str.copy str.upper "FUNCTION" streq do
+    if token_upper "FUNCTION" streq do
       token
       f"Token '{token_value}' is not valid inside a function"
       "SYNTAX_ERROR" CompilerErrorWithToken
     endif
 
     if
-      token_value str.copy str.upper
+      token_upper
       current_part FUNCTION_PART_DELIMITERS List.nth str.load
       streq
     do
@@ -892,7 +910,7 @@ function parse_function
       current_part =
 
       // Append Func and reset variables when function is fully lexed
-      if token_value str.copy str.upper "END" streq do
+      if token_upper "END" streq do
 
         // Append 0 token as the exit code for MAIN function
         if function_name str.copy str.upper "MAIN" streq do
@@ -944,7 +962,7 @@ function parse_function
       take param_colon in
 
       // Parse parameter's TokenType
-      token_value param_colon 1 + str+
+      token_value str.len param_colon 1 + token_value str.copy str.slice
       take param_type in
       param_type cast(ptr) param_types List.append
 
@@ -958,13 +976,8 @@ function parse_function
         endif
 
         // Parse parameter's name
-        token_value str.copy
-        dup param_colon str+ str.empty
-        token_value str.copy param_colon str+ 1 str+
-        take
-          param_type
-          param_name
-        in
+        param_colon 0 token_value str.copy str.slice
+        take param_name in
 
         // Handle function pointer parameters
         // Example => fn[str int -> bool]
@@ -1203,14 +1216,10 @@ function parse_class_attribute
     "SYNTAX_ERROR" CompilerErrorWithToken
   endif
 
-  // Parse attribute's TokenType
-  token_value attribute_colon 1 + str+
-  take attribute_type in
-
-  // Parse attribute's name
-  token_value str.copy
-  dup attribute_colon str+ str.empty
-  take attribute_name in
+  // Parse attribute's name and type
+  attribute_colon 0 token_value str.copy str.slice
+  token_value str.len attribute_colon 1 + token_value str.copy str.slice
+  take attribute_type attribute_name in
 
   // Calculate attributes byte offset from object base pointer
   attribute_count int.size *

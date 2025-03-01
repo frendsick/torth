@@ -92,9 +92,18 @@ Pointer can only be created by [casting](#casting). See `malloc` function in [st
 
 ### str - String
 
-String literals are defined with double quotes. A defined string adds a null-terminated string buffer to the `.data` section of the executable.
+A string is like a [pointer](#ptr---pointer) as it points to the beginning of the string data. The first 8 bytes of the string is the length of the string as little-endian 64-bit number. The string's characters are found after the first 8 bytes.
 
-A string is like a [pointer](#ptr---pointer) as it points to the address of the beginning of the string data.
+The string's characters are stored in char-array formation, like in C. However, the strings are not guaranteed to end with a null-byte as their length is based on the first 8 bytes. Please use [C-strings](#c-strings-cstr) when passing strings to [syscalls](./intrinsics.md#SYSCALL).
+
+String literals are defined with double quotes. A defined string literal adds a buffer to the `.data` section of the executable. The first 8 bytes of the buffer encode the string literal's length as 64-bit little-endian number, followed by the string's characters.
+
+Example generated assembly for string `"Hello, World!\n"`:
+
+```asm
+section .data
+  main_s0 db 14,0,0,0,0,0,0,0,"Hello, World!",10,"",0
+```
 
 **Note**: Modifying the string literals stored in the `.data` section could cause undefined behavior. It is recommended to create a copy of the string with the `str.copy` function from the [std](../lib/std.torth) and modifying the copied data instead of the string literal.
 
@@ -122,6 +131,20 @@ end
 
 function print_nice a:int b:int :
   f"{a b + itoa}, nice"
+end
+```
+
+#### C-strings (cstr)
+
+C-strings are null-terminated character arrays, like in C programming language. C-strings must be used with Linux syscalls instead of regular strings.
+
+C-string literals are defined like [F-strings](#f-strings) but using the letter `c`. A defined C-string adds a null-terminated string buffer to the `.data` section of the executable.
+
+Example: Hello World using only [write](https://man7.org/linux/man-pages/man2/write.2.html) syscall.
+
+```pascal
+function main :
+    14 c"Hello, World!\n" 1 1 syscall3 drop
 end
 ```
 

@@ -55,7 +55,7 @@
       "patterns": [
         {
           "name": "entity.name.type.torth",
-          "match": "\\(any|bool|char|fn|int|None|ptr|str|Array|List|LinkedList)\\b"
+          "match": "\\(any|bool|char|cstr|fn|int|None|ptr|str|Array|List|LinkedList)\\b"
         }
       ]
     },
