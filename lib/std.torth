@@ -1208,8 +1208,6 @@ function sqrt int -> int :
 end
 
 // Arena allocator
-const ARENA_REGION_MIN_CAPACITY 4096 end
-
 class Arena
     begin:ArenaRegion   // First region of the arena
     last:ArenaRegion    // Last used region
@@ -1268,6 +1266,9 @@ class Arena
         Arena.size self cast(ptr) munmap
     end
 endclass
+
+// 4064 + ArenaRegion.size == 4096 == PAGE_SIZE
+const ARENA_REGION_MIN_CAPACITY 4064 end
 
 class ArenaRegion
     next:ArenaRegion    // Pointer to the next region, linked list
