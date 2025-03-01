@@ -221,13 +221,6 @@ function get_function_by_name function_name:str functions:List[Func] -> Func :
   NULL cast(Func)
 end
 
-// Get Nth command line argument
-// Params: index
-// Return: *argv[index]
-function get_nth_cmd_line_argument int -> str :
-  int.size * argv swap ptr+ cstr.load cstr.to_str
-end
-
 // Get Constant with certain name from List[Constants]
 // Params: name (STR), List[Constant]
 // Return: Constant
