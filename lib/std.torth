@@ -4,9 +4,6 @@
 // Common constants
 const NULL 0 end
 
-// Memory
-const MEMORY_CAPACITY 430080 end  // 420 * 1024 => 420kb
-
 // Data types
 const bool.size   1 end
 const char.size   1 end
@@ -44,12 +41,12 @@ inline function <<       int int   -> int  : shl               end
 inline function >>       int int   -> int  : shr               end
 
 // Get user input from stdin
-function input -> str :
+function input max_length:int -> str :
   // Allocate memory for the user input
-  MEMORY_CAPACITY malloc cast(str) take buffer in
+  max_length malloc cast(str) take buffer in
 
   // Read user input
-  MEMORY_CAPACITY buffer str.to_cstr stdin read
+  max_length buffer str.to_cstr stdin read
 
   // Store the string length
   buffer cast(ptr) int.store
