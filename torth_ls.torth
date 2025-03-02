@@ -571,11 +571,13 @@ function parse_file_to_state file_uri:str state:State :
     functions       state   State->functions
 end
 
+const MAX_REQUEST_LENGTH 10000 end
+
 function main :
     State.init take state in
 
     while True do
-        state 4096 input handle_request
+        state MAX_REQUEST_LENGTH input handle_request
 
         // Cache the current state
         // TODO: Only parse when there are changes
