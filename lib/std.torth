@@ -1244,6 +1244,8 @@ class Arena
             bytes ArenaRegion.init
             dup self Arena.last ArenaRegion->next
         endif
+
+        // Set the `last` to the region we are about to use
         peek region in self Arena->last
 
         // Get pointer to the allocated chunk, this will be returned
