@@ -19,6 +19,11 @@ const stdin  0 end
 const stdout 1 end
 const stderr 2 end
 
+// `file_stat` struct offsets
+// https://stackoverflow.com/questions/27216616/get-file-size-with-stat-syscall
+const file_stat.len 144 end
+const file_stat.st_size 48 end
+
 // Usual file modes
 const mode_777 0x1ff end
 const mode_755 0x1ed end
@@ -990,6 +995,13 @@ function open_file oflag:int path:str -> int :
   fd
 end
 
+function fd.size fd:int -> int :
+    file_stat.len malloc peek file_stat_buffer in
+    fd SYS_fstat syscall2 drop
+
+    file_stat_buffer file_stat.st_size ptr+ int.load
+end
+
 // Read a file to a newly allocated memory
 // Params: const char *path
 // Return: str buffer
@@ -999,11 +1011,14 @@ function read_file path:str -> str :
   path O_RDONLY open_file
 
   // Allocate string buffer
-  MEMORY_CAPACITY malloc cast(str)
+  dup fd.size peek fd_size in
+  int.size +    // First 8 bytes contain the string length
+  1 +           // NULL byte
+  malloc cast(str)
   take buffer fd in
 
   // Read the file to the string buffer and return it
-  MEMORY_CAPACITY buffer str.to_cstr fd read
+  fd_size buffer str.to_cstr fd read
   take read_bytes in
 
   // Save the buffer length
