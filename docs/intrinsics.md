@@ -5,6 +5,7 @@ Intrinsics are built-in functions that generate static assembly output. The key 
 ## List of Intrinsics
 
 - [AND](#AND)
+- [ARENA](#ARENA)
 - [ARGC](#ARGC)
 - [ARGV](#ARGV)
 - [DIV](#Calculations)
@@ -111,6 +112,20 @@ Perform bitwise AND for two [integers](definitions.md#integer-types).
 - `10 3 and` -> `2`
 - `16 5 and` -> `0`
 - `15 15 and` -> `15`
+
+## ARENA
+
+Push the built-in `ArenaAllocator` to the stack.
+
+If you are using the [std](../lib/std.torth), you should not need to use the `ARENA` intrinsic manually very often. Instead, you can request memory using the `malloc` function from [std](../lib/std.torth) library which uses `ARENA` under the hood. However, the `ARENA` intrinsic enables you to get finer control over how you want to use the `ArenaAllocator` object. For example, You can delete all data from the `ArenaAllocator` using `ArenaAllocator.delete` method from [std](../lib/std.torth) library.
+
+**Examples**
+
+```
+42000 arena ArenaAllocator.allocate // Equal to `42000 malloc`
+arena ArenaAllocator.reset          // Reset all regions within arena without deallocation
+arena ArenaAllocator.delete         // Deallocate all regions within the arena
+```
 
 ## ARGC
 
