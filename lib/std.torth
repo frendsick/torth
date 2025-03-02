@@ -1214,7 +1214,7 @@ class ArenaAllocator
     current:ArenaRegion // Currently used region
     last:ArenaRegion    // Last region in the arena
 
-    method init capacity:int -> ArenaAllocator :
+    method init -> ArenaAllocator :
         ArenaAllocator.size mmap cast(ArenaAllocator)
     end
 
