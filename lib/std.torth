@@ -1240,11 +1240,11 @@ class Arena
     method allocate self:Arena bytes:int -> ptr :
         // Find region with enough free space or allocate one
         if bytes self Arena.find_region not do
-            drop bytes ArenaRegion.init
-            dup  self Arena.last ArenaRegion->next
-            dup  self Arena->last
+            drop
+            bytes ArenaRegion.init
+            dup self Arena.last ArenaRegion->next
         endif
-        take region in
+        peek region in self Arena->last
 
         // Get pointer to the allocated chunk, this will be returned
         region ArenaRegion.data region ArenaRegion.count ptr+
