@@ -515,9 +515,6 @@ function str.replace
   string_start
   replacement str.cat
   string_end  str.cat
-
-  // Deallocate unused strings
-  string_end str.delete
 end
 
 // Replace all occurrences of substring with another string.
@@ -602,18 +599,7 @@ function str.cat str2:str str1:str -> str :
   // Update `result` string length
   str1.len str2.len + result cast(ptr) int.store
 
-  // Deallocate `str1` new memory was allocated
-  if requires_allocation do
-    str1 str.delete
-  endif
-
   result
-end
-
-// Deallocate string's memory if it is not a string literal
-function str.delete string:str :
-  if string str.is_static do return endif
-  string str.len int.size + string cast(ptr) munmap
 end
 
 // Append a character to the end of a string buffer
@@ -645,11 +631,6 @@ function str.append string:str character:char -> str :
 
   // Update string length
   string_len 1 + buffer int.store
-
-  // Deallocate the original string if new memory was allocated
-  if requires_allocation do
-    string str.delete
-  endif
 
   buffer cast(str)
 end
@@ -688,11 +669,6 @@ function str.prepend string:str character:char -> str :
 
   // Update string length
   string_len 1 + buffer int.store
-
-  // Deallocate the original string if new memory was allocated
-  if requires_allocation do
-    string str.delete
-  endif
 
   buffer cast(str)
 end

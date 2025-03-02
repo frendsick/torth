@@ -20,8 +20,4 @@ class Token
   method load ptr -> Token :
     ptr.load cast(Token)
   end
-
-  method delete self:Token :
-    Token.size self cast(ptr) munmap
-  end
 endclass
