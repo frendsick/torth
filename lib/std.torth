@@ -1220,13 +1220,7 @@ class Arena
     last:ArenaRegion    // Last region in the arena
 
     method init capacity:int -> Arena :
-        Arena.size malloc cast(Arena)   take arena in
-        capacity ArenaRegion.init       take region in
-
-        region arena Arena->first
-        region arena Arena->current
-        region arena Arena->last
-        arena
+        Arena.size malloc cast(Arena)
     end
 
     // Find region with enough space from the arena or allocate one
@@ -1270,7 +1264,13 @@ class Arena
 
     // Append region to the end of the Arena
     method append_region self:Arena region:ArenaRegion :
-        region self Arena.last ArenaRegion->next
+        self Arena.first cast(int) puti " arst\n" puts
+        if self Arena.first NULL == do
+            region self Arena->first
+            region self Arena->current
+        else
+            region self Arena.last ArenaRegion->next
+        endif
         region self Arena->last
     end
 
