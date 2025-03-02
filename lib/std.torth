@@ -1211,6 +1211,7 @@ end
 class Arena
     first:ArenaRegion   // First region of the arena
     current:ArenaRegion // Currently used region
+    last:ArenaRegion    // Last region in the arena
 
     method init capacity:int -> Arena :
         Arena.size malloc cast(Arena)   take arena in
@@ -1218,6 +1219,7 @@ class Arena
 
         region arena Arena->first
         region arena Arena->current
+        region arena Arena->last
         arena
     end
 
@@ -1264,8 +1266,9 @@ class Arena
             region ArenaRegion.next region =
         done
 
-        // Reset the `current`
+        // Reset `current` and `last`
         self Arena.first self Arena->current
+        self Arena.first self Arena->last
     end
 
     // Deallocating the arena with its regions
