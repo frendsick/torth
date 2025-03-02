@@ -1253,6 +1253,19 @@ class Arena
         region ArenaRegion.count bytes + region ArenaRegion->count
     end
 
+    // Reset the arena without deallocating its regions
+    method reset self:Arena :
+        // Zero counts for regions
+        self Arena.begin take region in
+        while region NULL != do
+            0 region ArenaRegion->count
+            region ArenaRegion.next region =
+        done
+
+        // Reset the `last`
+        self Arena.begin self Arena->last
+    end
+
     // Deallocating the arena with its regions
     method delete self:Arena :
         // Deallocate regions
