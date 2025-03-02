@@ -225,6 +225,7 @@ function get_tokens_op_type
   // Intrinsics
   elif
     token_upper "AND"         streq
+    token_upper "ARENA"       streq ||
     token_upper "ARGC"        streq ||
     token_upper "ARGV"        streq ||
     token_upper "DIV"         streq ||

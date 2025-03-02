@@ -4,9 +4,6 @@
 // Common constants
 const NULL 0 end
 
-// Memory
-const MEMORY_CAPACITY 430080 end  // 420 * 1024 => 420kb
-
 // Data types
 const bool.size   1 end
 const char.size   1 end
@@ -18,6 +15,11 @@ const str.size    8 end
 const stdin  0 end
 const stdout 1 end
 const stderr 2 end
+
+// `file_stat` struct offsets
+// https://stackoverflow.com/questions/27216616/get-file-size-with-stat-syscall
+const file_stat.len 144 end
+const file_stat.st_size 48 end
 
 // Usual file modes
 const mode_777 0x1ff end
@@ -39,12 +41,12 @@ inline function <<       int int   -> int  : shl               end
 inline function >>       int int   -> int  : shr               end
 
 // Get user input from stdin
-function input -> str :
+function input max_length:int -> str :
   // Allocate memory for the user input
-  MEMORY_CAPACITY malloc cast(str) take buffer in
+  max_length malloc cast(str) take buffer in
 
   // Read user input
-  MEMORY_CAPACITY buffer str.to_cstr stdin read
+  max_length buffer str.to_cstr stdin read
 
   // Store the string length
   buffer cast(ptr) int.store
@@ -80,18 +82,18 @@ function fputs fd:int buf:str : buf str.len buf str.to_cstr fd write drop end
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
 // Return: Pointer to the start of the allocated memory
-function malloc length:int -> ptr :
-  // Allocate at least one byte
-  if length 0 <= do
-    1 length =
-  endif
-
+function mmap length:int -> ptr :
   // mmap ( NULL, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0 );
   0 0
   MAP_ANONYMOUS MAP_PRIVATE |
   PROT_READ PROT_WRITE |
   length
   NULL SYS_mmap SYSCALL6 cast(ptr)
+end
+
+// Allocate memory using built-in `ArenaAllocator`
+function malloc int -> ptr :
+    arena ArenaAllocator.allocate
 end
 
 // Deallocate memory
@@ -123,7 +125,10 @@ function cstr.to_string cstring:cstr -> str :
     endif
 
     // Allocate memory for string
-    cstring_len int.size + malloc cast(str)
+    cstring_len
+    int.size +    // First 8 bytes contain the string length
+    1 +           // NULL byte
+    malloc cast(str)
     take string in
 
     // Save the string length
@@ -236,7 +241,8 @@ end
 
 function char.to_string character:char -> str :
   1 peek string_len in
-  int.size + // First 8 bytes contain the string length
+  int.size +    // First 8 bytes contain the string length
+  1 +           // NULL byte
   malloc cast(str)
   take string in
 
@@ -298,7 +304,7 @@ function itoa num:int -> str :
 
   // Allocate memory to the string representation
   num int.get_digits
-  dup int.size + malloc cast(str)
+  dup int.size + 1 + malloc cast(str)
   10
   take
     base
@@ -372,7 +378,8 @@ inline function str.store    ptr str   ->      : STORE_QWORD                   e
 function str.copy string:str -> str :
   // Allocate memory which can store the string
   string str.len
-  int.size + // First 8 bytes contain the string length
+  int.size +    // First 8 bytes contain the string length
+  1 +           // NULL byte
   malloc
 
   // Fill the new memory with string content
@@ -499,7 +506,7 @@ function str.replace
   // Store the string length
   string str.copy peek string_start in
   str.len index - substring str.len - peek end_len in
-  int.size + malloc cast(str) take string_end in
+  int.size + 1 + malloc cast(str) take string_end in
   end_len string_end cast(ptr) int.store
 
   // Copy the end of string from index to `string_end`
@@ -515,9 +522,6 @@ function str.replace
   string_start
   replacement str.cat
   string_end  str.cat
-
-  // Deallocate unused strings
-  string_end str.delete
 end
 
 // Replace all occurrences of substring with another string.
@@ -580,14 +584,14 @@ function str.cat str2:str str1:str -> str :
   str1
   take result str1.len str2.len in
 
-  str1.len int.size + PAGE_SIZE %
-  str2.len          + PAGE_SIZE >
+  str1.len int.size + ARENA_CHUNK_SIZE %
+  str2.len + 1      + ARENA_CHUNK_SIZE >
   str1 str.is_static ||
   take requires_allocation in
 
   if requires_allocation do
     // Allocate memory to hold both string
-    str1.len str2.len + int.size + malloc
+    str1.len str2.len + int.size + 1 + malloc
 
     // Fill the beginning of the allocated memory with str1
     str1 str.fill result =
@@ -602,18 +606,7 @@ function str.cat str2:str str1:str -> str :
   // Update `result` string length
   str1.len str2.len + result cast(ptr) int.store
 
-  // Deallocate `str1` new memory was allocated
-  if requires_allocation do
-    str1 str.delete
-  endif
-
   result
-end
-
-// Deallocate string's memory if it is not a string literal
-function str.delete string:str :
-  if string str.is_static do return endif
-  string str.len int.size + string cast(ptr) munmap
 end
 
 // Append a character to the end of a string buffer
@@ -624,7 +617,7 @@ function str.append string:str character:char -> str :
   string str.len
   take string_len required_extra_space in
 
-  string_len PAGE_SIZE % PAGE_SIZE required_extra_space - >
+  string_len ARENA_CHUNK_SIZE % ARENA_CHUNK_SIZE required_extra_space - >
   string str.is_static ||
   take requires_allocation in
 
@@ -646,11 +639,6 @@ function str.append string:str character:char -> str :
   // Update string length
   string_len 1 + buffer int.store
 
-  // Deallocate the original string if new memory was allocated
-  if requires_allocation do
-    string str.delete
-  endif
-
   buffer cast(str)
 end
 
@@ -664,7 +652,7 @@ function str.prepend string:str character:char -> str :
 
   // Test if the character fits in the current memory page
   // String literals cannot be appended so them always require allocation
-  string_len PAGE_SIZE % PAGE_SIZE required_extra_space - >
+  string_len ARENA_CHUNK_SIZE % ARENA_CHUNK_SIZE required_extra_space - >
   string str.is_static ||
   take requires_allocation in
 
@@ -688,11 +676,6 @@ function str.prepend string:str character:char -> str :
 
   // Update string length
   string_len 1 + buffer int.store
-
-  // Deallocate the original string if new memory was allocated
-  if requires_allocation do
-    string str.delete
-  endif
 
   buffer cast(str)
 end
@@ -773,7 +756,7 @@ end
 function str.alphanumeric string:str -> str :
   // Allocate enough memory to hold the whole string
   string str.len
-  dup int.size + malloc cast(str)
+  dup int.size + 1 + malloc cast(str)
   0
   take index buffer string_len in
 
@@ -905,7 +888,7 @@ end
 function str.reverse original:str -> str :
   // Allocate memory for the reversed string
   original str.len
-  dup int.size + malloc cast(str)
+  dup int.size + 1 + malloc cast(str)
   take reversed index in
 
   // Append characters from the parameter string to allocated memory in the reversed order
@@ -1009,6 +992,13 @@ function open_file oflag:int path:str -> int :
   fd
 end
 
+function fd.size fd:int -> int :
+    file_stat.len malloc peek file_stat_buffer in
+    fd SYS_fstat syscall2 drop
+
+    file_stat_buffer file_stat.st_size ptr+ int.load
+end
+
 // Read a file to a newly allocated memory
 // Params: const char *path
 // Return: str buffer
@@ -1018,11 +1008,14 @@ function read_file path:str -> str :
   path O_RDONLY open_file
 
   // Allocate string buffer
-  MEMORY_CAPACITY malloc cast(str)
+  dup fd.size peek fd_size in
+  int.size +    // First 8 bytes contain the string length
+  1 +           // NULL byte
+  malloc cast(str)
   take buffer fd in
 
   // Read the file to the string buffer and return it
-  MEMORY_CAPACITY buffer str.to_cstr fd read
+  fd_size buffer str.to_cstr fd read
   take read_bytes in
 
   // Save the buffer length
@@ -1213,25 +1206,21 @@ end
 const ARENA_REGION_MIN_CAPACITY 4064 end
 // Minimum space left to not update the `current` region
 const ARENA_CURRENT_MIN_SPACE 128 end
+// Chunk sizes within regions
+const ARENA_CHUNK_SIZE 64 end
 
-class Arena
+class ArenaAllocator
     first:ArenaRegion   // First region of the arena
     current:ArenaRegion // Currently used region
     last:ArenaRegion    // Last region in the arena
 
-    method init capacity:int -> Arena :
-        Arena.size malloc cast(Arena)   take arena in
-        capacity ArenaRegion.init       take region in
-
-        region arena Arena->first
-        region arena Arena->current
-        region arena Arena->last
-        arena
+    method init -> ArenaAllocator :
+        ArenaAllocator.size mmap cast(ArenaAllocator)
     end
 
     // Find region with enough space from the arena or allocate one
-    method find_region self:Arena bytes:int -> ArenaRegion :
-        self Arena.current take region in
+    method find_region self:ArenaAllocator bytes:int -> ArenaRegion :
+        self ArenaAllocator.current take region in
         while region NULL != do
             // Region with enough leftover capacity is found
             if region ArenaRegion.capacity region ArenaRegion.count bytes + >= do
@@ -1242,13 +1231,17 @@ class Arena
 
         // Append a new region to the end of the arena
         bytes ArenaRegion.init
-        dup self Arena.append_region
+        dup self ArenaAllocator.append_region
     end
 
-    // Allocate `bytes` for Arena
-    method allocate self:Arena bytes:int -> ptr :
+    // Allocate `bytes` for ArenaAllocator
+    method allocate self:ArenaAllocator bytes:int -> ptr :
+        // Round `bytes` up to the nearest chunk
+        ARENA_CHUNK_SIZE bytes ARENA_CHUNK_SIZE % - bytes +
+        bytes =
+
         // Find region with enough free space
-        bytes self Arena.find_region take region in
+        bytes self ArenaAllocator.find_region take region in
 
         // Get pointer to the allocated chunk, this will be returned
         region ArenaRegion.data region ArenaRegion.count ptr+
@@ -1259,47 +1252,60 @@ class Arena
         // Update `current` if it has less than `ARENA_CURRENT_MIN_SPACE` bytes left
         if
             ARENA_CURRENT_MIN_SPACE
-            self Arena.current peek current in
+            self ArenaAllocator.current peek current in
             ArenaRegion.capacity current ArenaRegion.count -
             >
         do
-            ARENA_CURRENT_MIN_SPACE self Arena.find_region
-            self Arena->current
+            ARENA_CURRENT_MIN_SPACE self ArenaAllocator.find_region
+            self ArenaAllocator->current
         endif
     end
 
-    // Append region to the end of the Arena
-    method append_region self:Arena region:ArenaRegion :
-        region self Arena.last ArenaRegion->next
-        region self Arena->last
+    // Append region to the end of the ArenaAllocator
+    method append_region self:ArenaAllocator region:ArenaRegion :
+        if self ArenaAllocator.first NULL == do
+            region self ArenaAllocator->first
+            region self ArenaAllocator->current
+        else
+            region self ArenaAllocator.last ArenaRegion->next
+        endif
+        region self ArenaAllocator->last
     end
 
     // Reset the arena without deallocating its regions
-    method reset self:Arena :
+    method reset self:ArenaAllocator :
         // Zero counts for regions
-        self Arena.first take region in
+        self ArenaAllocator.first take region in
         while region NULL != do
             0 region ArenaRegion->count
             region ArenaRegion.next region =
         done
 
         // Reset `current` and `last`
-        self Arena.first self Arena->current
-        self Arena.first self Arena->last
+        self ArenaAllocator.first self ArenaAllocator->current
+        self ArenaAllocator.first self ArenaAllocator->last
     end
 
-    // Deallocating the arena with its regions
-    method delete self:Arena :
+    // Deallocating regions within the arena
+    method delete self:ArenaAllocator :
         // Deallocate regions
-        self Arena.first take region in
+        self ArenaAllocator.first take region in
         while region NULL != do
             region ArenaRegion.next take next in
             region ArenaRegion.delete
             next region =
         done
 
+        // Built-in arena cannot be deallocated so reset it instead
+        if self KERNEL_SPACE_PTR < do
+            NULL cast(ArenaRegion) self ArenaAllocator->first
+            NULL cast(ArenaRegion) self ArenaAllocator->current
+            NULL cast(ArenaRegion) self ArenaAllocator->last
+            return
+        endif
+
         // Deallocate arena
-        Arena.size self cast(ptr) munmap
+        ArenaAllocator.size self cast(ptr) munmap
     end
 endclass
 
@@ -1313,7 +1319,7 @@ class ArenaRegion
         if capacity ARENA_REGION_MIN_CAPACITY < do
             ARENA_REGION_MIN_CAPACITY capacity =
         endif
-        capacity ArenaRegion.size + malloc cast(ArenaRegion)
+        capacity ArenaRegion.size + mmap cast(ArenaRegion)
         take region in
 
         0                                       region ArenaRegion->count

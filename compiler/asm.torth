@@ -23,6 +23,7 @@ function get_asm_file_start -> str :
 
 section .bss
   args_ptr: resq 1
+  arena_allocator: resq 3
   return_stack: resb 1337*64
 
 "
@@ -164,6 +165,8 @@ function get_intrinsic_asm token:Token -> str :
   take intrinsic in
   if intrinsic "AND" streq do
     get_and_asm return
+  elif intrinsic "ARENA" streq do
+    get_arena_asm return
   elif intrinsic "ARGC" streq do
     get_argc_asm return
   elif intrinsic "ARGV" streq do
@@ -659,6 +662,13 @@ function get_and_asm -> str :
   and [rsp], rax\n"
 end
 
+// ARENA pushes built-in ArenaAllocator to the stack
+// Params: None
+// Return: Assembly
+function get_arena_asm -> str :
+  "  push arena_allocator"
+end
+
 // ARGC pushes the argument count to the stack
 // Params: None
 // Return: Assembly
@@ -987,7 +997,6 @@ function generate_assembly_file
 
   // Append .data section to the assembly file
   data_section_asm file_name append_file
-  data_section_asm str.delete
 end
 
 // Get Assembly code to be added to .data section from Program's string variables
@@ -1083,8 +1092,6 @@ function format_escape_sequences_for_nasm string:str -> str :
 
   DoubleQuote str.copy ",27," str.cat DoubleQuote str.cat
   Escape string str.replace_all
-
-  DoubleQuote str.delete
 end
 
 // Pop a value from the data stack and push it to the return stack

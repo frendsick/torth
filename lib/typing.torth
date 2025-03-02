@@ -24,15 +24,6 @@ class Array
         cast(Array) // Return Array
     end
 
-    // Free the allocated memory for a certain array
-    // Params: array (PTR)
-    // Return: None
-    method delete Array :
-        take array in
-        array Array.len int.size * int.size +
-        array cast(ptr) munmap
-    end
-
     // Get the length of an array (number of elements)
     // Params: array (PTR)
     // Return: len (INT)
@@ -358,18 +349,6 @@ class List
         list
     end
 
-    // Free the allocated memory for a certain list
-    method delete List :
-        dup List.array
-        take array list in
-
-        // Deallocate the array pointed by List.array
-        array Array.delete
-
-        // Deallocate the List object
-        List.size list cast(ptr) munmap
-    end
-
     // Append value pointer to a list
     // Params: list (PTR), value (ANY)
     // Return: list (PTR)
@@ -404,9 +383,6 @@ class List
 
             // Update new array length
             len new_array cast(ptr) int.store
-
-            // Deallocate the old array
-            array Array.delete
 
             // Set the new_array to array
             new_array array =
@@ -582,9 +558,6 @@ function LinkedList.pop Node -> ptr :
     // Unlink the old head
     head Node.next head_ptr cast(ptr) Node.store
 
-    // Deallocate the old head
-    Node.size head cast(ptr) munmap
-
     // Return the popped data
     popped_data
 end
@@ -614,17 +587,6 @@ function LinkedList.is_empty Node -> bool :
     cast(ptr) int.load 0 ==
 end
 
-function LinkedList.delete linked_list:Node data_size:int :
-    linked_list cast(ptr) Node.load
-    take node in
-
-    while node cast(int) NULL != do
-        node Node.next
-        data_size node Node.delete
-        take node in
-    done
-end
-
 class Node
     data:ptr
     next:Node
@@ -636,12 +598,6 @@ class Node
 
     method store ptr Node :
         swap cast(ptr) swap ptr.store
-    end
-
-    method delete node:Node data_size:int :
-        // Deallocate the Node with its data
-        data_size node Node.data munmap
-        Node.size node cast(ptr) munmap
     end
 endclass // Node
 
@@ -759,9 +715,6 @@ class HashMap
                 if prev cast(int) NULL != do
                     next prev Node->next
                 endif
-
-                // Deallocate the deleted node
-                Pair.size node Node.delete
                 return
             endif
             node Node.next node =

@@ -575,7 +575,7 @@ function main :
     State.init take state in
 
     while True do
-        state input handle_request
+        state 4096 input handle_request
 
         // Cache the current state
         // TODO: Only parse when there are changes

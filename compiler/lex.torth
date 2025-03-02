@@ -944,7 +944,6 @@ function parse_function
       if token_value ":" streq do
         current_part 2 + current_part =
         token_index 1 + token_index =
-        token_value str.delete
         continue
       endif
 
