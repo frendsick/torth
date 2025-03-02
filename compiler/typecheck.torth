@@ -301,7 +301,9 @@ function type_check_intrinsic
   take intrinsic in
 
   // Switch like if block with every type of Intrinsic
-  if intrinsic "ARGC" streq do
+  if intrinsic "ARENA" streq do
+    type_stack token type_check_push_arena_allocator return
+  elif intrinsic "ARGC" streq do
     type_stack token type_check_push_int return
   elif intrinsic "ARGV" streq do
     type_stack token type_check_push_ptr return
@@ -937,6 +939,16 @@ function type_check_push_bind
   token Token.location
   token Token.value variables List.get_variable Variable.type
   TypeNode.init cast(ptr) type_stack LinkedList.push
+end
+
+// Push built-in ArenaAllocator to the stack
+// Params
+//    token: Token
+//    type_stack: LinkedList[TypeNode]
+// Return None
+function type_check_push_arena_allocator token:Token type_stack:Node :
+  token Token.location "ArenaAllocator" TypeNode.init cast(ptr)
+  type_stack LinkedList.push
 end
 
 // Push a boolean to the stack
