@@ -1208,6 +1208,12 @@ function sqrt int -> int :
 end
 
 // Arena allocator
+
+// 4064 + ArenaRegion.size == 4096 == PAGE_SIZE
+const ARENA_REGION_MIN_CAPACITY 4064 end
+// Minimum space left to not update the `current` region
+const ARENA_CURRENT_MIN_SPACE 128 end
+
 class Arena
     first:ArenaRegion   // First region of the arena
     current:ArenaRegion // Currently used region
@@ -1249,6 +1255,17 @@ class Arena
 
         // Update used bytes count
         region ArenaRegion.count bytes + region ArenaRegion->count
+
+        // Update `current` if it has less than `ARENA_CURRENT_MIN_SPACE` bytes left
+        if
+            ARENA_CURRENT_MIN_SPACE
+            self Arena.current peek current in
+            ArenaRegion.capacity current ArenaRegion.count -
+            >
+        do
+            ARENA_CURRENT_MIN_SPACE self Arena.find_region
+            self Arena->current
+        endif
     end
 
     // Append region to the end of the Arena
@@ -1285,9 +1302,6 @@ class Arena
         Arena.size self cast(ptr) munmap
     end
 endclass
-
-// 4064 + ArenaRegion.size == 4096 == PAGE_SIZE
-const ARENA_REGION_MIN_CAPACITY 4064 end
 
 class ArenaRegion
     next:ArenaRegion    // Pointer to the next region, linked list
