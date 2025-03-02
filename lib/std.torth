@@ -80,18 +80,18 @@ function fputs fd:int buf:str : buf str.len buf str.to_cstr fd write drop end
 // Allocate read-write memory and return the pointer to the allocated memory
 // Params: size_t length
 // Return: Pointer to the start of the allocated memory
-function malloc length:int -> ptr :
-  // Allocate at least one byte
-  if length 0 <= do
-    1 length =
-  endif
-
+function mmap length:int -> ptr :
   // mmap ( NULL, length, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0 );
   0 0
   MAP_ANONYMOUS MAP_PRIVATE |
   PROT_READ PROT_WRITE |
   length
   NULL SYS_mmap SYSCALL6 cast(ptr)
+end
+
+// Allocate memory using built-in `ArenaAllocator`
+function malloc int -> ptr :
+    arena ArenaAllocator.allocate
 end
 
 // Deallocate memory
@@ -123,7 +123,10 @@ function cstr.to_string cstring:cstr -> str :
     endif
 
     // Allocate memory for string
-    cstring_len int.size + malloc cast(str)
+    cstring_len
+    int.size +    // First 8 bytes contain the string length
+    1 +           // NULL byte
+    malloc cast(str)
     take string in
 
     // Save the string length
@@ -236,7 +239,8 @@ end
 
 function char.to_string character:char -> str :
   1 peek string_len in
-  int.size + // First 8 bytes contain the string length
+  int.size +    // First 8 bytes contain the string length
+  1 +           // NULL byte
   malloc cast(str)
   take string in
 
@@ -298,7 +302,7 @@ function itoa num:int -> str :
 
   // Allocate memory to the string representation
   num int.get_digits
-  dup int.size + malloc cast(str)
+  dup int.size + 1 + malloc cast(str)
   10
   take
     base
@@ -372,7 +376,8 @@ inline function str.store    ptr str   ->      : STORE_QWORD                   e
 function str.copy string:str -> str :
   // Allocate memory which can store the string
   string str.len
-  int.size + // First 8 bytes contain the string length
+  int.size +    // First 8 bytes contain the string length
+  1 +           // NULL byte
   malloc
 
   // Fill the new memory with string content
@@ -499,7 +504,7 @@ function str.replace
   // Store the string length
   string str.copy peek string_start in
   str.len index - substring str.len - peek end_len in
-  int.size + malloc cast(str) take string_end in
+  int.size + 1 + malloc cast(str) take string_end in
   end_len string_end cast(ptr) int.store
 
   // Copy the end of string from index to `string_end`
@@ -577,14 +582,14 @@ function str.cat str2:str str1:str -> str :
   str1
   take result str1.len str2.len in
 
-  str1.len int.size + PAGE_SIZE %
-  str2.len          + PAGE_SIZE >
+  str1.len int.size + ARENA_CHUNK_SIZE %
+  str2.len + 1      + ARENA_CHUNK_SIZE >
   str1 str.is_static ||
   take requires_allocation in
 
   if requires_allocation do
     // Allocate memory to hold both string
-    str1.len str2.len + int.size + malloc
+    str1.len str2.len + int.size + 1 + malloc
 
     // Fill the beginning of the allocated memory with str1
     str1 str.fill result =
@@ -610,7 +615,7 @@ function str.append string:str character:char -> str :
   string str.len
   take string_len required_extra_space in
 
-  string_len PAGE_SIZE % PAGE_SIZE required_extra_space - >
+  string_len ARENA_CHUNK_SIZE % ARENA_CHUNK_SIZE required_extra_space - >
   string str.is_static ||
   take requires_allocation in
 
@@ -645,7 +650,7 @@ function str.prepend string:str character:char -> str :
 
   // Test if the character fits in the current memory page
   // String literals cannot be appended so them always require allocation
-  string_len PAGE_SIZE % PAGE_SIZE required_extra_space - >
+  string_len ARENA_CHUNK_SIZE % ARENA_CHUNK_SIZE required_extra_space - >
   string str.is_static ||
   take requires_allocation in
 
@@ -749,7 +754,7 @@ end
 function str.alphanumeric string:str -> str :
   // Allocate enough memory to hold the whole string
   string str.len
-  dup int.size + malloc cast(str)
+  dup int.size + 1 + malloc cast(str)
   0
   take index buffer string_len in
 
@@ -881,7 +886,7 @@ end
 function str.reverse original:str -> str :
   // Allocate memory for the reversed string
   original str.len
-  dup int.size + malloc cast(str)
+  dup int.size + 1 + malloc cast(str)
   take reversed index in
 
   // Append characters from the parameter string to allocated memory in the reversed order
@@ -1198,7 +1203,7 @@ class ArenaAllocator
     last:ArenaRegion    // Last region in the arena
 
     method init capacity:int -> ArenaAllocator :
-        ArenaAllocator.size malloc cast(ArenaAllocator)
+        ArenaAllocator.size mmap cast(ArenaAllocator)
     end
 
     // Find region with enough space from the arena or allocate one
@@ -1294,7 +1299,7 @@ class ArenaRegion
         if capacity ARENA_REGION_MIN_CAPACITY < do
             ARENA_REGION_MIN_CAPACITY capacity =
         endif
-        capacity ArenaRegion.size + malloc cast(ArenaRegion)
+        capacity ArenaRegion.size + mmap cast(ArenaRegion)
         take region in
 
         0                                       region ArenaRegion->count
