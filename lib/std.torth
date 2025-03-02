@@ -1214,18 +1214,18 @@ const ARENA_REGION_MIN_CAPACITY 4064 end
 // Minimum space left to not update the `current` region
 const ARENA_CURRENT_MIN_SPACE 128 end
 
-class Arena
+class ArenaAllocator
     first:ArenaRegion   // First region of the arena
     current:ArenaRegion // Currently used region
     last:ArenaRegion    // Last region in the arena
 
-    method init capacity:int -> Arena :
-        Arena.size malloc cast(Arena)
+    method init capacity:int -> ArenaAllocator :
+        ArenaAllocator.size malloc cast(ArenaAllocator)
     end
 
     // Find region with enough space from the arena or allocate one
-    method find_region self:Arena bytes:int -> ArenaRegion :
-        self Arena.current take region in
+    method find_region self:ArenaAllocator bytes:int -> ArenaRegion :
+        self ArenaAllocator.current take region in
         while region NULL != do
             // Region with enough leftover capacity is found
             if region ArenaRegion.capacity region ArenaRegion.count bytes + >= do
@@ -1236,13 +1236,13 @@ class Arena
 
         // Append a new region to the end of the arena
         bytes ArenaRegion.init
-        dup self Arena.append_region
+        dup self ArenaAllocator.append_region
     end
 
-    // Allocate `bytes` for Arena
-    method allocate self:Arena bytes:int -> ptr :
+    // Allocate `bytes` for ArenaAllocator
+    method allocate self:ArenaAllocator bytes:int -> ptr :
         // Find region with enough free space
-        bytes self Arena.find_region take region in
+        bytes self ArenaAllocator.find_region take region in
 
         // Get pointer to the allocated chunk, this will be returned
         region ArenaRegion.data region ArenaRegion.count ptr+
@@ -1253,45 +1253,45 @@ class Arena
         // Update `current` if it has less than `ARENA_CURRENT_MIN_SPACE` bytes left
         if
             ARENA_CURRENT_MIN_SPACE
-            self Arena.current peek current in
+            self ArenaAllocator.current peek current in
             ArenaRegion.capacity current ArenaRegion.count -
             >
         do
-            ARENA_CURRENT_MIN_SPACE self Arena.find_region
-            self Arena->current
+            ARENA_CURRENT_MIN_SPACE self ArenaAllocator.find_region
+            self ArenaAllocator->current
         endif
     end
 
-    // Append region to the end of the Arena
-    method append_region self:Arena region:ArenaRegion :
-        self Arena.first cast(int) puti " arst\n" puts
-        if self Arena.first NULL == do
-            region self Arena->first
-            region self Arena->current
+    // Append region to the end of the ArenaAllocator
+    method append_region self:ArenaAllocator region:ArenaRegion :
+        self ArenaAllocator.first cast(int) puti " arst\n" puts
+        if self ArenaAllocator.first NULL == do
+            region self ArenaAllocator->first
+            region self ArenaAllocator->current
         else
-            region self Arena.last ArenaRegion->next
+            region self ArenaAllocator.last ArenaRegion->next
         endif
-        region self Arena->last
+        region self ArenaAllocator->last
     end
 
     // Reset the arena without deallocating its regions
-    method reset self:Arena :
+    method reset self:ArenaAllocator :
         // Zero counts for regions
-        self Arena.first take region in
+        self ArenaAllocator.first take region in
         while region NULL != do
             0 region ArenaRegion->count
             region ArenaRegion.next region =
         done
 
         // Reset `current` and `last`
-        self Arena.first self Arena->current
-        self Arena.first self Arena->last
+        self ArenaAllocator.first self ArenaAllocator->current
+        self ArenaAllocator.first self ArenaAllocator->last
     end
 
     // Deallocating the arena with its regions
-    method delete self:Arena :
+    method delete self:ArenaAllocator :
         // Deallocate regions
-        self Arena.first take region in
+        self ArenaAllocator.first take region in
         while region NULL != do
             region ArenaRegion.next take next in
             region ArenaRegion.delete
@@ -1299,7 +1299,7 @@ class Arena
         done
 
         // Deallocate arena
-        Arena.size self cast(ptr) munmap
+        ArenaAllocator.size self cast(ptr) munmap
     end
 endclass
 
