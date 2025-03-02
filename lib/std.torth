@@ -1209,14 +1209,14 @@ end
 
 // Arena allocator
 class Arena
-    begin:ArenaRegion   // First region of the arena
+    first:ArenaRegion   // First region of the arena
     last:ArenaRegion    // Last used region
 
     method init capacity:int -> Arena :
         Arena.size malloc cast(Arena)   take arena in
         capacity ArenaRegion.init       take region in
 
-        region arena Arena->begin
+        region arena Arena->first
         region arena Arena->last
         arena
     end
@@ -1256,20 +1256,20 @@ class Arena
     // Reset the arena without deallocating its regions
     method reset self:Arena :
         // Zero counts for regions
-        self Arena.begin take region in
+        self Arena.first take region in
         while region NULL != do
             0 region ArenaRegion->count
             region ArenaRegion.next region =
         done
 
         // Reset the `last`
-        self Arena.begin self Arena->last
+        self Arena.first self Arena->last
     end
 
     // Deallocating the arena with its regions
     method delete self:Arena :
         // Deallocate regions
-        self Arena.begin take region in
+        self Arena.first take region in
         while region NULL != do
             region ArenaRegion.next take next in
             region ArenaRegion.delete
