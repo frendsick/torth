@@ -1210,20 +1210,20 @@ end
 // Arena allocator
 class Arena
     first:ArenaRegion   // First region of the arena
-    last:ArenaRegion    // Last used region
+    current:ArenaRegion // Currently used region
 
     method init capacity:int -> Arena :
         Arena.size malloc cast(Arena)   take arena in
         capacity ArenaRegion.init       take region in
 
         region arena Arena->first
-        region arena Arena->last
+        region arena Arena->current
         arena
     end
 
     // Find region with enough space from the arena
     method find_region self:Arena bytes:int -> ArenaRegion bool :
-        self Arena.last take region in
+        self Arena.current take region in
         while region NULL != do
             // Region with enough leftover capacity is found
             if region ArenaRegion.capacity region ArenaRegion.count bytes + >= do
@@ -1242,11 +1242,11 @@ class Arena
         if bytes self Arena.find_region not do
             drop
             bytes ArenaRegion.init
-            dup self Arena.last ArenaRegion->next
+            dup self Arena.current ArenaRegion->next
         endif
 
-        // Set the `last` to the region we are about to use
-        peek region in self Arena->last
+        // Set the `current` to the region we are about to use
+        peek region in self Arena->current
 
         // Get pointer to the allocated chunk, this will be returned
         region ArenaRegion.data region ArenaRegion.count ptr+
@@ -1264,8 +1264,8 @@ class Arena
             region ArenaRegion.next region =
         done
 
-        // Reset the `last`
-        self Arena.first self Arena->last
+        // Reset the `current`
+        self Arena.first self Arena->current
     end
 
     // Deallocating the arena with its regions
