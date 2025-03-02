@@ -1286,7 +1286,7 @@ class ArenaAllocator
         self ArenaAllocator.first self ArenaAllocator->last
     end
 
-    // Deallocating the arena with its regions
+    // Deallocating regions within the arena
     method delete self:ArenaAllocator :
         // Deallocate regions
         self ArenaAllocator.first take region in
@@ -1295,6 +1295,14 @@ class ArenaAllocator
             region ArenaRegion.delete
             next region =
         done
+
+        // Built-in arena cannot be deallocated so reset it instead
+        if self KERNEL_SPACE_PTR < do
+            NULL cast(ArenaRegion) self ArenaAllocator->first
+            NULL cast(ArenaRegion) self ArenaAllocator->current
+            NULL cast(ArenaRegion) self ArenaAllocator->last
+            return
+        endif
 
         // Deallocate arena
         ArenaAllocator.size self cast(ptr) munmap
