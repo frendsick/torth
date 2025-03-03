@@ -62,7 +62,7 @@ main() {
         # Verify that dependencies were installed
         missing_dependencies=$(get_missing_dependencies)
         if [ -n "$missing_dependencies" ]; then
-            >&2 log "WARNING" "Please install missing dependencies manually:" "$missing_dependencies"
+            log "WARNING" "Please install missing dependencies manually:" "$missing_dependencies"
             exit 0
         fi
     fi
@@ -72,7 +72,7 @@ main() {
 
 download_asset() {
     if [ "$#" -ne 2 ]; then
-        >&2 log "ERROR" "Invalid arguments" "Usage: download_asset <url> <output_file>"
+        log "ERROR" "Invalid arguments" "Usage: download_asset <url> <output_file>"
         exit 1
     fi
 
@@ -81,7 +81,7 @@ download_asset() {
 
     log "SUCCESS" "Download asset" "$output_file"
     if ! curl --silent --location --output "$output_file" "$url"; then
-        >&2 log "WARNING" "Download failed" "$output_file"
+        log "WARNING" "Download failed" "$output_file"
     fi
 }
 
@@ -102,7 +102,7 @@ get_missing_dependencies() {
 # Install dependencies for supported Linux distros
 install_dependencies() {
     if [ "$#" -ne 1 ]; then
-        >&2 log "ERROR" "Invalid arguments" "Usage: install_dependencies <dependencies>"
+        log "ERROR" "Invalid arguments" "Usage: install_dependencies <dependencies>"
         exit 1
     fi
 
@@ -120,16 +120,16 @@ install_dependencies() {
         install_packages "apt" "$(echo "$dependencies" | sed "s/ld/binutils/")"
     # Could not determine the distro
     elif [ -z "$distro" ]; then
-        >&2 log "WARNING" "Unsupported distro" 'Could not determine the Linux distribution with `lsb_release`'
+        log "WARNING" "Unsupported distro" 'Could not determine the Linux distribution with `lsb_release`'
     # Not supported distro
     else
-        >&2 log "WARNING" "Unsupported distro" "Dependency installation is not implemented for $distro"
+        log "WARNING" "Unsupported distro" "Dependency installation is not implemented for $distro"
     fi
 }
 
 install_packages() {
     if [ "$#" -ne 2 ]; then
-        >&2 log "ERROR" "Invalid arguments" "Usage: install_packages <package_manager> <packages>"
+        log "ERROR" "Invalid arguments" "Usage: install_packages <package_manager> <packages>"
         exit 1
     fi
 
@@ -150,19 +150,19 @@ install_packages() {
     if [ "$yn" = "n" ] || [ "$yn" = "N" ]; then
         log "INFO" "Skip installing dependencies" ""
     elif [ "$package_manager" = "apt" ]; then
-        sudo apt-get update && sudo apt-get install -y nasm
+        sudo apt-get update && sudo apt-get install -y $packages
 
         # Verify that dependencies were installed
         missing_dependencies=$(get_missing_dependencies)
         if [ -n "$missing_dependencies" ]; then
-            >&2 log "ERROR" "Dependency installation failed" ""
+            log "ERROR" "Dependency installation failed" ""
         fi
     fi
 }
 
 log() {
     if [ "$#" -ne 3 ]; then
-        >&2 log "ERROR" "Invalid arguments" "Usage: log <log_level> <summary> <description>"
+        log "ERROR" "Invalid arguments" "Usage: log <log_level> <summary> <description>"
         exit 1
     fi
 
@@ -189,12 +189,17 @@ log() {
     elif [ "$log_level" = "WARNING" ]; then
         prefix="[${WARNING}-${RESET}]" # [-]
     else
-        >&2 log "ERROR" "Unknown log level" "$log_level"
+        log "ERROR" "Unknown log level" "$log_level"
         exit 1
     fi
 
-    # Print log to stdout
-    printf "%b %-*s %s\n" "$prefix" "$SUMMARY_WIDTH" "$summary" "$description"
+    if [ "$log_level" = "ERROR" ] || [ "$log_level" = "WARNING" ]; then
+        # Print log to stderr
+        >&2 printf "%b %-*s %s\n" "$prefix" "$SUMMARY_WIDTH" "$summary" "$description"
+    else
+        # Print log to stdout
+        printf "%b %-*s %s\n" "$prefix" "$SUMMARY_WIDTH" "$summary" "$description"
+    fi
 }
 
 main
