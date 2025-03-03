@@ -107,17 +107,23 @@ install_dependencies() {
     fi
 
     dependencies="$1"
-    distributor_id=$(
+    distro=$(
         command -v lsb_release >/dev/null 2>&1 &&
             lsb_release -i | awk '{print $NF}'
     )
 
     # Debian derivates
-    if [ "$distributor_id" = "Debian" ] ||
-        [ "$distributor_id" = "Kali" ] ||
-        [ "$distributor_id" = "Ubuntu" ]; then
+    if [ "$distro" = "Debian" ] ||
+        [ "$distro" = "Kali" ] ||
+        [ "$distro" = "Ubuntu" ]; then
         # APT has `ld` in the `binutils` package
         install_packages "apt" "$(echo "$dependencies" | sed "s/ld/binutils/")"
+    # Could not determine the distro
+    elif [ -z "$distro" ]; then
+        >&2 log "WARNING" "Unsupported distro" 'Could not determine the Linux distribution with `lsb_release`'
+    # Not supported distro
+    else
+        >&2 log "WARNING" "Unsupported distro" "Dependency installation is not implemented for $distro"
     fi
 }
 
