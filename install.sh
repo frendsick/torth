@@ -32,16 +32,19 @@ main() {
             '
     )
 
-    # Download the files listed in `$FILES_TO_INSTALL`
+    # Handle each asset from the release
     echo "$release_asset_urls" | while read -r asset_name asset_url; do
-        # Download the executable and it executable
+
+        # Download the executable and make it executable
         if [ "$asset_name" = "$TORTH_COMPILER" ]; then
             download_asset "$asset_url" "$asset_name"
             chmod +x "$asset_name"
             log "SUCCESS" "Make executable" "$asset_name"
-        # Download standard library
+
+        # Download the standard library
         elif [ "$asset_name" = "$TORTH_STD_LIBRARY" ]; then
             download_asset "$asset_url" "$asset_name"
+
         else
             log "INFO" "Skipping asset" "$asset_name"
         fi
