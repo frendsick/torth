@@ -142,13 +142,21 @@ install_packages() {
         case $yn in
         "") break ;; # Interpret empty answer as yes
         [Yy]) break ;;
-        [Nn]) return 1 ;;
+        [Nn]) break ;;
         esac
     done
 
     # Install packages with supported package manager
-    if [ "$package_manager" = "apt" ]; then
-        sudo apt-get update && sudo apt-get install -y $packages
+    if [ "$yn" = "n" ] || [ "$yn" = "N" ]; then
+        log "INFO" "Skip installing dependencies" ""
+    elif [ "$package_manager" = "apt" ]; then
+        sudo apt-get update && sudo apt-get install -y nasm
+
+        # Verify that dependencies were installed
+        missing_dependencies=$(get_missing_dependencies)
+        if [ -n "$missing_dependencies" ]; then
+            >&2 log "ERROR" "Dependency installation failed" ""
+        fi
     fi
 }
 
