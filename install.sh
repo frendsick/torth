@@ -62,8 +62,8 @@ main() {
         # Verify that dependencies were installed
         missing_dependencies=$(get_missing_dependencies)
         if [ -n "$missing_dependencies" ]; then
-            log "ERROR" "Dependency install failed" "$missing_dependencies"
-            exit 1
+            >&2 log "WARNING" "Please install missing dependencies manually:" "$missing_dependencies"
+            exit 0
         fi
     fi
 
