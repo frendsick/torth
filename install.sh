@@ -9,6 +9,9 @@ RELEASE_VERSION="latest"
 TORTH_COMPILER="torth"
 TORTH_STD_LIBRARY="std.torth"
 
+# List of dependencies
+DEPENDENCIES="ld nasm"
+
 # Script entry point
 main() {
     # Fetch latest release from the Github REST API
@@ -49,6 +52,22 @@ main() {
             log "INFO" "Skipping asset" "$asset_name"
         fi
     done
+
+    # Offer to install missing dependencies for supported distros
+    missing_dependencies=$(get_missing_dependencies)
+    if [ -n "$missing_dependencies" ]; then
+        log "WARNING" "Dependencies missing" "$missing_dependencies"
+        install_dependencies "$missing_dependencies"
+
+        # Verify that dependencies were installed
+        missing_dependencies=$(get_missing_dependencies)
+        if [ -n "$missing_dependencies" ]; then
+            log "ERROR" "Dependency install failed" "$missing_dependencies"
+            exit 1
+        fi
+    fi
+
+    log "SUCCESS" "All set. Happy hacking!" ""
 }
 
 download_asset() {
@@ -66,6 +85,67 @@ download_asset() {
     fi
 }
 
+get_missing_dependencies() {
+    # Gather missing packages to this variable
+    missing_dependencies=""
+
+    for dependency in $DEPENDENCIES; do
+        # Check if dependency already exists
+        if ! command -v "$dependency" >/dev/null 2>&1; then
+            missing_dependencies="$dependency $missing_dependencies"
+        fi
+    done
+
+    echo "$missing_dependencies"
+}
+
+# Install dependencies for supported Linux distros
+install_dependencies() {
+    if [ "$#" -ne 1 ]; then
+        >&2 log "ERROR" "Invalid arguments" "Usage: install_dependencies <dependencies>"
+        exit 1
+    fi
+
+    dependencies="$1"
+    distributor_id=$(
+        command -v lsb_release >/dev/null 2>&1 &&
+            lsb_release -i | awk '{print $NF}'
+    )
+
+    # Debian derivates
+    if [ "$distributor_id" = "Debian" ] ||
+        [ "$distributor_id" = "Kali" ] ||
+        [ "$distributor_id" = "Ubuntu" ]; then
+        # APT has `ld` in the `binutils` package
+        install_packages "apt" "$(echo "$dependencies" | sed "s/ld/binutils/")"
+    fi
+}
+
+install_packages() {
+    if [ "$#" -ne 2 ]; then
+        >&2 log "ERROR" "Invalid arguments" "Usage: install_packages <package_manager> <packages>"
+        exit 1
+    fi
+
+    package_manager="$1"
+    packages="$2"
+
+    # Ask from the user if script should install dependencies
+    while true; do
+        read -p "Install dependencies from $package_manager? (Y/n) " yn
+        case $yn in
+        "") break ;; # Interpret empty answer as yes
+        [Yy]) break ;;
+        [Nn]) return 1 ;;
+        esac
+    done
+
+    # Install packages with supported package manager
+    if [ "$package_manager" = "apt" ]; then
+        sudo apt-get update && sudo apt-get install -y $packages
+    fi
+}
+
 log() {
     if [ "$#" -ne 3 ]; then
         >&2 log "ERROR" "Invalid arguments" "Usage: log <log_level> <summary> <description>"
@@ -73,7 +153,7 @@ log() {
     fi
 
     # $description starts at least $SUMMARY_WIDTH characters from the beginning of $summary
-    SUMMARY_WIDTH=24
+    SUMMARY_WIDTH=26
     log_level="$1"
     summary="$2"
     description="$3"
