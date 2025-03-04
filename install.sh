@@ -70,6 +70,35 @@ main() {
     log "SUCCESS" "All set. Happy hacking!" ""
 }
 
+are_you_sure() {
+    if [ "$#" -ne 1 ]; then
+        log "ERROR" "Invalid arguments" "Usage: are_you_sure <message>"
+        exit 1
+    fi
+
+    message="$1"
+
+    while true; do
+        read -p "$message (Y/n) " yn </dev/tty
+        case $yn in
+        # Interpret empty answer as yes
+        "")
+            echo true
+            break
+            ;;
+        [Yy])
+            echo true
+            break
+            ;;
+        [Nn])
+            echo false
+            break
+            ;;
+        *) ;;
+        esac
+    done
+}
+
 download_asset() {
     if [ "$#" -ne 2 ]; then
         log "ERROR" "Invalid arguments" "Usage: download_asset <url> <output_file>"
@@ -78,10 +107,20 @@ download_asset() {
 
     url="$1"
     output_file="$2"
+    should_download=true
 
-    log "SUCCESS" "Download asset" "$output_file"
-    if ! curl --silent --location --output "$output_file" "$url"; then
-        log "WARNING" "Download failed" "$output_file"
+    if [ -e "$output_file" ]; then
+        log "INFO" "File already exists" "$output_file"
+        should_download=$(are_you_sure "Reinstall $output_file?")
+    fi
+
+    if $should_download; then
+        log "SUCCESS" "Download asset" "$output_file"
+        if ! curl --silent --location --output "$output_file" "$url"; then
+            log "WARNING" "Download failed" "$output_file"
+        fi
+    else
+        log "INFO" "Skip downloading asset" "$output_file"
     fi
 }
 
@@ -137,18 +176,11 @@ install_packages() {
     packages="$2"
 
     # Ask from the user if script should install dependencies
-    while true; do
-        read -p "Install dependencies from $package_manager? (Y/n) " yn
-        case $yn in
-        "") break ;; # Interpret empty answer as yes
-        [Yy]) break ;;
-        [Nn]) break ;;
-        esac
-    done
+    install=$(are_you_sure "Install dependencies from $package_manager?")
 
     # Install packages with supported package manager
-    if [ "$yn" = "n" ] || [ "$yn" = "N" ]; then
-        log "INFO" "Skip installing dependencies" ""
+    if [ "$install" != "true" ]; then
+        log "INFO" "Skip dependency install" ""
     elif [ "$package_manager" = "apt" ]; then
         sudo apt-get update && sudo apt-get install -y $packages
 
