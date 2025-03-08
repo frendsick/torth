@@ -159,10 +159,10 @@ install_dependencies() {
         install_packages "apt" "$(echo "$dependencies" | sed "s/ld/binutils/")"
     # Could not determine the distro
     elif [ -z "$distro" ]; then
-        log "WARNING" "Unsupported distro" 'Could not determine the Linux distribution with `lsb_release`'
+        log "WARNING" "Install dependencies" 'Could not determine the Linux distribution with `lsb_release`'
     # Not supported distro
     else
-        log "WARNING" "Unsupported distro" "Dependency installation is not implemented for $distro"
+        log "WARNING" "Install dependencies" "Dependency installation is not implemented for $distro"
     fi
 }
 
