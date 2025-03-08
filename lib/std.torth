@@ -1204,8 +1204,6 @@ end
 
 // 4064 + ArenaRegion.size == 4096 == PAGE_SIZE
 const ARENA_REGION_MIN_CAPACITY 4064 end
-// Minimum space left to not update the `current` region
-const ARENA_CURRENT_MIN_SPACE 128 end
 // Chunk sizes within regions
 const ARENA_CHUNK_SIZE 64 end
 
@@ -1249,14 +1247,14 @@ class ArenaAllocator
         // Update used bytes count
         region ArenaRegion.count bytes + region ArenaRegion->count
 
-        // Update `current` if it has less than `ARENA_CURRENT_MIN_SPACE` bytes left
+        // Update `current` if it has less than `ARENA_CHUNK_SIZE` bytes left
         if
-            ARENA_CURRENT_MIN_SPACE
+            ARENA_CHUNK_SIZE
             self ArenaAllocator.current peek current in
             ArenaRegion.capacity current ArenaRegion.count -
             >
         do
-            ARENA_CURRENT_MIN_SPACE self ArenaAllocator.find_region
+            ARENA_CHUNK_SIZE self ArenaAllocator.find_region
             self ArenaAllocator->current
         endif
     end
