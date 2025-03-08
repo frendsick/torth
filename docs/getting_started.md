@@ -9,22 +9,32 @@ For now, the language only works with Linux using x86_64 architecture. Windows u
 - Object file is linked to a statically linked 64-bit ELF-executable with LD
 - The resulting executable does not have any external dependencies
 
-## Requirements
+## Dependencies
 
-The following requirements can be installed via your Linux distro's package manager.
+The following dependencies can be installed from your Linux distro's package manager.
 
 - [NASM](https://www.nasm.us/)
 - [LD](https://linux.die.net/man/1/ld) (_binutils_ package in APT)
 
 ## Installation
 
-Install the Torth compiler and its standard library with [install.sh](../install.sh) Shell script. [Requirements](#requirements) should be installed separately.
+### Install script
+
+Install the Torth compiler, its [dependencies](#dependencies), and the [standard library](../lib/std.torth) with [install.sh](../install.sh) Shell script.
 
 ```sh
 ./install.sh
 ```
 
-Alternatively, you can install the `torth` compiler and the `std.torth` library from the [releases](https://github.com/frendsick/torth/releases/latest). The `torth` file must be set as executable with the `chmod` command.
+If the dependency installation fails, the script gives an error like this:
+
+> [-] Please install missing dependencies manually: nasm ld
+
+### Manual installation
+
+- Install [dependencies](#dependencies)
+- Download the `torth` compiler and the `std.torth` library from [releases](https://github.com/frendsick/torth/releases/latest)
+- Make the `torth` compiler an executable with the `chmod` command.
 
 ```sh
 chmod +x torth
