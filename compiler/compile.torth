@@ -4,19 +4,30 @@ include "compiler/utils"
 
 // Compile and link the assembly file with GAS and LD
 // Params: out_file (STR)
-function compile_executable out_file:str :
+function compile_executable out_file:str args:Argparser :
+  "-g" args Argparser.flag_present
+  take is_debug in
+
   // Compile assembly code file to an object file with GAS
-  out_file compile_with_as& exec_forked
+  if is_debug do
+    out_file compile_debug_with_gas& exec_forked
+  else
+    out_file compile_with_gas& exec_forked
+  endif
 
   // Link the object file to an executable with LD
-  out_file link_with_ld& exec_forked
+  if is_debug do
+    out_file link_debug_with_ld& exec_forked
+  else
+    out_file link_with_ld& exec_forked
+  endif
 end
 
 // Compile assembly code file to object file with GAS
-function compile_with_as out_file:str :
+function compile_with_gas out_file:str :
   out_file str.copy ".o"   str.cat
   out_file str.copy ".asm" str.cat
-  List.init // Allocate memory for arguments
+  List.init
   take
     argv
     asm_file
@@ -30,15 +41,49 @@ function compile_with_as out_file:str :
   NULLPTR argv List.first c"/usr/bin/as" execve drop
 end
 
-// Link object file with LD
+// Compile assembly code file to object file with debug information with GAS
+function compile_debug_with_gas out_file:str :
+  out_file str.copy ".o"   str.cat
+  out_file str.copy ".asm" str.cat
+  List.init
+  take
+    argv
+    asm_file
+    object_file
+  in
+
+  c"as"                   cast(ptr) argv List.append
+  c"-g"                   cast(ptr) argv List.append
+  c"-o"                   cast(ptr) argv List.append
+  object_file str.to_cstr cast(ptr) argv List.append
+  asm_file    str.to_cstr cast(ptr) argv List.append
+  NULLPTR argv List.first c"/usr/bin/as" execve drop
+end
+
+// Link object file using `ld`
 function link_with_ld out_file:str :
   out_file str.copy ".o" str.cat
-  List.init // Allocate memory for arguments
+  List.init
   take argv object_file in
 
   c"ld"                       cast(ptr) argv List.append
   c"-melf_x86_64"             cast(ptr) argv List.append
   c"-s"                       cast(ptr) argv List.append
+  c"-o"                       cast(ptr) argv List.append
+  out_file        str.to_cstr cast(ptr) argv List.append
+  object_file     str.to_cstr cast(ptr) argv List.append
+  NULLPTR argv List.first c"/usr/bin/ld" execve drop
+end
+
+// Link object file with debug information using `ld`
+function link_debug_with_ld out_file:str :
+  out_file str.copy ".o" str.cat
+  List.init
+  take argv object_file in
+
+  c"ld"                       cast(ptr) argv List.append
+  c"-melf_x86_64"             cast(ptr) argv List.append
+  c"-g"                       cast(ptr) argv List.append
   c"-o"                       cast(ptr) argv List.append
   out_file        str.to_cstr cast(ptr) argv List.append
   object_file     str.to_cstr cast(ptr) argv List.append

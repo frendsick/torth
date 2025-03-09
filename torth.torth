@@ -54,7 +54,7 @@ function main :
 
   // Compile the assembly code file to a Linux x86_64 executable
   args "Compiling Assembly code" verbose_output
-  out_file compile_executable
+  args out_file compile_executable
 
   // Remove files generated during compilation
   // if -s command line flag is not present

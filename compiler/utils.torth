@@ -18,6 +18,7 @@ function parse_command_line_arguments -> Argparser :
   take parser in
   True  "" "Input file" "code_file"                       parser Argparser.add_argument
   False "FILE" "Output file" "--out"                      parser Argparser.add_argument
+  False "" "Produce debugging information" "-g"           parser Argparser.add_argument
   False "" "Run program after compilation" "-r"           parser Argparser.add_argument
   False "" "Save files generated during compilation" "-s" parser Argparser.add_argument
   False "" "Output compilation steps" "-v"                parser Argparser.add_argument
