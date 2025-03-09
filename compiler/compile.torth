@@ -2,18 +2,18 @@ include "std"
 include "compiler/error"
 include "compiler/utils"
 
-// Compile and link the assembly file with NASM and LD
+// Compile and link the assembly file with GAS and LD
 // Params: out_file (STR)
 function compile_executable out_file:str :
-  // Compile assembly code file to an object file with NASM
-  out_file compile_with_nasm& exec_forked
+  // Compile assembly code file to an object file with GAS
+  out_file compile_with_as& exec_forked
 
   // Link the object file to an executable with LD
   out_file link_with_ld& exec_forked
 end
 
-// Compile assembly code file to object file with NASM
-function compile_with_nasm out_file:str :
+// Compile assembly code file to object file with GAS
+function compile_with_as out_file:str :
   out_file str.copy ".o"   str.cat
   out_file str.copy ".asm" str.cat
   List.init // Allocate memory for arguments
@@ -23,12 +23,11 @@ function compile_with_nasm out_file:str :
     object_file
   in
 
-  c"nasm"                 cast(ptr) argv List.append
-  c"-felf64"              cast(ptr) argv List.append
+  c"as"                   cast(ptr) argv List.append
   c"-o"                   cast(ptr) argv List.append
   object_file str.to_cstr cast(ptr) argv List.append
   asm_file    str.to_cstr cast(ptr) argv List.append
-  NULLPTR argv List.first c"/usr/bin/nasm" execve drop
+  NULLPTR argv List.first c"/usr/bin/as" execve drop
 end
 
 // Link object file with LD
