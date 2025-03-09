@@ -11,7 +11,6 @@ include "compiler/class/Token"
 // Return: Assembly
 function initialize_asm_file file_name:str :
   get_asm_file_start
-  ".section .text\n" str.cat
   mode_644 file_name write_file drop
 end
 
@@ -25,7 +24,12 @@ function get_asm_file_start -> str :
 end
 
 // Get Assembly for certain Op
-function get_op_asm op:Op program:Program sub_programs:List[Program] -> str :
+function get_op_asm
+  op:Op
+  program:Program
+  sub_programs:List[Program]
+  file_numbers:HashMap
+-> str :
   // Assert that every OpType has been taken into account
   if OpType.len 31 != do
     "All OpTypes are not taken into account in `get_op_asm` function.\n"
@@ -94,7 +98,7 @@ function get_op_asm op:Op program:Program sub_programs:List[Program] -> str :
 
       // Expand assembly from the called inline function
       if func Func.name token_value streq do
-        sub_programs program generate_program_ops_assembly_code
+        file_numbers sub_programs program generate_program_ops_assembly_code
         return
       endif
       program_index 1 + program_index =
@@ -952,6 +956,37 @@ function get_syscall_argument_registers -> List :
   registers
 end
 
+// Write `.file` directives
+// Returns: HashMap with file name as key and corresponding file number as value
+// Ref: https://sourceware.org/binutils/docs-2.18/as/LNS-directives.html#LNS-directives
+function write_file_directives assembly_file:str sub_programs:List[Program] -> HashMap :
+  HashMap.init
+  '"' char.to_string
+  0
+  0
+  take index file_index quote file_numbers in
+
+  while index sub_programs cast(List) List.len < do
+    // Get the current Program
+    index sub_programs cast(List) List.nth ptr.load cast(List)
+    List.first Op.load Op.token Token.location Location.file
+    take file_name in
+
+
+    if file_name file_numbers HashMap.get NULL == do
+      // Save the index to the hashmap
+      file_index file_name file_numbers HashMap.set
+
+      // Append `.file directive`
+      f".file {file_index itoa} {quote}{file_name}{quote}\n" assembly_file append_file
+      file_index 1 + file_index =
+    endif
+    index 1 + index =
+  done
+
+  file_numbers
+end
+
 // Generate GAS x86_64 assembly file
 // Params: file_name, sub_programs (List[Program])
 // Return: None
@@ -971,7 +1006,12 @@ function generate_assembly_file
   // Write the beginning of the assembly to file
   file_name initialize_asm_file
 
-  // Iterate over each Program in sub_programs
+  // Generate `.file` directives
+  sub_programs file_name write_file_directives
+  take file_numbers in
+
+  // Generate `.text` section
+  ".section .text\n" file_name append_file
   while index sub_programs.len < do
 
     // Get the current Program
@@ -986,7 +1026,7 @@ function generate_assembly_file
     endif
 
     // Get assembly code for the current Program
-    sub_programs program file_name append_programs_assembly_code
+    sub_programs program file_numbers file_name append_programs_assembly_code
 
     // Add strings from the program to the .data section
     program get_string_variables_for_data_section
@@ -1134,15 +1174,18 @@ end
 // Return the beginning of the assembly code of each Program
 // Params: Func's name
 // Return: Assembly code
-function get_function_start_asm func:Func -> str :
+function get_function_start_asm func:Func file_numbers:HashMap -> str :
   func Func.name
   func Func.variables cast(List) List.len
-  take variable_count function_name in
+  func Func.location
+  dup Location.file file_numbers HashMap.get
+  take file_number location variable_count function_name in
 
   // MAIN Func differs from the others
   if function_name str.copy str.upper "MAIN" streq do
     f".globl _start
 _start:
+  .loc {file_number itoa} {location Location.row itoa} {location Location.column itoa}
   movq %rsp, (args_ptr)
   leaq return_stack(%rip), %r14
   addq ${variable_count 8 * itoa}, %r14\n" return
@@ -1150,6 +1193,7 @@ _start:
 
   f"{function_name get_valid_label_for_gas}:
 # [{function_name}] Save the return address to return stack
+  .loc {file_number itoa} {location Location.row itoa} {location Location.column itoa}
   addq ${variable_count 8 * 8 + itoa}, %r14 # {variable_count itoa} local variables
   popq (%r14) # Save return address from stack\n"
 end
@@ -1176,17 +1220,22 @@ function get_function_end_asm func:Func -> str :
   ret\n\n"
 end
 
-function append_programs_assembly_code file_name:str program:Program sub_programs:List[Program] :
+function append_programs_assembly_code
+    file_name:str
+    file_numbers:HashMap
+    program:Program
+    sub_programs:List[Program]
+:
   // Get the Func's name to be added to the assembly code
   // Exception: MAIN Func should be named '_start'
   program cast(List) List.first Op.load Op.func
   take func in
 
   // Write Func's start assembly to file
-  func get_function_start_asm file_name append_file
+  file_numbers func get_function_start_asm file_name append_file
 
   // Write assembly code of each Op in program
-  sub_programs program file_name append_program_ops_assembly_code
+  sub_programs program file_numbers file_name append_program_ops_assembly_code
 
   // Prepend the Func's beginning code and prepend the ending code
   func get_function_end_asm file_name append_file
@@ -1195,6 +1244,7 @@ end
 // Generate assembly for program
 function append_program_ops_assembly_code
   file_name:str
+  file_numbers:HashMap
   program:Program
   sub_programs:List[Program]
 -> :
@@ -1214,16 +1264,28 @@ function append_program_ops_assembly_code
 
     // Generate assembly for Op
     op get_op_comment_asm file_name append_file
-    sub_programs program op get_op_asm file_name append_file
+    file_numbers op get_loc_asm file_name append_file
+    file_numbers sub_programs program op get_op_asm file_name append_file
 
     // Append the current Op's assembly to file
     index 1 + index =
   done
 end
 
+// Generate assembly for Op's `.loc` directive
+// https://sourceware.org/binutils/docs-2.18/as/LNS-directives.html#LNS-directives
+function get_loc_asm op:Op file_numbers:HashMap -> str :
+  op Op.token Token.location
+  dup Location.file file_numbers HashMap.get
+  take file_number location in
+
+  f"  .loc {file_number itoa} {location Location.row itoa} {location Location.column itoa}\n"
+end
+
 function generate_program_ops_assembly_code
   program:Program
   sub_programs:List[Program]
+  file_numbers:HashMap
 -> str :
   "" str.copy
   program cast(List) List.len
@@ -1244,7 +1306,8 @@ function generate_program_ops_assembly_code
     // Generate assembly for Op
     assembly_code
     op get_op_comment_asm str.cat
-    sub_programs program op get_op_asm str.cat
+    file_numbers op get_loc_asm str.cat
+    file_numbers sub_programs program op get_op_asm str.cat
     assembly_code =
 
     // Append the current Op's assembly to file
